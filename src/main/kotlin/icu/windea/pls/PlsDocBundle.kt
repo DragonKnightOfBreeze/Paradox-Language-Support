@@ -1,16 +1,25 @@
 package icu.windea.pls
 
-import com.intellij.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import org.jetbrains.annotations.*
-import java.util.function.*
+import com.intellij.DynamicBundle
+import com.intellij.openapi.project.Project
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.NonNls
+import org.jetbrains.annotations.PropertyKey
+import java.util.function.Supplier
 
 @Suppress("unused")
 object PlsDocBundle {

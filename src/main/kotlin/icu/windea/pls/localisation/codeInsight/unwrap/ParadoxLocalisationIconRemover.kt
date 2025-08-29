@@ -1,8 +1,8 @@
 package icu.windea.pls.localisation.codeInsight.unwrap
 
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 class ParadoxLocalisationIconRemover : ParadoxLocalisationUnwrapper() {
     override fun getDescription(e: PsiElement): String {

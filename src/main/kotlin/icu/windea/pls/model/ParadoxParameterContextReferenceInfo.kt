@@ -1,9 +1,11 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import javax.swing.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPsiElementPointer
+import javax.swing.Icon
 
 /**
  * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。

@@ -1,12 +1,20 @@
 package icu.windea.pls.integrations.lints
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.events.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.integrations.lints.tools.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.core.collections.filterIsInstance
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
+import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于监听Tiger检查工具的`.conf`配置文件的更改，以便在必要时刷新检查结果缓存。

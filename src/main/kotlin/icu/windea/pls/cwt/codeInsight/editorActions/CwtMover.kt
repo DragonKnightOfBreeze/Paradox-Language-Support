@@ -1,14 +1,21 @@
 package icu.windea.pls.cwt.codeInsight.editorActions
 
-import com.intellij.codeInsight.editorActions.moveUpDown.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.editorActions.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.codeInsight.editorActions.moveUpDown.LineRange
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.children
+import icu.windea.pls.core.codeInsight.editorActions.ContainerBasedMover
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtBlockElement
+import icu.windea.pls.cwt.psi.CwtElementTypes.LEFT_BRACE
+import icu.windea.pls.cwt.psi.CwtElementTypes.RIGHT_BRACE
+import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtRootBlock
 
 /**
  * 用于在 CWT 文件中，为成员（属性、单独的值）适配 *上移/下移声明* 的功能。兼容附加的注释。

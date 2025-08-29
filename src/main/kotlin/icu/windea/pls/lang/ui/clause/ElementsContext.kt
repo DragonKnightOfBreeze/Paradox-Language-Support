@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.ui.clause
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
 
 class ElementsContext(
     val project: Project,

@@ -1,18 +1,31 @@
 package icu.windea.pls.ep.priority
 
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.filePathPatternsForPriority
+import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.util.set
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxSearchParameters
+import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxPriority>

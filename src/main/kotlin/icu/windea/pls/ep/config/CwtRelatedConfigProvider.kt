@@ -1,11 +1,13 @@
 package icu.windea.pls.ep.config
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.navigation.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiFile
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction
+import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsHandler
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * 用于基于上下文提供相关的CWT规则。

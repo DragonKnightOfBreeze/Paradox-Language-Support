@@ -1,14 +1,20 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.ide.projectView.*
-import com.intellij.ide.projectView.impl.nodes.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.configGroup.*
+import com.intellij.ide.projectView.NodeSortOrder
+import com.intellij.ide.projectView.NodeSortSettings
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.projectView.ProjectViewNode
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.nodes.PsiFileNode
+import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.ide.util.treeView.ValidateableNode
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.util.PlatformIcons
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 
 @Suppress("UnstableApiUsage")
 class CwtConfigDirectoryElementNode(

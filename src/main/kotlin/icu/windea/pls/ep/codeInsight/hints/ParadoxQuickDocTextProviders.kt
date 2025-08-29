@@ -1,17 +1,27 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.extendedComplexEnumValues
+import icu.windea.pls.config.configGroup.extendedDefinitions
+import icu.windea.pls.config.configGroup.extendedDynamicValues
+import icu.windea.pls.config.configGroup.extendedGameRules
+import icu.windea.pls.config.configGroup.extendedParameters
+import icu.windea.pls.config.configGroup.extendedScriptedVariables
+import icu.windea.pls.config.documentation
+import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.config.matchFromPattern
+import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.Source
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {

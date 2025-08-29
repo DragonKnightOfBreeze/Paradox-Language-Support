@@ -1,8 +1,9 @@
 package icu.windea.pls.lang.actions.tools
 
-import icu.windea.pls.*
-import icu.windea.pls.model.*
-import java.nio.file.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import java.nio.file.Path
 
 interface OpenPathActions {
     class Steam : OpenPathAction() {

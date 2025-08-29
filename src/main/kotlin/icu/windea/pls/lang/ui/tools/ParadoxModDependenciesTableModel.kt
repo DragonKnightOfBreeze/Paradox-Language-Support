@@ -1,9 +1,12 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
+import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.ListTableModel
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
 
 //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
 

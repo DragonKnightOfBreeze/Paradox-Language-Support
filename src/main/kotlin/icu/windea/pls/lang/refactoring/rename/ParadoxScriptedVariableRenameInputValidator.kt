@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.refactoring.rename
 
-import com.intellij.patterns.*
-import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.*
-import com.intellij.refactoring.rename.*
-import com.intellij.util.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.patterns.ElementPattern
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiElement
+import com.intellij.refactoring.rename.RenameInputValidator
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptedVariableRenameInputValidator : RenameInputValidator {
     private val elementPattern = psiElement(ParadoxScriptScriptedVariable::class.java)

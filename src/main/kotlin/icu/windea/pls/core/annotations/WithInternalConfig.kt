@@ -1,7 +1,7 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.config.config.*
-import kotlin.reflect.*
+import icu.windea.pls.config.config.CwtDetachedConfig
+import kotlin.reflect.KClass
 
 /**
  * 注明此功能的实现基于指定的内部规则。这些规则目前尚不支持自定义。

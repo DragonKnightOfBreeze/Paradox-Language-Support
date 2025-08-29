@@ -1,11 +1,16 @@
 package icu.windea.pls.lang.search.selector
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ChainedParadoxSelectorHolder(
     val project: Project,

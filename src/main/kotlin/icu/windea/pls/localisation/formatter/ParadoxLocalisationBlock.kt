@@ -1,15 +1,25 @@
 package icu.windea.pls.localisation.formatter
 
-import com.intellij.formatting.*
+import com.intellij.formatting.Alignment
+import com.intellij.formatting.Block
 import com.intellij.formatting.Indent
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.formatter.common.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.formatting.Spacing
+import com.intellij.formatting.SpacingBuilder
+import com.intellij.formatting.Wrap
+import com.intellij.lang.ASTNode
+import com.intellij.psi.TokenType
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.tree.IFileElementType
+import com.intellij.psi.tree.TokenSet
+import icu.windea.pls.core.processChild
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLON
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_NUMBER
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE
 
 class ParadoxLocalisationBlock(
     node: ASTNode,

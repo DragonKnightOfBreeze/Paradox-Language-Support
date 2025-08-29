@@ -1,22 +1,29 @@
 package icu.windea.pls.lang.search.usage
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.ep.icon.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.application.runReadAction
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.RequestResultProcessor
+import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.util.Processor
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.wordRequests
+import icu.windea.pls.ep.data.StellarisGameConceptData
+import icu.windea.pls.ep.icon.CompositeParadoxLocalisationIconSupport
+import icu.windea.pls.ep.icon.DefinitionBasedParadoxLocalisationIconSupport
+import icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
-import kotlin.experimental.*
+import kotlin.experimental.or
 
 /**
  * 定义的使用的查询。

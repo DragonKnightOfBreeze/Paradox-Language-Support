@@ -1,10 +1,11 @@
 package icu.windea.pls.ep.scope
 
-import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.ParadoxScriptedModifierManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisScriptedModifierSupportedScopesProvider : ParadoxDefinitionSupportedScopesProvider {

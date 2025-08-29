@@ -1,15 +1,18 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.icons.*
-import com.intellij.ide.*
-import com.intellij.ide.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.ide.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import java.awt.datatransfer.*
-import java.nio.file.*
+import com.intellij.icons.AllIcons
+import com.intellij.ide.BrowserUtil
+import com.intellij.ide.actions.RevealFileAction
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.toPathOrNull
+import java.awt.datatransfer.StringSelection
+import java.nio.file.Path
 
 interface ParadoxModDependenciesPopupActions {
     /**

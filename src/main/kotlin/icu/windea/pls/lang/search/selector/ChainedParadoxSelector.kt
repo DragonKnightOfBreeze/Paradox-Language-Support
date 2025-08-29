@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.search.selector
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.thenPossible
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
 class ChainedParadoxSelector<T>(

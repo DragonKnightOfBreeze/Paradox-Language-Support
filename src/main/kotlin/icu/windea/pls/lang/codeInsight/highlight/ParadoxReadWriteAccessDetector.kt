@@ -1,12 +1,17 @@
 package icu.windea.pls.lang.codeInsight.highlight
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.constraints.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 //如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 

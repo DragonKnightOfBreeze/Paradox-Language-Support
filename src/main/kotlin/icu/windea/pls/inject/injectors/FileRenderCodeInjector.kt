@@ -2,14 +2,17 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.openapi.fileChooser.tree.*
-import com.intellij.openapi.vfs.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.fileChooser.tree.FileNode
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.SimpleColoredComponent
+import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.qualifiedName
 
 /**
  * @see com.intellij.openapi.fileChooser.tree.FileRenderer

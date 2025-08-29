@@ -1,13 +1,15 @@
 package icu.windea.pls.cwt.codeInsight.surroundWith
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.cwt.psi.CwtElementFactory
+import icu.windea.pls.cwt.psi.CwtProperty
 
 class CwtPropertySurrounder : CwtSurrounder() {
     override fun getTemplateDescription(): String {

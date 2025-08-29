@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.actions.tools
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.ide.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import java.awt.datatransfer.*
-import java.nio.file.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxFileInfo
+import java.awt.datatransfer.StringSelection
+import java.nio.file.Path
 
 abstract class CopyPathAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

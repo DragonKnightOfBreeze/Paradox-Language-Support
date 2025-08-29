@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.refactoring.rename
 
-import com.intellij.psi.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.refactoring.rename.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.codeStyle.SuggestedNameInfo
+import com.intellij.refactoring.rename.NameSuggestionProvider
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.model.ParadoxDeclarationInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.findParentDefinition
 
 //org.jetbrains.kotlin.idea.base.codeInsight.KotlinNameSuggestionProvider
 

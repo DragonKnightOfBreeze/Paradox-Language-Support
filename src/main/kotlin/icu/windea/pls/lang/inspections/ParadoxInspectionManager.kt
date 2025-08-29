@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.ep.inspections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.*
-import java.util.regex.*
+import com.intellij.codeInspection.SuppressionUtil
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.siblings
+import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.util.regex.Pattern
 
 object ParadoxInspectionManager {
     private val SUPPRESS_IN_LINE_COMMENT_PATTERN = Pattern.compile("#" + SuppressionUtil.COMMON_SUPPRESS_REGEXP + ".*")

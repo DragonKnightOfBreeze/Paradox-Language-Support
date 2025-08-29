@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.ui
 
-import com.intellij.ui.*
-import com.intellij.ui.table.*
-import com.intellij.util.ui.*
-import icu.windea.pls.core.util.*
-import java.awt.*
-import javax.swing.*
+import com.intellij.ui.TableViewSpeedSearch
+import com.intellij.ui.ToolbarDecorator
+import com.intellij.ui.table.TableView
+import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.ListTableModel
+import icu.windea.pls.core.util.Entry
+import java.awt.Dimension
+import javax.swing.JPanel
+import javax.swing.ListSelectionModel
 
 class EntryListTableModel<K, V>(
     val list: MutableList<Entry<K, V>>,

@@ -1,12 +1,15 @@
 package icu.windea.pls.localisation.editor.editorActions.smartEnter
 
-import com.intellij.lang.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.lang.SmartEnterProcessorWithFixers
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.endOffset
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.isAtLineEnd
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 用于补充当前声明。

@@ -1,12 +1,18 @@
 package icu.windea.pls.script.usages
 
-import com.intellij.usages.*
-import com.intellij.usages.rules.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.usages.Usage
+import com.intellij.usages.UsageGroup
+import com.intellij.usages.UsageInfo2UsageAdapter
+import com.intellij.usages.UsageTarget
+import com.intellij.usages.UsageViewSettings
+import com.intellij.usages.rules.PsiElementUsage
+import com.intellij.usages.rules.SingleParentUsageGroupingRule
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.findParentDefinition
 
 class ParadoxDefinitionUsageGroupingRule(
     private val usageViewSettings: UsageViewSettings

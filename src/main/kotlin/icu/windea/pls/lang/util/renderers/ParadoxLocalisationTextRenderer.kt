@@ -1,10 +1,23 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.resolveLocalisation
+import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.util.ParadoxEscapeManager
+import icu.windea.pls.lang.util.ParadoxGameConceptManager
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxLocalisationTextRenderer(

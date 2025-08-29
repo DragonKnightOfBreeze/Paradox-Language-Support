@@ -2,22 +2,35 @@
 
 package icu.windea.pls.lang.documentation
 
-import com.intellij.codeInsight.documentation.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.*
+import com.intellij.codeInsight.documentation.DocumentationManagerUtil
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.core.documentation.buildDocumentation
+import icu.windea.pls.core.documentation.grayed
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
-import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
-import icu.windea.pls.model.*
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.qualifiedName
+import icu.windea.pls.model.steamId
+import icu.windea.pls.model.title
+import icu.windea.pls.model.toScopeMap
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
     append("<br>")

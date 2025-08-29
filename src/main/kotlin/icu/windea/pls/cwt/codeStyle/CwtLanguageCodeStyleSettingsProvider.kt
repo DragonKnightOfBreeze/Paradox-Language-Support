@@ -1,12 +1,18 @@
 package icu.windea.pls.cwt.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.model.constants.*
+import com.intellij.application.options.SmartIndentOptionsEditor
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.BlankLinesOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.CommenterOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.IndentOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.pass
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {

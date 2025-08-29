@@ -1,10 +1,17 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.patterns.PlatformPatterns.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionInitializationContext
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.patterns.PlatformPatterns.psiElement
+import icu.windea.pls.core.extend
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 class ParadoxScriptCompletionContributor : CompletionContributor() {
     init {

@@ -1,10 +1,11 @@
 package icu.windea.pls.script.lexer
 
-import com.intellij.lexer.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import com.intellij.lexer.LayeredLexer
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.openapi.project.Project
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptLexerFactory {

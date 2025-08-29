@@ -1,17 +1,21 @@
 package icu.windea.pls.extension.diagram
 
-import com.intellij.diagram.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.lang.*
-import java.util.concurrent.*
+import com.intellij.diagram.DiagramDataKeys
+import com.intellij.diagram.DiagramDataModel
+import com.intellij.diagram.DiagramNode
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.util.application
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import java.util.concurrent.Callable
 
 //com.intellij.uml.java.JavaUmlDataModel
 

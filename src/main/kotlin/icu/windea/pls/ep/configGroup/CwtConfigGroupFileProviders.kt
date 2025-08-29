@@ -1,13 +1,20 @@
 package icu.windea.pls.ep.configGroup
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileVisitor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigRepositoryManager
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toClasspathUrl
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.lang.util.PlsGitManager
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {

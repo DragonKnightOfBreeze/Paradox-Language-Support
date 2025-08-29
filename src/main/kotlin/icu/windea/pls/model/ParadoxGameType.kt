@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 
 /**
  * @property id ID。

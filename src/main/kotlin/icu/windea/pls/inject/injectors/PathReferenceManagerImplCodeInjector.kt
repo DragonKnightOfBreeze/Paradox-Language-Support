@@ -2,12 +2,15 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.paths.*
-import com.intellij.psi.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.references.paths.*
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.paths.PathReferenceProvider
+import com.intellij.openapi.paths.PsiDynaReference
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.lang.references.paths.ParadoxPathReference
 
 /**
  * @see com.intellij.openapi.paths.PathReferenceManagerImpl

@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.isCommandExpression
+import icu.windea.pls.localisation.psi.isComplexExpression
+import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * 复杂表达式，对应脚本语言/本地化语言中的某段特定的标识符。

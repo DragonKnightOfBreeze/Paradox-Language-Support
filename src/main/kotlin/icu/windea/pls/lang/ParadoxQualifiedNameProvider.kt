@@ -1,10 +1,13 @@
 package icu.windea.pls.lang
 
-import com.intellij.ide.actions.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.ide.actions.QualifiedNameProvider
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 //用于复制路径/引用（Edit > Copy Path/Reference...）
 

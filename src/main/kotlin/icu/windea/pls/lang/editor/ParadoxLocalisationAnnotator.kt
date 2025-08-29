@@ -1,13 +1,21 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.editor.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.lang.resolveLocalisation
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 class ParadoxLocalisationAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

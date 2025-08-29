@@ -1,9 +1,14 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.util.xmlb.*
-import icu.windea.pls.lang.hierarchy.*
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.StoragePathMacros
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import com.intellij.util.xmlb.XmlSerializerUtil
+import icu.windea.pls.lang.hierarchy.ParadoxHierarchyBrowserSettings
 
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxCallHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])

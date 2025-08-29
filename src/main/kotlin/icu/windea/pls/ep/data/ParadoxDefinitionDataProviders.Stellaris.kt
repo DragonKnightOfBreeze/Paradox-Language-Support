@@ -2,10 +2,12 @@
 
 package icu.windea.pls.ep.data
 
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.util.data.ParadoxScriptData
+import icu.windea.pls.lang.util.data.get
+import icu.windea.pls.lang.util.data.getAll
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProviderDelegates as Delegates
 
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionData {

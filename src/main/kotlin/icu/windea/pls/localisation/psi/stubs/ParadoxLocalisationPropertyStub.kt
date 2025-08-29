@@ -1,10 +1,12 @@
 package icu.windea.pls.localisation.psi.stubs
 
-import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.psi.stubs.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.*
+import com.intellij.psi.stubs.StubBase
+import com.intellij.psi.stubs.StubElement
+import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
 interface ParadoxLocalisationPropertyStub : ParadoxLocaleAwareStub<ParadoxLocalisationProperty> {

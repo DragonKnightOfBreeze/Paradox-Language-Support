@@ -1,15 +1,15 @@
 package icu.windea.pls.lang.refactoring.rename.naming
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.refactoring.rename.naming.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。

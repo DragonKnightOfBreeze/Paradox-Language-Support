@@ -1,14 +1,15 @@
 package icu.windea.pls.model.elementInfo
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.*
-import javax.swing.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.parameter.support
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.model.ParadoxGameType
+import javax.swing.Icon
 
 data class ParadoxParameterInfo(
     override val name: String,

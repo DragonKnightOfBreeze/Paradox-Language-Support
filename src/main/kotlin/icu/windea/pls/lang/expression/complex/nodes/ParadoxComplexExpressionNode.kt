@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.ParadoxComplexExpressionError
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
  * 复杂表达式的节点。复杂表达式由数个节点组成，本身也是一个节点。

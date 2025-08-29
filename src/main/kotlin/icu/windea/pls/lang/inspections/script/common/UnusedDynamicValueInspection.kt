@@ -1,20 +1,28 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.search.selector.dynamicValue
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 动态值被设置但未被使用的检查。

@@ -1,6 +1,6 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.tree.*
+import com.intellij.psi.tree.IElementType
 
 object ParadoxLocalisationElementTypeFactory {
     @JvmStatic

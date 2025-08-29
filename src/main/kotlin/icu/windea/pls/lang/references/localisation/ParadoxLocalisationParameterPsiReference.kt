@@ -1,17 +1,27 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxLocalisationType.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.ParadoxLocalisationType.Normal
+import icu.windea.pls.model.ParadoxLocalisationType.Synced
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider

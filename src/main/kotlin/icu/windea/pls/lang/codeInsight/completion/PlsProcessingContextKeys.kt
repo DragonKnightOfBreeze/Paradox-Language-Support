@@ -1,14 +1,18 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxScopeContext
 
 object PlsProcessingContextKeys : KeyRegistry()
 

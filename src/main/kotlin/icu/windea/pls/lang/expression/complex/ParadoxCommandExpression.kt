@@ -2,11 +2,17 @@
 
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxCommandFieldNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxCommandScopeLinkNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxCommandSuffixNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 /**
  * （本地化）命令表达式。

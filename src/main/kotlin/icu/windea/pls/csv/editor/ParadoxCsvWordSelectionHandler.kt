@@ -1,13 +1,14 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.codeInsight.editorActions.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parents
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
 
 class ParadoxCsvWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {

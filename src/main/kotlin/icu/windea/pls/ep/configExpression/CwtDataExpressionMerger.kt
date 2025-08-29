@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.configExpression
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
  * 用于合并CWT数据表达式。

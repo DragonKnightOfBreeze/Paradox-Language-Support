@@ -1,9 +1,9 @@
 package icu.windea.pls.images.tga
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
-import java.io.*
-import javax.imageio.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.core.runCatchingCancelable
+import java.io.ByteArrayInputStream
+import javax.imageio.ImageIO
 
 //org.intellij.images.util.ImageInfoReader.read
 

@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.resolve
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.navigation.*
-import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.codeInsight.navigation.ParadoxGotoSuperDefinitionActionHandler
+import icu.windea.pls.lang.documentation.ParadoxDocumentationTarget
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
  * 用于提供对定义的继承逻辑的支持。

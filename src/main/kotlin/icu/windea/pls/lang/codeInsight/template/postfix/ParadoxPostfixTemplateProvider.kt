@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.codeInsight.template.postfix
 
-import com.intellij.codeInsight.template.postfix.templates.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
+import com.intellij.codeInsight.template.postfix.templates.PostfixTemplate
+import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.postfixTemplateSettings
 
 class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
     private val defaultTemplates by lazy {

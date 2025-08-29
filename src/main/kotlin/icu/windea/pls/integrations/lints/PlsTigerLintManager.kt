@@ -1,18 +1,31 @@
 package icu.windea.pls.integrations.lints
 
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.integrations.lints.tools.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.util.SimpleModificationTracker
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.toPsiDirectory
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
+import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 
 object PlsTigerLintManager {
     object Keys : KeyRegistry() {

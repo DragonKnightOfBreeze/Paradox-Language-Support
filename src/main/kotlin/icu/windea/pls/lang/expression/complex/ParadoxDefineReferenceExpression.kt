@@ -1,12 +1,17 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDefineNamespaceNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDefinePrefixNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDefineVariableNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorTokenNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 定义引用表达式。对应的CWT规则类型为[CwtDataTypes.DefineReference]。

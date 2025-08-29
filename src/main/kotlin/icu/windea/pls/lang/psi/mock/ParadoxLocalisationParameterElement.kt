@@ -1,14 +1,15 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * 本地化的参数并不存在一个真正意义上的声明处，用这个模拟。

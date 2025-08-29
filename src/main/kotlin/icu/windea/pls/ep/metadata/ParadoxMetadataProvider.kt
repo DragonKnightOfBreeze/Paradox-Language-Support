@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.metadata
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.model.ParadoxMetadata
 
 /**
  * 用于获取游戏或模组的元数据。

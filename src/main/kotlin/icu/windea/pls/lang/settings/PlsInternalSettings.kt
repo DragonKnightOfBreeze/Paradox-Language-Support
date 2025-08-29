@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.util.registry.*
-import icu.windea.pls.core.*
+import com.intellij.openapi.util.registry.Registry
+import icu.windea.pls.core.orNull
 
 /**
  * PLS的内部设置。可以通过 Registry 页面进行调整。

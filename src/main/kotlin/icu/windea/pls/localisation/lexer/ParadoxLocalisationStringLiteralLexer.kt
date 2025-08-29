@@ -1,8 +1,8 @@
 package icu.windea.pls.localisation.lexer
 
-import com.intellij.lexer.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.psi.StringEscapesTokenTypes
+import com.intellij.psi.tree.IElementType
 
 class ParadoxLocalisationStringLiteralLexer(
     originalLiteralToken: IElementType

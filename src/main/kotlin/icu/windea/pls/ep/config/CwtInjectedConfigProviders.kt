@@ -1,11 +1,16 @@
 package icu.windea.pls.ep.config
 
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.declarationConfigContext
+import icu.windea.pls.config.config.delegatedWith
+import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.ep.configContext.onActionConfig
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfigProvider {
     override fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {

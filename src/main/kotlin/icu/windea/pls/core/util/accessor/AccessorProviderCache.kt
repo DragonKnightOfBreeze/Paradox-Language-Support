@@ -1,8 +1,8 @@
 package icu.windea.pls.core.util.accessor
 
-import com.jetbrains.rd.util.*
-import icu.windea.pls.core.*
-import kotlin.reflect.*
+import com.jetbrains.rd.util.ConcurrentHashMap
+import icu.windea.pls.core.cast
+import kotlin.reflect.KClass
 
 object AccessorProviderCache {
     private val cache = ConcurrentHashMap<KClass<*>, AccessorProvider<*>>()

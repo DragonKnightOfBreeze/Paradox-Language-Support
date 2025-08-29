@@ -1,13 +1,15 @@
 package icu.windea.pls.lang.navigation
 
-import com.intellij.navigation.*
-import com.intellij.psi.search.*
-import com.intellij.psi.stubs.*
-import com.intellij.util.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.navigation.ChooseByNameContributorEx
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
+import com.intellij.util.Processor
+import com.intellij.util.indexing.FindSymbolParameters
+import com.intellij.util.indexing.IdFilter
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找本地化。

@@ -1,12 +1,16 @@
 package icu.windea.pls.lang.inspections.script.inference
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ep.configContext.inlineScriptHasConflict
+import icu.windea.pls.lang.quickfix.GotoInlineScriptUsagesFix
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
  * 检查内联脚本的使用位置是否存在冲突。

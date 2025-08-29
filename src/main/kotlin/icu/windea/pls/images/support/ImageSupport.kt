@@ -1,8 +1,9 @@
 package icu.windea.pls.images.support
 
-import com.intellij.openapi.extensions.*
-import java.io.*
-import java.nio.file.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import java.io.InputStream
+import java.io.OutputStream
+import java.nio.file.Path
 
 interface ImageSupport {
     @Throws(UnsupportedOperationException::class)

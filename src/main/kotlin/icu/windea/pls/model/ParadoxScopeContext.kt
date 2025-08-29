@@ -1,11 +1,16 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.scope.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.expression.complex.nodes.*
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
+import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScopeLinkNode
 
 interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope

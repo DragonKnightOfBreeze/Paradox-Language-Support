@@ -1,14 +1,13 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import com.intellij.icons.*
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.icons.AllIcons
+import com.intellij.ide.hierarchy.ChangeHierarchyViewActionBase
+import com.intellij.openapi.actionSystem.AnActionEvent
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import javax.swing.Icon
 
 interface ParadoxDefinitionHierarchyActions {
     sealed class ViewActionBase(

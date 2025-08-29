@@ -2,7 +2,7 @@
 
 package icu.windea.pls.core.collections
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.cast
 import java.util.*
 
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }

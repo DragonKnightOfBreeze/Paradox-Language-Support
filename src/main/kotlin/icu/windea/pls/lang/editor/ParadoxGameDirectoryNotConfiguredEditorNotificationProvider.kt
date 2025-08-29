@@ -1,21 +1,27 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
-import com.intellij.ui.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EditorNotificationProvider
+import com.intellij.util.application
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.util.toMutableEntryList
+import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
+import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
+import icu.windea.pls.lang.settings.finalGameDirectory
+import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
-import javax.swing.*
+import javax.swing.JComponent
 
 /**
  * 如果游戏目录未配置，则为模组文件提供通知，以便快速配置。仅适用于项目中的文本文件。

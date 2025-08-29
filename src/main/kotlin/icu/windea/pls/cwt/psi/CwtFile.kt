@@ -1,11 +1,12 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.extapi.psi.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.navigation.*
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.tree.IFileElementType
+import icu.windea.pls.core.findChild
+import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.navigation.CwtItemPresentation
 
 class CwtFile(
     viewProvider: FileViewProvider

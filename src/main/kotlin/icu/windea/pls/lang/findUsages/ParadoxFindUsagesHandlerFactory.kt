@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.findUsages
 
-import com.intellij.find.findUsages.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
+import com.intellij.find.findUsages.FindUsagesHandler
+import com.intellij.find.findUsages.FindUsagesHandlerFactory
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFactory() {
     val findOptions = ParadoxFindUsagesOptions(project)

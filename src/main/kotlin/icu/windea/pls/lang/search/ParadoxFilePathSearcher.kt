@@ -1,17 +1,20 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.SearchScope
+import com.intellij.util.Processor
+import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 /**
  * 文件路径的查询器。

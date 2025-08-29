@@ -1,11 +1,13 @@
 package icu.windea.pls.ai.settings
 
-import com.intellij.openapi.options.*
-import com.intellij.openapi.ui.*
+import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.core.util.CallbackLock
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.paths
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.orNull
 
 internal class ParadoxPathResolverImpl : ParadoxPath.Resolver {
     override fun resolveEmpty(): ParadoxPath = EmptyParadoxPath

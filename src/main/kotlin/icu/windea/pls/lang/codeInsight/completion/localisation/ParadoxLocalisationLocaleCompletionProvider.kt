@@ -1,19 +1,27 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
-import com.intellij.application.options.*
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.ui.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.application.options.CodeStyle
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.ui.JBColor
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.letIf
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionPriorities
+import icu.windea.pls.lang.codeInsight.completion.withPriority
+import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**

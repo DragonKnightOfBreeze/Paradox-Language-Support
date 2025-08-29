@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.injected.editor.*
-import com.intellij.openapi.vfs.*
-import com.intellij.testFramework.*
+import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.testFramework.LightVirtualFileBase
 
 object PlsVfsManager {
     fun isLightFile(file: VirtualFile): Boolean {

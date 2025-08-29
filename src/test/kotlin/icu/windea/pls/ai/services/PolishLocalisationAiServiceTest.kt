@@ -1,15 +1,16 @@
 package icu.windea.pls.ai.services
 
-import com.intellij.openapi.application.*
-import com.intellij.testFramework.*
-import com.intellij.testFramework.fixtures.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.ai.util.manipulators.*
-import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.localisation.psi.*
-import kotlinx.coroutines.*
-import org.junit.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
+import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class PolishLocalisationAiServiceTest : BasePlatformTestCase() {

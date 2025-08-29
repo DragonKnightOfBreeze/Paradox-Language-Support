@@ -1,20 +1,32 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.refactoring.*
-import com.intellij.refactoring.rename.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.paths.*
+import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.refactoring.RefactoringSettings
+import com.intellij.refactoring.rename.RenameProcessor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 /**
  * 不正确的文件名的检查。

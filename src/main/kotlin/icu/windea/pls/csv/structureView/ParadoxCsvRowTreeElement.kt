@@ -1,8 +1,8 @@
 package icu.windea.pls.csv.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.model.constants.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxCsvRowTreeElement(
     element: ParadoxCsvRow

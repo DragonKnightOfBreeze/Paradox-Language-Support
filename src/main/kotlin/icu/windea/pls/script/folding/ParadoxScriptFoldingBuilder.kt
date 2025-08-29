@@ -1,19 +1,28 @@
 package icu.windea.pls.script.folding
 
-import com.intellij.lang.*
-import com.intellij.lang.folding.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.folding.CustomFoldingBuilder
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PARAMETER_CONDITION
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {

@@ -1,14 +1,39 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.lang.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.paths.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import com.intellij.lang.LighterAST
+import com.intellij.lang.LighterASTNode
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.TokenType
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.siblings
+import icu.windea.pls.core.children
+import icu.windea.pls.core.childrenOfType
+import icu.windea.pls.core.firstChild
+import icu.windea.pls.core.internNode
+import icu.windea.pls.core.parent
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
 
 /**
  * @see ParadoxExpressionPath

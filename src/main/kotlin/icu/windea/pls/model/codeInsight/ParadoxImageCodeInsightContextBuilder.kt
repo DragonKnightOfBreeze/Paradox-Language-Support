@@ -1,21 +1,29 @@
 package icu.windea.pls.model.codeInsight
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.enabledTool
+import icu.windea.pls.core.getInspectionToolState
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.Type
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.inspections.script.common.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxImageCodeInsightContextBuilder {
     fun fromFile(

@@ -1,9 +1,15 @@
 package icu.windea.pls.script.codeInsight.unwrap
 
-import com.intellij.codeInsight.unwrap.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.unwrap.AbstractUnwrapper
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.siblings
+import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 abstract class ParadoxScriptUnwrapper : AbstractUnwrapper<ParadoxScriptUnwrapper.Context>("") {
     override fun createContext(): Context {

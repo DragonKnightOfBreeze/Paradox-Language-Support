@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.codeInsight.markers
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.navigation.*
-import com.intellij.navigation.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.util.*
-import javax.swing.*
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
+import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.navigation.GotoRelatedItem
+import com.intellij.psi.PsiElement
+import com.intellij.util.NotNullFunction
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
+import javax.swing.Icon
 
 abstract class ParadoxRelatedItemLineMarkerProvider : RelatedItemLineMarkerProvider() {
     companion object {

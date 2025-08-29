@@ -1,20 +1,38 @@
 package icu.windea.pls.ep.index
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readOrReadFrom
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeOrWriteFrom
+import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
-import java.io.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.withState
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
+import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
+import java.io.DataInput
+import java.io.DataOutput
 
 class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxComplexEnumValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.findUsages
 
-import com.intellij.find.findUsages.*
-import com.intellij.ide.util.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
+import com.intellij.find.findUsages.PersistentFindUsagesOptions
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
 
 //com.intellij.find.findUsages.JavaFindUsagesOptions
 

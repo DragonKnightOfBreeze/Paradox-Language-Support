@@ -1,21 +1,29 @@
 package icu.windea.pls.lang.codeInsight.generation
 
-import com.intellij.application.options.*
-import com.intellij.ide.actions.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.model.constants.*
+import com.intellij.application.options.CodeStyle
+import com.intellij.ide.actions.OpenFileAction
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.locale
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
+import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerator {

@@ -6,12 +6,7 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.MAX_LINE_LENGTH_WORD_WRAP
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.toNonNullableProperty
+import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade

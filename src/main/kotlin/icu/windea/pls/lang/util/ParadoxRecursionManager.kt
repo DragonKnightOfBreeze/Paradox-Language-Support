@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxRecursionManager {
     //由于需要处理引用传递的情况，考虑性能问题，目前仅检测第一个递归引用

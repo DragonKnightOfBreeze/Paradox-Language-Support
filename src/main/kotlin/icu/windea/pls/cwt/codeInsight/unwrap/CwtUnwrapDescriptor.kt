@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.codeInsight.unwrap
 
-import com.intellij.codeInsight.unwrap.*
+import com.intellij.codeInsight.unwrap.UnwrapDescriptorBase
+import com.intellij.codeInsight.unwrap.Unwrapper
 
 class CwtUnwrapDescriptor : UnwrapDescriptorBase() {
     private val _unwrappers = arrayOf(

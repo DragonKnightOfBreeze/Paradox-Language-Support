@@ -1,6 +1,6 @@
 package icu.windea.pls.core.util.console
 
-import java.nio.charset.*
+import java.nio.charset.Charset
 
 object CommandOutputCharsetDetector {
     fun detect(commandType: CommandType): Charset {

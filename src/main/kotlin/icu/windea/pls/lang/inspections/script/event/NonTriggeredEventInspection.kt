@@ -1,16 +1,27 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInsight.daemon.impl.actions.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.properties
 
 class NonTriggeredEventInspection : LocalInspectionTool() {
     //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88

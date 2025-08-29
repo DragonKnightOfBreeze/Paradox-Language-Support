@@ -1,8 +1,10 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider

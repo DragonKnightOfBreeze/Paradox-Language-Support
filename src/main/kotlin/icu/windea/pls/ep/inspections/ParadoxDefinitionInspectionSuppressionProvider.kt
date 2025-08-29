@@ -1,10 +1,10 @@
 package icu.windea.pls.ep.inspections
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
  * @see icu.windea.pls.lang.inspections.ParadoxScriptInspectionSuppressor

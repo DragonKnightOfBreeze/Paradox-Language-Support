@@ -1,10 +1,11 @@
 package icu.windea.pls.cwt.lexer
 
-import com.intellij.lexer.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.lexer.LayeredLexer
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.openapi.project.Project
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtTokenSets
 
 @Suppress("UNUSED_PARAMETER")
 object CwtLexerFactory {

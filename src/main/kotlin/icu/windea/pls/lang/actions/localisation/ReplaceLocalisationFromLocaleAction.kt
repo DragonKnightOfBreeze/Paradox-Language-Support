@@ -1,22 +1,28 @@
 package icu.windea.pls.lang.actions.localisation
 
-import com.intellij.notification.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.project.*
-import com.intellij.platform.ide.progress.*
-import com.intellij.platform.util.coroutines.*
-import com.intellij.platform.util.progress.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.concurrent.atomic.*
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.coroutines.forEachConcurrent
+import com.intellij.platform.util.progress.reportRawProgress
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flow
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopup() {
     @OptIn(ExperimentalCoroutinesApi::class)

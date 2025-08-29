@@ -1,19 +1,31 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.diagram.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.diagram.DiagramRelationshipInfo
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.GlobalSearchScopes
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.extension.diagram.ParadoxDiagramDataModel
+import icu.windea.pls.extension.diagram.ParadoxDiagramEdge
+import icu.windea.pls.extension.diagram.ParadoxDiagramElementManager
+import icu.windea.pls.extension.diagram.ParadoxDiagramNode
+import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
     open fun getItemPropertyKeys(): List<String> = emptyList()

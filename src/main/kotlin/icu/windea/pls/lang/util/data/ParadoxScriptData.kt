@@ -1,8 +1,9 @@
 package icu.windea.pls.lang.util.data
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.UserDataHolder
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
  * 用于方便地处理脚本数据。

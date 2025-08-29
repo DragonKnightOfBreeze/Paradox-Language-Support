@@ -1,13 +1,15 @@
 package icu.windea.pls.model.constraints
 
-import com.intellij.lang.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.lexer.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxGameType.*
+import com.intellij.lang.PsiBuilder
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.resolve.FileContextUtil
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxGameType.Ck3
+import icu.windea.pls.model.ParadoxGameType.Stellaris
+import icu.windea.pls.model.ParadoxGameType.Vic3
 
 enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType

@@ -1,12 +1,23 @@
 package icu.windea.pls.lang.util.data
 
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
-import kotlin.reflect.*
-import kotlin.reflect.full.*
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.ep.data.ParadoxDefinitionData
+import icu.windea.pls.script.psi.booleanValue
+import icu.windea.pls.script.psi.colorValue
+import icu.windea.pls.script.psi.floatValue
+import icu.windea.pls.script.psi.intValue
+import icu.windea.pls.script.psi.stringValue
+import icu.windea.pls.script.psi.value
+import java.awt.Color
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
+import kotlin.reflect.KType
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.typeOf
 
 inline fun <reified T> ParadoxScriptData.get(path: String): ParadoxScriptDataDelegateProvider<T?> {
     return ParadoxScriptDataDelegateProvider(getData(path), typeOf<T>(), null)

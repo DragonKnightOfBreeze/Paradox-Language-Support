@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.localisation.editor.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxCommandSuffixNode(
     override val text: String,

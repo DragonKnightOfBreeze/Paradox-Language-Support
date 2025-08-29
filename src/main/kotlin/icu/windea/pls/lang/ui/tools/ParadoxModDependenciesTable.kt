@@ -1,19 +1,28 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.ide.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.ide.*
-import com.intellij.openapi.project.*
-import com.intellij.ui.*
-import com.intellij.ui.scale.*
-import com.intellij.ui.table.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.settings.*
-import java.awt.event.*
-import javax.swing.*
+import com.intellij.ide.CopyProvider
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.Project
+import com.intellij.ui.BooleanTableCellEditor
+import com.intellij.ui.BooleanTableCellRenderer
+import com.intellij.ui.DoubleClickListener
+import com.intellij.ui.PopupHandler
+import com.intellij.ui.TableSpeedSearch
+import com.intellij.ui.ToolbarDecorator
+import com.intellij.ui.scale.JBUIScale
+import com.intellij.ui.table.JBTable
+import com.intellij.util.ui.TextTransferable
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.registerClickListener
+import icu.windea.pls.core.registerCopyProvider
+import icu.windea.pls.lang.actions.PlsActionPlaces
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import java.awt.event.MouseEvent
+import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(
     val model: ParadoxModDependenciesTableModel

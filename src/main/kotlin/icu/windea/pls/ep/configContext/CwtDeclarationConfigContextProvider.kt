@@ -1,13 +1,15 @@
 package icu.windea.pls.ep.configContext
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtDeclarationConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.config.configContext.provider
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于提供CWT声明规则上下文。

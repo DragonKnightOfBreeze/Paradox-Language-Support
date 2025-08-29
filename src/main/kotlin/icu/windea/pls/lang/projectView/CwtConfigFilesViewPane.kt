@@ -1,15 +1,18 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.icons.*
-import com.intellij.ide.*
-import com.intellij.ide.projectView.*
-import com.intellij.ide.projectView.impl.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.registry.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import javax.swing.tree.*
+import com.intellij.icons.AllIcons
+import com.intellij.ide.SelectInTarget
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.AbstractProjectViewPaneWithAsyncSupport
+import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase
+import com.intellij.ide.projectView.impl.ProjectTreeStructure
+import com.intellij.ide.projectView.impl.ProjectViewTree
+import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.psi.PsiDirectory
+import icu.windea.pls.PlsBundle
+import javax.swing.tree.DefaultTreeModel
 
 //com.intellij.ide.projectView.impl.PackageViewPane
 

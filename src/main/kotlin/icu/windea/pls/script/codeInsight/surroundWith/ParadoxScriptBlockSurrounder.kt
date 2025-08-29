@@ -1,14 +1,16 @@
 package icu.windea.pls.script.codeInsight.surroundWith
 
-import com.intellij.lang.surroundWith.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.surroundWith.Surrounder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 class ParadoxScriptBlockSurrounder : Surrounder {
     override fun getTemplateDescription(): String {

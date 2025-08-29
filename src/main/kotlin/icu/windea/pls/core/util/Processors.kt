@@ -1,6 +1,6 @@
 package icu.windea.pls.core.util
 
-import com.intellij.util.*
+import com.intellij.util.Processor
 
 object Processors {
     open class FindProcessor<T> : Processor<T> {

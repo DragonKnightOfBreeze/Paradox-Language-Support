@@ -2,13 +2,20 @@
 
 package icu.windea.pls.ai.model
 
-import dev.langchain4j.model.chat.*
-import dev.langchain4j.model.chat.request.*
-import dev.langchain4j.service.*
-import icu.windea.pls.core.coroutines.*
-import kotlinx.coroutines.channels.*
-import kotlinx.coroutines.flow.*
-import kotlin.coroutines.cancellation.*
+import dev.langchain4j.model.chat.StreamingChatModel
+import dev.langchain4j.model.chat.request.ChatRequest
+import dev.langchain4j.service.TokenStream
+import icu.windea.pls.core.coroutines.toLineFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transform
+import kotlin.coroutines.cancellation.CancellationException
 
 fun StreamingChatModel.chatFlow(chatRequest: ChatRequest): Flow<ChatFlowReply> = callbackFlow {
     val model = this@chatFlow

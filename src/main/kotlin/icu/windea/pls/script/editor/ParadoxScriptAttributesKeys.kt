@@ -1,10 +1,26 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.ide.highlighter.custom.CustomHighlighterColors.*
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
-import com.intellij.openapi.editor.HighlighterColors.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.editor.colors.TextAttributesKey.*
+import com.intellij.ide.highlighter.custom.CustomHighlighterColors.CUSTOM_KEYWORD2_ATTRIBUTES
+import com.intellij.ide.highlighter.custom.CustomHighlighterColors.CUSTOM_KEYWORD3_ATTRIBUTES
+import com.intellij.ide.highlighter.custom.CustomHighlighterColors.CUSTOM_KEYWORD4_ATTRIBUTES
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.IDENTIFIER
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_METHOD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.METADATA
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBER
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.OPERATION_SIGN
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STATIC_FIELD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STATIC_METHOD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STRING
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE
+import com.intellij.openapi.editor.HighlighterColors.BAD_CHARACTER
+import com.intellij.openapi.editor.colors.CodeInsightColors
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as LKeys
 
 object ParadoxScriptAttributesKeys {

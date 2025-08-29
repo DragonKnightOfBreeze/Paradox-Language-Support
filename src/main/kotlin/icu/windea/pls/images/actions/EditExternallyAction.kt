@@ -1,23 +1,26 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.execution.*
-import com.intellij.execution.configurations.*
-import com.intellij.execution.util.*
-import com.intellij.ide.util.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.util.io.*
-import com.intellij.openapi.util.text.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.*
-import icu.windea.pls.images.*
-import org.intellij.images.*
-import org.intellij.images.fileTypes.*
-import org.intellij.images.options.impl.*
-import java.awt.*
-import java.io.*
+import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.util.ExecUtil
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.SystemInfo
+import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.util.EnvironmentUtil
+import icu.windea.pls.images.ImageManager
+import org.intellij.images.ImagesBundle
+import org.intellij.images.fileTypes.ImageFileTypeManager
+import org.intellij.images.options.impl.ImagesConfigurable
+import java.awt.Desktop
+import java.io.File
+import java.io.IOException
 
 //org.intellij.images.actions.EditExternallyAction
 

@@ -1,16 +1,21 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.ScrollType
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.findParentDefinition
 
 class IntroduceLocalVariableFix(
     private val variableName: String,

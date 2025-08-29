@@ -1,9 +1,11 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.images.*
-import org.intellij.images.editor.actions.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.images.ImageManager
+import org.intellij.images.editor.actions.BackgroundImageDialog
 
 //org.intellij.images.editor.actions.SetBackgroundImageAction
 

@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.references.cwt
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.indexInfo.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.core.unquote
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
+import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolPsiReference(
     element: CwtStringExpressionElement,

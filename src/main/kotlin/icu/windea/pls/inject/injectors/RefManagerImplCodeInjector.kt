@@ -2,11 +2,15 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.codeInspection.reference.*
-import icu.windea.pls.core.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInspection.reference.RefElement
+import com.intellij.codeInspection.reference.RefFile
+import icu.windea.pls.core.findTopHostFileOrThis
+import icu.windea.pls.core.orNull
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectFile
 
 /**
  * @see com.intellij.codeInspection.reference.RefManagerImpl

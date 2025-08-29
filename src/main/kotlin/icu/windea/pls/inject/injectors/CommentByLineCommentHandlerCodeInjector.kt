@@ -2,13 +2,14 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.lang.*
-import com.intellij.openapi.editor.*
-import com.intellij.util.text.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.editor.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
+import com.intellij.lang.Commenter
+import com.intellij.openapi.editor.Editor
+import com.intellij.util.text.CharArrayUtil
+import icu.windea.pls.core.memberProperty
+import icu.windea.pls.cwt.editor.CwtCommenter
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
 
 /**
  * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler

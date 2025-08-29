@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.isParameterized
 
 class ParadoxParameterizedCommandScopeLinkNode(
     override val text: String,

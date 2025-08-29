@@ -1,12 +1,19 @@
 package icu.windea.pls.script.codeInsight.template
 
-import com.intellij.codeInsight.template.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.editor.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.template.TemplateActionContext
+import com.intellij.codeInsight.template.TemplateContextType
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.parents
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighter
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 
 abstract class ParadoxScriptTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {

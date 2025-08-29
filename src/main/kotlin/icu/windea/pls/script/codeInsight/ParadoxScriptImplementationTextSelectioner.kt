@@ -1,9 +1,10 @@
 package icu.windea.pls.script.codeInsight
 
-import com.intellij.codeInsight.hint.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.hint.ImplementationTextSelectioner
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 /**
  * 用于为脚本语言指定快速定义显示的文本范围。

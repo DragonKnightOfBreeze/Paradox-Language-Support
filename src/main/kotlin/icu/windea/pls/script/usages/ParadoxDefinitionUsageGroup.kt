@@ -1,15 +1,18 @@
 package icu.windea.pls.script.usages
 
-import com.intellij.navigation.*
-import com.intellij.openapi.vcs.*
-import com.intellij.psi.*
-import com.intellij.usages.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import com.intellij.navigation.NavigationItemFileStatus
+import com.intellij.openapi.vcs.FileStatus
+import com.intellij.psi.SmartPointerManager
+import com.intellij.usages.UsageGroup
+import com.intellij.usages.UsageViewSettings
+import icu.windea.pls.core.compareToIgnoreCase
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import javax.swing.Icon
 
 class ParadoxDefinitionUsageGroup(
     definition: ParadoxScriptDefinitionElement,

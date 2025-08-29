@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.refactoring.rename.naming
 
-import com.intellij.psi.*
-import com.intellij.refactoring.rename.naming.*
-import com.intellij.usageView.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import com.intellij.psi.PsiElement
+import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
+import com.intellij.usageView.UsageInfo
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.refactoring.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。

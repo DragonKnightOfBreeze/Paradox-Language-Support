@@ -1,22 +1,28 @@
 package icu.windea.pls.ep.parameter
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.unknown
+import icu.windea.pls.lang.documentation.appendBr
+import icu.windea.pls.lang.documentation.appendIndent
+import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ReferenceLinkType
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {
     override fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterElement? {

@@ -1,6 +1,6 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.support.*
+import icu.windea.pls.inject.support.FieldBasedCacheCodeInjectorSupport
 
 /**
  * 注明字段缓存信息。

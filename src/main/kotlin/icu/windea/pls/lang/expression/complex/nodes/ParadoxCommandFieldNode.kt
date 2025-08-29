@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configGroup.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 sealed interface ParadoxCommandFieldNode : ParadoxComplexExpressionNode {
     companion object Resolver {

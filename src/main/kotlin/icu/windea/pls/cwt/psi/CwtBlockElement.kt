@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiListLikeElement
 
 interface CwtBlockElement : PsiListLikeElement {
     val valueList: List<CwtValue>

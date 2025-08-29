@@ -1,24 +1,30 @@
 package icu.windea.pls.ep.modifier
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.util.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.config.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.CwtModifierConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.core.util.KeyProvider
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.codeInsight.completion.gameType
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 提供对修正的支持。

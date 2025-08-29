@@ -1,10 +1,15 @@
 package icu.windea.pls.inject.support
 
-import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import javassist.*
-import kotlin.reflect.full.*
+import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.inject.CodeInjector
+import icu.windea.pls.inject.CodeInjectorService
+import icu.windea.pls.inject.CodeInjectorSupport
+import icu.windea.pls.inject.annotations.InjectFieldBasedCache
+import javassist.CtClass
+import javassist.CtField
+import javassist.CtMethod
+import javassist.CtPrimitiveType
+import kotlin.reflect.full.findAnnotations
 
 /**
  * 提供对字段缓存的代码注入器的支持。

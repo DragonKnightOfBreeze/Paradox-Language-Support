@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.*
-import org.junit.*
+import com.intellij.codeInsight.CodeInsightUtilCore
+import org.junit.Test
 
 class ParadoxEscapeManagerTest {
     @Test

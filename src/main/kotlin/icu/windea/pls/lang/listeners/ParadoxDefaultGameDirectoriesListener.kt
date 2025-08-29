@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.util.messages.*
+import com.intellij.util.messages.Topic
 
 /**
  * 监听默认游戏目录映射的更改。

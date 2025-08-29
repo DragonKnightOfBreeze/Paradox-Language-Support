@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDynamicValueNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorTokenNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 动态值表达式。对应的CWT规则类型为[CwtDataTypeGroups.DynamicValue]。

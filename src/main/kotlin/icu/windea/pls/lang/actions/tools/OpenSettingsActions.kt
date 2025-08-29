@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.actions.tools
 
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.ParadoxGameSettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.ui.tools.ParadoxGameSettingsDialog
+import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
+import icu.windea.pls.model.ParadoxRootInfo
 
 interface OpenSettingsActions {
     /**

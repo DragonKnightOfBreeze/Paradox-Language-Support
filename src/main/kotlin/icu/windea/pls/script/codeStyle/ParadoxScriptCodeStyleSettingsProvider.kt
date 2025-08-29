@@ -1,8 +1,11 @@
 package icu.windea.pls.script.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.script.*
+import com.intellij.application.options.CodeStyleAbstractConfigurable
+import com.intellij.application.options.CodeStyleAbstractPanel
+import com.intellij.psi.codeStyle.CodeStyleConfigurable
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 class ParadoxScriptCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxScriptLanguage

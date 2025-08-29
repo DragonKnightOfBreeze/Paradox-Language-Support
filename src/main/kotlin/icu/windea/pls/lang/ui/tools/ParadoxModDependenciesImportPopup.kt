@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.util.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.tools.*
-import javax.swing.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ep.tools.ParadoxModImporter
+import javax.swing.Icon
 
 class ParadoxModDependenciesImportPopup(
     private val project: Project,

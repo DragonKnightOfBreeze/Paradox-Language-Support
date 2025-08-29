@@ -1,11 +1,11 @@
 package icu.windea.pls.ep.inspections
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * @see icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection

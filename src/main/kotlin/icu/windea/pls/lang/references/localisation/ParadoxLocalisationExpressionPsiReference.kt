@@ -1,15 +1,21 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.PsiReference
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.psi.PsiReferencesAware
+import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 class ParadoxLocalisationExpressionPsiReference(
     element: ParadoxLocalisationExpressionElement,

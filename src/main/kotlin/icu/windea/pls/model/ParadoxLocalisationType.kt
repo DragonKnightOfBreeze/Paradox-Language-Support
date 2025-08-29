@@ -1,10 +1,13 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.paths.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 enum class ParadoxLocalisationType(
     val id: String

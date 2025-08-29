@@ -1,8 +1,10 @@
 package icu.windea.pls
 
-import com.intellij.*
-import org.jetbrains.annotations.*
-import java.util.function.*
+import com.intellij.DynamicBundle
+import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.NonNls
+import org.jetbrains.annotations.PropertyKey
+import java.util.function.Supplier
 
 object PlsBundle {
     @NonNls

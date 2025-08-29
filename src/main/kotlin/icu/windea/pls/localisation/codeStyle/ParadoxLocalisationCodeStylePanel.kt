@@ -1,8 +1,9 @@
 package icu.windea.pls.localisation.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.localisation.*
+import com.intellij.application.options.GenerationCodeStylePanel
+import com.intellij.application.options.TabbedLanguageCodeStylePanel
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
 class ParadoxLocalisationCodeStylePanel(
     currentSettings: CodeStyleSettings,

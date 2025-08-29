@@ -1,11 +1,16 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 作用域字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ScopeField]。

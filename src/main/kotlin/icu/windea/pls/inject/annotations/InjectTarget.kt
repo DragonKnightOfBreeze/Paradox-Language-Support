@@ -1,6 +1,7 @@
 package icu.windea.pls.inject.annotations
 
-import icu.windea.pls.inject.*
+import icu.windea.pls.inject.CodeInjector
+import icu.windea.pls.inject.CodeInjectorBase
 
 /**
  * 注明注入目标信息。

@@ -2,19 +2,27 @@
 
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.codeInsight.hints.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionHintTextHintsProvider.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionHintTextHintsProvider.Settings
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示定义的提示文本。

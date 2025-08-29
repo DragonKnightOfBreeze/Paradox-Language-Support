@@ -1,17 +1,19 @@
 package icu.windea.pls.lang.settings
 
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.ui.*
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ui.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.Entry
+import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.ui.EntryListTableModel
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.model.ParadoxGameType
+import javax.swing.JComponent
 
 @Suppress("UnstableApiUsage")
 class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {

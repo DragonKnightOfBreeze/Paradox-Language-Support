@@ -1,12 +1,13 @@
 package icu.windea.pls.images.dds
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.file.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.components.service
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Couple
+import com.intellij.openapi.util.Pair
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.file.FileLookupInfoProvider
 
 //org.intellij.images.completion.ImageLookupInfoProvider
 

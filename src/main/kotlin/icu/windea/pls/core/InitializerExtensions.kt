@@ -1,12 +1,22 @@
 package icu.windea.pls.core
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.io.*
-import kotlinx.coroutines.*
-import java.net.*
-import java.nio.file.*
+import com.intellij.openapi.application.UI
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.createDirectories
+import com.intellij.util.io.createParentDirectories
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 class SmartInitializer(
     private val completableDeferred: CompletableDeferred<Unit> = CompletableDeferred(),

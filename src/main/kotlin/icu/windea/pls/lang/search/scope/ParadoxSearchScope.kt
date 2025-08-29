@@ -1,17 +1,22 @@
 package icu.windea.pls.lang.search.scope
 
-import com.intellij.openapi.module.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findTopHostFileOrThis
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.finalGameDirectory
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxRootInfo
 
 open class ParadoxSearchScope(
     project: Project?,

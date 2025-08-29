@@ -1,8 +1,11 @@
 package icu.windea.pls.ep.resolve
 
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供对内联脚本的内联逻辑的支持。

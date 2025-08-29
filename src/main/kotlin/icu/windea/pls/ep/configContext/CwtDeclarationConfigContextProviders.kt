@@ -1,15 +1,26 @@
 package icu.windea.pls.ep.configContext
 
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtDeclarationConfig
+import icu.windea.pls.config.config.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.declarationConfigContext
+import icu.windea.pls.config.config.delegated
+import icu.windea.pls.config.config.subtypesUsedInDeclaration
+import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.extendedGameRules
+import icu.windea.pls.config.configGroup.extendedOnActions
+import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 //region Extensions
 

@@ -1,9 +1,8 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.core.*
-import java.io.*
-import java.util.concurrent.*
-import kotlin.collections.iterator
+import icu.windea.pls.core.unquote
+import java.io.File
+import java.util.concurrent.CopyOnWriteArrayList
 
 object ParadoxModOverriddenFileSelector {
     private val ignoredFileShortNames = arrayOf("README", "CHANGELOG", "CREDITS")

@@ -1,8 +1,8 @@
 package icu.windea.pls.model.indexInfo
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxParameterIndexInfo(
     val name: String,

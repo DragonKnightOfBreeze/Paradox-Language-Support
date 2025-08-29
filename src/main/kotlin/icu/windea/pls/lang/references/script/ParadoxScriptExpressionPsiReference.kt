@@ -1,21 +1,32 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.PsiReference
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.bindConfig
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.tagType
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.psi.PsiReferencesAware
+import icu.windea.pls.core.unquote
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider

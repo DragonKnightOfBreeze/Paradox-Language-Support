@@ -1,19 +1,21 @@
 package icu.windea.pls.ep.tools
 
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.tools.model.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.fileChooser.FileChooserFactory
+import com.intellij.openapi.fileChooser.FileSaverDescriptor
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.ep.tools.model.ParadoxLauncherJsonV3
+import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.settings.qualifiedName
+import icu.windea.pls.lang.ui.tools.ParadoxModDependenciesTable
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxModSource
 
 /**
  * 导出模组配置到启动器JSON配置文件。（>= 2021.10）

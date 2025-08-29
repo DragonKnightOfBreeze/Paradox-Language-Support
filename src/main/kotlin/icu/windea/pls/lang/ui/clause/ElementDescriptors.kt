@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.ui.clause
 
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxSeparatorType
 
 sealed interface ElementDescriptor {
     val name: String

@@ -1,15 +1,23 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDynamicValueFieldNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxValueFieldNode
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxType
 
 /**
  * 值字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ValueField]。

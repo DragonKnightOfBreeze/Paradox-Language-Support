@@ -2,8 +2,7 @@
 
 package icu.windea.pls.core
 
-import kotlin.collections.iterator
-import kotlin.reflect.*
+import kotlin.reflect.KMutableProperty0
 
 inline fun <T> withProperties(block: PropertiesContainer.() -> T): T {
     val container = PropertiesContainer()

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.ParadoxComplexExpressionError
+import icu.windea.pls.lang.isParameterized
 
 class ParadoxErrorValueFieldNode(
     override val text: String,

@@ -1,14 +1,22 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
+import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import javax.swing.JComponent
 
 /**
  * 无法解析的封装变量引用的检查。

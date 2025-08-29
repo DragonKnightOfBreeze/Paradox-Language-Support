@@ -1,15 +1,27 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
-import java.io.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.properties
+import java.io.DataInput
+import java.io.DataOutput
 
 /**
  * 用于索引预定义的命名空间与变量。

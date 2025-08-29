@@ -1,8 +1,8 @@
 package icu.windea.pls.integrations.translation.tools
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.integrations.translation.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.integrations.translation.TranslateCallback
 
 /**
  * 提供翻译工具。用于翻译本地化文本。

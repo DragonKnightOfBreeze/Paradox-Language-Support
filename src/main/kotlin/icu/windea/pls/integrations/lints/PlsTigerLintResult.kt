@@ -1,10 +1,12 @@
 package icu.windea.pls.integrations.lints
 
-import com.fasterxml.jackson.annotation.*
-import com.fasterxml.jackson.module.kotlin.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import java.io.*
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.module.kotlin.readValue
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.util.ObjectMappers
+import java.io.File
 
 /**
  * @property itemGroup 键是相对于游戏或模组目录的路径，值是对应的一组检查结果项。

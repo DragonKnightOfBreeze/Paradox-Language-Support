@@ -1,6 +1,7 @@
 package icu.windea.pls.script.codeInsight.unwrap
 
-import com.intellij.codeInsight.unwrap.*
+import com.intellij.codeInsight.unwrap.UnwrapDescriptorBase
+import com.intellij.codeInsight.unwrap.Unwrapper
 
 class ParadoxScriptUnwrapDescriptor : UnwrapDescriptorBase() {
     private val _unwrappers = arrayOf(

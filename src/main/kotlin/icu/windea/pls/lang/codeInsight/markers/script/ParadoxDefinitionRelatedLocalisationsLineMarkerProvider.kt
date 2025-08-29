@@ -1,21 +1,22 @@
 package icu.windea.pls.lang.codeInsight.markers.script
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.navigation.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.markers.*
-import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.navigation.GotoRelatedItem
+import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.NotNullLazyValue
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标。

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.toClasspathUrl
 
 object PlsStringConstants {
     const val anonymous = "(anonymous)"

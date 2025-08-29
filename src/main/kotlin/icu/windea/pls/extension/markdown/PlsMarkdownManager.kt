@@ -1,19 +1,35 @@
 package icu.windea.pls.extension.markdown
 
-import com.intellij.lang.*
-import com.intellij.lang.injection.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.injection.*
-import icu.windea.pls.model.paths.*
-import org.intellij.plugins.markdown.lang.*
-import org.intellij.plugins.markdown.lang.psi.impl.*
+import com.intellij.lang.Language
+import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.elementType
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.core.trimFast
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.injection.ParadoxPathInjectionInfo
+import icu.windea.pls.model.paths.ParadoxPath
+import org.intellij.plugins.markdown.lang.MarkdownElementTypes
+import org.intellij.plugins.markdown.lang.MarkdownTokenTypes
+import org.intellij.plugins.markdown.lang.psi.impl.MarkdownCodeFence
 
 object PlsMarkdownManager {
     object Keys : KeyRegistry() {

@@ -1,16 +1,19 @@
 package icu.windea.pls.lang.index.stubs
 
-import com.intellij.lang.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.stubs.*
-import com.intellij.util.diff.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.lexer.*
-import icu.windea.pls.localisation.parser.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.paths.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.LighterASTNode
+import com.intellij.lang.PsiBuilderFactory
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.stubs.LightLanguageStubDefinition
+import com.intellij.util.diff.FlyweightCapableTreeStructure
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
+import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {

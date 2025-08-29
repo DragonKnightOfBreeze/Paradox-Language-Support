@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.icon.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
  * 本地化图标的PSI引用。

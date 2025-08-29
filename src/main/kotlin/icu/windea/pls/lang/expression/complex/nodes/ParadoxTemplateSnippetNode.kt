@@ -1,21 +1,33 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.PsiReference
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolve
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.unquote
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.expression.complex.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.complex.ParadoxTemplateExpression
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.resolved
 
 /**
  * @see ParadoxTemplateExpression

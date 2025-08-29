@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * 用于为CWT规则文件中的一些符号提供对引用解析和查找用法的支持。

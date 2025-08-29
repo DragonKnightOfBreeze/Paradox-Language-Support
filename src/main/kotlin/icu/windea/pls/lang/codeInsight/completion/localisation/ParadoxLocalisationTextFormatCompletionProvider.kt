@@ -1,19 +1,28 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.progress.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.withCompletionId
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<CompletionParameters>() {

@@ -1,22 +1,29 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.util.Processor
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.swappedTypes
+import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.core.processAllElements
+import icu.windea.pls.core.processAllElementsByKeys
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.search.selector.getConstraint
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 定义的查询器。

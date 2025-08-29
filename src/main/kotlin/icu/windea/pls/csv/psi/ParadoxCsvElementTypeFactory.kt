@@ -1,6 +1,6 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.psi.tree.*
+import com.intellij.psi.tree.IElementType
 
 object ParadoxCsvElementTypeFactory {
     @JvmStatic

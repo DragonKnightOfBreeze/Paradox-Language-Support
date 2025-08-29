@@ -1,20 +1,32 @@
 package icu.windea.pls.lang.inspections.script.scope
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.ep.modifier.*
-import icu.windea.pls.ep.scope.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.supportedScopes
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
+import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 class IncorrectScopeInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

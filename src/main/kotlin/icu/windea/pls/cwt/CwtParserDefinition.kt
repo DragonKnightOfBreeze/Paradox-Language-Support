@@ -1,13 +1,19 @@
 package icu.windea.pls.cwt
 
-import com.intellij.lang.*
-import com.intellij.lang.ParserDefinition.SpaceRequirements.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.cwt.lexer.*
-import icu.windea.pls.cwt.parser.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.ParserDefinition
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MAY
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MUST_LINE_BREAK
+import com.intellij.openapi.project.Project
+import com.intellij.psi.FileViewProvider
+import icu.windea.pls.cwt.lexer.CwtLexerFactory
+import icu.windea.pls.cwt.parser.CwtParser
+import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
+import icu.windea.pls.cwt.psi.CwtElementTypes.DOC_COMMENT
+import icu.windea.pls.cwt.psi.CwtElementTypes.Factory
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtTokenSets
 
 class CwtParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = CwtTokenSets.WHITE_SPACES

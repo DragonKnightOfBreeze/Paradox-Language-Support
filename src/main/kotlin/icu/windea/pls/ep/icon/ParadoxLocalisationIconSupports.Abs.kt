@@ -1,20 +1,30 @@
 package icu.windea.pls.ep.icon
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.parameters
+import icu.windea.pls.lang.codeInsight.completion.withCompletionId
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.distinctByFilePath
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")
 abstract class CompositeParadoxLocalisationIconSupport : ParadoxLocalisationIconSupport {

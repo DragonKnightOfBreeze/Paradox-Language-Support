@@ -1,7 +1,7 @@
 package icu.windea.pls.inject
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.util.UserDataHolder
 
 /**
  * 代码注入器。

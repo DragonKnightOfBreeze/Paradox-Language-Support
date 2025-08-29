@@ -1,7 +1,8 @@
 package icu.windea.pls.lang.util.data
 
-import com.intellij.psi.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.psi.PsiFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
  * 本地化数据的解析器。

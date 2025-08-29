@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.psi
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import kotlin.math.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.PsiLanguageInjectionHost
+import icu.windea.pls.lang.util.ParadoxEscapeManager
+import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import kotlin.math.min
 
 class ParadoxScriptExpressionLiteralTextEscaper<T : PsiLanguageInjectionHost>(
     host: T

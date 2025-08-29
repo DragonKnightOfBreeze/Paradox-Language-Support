@@ -1,10 +1,11 @@
 package icu.windea.pls.csv.lexer
 
-import com.intellij.lexer.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.model.*
+import com.intellij.lexer.LayeredLexer
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.openapi.project.Project
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
+import icu.windea.pls.model.ParadoxGameType
 
 object ParadoxCsvLexerFactory {
     @JvmStatic

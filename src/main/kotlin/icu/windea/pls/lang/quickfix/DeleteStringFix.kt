@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.daemon.impl.actions.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.startOffset
 
 class DeleteStringFix(
     element: PsiElement,

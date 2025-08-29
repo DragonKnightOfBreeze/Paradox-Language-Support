@@ -1,7 +1,7 @@
 package icu.windea.pls.misc
 
-import icu.windea.pls.core.*
-import org.junit.*
+import icu.windea.pls.core.withRecursionGuard
+import org.junit.Test
 
 class MiscTest {
     @Test

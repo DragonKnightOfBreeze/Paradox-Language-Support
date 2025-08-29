@@ -1,17 +1,30 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.lang.annotation.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.complexEnumValueInfo
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.editor.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.isResolvableExpression
+import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.tagType
 
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

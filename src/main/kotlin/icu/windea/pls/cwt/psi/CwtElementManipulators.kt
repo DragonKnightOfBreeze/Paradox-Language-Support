@@ -1,8 +1,9 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.AbstractElementManipulator
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.replaceAndQuoteIfNecessary
 
 class CwtOptionKeyManipulator : AbstractElementManipulator<CwtOptionKey>() {
     override fun handleContentChange(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {

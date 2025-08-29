@@ -2,11 +2,16 @@
 
 package icu.windea.pls.core.util
 
-import com.google.common.cache.*
-import com.google.common.collect.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
-import java.util.concurrent.*
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.LoadingCache
+import com.google.common.collect.ImmutableMap
+import com.intellij.openapi.util.ModificationTracker
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.cancelable
+import java.util.concurrent.Callable
+import java.util.concurrent.ConcurrentHashMap
 
 inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
     return build<K, V>().toCancelable()

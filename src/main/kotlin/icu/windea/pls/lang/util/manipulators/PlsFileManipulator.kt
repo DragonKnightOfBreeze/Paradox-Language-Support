@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.util.manipulators
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.actions.*
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.core.util.Processors
+import icu.windea.pls.lang.actions.editor
 
 object PlsFileManipulator {
     fun buildSequence(e: AnActionEvent, deep: Boolean = false): Sequence<VirtualFile> {

@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.navigation.*
-import com.intellij.openapi.util.*
-import com.intellij.platform.backend.navigation.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.*
-import com.intellij.psi.search.*
-import icu.windea.pls.lang.search.scope.*
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.util.TextRange
+import com.intellij.platform.backend.navigation.NavigationRequest
+import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.impl.RenameableFakePsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 
 @Suppress("UnstableApiUsage")
 abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {

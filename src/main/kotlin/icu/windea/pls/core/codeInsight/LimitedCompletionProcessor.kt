@@ -1,7 +1,7 @@
 package icu.windea.pls.core.codeInsight
 
-import com.intellij.openapi.util.registry.*
-import com.intellij.util.*
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.util.Processor
 
 /**
  * 进行代码补全时，确保加入的提示项不超过`ide.completion.variant.limit`指定的上限。

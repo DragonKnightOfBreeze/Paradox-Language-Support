@@ -1,18 +1,22 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.ide.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.options.*
-import com.intellij.openapi.options.ex.*
-import com.intellij.openapi.ui.*
-import com.intellij.ui.components.*
+import com.intellij.ide.DataManager
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.options.ex.Settings
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.setEmptyState
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import icu.windea.pls.*
-import icu.windea.pls.ai.settings.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.integrations.*
-import icu.windea.pls.model.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
+import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {

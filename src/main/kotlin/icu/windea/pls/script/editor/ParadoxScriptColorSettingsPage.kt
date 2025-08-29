@@ -1,10 +1,13 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.options.colors.*
-import icu.windea.pls.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.options.colors.AttributesDescriptor
+import com.intellij.openapi.options.colors.ColorDescriptor
+import com.intellij.openapi.options.colors.ColorSettingsPage
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 class ParadoxScriptColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
 
 object ParadoxScriptPsiUtil {
     fun canAttachComment(element: PsiElement): Boolean {

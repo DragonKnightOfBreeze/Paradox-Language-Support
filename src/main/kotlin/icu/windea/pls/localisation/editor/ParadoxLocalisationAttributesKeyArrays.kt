@@ -1,6 +1,6 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.openapi.editor.colors.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as K
 
 object ParadoxLocalisationAttributesKeyArrays {

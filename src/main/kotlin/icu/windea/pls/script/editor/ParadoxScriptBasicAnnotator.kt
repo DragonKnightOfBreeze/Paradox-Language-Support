@@ -1,13 +1,23 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lang.annotation.*
-import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity.ERROR
+import com.intellij.lang.annotation.HighlightSeverity.INFORMATION
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.lang.quickfix.InsertStringFix
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
 class ParadoxScriptBasicAnnotator : Annotator {

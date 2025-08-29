@@ -1,21 +1,27 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.diagram.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramColorManagerBase
+import com.intellij.diagram.DiagramNode
+import com.intellij.diagram.DiagramPresentationModel
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.ui.ColorUtil
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
+import icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettings
+import icu.windea.pls.extension.diagram.settings.StellarisTechTreeDiagramSettings
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.getData
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.awt.Color
 
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {

@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.documentation
 
-import com.intellij.codeInsight.documentation.*
-import com.intellij.platform.backend.documentation.*
+import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.platform.backend.documentation.DocumentationLinkHandler
-import icu.windea.pls.core.*
+import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.documentation.LinkResolveResult
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 
 class ParadoxDocumentationLinkHandler : DocumentationLinkHandler {

@@ -1,13 +1,15 @@
 package icu.windea.pls.inject
 
-import com.intellij.ide.plugins.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.inject.annotations.*
-import kotlin.reflect.full.*
+import com.intellij.ide.plugins.PluginManager
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.extensions.PluginDescriptor
+import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.util.application
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import kotlin.reflect.full.findAnnotation
 
 /**
  * @see InjectTarget

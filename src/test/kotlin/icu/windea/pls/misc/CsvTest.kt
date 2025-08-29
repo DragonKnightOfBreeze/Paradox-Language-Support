@@ -1,6 +1,6 @@
 package icu.windea.pls.misc
 
-import org.junit.*
+import org.junit.Test
 
 class CsvTest {
     @Test

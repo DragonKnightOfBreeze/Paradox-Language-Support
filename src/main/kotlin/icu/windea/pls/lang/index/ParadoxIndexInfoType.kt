@@ -1,14 +1,25 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
+import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findFileBasedIndex
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxEventInEventIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxEventInOnActionIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxInferredScopeContextAwareDefinitionIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 
 abstract class ParadoxIndexInfoType<T : ParadoxIndexInfo>(val id: Byte) {
     data object ComplexEnumValue : ParadoxIndexInfoType<ParadoxComplexEnumValueIndexInfo>(1)

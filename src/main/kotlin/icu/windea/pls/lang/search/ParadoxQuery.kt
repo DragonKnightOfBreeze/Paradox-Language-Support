@@ -1,11 +1,15 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.progress.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.priority.*
-import icu.windea.pls.lang.search.selector.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.util.AbstractQuery
+import com.intellij.util.CommonProcessors
+import com.intellij.util.Processor
+import com.intellij.util.Query
+import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.thenPossible
+import icu.windea.pls.ep.priority.ParadoxPriorityProvider
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.ParadoxSelector
 
 /**
  * 可对查询结果进行进一步的处理，包括排序、过滤、去重等。

@@ -1,15 +1,21 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.lang.util.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.floatRange
+import icu.windea.pls.config.configExpression.intRange
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxType
 
 class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun matches(element: PsiElement, expressionText: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result? {

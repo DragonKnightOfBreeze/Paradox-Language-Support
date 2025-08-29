@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.indexInfo.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.search.searches.ExtensibleQueryFactory
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
 
 /**
  * 动态值的查询。（不涉及CWT规则文件中预定义的值）

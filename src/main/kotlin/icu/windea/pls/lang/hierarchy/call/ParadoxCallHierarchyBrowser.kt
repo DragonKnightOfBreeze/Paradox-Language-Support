@@ -1,21 +1,32 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.hierarchy.*
+import com.intellij.ide.hierarchy.CallHierarchyBrowserBase
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.ide.hierarchy.HierarchyTreeStructure
+import com.intellij.ide.hierarchy.LanguageCallHierarchy
+import com.intellij.ide.util.treeView.NodeDescriptor
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.ui.PopupHandler
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.element
+import icu.windea.pls.core.project
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
+import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
-import java.text.*
-import javax.swing.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import java.text.MessageFormat
+import javax.swing.JTree
 
 class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHierarchyBrowserBase(project, target) {
     override fun prependActions(actionGroup: DefaultActionGroup) {

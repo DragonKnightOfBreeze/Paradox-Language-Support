@@ -1,15 +1,18 @@
 package icu.windea.pls.lang.codeInsight.highlight
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.usages.*
-import com.intellij.usages.impl.rules.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.references.cwt.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.usages.PsiElementUsageTarget
+import com.intellij.usages.UsageTarget
+import com.intellij.usages.impl.rules.UsageType
+import com.intellij.usages.impl.rules.UsageTypeProviderEx
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
+import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
 /**
  * 在查找使用中，区分CWT规则符号的使用类型。

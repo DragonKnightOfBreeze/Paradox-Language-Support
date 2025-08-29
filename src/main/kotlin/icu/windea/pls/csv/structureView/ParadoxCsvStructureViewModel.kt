@@ -1,11 +1,16 @@
 package icu.windea.pls.csv.structureView
 
-import com.intellij.ide.structureView.*
-import com.intellij.ide.util.treeView.smartTree.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.ide.structureView.StructureViewModel
+import com.intellij.ide.structureView.StructureViewTreeElement
+import com.intellij.ide.structureView.TextEditorBasedStructureViewModel
+import com.intellij.ide.util.treeView.smartTree.Sorter
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.lang.util.PlsPsiManager
 
 class ParadoxCsvStructureViewModel(
     editor: Editor?,

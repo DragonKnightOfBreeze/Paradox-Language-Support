@@ -2,16 +2,17 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.model.*
-import com.intellij.openapi.project.*
-import com.intellij.platform.backend.navigation.*
-import com.intellij.psi.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.psi.mock.*
-import kotlin.reflect.*
-import kotlin.reflect.full.*
-import kotlin.reflect.jvm.*
+import com.intellij.model.Symbol
+import com.intellij.openapi.project.Project
+import com.intellij.platform.backend.navigation.NavigationTarget
+import com.intellij.psi.PsiElement
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.lang.psi.mock.MockPsiElement
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * @see com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl

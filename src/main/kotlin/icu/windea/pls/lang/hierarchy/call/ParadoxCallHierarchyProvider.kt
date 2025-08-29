@@ -1,13 +1,19 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.hierarchy.CallHierarchyBrowserBase
+import com.intellij.ide.hierarchy.HierarchyBrowser
+import com.intellij.ide.hierarchy.HierarchyProvider
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 //com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
 

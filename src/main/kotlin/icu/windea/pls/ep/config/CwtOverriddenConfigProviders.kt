@@ -1,17 +1,26 @@
 package icu.windea.pls.ep.config
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.parentsOfType
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.isBlock
+import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.stringValue
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     object Constants {

@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.util.renderers
 
-import com.intellij.openapi.application.*
-import com.intellij.ui.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.model.constants.*
-import kotlinx.coroutines.*
-import java.awt.*
-import javax.swing.*
+import com.intellij.openapi.application.UI
+import com.intellij.openapi.application.readAction
+import com.intellij.ui.ColorUtil
+import com.intellij.util.ui.JBUI
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.constants.PlsStringConstants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.awt.Color
+import javax.swing.JLabel
 
 class ParadoxLocalisationTextUIRenderer(
     val color: Color? = null

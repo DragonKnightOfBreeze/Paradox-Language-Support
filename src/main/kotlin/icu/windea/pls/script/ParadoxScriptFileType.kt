@@ -1,7 +1,8 @@
 package icu.windea.pls.script
 
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.lang.ParadoxBaseFileType
 
 object ParadoxScriptFileType : ParadoxBaseFileType(ParadoxScriptLanguage) {
     override fun getName() = "Paradox Script"

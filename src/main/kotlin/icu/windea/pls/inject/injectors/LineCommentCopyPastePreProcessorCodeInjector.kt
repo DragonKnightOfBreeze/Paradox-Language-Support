@@ -2,19 +2,21 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.application.options.*
-import com.intellij.lang.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.text.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import com.intellij.util.text.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.codeStyle.*
-import icu.windea.pls.cwt.editor.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
+import com.intellij.application.options.CodeStyle
+import com.intellij.lang.LanguageCommenters
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.RawText
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.PsiFile
+import com.intellij.util.DocumentUtil
+import com.intellij.util.text.CharArrayUtil
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
+import icu.windea.pls.cwt.editor.CwtCommenter
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
 
 /**
  * @see com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor

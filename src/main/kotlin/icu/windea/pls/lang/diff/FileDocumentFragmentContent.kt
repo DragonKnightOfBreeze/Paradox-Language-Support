@@ -1,23 +1,29 @@
 package icu.windea.pls.lang.diff
 
-import com.intellij.diff.contents.*
-import com.intellij.diff.util.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.command.undo.*
-import com.intellij.openapi.diff.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.event.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileEditor.impl.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.pom.*
-import com.intellij.util.*
-import icu.windea.pls.lang.diff.actions.*
-import java.nio.charset.*
-import java.util.function.*
+import com.intellij.diff.contents.DocumentContent
+import com.intellij.diff.contents.DocumentContentBase
+import com.intellij.diff.contents.FileContent
+import com.intellij.diff.util.DiffUserDataKeysEx
+import com.intellij.diff.util.DiffUtil
+import com.intellij.diff.util.LineCol
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.undo.UndoManager
+import com.intellij.openapi.diff.DiffBundle
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.RangeMarker
+import com.intellij.openapi.editor.event.DocumentEvent
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.impl.LoadTextUtil
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.pom.Navigatable
+import com.intellij.util.LineSeparator
+import com.intellij.util.ObjectUtils
+import icu.windea.pls.lang.diff.actions.DocumentsSynchronizer
+import java.nio.charset.Charset
+import java.util.function.IntUnaryOperator
 
 //com.intellij.diff.contents.FileDocumentContentImpl
 //com.intellij.diff.actions.DocumentFragmentContent

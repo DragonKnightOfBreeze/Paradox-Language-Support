@@ -1,17 +1,20 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.codeInsight.generation.*
-import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
+import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.codeInsight.generation.ParadoxGenerateLocalisationsHandler
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
 
 class GenerateLocalisationsFix(
     element: PsiElement,

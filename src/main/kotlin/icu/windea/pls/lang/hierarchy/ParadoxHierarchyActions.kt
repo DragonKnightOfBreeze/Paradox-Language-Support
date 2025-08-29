@@ -1,17 +1,30 @@
 package icu.windea.pls.lang.hierarchy
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.*
-import com.intellij.util.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.hierarchy.type.*
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.lang.settings.*
-import java.awt.*
-import javax.swing.*
+import com.intellij.ide.hierarchy.HierarchyBrowserBaseEx
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.actionSystem.ex.ComboBoxAction
+import com.intellij.util.application
+import com.intellij.util.ui.JBUI
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.element
+import icu.windea.pls.core.function
+import icu.windea.pls.core.project
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.settings.PlsStrategies
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JPanel
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
 interface ParadoxHierarchyActions {

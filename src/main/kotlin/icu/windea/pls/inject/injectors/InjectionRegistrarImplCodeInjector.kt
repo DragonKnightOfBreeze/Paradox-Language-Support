@@ -2,13 +2,14 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.injected.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.inject.processors.*
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.tree.injected.Place
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.inject.processors.InjectedFileProcessor
 
 /**
  * @see com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl

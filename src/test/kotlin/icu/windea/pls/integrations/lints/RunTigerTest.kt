@@ -1,8 +1,10 @@
 package icu.windea.pls.integrations.lints
 
-import icu.windea.pls.core.*
-import org.junit.*
-import kotlin.time.*
+import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.toFile
+import org.junit.Ignore
+import org.junit.Test
+import kotlin.time.measureTime
 
 @Ignore
 class RunTigerTest {

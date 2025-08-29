@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.psi
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.impl.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.project.DumbService
+import com.intellij.psi.impl.PsiModificationTrackerImpl
+import com.intellij.psi.impl.PsiTreeChangeEventImpl
+import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 //com.intellij.psi.impl.PsiModificationTrackerImpl
 

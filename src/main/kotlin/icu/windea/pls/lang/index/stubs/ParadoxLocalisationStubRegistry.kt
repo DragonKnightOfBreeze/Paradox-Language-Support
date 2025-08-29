@@ -1,17 +1,42 @@
 package icu.windea.pls.lang.index.stubs
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.impl.*
-import icu.windea.pls.localisation.psi.stubs.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
+import com.intellij.lang.LighterAST
+import com.intellij.lang.LighterASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.stubs.IndexSink
+import com.intellij.psi.stubs.LightStubElementFactory
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.stubs.StubInputStream
+import com.intellij.psi.stubs.StubOutputStream
+import com.intellij.psi.stubs.StubRegistry
+import com.intellij.psi.stubs.StubRegistryExtension
+import com.intellij.psi.stubs.StubSerializer
+import icu.windea.pls.core.children
+import icu.windea.pls.core.firstChild
+import icu.windea.pls.core.internNode
+import icu.windea.pls.core.pass
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.optimizeValue
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubRegistry : StubRegistryExtension {

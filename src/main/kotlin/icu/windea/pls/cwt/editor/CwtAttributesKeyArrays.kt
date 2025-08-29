@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.openapi.editor.colors.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.cwt.editor.CwtAttributesKeys as K
 
 object CwtAttributesKeyArrays {

@@ -1,12 +1,27 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.StringEscapesTokenTypes.*
-import com.intellij.psi.TokenType.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.lexer.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
+import com.intellij.openapi.project.Project
+import com.intellij.psi.StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN
+import com.intellij.psi.StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN
+import com.intellij.psi.StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN
+import com.intellij.psi.TokenType.BAD_CHARACTER
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.cwt.lexer.CwtLexerFactory
+import icu.windea.pls.cwt.psi.CwtElementTypes.BOOLEAN_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
+import icu.windea.pls.cwt.psi.CwtElementTypes.DOC_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.EQUAL_SIGN
+import icu.windea.pls.cwt.psi.CwtElementTypes.FLOAT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.INT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.LEFT_BRACE
+import icu.windea.pls.cwt.psi.CwtElementTypes.NOT_EQUAL_SIGN
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT_START
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_KEY_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.RIGHT_BRACE
+import icu.windea.pls.cwt.psi.CwtElementTypes.STRING_TOKEN
 import icu.windea.pls.cwt.editor.CwtAttributesKeyArrays as KA
 
 class CwtSyntaxHighlighter(

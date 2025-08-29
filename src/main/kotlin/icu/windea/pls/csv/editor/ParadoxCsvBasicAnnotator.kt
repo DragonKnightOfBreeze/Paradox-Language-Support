@@ -1,12 +1,14 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.lang.annotation.*
-import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.psi.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.model.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity.INFORMATION
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.psi.PsiElement
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.model.ParadoxType
 
 class ParadoxCsvBasicAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

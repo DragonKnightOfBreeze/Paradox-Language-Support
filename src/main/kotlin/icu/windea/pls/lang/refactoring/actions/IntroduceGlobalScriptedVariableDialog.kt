@@ -1,21 +1,26 @@
 package icu.windea.pls.lang.refactoring.actions
 
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.observable.util.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.vfs.*
-import com.intellij.ui.*
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.observable.util.whenTextChanged
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.TextComponentAccessors
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.RecentsManager
+import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.layout.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.*
+import com.intellij.ui.layout.ValidationInfoBuilder
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.pathCompletionShortcutComment
+import icu.windea.pls.core.toPath
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.script.ParadoxScriptFileType
 
 class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,

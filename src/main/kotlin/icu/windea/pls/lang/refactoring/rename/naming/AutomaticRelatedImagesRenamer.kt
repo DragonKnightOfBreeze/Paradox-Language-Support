@@ -1,14 +1,14 @@
 package icu.windea.pls.lang.refactoring.rename.naming
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.refactoring.rename.naming.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于在重命名定义时自动重命名相关图片（重命名文件名，如果存在且需要）。

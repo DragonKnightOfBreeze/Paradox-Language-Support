@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.actions.csv
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import java.util.function.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.psi.PsiFile
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.util.dataFlow.ParadoxRowSequence
+import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import java.util.function.Supplier
 
 /**
  * 用于处理行的一类动作。

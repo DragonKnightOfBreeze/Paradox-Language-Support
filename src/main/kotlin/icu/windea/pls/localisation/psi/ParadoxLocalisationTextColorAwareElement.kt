@@ -1,8 +1,8 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.model.ParadoxTextColorInfo
 
 /**
  * @see ParadoxLocalisationColorfulText

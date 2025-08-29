@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.expression
 
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxDefinitionInfo
 
 /**
  * 定义类型表达式。

@@ -1,8 +1,9 @@
 package icu.windea.pls.lang.references.csv
 
-import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiReferenceContributor
+import com.intellij.psi.PsiReferenceRegistrar
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 
 class ParadoxCsvPsiReferenceContributor : PsiReferenceContributor() {
     private val expressionProvider = ParadoxCsvExpressionPsiReferenceProvider()

@@ -1,17 +1,21 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.ide.projectView.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.projectView.ProjectViewNode
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.processQuery
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withGameType
 
 class ParadoxGameElementNode(
     project: Project,

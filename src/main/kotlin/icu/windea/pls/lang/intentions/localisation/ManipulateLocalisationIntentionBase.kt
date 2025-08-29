@@ -1,19 +1,23 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.localisation.psi.*
-import kotlinx.coroutines.*
+import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import kotlinx.coroutines.launch
 
 /**
  * 用于处理本地化的一类意图。

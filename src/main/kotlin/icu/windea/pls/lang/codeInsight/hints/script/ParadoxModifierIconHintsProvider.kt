@@ -2,23 +2,36 @@
 
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import javax.imageio.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider.Settings
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
+import javax.imageio.ImageIO
+import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示修正的渲染后的图标。

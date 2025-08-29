@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util
 
 import java.util.*
-import java.util.function.*
+import java.util.function.IntUnaryOperator
 
 object ParadoxEscapeManager {
     enum class Type {

@@ -1,16 +1,35 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.psi.util.startOffset
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configContext.provider
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.ep.configContext.InlineScriptUsageCwtConfigContextProvider
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.contextElement
+import icu.windea.pls.lang.codeInsight.completion.expressionOffset
+import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.offsetInParent
+import icu.windea.pls.lang.codeInsight.completion.quoted
+import icu.windea.pls.lang.codeInsight.completion.rightQuoted
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.resolved
 
 /**
  * 提供内联脚本调用的代码补全。

@@ -1,6 +1,7 @@
 package icu.windea.pls.core.coroutines
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
     require(chunkSize > 0) { "chunkSize must be positive, but was $chunkSize" }

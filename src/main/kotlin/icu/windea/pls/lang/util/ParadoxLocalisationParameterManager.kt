@@ -1,22 +1,37 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
+import icu.windea.pls.lang.search.selector.localisationParameter
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.script.psi.properties
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterManager {

@@ -1,16 +1,29 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.config.overriddenProvider
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.isExpression
 
 /**
  * 对应的CWT规则有多个且存在冲突的表达式的检查。

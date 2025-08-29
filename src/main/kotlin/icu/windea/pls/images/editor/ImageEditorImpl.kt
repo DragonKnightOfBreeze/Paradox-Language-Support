@@ -1,18 +1,24 @@
 package icu.windea.pls.images.editor
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.*
-import icu.windea.pls.images.*
-import org.intellij.images.editor.*
-import org.intellij.images.editor.ImageDocument.*
-import org.intellij.images.thumbnail.actionSystem.*
-import java.awt.*
-import javax.swing.*
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.components.service
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileEvent
+import com.intellij.openapi.vfs.VirtualFileListener
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.VirtualFilePropertyEvent
+import com.intellij.openapi.vfs.newvfs.RefreshQueue
+import icu.windea.pls.images.ImageManager
+import org.intellij.images.editor.ImageDocument
+import org.intellij.images.editor.ImageDocument.ScaledImageProvider
+import org.intellij.images.editor.ImageEditor
+import org.intellij.images.editor.ImageZoomModel
+import org.intellij.images.thumbnail.actionSystem.ThumbnailViewActions
+import java.awt.Color
+import javax.swing.JComponent
 
 //org.intellij.images.editor.impl.ImageEditorImpl
 

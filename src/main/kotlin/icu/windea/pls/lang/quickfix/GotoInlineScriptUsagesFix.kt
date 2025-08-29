@@ -1,14 +1,15 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInsight.navigation.actions.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInsight.navigation.actions.GotoDeclarationAction
+import com.intellij.codeInspection.IntentionAndQuickFixAction
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class GotoInlineScriptUsagesFix : IntentionAndQuickFixAction() {
     override fun getName(): String {

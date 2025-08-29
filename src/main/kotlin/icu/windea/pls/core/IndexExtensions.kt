@@ -2,14 +2,19 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.stubs.*
-import com.intellij.util.indexing.*
-import com.intellij.util.io.*
-import java.io.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
+import com.intellij.psi.stubs.StubIndexExtension
+import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.util.indexing.FileBasedIndexExtension
+import com.intellij.util.io.DataInputOutputUtil
+import com.intellij.util.io.IOUtil
+import java.io.DataInput
+import java.io.DataOutput
 
 inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAction: () -> V): V {
     if (from == null) return readAction()

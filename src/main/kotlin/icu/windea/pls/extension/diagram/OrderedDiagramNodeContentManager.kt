@@ -1,6 +1,8 @@
 package icu.windea.pls.extension.diagram
 
-import com.intellij.diagram.*
+import com.intellij.diagram.DiagramCategoriesHolder
+import com.intellij.diagram.DiagramCategory
+import com.intellij.diagram.DiagramNodeContentManager
 import java.util.*
 
 /**

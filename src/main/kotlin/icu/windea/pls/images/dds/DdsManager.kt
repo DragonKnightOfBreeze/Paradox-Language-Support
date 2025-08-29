@@ -1,8 +1,8 @@
 package icu.windea.pls.images.dds
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
-import io.github.ititus.dds.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.core.runCatchingCancelable
+import io.github.ititus.dds.DdsFile
 
 object DdsManager {
     fun getMetadata(file: VirtualFile): DdsMetadata? {

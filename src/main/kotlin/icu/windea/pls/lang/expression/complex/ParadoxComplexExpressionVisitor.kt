@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.expression.complex
 
-import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
 
 abstract class ParadoxComplexExpressionVisitor {
     open fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {

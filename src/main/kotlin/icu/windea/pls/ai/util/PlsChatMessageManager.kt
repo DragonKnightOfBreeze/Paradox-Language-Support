@@ -1,12 +1,12 @@
 package icu.windea.pls.ai.util
 
-import com.intellij.DynamicBundle.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.lang.util.manipulators.*
-import io.pebbletemplates.pebble.*
-import io.pebbletemplates.pebble.loader.*
-import java.io.*
-import java.util.Locale.*
+import com.intellij.DynamicBundle.getLocale
+import icu.windea.pls.ai.model.requests.AiRequest
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import io.pebbletemplates.pebble.PebbleEngine
+import io.pebbletemplates.pebble.loader.ClasspathLoader
+import java.io.StringWriter
+import java.util.Locale.SIMPLIFIED_CHINESE
 
 object PlsChatMessageManager {
     private val engine by lazy {

@@ -1,12 +1,13 @@
 package icu.windea.pls.extension.diagram.settings
 
-import com.intellij.diagram.*
-import com.intellij.openapi.options.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
+import com.intellij.diagram.DiagramProvider
+import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 
 class PlsDiagramSettingsConfigurable(
     private val project: Project

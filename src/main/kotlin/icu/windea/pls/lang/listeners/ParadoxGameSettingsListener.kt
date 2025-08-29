@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.util.messages.*
-import icu.windea.pls.lang.settings.*
+import com.intellij.util.messages.Topic
+import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 
 /**
  * 监听游戏配置的更改。

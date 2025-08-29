@@ -1,13 +1,15 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.lang.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.lexer.*
-import icu.windea.pls.script.parser.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.Language
+import com.intellij.lang.PsiBuilderFactory
+import com.intellij.openapi.project.Project
+import com.intellij.psi.ParsingDiagnostics
+import com.intellij.psi.impl.source.tree.LazyParseablePsiElement
+import com.intellij.psi.tree.IReparseableElementType
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
+import icu.windea.pls.script.parser.ParadoxScriptParser
 
 @Suppress("UnstableApiUsage")
 class ParadoxScriptInlineMathElementType(debugName: String) : IReparseableElementType(debugName, ParadoxScriptLanguage) {

@@ -1,7 +1,8 @@
 package icu.windea.pls.script.codeStyle
 
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.script.*
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CustomCodeStyleSettings
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 class ParadoxScriptCodeStyleSettings(
     container: CodeStyleSettings,

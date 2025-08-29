@@ -2,7 +2,7 @@
 
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.*
+import com.intellij.codeInspection.LocalInspectionTool
 
 /**
  * 注明此检查对应某个原版游戏文件中标出的关于LocEditor的检查。

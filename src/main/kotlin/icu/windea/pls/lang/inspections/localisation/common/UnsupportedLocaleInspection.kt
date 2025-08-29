@@ -1,11 +1,17 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.paths.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 /**
  * 不支持的语言区域的检查。

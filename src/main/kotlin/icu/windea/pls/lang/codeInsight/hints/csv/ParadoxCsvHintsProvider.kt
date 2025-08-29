@@ -2,16 +2,21 @@
 
 package icu.windea.pls.lang.codeInsight.hints.csv
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.lang.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsCollector
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.lang.Language
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.*
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.fileInfo
 
 abstract class ParadoxCsvHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
     override val previewText: String? get() = null

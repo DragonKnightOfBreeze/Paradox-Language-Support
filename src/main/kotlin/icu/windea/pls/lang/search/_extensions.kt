@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.util.*
+import com.intellij.util.Processor
+import com.intellij.util.QueryFactory
 
 fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.createParadoxQuery(parameters: P): ParadoxQuery<R, P> {
     return ParadoxQuery(createQuery(parameters), parameters)

@@ -1,13 +1,15 @@
 package icu.windea.pls.localisation.navigation
 
-import com.intellij.ide.navigationToolbar.*
-import com.intellij.lang.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import javax.swing.*
+import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import javax.swing.Icon
 
 class ParadoxLocalisationNavBar : StructureAwareNavBarModelExtension() {
     override val language: Language = ParadoxLocalisationLanguage

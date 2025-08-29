@@ -2,17 +2,27 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.util.text.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import java.io.*
-import java.net.*
-import java.nio.charset.*
-import java.nio.file.*
+import com.intellij.openapi.util.text.StringUtil
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.Matchers
+import java.io.File
+import java.net.URL
+import java.nio.charset.StandardCharsets
+import java.nio.file.FileAlreadyExistsException
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
-import kotlin.contracts.*
-import kotlin.io.path.*
-import kotlin.math.*
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.io.path.absolute
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.isDirectory
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.round
 
 private data object EmptyObject
 

@@ -1,18 +1,22 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 object ParadoxDynamicValueManager {
     const val EVENT_TARGET_PREFIX = "event_target:"

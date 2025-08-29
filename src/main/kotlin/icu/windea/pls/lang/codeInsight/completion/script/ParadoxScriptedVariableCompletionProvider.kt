@@ -1,17 +1,29 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.progress.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.scriptedVariable
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 提供封装变量引用的名字的代码补全。

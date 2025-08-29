@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.lang.index.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.lang.index.ParadoxFilePathIndex
 
 /**
  * 提供对路径引用表达式的支持。

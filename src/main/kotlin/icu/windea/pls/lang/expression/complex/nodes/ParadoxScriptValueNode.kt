@@ -1,20 +1,25 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.editor.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.set
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.expression.complex.ParadoxComplexExpressionError
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptValueNode(
     override val text: String,

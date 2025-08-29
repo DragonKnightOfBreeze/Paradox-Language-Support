@@ -2,22 +2,38 @@
 
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.codeInsight.hints.presentation.SequencePresentation
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.scopeAliasMap
+import icu.windea.pls.config.configGroup.systemScopes
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.isAtLineEnd
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.Settings
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxScope
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示定义及其成员的作用域上下文信息。

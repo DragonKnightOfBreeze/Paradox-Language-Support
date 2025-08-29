@@ -1,9 +1,12 @@
 package icu.windea.pls.cwt.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtValue
 
 class CwtValueTreeElement(
     element: CwtValue

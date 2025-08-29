@@ -1,14 +1,24 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInspection.InspectionSuppressor
+import com.intellij.codeInspection.SuppressQuickFix
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.singleAliasConfig
+import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.processParent
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.isExpression
 
 //TODO 暂未使用，需要验证
 

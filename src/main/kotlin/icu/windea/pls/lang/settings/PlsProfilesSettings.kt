@@ -1,11 +1,23 @@
 package icu.windea.pls.lang.settings
 
-import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.SimplePersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.annotations.MapAnnotation
+import com.intellij.util.xmlb.annotations.Property
+import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.util.xmlb.annotations.XCollection
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxModSource
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.orDefault
 
 /**
  * PLS资料设置。

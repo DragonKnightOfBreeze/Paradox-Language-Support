@@ -1,11 +1,15 @@
 package icu.windea.pls.integrations.translation.tools
 
-import cn.yiiguxing.plugin.translate.trans.*
+import cn.yiiguxing.plugin.translate.trans.Lang
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
-import com.intellij.openapi.application.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.integrations.translation.*
-import kotlinx.coroutines.*
+import cn.yiiguxing.plugin.translate.trans.TranslateListener
+import cn.yiiguxing.plugin.translate.trans.TranslateService
+import cn.yiiguxing.plugin.translate.trans.Translation
+import com.intellij.openapi.application.UI
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.integrations.translation.TranslateCallback
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * 参见：[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)

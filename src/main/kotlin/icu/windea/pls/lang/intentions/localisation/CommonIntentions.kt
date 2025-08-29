@@ -1,6 +1,13 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import icu.windea.pls.lang.intentions.common.*
+import icu.windea.pls.lang.intentions.common.CopyDefinitionLocalizedNameIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyDefinitionNameIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyLocalisationNameIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyLocalisationTextAsHtmlIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyLocalisationTextAsPlainIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyLocalisationTextIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyScriptedVariableLocalizedNameIntentionBase
+import icu.windea.pls.lang.intentions.common.CopyScriptedVariableNameIntentionBase
 
 class CopyScriptedVariableNameIntention : CopyScriptedVariableNameIntentionBase()
 

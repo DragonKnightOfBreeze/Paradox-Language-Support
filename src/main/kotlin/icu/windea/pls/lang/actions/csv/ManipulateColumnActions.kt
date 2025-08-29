@@ -2,21 +2,24 @@
 
 package icu.windea.pls.lang.actions.csv
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.command.*
-import com.intellij.psi.*
-import com.intellij.psi.TokenType.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.*
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.command.writeCommandAction
+import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType.WHITE_SPACE
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
+import icu.windea.pls.csv.psi.getColumnIndex
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.util.dataFlow.ParadoxColumnSequence
+import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import kotlinx.coroutines.launch
 
 class SelectColumnCellAction : ManipulateColumnActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {

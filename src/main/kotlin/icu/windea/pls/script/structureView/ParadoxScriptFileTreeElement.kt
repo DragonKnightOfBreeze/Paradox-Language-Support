@@ -1,14 +1,20 @@
 package icu.windea.pls.script.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import javax.swing.Icon
 
 class ParadoxScriptFileTreeElement(
     element: ParadoxScriptFile

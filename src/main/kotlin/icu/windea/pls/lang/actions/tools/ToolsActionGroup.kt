@@ -1,7 +1,10 @@
 package icu.windea.pls.lang.actions.tools
 
-import com.intellij.openapi.actionSystem.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import icu.windea.pls.lang.fileInfo
 
 class ToolsActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

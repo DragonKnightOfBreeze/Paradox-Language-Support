@@ -1,12 +1,16 @@
 package icu.windea.pls.lang.inspections.script.inference
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.ep.scope.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProvider
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 检查作用域上下文的推断结果是否存在冲突。默认不启用。

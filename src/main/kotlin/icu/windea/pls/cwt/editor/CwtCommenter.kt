@@ -1,9 +1,11 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.lang.CodeDocumentationAwareCommenterEx
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import icu.windea.pls.cwt.psi.CwtDocComment
+import icu.windea.pls.cwt.psi.CwtElementTypes
 
 /**
  * @see icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector

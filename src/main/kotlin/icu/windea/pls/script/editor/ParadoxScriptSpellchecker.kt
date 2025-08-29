@@ -1,9 +1,10 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy
+import com.intellij.spellchecker.tokenizer.Tokenizer
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 
 class ParadoxScriptSpellchecker : SpellcheckingStrategy() {
     private val textTokenizer = TEXT_TOKENIZER

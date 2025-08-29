@@ -1,20 +1,27 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.editor.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.lang.expression.complex.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.complex.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.define
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDefineVariableNode(
     override val text: String,

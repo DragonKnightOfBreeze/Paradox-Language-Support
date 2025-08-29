@@ -2,10 +2,11 @@
 
 package icu.windea.pls.lang.ui.locale
 
-import com.intellij.openapi.ui.popup.*
-import com.intellij.openapi.ui.popup.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
+import com.intellij.openapi.ui.popup.PopupStep
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.config.CwtLocaleConfig
 
 class ParadoxLocaleListPopup(
     val allLocales: List<CwtLocaleConfig>

@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.tools.model
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonInclude
 
 data class ParadoxLauncherJsonV3(
     val game: String,

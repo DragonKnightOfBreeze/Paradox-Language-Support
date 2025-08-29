@@ -1,14 +1,20 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
-import kotlin.Pair
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScriptValueArgumentNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScriptValueArgumentValueNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScriptValueNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 脚本值表达式。作为[ParadoxValueFieldExpression]的一部分。

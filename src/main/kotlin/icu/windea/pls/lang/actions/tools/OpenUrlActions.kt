@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.actions.tools
 
-import icu.windea.pls.*
-import icu.windea.pls.model.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.steamId
 
 interface OpenUrlActions {
     class GameStorePageInSteam : OpenUrlAction() {

@@ -1,15 +1,21 @@
 package icu.windea.pls.script.navigation
 
-import com.intellij.ide.navigationToolbar.*
-import com.intellij.lang.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
+import javax.swing.Icon
 
 class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
     override val language: Language = ParadoxScriptLanguage

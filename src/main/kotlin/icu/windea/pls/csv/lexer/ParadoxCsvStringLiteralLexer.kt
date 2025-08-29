@@ -1,7 +1,7 @@
 package icu.windea.pls.csv.lexer
 
-import com.intellij.lexer.*
-import com.intellij.psi.tree.*
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.psi.tree.IElementType
 
 class ParadoxCsvStringLiteralLexer(
     originalLiteralToken: IElementType

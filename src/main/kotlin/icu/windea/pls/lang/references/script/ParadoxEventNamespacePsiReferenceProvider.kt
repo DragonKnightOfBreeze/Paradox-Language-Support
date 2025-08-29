@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findParentByPath
 
 /**
  * 解析事件ID中的事件命名空间引用。

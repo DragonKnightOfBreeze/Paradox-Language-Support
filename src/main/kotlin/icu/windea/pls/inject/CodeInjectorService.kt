@@ -1,13 +1,17 @@
 package icu.windea.pls.inject
 
-import com.intellij.ide.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.inject.support.*
-import javassist.*
-import java.lang.reflect.*
+import com.intellij.ide.AppLifecycleListener
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.util.application
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.inject.support.BaseCodeInjectorSupport
+import javassist.ClassClassPath
+import javassist.ClassPool
+import javassist.CtClass
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
 private val logger = logger<CodeInjectorService>()
 

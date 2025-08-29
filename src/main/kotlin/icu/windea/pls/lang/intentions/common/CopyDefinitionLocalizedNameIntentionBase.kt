@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.intentions.common
 
-import com.intellij.modcommand.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModCommand
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.Presentation
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 复制定义的本地化后的名字到剪贴板。

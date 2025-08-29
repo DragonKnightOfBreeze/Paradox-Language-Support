@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.lang.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.util.text.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import com.intellij.ui.ColorUtil.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
+import com.intellij.lang.ExpressionTypeProvider
+import com.intellij.openapi.util.NlsContexts
+import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiElement
+import com.intellij.ui.ColorUtil.toHtmlColor
+import com.intellij.ui.Gray
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtConfigManager
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。

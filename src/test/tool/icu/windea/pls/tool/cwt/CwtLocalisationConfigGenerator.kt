@@ -1,8 +1,9 @@
 package icu.windea.pls.tool.cwt
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import java.io.*
+import icu.windea.pls.core.removeSurrounding
+import icu.windea.pls.core.surroundsWith
+import icu.windea.pls.model.ParadoxGameType
+import java.io.File
 
 /**
  * 用于从`localisations.log`生成

@@ -1,13 +1,23 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.vfs.*
-import com.intellij.util.indexing.*
-import com.intellij.util.io.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import java.io.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.indexing.DataIndexer
+import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.FileBasedIndexExtension
+import com.intellij.util.indexing.FileContent
+import com.intellij.util.io.DataExternalizer
+import com.intellij.util.io.EnumeratorStringDescriptor
+import com.intellij.util.io.KeyDescriptor
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.optimizeValue
+import java.io.DataInput
+import java.io.DataOutput
 import java.util.*
 
 /**

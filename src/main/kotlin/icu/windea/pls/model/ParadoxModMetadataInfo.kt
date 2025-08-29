@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class ParadoxModMetadataInfo(
     val name: String,

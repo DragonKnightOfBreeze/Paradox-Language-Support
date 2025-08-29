@@ -1,8 +1,12 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.lookup.*
-import icu.windea.pls.core.util.*
-import javax.swing.*
+import com.intellij.codeInsight.lookup.LookupElement
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import javax.swing.Icon
 
 object PlsLookupElementKeys : KeyRegistry()
 

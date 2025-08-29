@@ -1,8 +1,9 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.icons.*
-import com.intellij.ide.hierarchy.*
-import icu.windea.pls.*
+import com.intellij.icons.AllIcons
+import com.intellij.ide.hierarchy.CallHierarchyBrowserBase
+import com.intellij.ide.hierarchy.ChangeHierarchyViewActionBase
+import icu.windea.pls.PlsBundle
 
 interface ParadoxCallHierarchyActions {
     class ViewCallerHierarchyAction : ChangeHierarchyViewActionBase(

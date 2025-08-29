@@ -1,13 +1,19 @@
 package icu.windea.pls.lang.expression
 
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.util.BitUtil
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.codeInsight.type
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
+import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import java.util.*
 
 /**

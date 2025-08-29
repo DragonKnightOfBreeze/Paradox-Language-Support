@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.config
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * 用于基于CWT规则的上下文注入一些特定的CWT规则。

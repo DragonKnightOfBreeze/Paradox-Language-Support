@@ -1,15 +1,21 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.lang.cacheBuilder.*
-import com.intellij.lang.findUsages.*
-import com.intellij.psi.*
-import com.intellij.refactoring.util.*
-import com.intellij.usageView.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.lang.cacheBuilder.WordsScanner
+import com.intellij.lang.findUsages.FindUsagesProvider
+import com.intellij.psi.ElementDescriptionLocation
+import com.intellij.psi.ElementDescriptionProvider
+import com.intellij.psi.PsiElement
+import com.intellij.refactoring.util.RefactoringDescriptionLocation
+import com.intellij.usageView.UsageViewLongNameLocation
+import com.intellij.usageView.UsageViewNodeTextLocation
+import com.intellij.usageView.UsageViewTypeLocation
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {

@@ -1,13 +1,20 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.bindTextWhenChanged
+import icu.windea.pls.core.matchesPattern
+import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import javax.swing.JComponent
 
 /**
  * 检查本地化文件中是否缺少语言区域声明。

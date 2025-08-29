@@ -1,21 +1,30 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.references.script.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.editor.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolve
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.codeInsight.completion.config
+import icu.windea.pls.lang.codeInsight.completion.configs
+import icu.windea.pls.lang.codeInsight.completion.isKey
+import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.keywordOffset
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {

@@ -1,19 +1,25 @@
 package icu.windea.pls.lang.codeInsight.markers.localisation
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.navigation.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.codeInsight.markers.*
-import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxLocalisationType.*
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.navigation.GotoRelatedItem
+import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.util.NotNullLazyValue
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType.Normal
+import icu.windea.pls.model.ParadoxLocalisationType.Synced
 
 /**
  * 提供本地化（localisation/localisation_synced）的装订线图标。

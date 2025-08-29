@@ -1,15 +1,18 @@
 package icu.windea.pls.lang.folding
 
-import com.intellij.lang.*
-import com.intellij.lang.folding.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.folding.FoldingBuilderEx
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.FoldingGroup
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     object Constants {

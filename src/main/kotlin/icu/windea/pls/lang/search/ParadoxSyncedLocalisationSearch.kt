@@ -1,13 +1,14 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
+import com.intellij.codeInsight.completion.PrefixMatcher
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.search.searches.ExtensibleQueryFactory
+import com.intellij.util.Processor
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.core.processFirstElementByKeys
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 同步本地化的查询。

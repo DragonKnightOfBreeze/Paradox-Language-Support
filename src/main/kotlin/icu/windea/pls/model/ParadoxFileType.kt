@@ -1,8 +1,10 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.paths.*
+import icu.windea.pls.core.orNull
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 enum class ParadoxFileType {
     Script,

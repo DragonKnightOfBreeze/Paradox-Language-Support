@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
  * 同一文件中重复的（同一语言区域的）属性声明的检查。

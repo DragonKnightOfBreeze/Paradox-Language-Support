@@ -1,7 +1,7 @@
 package icu.windea.pls.core.documentation
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.util.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.util.KeyRegistry
 
 class DocumentationBuilder : UserDataHolderBase() {
     val content: StringBuilder = StringBuilder()

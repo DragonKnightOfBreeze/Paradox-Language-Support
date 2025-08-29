@@ -1,9 +1,14 @@
 package icu.windea.pls.script.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 class ParadoxScriptValueTreeElement(
     element: ParadoxScriptValue

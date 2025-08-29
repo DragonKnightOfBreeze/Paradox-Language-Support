@@ -1,9 +1,9 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.ep.codeInsight.hints.*
-import java.awt.*
+import com.intellij.openapi.editor.ElementColorProvider
+import com.intellij.psi.PsiElement
+import icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider
+import java.awt.Color
 
 class ParadoxScriptColorProvider : ElementColorProvider {
     override fun getColorFrom(element: PsiElement): Color? {

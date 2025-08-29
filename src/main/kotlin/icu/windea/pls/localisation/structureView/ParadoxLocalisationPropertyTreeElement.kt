@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class ParadoxLocalisationPropertyTreeElement(
     element: ParadoxLocalisationProperty

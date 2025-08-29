@@ -1,13 +1,19 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.openapi.ui.popup.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.ScrollType
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.icon
 
 abstract class NavigateToFix(
     val key: String,

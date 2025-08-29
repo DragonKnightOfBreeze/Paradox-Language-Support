@@ -1,13 +1,18 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lang.annotation.*
-import com.intellij.lang.annotation.HighlightSeverity.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.quickfix.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity.ERROR
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.cwt.psi.CwtOptionKey
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.lang.quickfix.InsertStringFix
 
 class CwtBasicAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

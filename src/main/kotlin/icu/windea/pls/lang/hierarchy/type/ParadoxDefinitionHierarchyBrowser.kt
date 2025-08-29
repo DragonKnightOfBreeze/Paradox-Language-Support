@@ -1,22 +1,30 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.hierarchy.*
+import com.intellij.ide.hierarchy.HierarchyBrowserBaseEx
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.ide.hierarchy.HierarchyTreeStructure
+import com.intellij.ide.hierarchy.LanguageTypeHierarchy
+import com.intellij.ide.util.treeView.NodeDescriptor
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.ui.PopupHandler
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.project
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.actions.PlsActions
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
+import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
-import java.text.*
-import java.util.function.*
-import javax.swing.*
+import java.text.MessageFormat
+import java.util.function.Supplier
+import javax.swing.JPanel
+import javax.swing.JTree
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
 class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {

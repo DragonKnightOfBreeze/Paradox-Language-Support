@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.codeInsight.navigation
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
 
 /**
  * 用于将特定的链接（快速文档中的PSI链接，或是html/markdown等文件中的链接）解析为匹配的目标引用（定义、本地化等）。

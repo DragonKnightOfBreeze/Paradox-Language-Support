@@ -1,11 +1,14 @@
 package icu.windea.pls.ai.util
 
-import com.fasterxml.jackson.module.kotlin.*
-import dev.langchain4j.exception.*
-import icu.windea.pls.ai.model.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import kotlin.coroutines.cancellation.*
+import com.fasterxml.jackson.module.kotlin.readValue
+import dev.langchain4j.exception.LangChain4jException
+import icu.windea.pls.ai.model.ChatFlowCompletionException
+import icu.windea.pls.ai.model.ChatFlowCompletionStatus
+import icu.windea.pls.ai.model.OpenAiErrorInfo
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.util.ObjectMappers
+import kotlin.coroutines.cancellation.CancellationException
 
 object PlsAiManager {
     fun getChatFlowCompletionStatus(e: Throwable?): ChatFlowCompletionStatus {

@@ -1,7 +1,7 @@
 package icu.windea.pls.localisation.ui.floating
 
-import com.intellij.ide.ui.customization.*
-import icu.windea.pls.*
+import com.intellij.ide.ui.customization.CustomizableActionGroupProvider
+import icu.windea.pls.PlsBundle
 
 //org.intellij.plugins.markdown.ui.floating.FloatingToolbarCustomizableGroupProvider
 

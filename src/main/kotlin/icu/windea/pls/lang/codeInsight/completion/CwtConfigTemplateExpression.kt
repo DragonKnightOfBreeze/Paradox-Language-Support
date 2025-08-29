@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.codeInsight.completion
 
-import com.intellij.codeInsight.lookup.*
-import com.intellij.codeInsight.template.*
-import com.intellij.openapi.util.*
-import com.intellij.util.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.template.Expression
+import com.intellij.codeInsight.template.ExpressionContext
+import com.intellij.codeInsight.template.Result
+import com.intellij.codeInsight.template.TextResult
+import com.intellij.openapi.util.TextRange
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.core.removeSurroundingOrNull
 
 sealed class CwtConfigTemplateExpression(
     val context: ProcessingContext,

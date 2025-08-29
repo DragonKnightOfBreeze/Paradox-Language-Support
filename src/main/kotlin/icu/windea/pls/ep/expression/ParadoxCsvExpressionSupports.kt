@@ -1,23 +1,30 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.editor.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.core.unquote
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.complexEnumValue
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 //目前仅提供有限的支持
 

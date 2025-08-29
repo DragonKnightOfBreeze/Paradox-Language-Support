@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.CwtModifierCategoryConfig
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.stringValue
 
 object ParadoxScriptedModifierManager {
     /**

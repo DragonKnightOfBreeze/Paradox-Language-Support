@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.util.manipulators
 
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.resolve.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.core.children
+import icu.windea.pls.ep.resolve.ParadoxInlineSupport
+import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Member as MemberOptions
 
 object ParadoxScriptManipulator {

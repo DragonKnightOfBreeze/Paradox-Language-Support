@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.actions.tools
 
-import com.intellij.ide.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxFileInfo
 
 abstract class OpenUrlAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

@@ -2,17 +2,23 @@
 
 package icu.windea.pls.script.psi
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.model.paths.*
-import icu.windea.pls.script.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
+import icu.windea.pls.lang.util.dataFlow.ParadoxPropertySequence
+import icu.windea.pls.lang.util.dataFlow.ParadoxValueSequence
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.lang.util.dataFlow.transform
+import icu.windea.pls.lang.util.manipulators.ParadoxScriptManipulator
+import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 fun ParadoxScriptFile.members(): ParadoxMemberSequence {
     return ParadoxScriptManipulator.buildMemberSequence(this)

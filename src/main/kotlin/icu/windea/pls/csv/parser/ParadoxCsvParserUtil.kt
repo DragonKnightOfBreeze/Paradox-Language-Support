@@ -1,10 +1,16 @@
 package icu.windea.pls.csv.parser
 
-import com.intellij.lang.*
-import com.intellij.lang.parser.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
+import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
+import icu.windea.pls.core.lookupWithOffset
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.EOL
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvParserUtil : GeneratedParserUtilBase() {

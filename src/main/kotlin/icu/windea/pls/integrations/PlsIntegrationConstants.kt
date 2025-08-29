@@ -1,9 +1,9 @@
 package icu.windea.pls.integrations
 
-import icu.windea.pls.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.model.*
-import org.cef.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.integrations.lints.PlsTigerLintManager
+import icu.windea.pls.model.ParadoxGameType
+import org.cef.OS
 
 object PlsIntegrationConstants {
     object Texconv {

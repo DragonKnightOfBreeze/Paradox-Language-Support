@@ -2,13 +2,16 @@
 
 package icu.windea.pls.lang.codeInsight.hints
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.project.*
+import com.intellij.codeInsight.hints.InlayHintsProvider
+import com.intellij.codeInsight.hints.InlayHintsUtils
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.MenuOnClickPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import kotlin.reflect.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.bindIntTextWhenChanged
+import kotlin.reflect.KMutableProperty0
 
 abstract class ParadoxHintsProvider<T : Any> : InlayHintsProvider<T> {
     open val renderIcon = false

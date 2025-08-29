@@ -1,7 +1,10 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.*
-import icu.windea.pls.lang.psi.*
+import com.intellij.psi.ElementManipulators
+import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.NavigatablePsiElement
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
+import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
 
 interface ParadoxParameter : NavigatablePsiElement, ParadoxLanguageInjectionHost {
     override fun getName(): String?

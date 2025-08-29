@@ -1,22 +1,31 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.ui.util.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ui.util.CompositeAppearance
+import com.intellij.openapi.util.Comparing
+import com.intellij.psi.PsiElement
+import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import java.awt.*
-import javax.swing.*
+import java.awt.Color
+import java.awt.Font
+import javax.swing.Icon
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 

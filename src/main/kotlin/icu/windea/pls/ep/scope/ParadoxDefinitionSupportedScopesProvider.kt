@@ -1,11 +1,10 @@
 package icu.windea.pls.ep.scope
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于为定义提供支持的作用域。

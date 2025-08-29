@@ -1,11 +1,15 @@
 package icu.windea.pls.lang.diff.actions
 
-import com.intellij.diff.*
-import com.intellij.diff.chains.*
-import com.intellij.diff.util.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
+import com.intellij.diff.DiffDialogHints
+import com.intellij.diff.DiffManager
+import com.intellij.diff.chains.DiffRequestChain
+import com.intellij.diff.chains.DiffRequestProducer
+import com.intellij.diff.util.DiffUtil
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
 //com.intellij.diff.actions.BaseShowDiffAction

@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.codeInsight.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInsight.ContainerProvider
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.ParadoxBaseLanguage
 
 class ParadoxContainerProvider : ContainerProvider {
     override fun getContainer(item: PsiElement): PsiElement? {

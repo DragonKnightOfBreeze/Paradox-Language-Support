@@ -1,23 +1,32 @@
 package icu.windea.pls.lang.settings
 
-import com.intellij.openapi.options.*
-import com.intellij.openapi.ui.*
-import com.intellij.ui.components.*
+import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.listCellRenderer.*
-import com.intellij.ui.layout.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.settings.PlsStrategies.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import java.awt.event.*
+import com.intellij.ui.layout.selected
+import com.intellij.util.application
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringList
+import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.toMutableEntryList
+import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
+import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
+import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
+import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration
+import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.ui.locale.localeComboBox
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
+import java.awt.event.ActionEvent
 
 class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"

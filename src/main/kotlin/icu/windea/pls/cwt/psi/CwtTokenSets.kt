@@ -1,8 +1,16 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.psi.TokenType
+import com.intellij.psi.tree.TokenSet
+import icu.windea.pls.cwt.psi.CwtElementTypes.BLOCK
+import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
+import icu.windea.pls.cwt.psi.CwtElementTypes.DOC_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_KEY_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.PROPERTY
+import icu.windea.pls.cwt.psi.CwtElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.ROOT_BLOCK
+import icu.windea.pls.cwt.psi.CwtElementTypes.STRING_TOKEN
 
 object CwtTokenSets {
     @JvmField

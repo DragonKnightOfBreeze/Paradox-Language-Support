@@ -1,16 +1,18 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.codeInsight.navigation.actions.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.*
+import com.intellij.codeInsight.navigation.actions.GotoDeclarationAction
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EditorNotificationProvider
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.script.ParadoxScriptFileType
 import java.util.function.Function
-import javax.swing.*
+import javax.swing.JComponent
 
 /**
  * 为内联脚本文件提供通知，以便快速导航到它们的使用处。

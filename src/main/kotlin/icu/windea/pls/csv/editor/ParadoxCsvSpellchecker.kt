@@ -1,9 +1,10 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy
+import com.intellij.spellchecker.tokenizer.Tokenizer
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 
 class ParadoxCsvSpellchecker : SpellcheckingStrategy() {
     private val textTokenizer = TEXT_TOKENIZER

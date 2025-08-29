@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.ide.impl.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.configGroup.*
+import com.intellij.ide.impl.ProjectViewSelectInTarget
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.util.PsiUtilCore
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 
 class CwtConfigFilesPaneSelectInTarget(private val project: Project) : ProjectViewSelectInTarget(project) {
     override fun canSelect(file: PsiFileSystemItem?): Boolean {

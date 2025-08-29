@@ -1,14 +1,23 @@
 package icu.windea.pls.lang.settings
 
-import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.properties.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.settings.PlsStrategies.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.SimplePersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.annotations.Property
+import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
+import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration
+import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS设置。可以在插件的对应设置页面中进行配置。

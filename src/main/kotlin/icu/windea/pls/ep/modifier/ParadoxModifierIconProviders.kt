@@ -1,19 +1,22 @@
 package icu.windea.pls.ep.modifier
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.processQuery
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
+import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {

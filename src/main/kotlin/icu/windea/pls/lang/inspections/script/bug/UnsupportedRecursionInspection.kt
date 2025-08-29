@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.inspections.script.bug
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import org.jetbrains.annotations.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * （对于脚本文件）检查是否存在不支持的递归。

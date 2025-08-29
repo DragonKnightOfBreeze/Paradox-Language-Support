@@ -1,6 +1,6 @@
 package icu.windea.pls.ai.model.results
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.isExactDigit
 
 data class LocalisationAiResult(
     val key: String,

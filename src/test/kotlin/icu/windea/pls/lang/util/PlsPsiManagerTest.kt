@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.*
-import com.intellij.testFramework.*
-import com.intellij.testFramework.fixtures.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.*
-import org.junit.*
+import com.intellij.psi.PsiComment
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.findChild
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class PlsPsiManagerTest : BasePlatformTestCase() {

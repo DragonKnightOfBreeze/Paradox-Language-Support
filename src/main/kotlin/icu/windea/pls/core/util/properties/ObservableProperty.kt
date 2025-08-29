@@ -1,9 +1,10 @@
 
 package icu.windea.pls.core.util.properties
 
-import icu.windea.pls.core.*
-import kotlin.properties.*
-import kotlin.reflect.*
+import icu.windea.pls.core.EMPTY_OBJECT
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty
 
 /**
  * 可观察属性。

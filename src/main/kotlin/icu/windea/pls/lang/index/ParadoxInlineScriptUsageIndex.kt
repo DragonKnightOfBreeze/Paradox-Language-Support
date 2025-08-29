@@ -1,15 +1,25 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
-import java.io.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
+import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import java.io.DataInput
+import java.io.DataOutput
 
 /**
  * 用于索引内联脚本的使用信息。

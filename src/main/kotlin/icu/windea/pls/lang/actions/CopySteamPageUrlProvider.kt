@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.actions
 
-import com.intellij.ide.actions.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.ide.actions.DumbAwareCopyPathProvider
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.steamId
 
 class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
     //仅限游戏或模组的根目录

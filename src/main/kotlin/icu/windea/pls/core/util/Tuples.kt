@@ -2,8 +2,6 @@
 
 package icu.windea.pls.core.util
 
-import com.intellij.psi.PsiElement
-
 typealias Tuple2<A, B> = Pair<A, B>
 
 typealias TypedTuple2<T> = Pair<T, T>

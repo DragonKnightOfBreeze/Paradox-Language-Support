@@ -1,17 +1,22 @@
 package icu.windea.pls.lang.ui.clause
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.ui.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.SeparatorFactory
+import com.intellij.ui.TableViewSpeedSearch
+import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.table.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import java.awt.*
-import javax.swing.*
-import javax.swing.event.*
+import com.intellij.ui.table.TableView
+import com.intellij.util.ui.JBUI
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.letIf
+import java.awt.BorderLayout
+import java.awt.Dimension
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.ListSelectionModel
+import javax.swing.event.ChangeEvent
 
 //com.intellij.refactoring.extractInterface.ExtractInterfaceDialog
 //com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase

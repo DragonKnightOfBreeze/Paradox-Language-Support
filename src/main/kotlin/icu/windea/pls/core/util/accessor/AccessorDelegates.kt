@@ -1,8 +1,13 @@
 package icu.windea.pls.core.util.accessor
 
-import java.lang.reflect.*
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
+import java.lang.reflect.Field
+import java.lang.reflect.Method
+import kotlin.reflect.KFunction
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty0
+import kotlin.reflect.KProperty1
+import kotlin.reflect.jvm.isAccessible
 
 //region Interfaces
 

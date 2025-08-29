@@ -1,8 +1,8 @@
 package icu.windea.pls.ai.model
 
-import dev.langchain4j.agent.tool.*
-import dev.langchain4j.model.chat.response.*
-import dev.langchain4j.rag.content.*
+import dev.langchain4j.agent.tool.ToolExecutionRequest
+import dev.langchain4j.model.chat.response.ChatResponse
+import dev.langchain4j.rag.content.Content
 
 sealed interface ChatFlowReply {
     data class PartialResponse(

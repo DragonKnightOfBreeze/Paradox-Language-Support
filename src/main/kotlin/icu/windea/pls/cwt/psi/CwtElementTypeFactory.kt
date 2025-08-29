@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.tree.*
+import com.intellij.psi.tree.IElementType
 
 object CwtElementTypeFactory {
     @JvmStatic

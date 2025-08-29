@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import com.intellij.codeInsight.highlighting.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 
 fun CwtType.optimizeValue() = fromCwtType(this)
 fun CwtSeparatorType.optimizeValue() = fromCwtSeparatorType(this)

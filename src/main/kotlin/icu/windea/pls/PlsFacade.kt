@@ -1,15 +1,22 @@
 package icu.windea.pls
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.settings.*
-import icu.windea.pls.core.*
-import icu.windea.pls.integrations.settings.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
-import kotlinx.coroutines.*
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.config.settings.PlsConfigSettings
+import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
+import icu.windea.pls.lang.PlsDataProvider
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.ParadoxGameSettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * 用于获取协程作用域、各种服务以及插件设置状态。

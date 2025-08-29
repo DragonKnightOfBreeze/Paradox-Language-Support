@@ -1,8 +1,10 @@
 package icu.windea.pls.localisation.psi
 
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.impl.*
-import icu.windea.pls.localisation.psi.stubs.*
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl
+import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
 
 // region PSI Accessors
 

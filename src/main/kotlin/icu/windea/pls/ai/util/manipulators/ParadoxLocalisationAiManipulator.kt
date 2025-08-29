@@ -1,21 +1,27 @@
 package icu.windea.pls.ai.util.manipulators
 
-import com.intellij.ide.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.openapi.ui.popup.util.*
-import com.intellij.ui.components.*
+import com.intellij.ide.IdeBundle
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.util.MinimizeButton
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.ai.model.results.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.flow.*
-import java.awt.*
-import kotlin.contracts.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
+import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
+import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
+import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.smaller
+import icu.windea.pls.core.smallerFont
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import kotlinx.coroutines.flow.Flow
+import java.awt.Dimension
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 object ParadoxLocalisationAiManipulator {
     suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {

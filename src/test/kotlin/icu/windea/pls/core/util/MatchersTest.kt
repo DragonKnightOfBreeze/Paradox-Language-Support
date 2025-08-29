@@ -1,7 +1,8 @@
 package icu.windea.pls.core.util
 
-import org.junit.*
-import kotlin.system.*
+import org.junit.Assert
+import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 class MatchersTest {
     @Suppress("DEPRECATION")

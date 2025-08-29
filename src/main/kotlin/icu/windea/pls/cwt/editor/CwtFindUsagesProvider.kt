@@ -1,16 +1,22 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lang.cacheBuilder.*
-import com.intellij.lang.findUsages.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.refactoring.util.*
-import com.intellij.usageView.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.model.constants.*
+import com.intellij.lang.cacheBuilder.WordsScanner
+import com.intellij.lang.findUsages.FindUsagesProvider
+import com.intellij.psi.ElementDescriptionLocation
+import com.intellij.psi.ElementDescriptionProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.refactoring.util.RefactoringDescriptionLocation
+import com.intellij.usageView.UsageViewLongNameLocation
+import com.intellij.usageView.UsageViewNodeTextLocation
+import com.intellij.usageView.UsageViewTypeLocation
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.cwt.psi.CwtElementTypes
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.lang.codeInsight.configType
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {

@@ -1,7 +1,8 @@
 package icu.windea.pls.core.codeInsight
 
-import com.intellij.codeInsight.template.*
-import com.intellij.codeInsight.template.impl.*
+import com.intellij.codeInsight.template.Template
+import com.intellij.codeInsight.template.TemplateEditingListener
+import com.intellij.codeInsight.template.impl.TemplateState
 
 fun interface TemplateEditingFinishedListener : TemplateEditingListener {
     override fun beforeTemplateFinished(state: TemplateState, template: Template?) {}

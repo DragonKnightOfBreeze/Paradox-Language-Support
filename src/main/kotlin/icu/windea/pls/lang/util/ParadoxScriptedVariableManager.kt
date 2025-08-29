@@ -1,15 +1,28 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 用于处理封装变量。

@@ -1,12 +1,16 @@
 package icu.windea.pls.lang.inspections.lints
 
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.integrations.lints.tools.*
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.lang.annotation.ExternalAnnotator
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiFile
+import icu.windea.pls.core.letIf
+import icu.windea.pls.core.orNull
+import icu.windea.pls.integrations.lints.PlsTigerLintManager
+import icu.windea.pls.integrations.lints.PlsTigerLintResult
+import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 
 //com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 

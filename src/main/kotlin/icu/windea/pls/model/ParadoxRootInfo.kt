@@ -1,9 +1,10 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import java.nio.file.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import java.nio.file.Path
 
 /**
  * 游戏或模组信息。

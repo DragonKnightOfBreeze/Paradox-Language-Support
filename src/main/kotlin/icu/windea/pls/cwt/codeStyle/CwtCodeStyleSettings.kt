@@ -1,7 +1,8 @@
 package icu.windea.pls.cwt.codeStyle
 
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.cwt.*
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CustomCodeStyleSettings
+import icu.windea.pls.cwt.CwtLanguage
 
 class CwtCodeStyleSettings(
     container: CodeStyleSettings

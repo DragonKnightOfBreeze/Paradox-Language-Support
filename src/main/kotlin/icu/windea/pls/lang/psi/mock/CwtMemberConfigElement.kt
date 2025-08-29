@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * 用于为合成的（注入的/合并后的）CWT规则提供声明处。

@@ -1,14 +1,20 @@
 package icu.windea.pls.lang.index.stubs
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.stubs.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.stubs.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.LighterAST
+import com.intellij.lang.LighterASTNode
+import com.intellij.psi.PsiFile
+import com.intellij.psi.stubs.LightStubBuilder
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.ROOT_BLOCK
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
 
 class ParadoxScriptStubBuilder : LightStubBuilder() {
     override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {

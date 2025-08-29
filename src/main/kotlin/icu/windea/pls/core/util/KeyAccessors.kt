@@ -2,10 +2,13 @@
 
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import kotlin.reflect.*
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.KeyWithDefaultValue
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.runCatchingCancelable
+import kotlin.reflect.KProperty
 
 inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
     runCatchingCancelable { putUserData(key, value) }

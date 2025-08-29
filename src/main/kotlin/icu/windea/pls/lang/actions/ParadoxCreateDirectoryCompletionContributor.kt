@@ -1,15 +1,16 @@
 package icu.windea.pls.lang.actions
 
-import com.intellij.ide.actions.*
-import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.actions.CreateDirectoryCompletionContributor
+import com.intellij.ide.actions.CreateDirectoryCompletionContributor.Variant
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbService
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
 
 /**

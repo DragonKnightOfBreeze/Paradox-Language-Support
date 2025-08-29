@@ -1,14 +1,18 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.paths.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.hasBom
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction

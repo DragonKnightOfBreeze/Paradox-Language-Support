@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.hasBom
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction

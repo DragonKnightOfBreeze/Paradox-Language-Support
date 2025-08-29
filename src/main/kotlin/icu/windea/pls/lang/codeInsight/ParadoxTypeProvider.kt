@@ -1,14 +1,14 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.lang.*
-import com.intellij.openapi.util.text.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import com.intellij.ui.ColorUtil.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.ExpressionTypeProvider
+import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiElement
+import com.intellij.ui.ColorUtil.toHtmlColor
+import com.intellij.ui.Gray
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 //com.intellij.codeInsight.hint.JavaTypeProvider
 

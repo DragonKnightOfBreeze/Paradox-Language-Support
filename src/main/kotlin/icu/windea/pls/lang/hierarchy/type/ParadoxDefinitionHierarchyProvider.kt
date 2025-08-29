@@ -1,12 +1,15 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.hierarchy.HierarchyBrowser
+import com.intellij.ide.hierarchy.HierarchyProvider
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.util.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 提供定义的类型层级视图。（定义类型/定义子类型 > 定义）

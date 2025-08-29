@@ -1,13 +1,17 @@
 package icu.windea.pls.script.navigation
 
-import com.intellij.ide.util.treeView.*
-import com.intellij.navigation.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import com.intellij.ide.util.treeView.TreeAnchorizer
+import com.intellij.navigation.ItemPresentation
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import javax.swing.Icon
 
 class ParadoxScriptItemPresentation(
     element: PsiElement

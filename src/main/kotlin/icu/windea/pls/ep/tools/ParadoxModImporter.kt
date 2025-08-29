@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.tools
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.lang.ui.tools.*
-import javax.swing.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import icu.windea.pls.lang.ui.tools.ParadoxModDependenciesTable
+import javax.swing.Icon
 
 interface ParadoxModImporter {
     val icon: Icon? get() = null

@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.presentation
 
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 object ParadoxDefinitionPresentationProviderDelegates {
     class FromDefinitionType<T : ParadoxDefinitionPresentation>(

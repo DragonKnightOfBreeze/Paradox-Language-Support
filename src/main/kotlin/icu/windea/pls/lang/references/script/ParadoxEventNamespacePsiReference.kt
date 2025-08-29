@@ -1,13 +1,20 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiPolyVariantReferenceBase
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxEventNamespacePsiReference(
     element: ParadoxScriptString,

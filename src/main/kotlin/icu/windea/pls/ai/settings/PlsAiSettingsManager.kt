@@ -1,13 +1,13 @@
 package icu.windea.pls.ai.settings
 
-import com.intellij.*
-import com.intellij.openapi.ui.*
-import com.intellij.ui.components.*
-import com.intellij.ui.layout.*
-import icu.windea.pls.*
-import icu.windea.pls.ai.model.*
-import icu.windea.pls.ai.util.*
-import icu.windea.pls.core.util.*
+import com.intellij.DynamicBundle
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.ui.components.JBPasswordField
+import com.intellij.ui.layout.ValidationInfoBuilder
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.model.ChatModelType
+import icu.windea.pls.ai.util.PlsChatModelManager
+import icu.windea.pls.core.util.CallbackLock
 import java.util.*
 
 object PlsAiSettingsManager {

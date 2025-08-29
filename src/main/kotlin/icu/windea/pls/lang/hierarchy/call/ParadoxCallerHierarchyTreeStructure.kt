@@ -1,24 +1,28 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.psi.util.*
-import com.intellij.ui.tree.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.ide.hierarchy.HierarchyTreeStructure
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.psi.util.parentOfType
+import com.intellij.ui.tree.LeafState
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.findParentDefinition
 
 //com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 

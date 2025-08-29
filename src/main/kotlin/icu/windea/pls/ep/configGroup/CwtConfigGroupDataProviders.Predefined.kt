@@ -1,6 +1,11 @@
 package icu.windea.pls.ep.configGroup
 
-import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.aliasNamesSupportScope
+import icu.windea.pls.config.configGroup.definitionTypesIndirectSupportScope
+import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
+import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
+import icu.windea.pls.config.configGroup.definitionTypesSupportScope
 
 /**
  * 用于初始规则分组中预先定义的那些数据。

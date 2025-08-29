@@ -1,18 +1,29 @@
 package icu.windea.pls.ep.parameter
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.util.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.core.util.KeyProvider
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport.Keys.synced
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.model.ParadoxParameterContextInfo
+import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
+import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * 提供对脚本参数的支持。

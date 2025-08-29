@@ -1,13 +1,20 @@
 package icu.windea.pls.lang.inspections.localisation.expression
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.paths.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.expression.complex.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.expression.complex.getAllErrors
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
 
 /**
  * 不正确的[ParadoxDatabaseObjectExpression]的检查。

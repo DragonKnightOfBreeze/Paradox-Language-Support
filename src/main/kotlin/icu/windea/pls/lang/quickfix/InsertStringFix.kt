@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
+import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 
 class InsertStringFix(
     private val name: String,

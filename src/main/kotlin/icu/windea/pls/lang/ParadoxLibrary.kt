@@ -1,15 +1,22 @@
 package icu.windea.pls.lang
 
-import com.intellij.navigation.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
-import javax.swing.*
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.AdditionalLibraryRootsListener
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.roots.SyntheticLibrary
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.settings.finalGameDirectory
+import icu.windea.pls.lang.util.PlsCoreManager
+import javax.swing.Icon
 
 //each library each project
 

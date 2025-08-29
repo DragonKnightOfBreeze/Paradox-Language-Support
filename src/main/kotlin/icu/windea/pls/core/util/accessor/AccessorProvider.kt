@@ -1,6 +1,6 @@
 package icu.windea.pls.core.util.accessor
 
-import kotlin.reflect.*
+import kotlin.reflect.KClass
 
 interface AccessorProvider<T : Any> {
     val targetClass: KClass<T>

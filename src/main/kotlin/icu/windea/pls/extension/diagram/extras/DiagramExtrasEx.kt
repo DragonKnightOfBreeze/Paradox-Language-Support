@@ -1,13 +1,15 @@
 package icu.windea.pls.extension.diagram.extras
 
-import com.intellij.diagram.*
-import com.intellij.diagram.components.*
-import com.intellij.diagram.extras.custom.*
-import com.intellij.openapi.graph.view.*
-import com.intellij.psi.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.components.*
-import javax.swing.*
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramNode
+import com.intellij.diagram.components.DiagramNodeContainer
+import com.intellij.diagram.extras.custom.CommonDiagramExtras
+import com.intellij.openapi.graph.view.NodeRealizer
+import com.intellij.psi.PsiElement
+import icu.windea.pls.extension.diagram.components.DiagramNodeItemComponentEx
+import icu.windea.pls.extension.diagram.itemComponent
+import javax.swing.JComponent
+import javax.swing.JPanel
 
 abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
     override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {

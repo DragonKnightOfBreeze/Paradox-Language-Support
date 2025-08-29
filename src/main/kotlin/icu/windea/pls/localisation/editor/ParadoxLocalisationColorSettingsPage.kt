@@ -1,11 +1,14 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.options.colors.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.editor.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.options.colors.AttributesDescriptor
+import com.intellij.openapi.options.colors.ColorDescriptor
+import com.intellij.openapi.options.colors.ColorSettingsPage
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

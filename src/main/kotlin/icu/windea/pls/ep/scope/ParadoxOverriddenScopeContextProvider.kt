@@ -1,11 +1,12 @@
 package icu.windea.pls.ep.scope
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.overriddenProvider
 
 /**
  * 用于基于上下文为某些特定的脚本表达式提供重载后的作用域上下文。

@@ -1,16 +1,24 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.psi.util.startOffset
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.icon
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.withCompletionId
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findParentByPath
 
 /**
  * 提供事件ID中事件命名空间的代码补全。

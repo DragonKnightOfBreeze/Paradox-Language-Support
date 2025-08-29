@@ -1,13 +1,22 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.psi.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import java.io.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.config.util.CwtConfigSymbolManager
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.optimizeValue
+import java.io.DataInput
+import java.io.DataOutput
 
 /**
  * 用于索引CWT规则文件中的符号信息。

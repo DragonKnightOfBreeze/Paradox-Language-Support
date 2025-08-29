@@ -1,9 +1,13 @@
 package icu.windea.pls.lang.util.manipulators
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementVisitor
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationString
 
 data class ParadoxLocalisationContext(
     private val elementPointer: SmartPsiElementPointer<ParadoxLocalisationProperty>,

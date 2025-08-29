@@ -1,6 +1,6 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.OS
 
 /**
  * 注明此功能仅适用于特定的OS。

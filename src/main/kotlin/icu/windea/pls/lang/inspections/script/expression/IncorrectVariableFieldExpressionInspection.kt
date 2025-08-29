@@ -1,14 +1,19 @@
 package icu.windea.pls.lang.inspections.script.expression
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.expression.complex.getAllErrors
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 不正确的[ParadoxVariableFieldExpression]的检查。

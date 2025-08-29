@@ -2,16 +2,26 @@
 
 package icu.windea.pls.localisation.editor
 
-import com.google.common.cache.*
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
-import com.intellij.openapi.editor.HighlighterColors.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import com.intellij.openapi.editor.markup.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
-import java.awt.*
+import com.google.common.cache.CacheBuilder
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.IDENTIFIER
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_METHOD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBER
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.OPERATION_SIGN
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STATIC_FIELD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STATIC_METHOD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STRING
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE
+import com.intellij.openapi.editor.HighlighterColors.BAD_CHARACTER
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
+import com.intellij.openapi.editor.markup.TextAttributes
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.buildCache
+import java.awt.Color
 
 object ParadoxLocalisationAttributesKeys {
     @JvmField

@@ -1,18 +1,25 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.paths.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.extendedDefinitions
+import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.paths.ParadoxPathMatcher
+import icu.windea.pls.model.paths.matches
+import javax.swing.JComponent
 
 /**
  * 无法解析的概念的检查。

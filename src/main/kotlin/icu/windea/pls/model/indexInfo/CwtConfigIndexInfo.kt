@@ -1,7 +1,7 @@
 package icu.windea.pls.model.indexInfo
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * CWT规则文件中的索引信息。记录的信息包括PSI元素偏移与游戏类型。

@@ -1,13 +1,15 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addBlockScriptExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {

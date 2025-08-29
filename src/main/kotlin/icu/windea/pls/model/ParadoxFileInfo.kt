@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.model.paths.*
+import icu.windea.pls.model.paths.ParadoxPath
 import java.util.*
 
 /**

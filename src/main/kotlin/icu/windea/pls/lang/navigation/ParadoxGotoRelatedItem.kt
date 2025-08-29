@@ -1,13 +1,15 @@
 package icu.windea.pls.lang.navigation
 
-import com.intellij.navigation.*
-import com.intellij.openapi.util.NlsContexts.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.navigation.GotoRelatedItem
+import com.intellij.openapi.util.NlsContexts.Separator
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.qualifiedName
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : GotoRelatedItem(element, group) {
     override fun getCustomName(): String? {

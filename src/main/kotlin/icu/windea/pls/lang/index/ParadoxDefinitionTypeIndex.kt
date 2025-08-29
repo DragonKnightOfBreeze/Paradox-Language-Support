@@ -1,8 +1,7 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.psi.stubs.*
+import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于基于类型索引定义声明。

@@ -1,20 +1,33 @@
 package icu.windea.pls.model
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.paths.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtModifierConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtSubtypeConfig
+import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.config.configExpression.CwtImageLocationExpression
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.declarations
+import icu.windea.pls.config.configGroup.type2ModifiersMap
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.annotations.Inferred
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
+import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.stringValue
 import java.util.*
-import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）

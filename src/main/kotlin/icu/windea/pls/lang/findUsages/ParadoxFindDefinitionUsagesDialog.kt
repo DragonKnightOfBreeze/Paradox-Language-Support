@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.findUsages
 
-import com.intellij.find.findUsages.*
-import com.intellij.openapi.project.*
-import com.intellij.ui.*
-import icu.windea.pls.*
+import com.intellij.find.findUsages.FindUsagesOptions
+import com.intellij.openapi.project.Project
+import com.intellij.ui.StateRestoringCheckBox
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import javax.swing.BoxLayout
+import javax.swing.JPanel
 
 class ParadoxFindDefinitionUsagesDialog(
     element: ParadoxScriptDefinitionElement,

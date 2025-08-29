@@ -1,15 +1,22 @@
 package icu.windea.pls.lang.codeInsight.generation
 
-import com.intellij.codeInsight.generation.*
-import com.intellij.icons.*
-import com.intellij.ide.util.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import java.awt.event.*
-import javax.swing.*
+import com.intellij.codeInsight.generation.ClassMember
+import com.intellij.codeInsight.generation.MemberChooserObject
+import com.intellij.codeInsight.generation.MemberChooserObjectBase
+import com.intellij.icons.AllIcons
+import com.intellij.ide.util.MemberChooser
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
+import javax.swing.Action
+import javax.swing.JComponent
+import javax.swing.JPanel
 
 class ParadoxGenerateLocalisationsChooser(
     elements: Array<out Item>,

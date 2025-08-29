@@ -1,8 +1,10 @@
 package icu.windea.pls.lang.references.paths
 
-import com.intellij.openapi.paths.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
+import com.intellij.openapi.paths.PathReference
+import com.intellij.openapi.paths.PathReferenceProviderBase
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 
 //org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider

@@ -1,10 +1,15 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.ui.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.ui.EditorNotifications
+import icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider
+import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
+import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.config.configGroupLibrary
 
 /**
  * 当各类规则分组的启用状态发生变化时，需要更新编辑器通知。

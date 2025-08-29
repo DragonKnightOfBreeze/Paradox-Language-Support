@@ -1,10 +1,10 @@
 package icu.windea.pls.model
 
-import com.intellij.psi.*
-import com.intellij.ui.*
-import com.intellij.util.ui.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
+import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ui.ColorUtil
+import com.intellij.util.ui.ColorIcon
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import java.awt.Color
 
 class ParadoxTextColorInfo(
     val name: String,

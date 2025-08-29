@@ -1,14 +1,23 @@
 package icu.windea.pls.core.codeInsight.editorActions
 
-import com.intellij.codeInsight.editorActions.moveUpDown.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.DocumentUtil.*
-import fleet.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInsight.editorActions.moveUpDown.LineMover
+import com.intellij.codeInsight.editorActions.moveUpDown.LineRange
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.LogicalPosition
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.parents
+import com.intellij.psi.util.startOffset
+import com.intellij.util.DocumentUtil.isLineEmpty
+import fleet.util.takeWhileInclusive
+import icu.windea.pls.core.children
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.util.PlsPsiManager
 
 abstract class ContainerBasedMover : LineMover() {
     override fun checkAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean): Boolean {

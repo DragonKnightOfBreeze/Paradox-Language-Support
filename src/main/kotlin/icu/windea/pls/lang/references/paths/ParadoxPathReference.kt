@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.references.paths
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
+import com.intellij.codeInsight.daemon.EmptyResolveMessageProvider
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 
 /**

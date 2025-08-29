@@ -1,11 +1,16 @@
 package icu.windea.pls.localisation.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.model.constants.*
+import com.intellij.application.options.SmartIndentOptionsEditor
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.BlankLinesOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.CommenterOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.IndentOption
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import icu.windea.pls.core.pass
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxLocalisationLanguage

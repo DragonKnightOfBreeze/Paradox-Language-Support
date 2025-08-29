@@ -1,19 +1,42 @@
 package icu.windea.pls.lang.index.stubs
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.paths.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.impl.*
-import icu.windea.pls.script.psi.stubs.*
+import com.intellij.lang.LighterAST
+import com.intellij.lang.LighterASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.stubs.IndexSink
+import com.intellij.psi.stubs.LightStubElementFactory
+import com.intellij.psi.stubs.ObjectStubSerializer
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.stubs.StubInputStream
+import com.intellij.psi.stubs.StubOutputStream
+import com.intellij.psi.stubs.StubRegistry
+import com.intellij.psi.stubs.StubRegistryExtension
+import com.intellij.psi.stubs.StubSerializer
+import icu.windea.pls.core.children
+import icu.windea.pls.core.firstChild
+import icu.windea.pls.core.internNode
+import icu.windea.pls.core.pass
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.AT
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE_NAME
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl
+import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
+import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
+import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 
 @Suppress("UnstableApiUsage")
 class ParadoxScriptStubRegistry : StubRegistryExtension {

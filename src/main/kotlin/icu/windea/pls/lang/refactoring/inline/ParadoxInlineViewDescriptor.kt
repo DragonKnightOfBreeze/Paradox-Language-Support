@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.refactoring.inline
 
-import com.intellij.psi.*
-import com.intellij.usageView.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.usageView.UsageViewBundle
+import com.intellij.usageView.UsageViewDescriptor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 //com.intellij.refactoring.inline.InlineViewDescriptor
 

@@ -1,8 +1,10 @@
 package icu.windea.pls.tool.cwt
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import java.io.*
+import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.toPath
+import icu.windea.pls.core.unquote
+import icu.windea.pls.model.ParadoxGameType
+import java.io.File
 
 /**
  * 用于从`modifiers.log`生成`modifiers.cwt`和`modifier_categories.cwt`

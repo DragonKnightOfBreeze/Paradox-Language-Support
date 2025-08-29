@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.search.scope
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.lang.fileInfo
 
 @Suppress("EqualsOrHashCode")
 class ParadoxWithFilePathSearchScope(

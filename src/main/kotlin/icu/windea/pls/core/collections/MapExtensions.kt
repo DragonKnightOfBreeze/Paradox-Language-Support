@@ -3,7 +3,7 @@
 package icu.windea.pls.core.collections
 
 import java.util.*
-import kotlin.reflect.*
+import kotlin.reflect.KProperty
 
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 

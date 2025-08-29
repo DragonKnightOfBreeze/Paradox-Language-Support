@@ -1,18 +1,22 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.expression.complex.ParadoxCommandExpression
+import icu.windea.pls.lang.expression.complex.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.expression.complex.getAllReferences
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.isCommandExpression
+import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressionSupport {
     override fun supports(element: ParadoxExpressionElement): Boolean {

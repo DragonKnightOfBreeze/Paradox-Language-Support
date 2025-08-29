@@ -1,12 +1,16 @@
 package icu.windea.pls.lang.ui.clause
 
-import com.intellij.openapi.ui.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import javax.swing.*
-import javax.swing.table.*
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.ComboBoxTableRenderer
+import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.EditableModel
+import com.intellij.util.ui.ListTableModel
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.pass
+import icu.windea.pls.model.ParadoxSeparatorType
+import javax.swing.DefaultCellEditor
+import javax.swing.table.TableCellEditor
+import javax.swing.table.TableCellRenderer
 
 //com.intellij.refactoring.changeSignature.ParameterTableModelBase
 

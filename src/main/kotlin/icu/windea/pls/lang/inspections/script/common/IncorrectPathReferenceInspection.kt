@@ -1,12 +1,18 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.script.psi.ParadoxScriptString
 
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

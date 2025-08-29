@@ -1,13 +1,15 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.lang.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.lexer.*
-import icu.windea.pls.cwt.parser.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.Language
+import com.intellij.lang.PsiBuilderFactory
+import com.intellij.openapi.project.Project
+import com.intellij.psi.ParsingDiagnostics
+import com.intellij.psi.impl.source.tree.LazyParseablePsiElement
+import com.intellij.psi.tree.IReparseableElementType
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.lexer.CwtLexerFactory
+import icu.windea.pls.cwt.parser.CwtParser
 
 @Suppress("UnstableApiUsage")
 class CwtOptionCommentElementType(debugName: String) : IReparseableElementType(debugName, CwtLanguage) {

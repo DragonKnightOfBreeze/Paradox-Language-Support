@@ -1,19 +1,22 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.openapi.ui.popup.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import kotlinx.coroutines.*
+import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.openapi.command.writeCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import kotlinx.coroutines.launch
 
 /**
  * 更改本地化语言区域。

@@ -1,14 +1,18 @@
 package icu.windea.pls.lang.codeInsight.parameterInfo
 
-import com.intellij.lang.parameterInfo.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.lang.parameterInfo.CreateParameterInfoContext
+import com.intellij.lang.parameterInfo.ParameterInfoHandler
+import com.intellij.lang.parameterInfo.ParameterInfoUIContext
+import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.model.ParadoxParameterContextInfo
+import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 
 /**
  * 在参数上下文引用中显示参数信息。

@@ -1,14 +1,19 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.documentation.ParadoxDocumentationManager
+import icu.windea.pls.lang.documentation.ParadoxDocumentationTarget
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.util.ParadoxPsiMatcher
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 用于为各种目标提供提示文本，并渲染到快速文档中。

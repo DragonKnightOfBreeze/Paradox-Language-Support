@@ -1,20 +1,24 @@
 package icu.windea.pls.ep.tools
 
-import com.fasterxml.jackson.module.kotlin.*
-import com.intellij.notification.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.tools.model.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.*
-import icu.windea.pls.lang.util.*
-import kotlin.io.path.*
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.ep.tools.model.ParadoxLauncherJsonV3
+import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.lang.settings.qualifiedName
+import icu.windea.pls.lang.ui.tools.ParadoxModDependenciesTable
+import icu.windea.pls.lang.util.PlsCoreManager
+import kotlin.io.path.exists
 
 /**
  * 从启动器JSON配置文件导入模组配置。

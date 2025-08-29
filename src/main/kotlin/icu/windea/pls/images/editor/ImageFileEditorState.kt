@@ -1,7 +1,9 @@
 package icu.windea.pls.images.editor
 
-import com.intellij.openapi.fileEditor.*
-import java.io.*
+import com.intellij.openapi.fileEditor.FileEditorState
+import com.intellij.openapi.fileEditor.FileEditorStateLevel
+import com.intellij.openapi.fileEditor.TransferableFileEditorState
+import java.io.Serializable
 
 //org.intellij.images.editor.impl.ImageFileEditorState
 

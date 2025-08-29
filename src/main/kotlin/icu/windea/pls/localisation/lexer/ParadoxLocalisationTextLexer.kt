@@ -1,8 +1,9 @@
 package icu.windea.pls.localisation.lexer
 
-import com.intellij.lexer.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.lexer.FlexAdapter
+import com.intellij.lexer.MergingLexerAdapter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationTextLexer(
     gameType: ParadoxGameType? = null

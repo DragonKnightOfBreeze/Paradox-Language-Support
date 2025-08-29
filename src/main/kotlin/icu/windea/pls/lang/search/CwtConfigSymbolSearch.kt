@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.ExtensibleQueryFactory
+import com.intellij.util.Query
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>(EP_NAME) {
     class SearchParameters(

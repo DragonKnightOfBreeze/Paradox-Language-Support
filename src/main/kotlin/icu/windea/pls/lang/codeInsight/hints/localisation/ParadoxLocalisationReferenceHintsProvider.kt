@@ -2,17 +2,26 @@
 
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider.Settings
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
+import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示渲染后的本地化文本，适用于本地化参数中引用的本地化。

@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInsight.daemon.impl.actions.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
+import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix
+import com.intellij.codeInspection.InspectionSuppressor
+import com.intellij.codeInspection.SuppressQuickFix
+import com.intellij.codeInspection.SuppressionUtil
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.model.constants.PlsStringConstants
 
 //com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 //org.intellij.grammar.inspection.BnfInspectionSuppressor

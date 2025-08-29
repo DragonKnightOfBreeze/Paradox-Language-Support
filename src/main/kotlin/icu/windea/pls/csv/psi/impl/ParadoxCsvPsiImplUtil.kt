@@ -1,18 +1,25 @@
 package icu.windea.pls.csv.psi.impl
 
-import com.intellij.navigation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.*
-import com.intellij.psi.impl.source.resolve.reference.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.navigation.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.util.*
-import javax.swing.*
+import com.intellij.navigation.ItemPresentation
+import com.intellij.openapi.util.Iconable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.impl.ResolveScopeManager
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.unquote
+import icu.windea.pls.csv.navigation.ParadoxCsvItemPresentation
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.util.ParadoxCsvManager
+import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvPsiImplUtil {

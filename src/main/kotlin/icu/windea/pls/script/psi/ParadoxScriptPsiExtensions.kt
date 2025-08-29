@@ -2,18 +2,25 @@
 
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.psi.util.siblings
+import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.tagType
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.findChildren
+import icu.windea.pls.core.toBooleanYesNo
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
+import icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl
+import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
-import icu.windea.pls.lang.references.script.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.impl.*
-import java.awt.*
+import java.awt.Color
 
 //region PSI Accessors
 

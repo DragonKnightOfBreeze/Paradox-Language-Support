@@ -1,20 +1,32 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.psi.util.startOffset
+import com.intellij.util.Processor
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.processAllElements
+import icu.windea.pls.core.processAllElementsByKeys
+import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.lang.search.selector.inlineScriptUsage
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 本地封装变量的查询器。

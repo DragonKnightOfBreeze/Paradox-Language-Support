@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util.properties
 
-import org.junit.*
+import org.junit.Assert
+import org.junit.Test
 
 class ObservableTest {
     @Test

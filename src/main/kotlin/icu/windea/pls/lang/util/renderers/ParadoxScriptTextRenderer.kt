@@ -1,8 +1,13 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.members
+import icu.windea.pls.script.psi.value
 
 class ParadoxScriptTextRenderer(
     val builder: StringBuilder = StringBuilder(),

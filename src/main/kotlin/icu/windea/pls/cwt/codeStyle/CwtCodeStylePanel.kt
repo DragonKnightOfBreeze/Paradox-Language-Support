@@ -1,8 +1,9 @@
 package icu.windea.pls.cwt.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.cwt.*
+import com.intellij.application.options.GenerationCodeStylePanel
+import com.intellij.application.options.TabbedLanguageCodeStylePanel
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import icu.windea.pls.cwt.CwtLanguage
 
 class CwtCodeStylePanel(
     currentSettings: CodeStyleSettings,

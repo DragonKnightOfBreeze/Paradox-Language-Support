@@ -1,6 +1,6 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.*
+import com.intellij.psi.NavigatablePsiElement
 
 /**
  * @see CwtPropertyKey

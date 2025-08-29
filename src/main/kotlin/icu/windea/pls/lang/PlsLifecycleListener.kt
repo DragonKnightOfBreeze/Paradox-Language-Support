@@ -1,21 +1,26 @@
 package icu.windea.pls.lang
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.ide.*
-import com.intellij.ide.plugins.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.startup.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.images.*
-import icu.windea.pls.model.constants.*
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
+import com.intellij.ide.AppLifecycleListener
+import com.intellij.ide.plugins.DynamicPluginListener
+import com.intellij.ide.plugins.IdeaPluginDescriptor
+import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.components.service
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.util.application
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
+import icu.windea.pls.config.configGroupLibrary
+import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.images.ImageManager
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.PlsPathConstants
 
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。

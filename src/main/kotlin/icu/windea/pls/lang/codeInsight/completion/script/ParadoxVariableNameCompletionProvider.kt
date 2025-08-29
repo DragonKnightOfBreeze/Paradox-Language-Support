@@ -1,17 +1,32 @@
 package icu.windea.pls.lang.codeInsight.completion.script
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.psi.util.startOffset
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.configGroup.mockVariableConfig
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.getKeyword
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.config
+import icu.windea.pls.lang.codeInsight.completion.configGroup
+import icu.windea.pls.lang.codeInsight.completion.contextElement
+import icu.windea.pls.lang.codeInsight.completion.expressionOffset
+import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.offsetInParent
+import icu.windea.pls.lang.codeInsight.completion.quoted
+import icu.windea.pls.lang.codeInsight.completion.rightQuoted
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.script.psi.isBlockMember
 
 /**
  * 提供变量名的代码补全。（在effect子句中）

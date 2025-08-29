@@ -1,20 +1,22 @@
 package icu.windea.pls.extension.diagram.settings
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import kotlinx.coroutines.future.asCompletableFuture
-import kotlinx.coroutines.launch
-import org.jetbrains.concurrency.asPromise
+import com.intellij.util.xmlb.annotations.XMap
+import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.collections.provideDelegate
+import icu.windea.pls.core.collections.withDefault
+import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.lang.util.ParadoxPresentationManager
+import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)

@@ -2,8 +2,9 @@
 
 package icu.windea.pls.core
 
-import java.lang.reflect.*
-import kotlin.reflect.*
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import kotlin.reflect.KFunction
 
 fun KFunction<*>.isGetter(propertyName: String? = null): Boolean {
     if (parameters.size != 1) return false

@@ -1,14 +1,21 @@
 package icu.windea.pls.localisation.ui.actions.styling
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ToggleAction
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 

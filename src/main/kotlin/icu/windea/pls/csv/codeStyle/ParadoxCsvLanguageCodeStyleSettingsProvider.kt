@@ -1,10 +1,14 @@
 package icu.windea.pls.csv.codeStyle
 
-import com.intellij.psi.codeStyle.*
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.model.constants.*
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.BlankLinesOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.CommenterOption
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import icu.windea.pls.core.pass
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxCsvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxCsvLanguage

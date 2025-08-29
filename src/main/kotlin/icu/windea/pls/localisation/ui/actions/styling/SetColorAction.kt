@@ -1,12 +1,14 @@
 package icu.windea.pls.localisation.ui.actions.styling
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ToggleAction
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiDocumentManager
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.model.ParadoxTextColorInfo
 
 //org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
 //org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction

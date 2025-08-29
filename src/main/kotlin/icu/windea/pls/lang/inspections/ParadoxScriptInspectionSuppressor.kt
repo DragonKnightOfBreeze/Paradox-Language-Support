@@ -1,17 +1,25 @@
 package icu.windea.pls.lang.inspections
 
-import com.intellij.codeInsight.daemon.impl.actions.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix
+import com.intellij.codeInspection.InspectionSuppressor
+import com.intellij.codeInspection.SuppressQuickFix
+import com.intellij.codeInspection.SuppressionUtil
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parents
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.script.psi.isBlockMember
 
 /**
  * 基于特定条件，禁用适用于脚本文件的代码检查。

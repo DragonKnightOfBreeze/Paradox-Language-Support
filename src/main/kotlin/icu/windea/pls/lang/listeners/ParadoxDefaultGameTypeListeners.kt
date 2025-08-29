@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 当更改默认游戏类型后，重新解析文件。

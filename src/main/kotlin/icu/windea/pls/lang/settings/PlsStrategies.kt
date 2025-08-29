@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.settings
 
-import icu.windea.pls.*
+import icu.windea.pls.PlsBundle
 
 interface PlsStrategies {
     /**

@@ -1,13 +1,15 @@
 package icu.windea.pls.ep.index
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
-import java.io.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import java.io.DataInput
+import java.io.DataOutput
 
 interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     val id: Byte

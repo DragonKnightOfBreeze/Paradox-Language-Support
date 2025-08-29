@@ -1,6 +1,6 @@
 package icu.windea.pls.core.codeInsight
 
-import com.intellij.codeInsight.lookup.*
+import com.intellij.codeInsight.lookup.LookupElement
 
 class CompositeLookupElement(
     val element: LookupElement,

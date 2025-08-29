@@ -1,15 +1,25 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.psi.search.SearchScope
+import com.intellij.psi.search.SearchScopeProvider
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.findTopHostFileOrThis
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.search.scope.ParadoxGameSearchScope
+import icu.windea.pls.lang.search.scope.ParadoxGameWithDependenciesSearchScope
+import icu.windea.pls.lang.search.scope.ParadoxModAndGameSearchScope
+import icu.windea.pls.lang.search.scope.ParadoxModSearchScope
+import icu.windea.pls.lang.search.scope.ParadoxModWithDependenciesSearchScope
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.finalGameDirectory
+import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 在查找使用以及其他一些地方提供自定义的额外的查询作用域。

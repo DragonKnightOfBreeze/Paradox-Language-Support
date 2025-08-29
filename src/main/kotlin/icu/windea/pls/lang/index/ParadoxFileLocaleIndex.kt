@@ -1,10 +1,14 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.util.indexing.*
-import com.intellij.util.io.*
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.util.indexing.DataIndexer
+import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.FileContent
+import com.intellij.util.indexing.ScalarIndexExtension
+import com.intellij.util.io.EnumeratorStringDescriptor
+import com.intellij.util.io.KeyDescriptor
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import java.util.*
 
 /**

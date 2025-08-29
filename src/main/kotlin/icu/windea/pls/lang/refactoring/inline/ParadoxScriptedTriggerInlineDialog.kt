@@ -1,17 +1,19 @@
 package icu.windea.pls.lang.refactoring.inline
 
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.refactoring.inline.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.refactoring.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.refactoring.inline.InlineOptionsDialog
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.search.scope.withFileTypes
+import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptedTriggerInlineDialog(
     project: Project,

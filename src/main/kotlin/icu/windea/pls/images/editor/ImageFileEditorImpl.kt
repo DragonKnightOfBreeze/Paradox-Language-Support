@@ -1,14 +1,18 @@
 package icu.windea.pls.images.editor
 
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.*
-import org.intellij.images.editor.*
-import org.intellij.images.options.*
-import java.beans.*
-import javax.swing.*
+import com.intellij.openapi.fileEditor.FileEditorState
+import com.intellij.openapi.fileEditor.FileEditorStateLevel
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.EventDispatcher
+import org.intellij.images.editor.ImageEditor
+import org.intellij.images.editor.ImageFileEditor
+import org.intellij.images.options.OptionsManager
+import java.beans.PropertyChangeEvent
+import java.beans.PropertyChangeListener
+import javax.swing.JComponent
 
 //org.intellij.images.editor.impl.ImageFileEditorImpl
 

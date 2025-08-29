@@ -1,13 +1,17 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.navigation.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.pom.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.config.*
+import com.intellij.codeInsight.navigation.GotoTargetHandler
+import com.intellij.codeInsight.navigation.activateFileWithPsiElement
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.findElementAt
+import icu.windea.pls.ep.config.CwtRelatedConfigProvider
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 

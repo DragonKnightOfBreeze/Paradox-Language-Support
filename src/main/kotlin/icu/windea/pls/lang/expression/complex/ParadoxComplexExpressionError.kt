@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 data class ParadoxComplexExpressionError(
     val code: Int,

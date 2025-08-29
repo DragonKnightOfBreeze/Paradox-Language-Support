@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.psi.*
+import com.intellij.psi.PsiReference
+import com.intellij.util.Processor
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorTokenNode
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 fun ParadoxComplexExpression.accept(visitor: ParadoxComplexExpressionVisitor) {
     visitor.visit(this, null)

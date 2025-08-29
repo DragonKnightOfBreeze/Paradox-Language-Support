@@ -1,21 +1,35 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.ui.tree.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.resolve.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.ide.hierarchy.HierarchyTreeStructure
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.ui.tree.LeafState
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.ep.resolve.ParadoxInlineSupport
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.isComplexExpression
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.isExpression
 
 //com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 

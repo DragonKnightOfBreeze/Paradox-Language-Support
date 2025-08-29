@@ -1,13 +1,18 @@
 package icu.windea.pls.extension.diagram.actions
 
-import com.intellij.diagram.*
-import com.intellij.icons.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.lang.search.scope.type.*
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.Toggleable
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.extension.diagram.ParadoxDiagramDataModel
+import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 
 //com.intellij.uml.core.actions.scopes.UmlScopesActionGroup
 

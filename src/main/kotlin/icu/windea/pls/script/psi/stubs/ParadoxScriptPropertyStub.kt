@@ -1,11 +1,12 @@
 package icu.windea.pls.script.psi.stubs
 
-import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.psi.stubs.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.paths.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import com.intellij.psi.stubs.StubBase
+import com.intellij.psi.stubs.StubElement
+import icu.windea.pls.lang.psi.stubs.ParadoxStub
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @Suppress("UnstableApiUsage")
 interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {

@@ -1,12 +1,12 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vcs.*
-import com.intellij.openapi.vcs.changes.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import javax.swing.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vcs.FilePath
+import com.intellij.openapi.vcs.changes.FilePathIconProvider
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.model.ParadoxFileType
+import javax.swing.Icon
 
 /**
  * 用于在VCS提交记录中直接基于文件路径为（可能已经不存在的）文件提供正确的图标。

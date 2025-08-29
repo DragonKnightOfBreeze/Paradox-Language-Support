@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.metadata
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     override fun getGameType(rootFile: VirtualFile): ParadoxGameType? {

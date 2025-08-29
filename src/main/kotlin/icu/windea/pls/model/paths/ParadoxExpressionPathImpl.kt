@@ -1,6 +1,7 @@
 package icu.windea.pls.model.paths
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.isQuoted
+import icu.windea.pls.core.unquote
 
 internal class ParadoxExpressionPathResolverImpl : ParadoxExpressionPath.Resolver {
     override fun resolveEmpty(): ParadoxExpressionPath = EmptyParadoxExpressionPath

@@ -1,6 +1,6 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.tree.*
+import com.intellij.psi.tree.IElementType
 
 object ParadoxScriptElementTypeFactory {
     @JvmStatic

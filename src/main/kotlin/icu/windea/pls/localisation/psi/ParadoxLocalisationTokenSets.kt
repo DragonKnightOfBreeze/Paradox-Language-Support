@@ -1,8 +1,29 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.psi.TokenType
+import com.intellij.psi.tree.TokenSet
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMAND
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMAND_TEXT_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_COMMAND
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_NAME_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_TEXT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.SCRIPTED_VARIABLE_REFERENCE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.STRING_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_TEXT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_ROOT
 
 object ParadoxLocalisationTokenSets {
     @JvmField

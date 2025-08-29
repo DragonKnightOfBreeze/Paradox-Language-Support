@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
 object ParadoxLocalisationFileManager {
     fun getLocaleIdFromFileName(file: ParadoxLocalisationFile): String? {

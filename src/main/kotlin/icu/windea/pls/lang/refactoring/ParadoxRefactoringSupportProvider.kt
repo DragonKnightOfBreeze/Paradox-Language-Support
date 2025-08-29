@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.refactoring
 
-import com.intellij.lang.refactoring.*
-import com.intellij.psi.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.psi.PsiElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {

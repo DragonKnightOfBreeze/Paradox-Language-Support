@@ -1,7 +1,8 @@
 package icu.windea.pls.inject.injectors.psi
 
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectFieldBasedCache
+import icu.windea.pls.inject.annotations.InjectTarget
 
 interface ParadoxScriptPsiCodeInjectors {
     //用于优化性能

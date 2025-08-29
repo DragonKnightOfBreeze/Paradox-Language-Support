@@ -1,9 +1,9 @@
 package icu.windea.pls.integrations.lints.tools
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.integrations.lints.PlsLintResult
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供检查工具。用于提供额外的代码检查。

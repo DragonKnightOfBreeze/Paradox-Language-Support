@@ -1,10 +1,12 @@
 package icu.windea.pls.cwt.navigation
 
-import com.intellij.ide.util.treeView.*
-import com.intellij.navigation.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import javax.swing.*
+import com.intellij.ide.util.treeView.TreeAnchorizer
+import com.intellij.navigation.ItemPresentation
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import icu.windea.pls.core.icon
+import javax.swing.Icon
 
 class CwtItemPresentation(
     element: PsiElement

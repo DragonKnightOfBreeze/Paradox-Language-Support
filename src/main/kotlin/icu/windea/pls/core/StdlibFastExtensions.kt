@@ -1,6 +1,6 @@
 package icu.windea.pls.core
 
-import it.unimi.dsi.fastutil.objects.*
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
 fun String.trimFast(c: Char): String {
     //Should be very fast

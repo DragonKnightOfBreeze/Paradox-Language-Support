@@ -2,8 +2,9 @@
 
 package icu.windea.pls.ep.data
 
-import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.model.constants.*
+import icu.windea.pls.lang.util.data.ParadoxScriptData
+import icu.windea.pls.lang.util.data.get
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProviderDelegates as Delegates
 
 class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {

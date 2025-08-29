@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.index
 
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.createKey
 
 object ParadoxIndexManager {
     val excludeDirectoriesForFilePathIndex = listOf(

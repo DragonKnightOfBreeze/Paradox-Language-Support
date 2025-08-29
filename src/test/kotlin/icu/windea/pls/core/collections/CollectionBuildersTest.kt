@@ -1,9 +1,10 @@
 package icu.windea.pls.core.collections
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.Comparator
-import java.util.TreeSet
+import java.util.*
 
 class CollectionBuildersTest {
     @Test

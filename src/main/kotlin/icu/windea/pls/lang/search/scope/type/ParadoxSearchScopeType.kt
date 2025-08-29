@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.search.scope.type
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
 
 abstract class ParadoxSearchScopeType(
     val id: String,

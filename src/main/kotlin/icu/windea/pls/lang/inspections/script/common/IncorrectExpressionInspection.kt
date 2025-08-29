@@ -1,11 +1,17 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.ep.inspections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptBoolean
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 /**
  * 不正确的表达式的检查。

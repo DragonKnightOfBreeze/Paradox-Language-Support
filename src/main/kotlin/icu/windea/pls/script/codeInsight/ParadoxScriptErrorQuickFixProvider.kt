@@ -1,12 +1,12 @@
 package icu.windea.pls.script.codeInsight
 
-import com.intellij.codeInsight.daemon.impl.*
-import com.intellij.codeInsight.daemon.impl.analysis.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.daemon.impl.HighlightInfo
+import com.intellij.codeInsight.daemon.impl.analysis.ErrorQuickFixProvider
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.lang.quickfix.InsertMissingTokenFix
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxParameter
 
 /**
  * 快速修复一些语法错误。

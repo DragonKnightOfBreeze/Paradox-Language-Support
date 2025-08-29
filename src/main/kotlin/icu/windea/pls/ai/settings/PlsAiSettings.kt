@@ -1,10 +1,16 @@
 package icu.windea.pls.ai.settings
 
-import com.intellij.credentialStore.*
-import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.*
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.SimplePersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.annotations.Property
+import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.core.getValue
+import icu.windea.pls.core.setValue
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS AI设置。可以在插件的对应设置页面中进行配置。

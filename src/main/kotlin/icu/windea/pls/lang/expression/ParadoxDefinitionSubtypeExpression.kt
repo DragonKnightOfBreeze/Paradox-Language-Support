@@ -1,7 +1,8 @@
 package icu.windea.pls.lang.expression
 
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.model.ParadoxDefinitionInfo
 
 /**
  * 定义子类型表达式。

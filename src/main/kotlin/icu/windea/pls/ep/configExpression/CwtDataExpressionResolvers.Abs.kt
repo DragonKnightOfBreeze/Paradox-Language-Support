@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.configExpression
 
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.CwtDataType
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.removeSurroundingOrNull
 
 abstract class RuleBasedCwtDataExpressionResolver : CwtDataExpressionResolver {
     sealed interface Rule {

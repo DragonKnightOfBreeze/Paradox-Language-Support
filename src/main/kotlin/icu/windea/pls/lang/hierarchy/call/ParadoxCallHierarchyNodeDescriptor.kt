@@ -1,27 +1,33 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.ide.*
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.ui.util.*
-import com.intellij.openapi.util.*
-import com.intellij.pom.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInsight.highlighting.HighlightManager
+import com.intellij.ide.IdeBundle
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.openapi.editor.colors.EditorColors
+import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ui.util.CompositeAppearance
+import com.intellij.openapi.util.Comparing
+import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.util.PsiEditorUtil
+import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import java.awt.Color
+import java.awt.Font
 
 //com.intellij.ide.hierarchy.call.CallHierarchyNodeDescriptor
 

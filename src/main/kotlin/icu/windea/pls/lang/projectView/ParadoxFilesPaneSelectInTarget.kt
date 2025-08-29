@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.ide.impl.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.impl.ProjectViewSelectInTarget
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.isFile
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.util.PsiUtilCore
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.fileInfo
 
 class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarget(project) {
     override fun canSelect(file: PsiFileSystemItem?): Boolean {

@@ -1,15 +1,19 @@
 package icu.windea.pls.extension.diagram.settings
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.SimplePersistentStateComponent
+import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import kotlinx.coroutines.*
+import com.intellij.util.ui.ThreeStateCheckBox
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.smaller
+import icu.windea.pls.core.threeStateCheckBox
+import icu.windea.pls.core.toMutableProperty
+import icu.windea.pls.model.ParadoxGameType
+import kotlinx.coroutines.launch
 
 abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
     val project: Project,

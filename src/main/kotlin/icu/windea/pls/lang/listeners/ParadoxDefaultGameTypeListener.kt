@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.util.messages.*
-import icu.windea.pls.model.*
+import com.intellij.util.messages.Topic
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 监听默认游戏类型的更改。

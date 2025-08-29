@@ -1,22 +1,29 @@
 package icu.windea.pls.lang.actions.localisation
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.localisation.*
-import kotlinx.coroutines.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.MessageDialogBuilder
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.isFile
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.util.manipulators.PlsFileManipulator
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import kotlinx.coroutines.launch
 
 /**
  * 用于处理本地化的一类动作。

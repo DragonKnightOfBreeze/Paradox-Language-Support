@@ -1,17 +1,26 @@
 package icu.windea.pls.lang.inspections.overridden
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.roots.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * （对于脚本文件）检查是否存在对定义的重载。

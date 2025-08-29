@@ -2,7 +2,7 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.util.*
+import com.intellij.openapi.util.StackOverflowPreventedException
 
 /**
  * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。

@@ -1,11 +1,16 @@
 package icu.windea.pls.localisation.structureView
 
-import com.intellij.ide.structureView.*
-import com.intellij.ide.util.treeView.smartTree.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.ide.structureView.StructureViewModel
+import com.intellij.ide.structureView.StructureViewTreeElement
+import com.intellij.ide.structureView.TextEditorBasedStructureViewModel
+import com.intellij.ide.util.treeView.smartTree.Sorter
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 class ParadoxLocalisationStructureViewModel(
     editor: Editor?,

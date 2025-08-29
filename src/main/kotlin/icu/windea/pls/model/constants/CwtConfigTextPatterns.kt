@@ -1,6 +1,6 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.TextPattern
 
 object CwtConfigTextPatterns {
     val type = TextPattern("type[", "]")

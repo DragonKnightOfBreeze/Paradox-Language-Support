@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * 用于在 *随处搜索* 中查找CWT规则符号。

@@ -1,8 +1,11 @@
 package icu.windea.pls.lang.ui.clause
 
-import com.intellij.icons.*
-import com.intellij.openapi.actionSystem.*
-import icu.windea.pls.*
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CustomShortcutSet
+import icu.windea.pls.PlsBundle
 
 interface ElementsToolbarActions {
     /**

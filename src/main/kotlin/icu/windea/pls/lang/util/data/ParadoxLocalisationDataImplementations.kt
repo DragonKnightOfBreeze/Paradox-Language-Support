@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.util.data
 
-import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.core.children
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 interface ParadoxLocalisationLazyData {
     class PropertyList(

@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.intentions.common
 
-import com.intellij.modcommand.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModCommand
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.Presentation
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 复制本地化文本到剪贴板。（复制的是HTML文本）

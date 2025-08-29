@@ -1,18 +1,22 @@
 package icu.windea.pls.lang.refactoring.inline
 
-import com.intellij.codeInsight.*
-import com.intellij.lang.*
-import com.intellij.lang.refactoring.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.refactoring.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.references.localisation.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.TargetElementUtil
+import com.intellij.lang.Language
+import com.intellij.lang.refactoring.InlineActionHandler
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.refactoring.util.CommonRefactoringUtil
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.paths
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.removePrefixOrNull
 
 fun ParadoxPath.matches(matcher: ParadoxPathMatcher): Boolean {
     return matcher.matches(this)

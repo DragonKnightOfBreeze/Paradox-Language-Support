@@ -2,30 +2,40 @@
 
 package icu.windea.pls.core
 
-import com.intellij.ide.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.keymap.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.observable.util.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.util.*
-import com.intellij.refactoring.*
-import com.intellij.ui.*
-import com.intellij.ui.components.*
+import com.intellij.ide.CopyProvider
+import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.IdeActions
+import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.keymap.KeymapUtil
+import com.intellij.openapi.observable.properties.GraphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.observable.util.whenTextChanged
+import com.intellij.openapi.ui.getOrPutUserData
+import com.intellij.openapi.util.IconLoader
+import com.intellij.refactoring.RefactoringBundle
+import com.intellij.ui.ClickListener
+import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.builder.Cell
-import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.util.*
-import com.intellij.util.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import java.awt.*
-import java.awt.image.*
-import java.net.*
-import javax.swing.*
-import kotlin.properties.*
-import kotlin.reflect.*
+import com.intellij.util.IconUtil
+import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.ThreeStateCheckBox
+import com.intellij.util.ui.UIUtil
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.createKey
+import java.awt.Color
+import java.awt.Image
+import java.awt.image.BufferedImage
+import java.net.URL
+import javax.swing.Icon
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.SwingConstants
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty
 
 fun String.toIconOrNull(locationClass: Class<*> = PlsFacade::class.java): Icon? {
     //注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）

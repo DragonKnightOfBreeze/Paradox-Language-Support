@@ -1,13 +1,15 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.ide.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.util.*
-import java.awt.datatransfer.*
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.util.PlsCoreManager
+import java.awt.datatransfer.StringSelection
 
 /**
  * 复制本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。

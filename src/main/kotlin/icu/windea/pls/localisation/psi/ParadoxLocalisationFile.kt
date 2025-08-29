@@ -1,13 +1,15 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.extapi.psi.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.navigation.*
-import icu.windea.pls.model.*
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IFileElementType
+import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.navigation.ParadoxLocalisationItemPresentation
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,

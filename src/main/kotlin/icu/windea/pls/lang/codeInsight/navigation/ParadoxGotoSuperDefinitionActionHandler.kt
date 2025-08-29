@@ -1,16 +1,17 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.generation.actions.*
-import com.intellij.ide.util.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.resolve.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.generation.actions.PresentableCodeInsightActionHandler
+import com.intellij.ide.util.EditSourceUtil
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
  * 从光标位置对应的定义跳转到其父定义。

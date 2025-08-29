@@ -1,11 +1,14 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.ui.breadcrumbs.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 class ParadoxLocalisationBreadCrumbsProvider : BreadcrumbsProvider {
     private val _defaultLanguages = arrayOf(ParadoxLocalisationLanguage)

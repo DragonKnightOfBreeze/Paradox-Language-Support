@@ -1,19 +1,23 @@
 package icu.windea.pls.lang.search.selector
 
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
     if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)

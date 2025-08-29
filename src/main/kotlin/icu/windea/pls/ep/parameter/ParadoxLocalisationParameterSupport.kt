@@ -1,12 +1,13 @@
 package icu.windea.pls.ep.parameter
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.documentation.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * 提供对本地化参数的支持。

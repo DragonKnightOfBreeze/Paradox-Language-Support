@@ -1,16 +1,20 @@
 package icu.windea.pls.lang.projectView
 
-import com.intellij.ide.projectView.*
-import com.intellij.ide.projectView.impl.*
-import com.intellij.ide.projectView.impl.nodes.*
-import com.intellij.ide.util.treeView.*
-import com.intellij.openapi.module.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.ModuleGroup
+import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode
+import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
+import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode
+import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toPath
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.selectGameType
 
 class ParadoxFilesViewProjectNode(
     project: Project,

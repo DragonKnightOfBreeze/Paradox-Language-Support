@@ -1,8 +1,9 @@
 package icu.windea.pls.images.spi
 
 import java.util.*
-import javax.imageio.*
-import javax.imageio.spi.*
+import javax.imageio.ImageReader
+import javax.imageio.spi.ImageReaderSpi
+import javax.imageio.spi.ServiceRegistry
 
 open class DelegatedImageReaderSpi(
     val delegate: ImageReaderSpi

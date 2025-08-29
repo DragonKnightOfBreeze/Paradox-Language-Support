@@ -1,15 +1,18 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.components.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import com.intellij.openapi.components.Service
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.formatted
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.OS
 import icu.windea.pls.core.util.console.CommandType
-import icu.windea.pls.model.*
-import kotlinx.coroutines.*
-import java.nio.file.*
-import java.util.concurrent.*
-import kotlin.io.path.*
+import icu.windea.pls.model.ParadoxGameType
+import kotlinx.coroutines.launch
+import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.Path
 
 /**
  * 用于提供一些需要动态获取的数据。

@@ -3,7 +3,7 @@ package icu.windea.pls.config.configExpression
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
-import org.junit.Assert.*
+import org.junit.Assert.assertNotEquals
 
 class CwtTemplateExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {

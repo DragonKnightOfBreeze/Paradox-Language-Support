@@ -1,10 +1,15 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isResolvableExpression
 
 class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {

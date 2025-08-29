@@ -1,12 +1,16 @@
 package icu.windea.pls.ep.data
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.Key
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.util.data.ParadoxScriptData
+import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 abstract class ParadoxDefinitionDataProviderBase<T : ParadoxDefinitionData>() : ParadoxDefinitionDataProvider<T> {
     private val cachedDataKey: Key<CachedValue<T>> by lazy { createKey("cached.data.by.${javaClass.name}") }

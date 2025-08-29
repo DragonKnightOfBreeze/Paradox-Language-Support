@@ -1,11 +1,22 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.script.psi.*
-import kotlin.contracts.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptParameter
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 @Suppress("unused")
 object ParadoxPsiMatcher {

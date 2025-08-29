@@ -2,11 +2,14 @@
 
 package icu.windea.pls.ai.util
 
-import com.google.common.cache.*
-import dev.langchain4j.model.chat.*
-import icu.windea.pls.ai.model.*
-import icu.windea.pls.ai.providers.*
-import icu.windea.pls.core.*
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import dev.langchain4j.model.chat.ChatModel
+import dev.langchain4j.model.chat.StreamingChatModel
+import icu.windea.pls.ai.model.ChatModelType
+import icu.windea.pls.ai.providers.ChatModelProvider
+import icu.windea.pls.ai.providers.OpenAiChatModelProvider
+import icu.windea.pls.core.EMPTY_OBJECT
 
 object PlsChatModelManager {
     private val chatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()

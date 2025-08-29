@@ -1,14 +1,16 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.lang.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.lexer.*
-import icu.windea.pls.localisation.parser.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.Language
+import com.intellij.lang.PsiBuilderFactory
+import com.intellij.openapi.project.Project
+import com.intellij.psi.ParsingDiagnostics
+import com.intellij.psi.impl.source.tree.LazyParseablePsiElement
+import com.intellij.psi.tree.IReparseableElementType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
+import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationPropertyValueElementType(debugName: String) : IReparseableElementType(debugName, ParadoxLocalisationLanguage) {

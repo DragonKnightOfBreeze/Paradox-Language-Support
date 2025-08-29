@@ -2,21 +2,27 @@
 
 package icu.windea.pls.lang.documentation
 
-import com.intellij.codeInsight.navigation.*
-import com.intellij.ide.util.*
-import com.intellij.navigation.*
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.newvfs.*
-import com.intellij.platform.backend.documentation.*
-import com.intellij.platform.backend.presentation.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.lang.*
+import com.intellij.codeInsight.navigation.fileStatusAttributes
+import com.intellij.ide.util.ModuleRendererFactory
+import com.intellij.ide.util.PlatformModuleRendererFactory
+import com.intellij.navigation.ColoredItemPresentation
+import com.intellij.navigation.ItemPresentation
+import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.util.Iconable
+import com.intellij.openapi.vfs.newvfs.VfsPresentationUtil
+import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.presentation.TargetPresentation
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import com.intellij.psi.PsiNamedElement
+import com.intellij.util.TextWithIcon
+import icu.windea.pls.core.psiDocumentationTargets
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.lang.ParadoxBaseLanguage
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
     //similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications

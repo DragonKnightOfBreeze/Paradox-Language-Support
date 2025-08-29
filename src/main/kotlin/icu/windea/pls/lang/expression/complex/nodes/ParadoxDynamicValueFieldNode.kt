@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.collections.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.forValue
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.links
+import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.core.collections.findIsInstance
 
 class ParadoxDynamicValueFieldNode(
     override val text: String,

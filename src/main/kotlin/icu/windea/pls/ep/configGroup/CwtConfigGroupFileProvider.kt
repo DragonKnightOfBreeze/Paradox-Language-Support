@@ -1,10 +1,11 @@
 package icu.windea.pls.ep.configGroup
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.id
 
 /**
  * 用于获取规则分组中的文件。

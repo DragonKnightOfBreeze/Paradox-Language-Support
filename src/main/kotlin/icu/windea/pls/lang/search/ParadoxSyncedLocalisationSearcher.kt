@@ -1,14 +1,16 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.util.Processor
+import icu.windea.pls.core.processAllElements
+import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 同步本地化的查询器。

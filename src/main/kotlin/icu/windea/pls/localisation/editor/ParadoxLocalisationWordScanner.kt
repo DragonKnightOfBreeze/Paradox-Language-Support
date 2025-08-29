@@ -1,8 +1,8 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.lang.cacheBuilder.*
-import icu.windea.pls.localisation.lexer.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner
+import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 
 class ParadoxLocalisationWordScanner : DefaultWordsScanner(
     ParadoxLocalisationLexerFactory.createLayeredLexer(),

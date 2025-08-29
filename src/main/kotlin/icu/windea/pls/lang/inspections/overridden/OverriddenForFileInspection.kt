@@ -1,17 +1,25 @@
 package icu.windea.pls.lang.inspections.overridden
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.roots.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 检查是否存在对文件的重载

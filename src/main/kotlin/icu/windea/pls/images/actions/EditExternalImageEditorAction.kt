@@ -1,15 +1,17 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.ide.*
-import com.intellij.ide.util.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.openapi.util.*
+import com.intellij.ide.IdeBundle
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.ui.dsl.builder.*
-import org.intellij.images.*
-import javax.swing.*
+import org.intellij.images.ImagesBundle
+import javax.swing.JComponent
 
 //org.intellij.images.actions.EditExternalImageEditorAction
 

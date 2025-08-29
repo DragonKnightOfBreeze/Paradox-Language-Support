@@ -1,19 +1,24 @@
 package icu.windea.pls.lang.codeInsight.markers.script
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.navigation.*
-import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.codeInsight.markers.*
-import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.navigation.GotoRelatedItem
+import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.util.NotNullLazyValue
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem
+import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.scriptedVariable
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 提供封装变量（scripted_variable）的装订线图标。

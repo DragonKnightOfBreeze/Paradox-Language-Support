@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.lang.search.selector.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.searches.ExtensibleQueryFactory
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 
 /**
  * 文件路径的查询。

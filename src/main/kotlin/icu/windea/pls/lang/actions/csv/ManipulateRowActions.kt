@@ -2,20 +2,26 @@
 
 package icu.windea.pls.lang.actions.csv
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.command.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.*
-import java.util.function.*
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.writeCommandAction
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.siblings
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.getColumnSize
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.util.dataFlow.ParadoxRowSequence
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import kotlinx.coroutines.launch
+import java.util.function.Supplier
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
     override fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {

@@ -1,13 +1,15 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.codeInsight.editorActions.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parents
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtString
 
 class CwtWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {

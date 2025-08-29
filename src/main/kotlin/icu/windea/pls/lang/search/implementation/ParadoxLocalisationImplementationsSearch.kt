@@ -1,16 +1,22 @@
 package icu.windea.pls.lang.search.implementation
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.runReadAction
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.DefinitionsScopedSearch
+import com.intellij.util.Processor
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 本地化的实现的查询。加入所有作用域内的包括不同语言区域在内的同名本地化。

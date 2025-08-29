@@ -2,8 +2,10 @@
 
 package icu.windea.pls.core.util.properties
 
-import icu.windea.pls.core.*
-import kotlin.reflect.*
+import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.toCommaDelimitedString
+import icu.windea.pls.core.toCommaDelimitedStringSet
+import kotlin.reflect.KMutableProperty0
 
 fun <T, V> KMutableProperty0<T>.observe(transform: (T) -> V): ObservableProperty<T, V> {
     return ObservableProperty(this, transform)

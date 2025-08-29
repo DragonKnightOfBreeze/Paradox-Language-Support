@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.annotations.WithGameType
 
 /**
  * @property modifierCategory modifier_category属性的值，并非modifier_categories.cwt中已定义的值

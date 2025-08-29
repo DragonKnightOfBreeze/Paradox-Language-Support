@@ -1,16 +1,34 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import com.intellij.openapi.command.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.util.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import java.awt.*
+import com.intellij.openapi.command.CommandProcessor
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.CompositeElement
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.elementType
+import com.intellij.ui.ColorUtil
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.util.ParadoxColorManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptColor
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COLOR_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LEFT_BRACE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptFloat
+import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.isValidExpression
+import icu.windea.pls.script.psi.resolved
+import java.awt.Color
 
 /**
  * 用于为字符串字面量（[ParadoxScriptString]）提供颜色的装订线图标。

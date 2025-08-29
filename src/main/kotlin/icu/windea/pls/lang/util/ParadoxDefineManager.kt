@@ -2,18 +2,26 @@
 
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.ParadoxDefineSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.define
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.resolveValue
 
 object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)

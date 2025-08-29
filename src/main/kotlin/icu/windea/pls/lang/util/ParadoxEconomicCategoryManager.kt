@@ -1,22 +1,34 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.ep.data.StellarisEconomicCategoryData
+import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.ParadoxEconomicCategoryInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {

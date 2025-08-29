@@ -1,7 +1,8 @@
 package icu.windea.pls.core.util.properties
 
-import kotlin.properties.*
-import kotlin.reflect.*
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty
 
 /**
  * 可修改的可观察属性。

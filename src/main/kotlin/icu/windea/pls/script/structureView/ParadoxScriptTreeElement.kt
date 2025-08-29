@@ -1,9 +1,9 @@
 package icu.windea.pls.script.structureView
 
-import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
-import com.intellij.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
+import com.intellij.psi.PsiElement
+import icu.windea.pls.script.psi.tagType
 
 abstract class ParadoxScriptTreeElement<T : PsiElement>(element: T) : PsiTreeElementBase<T>(element) {
     protected fun postHandleMemberChildren(children: MutableCollection<StructureViewTreeElement>) {

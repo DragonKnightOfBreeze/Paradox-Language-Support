@@ -1,8 +1,12 @@
 package icu.windea.pls.script.structureView
 
-import com.intellij.ide.util.treeView.smartTree.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.util.treeView.smartTree.ActionPresentation
+import com.intellij.ide.util.treeView.smartTree.ActionPresentationData
+import com.intellij.ide.util.treeView.smartTree.Filter
+import com.intellij.ide.util.treeView.smartTree.TreeElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.lang.definitionInfo
 
 interface ParadoxScriptStructureFilters {
     object VariablesFilter : Filter {

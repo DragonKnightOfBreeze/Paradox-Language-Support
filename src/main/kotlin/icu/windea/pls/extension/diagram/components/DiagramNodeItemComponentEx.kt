@@ -1,9 +1,14 @@
 package icu.windea.pls.extension.diagram.components
 
-import com.intellij.diagram.*
-import com.intellij.diagram.components.*
-import icu.windea.pls.extension.diagram.*
-import java.awt.*
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramElementManager
+import com.intellij.diagram.DiagramNode
+import com.intellij.diagram.components.DiagramNodeBodyComponent
+import com.intellij.diagram.components.DiagramNodeItemComponent
+import icu.windea.pls.extension.diagram.DiagramElementManagerEx
+import icu.windea.pls.extension.diagram.left
+import icu.windea.pls.extension.diagram.right
+import java.awt.Dimension
 
 //com.intellij.diagram.components.DiagramNodeContainer
 //com.intellij.diagram.components.DiagramNodeBodyComponent

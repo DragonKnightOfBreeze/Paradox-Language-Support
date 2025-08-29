@@ -1,16 +1,18 @@
 package icu.windea.pls.extension.diagram.extras
 
-import com.intellij.diagram.*
-import com.intellij.diagram.actions.*
-import com.intellij.diagram.settings.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.graph.*
-import com.intellij.openapi.graph.layout.*
-import com.intellij.openapi.graph.settings.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.core.*
-import icu.windea.pls.extension.diagram.actions.*
-import icu.windea.pls.extension.diagram.provider.*
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.actions.DiagramToolbarActionsProvider
+import com.intellij.diagram.settings.DiagramConfigGroup
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.SeparatorAction
+import com.intellij.openapi.graph.GraphManager
+import com.intellij.openapi.graph.layout.LayoutOrientation
+import com.intellij.openapi.graph.layout.Layouter
+import com.intellij.openapi.graph.settings.GraphSettings
+import com.intellij.openapi.project.Project
+import icu.windea.pls.core.children
+import icu.windea.pls.extension.diagram.actions.ParadoxDiagramScopeTypesActionGroup
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 
 open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider

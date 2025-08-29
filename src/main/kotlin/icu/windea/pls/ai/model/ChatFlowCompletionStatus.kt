@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.model
 
-import dev.langchain4j.model.chat.response.*
-import kotlin.coroutines.cancellation.*
+import dev.langchain4j.model.chat.response.ChatResponse
+import kotlin.coroutines.cancellation.CancellationException
 
 sealed class ChatFlowCompletionStatus {
     abstract val text: String

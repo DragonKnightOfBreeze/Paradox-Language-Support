@@ -1,9 +1,10 @@
 package icu.windea.pls.localisation.codeInsight.unwrap
 
-import com.intellij.codeInsight.unwrap.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.unwrap.AbstractUnwrapper
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.siblings
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 
 abstract class ParadoxLocalisationUnwrapper : AbstractUnwrapper<ParadoxLocalisationUnwrapper.Context>("") {
     override fun createContext(): Context {

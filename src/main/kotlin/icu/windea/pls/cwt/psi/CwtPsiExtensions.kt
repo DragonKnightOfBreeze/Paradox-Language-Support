@@ -2,8 +2,8 @@
 
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
+import com.intellij.psi.util.elementType
+import icu.windea.pls.core.toBooleanYesNo
 
 //region Predicates
 

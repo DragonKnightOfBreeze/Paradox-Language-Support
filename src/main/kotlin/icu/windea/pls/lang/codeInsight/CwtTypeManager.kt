@@ -1,13 +1,24 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parents
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtBoolean
+import icu.windea.pls.cwt.psi.CwtExpressionElement
+import icu.windea.pls.cwt.psi.CwtFloat
+import icu.windea.pls.cwt.psi.CwtInt
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.cwt.psi.isOptionBlockValue
+import icu.windea.pls.cwt.psi.isOptionValue
+import icu.windea.pls.model.CwtType
 
 object CwtTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {

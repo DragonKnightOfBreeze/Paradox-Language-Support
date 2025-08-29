@@ -1,15 +1,19 @@
 package icu.windea.pls.lang.util
 
-import com.fasterxml.jackson.module.kotlin.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.isFile
+import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
+import icu.windea.pls.model.ParadoxLauncherSettingsInfo
+import icu.windea.pls.model.ParadoxModDescriptorInfo
+import icu.windea.pls.model.ParadoxModMetadataInfo
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.stringValue
 
 object ParadoxMetadataManager {
     val metadataFileNames = setOf(

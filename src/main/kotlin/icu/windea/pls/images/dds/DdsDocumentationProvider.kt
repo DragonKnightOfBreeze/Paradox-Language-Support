@@ -1,14 +1,15 @@
 package icu.windea.pls.images.dds
 
-import com.intellij.lang.documentation.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.text.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.documentation.*
+import com.intellij.lang.documentation.AbstractDocumentationProvider
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.documentation.buildDocumentation
+import icu.windea.pls.core.orNull
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 

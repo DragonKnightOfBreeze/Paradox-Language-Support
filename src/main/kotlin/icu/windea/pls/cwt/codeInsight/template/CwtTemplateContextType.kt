@@ -1,12 +1,13 @@
 package icu.windea.pls.cwt.codeInsight.template
 
-import com.intellij.codeInsight.template.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.editor.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.codeInsight.template.TemplateActionContext
+import com.intellij.codeInsight.template.TemplateContextType
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
+import com.intellij.psi.util.parents
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.editor.CwtSyntaxHighlighter
+import icu.windea.pls.cwt.psi.CwtMemberElement
 
 abstract class CwtTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {

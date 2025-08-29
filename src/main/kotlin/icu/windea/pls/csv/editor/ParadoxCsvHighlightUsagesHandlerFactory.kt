@@ -1,13 +1,23 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase
+import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbService
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.findParentOfType
+import com.intellij.util.Consumer
+import icu.windea.pls.core.findElementAt
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.unquote
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.getHeaderColumn
 
 /**
  * 用于基于上下文进行高亮。

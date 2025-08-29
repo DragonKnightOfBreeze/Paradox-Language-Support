@@ -1,19 +1,29 @@
 package icu.windea.pls.localisation.folding
 
-import com.intellij.lang.*
-import com.intellij.lang.folding.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.constants.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.folding.CustomFoldingBuilder
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMAND
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_COMMAND
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_TEXT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {

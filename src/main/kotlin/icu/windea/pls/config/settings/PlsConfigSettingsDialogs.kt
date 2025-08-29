@@ -4,11 +4,7 @@ import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.setEmptyState
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.COLUMNS_LARGE
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.columns
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.Entry

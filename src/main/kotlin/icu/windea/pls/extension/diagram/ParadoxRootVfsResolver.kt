@@ -1,12 +1,14 @@
 package icu.windea.pls.extension.diagram
 
-import com.intellij.diagram.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.diagram.DiagramVfsResolver
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.toPsiDirectory
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxRootInfo
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     //based on rootFile

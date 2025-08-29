@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.references.localisation.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.core.isExactDigit
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
+import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 object ParadoxLocalisationArgumentManager {
     fun getReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {

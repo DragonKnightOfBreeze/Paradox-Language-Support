@@ -1,6 +1,8 @@
 package icu.windea.pls.csv.psi
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
+import icu.windea.pls.core.findChild
 
 fun ParadoxCsvRowElement.getColumnSize(): Int {
     return this.children().count { it is ParadoxCsvColumn }

@@ -1,9 +1,15 @@
 package icu.windea.pls.ep.configExpression
 
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.floatRange
+import icu.windea.pls.config.configExpression.ignoreCase
+import icu.windea.pls.config.configExpression.intRange
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.util.tupleOf
 
 class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(

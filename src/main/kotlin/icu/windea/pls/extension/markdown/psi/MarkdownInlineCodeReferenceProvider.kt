@@ -1,17 +1,28 @@
 package icu.windea.pls.extension.markdown.psi
 
-import com.intellij.model.*
-import com.intellij.model.psi.*
-import com.intellij.openapi.options.advanced.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.extension.markdown.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constants.*
+import com.intellij.model.Symbol
+import com.intellij.model.psi.ImplicitReferenceProvider
+import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.openapi.options.advanced.AdvancedSettings
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.asSymbol
+import icu.windea.pls.core.containsBlank
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.util.set
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.extension.markdown.PlsMarkdownManager
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.scriptedVariable
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.model.constants.PlsPatternConstants
 
 /**
  * 用于支持在markdown文件中，将内联代码尝试没戏为匹配的目标引用（定义、本地化等）。

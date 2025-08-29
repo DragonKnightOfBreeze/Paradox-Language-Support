@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.findUsages
 
-import com.intellij.openapi.project.*
+import com.intellij.openapi.project.Project
 
 // isCrossLocales - 是否查找不同的语言区域的本地化文件中的引用，不便实现，忽略
 

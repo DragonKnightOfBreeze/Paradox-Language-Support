@@ -1,16 +1,18 @@
 package icu.windea.pls.images
 
-import com.intellij.openapi.fileTypes.*
-import icu.windea.pls.images.dds.*
-import icu.windea.pls.images.spi.*
-import icu.windea.pls.images.support.*
-import icu.windea.pls.images.tga.*
-import icu.windea.pls.model.*
-import org.intellij.images.fileTypes.impl.*
-import java.awt.image.*
-import java.io.*
-import java.nio.file.*
-import javax.imageio.spi.*
+import com.intellij.openapi.fileTypes.FileType
+import icu.windea.pls.images.dds.DdsFileType
+import icu.windea.pls.images.spi.DdsImageReaderSpi
+import icu.windea.pls.images.spi.TgaImageReaderSpi
+import icu.windea.pls.images.support.ImageSupport
+import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.model.ImageFrameInfo
+import org.intellij.images.fileTypes.impl.ImageFileType
+import java.awt.image.BufferedImage
+import java.io.InputStream
+import java.io.OutputStream
+import java.nio.file.Path
+import javax.imageio.spi.IIORegistry
 
 object ImageManager {
     fun isImageFileType(fileType: FileType): Boolean {

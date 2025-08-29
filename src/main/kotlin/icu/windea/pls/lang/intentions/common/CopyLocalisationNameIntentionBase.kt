@@ -1,11 +1,14 @@
 package icu.windea.pls.lang.intentions.common
 
-import com.intellij.modcommand.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModCommand
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.Presentation
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 复制本地化的名字到剪贴板。

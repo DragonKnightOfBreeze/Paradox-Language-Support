@@ -1,9 +1,10 @@
 package icu.windea.pls.csv.structureView
 
-import com.intellij.ide.structureView.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.getHeaderColumn
 
 class ParadoxCsvColumnTreeElement(
     element: ParadoxCsvColumn

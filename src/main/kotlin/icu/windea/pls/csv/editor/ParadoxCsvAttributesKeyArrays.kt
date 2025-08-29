@@ -1,6 +1,6 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.openapi.editor.colors.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.csv.editor.ParadoxCsvAttributesKeys as K
 
 object ParadoxCsvAttributesKeyArrays {

@@ -1,17 +1,26 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.daemon.impl.*
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
+import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileVisitor
+import com.intellij.openapi.vfs.isFile
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.FileContentUtilCore
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.ParadoxBaseFileType
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.index.ParadoxMergedIndex
 
 object PlsCoreManager {
     //region ThreadLocals

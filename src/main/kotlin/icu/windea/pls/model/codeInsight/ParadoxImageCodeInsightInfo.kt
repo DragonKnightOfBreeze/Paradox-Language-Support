@@ -1,6 +1,6 @@
 package icu.windea.pls.model.codeInsight
 
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxDefinitionInfo
 
 data class ParadoxImageCodeInsightInfo(
     val type: Type,

@@ -1,17 +1,20 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.refactoring.actions.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class IntroduceGlobalVariableFix(
     private val variableName: String,

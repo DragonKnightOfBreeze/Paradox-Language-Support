@@ -1,12 +1,13 @@
 package icu.windea.pls.inject.injectors
 
-import icu.windea.pls.core.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.integrations.images.*
-import java.awt.image.*
-import javax.imageio.*
-import javax.imageio.stream.*
+import icu.windea.pls.core.memberProperty
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
+import icu.windea.pls.integrations.images.PlsImageManager
+import java.awt.image.BufferedImage
+import javax.imageio.ImageReadParam
+import javax.imageio.stream.ImageInputStream
 
 /**
  * @see icu.windea.pls.images.spi.DdsImageReaderSpi

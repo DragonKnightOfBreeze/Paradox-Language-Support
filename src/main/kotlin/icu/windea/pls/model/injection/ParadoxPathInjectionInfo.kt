@@ -1,6 +1,6 @@
 package icu.windea.pls.model.injection
 
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 路径的语言注入信息。

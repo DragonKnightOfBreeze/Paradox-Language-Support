@@ -1,13 +1,16 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.ui.breadcrumbs.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.model.constants.*
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.getHeaderColumn
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
     private val _defaultLanguages = arrayOf(ParadoxCsvLanguage)

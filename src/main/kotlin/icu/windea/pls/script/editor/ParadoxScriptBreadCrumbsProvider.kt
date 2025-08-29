@@ -1,14 +1,17 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.ui.breadcrumbs.*
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
 
 class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
     private val _defaultLanguages = arrayOf(ParadoxScriptLanguage)

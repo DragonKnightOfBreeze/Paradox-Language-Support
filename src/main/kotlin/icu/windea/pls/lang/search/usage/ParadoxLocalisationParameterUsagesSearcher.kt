@@ -1,15 +1,17 @@
 package icu.windea.pls.lang.search.usage
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.model.constraints.*
-import kotlin.experimental.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.RequestResultProcessor
+import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.util.Processor
+import icu.windea.pls.core.wordRequests
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import kotlin.experimental.or
 
 class ParadoxLocalisationParameterUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

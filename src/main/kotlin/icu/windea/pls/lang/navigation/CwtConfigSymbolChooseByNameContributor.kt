@@ -1,21 +1,25 @@
 package icu.windea.pls.lang.navigation
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.navigation.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.search.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import com.intellij.util.indexing.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.navigation.ChooseByNameContributorEx
+import com.intellij.navigation.NavigationItem
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.parentOfType
+import com.intellij.util.Processor
+import com.intellij.util.indexing.FindSymbolParameters
+import com.intellij.util.indexing.IdFilter
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.core.getCurrentProject
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.lang.psi.mock.CwtConfigSymbolNavigationElement
+import icu.windea.pls.lang.search.CwtConfigSymbolSearch
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中查找CWT规则符号。

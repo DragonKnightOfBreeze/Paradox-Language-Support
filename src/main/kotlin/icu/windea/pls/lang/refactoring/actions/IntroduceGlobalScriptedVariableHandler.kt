@@ -1,16 +1,29 @@
 package icu.windea.pls.lang.refactoring.actions
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.refactoring.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.ScrollType
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findElementAt
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.findParentDefinition
 
 /**
  * 声明全局封装变量的重构。

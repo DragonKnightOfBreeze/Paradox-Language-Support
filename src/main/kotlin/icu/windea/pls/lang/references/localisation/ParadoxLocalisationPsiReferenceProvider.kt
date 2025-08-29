@@ -1,11 +1,22 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.lang.references.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
+import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
+import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 
 class ParadoxLocalisationPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {

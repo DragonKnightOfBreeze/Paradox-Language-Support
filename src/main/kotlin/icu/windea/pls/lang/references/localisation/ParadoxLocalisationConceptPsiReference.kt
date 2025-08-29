@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.lang.util.ParadoxGameConceptManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider

@@ -1,15 +1,15 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
 /**
  * 用于匹配脚本表达式与CWT规则表达式。

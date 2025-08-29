@@ -2,16 +2,21 @@
 
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.NoSettings
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isExpression
 
 /**
  * 通过内嵌提示显示动态值信息，即类型。

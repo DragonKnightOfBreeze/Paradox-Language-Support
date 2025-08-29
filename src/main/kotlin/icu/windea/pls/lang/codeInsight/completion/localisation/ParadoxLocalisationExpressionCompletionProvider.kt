@@ -1,12 +1,19 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.startOffset
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.getKeyword
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.contextElement
+import icu.windea.pls.lang.codeInsight.completion.keyword
+import icu.windea.pls.lang.codeInsight.completion.offsetInParent
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
+import icu.windea.pls.localisation.psi.isComplexExpression
 
 /**
  * 提供本地化表达式相关的代码补全。基于规则文件。

@@ -1,14 +1,17 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.editor.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.ui.EditorNotifications
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.ParadoxLibrary
+import icu.windea.pls.lang.ParadoxLibraryProvider
+import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
+import icu.windea.pls.lang.paradoxLibrary
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 当添加或更改模组配置后，刷新库信息。

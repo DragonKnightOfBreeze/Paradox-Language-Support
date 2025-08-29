@@ -1,12 +1,12 @@
 package icu.windea.pls.config.configExpression
 
-import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolverImpl
 import icu.windea.pls.config.CwtDataTypes.Constant
-import icu.windea.pls.config.CwtDataTypes.Value
-import icu.windea.pls.config.CwtDataTypes.EnumValue
-import icu.windea.pls.config.CwtDataTypes.Scope
-import icu.windea.pls.config.CwtDataTypes.Icon
 import icu.windea.pls.config.CwtDataTypes.Definition
+import icu.windea.pls.config.CwtDataTypes.EnumValue
+import icu.windea.pls.config.CwtDataTypes.Icon
+import icu.windea.pls.config.CwtDataTypes.Scope
+import icu.windea.pls.config.CwtDataTypes.Value
+import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolverImpl
 
 /**
  * CWT 模板表达式。

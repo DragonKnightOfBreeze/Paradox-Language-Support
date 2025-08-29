@@ -1,11 +1,12 @@
 package icu.windea.pls.ep.presentation
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.Key
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 abstract class ParadoxDefinitionPresentationProviderBase<T: ParadoxDefinitionPresentation>() : ParadoxDefinitionPresentationProvider<T> {
     private val cachedPresentationKey: Key<CachedValue<T>> by lazy { createKey("cached.presentation.by.${javaClass.name}") }

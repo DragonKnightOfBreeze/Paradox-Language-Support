@@ -1,13 +1,17 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.constants.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.trimFast
+import icu.windea.pls.core.util.set
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * @see CwtDataTypes.Icon

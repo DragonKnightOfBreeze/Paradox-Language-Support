@@ -1,10 +1,12 @@
 package icu.windea.pls.localisation.lexer
 
-import com.intellij.lexer.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.*
+import com.intellij.lexer.LayeredLexer
+import com.intellij.lexer.StringLiteralLexer
+import com.intellij.openapi.project.Project
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.STRING_TOKEN
+import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationLexerFactory {

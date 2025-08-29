@@ -1,10 +1,17 @@
 package icu.windea.pls.lang
 
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.paths.*
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.model.ImageFrameInfo
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.paths.ParadoxExpressionPath
 
 object PlsKeys : KeyRegistry() {
     val library by createKey<ParadoxLibrary>(this)

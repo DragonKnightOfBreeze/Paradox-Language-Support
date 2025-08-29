@@ -1,10 +1,11 @@
 package icu.windea.pls.lang.folding
 
-import com.intellij.lang.*
-import com.intellij.lang.folding.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.FoldingGroup
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsFacade
 
 class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldingBuilder() {
     object Constants {

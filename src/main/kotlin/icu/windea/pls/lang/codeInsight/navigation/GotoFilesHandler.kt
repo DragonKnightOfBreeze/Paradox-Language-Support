@@ -1,17 +1,23 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.navigation.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.pom.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
+import com.intellij.codeInsight.navigation.GotoTargetHandler
+import com.intellij.codeInsight.navigation.activateFileWithPsiElement
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
 import java.util.*
 
 class GotoFilesHandler : GotoTargetHandler() {

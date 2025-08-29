@@ -1,6 +1,6 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.openapi.editor.colors.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as K
 
 object ParadoxScriptAttributesKeyArrays {

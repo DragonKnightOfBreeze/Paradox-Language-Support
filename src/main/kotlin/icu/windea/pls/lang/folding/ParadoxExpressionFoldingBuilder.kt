@@ -1,19 +1,27 @@
 package icu.windea.pls.lang.folding
 
-import com.intellij.lang.folding.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.folding.FoldingBuilderEx
+import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.FoldingGroup
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtFoldingSettingsConfig
+import icu.windea.pls.config.configGroup.foldingSettings
+import icu.windea.pls.core.annotations.WithInternalConfig
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
+import icu.windea.pls.script.psi.properties
 
 @WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {

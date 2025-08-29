@@ -1,10 +1,16 @@
 package icu.windea.pls.core.util.accessor
 
-import com.jetbrains.rd.util.*
-import icu.windea.pls.core.*
-import java.lang.reflect.*
-import kotlin.reflect.*
-import kotlin.reflect.full.*
+import com.jetbrains.rd.util.ConcurrentHashMap
+import icu.windea.pls.core.isGetter
+import icu.windea.pls.core.isSetter
+import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.full.staticFunctions
+import kotlin.reflect.full.staticProperties
 
 class AccessorProviderImpl<T : Any>(
     override val targetClass: KClass<T>

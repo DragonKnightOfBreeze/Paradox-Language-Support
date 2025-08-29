@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.parameter
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxParameterContextInfo
 
 /**
  * 用于为脚本参数提供（基于使用）推断的CWT规则上下文。

@@ -1,8 +1,9 @@
 package icu.windea.pls.ai.providers
 
-import dev.langchain4j.model.chat.*
-import dev.langchain4j.model.openai.*
-import icu.windea.pls.ai.model.*
+import dev.langchain4j.model.chat.Capability
+import dev.langchain4j.model.openai.OpenAiChatModel
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel
+import icu.windea.pls.ai.model.ChatModelType
 
 class OpenAiChatModelProvider : ChatModelProvider<OpenAiChatModelOptions> {
     override val type: ChatModelType = ChatModelType.OPEN_AI

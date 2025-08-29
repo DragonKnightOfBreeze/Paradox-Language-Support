@@ -1,15 +1,26 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.properties
+import icu.windea.pls.script.psi.stringValue
 
 /**
  * 检查事件脚本文件中的事件ID与事件所属的命名空间是否匹配。

@@ -1,14 +1,16 @@
 package icu.windea.pls.lang.codeInsight.generation
 
-import com.intellij.codeInsight.*
-import com.intellij.codeInsight.actions.*
-import com.intellij.codeInsight.generation.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.CodeInsightActionHandler
+import com.intellij.codeInsight.actions.BaseCodeInsightAction
+import com.intellij.codeInsight.generation.actions.GenerateActionPopupTemplateInjector
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class GenerateLocalisationsInFileAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler(forFile = true)

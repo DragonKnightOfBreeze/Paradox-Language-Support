@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.expression.complex
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtModifierConfig
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxTemplateSnippetConstantNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 模版表达式。对应的CWT规则类型为[CwtDataTypes.TemplateExpression]。

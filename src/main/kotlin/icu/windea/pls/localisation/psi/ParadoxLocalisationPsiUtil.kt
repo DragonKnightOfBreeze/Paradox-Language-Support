@@ -1,8 +1,10 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.TokenType
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.prevLeaf
+import icu.windea.pls.core.isExactLineBreak
 
 object ParadoxLocalisationPsiUtil {
     fun canAttachComment(element: PsiElement): Boolean {

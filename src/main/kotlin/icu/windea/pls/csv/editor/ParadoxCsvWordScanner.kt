@@ -1,8 +1,8 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.lang.cacheBuilder.*
-import icu.windea.pls.csv.lexer.*
-import icu.windea.pls.csv.psi.*
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner
+import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
+import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 
 class ParadoxCsvWordScanner : DefaultWordsScanner(
     ParadoxCsvLexerFactory.createLexer(),

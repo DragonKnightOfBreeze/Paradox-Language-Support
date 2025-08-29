@@ -1,12 +1,13 @@
 package icu.windea.pls.model.elementInfo
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.modifier.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.modifier.support
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxModifierInfo(
     override val name: String,

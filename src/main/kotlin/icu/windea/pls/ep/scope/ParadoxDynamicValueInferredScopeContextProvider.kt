@@ -1,11 +1,13 @@
 package icu.windea.pls.ep.scope
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
+import icu.windea.pls.model.resolve
 
 /**
  * 用于为动态值提供（基于使用）推断的作用域上下文。

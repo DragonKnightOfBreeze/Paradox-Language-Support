@@ -1,13 +1,14 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.script.editor.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.expression.complex.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxScopeLinkValueNode(
     override val text: String,

@@ -2,14 +2,17 @@
 
 package icu.windea.pls.lang.documentation.actions
 
-import com.intellij.codeInsight.hint.HintManagerImpl.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.platform.ide.documentation.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInsight.hint.HintManagerImpl.ActionToIgnore
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.documentation.targetElement
+import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 //cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction
 //com.intellij.codeInsight.documentation.actions.CopyQuickDocAction

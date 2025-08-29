@@ -1,20 +1,30 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.ui.components.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.properties.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.codeInsight.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.bindTextWhenChanged
+import icu.windea.pls.core.util.properties.fromCommandDelimitedString
+import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
+import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.ui.locale.ParadoxLocaleCheckBoxDialog
+import icu.windea.pls.lang.ui.locale.ParadoxPreferredLocaleDialog
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
+import javax.swing.JComponent
 
 /**
  * 缺失的本地化的检查

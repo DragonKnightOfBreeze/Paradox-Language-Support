@@ -1,20 +1,32 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.diagram.DiagramElementManager.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
+import com.intellij.diagram.DiagramElementManager.DEFAULT_TEXT_ATTR
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.ui.SimpleColoredText
+import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.toIconOrNull
+import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextUIRenderer
+import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.properties
+import java.awt.Color
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
+import javax.swing.JLabel
 
 object ParadoxPresentationManager {
     fun getNameLocalisation(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {

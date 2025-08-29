@@ -2,8 +2,9 @@
 
 package icu.windea.pls.core.util.accessor
 
-import icu.windea.pls.core.*
-import kotlin.reflect.*
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.toKClass
+import kotlin.reflect.KClass
 
 object AccessorBuilder {
     fun <T : Any, V> property(target: T, propertyName: String, targetClass: KClass<T>): PropertyAccessor<T, V> {

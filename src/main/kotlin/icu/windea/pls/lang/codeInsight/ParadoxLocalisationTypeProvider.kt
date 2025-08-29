@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.model.*
+import com.intellij.lang.ExpressionTypeProvider
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 用于显示本地化的类型信息（`View > Type Info`）。

@@ -1,17 +1,19 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.util.Processor
 import icu.windea.pls.core.findFileBasedIndex
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
+import icu.windea.pls.lang.index.ParadoxDefineIndex
+import icu.windea.pls.lang.search.scope.withFilePath
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 /**
  * 预定义的命名空间与变量的查询器。

@@ -1,13 +1,34 @@
 package icu.windea.pls.localisation
 
-import com.intellij.lang.*
-import com.intellij.lang.ParserDefinition.SpaceRequirements.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.localisation.lexer.*
-import icu.windea.pls.localisation.parser.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.lang.ASTNode
+import com.intellij.lang.ParserDefinition
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MAY
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MUST
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MUST_LINE_BREAK
+import com.intellij.lang.ParserDefinition.SpaceRequirements.MUST_NOT
+import com.intellij.openapi.project.Project
+import com.intellij.psi.FileViewProvider
+import com.intellij.psi.TokenType
+import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
+import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.AT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLON
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLOR_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMA
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.Factory
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PIPE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.SCRIPTED_VARIABLE_REFERENCE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 
 open class ParadoxLocalisationParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxLocalisationTokenSets.WHITE_SPACES

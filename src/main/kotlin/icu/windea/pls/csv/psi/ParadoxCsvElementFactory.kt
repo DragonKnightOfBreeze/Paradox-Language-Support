@@ -1,13 +1,15 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.util.elementType
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
+import icu.windea.pls.lang.util.ParadoxCsvManager
 
 object ParadoxCsvElementFactory {
     @JvmStatic

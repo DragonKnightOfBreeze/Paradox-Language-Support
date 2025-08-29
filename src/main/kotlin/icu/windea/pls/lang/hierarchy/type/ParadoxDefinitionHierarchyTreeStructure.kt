@@ -1,22 +1,30 @@
 package icu.windea.pls.lang.hierarchy.type
 
-import com.intellij.ide.hierarchy.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.ui.tree.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
+import com.intellij.ide.hierarchy.HierarchyTreeStructure
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.ui.tree.LeafState
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.PlsStrategies.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 

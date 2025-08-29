@@ -1,14 +1,24 @@
 package icu.windea.pls.script.codeInsight.editorActions
 
-import com.intellij.codeInsight.editorActions.moveUpDown.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.editorActions.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import com.intellij.codeInsight.editorActions.moveUpDown.LineRange
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.children
+import icu.windea.pls.core.codeInsight.editorActions.ContainerBasedMover
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LEFT_BRACE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.RIGHT_BRACE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.RIGHT_BRACKET
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
 /**
  * 用于在脚本文件中，为成员（封装变量、属性、单独的值）适配 *上移/下移声明* 的功能。兼容附加的注释。

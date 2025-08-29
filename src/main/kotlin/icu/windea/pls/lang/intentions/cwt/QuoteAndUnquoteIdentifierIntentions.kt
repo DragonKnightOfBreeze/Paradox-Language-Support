@@ -2,12 +2,24 @@
 
 package icu.windea.pls.lang.intentions.cwt
 
-import com.intellij.modcommand.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModPsiUpdater
+import com.intellij.modcommand.PsiUpdateModCommandAction
+import com.intellij.openapi.project.DumbAware
+import com.intellij.psi.ElementManipulators
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.containsBlank
+import icu.windea.pls.core.isQuoted
+import icu.windea.pls.core.quote
+import icu.windea.pls.core.unquote
+import icu.windea.pls.cwt.psi.CwtExpressionElement
+import icu.windea.pls.cwt.psi.CwtFloat
+import icu.windea.pls.cwt.psi.CwtInt
+import icu.windea.pls.cwt.psi.CwtPropertyKey
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.cwt.psi.isPropertyValue
 
 class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")

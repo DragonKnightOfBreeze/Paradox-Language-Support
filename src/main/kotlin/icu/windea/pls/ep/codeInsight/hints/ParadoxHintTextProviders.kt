@@ -1,19 +1,30 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configGroup.extendedComplexEnumValues
+import icu.windea.pls.config.configGroup.extendedDefinitions
+import icu.windea.pls.config.configGroup.extendedDynamicValues
+import icu.windea.pls.config.configGroup.extendedGameRules
+import icu.windea.pls.config.configGroup.extendedOnActions
+import icu.windea.pls.config.configGroup.extendedScriptedVariables
+import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.Source
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxDynamicValueManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition() {
     override val source: Source get() = Source.PrimaryLocalisation

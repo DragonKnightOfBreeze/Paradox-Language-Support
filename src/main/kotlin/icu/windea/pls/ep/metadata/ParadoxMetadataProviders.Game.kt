@@ -1,9 +1,12 @@
 package icu.windea.pls.ep.metadata
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLauncherSettingsInfo
+import icu.windea.pls.model.ParadoxMetadata
 
 class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {

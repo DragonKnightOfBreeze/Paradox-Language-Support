@@ -1,15 +1,20 @@
 package icu.windea.pls.localisation.ui.floating
 
-import com.intellij.ide.ui.customization.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
+import com.intellij.ide.ui.customization.CustomActionsSchema
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.prevLeaf
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.ui.FloatingToolbar
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import kotlinx.coroutines.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
+import kotlinx.coroutines.CoroutineScope
 
 //org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 

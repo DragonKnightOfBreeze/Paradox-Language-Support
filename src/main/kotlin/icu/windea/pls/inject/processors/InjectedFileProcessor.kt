@@ -1,7 +1,7 @@
 package icu.windea.pls.inject.processors
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiFile
 
 /**
  * 用于在创建或者重新解析注入的PSI文件时，进行额外的处理。

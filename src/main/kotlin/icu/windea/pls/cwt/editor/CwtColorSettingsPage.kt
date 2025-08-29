@@ -1,10 +1,13 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.options.colors.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.model.constants.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.options.colors.AttributesDescriptor
+import com.intellij.openapi.options.colors.ColorDescriptor
+import com.intellij.openapi.options.colors.ColorSettingsPage
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

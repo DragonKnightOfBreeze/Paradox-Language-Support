@@ -2,20 +2,30 @@
 
 package icu.windea.pls.ai.services
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
-import dev.langchain4j.data.message.*
-import dev.langchain4j.memory.*
-import dev.langchain4j.memory.chat.*
-import dev.langchain4j.model.chat.request.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.model.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.ai.model.results.*
-import icu.windea.pls.ai.util.*
-import icu.windea.pls.core.coroutines.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.flow.*
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.logger
+import dev.langchain4j.data.message.SystemMessage
+import dev.langchain4j.data.message.UserMessage
+import dev.langchain4j.memory.ChatMemory
+import dev.langchain4j.memory.chat.MessageWindowChatMemory
+import dev.langchain4j.model.chat.request.ChatRequest
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.model.chatFlow
+import icu.windea.pls.ai.model.onCompletionStatus
+import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
+import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.model.toLineFlow
+import icu.windea.pls.ai.util.PlsChatMessageManager
+import icu.windea.pls.ai.util.PlsChatModelManager
+import icu.windea.pls.ai.util.PlsPrompts
+import icu.windea.pls.core.coroutines.chunked
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 
 @Service
 class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocalisationAiRequest>() {

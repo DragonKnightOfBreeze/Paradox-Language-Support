@@ -1,14 +1,24 @@
 package icu.windea.pls.lang.inspections.csv.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.getColumnIndex
+import icu.windea.pls.csv.psi.isEmptyColumn
+import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.PlsVfsManager
+import javax.swing.JComponent
 
 /**
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。

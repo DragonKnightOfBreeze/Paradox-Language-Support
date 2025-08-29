@@ -1,10 +1,13 @@
 package icu.windea.pls.core.io
 
-import com.intellij.openapi.application.ex.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.io.*
-import java.nio.file.*
-import kotlin.reflect.*
+import com.intellij.openapi.application.ex.ApplicationManagerEx
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.createParentDirectories
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import kotlin.reflect.KProperty
 
 @Deprecated("")
 class VirtualFileProvider(

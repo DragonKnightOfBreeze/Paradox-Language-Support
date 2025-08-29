@@ -1,9 +1,10 @@
 package icu.windea.pls.script.codeInsight.unwrap
 
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.util.or
+import icu.windea.pls.core.util.unresolved
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 class ParadoxScriptParameterConditionRemover : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {

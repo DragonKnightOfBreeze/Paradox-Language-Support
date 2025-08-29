@@ -1,12 +1,11 @@
 package icu.windea.pls.model.constraints
 
-import com.intellij.psi.*
-import com.intellij.psi.stubs.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.stubs.StubIndexKey
 import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
 
 interface ParadoxIndexConstraint<T : PsiElement> {
     val indexKey: StubIndexKey<String, T>

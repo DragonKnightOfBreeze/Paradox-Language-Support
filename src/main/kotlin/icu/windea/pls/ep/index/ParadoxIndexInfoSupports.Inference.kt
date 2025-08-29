@@ -1,18 +1,37 @@
 package icu.windea.pls.ep.index
 
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
-import java.io.*
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.memberConfig
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readOrReadFrom
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeOrWriteFrom
+import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.index.ParadoxIndexInfoType
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.indexInfo.ParadoxEventInEventIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxEventInOnActionIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxInferredScopeContextAwareDefinitionIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.script.psi.findProperty
+import java.io.DataInput
+import java.io.DataOutput
 
 class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     object Constants {

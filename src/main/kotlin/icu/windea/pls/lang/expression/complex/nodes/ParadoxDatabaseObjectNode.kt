@@ -1,15 +1,16 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.editor.*
-import icu.windea.pls.script.editor.*
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.expression.complex.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDatabaseObjectNode(
     override val text: String,

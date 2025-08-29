@@ -1,12 +1,18 @@
 package icu.windea.pls.lang.inspections.localisation.bug
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_END
 
 class IncorrectSyntaxInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

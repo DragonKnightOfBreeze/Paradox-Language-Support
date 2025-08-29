@@ -1,8 +1,8 @@
 package icu.windea.pls.cwt.codeInsight.unwrap
 
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.cwt.psi.CwtProperty
 
 class CwtPropertyRemover : CwtUnwrapper() {
     override fun getDescription(e: PsiElement): String {

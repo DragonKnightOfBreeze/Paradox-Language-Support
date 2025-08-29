@@ -1,8 +1,11 @@
 package icu.windea.pls.cwt.codeStyle
 
-import com.intellij.application.options.*
-import com.intellij.psi.codeStyle.*
-import icu.windea.pls.cwt.*
+import com.intellij.application.options.CodeStyleAbstractConfigurable
+import com.intellij.application.options.CodeStyleAbstractPanel
+import com.intellij.psi.codeStyle.CodeStyleConfigurable
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
+import icu.windea.pls.cwt.CwtLanguage
 
 class CwtCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
     override fun getLanguage() = CwtLanguage

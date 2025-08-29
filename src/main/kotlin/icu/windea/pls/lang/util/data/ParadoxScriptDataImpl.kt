@@ -1,7 +1,8 @@
 package icu.windea.pls.lang.util.data
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 class ParadoxScriptDataImpl(
     override val key: ParadoxScriptPropertyKey?,

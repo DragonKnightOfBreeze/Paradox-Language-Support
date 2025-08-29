@@ -1,8 +1,8 @@
 package icu.windea.pls.tool.cwt
 
-import icu.windea.pls.*
-import icu.windea.pls.model.*
-import java.io.*
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.model.ParadoxGameType
+import java.io.File
 
 /**
  * 用于比较`game_rules.txt`与`game_rules.cwt`，输出新增项和移除项。

@@ -1,16 +1,17 @@
 package icu.windea.pls.ep.icon
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.codeInsight.completion.gameType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
  * 提供对本地化图标的支持。

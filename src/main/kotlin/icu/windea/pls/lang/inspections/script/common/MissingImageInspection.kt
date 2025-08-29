@@ -1,16 +1,24 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import com.intellij.ui.components.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContextBuilder
+import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.model.*
-import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import javax.swing.JComponent
 
 /**
  * 缺失的图片的检查。

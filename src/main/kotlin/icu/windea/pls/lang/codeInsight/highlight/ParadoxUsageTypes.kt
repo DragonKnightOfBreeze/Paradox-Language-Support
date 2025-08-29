@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.codeInsight.highlight
 
-import com.intellij.usages.impl.rules.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configExpression.*
-import java.util.concurrent.*
+import com.intellij.usages.impl.rules.UsageType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import java.util.concurrent.ConcurrentHashMap
 
 object ParadoxUsageTypes {
     val SCRIPTED_VARIABLE_REFERENCE_1 = UsageType { PlsBundle.message("usageType.scriptedVariableReference.1") }

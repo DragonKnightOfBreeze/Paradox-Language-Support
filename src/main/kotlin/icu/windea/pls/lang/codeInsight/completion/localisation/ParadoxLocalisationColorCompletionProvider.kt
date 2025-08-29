@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.codeInsight.completion.localisation
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.InsertHandler
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.util.elementType
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.letIf
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
 /**
  * 提供颜色ID的代码补全。

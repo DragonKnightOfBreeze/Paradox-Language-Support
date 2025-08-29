@@ -1,12 +1,15 @@
 package icu.windea.pls.tool.cwt
 
-import com.fasterxml.jackson.dataformat.csv.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.tool.*
-import java.io.*
+import com.fasterxml.jackson.dataformat.csv.CsvSchema
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.resolve
+import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.tool.csvMapper
+import java.io.File
 
 /**
  * 用于从`on_actions.csv`生成`on_actions.cwt`

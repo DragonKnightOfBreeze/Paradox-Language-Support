@@ -1,21 +1,30 @@
 package icu.windea.pls.lang.injection
 
-import com.intellij.lang.injection.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.injection.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.injection.MultiHostInjector
+import com.intellij.lang.injection.MultiHostRegistrar
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.elementType
+import com.intellij.util.InjectionUtils
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.processChild
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.unquote
+import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 脚本语言的语言注入器，用于提供以下功能：

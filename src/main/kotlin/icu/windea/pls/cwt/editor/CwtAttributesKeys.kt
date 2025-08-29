@@ -1,8 +1,18 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
-import com.intellij.openapi.editor.HighlighterColors.*
-import com.intellij.openapi.editor.colors.TextAttributesKey.*
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.DOC_COMMENT
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.NUMBER
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.OPERATION_SIGN
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.STRING
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE
+import com.intellij.openapi.editor.HighlighterColors.BAD_CHARACTER
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 
 object CwtAttributesKeys {
     @JvmField

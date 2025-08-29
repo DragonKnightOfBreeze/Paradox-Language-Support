@@ -2,11 +2,16 @@
 
 package icu.windea.pls.lang.intentions.script
 
-import com.intellij.modcommand.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.*
+import com.intellij.modcommand.ActionContext
+import com.intellij.modcommand.ModPsiUpdater
+import com.intellij.modcommand.PsiUpdateModCommandAction
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.findChild
+import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
 private val propertyFormatRegex = "(\\w+)\\s*=\\s*\\$\\1\\|no\\$".toRegex()
 private val blockFormatRegex = "\\[\\[(\\w+)]\\s*\\1\\s*=\\s*\\$\\1\\$\\s*]".toRegex()

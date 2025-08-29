@@ -1,9 +1,11 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import com.intellij.lang.BracePair
+import com.intellij.lang.PairedBraceMatcher
+import com.intellij.psi.PsiFile
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.cwt.psi.CwtElementTypes.LEFT_BRACE
+import icu.windea.pls.cwt.psi.CwtElementTypes.RIGHT_BRACE
 
 class CwtBraceMatcher : PairedBraceMatcher {
     private val _bracePairs = arrayOf(

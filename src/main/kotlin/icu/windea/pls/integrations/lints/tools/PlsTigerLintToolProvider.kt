@@ -1,14 +1,22 @@
 package icu.windea.pls.integrations.lints.tools
 
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import kotlin.io.path.*
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.quote
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPath
+import icu.windea.pls.core.toUuidString
+import icu.windea.pls.integrations.lints.PlsTigerLintResult
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.constants.PlsPathConstants
+import kotlin.io.path.createDirectories
+import kotlin.io.path.name
+import kotlin.io.path.nameWithoutExtension
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)

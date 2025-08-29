@@ -2,10 +2,10 @@
 
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
-import java.util.concurrent.*
-import kotlin.reflect.*
+import com.intellij.openapi.util.Key
+import icu.windea.pls.core.cast
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KProperty
 
 class KeyWithFactory<T, in THIS>(name: String, val factory: THIS.() -> T) : Key<T>(name)
 

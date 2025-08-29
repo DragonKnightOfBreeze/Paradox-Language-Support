@@ -1,10 +1,13 @@
 package icu.windea.pls.extension.markdown.inspections
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.references.paths.*
-import org.intellij.plugins.markdown.lang.psi.*
-import org.intellij.plugins.markdown.lang.psi.impl.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import icu.windea.pls.lang.references.paths.ParadoxPathReference
+import org.intellij.plugins.markdown.lang.psi.MarkdownElementVisitor
+import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination
 
 //org.intellij.plugins.markdown.lang.references.paths.MarkdownUnresolvedFileReferenceInspection
 

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.encoding.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.encoding.Utf8BomOptionProvider
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.model.ParadoxFileType
 
 /**
  * 基于文件的扩展名以及相对于入口目录的路径，判断创建新的脚本文件或本地化文件时，是否需要添加BOM。

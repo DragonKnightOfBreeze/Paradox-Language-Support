@@ -1,18 +1,19 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.codeInsight.completion.config
+import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * 提供对CSV表达式（列）的支持。

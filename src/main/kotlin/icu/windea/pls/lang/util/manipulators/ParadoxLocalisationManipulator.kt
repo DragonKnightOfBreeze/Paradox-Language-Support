@@ -2,26 +2,42 @@
 
 package icu.windea.pls.lang.util.manipulators
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.command.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.NlsContexts.*
-import com.intellij.platform.ide.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.integrations.translation.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.localisation.psi.*
-import kotlinx.coroutines.*
-import kotlin.coroutines.*
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.command.writeCommandAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.NlsContexts.Command
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.findParentInFile
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.siblings
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.children
+import icu.windea.pls.core.findElementAt
+import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.locale
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Localisation as LocalisationOptions
 
 object ParadoxLocalisationManipulator {

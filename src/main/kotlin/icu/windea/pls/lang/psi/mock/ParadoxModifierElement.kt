@@ -1,13 +1,14 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.modifier.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport
+import icu.windea.pls.model.ParadoxGameType
 import java.util.*
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。

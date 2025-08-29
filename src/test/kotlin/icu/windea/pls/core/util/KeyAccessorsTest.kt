@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.util.*
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.UserDataHolderBase
 import org.junit.Assert
 import org.junit.Test
 

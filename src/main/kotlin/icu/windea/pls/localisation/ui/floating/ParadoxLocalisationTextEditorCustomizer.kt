@@ -1,15 +1,16 @@
 package icu.windea.pls.localisation.ui.floating
 
-import com.intellij.ide.scratch.*
-import com.intellij.lang.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileEditor.impl.text.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.localisation.*
-import kotlinx.coroutines.*
+import com.intellij.ide.scratch.ScratchUtil
+import com.intellij.lang.LanguageUtil
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import kotlinx.coroutines.coroutineScope
 
 //org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 

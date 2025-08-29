@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.search.implementation
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.runReadAction
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.searches.DefinitionsScopedSearch
+import com.intellij.util.Processor
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.selector.scriptedVariable
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScope
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 封装变量的实现的查询。加入所有作用域内的同名封装变量。

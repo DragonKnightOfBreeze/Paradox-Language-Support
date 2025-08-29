@@ -1,14 +1,18 @@
 package icu.windea.pls.csv.navigation
 
-import com.intellij.ide.navigationToolbar.*
-import com.intellij.lang.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.model.constants.*
-import javax.swing.*
+import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.getHeaderColumn
+import icu.windea.pls.model.constants.PlsStringConstants
+import javax.swing.Icon
 
 class ParadoxCsvNavBar : StructureAwareNavBarModelExtension() {
     override val language: Language = ParadoxCsvLanguage

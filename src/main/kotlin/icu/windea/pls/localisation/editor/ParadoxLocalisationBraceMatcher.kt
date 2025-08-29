@@ -1,9 +1,25 @@
 package icu.windea.pls.localisation.editor
 
-import com.intellij.lang.*
-import com.intellij.psi.*
-import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.lang.BracePair
+import com.intellij.lang.PairedBraceMatcher
+import com.intellij.psi.PsiFile
+import com.intellij.psi.tree.IElementType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_BRACKET
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_SINGLE_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_BRACKET
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_SINGLE_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_ICON_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_ICON_START
 
 class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
     private val _bracePairs = arrayOf(

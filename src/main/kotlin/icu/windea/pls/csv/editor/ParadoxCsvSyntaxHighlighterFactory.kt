@@ -1,8 +1,8 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 
 class ParadoxCsvSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): ParadoxCsvSyntaxHighlighter {

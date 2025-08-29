@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.actions.tools
 
-import com.intellij.ide.lightEdit.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.fileChooser.actions.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
-import java.nio.file.*
+import com.intellij.ide.lightEdit.LightEditCompatible
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.fileChooser.FileChooserPanel
+import com.intellij.openapi.fileChooser.FileSystemTree
+import com.intellij.openapi.fileChooser.actions.FileChooserAction
+import com.intellij.openapi.vfs.VfsUtil
+import icu.windea.pls.core.runCatchingCancelable
+import java.nio.file.Path
 
 /**
  * 用于在文件选择页面中跳转到一个路径。

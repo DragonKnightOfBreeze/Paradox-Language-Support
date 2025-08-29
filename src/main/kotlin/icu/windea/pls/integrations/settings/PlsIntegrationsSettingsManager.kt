@@ -2,16 +2,19 @@
 
 package icu.windea.pls.integrations.settings
 
-import com.intellij.openapi.ui.*
-import com.intellij.ui.layout.*
-import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.integrations.images.tools.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.integrations.lints.tools.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.ui.layout.ValidationInfoBuilder
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.integrations.images.tools.PlsImageToolProvider
+import icu.windea.pls.integrations.images.tools.PlsMagickToolProvider
+import icu.windea.pls.integrations.lints.PlsTigerLintManager
+import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
+import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
 
 object PlsIntegrationsSettingsManager {
     fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {

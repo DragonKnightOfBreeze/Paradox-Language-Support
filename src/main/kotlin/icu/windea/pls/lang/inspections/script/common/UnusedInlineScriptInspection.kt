@@ -1,12 +1,17 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
+import icu.windea.pls.lang.search.selector.inlineScriptUsage
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
  * 未使用的内联脚本的检查。

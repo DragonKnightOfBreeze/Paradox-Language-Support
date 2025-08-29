@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.codeInsight.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.TargetElementEvaluatorEx2
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 
 class ParadoxTargetElementEvaluator: TargetElementEvaluatorEx2() {
     override fun getNamedElement(element: PsiElement): PsiElement? {

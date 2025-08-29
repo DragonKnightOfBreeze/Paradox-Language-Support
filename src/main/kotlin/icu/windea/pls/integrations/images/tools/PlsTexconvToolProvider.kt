@@ -1,13 +1,20 @@
 package icu.windea.pls.integrations.images.tools
 
-import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.constants.*
-import java.nio.file.*
-import kotlin.io.path.*
+import com.intellij.openapi.diagnostic.thisLogger
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.WithOS
+import icu.windea.pls.core.executeCommand
+import icu.windea.pls.core.quote
+import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.util.OS
+import icu.windea.pls.model.constants.PlsPathConstants
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import kotlin.io.path.createDirectories
+import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.notExists
 
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)

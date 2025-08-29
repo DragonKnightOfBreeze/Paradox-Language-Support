@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.codeInsight.template.postfix
 
-import com.intellij.codeInsight.template.*
-import com.intellij.codeInsight.template.impl.*
-import com.intellij.codeInsight.template.postfix.templates.*
-import com.intellij.codeInsight.template.postfix.templates.editable.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
+import com.intellij.codeInsight.template.Template
+import com.intellij.codeInsight.template.impl.TemplateImpl
+import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
+import com.intellij.codeInsight.template.postfix.templates.editable.EditablePostfixTemplate
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.config.CwtPostfixTemplateSettingsConfig
+import icu.windea.pls.core.annotations.WithInternalConfig
+import icu.windea.pls.core.quote
 
 @WithInternalConfig("builtin/postfix_template_settings.cwt", CwtPostfixTemplateSettingsConfig::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(

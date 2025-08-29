@@ -1,8 +1,8 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lang.cacheBuilder.*
-import icu.windea.pls.script.lexer.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.cacheBuilder.DefaultWordsScanner
+import icu.windea.pls.script.lexer.ParadoxScriptLexerFactory
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 class ParadoxScriptWordScanner : DefaultWordsScanner(
     ParadoxScriptLexerFactory.createLayeredLexer(),

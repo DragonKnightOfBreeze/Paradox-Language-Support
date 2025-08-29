@@ -2,30 +2,38 @@
 
 package icu.windea.pls.lang.util
 
-import com.intellij.injected.editor.*
-import com.intellij.lang.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vcs.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.testFramework.*
-import com.intellij.util.io.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.*
-import java.nio.file.*
+import com.intellij.lang.Language
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.LightVirtualFile
+import com.intellij.util.io.createDirectories
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.getOptionValueOrValues
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.csv.ParadoxCsvFileType
+import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.inMainEntry
+import icu.windea.pls.script.ParadoxScriptFileType
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.*
-import javax.swing.*
 
 object ParadoxFileManager {
     object Keys : KeyRegistry() {

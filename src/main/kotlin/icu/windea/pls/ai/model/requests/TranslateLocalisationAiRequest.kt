@@ -1,10 +1,10 @@
 package icu.windea.pls.ai.model.requests
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.util.manipulators.*
-import java.util.concurrent.atomic.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import java.util.concurrent.atomic.AtomicInteger
 
 class TranslateLocalisationAiRequest(
     project: Project,

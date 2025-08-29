@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.*
-import com.intellij.codeInsight.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
+import com.intellij.codeInsight.CodeInsightActionHandler
+import com.intellij.codeInsight.actions.BaseCodeInsightAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.fileInfo
 
 /**
  * 导航到对应的规则的动作。

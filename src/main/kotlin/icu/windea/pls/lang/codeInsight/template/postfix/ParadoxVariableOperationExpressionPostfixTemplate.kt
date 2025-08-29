@@ -1,18 +1,23 @@
 package icu.windea.pls.lang.codeInsight.template.postfix
 
-import com.intellij.codeInsight.template.postfix.templates.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.*
+import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import icu.windea.pls.config.config.CwtPostfixTemplateSettingsConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.script.psi.isBlockMember
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider

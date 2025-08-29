@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.documentation
 
-import com.intellij.platform.backend.documentation.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
+import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
 
 class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     override fun documentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {

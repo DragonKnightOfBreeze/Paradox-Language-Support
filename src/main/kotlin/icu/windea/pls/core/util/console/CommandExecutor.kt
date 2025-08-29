@@ -1,10 +1,11 @@
 package icu.windea.pls.core.util.console
 
-import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.core.util.*
+import com.intellij.openapi.diagnostic.logger
+import icu.windea.pls.core.util.OS
 import io.ktor.utils.io.charsets.Charset
-import java.io.*
-import java.util.concurrent.*
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 import kotlin.text.Charsets
 
 class CommandExecutor(

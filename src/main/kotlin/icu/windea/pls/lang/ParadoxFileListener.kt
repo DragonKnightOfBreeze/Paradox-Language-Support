@@ -1,10 +1,20 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.events.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.core.util.tryPutUserData
+import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
  * 用于监听游戏或模组文件的更改，以更新相关缓存。

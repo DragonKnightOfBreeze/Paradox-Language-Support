@@ -1,13 +1,15 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.codeInsight.editorActions.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parents
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isRightQuoted
+import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxScriptWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {

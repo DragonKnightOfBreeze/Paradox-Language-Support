@@ -1,13 +1,20 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.config.typeKeyPrefixConfig
+import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.isBlockMember
 
 /**
  * 解析定义键前缀引用。

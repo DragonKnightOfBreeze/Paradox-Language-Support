@@ -1,14 +1,16 @@
 package icu.windea.pls.cwt.navigation
 
-import com.intellij.ide.navigationToolbar.*
-import com.intellij.lang.*
-import com.intellij.psi.*
+import com.intellij.ide.navigationToolbar.StructureAwareNavBarModelExtension
+import com.intellij.lang.Language
+import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.settings.*
-import javax.swing.*
+import icu.windea.pls.core.icon
+import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.cwt.psi.isBlockValue
+import javax.swing.Icon
 
 class CwtNavBar : StructureAwareNavBarModelExtension() {
     override val language: Language = CwtLanguage

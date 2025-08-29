@@ -2,10 +2,11 @@
 
 package icu.windea.pls.inject.injectors
 
-import com.intellij.openapi.util.text.*
-import com.intellij.util.text.*
-import icu.windea.pls.inject.*
-import icu.windea.pls.inject.annotations.*
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.util.text.StringSearcher
+import icu.windea.pls.inject.CodeInjectorBase
+import icu.windea.pls.inject.annotations.InjectMethod
+import icu.windea.pls.inject.annotations.InjectTarget
 
 /**
  * @see com.intellij.psi.impl.search.LowLevelSearchUtil

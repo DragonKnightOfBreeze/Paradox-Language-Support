@@ -1,15 +1,16 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.*
-import com.intellij.codeInsight.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import com.intellij.codeInsight.CodeInsightActionHandler
+import com.intellij.codeInsight.actions.BaseCodeInsightAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 导航到当前本地化的相关定义。

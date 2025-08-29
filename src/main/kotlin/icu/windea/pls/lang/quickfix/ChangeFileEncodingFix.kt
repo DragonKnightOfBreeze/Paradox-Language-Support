@@ -1,18 +1,24 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.daemon.impl.actions.*
-import com.intellij.codeInsight.intention.preview.*
-import com.intellij.codeInspection.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.encoding.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.*
-import java.nio.charset.*
+import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
+import com.intellij.openapi.vfs.encoding.EncodingUtil
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.addBom
+import icu.windea.pls.core.hasBom
+import icu.windea.pls.core.removeBom
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.model.constants.PlsConstants
+import java.nio.charset.Charset
 
 class ChangeFileEncodingFix(
     element: PsiElement,

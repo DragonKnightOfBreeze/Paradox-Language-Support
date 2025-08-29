@@ -1,9 +1,16 @@
 package icu.windea.pls.lang.util.data
 
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptBlockElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.members
 
 object ParadoxScriptDataResolver {
     /**

@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.search.searches.ExtensibleQueryFactory
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 全局封装变量的查询。

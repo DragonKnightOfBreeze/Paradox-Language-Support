@@ -1,8 +1,13 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.model.constants.*
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.SimplePersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.annotations.Property
+import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS集成设置。可以在插件的对应设置页面中进行配置。

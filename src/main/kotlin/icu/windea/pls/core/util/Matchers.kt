@@ -1,7 +1,8 @@
 package icu.windea.pls.core.util
 
-import com.google.common.cache.*
-import icu.windea.pls.core.*
+import com.google.common.cache.CacheBuilder
+import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.trimFast
 
 object Matchers {
     object GlobMatcher {

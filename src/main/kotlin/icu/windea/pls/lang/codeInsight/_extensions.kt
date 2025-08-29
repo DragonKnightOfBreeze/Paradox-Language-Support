@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.codeInsight
 
-import icu.windea.pls.config.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.cwt.psi.CwtExpressionElement
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxType
+import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 val CwtExpressionElement.type: CwtType get() = CwtTypeManager.getType(this)
 val CwtExpressionElement.configType: CwtConfigType? get() = CwtTypeManager.getConfigType(this)

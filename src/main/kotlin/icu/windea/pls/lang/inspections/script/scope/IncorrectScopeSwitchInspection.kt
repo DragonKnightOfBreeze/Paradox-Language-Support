@@ -1,18 +1,28 @@
 package icu.windea.pls.lang.inspections.script.scope
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
+import icu.windea.pls.core.pass
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxErrorScopeLinkNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxParameterizedScopeLinkNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.expression.complex.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.findParentDefinition
+import javax.swing.JComponent
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     private var checkForSystemScopes = false

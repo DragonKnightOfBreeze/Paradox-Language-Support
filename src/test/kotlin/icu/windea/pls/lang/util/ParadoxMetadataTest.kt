@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.util
 
-import com.fasterxml.jackson.module.kotlin.*
+import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.util.ObjectMappers
-import icu.windea.pls.model.*
-import org.junit.*
+import icu.windea.pls.model.ParadoxLauncherSettingsInfo
+import org.junit.Test
 
 class ParadoxMetadataTest {
     val launcherSettingsJson = """

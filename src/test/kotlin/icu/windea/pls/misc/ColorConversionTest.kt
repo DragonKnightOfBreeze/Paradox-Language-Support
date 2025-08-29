@@ -1,8 +1,8 @@
 package icu.windea.pls.misc
 
-import com.intellij.ui.*
-import org.junit.*
-import java.awt.*
+import com.intellij.ui.ColorUtil
+import org.junit.Test
+import java.awt.Color
 
 class ColorConversionTest {
     @Test

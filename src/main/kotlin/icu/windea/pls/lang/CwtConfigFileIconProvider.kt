@@ -1,12 +1,13 @@
 package icu.windea.pls.lang
 
-import com.intellij.ide.*
-import com.intellij.ide.projectView.impl.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.configGroup.*
-import javax.swing.*
+import com.intellij.ide.FileIconProvider
+import com.intellij.ide.projectView.impl.ProjectRootsUtil
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import javax.swing.Icon
 
 /**
  * 为规则目录以及其中的规则文件提供特殊的图标。

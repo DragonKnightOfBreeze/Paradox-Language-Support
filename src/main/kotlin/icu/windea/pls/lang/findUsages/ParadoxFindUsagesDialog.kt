@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.findUsages
 
-import com.intellij.find.findUsages.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import javax.swing.*
+import com.intellij.find.findUsages.CommonFindUsagesDialog
+import com.intellij.find.findUsages.FindUsagesOptions
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.ui.StateRestoringCheckBox
+import icu.windea.pls.PlsBundle
+import javax.swing.BoxLayout
+import javax.swing.JPanel
 
 //com.intellij.find.findUsages.FindClassUsagesDialog
 

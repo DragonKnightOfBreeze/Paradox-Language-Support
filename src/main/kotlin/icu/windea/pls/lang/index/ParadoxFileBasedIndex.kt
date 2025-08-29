@@ -1,13 +1,25 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.util.gist.*
-import com.intellij.util.indexing.*
-import com.intellij.util.io.*
-import icu.windea.pls.core.*
-import java.io.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.util.gist.GistManager
+import com.intellij.util.indexing.DataIndexer
+import com.intellij.util.indexing.FileBasedIndex
+import com.intellij.util.indexing.FileBasedIndexExtension
+import com.intellij.util.indexing.FileContent
+import com.intellij.util.indexing.ID
+import com.intellij.util.io.DataExternalizer
+import com.intellij.util.io.EnumeratorStringDescriptor
+import com.intellij.util.io.KeyDescriptor
+import icu.windea.pls.core.property
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
+import java.io.DataInput
+import java.io.DataOutput
 
 abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     override fun getIndexer(): DataIndexer<String, T, FileContent> {

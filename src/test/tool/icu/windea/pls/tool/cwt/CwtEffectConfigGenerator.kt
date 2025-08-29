@@ -1,9 +1,11 @@
 package icu.windea.pls.tool.cwt
 
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import java.io.*
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.core.substringIn
+import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.model.ParadoxGameType
+import java.io.File
 
 /**
  * 用于从`effects.log`生成`effects.cwt`。

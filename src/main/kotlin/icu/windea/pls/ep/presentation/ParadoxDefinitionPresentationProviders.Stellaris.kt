@@ -1,21 +1,39 @@
 package icu.windea.pls.ep.presentation
 
-import com.intellij.openapi.diagnostic.*
-import com.intellij.psi.*
-import com.intellij.ui.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
-import java.awt.*
-import javax.swing.*
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.ui.Gray
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.resize
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toImage
+import icu.windea.pls.core.toLabel
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.core.withLocation
+import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxPresentationManager
+import icu.windea.pls.lang.util.ParadoxTextColorManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.awt.Color
+import java.awt.Dimension
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.RenderingHints
+import javax.swing.Icon
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JPanel
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProviderDelegates as Delegates
 
 /**

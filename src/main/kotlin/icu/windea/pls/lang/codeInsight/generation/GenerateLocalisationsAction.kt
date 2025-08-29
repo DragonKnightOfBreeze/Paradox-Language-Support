@@ -1,19 +1,28 @@
 package icu.windea.pls.lang.codeInsight.generation
 
-import com.intellij.codeInsight.*
-import com.intellij.codeInsight.actions.*
-import com.intellij.codeInsight.generation.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.*
+import com.intellij.codeInsight.CodeInsightActionHandler
+import com.intellij.codeInsight.actions.BaseCodeInsightAction
+import com.intellij.codeInsight.generation.actions.GenerateActionPopupTemplateInjector
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiUtilBase
+import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.codeInsight.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
 
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler()

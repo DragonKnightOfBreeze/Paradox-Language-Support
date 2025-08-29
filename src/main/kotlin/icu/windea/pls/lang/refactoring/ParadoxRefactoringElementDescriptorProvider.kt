@@ -1,13 +1,16 @@
 package icu.windea.pls.lang.refactoring
 
-import com.intellij.psi.*
-import com.intellij.refactoring.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import com.intellij.psi.ElementDescriptionLocation
+import com.intellij.psi.ElementDescriptionProvider
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.refactoring.util.CommonRefactoringUtil
+import com.intellij.refactoring.util.RefactoringDescriptionLocation
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {

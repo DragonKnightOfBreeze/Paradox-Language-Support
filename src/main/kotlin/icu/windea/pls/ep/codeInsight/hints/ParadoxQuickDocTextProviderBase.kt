@@ -1,11 +1,15 @@
 package icu.windea.pls.ep.codeInsight.hints
 
-import com.intellij.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.util.ParadoxPsiMatcher
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
     abstract class ScriptedVariable : ParadoxQuickDocTextProviderBase() {

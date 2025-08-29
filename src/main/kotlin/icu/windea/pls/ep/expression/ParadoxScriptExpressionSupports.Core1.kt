@@ -1,18 +1,30 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.codeInsight.completion.*
-import com.intellij.lang.annotation.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.config
+import icu.windea.pls.lang.codeInsight.completion.isInt
+import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
+import icu.windea.pls.lang.codeInsight.completion.scopeName
+import icu.windea.pls.lang.expression.complex.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.expression.complex.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.expression.complex.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.complex.ParadoxTemplateExpression
+import icu.windea.pls.lang.expression.complex.ParadoxValueFieldExpression
+import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.expression.complex.getAllReferences
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {

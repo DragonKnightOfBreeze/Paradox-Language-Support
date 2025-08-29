@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.refactoring.actions
 
-import com.intellij.lang.refactoring.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import com.intellij.refactoring.*
-import com.intellij.refactoring.actions.*
-import icu.windea.pls.*
-import icu.windea.pls.script.psi.*
+import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.refactoring.RefactoringActionHandler
+import com.intellij.refactoring.actions.BasePlatformRefactoringAction
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 声明全局封装变量的动作。

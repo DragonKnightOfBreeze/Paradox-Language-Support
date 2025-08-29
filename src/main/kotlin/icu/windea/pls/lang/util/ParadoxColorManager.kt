@@ -1,14 +1,25 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.ui.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValue
+import com.intellij.ui.ColorUtil
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.core.component1
+import icu.windea.pls.core.component2
+import icu.windea.pls.core.component3
+import icu.windea.pls.core.component4
+import icu.windea.pls.core.format
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.script.psi.*
-import java.awt.*
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptColor
+import icu.windea.pls.script.psi.ParadoxScriptString
+import java.awt.Color
 
 object ParadoxColorManager {
     object Keys : KeyRegistry() {

@@ -1,13 +1,39 @@
 package icu.windea.pls.ep.configGroup
 
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.paths.*
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtDeclarationConfig
+import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.forValue
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.config.configGroup.aliasKeysGroupConst
+import icu.windea.pls.config.configGroup.aliasKeysGroupNoConst
+import icu.windea.pls.config.configGroup.declarations
+import icu.windea.pls.config.configGroup.definitionTypesMayWithTypeKeyPrefix
+import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
+import icu.windea.pls.config.configGroup.generatedModifiers
+import icu.windea.pls.config.configGroup.links
+import icu.windea.pls.config.configGroup.linksOfVariable
+import icu.windea.pls.config.configGroup.localisationLinks
+import icu.windea.pls.config.configGroup.modifierCategories
+import icu.windea.pls.config.configGroup.modifiers
+import icu.windea.pls.config.configGroup.parameterConfigs
+import icu.windea.pls.config.configGroup.predefinedModifiers
+import icu.windea.pls.config.configGroup.relatedLocalisationPatterns
+import icu.windea.pls.config.configGroup.swappedTypes
+import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.filePathPatterns
+import icu.windea.pls.config.findPropertyByPath
+import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.core.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.takeWithOperator
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.model.paths.CwtConfigPath
 
 /**
  * 用于初始规则分组中需要经过计算的那些数据。

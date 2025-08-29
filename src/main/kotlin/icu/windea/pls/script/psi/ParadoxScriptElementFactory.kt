@@ -1,10 +1,12 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.script.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFileFactory
+import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.script.ParadoxScriptLanguage
 
 object ParadoxScriptElementFactory {
     @JvmStatic

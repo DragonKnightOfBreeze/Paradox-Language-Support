@@ -1,12 +1,24 @@
 package icu.windea.pls.script.structureView
 
-import com.intellij.ide.structureView.*
-import com.intellij.ide.util.treeView.smartTree.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
+import com.intellij.ide.structureView.StructureViewModel
+import com.intellij.ide.structureView.StructureViewTreeElement
+import com.intellij.ide.structureView.TextEditorBasedStructureViewModel
+import com.intellij.ide.util.treeView.smartTree.Grouper
+import com.intellij.ide.util.treeView.smartTree.Sorter
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.DefinitionsFilter
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.PropertiesFilter
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.ValuesFilter
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.VariablesFilter
 
 class ParadoxScriptStructureViewModel(
     editor: Editor?,

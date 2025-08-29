@@ -1,13 +1,14 @@
 package icu.windea.pls.ep.tools
 
-import com.intellij.notification.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.*
-import icu.windea.pls.lang.util.*
-import java.nio.file.*
-import kotlin.io.path.*
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.qualifiedName
+import icu.windea.pls.lang.ui.tools.ParadoxModDependenciesTable
+import icu.windea.pls.lang.util.PlsCoreManager
+import java.nio.file.Path
+import kotlin.io.path.exists
 
 /**
  * 从Paradox启动器的Sqlite数据库中导入模组配置。

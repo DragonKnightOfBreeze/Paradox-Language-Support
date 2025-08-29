@@ -1,8 +1,12 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.patterns.PlatformPatterns.*
-import com.intellij.psi.*
-import icu.windea.pls.script.psi.*
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiReferenceContributor
+import com.intellij.psi.PsiReferenceRegistrar
+import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptString
 
 class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
     private val provider = ParadoxScriptPsiReferenceProvider()

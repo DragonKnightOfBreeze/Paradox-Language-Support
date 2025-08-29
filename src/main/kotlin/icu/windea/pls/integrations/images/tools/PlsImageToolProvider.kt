@@ -1,11 +1,13 @@
 package icu.windea.pls.integrations.images.tools
 
-import com.intellij.openapi.extensions.*
-import java.awt.image.*
-import java.io.*
-import java.nio.file.*
-import javax.imageio.*
-import javax.imageio.stream.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import java.awt.image.BufferedImage
+import java.io.InputStream
+import java.io.OutputStream
+import java.nio.file.Path
+import javax.imageio.ImageReadParam
+import javax.imageio.ImageReader
+import javax.imageio.stream.ImageInputStream
 
 /**
  * 提供图片处理工具。用于预览与渲染图片，以及转换图片格式。

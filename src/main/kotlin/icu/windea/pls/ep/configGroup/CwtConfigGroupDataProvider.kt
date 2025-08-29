@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.configGroup
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.configGroup.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
  * 用于获取规则分组中的数据。

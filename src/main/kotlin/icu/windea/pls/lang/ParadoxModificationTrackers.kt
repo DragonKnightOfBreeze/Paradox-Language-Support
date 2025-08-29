@@ -1,8 +1,9 @@
 package icu.windea.pls.lang
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.util.*
-import java.util.concurrent.*
+import com.intellij.openapi.util.SimpleModificationTracker
+import icu.windea.pls.core.util.FilePathBasedModificationTracker
+import icu.windea.pls.core.util.MergedModificationTracker
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 用于追踪更改 - 具有更高的精确度，提高缓存命中率。

@@ -1,11 +1,11 @@
 package icu.windea.pls.ep.expression
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 
 /**

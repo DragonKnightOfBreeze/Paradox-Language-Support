@@ -1,16 +1,18 @@
 package icu.windea.pls.lang.search.scope.type
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.ParadoxBaseFileType
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.script.psi.findParentDefinition
 
 object ParadoxSearchScopeTypes {
     private val map = mutableMapOf<String, ParadoxSearchScopeType>()

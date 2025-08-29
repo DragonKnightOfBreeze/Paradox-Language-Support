@@ -1,18 +1,22 @@
 package icu.windea.pls.lang.refactoring.rename.naming
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.refactoring.rename.naming.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import com.intellij.refactoring.rename.naming.AutomaticRenamer
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 用于在重命名定义时自动重命名由其生成的修正的作为名字和描述的本地化（如果存在）。

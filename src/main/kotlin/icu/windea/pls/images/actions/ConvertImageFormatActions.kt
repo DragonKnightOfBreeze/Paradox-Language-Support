@@ -1,9 +1,9 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.images.dds.*
-import icu.windea.pls.images.tga.*
-import org.intellij.images.fileTypes.impl.*
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.images.dds.DdsFileType
+import icu.windea.pls.images.tga.TgaFileType
+import org.intellij.images.fileTypes.impl.ImageFileType
 
 interface ConvertImageFormatActions {
     class Png : ConvertImageFormatAction("PNG") {

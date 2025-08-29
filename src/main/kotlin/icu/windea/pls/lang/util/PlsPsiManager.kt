@@ -1,9 +1,16 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.util.text.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.tree.*
-import com.intellij.psi.util.*
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.TokenType
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.siblings
+import com.intellij.psi.util.startOffset
 
 object PlsPsiManager {
     fun containsBlankLine(element: PsiWhiteSpace): Boolean {

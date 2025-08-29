@@ -1,13 +1,19 @@
 package icu.windea.pls.lang.inspections.script.event
 
-import com.intellij.codeInspection.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.dataFlow.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.matchesPath
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.properties
 
 /**
  * 检查事件脚本文件中的事件命名空间的格式是否合法。

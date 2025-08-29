@@ -1,13 +1,16 @@
 package icu.windea.pls.images.tga
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.registry.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.gist.*
-import com.intellij.util.io.*
-import icu.windea.pls.core.*
-import java.io.*
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.gist.GistManager
+import com.intellij.util.gist.VirtualFileGist
+import com.intellij.util.io.DataExternalizer
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.writeIntFast
+import java.io.DataInput
+import java.io.DataOutput
 
 //org.intellij.images.index.ImageInfoIndex
 

@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
+import com.intellij.DynamicBundle
+import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configGroup.localisationLocalesByCode
+import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.core.collections.pinned
+import icu.windea.pls.lang.PlsKeys
 
 object ParadoxLocaleManager {
     const val ID_AUTO = "auto"

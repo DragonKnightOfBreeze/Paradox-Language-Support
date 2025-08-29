@@ -1,15 +1,17 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
+import com.intellij.util.Processor
+import icu.windea.pls.lang.index.ParadoxIndexInfoType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 
 class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterIndexInfo, ParadoxLocalisationParameterSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationParameterIndexInfo>) {

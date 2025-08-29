@@ -1,15 +1,23 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.diagram.*
-import com.intellij.diagram.extras.*
-import com.intellij.diagram.settings.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.extras.*
-import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.model.*
+import com.intellij.diagram.DiagramProvider
+import com.intellij.diagram.DiagramPsiScopeManager
+import com.intellij.diagram.DiagramRelationshipManager
+import com.intellij.diagram.DiagramScopeManager
+import com.intellij.diagram.DiagramVfsResolver
+import com.intellij.diagram.DiagramVisibilityManager
+import com.intellij.diagram.EmptyDiagramVisibilityManager
+import com.intellij.diagram.extras.DiagramExtras
+import com.intellij.diagram.settings.DiagramConfigGroup
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.extension.diagram.ParadoxRelationshipManager
+import icu.windea.pls.extension.diagram.ParadoxRootVfsResolver
+import icu.windea.pls.extension.diagram.extras.ParadoxDiagramExtras
+import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.model.ParadoxGameType
 
 abstract class ParadoxDiagramProvider(
     val gameType: ParadoxGameType

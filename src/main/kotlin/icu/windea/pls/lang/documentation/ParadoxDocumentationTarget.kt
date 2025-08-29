@@ -2,13 +2,14 @@
 
 package icu.windea.pls.lang.documentation
 
-import com.intellij.model.*
-import com.intellij.openapi.application.*
-import com.intellij.platform.backend.documentation.*
-import com.intellij.platform.backend.presentation.*
-import com.intellij.pom.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
+import com.intellij.model.Pointer
+import com.intellij.openapi.application.runReadAction
+import com.intellij.platform.backend.documentation.DocumentationResult
+import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.presentation.TargetPresentation
+import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.createPointer
 
 //org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 

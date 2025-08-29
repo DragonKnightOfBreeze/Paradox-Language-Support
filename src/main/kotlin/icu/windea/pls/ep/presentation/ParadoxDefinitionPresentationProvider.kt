@@ -1,10 +1,11 @@
 package icu.windea.pls.ep.presentation
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
  * 用于得到定义的图形表示的数据，从而进一步绘制各种图形表示。

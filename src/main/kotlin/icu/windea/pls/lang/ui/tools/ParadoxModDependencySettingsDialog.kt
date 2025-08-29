@@ -1,15 +1,17 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
-import java.awt.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.lang.settings.finalGameType
+import icu.windea.pls.model.ParadoxGameType
+import java.awt.Component
 
 @Suppress("UnstableApiUsage")
 class ParadoxModDependencySettingsDialog(

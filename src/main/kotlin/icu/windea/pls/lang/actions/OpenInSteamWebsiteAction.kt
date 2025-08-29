@@ -1,13 +1,18 @@
 package icu.windea.pls.lang.actions
 
-import com.intellij.ide.*
-import com.intellij.ide.actions.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.ide.BrowserUtil
+import com.intellij.ide.actions.RevealFileAction
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.steamId
 
 //com.intellij.ide.actions.RevealFileAction
 //com.intellij.ide.actions.ShowFilePathAction

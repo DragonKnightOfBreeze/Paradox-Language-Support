@@ -1,14 +1,20 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInspection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.InspectionManager
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
-import org.jetbrains.annotations.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 同一文件中重复的封装变量声明的检查。

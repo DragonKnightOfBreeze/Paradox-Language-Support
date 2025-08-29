@@ -1,18 +1,25 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.icons.*
-import com.intellij.notification.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
+import com.intellij.icons.AllIcons
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CustomShortcutSet
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.ui.AnActionButton
+import com.intellij.ui.AnActionButtonRunnable
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.lang.settings.qualifiedName
+import icu.windea.pls.lang.util.PlsCoreManager
 
 @Suppress("unused")
 interface ParadoxModDependenciesToolbarActions {

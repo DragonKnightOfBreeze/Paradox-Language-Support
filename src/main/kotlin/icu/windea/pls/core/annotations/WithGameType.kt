@@ -1,6 +1,6 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 注明此功能仅适用于特定的游戏类型。

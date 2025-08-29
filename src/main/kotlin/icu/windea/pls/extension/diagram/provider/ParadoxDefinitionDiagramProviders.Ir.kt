@@ -1,17 +1,18 @@
 package icu.windea.pls.extension.diagram.provider
 
-import com.intellij.diagram.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.extension.diagram.settings.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.diagram.DiagramPresentationModel
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.extension.diagram.settings.IrEventTreeDiagramSettings
+import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 @WithGameType(ParadoxGameType.Ir)
 class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ir) {

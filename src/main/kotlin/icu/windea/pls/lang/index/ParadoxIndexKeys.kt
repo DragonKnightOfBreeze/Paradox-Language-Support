@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.psi.stubs.*
-import com.intellij.util.indexing.*
+import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.util.indexing.ID
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxIndexKeys {
     val ScriptedVariableName = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")

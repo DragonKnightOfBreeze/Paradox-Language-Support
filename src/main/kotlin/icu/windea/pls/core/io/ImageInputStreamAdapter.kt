@@ -1,7 +1,8 @@
 package icu.windea.pls.core.io
 
-import java.io.*
-import javax.imageio.stream.*
+import java.io.IOException
+import java.io.InputStream
+import javax.imageio.stream.ImageInputStream
 
 class ImageInputStreamAdapter(
     val imageInputStream: ImageInputStream

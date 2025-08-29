@@ -1,14 +1,21 @@
 package icu.windea.pls.lang.search.usage
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.util.Processor
+import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.pass
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtString
+import icu.windea.pls.cwt.psi.stringValue
 
 /**
  * CWT规则的查询。

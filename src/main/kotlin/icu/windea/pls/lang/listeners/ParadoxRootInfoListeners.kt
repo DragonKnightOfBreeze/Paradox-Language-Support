@@ -1,9 +1,12 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
+import com.intellij.util.application
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.ParadoxGameDescriptorSettingsState
+import icu.windea.pls.lang.settings.ParadoxGameSettingsState
+import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 当根目录信息被添加后，同步相关配置。

@@ -2,9 +2,11 @@
 
 package icu.windea.pls.core.documentation
 
-import com.intellij.lang.documentation.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import com.intellij.lang.documentation.DocumentationMarkup
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
 
 inline fun buildDocumentation(builderAction: DocumentationBuilder.() -> Unit): String {
     val builder = DocumentationBuilder()

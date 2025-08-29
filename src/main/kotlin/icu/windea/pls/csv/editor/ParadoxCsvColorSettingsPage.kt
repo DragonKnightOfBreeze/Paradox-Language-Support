@@ -1,10 +1,13 @@
 package icu.windea.pls.csv.editor
 
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.options.colors.*
-import icu.windea.pls.*
-import icu.windea.pls.csv.*
-import icu.windea.pls.model.constants.*
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.options.colors.AttributesDescriptor
+import com.intellij.openapi.options.colors.ColorDescriptor
+import com.intellij.openapi.options.colors.ColorSettingsPage
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxCsvColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

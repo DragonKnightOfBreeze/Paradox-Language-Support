@@ -1,11 +1,16 @@
 package icu.windea.pls.extension.diagram
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.core.toPsiFileSystemItem
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
+import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxRootInfo
 
 abstract class ParadoxDiagramElementManager(
     open val provider: ParadoxDiagramProvider

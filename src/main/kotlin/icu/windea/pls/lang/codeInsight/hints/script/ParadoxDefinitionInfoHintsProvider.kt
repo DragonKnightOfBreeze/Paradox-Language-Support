@@ -2,19 +2,25 @@
 
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.*
-import com.intellij.codeInsight.hints.presentation.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
+import com.intellij.codeInsight.hints.ChangeListener
+import com.intellij.codeInsight.hints.ImmediateConfigurable
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.codeInsight.hints.presentation.SequencePresentation
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
-import javax.swing.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.config.isBlock
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider.Settings
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示定义信息，包括名称、类型和子类型。

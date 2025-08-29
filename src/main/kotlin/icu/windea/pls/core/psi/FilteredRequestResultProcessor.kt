@@ -1,9 +1,12 @@
 package icu.windea.pls.core.psi
 
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.util.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceService
+import com.intellij.psi.ReferenceRange
+import com.intellij.psi.search.RequestResultProcessor
+import com.intellij.util.Processor
 
 abstract class FilteredRequestResultProcessor(private val target: PsiElement) : RequestResultProcessor(target) {
     override fun processTextOccurrence(element: PsiElement, offsetInElement: Int, consumer: Processor<in PsiReference>): Boolean {

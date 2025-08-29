@@ -1,16 +1,30 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.csv.psi.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.paths.*
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtRowConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.rows
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.util.ComputedModificationTracker
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvHeader
+import icu.windea.pls.csv.psi.ParadoxCsvRow
+import icu.windea.pls.csv.psi.ParadoxCsvRowElement
+import icu.windea.pls.csv.psi.getHeaderColumn
+import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.ep.expression.ParadoxCsvExpressionMatcher
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {

@@ -1,8 +1,9 @@
 package icu.windea.pls
 
-import com.intellij.icons.*
-import com.intellij.ui.*
-import javax.swing.*
+import com.intellij.icons.AllIcons
+import com.intellij.ui.ColorUtil
+import com.intellij.ui.IconManager
+import javax.swing.Icon
 
 object PlsIcons {
     private val colorWhite = ColorUtil.fromHex("#9AA7B0")

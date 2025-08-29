@@ -1,8 +1,8 @@
 package icu.windea.pls.model.indexInfo
 
-import com.intellij.openapi.vfs.*
-import com.intellij.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.QueryExecutor
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 索引信息。记录的信息包括PSI元素偏移与游戏类型。

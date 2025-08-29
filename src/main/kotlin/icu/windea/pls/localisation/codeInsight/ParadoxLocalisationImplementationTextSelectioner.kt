@@ -1,9 +1,9 @@
 package icu.windea.pls.localisation.codeInsight
 
-import com.intellij.codeInsight.hint.*
-import com.intellij.psi.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.codeInsight.hint.ImplementationTextSelectioner
+import com.intellij.psi.PsiElement
+import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**
  * 用于为本地化语言指定快速定义显示的文本范围。

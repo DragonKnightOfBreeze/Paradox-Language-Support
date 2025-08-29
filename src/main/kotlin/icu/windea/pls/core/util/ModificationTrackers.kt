@@ -1,7 +1,8 @@
 package icu.windea.pls.core.util
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.SimpleModificationTracker
+import icu.windea.pls.core.EMPTY_OBJECT
 
 class MergedModificationTracker(vararg val modificationTrackers: ModificationTracker) : ModificationTracker {
     override fun getModificationCount(): Long {

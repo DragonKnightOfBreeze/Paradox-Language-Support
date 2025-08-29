@@ -1,17 +1,32 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.isExactLetter
+import icu.windea.pls.core.isExactWord
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
+import icu.windea.pls.model.ParadoxTextColorInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.intValue
 
 object ParadoxTextColorManager {
     object Keys : KeyRegistry() {

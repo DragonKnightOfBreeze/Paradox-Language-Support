@@ -1,11 +1,13 @@
 package icu.windea.pls.extension.diagram.actions
 
-import com.intellij.diagram.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.options.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.*
+import com.intellij.diagram.DiagramDataKeys
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.options.ShowSettingsUtil
+import com.intellij.openapi.project.DumbAware
+import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
+import icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable
 
 //com.intellij.uml.core.actions.DiagramOpenSettingsAction
 

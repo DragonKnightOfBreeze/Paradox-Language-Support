@@ -1,19 +1,27 @@
 package icu.windea.pls.ep.scope
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentsOfType
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.originalConfig
+import icu.windea.pls.config.config.pushScope
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.resolveNext
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.stringValue
 
 class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
     object Constants {

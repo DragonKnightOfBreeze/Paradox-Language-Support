@@ -1,12 +1,18 @@
 package icu.windea.pls.ep.priority
 
-import com.intellij.openapi.extensions.*
-import icu.windea.pls.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.ParadoxSearchParameters
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 用于基于覆盖顺序对文件、封装变量、定义、本地化等进行排序。

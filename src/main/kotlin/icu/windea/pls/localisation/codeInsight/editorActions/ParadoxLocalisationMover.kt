@@ -1,14 +1,17 @@
 package icu.windea.pls.localisation.codeInsight.editorActions
 
-import com.intellij.codeInsight.editorActions.moveUpDown.*
-import com.intellij.openapi.editor.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.codeInsight.editorActions.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import com.intellij.codeInsight.editorActions.moveUpDown.LineRange
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
+import icu.windea.pls.core.children
+import icu.windea.pls.core.codeInsight.editorActions.ContainerBasedMover
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
  * 用于在本地化文件中，为属性（即本地化条目）适配 *上移/下移声明* 的功能。兼容附加的注释。

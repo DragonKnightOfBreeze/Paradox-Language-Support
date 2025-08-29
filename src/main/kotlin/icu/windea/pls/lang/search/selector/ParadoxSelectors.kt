@@ -1,16 +1,20 @@
 package icu.windea.pls.lang.search.selector
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.scope.type.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.search.GlobalSearchScope
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.complexCompareBy
+import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import java.util.function.Function
 
 class ParadoxWithGameTypeSelector<T>(

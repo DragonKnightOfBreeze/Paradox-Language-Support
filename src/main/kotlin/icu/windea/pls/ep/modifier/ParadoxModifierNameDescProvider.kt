@@ -1,10 +1,10 @@
 package icu.windea.pls.ep.modifier
 
-import com.intellij.openapi.extensions.*
-import com.intellij.psi.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.model.elementInfo.*
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
 
 /**
  * 用于为修正提供名字和描述的本地化。

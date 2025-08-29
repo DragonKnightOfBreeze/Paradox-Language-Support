@@ -1,16 +1,18 @@
 package icu.windea.pls.lang.search.usage
 
-import com.intellij.openapi.application.*
-import com.intellij.psi.*
-import com.intellij.psi.search.*
-import com.intellij.psi.search.searches.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import kotlin.experimental.*
+import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiReference
+import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.util.Processor
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.filePathExpressions
+import icu.windea.pls.core.orNull
+import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.lang.fileInfo
+import kotlin.experimental.or
 
 /**
  * （游戏或模组）文件的使用的查询。
