@@ -8,11 +8,11 @@
     { "include": "#variables" },
     { "include": "#operators" },
     { "include": "#colors" },
-    { "include": "#inline-math" },
     { "include": "#booleans" },
-    { "include": "#parameters-anywhere" },
-    { "include": "#strings" },
     { "include": "#numbers" },
+    { "include": "#strings" },
+    { "include": "#parameters-anywhere" },
+    { "include": "#inline-math" },
     { "include": "#punctuation" },
     { "include": "#braces" }
   ],
@@ -21,8 +21,10 @@
       "patterns": [
         {
           "name": "comment.line.number-sign.paradox",
-          "match": "^(\\s*)(#).*$",
-          "captures": { "2": { "name": "punctuation.definition.comment.paradox" } }
+          "match": "^(^|\\s)(#).*",
+          "captures": {
+            "2": { "name": "punctuation.definition.comment.paradox" }
+          }
         }
       ]
     },

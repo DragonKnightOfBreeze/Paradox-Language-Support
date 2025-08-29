@@ -35,7 +35,7 @@ export function registerParadoxLocalisation(Prism) {
       pattern: /(^|\s)[A-Za-z0-9_.\-']+/m,
       lookbehind: true
     },
-    'number': /\b\d+(?:\.\d+)?\b/,
+    'number': /\b\d+\b/,
     'string': {
       pattern: /"[^\r\n]+"?/,
       greedy: true,

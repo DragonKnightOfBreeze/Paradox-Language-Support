@@ -59,9 +59,20 @@ export function registerParadoxScript(Prism) {
     ],
     // string (must not before separator)
     'string': [
-      { pattern: /[^@#=<>?{}\[\]\s"]+"?/ },
-      // { pattern: /"([^"\\\r\n]|\\[\s\S])*"?/, greedy: true },
-      { pattern: /"([^"\\]|\\[\s\S])*"?/, greedy: true }, // can be multiline
+      // can be multiline
+      {
+        pattern: /"([^"\\]|\\[\s\S])*"?/,
+        greedy: true,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
+      {
+        pattern: /[^@#=<>?{}\[\]\s"]+"?/,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
     ],
     'operator': /!=|<=|>=|\?=|=|<|>|[+\-*/%]/,
     'punctuation': /[{}\[\](),]/,

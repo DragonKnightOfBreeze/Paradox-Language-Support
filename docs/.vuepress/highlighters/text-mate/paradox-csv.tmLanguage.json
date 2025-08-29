@@ -5,26 +5,54 @@
   "fileTypes": ["csv"],
   "patterns": [
     { "include": "#comments" },
-    { "include": "#fields" }
+    { "include": "#strings" },
+    { "include": "#booleans" },
+    { "include": "#numbers" },
+    { "include": "#punctuation" }
   ],
   "repository": {
     "comments": {
       "patterns": [
-        { "name": "comment.line.number-sign.csv", "match": "^(\\s*)(#).*$", "captures": { "2": { "name": "punctuation.definition.comment.csv" } } }
+        {
+          "name": "comment.line.number-sign.csv",
+          "match": "^(^|\\s)(#).*",
+          "captures": {
+            "2": { "name": "punctuation.definition.comment.csv" }
+          }
+        }
       ]
     },
-    "fields": {
+    "booleans": {
+      "patterns": [
+        { "name": "constant.language.boolean.cwt", "match": "\\b(?:yes|no)\\b" }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "name": "constant.numeric.float.cwt", "match": "\\b-?\\d+\\.\\d+\\b" },
+        { "name": "constant.numeric.integer.cwt", "match": "\\b-?\\d+\\b" }
+      ]
+    },
+    "strings": {
       "patterns": [
         {
           "name": "string.quoted.double.csv",
-          "begin": "\"",
-          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.csv" } },
-          "end": "\"",
-          "endCaptures": { "0": { "name": "punctuation.definition.string.end.csv" } },
+          "match": "[^#;\"\\s]([^#;\"\\r\\n]*[^#;\\s])?",
           "patterns": [
             { "name": "constant.character.escape.csv", "match": "\"\"" }
           ]
         },
+        {
+          "name": "string.unquoted.csv",
+          "match": "\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?",
+          "patterns": [
+            { "name": "constant.character.escape.csv", "match": "\"\"" }
+          ]
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
         { "name": "punctuation.separator.delimiter.csv", "match": ";" }
       ]
     }

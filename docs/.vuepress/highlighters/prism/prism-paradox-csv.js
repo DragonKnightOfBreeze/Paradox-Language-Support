@@ -28,8 +28,20 @@ export function registerParadoxCsv(Prism) {
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
     'string': [
-      { pattern: /[^#;"\s]([^#;"\r\n]*[^#;\s])?/ }, // middle whitespaces are permitted
-      { pattern: /"([^"\\\r\n]|\\[\s\S])*"?/, greedy: true },
+      {
+        pattern: /"([^"\\\r\n]|\\[\s\S])*"?/,
+        greedy: true,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
+      // middle whitespaces are permitted
+      {
+        pattern: /[^#;"\s]([^#;"\r\n]*[^#;\s])?/,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
     ],
     'punctuation': /;/, // only for semicolons
   };
