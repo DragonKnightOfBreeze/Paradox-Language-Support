@@ -35,4 +35,4 @@
 
 ### Stellaris模组卡覅
 
-- [笔记：Stellaris模组开发](笔记：Stellaris模组开发.md)
+- [笔记：Stellaris模组开发](../笔记：Stellaris模组开发.md)
