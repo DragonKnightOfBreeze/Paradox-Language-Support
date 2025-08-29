@@ -61,7 +61,7 @@ dependencies {
     implementation("org.javassist:javassist:3.30.2-GA")
 
     // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.19.2") {
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
