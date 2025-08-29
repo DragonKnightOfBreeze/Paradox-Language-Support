@@ -2,10 +2,7 @@ import { defineUserConfig } from "vuepress"
 import { viteBundler } from "@vuepress/bundler-vite"
 import { head } from "./configs/index.js"
 import theme from "./theme.js"
-// import prismCwtPlugin from "./plugins/prism/prism-cwt-plugin.js"
-// import prismParadoxScriptPlugin from "./plugins/prism/prism-paradox-script-plugin.js"
-// import prismParadoxLocalisationPlugin from "./plugins/prism/prism-paradox-localisation-plugin.js"
-// import prismParadoxCsvPlugin from "./plugins/prism/prism-paradox-csv-plugin.js"
+import { getPrismPlugins } from "./configs/highlighters.js";
 
 export default defineUserConfig({
   base: "/Paradox-Language-Support/",
@@ -21,10 +18,7 @@ export default defineUserConfig({
     }
   },
   plugins: [
-    // prismCwtPlugin(),
-    // prismParadoxScriptPlugin(),
-    // prismParadoxLocalisationPlugin(),
-    // prismParadoxCsvPlugin(),
+    ...getPrismPlugins()
   ],
   bundler: viteBundler(),
   theme: theme,

@@ -1,10 +1,6 @@
 import { hopeTheme } from "vuepress-theme-hope"
 import { navbarEn, navbarZh, sidebarEn, sidebarZh } from "./configs/index.js"
-import shikiCwt from "./highlighters/shiki/shiki-cwt.js";
-import shikiParadoxScript from "./highlighters/shiki/shiki-paradox-script.js";
-import shikiParadoxLocalisation from "./highlighters/shiki/shiki-paradox-localisation.js";
-import shikiParadoxCsvPlugin from "./plugins/shiki/shiki-paradox-csv-plugin.js";
-import shikiParadoxCsv from "./highlighters/shiki/shiki-paradox-csv.js";
+import { getHighlighterOptions } from "./configs/highlighters.js";
 
 export default hopeTheme({
   hostname: "https://windea.icu",
@@ -78,16 +74,7 @@ export default hopeTheme({
   },
 
   markdown: {
-    highlighter: {
-      type: "shiki",
-      // Custom language supports
-      langs: [
-        () => shikiCwt(),
-        () => shikiParadoxScript(),
-        () => shikiParadoxLocalisation(),
-        () => shikiParadoxCsv(),
-      ]
-    },
+    highlighter: getHighlighterOptions(),
     gfm: true,
     breaks: false,
     attrs: true,
