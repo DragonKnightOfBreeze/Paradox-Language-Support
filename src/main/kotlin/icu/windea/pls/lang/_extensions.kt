@@ -2,34 +2,57 @@
 
 package icu.windea.pls.lang
 
-import com.intellij.extapi.psi.*
-import com.intellij.injected.editor.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.util.text.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.testFramework.*
-import com.intellij.util.text.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.ep.presentation.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.stubs.*
-import icu.windea.pls.lang.references.*
-import icu.windea.pls.lang.references.localisation.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.psi.*
+import com.intellij.extapi.psi.StubBasedPsiElementBase
+import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.testFramework.LightVirtualFileBase
+import com.intellij.util.text.TextRangeUtil
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.ep.data.ParadoxDefinitionData
+import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
+import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
+import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
+import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
+import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
+import icu.windea.pls.lang.psi.stubs.ParadoxStub
+import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxLocalisationInfo
+import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.indexInfo.CwtConfigIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -64,8 +87,8 @@ fun String.isInlineUsage(): Boolean {
 }
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
+    if (from == null) return null
     return when {
-        from == null -> null
         from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
         from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
@@ -74,8 +97,8 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 }
 
 tailrec fun selectFile(from: Any?): VirtualFile? {
+    if (from == null) return null
     return when {
-        from == null -> null
         from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
         from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
         from is VirtualFile -> from
@@ -88,9 +111,10 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
 }
 
 tailrec fun selectGameType(from: Any?): ParadoxGameType? {
+    if (from == null) return null
+    if (from is ParadoxGameType) return from
+    if (from is UserDataHolder) from.getUserData(PlsKeys.injectedGameType)?.let { return it }
     return when {
-        from == null -> null
-        from is ParadoxGameType -> from
         from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
         from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
@@ -112,10 +136,10 @@ private fun getStubToSelectGameType(from: StubBasedPsiElementBase<*>): ParadoxSt
 }
 
 tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
+    if (from == null) return null
+    if (from is CwtLocaleConfig) return from
+    if (from is UserDataHolder) from.getUserData(PlsKeys.injectedLocaleConfig)?.let { return it }
     return when {
-        from == null -> null
-        from is CwtLocaleConfig -> from
-        from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> toLocale(from.name, from)
@@ -131,7 +155,7 @@ private fun getStubToSelectLocale(from: StubBasedPsiElementBase<*>): ParadoxLoca
 }
 
 private fun toLocale(localeId: String?, from: PsiElement?): CwtLocaleConfig? {
-    if(localeId == null || from == null) return null
+    if (localeId == null || from == null) return null
     return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(localeId)
 }
 

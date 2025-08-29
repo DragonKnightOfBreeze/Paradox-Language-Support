@@ -28,8 +28,8 @@ enum class ParadoxSyntaxConstraint(
 
     fun supports(target: Any): Boolean {
         val gameType = when (target) {
-            is PsiBuilder -> target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)?.fileInfo?.rootInfo?.gameType
             is _ParadoxLocalisationTextLexer -> target.gameType
+            is PsiBuilder -> selectGameType(target.getUserData(FileContextUtil.CONTAINING_FILE_KEY))
             is VirtualFile -> selectGameType(target)
             is PsiFile -> selectGameType(target)
             else -> null

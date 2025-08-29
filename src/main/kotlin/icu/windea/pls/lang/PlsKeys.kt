@@ -19,6 +19,8 @@ object PlsKeys : KeyRegistry() {
     //用于为临时文件注入文件信息
     val injectedFileInfo by createKey<ParadoxFileInfo>(this)
     //用于为临时文件注入语言区域
+    val injectedGameType by createKey<ParadoxGameType>(this)
+    //用于为临时文件注入语言区域
     val injectedLocaleConfig by createKey<CwtLocaleConfig>(this)
     //用于为临时脚本文件注入表达式路径前缀
     val injectedElementPathPrefix by createKey<ParadoxExpressionPath>(this)

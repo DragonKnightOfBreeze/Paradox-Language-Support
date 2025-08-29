@@ -1,14 +1,20 @@
 package icu.windea.pls.lang
 
-import com.intellij.injected.editor.*
-import com.intellij.openapi.fileTypes.*
-import com.intellij.openapi.fileTypes.impl.*
-import com.intellij.openapi.vfs.*
-import com.intellij.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileWithoutContent
+import com.intellij.util.application
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * 文件类型重载器。
@@ -40,7 +46,10 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 
         runCatchingCancelable r@{
             if (!application.isUnitTestMode) return@r
-            if (!file.name.startsWith(PlsConstants.testDataFileNamePrefix)) return@r
+            val s1 = file.name.removePrefixOrNull(PlsConstants.testDataFileNamePrefix)
+            if (s1 == null) return@r
+            val s2 = ParadoxGameType.entries.find { s1.startsWith(it.id + "_") }
+            if (s2 != null) file.putUserData(PlsKeys.injectedGameType, s2)
             return ParadoxFileManager.getFileType(possibleFileType)
         }
 
