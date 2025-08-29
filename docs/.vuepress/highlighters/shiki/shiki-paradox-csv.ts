@@ -28,7 +28,7 @@ export default function shikiParadoxCsv(): LanguageRegistration {
     ...(grammarJson as object),
     // Ensure required and friendly fields
     name: 'paradox_csv',
-    scopeName: 'source.paradoxcsv',
+    scopeName: 'source.paradox.csv',
     aliases: ['paradox-csv'],
   }
 }

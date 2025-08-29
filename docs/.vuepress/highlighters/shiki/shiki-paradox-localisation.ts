@@ -28,7 +28,7 @@ export default function shikiParadoxLocalisation(): LanguageRegistration {
     ...(grammarJson as object),
     // Ensure required and friendly fields
     name: 'paradox_localisation',
-    scopeName: 'source.paradoxlocalisation',
+    scopeName: 'source.paradox.localisation',
     aliases: ['paradox-localisation'],
   }
 }

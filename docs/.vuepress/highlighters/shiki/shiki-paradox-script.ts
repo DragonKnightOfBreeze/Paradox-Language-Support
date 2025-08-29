@@ -28,7 +28,7 @@ export default function shikiParadoxScript(): LanguageRegistration {
     ...(grammarJson as object),
     // Ensure required and friendly fields
     name: 'paradox_script',
-    scopeName: 'source.paradoxscript',
+    scopeName: 'source.paradox.script',
     aliases: ['paradox-script'],
   }
 }
