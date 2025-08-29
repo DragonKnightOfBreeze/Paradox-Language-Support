@@ -20,7 +20,7 @@
 - **Paradox Localisation**（本地化 `.yml`）
   - 注释：`#`
   - 代码块语言 ID：`paradox_localisation`
-- **Paradox CSV**（分号分隔 CSV，`*.cwt`）
+- **Paradox CSV**（分号分隔 CSV，`*.csv`）
   - 注释：`#`
   - 代码块语言 ID：`paradox_csv`
 
@@ -271,7 +271,7 @@ l_english:
 > [!warning]
 > `#format`、`@icon!` 等为特定游戏支持的进阶标记；仅在对应游戏中有效。`['concept' ...]` 仅 Stellaris 支持。
 
-## Paradox CSV 语言
+## Paradox CSV 语言 {#paradox-csv}
 
 <!--
 @impl-notes

@@ -6,7 +6,7 @@ import { registerParadoxLocalisation } from '../highlighters/prism-paradox-local
 import { PluginObject } from "vuepress";
 
 /**
- * uePress Prism plugin for Paradox Localisation.
+ * VuePress Prism plugin for Paradox Localisation.
  *
  * Usage:
  * - Browser: include after Prism, it will auto-register if window.Prism exists
@@ -14,6 +14,7 @@ import { PluginObject } from "vuepress";
  *
  * @see https://github.com/PrismJS/prism
  * @see https://prismjs.com
+ * @see https://prismjs.com/extending#language-definitions
  * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#localisation
  *
  * @author windea

@@ -24,6 +24,9 @@ importers:
       '@vuepress/plugin-search':
         specifier: 2.0.0-rc.112
         version: 2.0.0-rc.112(vuepress@2.0.0-rc.25(@vuepress/bundler-vite@2.0.0-rc.25(@types/node@24.3.0)(sass@1.91.0))(vue@3.5.20))
+      '@vuepress/plugin-shiki':
+        specifier: 2.0.0-rc.112
+        version: 2.0.0-rc.112(@vueuse/core@13.8.0(vue@3.5.20))(vuepress@2.0.0-rc.25(@vuepress/bundler-vite@2.0.0-rc.25(@types/node@24.3.0)(sass@1.91.0))(vue@3.5.20))
       artplayer:
         specifier: ^5.2.5
         version: 5.2.5
