@@ -9,10 +9,10 @@ import shikiParadoxLocalisation from "../../highlighters/shiki/shiki-paradox-loc
  * VuePress Shiki plugin for Paradox Localisation.
  *
  * Usage:
- * - 在 `docs/.vuepress/config.ts` 中引入并添加到 `plugins`：
+ * - Add to `plugins` in `docs/.vuepress/config.ts`:
  *   `plugins: [ shikiParadoxLocalisationPlugin() ]`
- * - 该插件按需注册自定义语言：`langs: [() => shikiParadoxLocalisation()]`。
- * - 与 `vuepress-theme-hope` 共存时，建议在主题的 Shiki 配置外部追加（或合并到统一的 shikiPlugin 配置）。
+ * - Lazily register the custom language: `langs: [() => shikiParadoxLocalisation()]`.
+ * - With `vuepress-theme-hope`, either merge into the theme's Shiki config or add an extra shikiPlugin instance.
  *
  *
  * References:

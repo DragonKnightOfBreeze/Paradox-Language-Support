@@ -9,10 +9,10 @@ import shikiParadoxScript from "../../highlighters/shiki/shiki-paradox-script.js
  * VuePress Shiki plugin for Paradox Script.
  *
  * Usage:
- * - 在 `docs/.vuepress/config.ts` 中引入并添加到 `plugins`：
+ * - Add to `plugins` in `docs/.vuepress/config.ts`:
  *   `plugins: [ shikiParadoxScriptPlugin() ]`
- * - 该插件按需注册自定义语言：`langs: [() => shikiParadoxScript()]`。
- * - 与 `vuepress-theme-hope` 共存时，建议在主题的 Shiki 配置外部追加（或合并到统一的 shikiPlugin 配置）。
+ * - Lazily register the custom language: `langs: [() => shikiParadoxScript()]`.
+ * - With `vuepress-theme-hope`, either merge into the theme's Shiki config or add an extra shikiPlugin instance.
  *
  * References:
  * - https://github.com/shikijs/shiki
