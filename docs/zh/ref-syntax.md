@@ -187,7 +187,7 @@ Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
 
 参数条件（parameter condition）：
 
-- 语法（外层）：`[ [!]<parameter> <members...> ]`。
+- 语法（外层）：`[[<expression>] <members...> ]`。
 - 说明：用于定义声明上下文中的条件化成员（仅在特定定义中有效）。
 
 内联参数条件（inline parameter condition）：

@@ -187,7 +187,7 @@ Parameter:
 
 Parameter Condition:
 
-- Syntax (outer): `[ [!]<parameter> <members...> ]`.
+- Syntax (outer): `[[!<expression>] <members...> ]`.
 - Description: Used to define conditional members within a declaration context (only valid in specific definitions).
 
 Inline Parameter Condition:
