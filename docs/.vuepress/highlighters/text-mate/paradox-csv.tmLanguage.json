@@ -5,55 +5,55 @@
   "fileTypes": ["csv"],
   "patterns": [
     { "include": "#comments" },
-    { "include": "#strings" },
     { "include": "#booleans" },
     { "include": "#numbers" },
+    { "include": "#strings" },
     { "include": "#punctuation" }
   ],
   "repository": {
     "comments": {
       "patterns": [
         {
-          "name": "comment.line.number-sign.csv",
+          "name": "comment.line.number-sign.paradox.csv",
           "match": "^(^|\\s)(#).*",
           "captures": {
-            "2": { "name": "punctuation.definition.comment.csv" }
+            "2": { "name": "punctuation.definition.comment.paradox.csv" }
           }
         }
       ]
     },
     "booleans": {
       "patterns": [
-        { "name": "constant.language.boolean.cwt", "match": "\\b(?:yes|no)\\b" }
+        { "name": "constant.language.boolean.paradox.csv", "match": "\\b(?:yes|no)\\b" }
       ]
     },
     "numbers": {
       "patterns": [
-        { "name": "constant.numeric.float.cwt", "match": "\\b-?\\d+\\.\\d+\\b" },
-        { "name": "constant.numeric.integer.cwt", "match": "\\b-?\\d+\\b" }
+        { "name": "constant.numeric.float.paradox.csv", "match": "\\b-?\\d+\\.\\d+\\b" },
+        { "name": "constant.numeric.integer.paradox.csv", "match": "\\b-?\\d+\\b" }
       ]
     },
     "strings": {
       "patterns": [
         {
-          "name": "string.quoted.double.csv",
+          "name": "string.quoted.double.paradox.csv",
           "match": "[^#;\"\\s]([^#;\"\\r\\n]*[^#;\\s])?",
           "patterns": [
-            { "name": "constant.character.escape.csv", "match": "\"\"" }
+            { "name": "constant.character.escape.paradox.csv", "match": "\"\"" }
           ]
         },
         {
-          "name": "string.unquoted.csv",
+          "name": "string.unquoted.paradox.csv",
           "match": "\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?",
           "patterns": [
-            { "name": "constant.character.escape.csv", "match": "\"\"" }
+            { "name": "constant.character.escape.paradox.csv", "match": "\"\"" }
           ]
         }
       ]
     },
     "punctuation": {
       "patterns": [
-        { "name": "punctuation.separator.delimiter.csv", "match": ";" }
+        { "name": "punctuation.separator.delimiter.paradox.csv", "match": ";" }
       ]
     }
   }
