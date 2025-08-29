@@ -71,13 +71,13 @@ dependencies {
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.3.0") {
+    implementation("dev.langchain4j:langchain4j:1.4.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.3.0") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.4.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-kotlin:1.3.0-beta9") {
+    implementation("dev.langchain4j:langchain4j-kotlin:1.4.0-beta9") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "com.fasterxml.jackson.core")
