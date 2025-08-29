@@ -2,7 +2,7 @@
 // All rights reserved.
 
 import Prism from 'prismjs'
-import { registerCwt } from '../highlighters/prism-cwt.js'
+import { registerParadoxCsv } from '../../highlighters/prism/prism-paradox-csv.js'
 import { PluginObject } from "vuepress";
 
 /**
@@ -15,16 +15,16 @@ import { PluginObject } from "vuepress";
  * @see https://github.com/PrismJS/prism
  * @see https://prismjs.com
  * @see https://prismjs.com/extending#language-definitions
- * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#cwt
+ * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-csv
  *
  * @author windea
  */
-export default function prismCwtPlugin(): PluginObject {
+export default function prismParadoxCsvPlugin(): PluginObject {
   return {
-    name: 'prism-cwt',
-    extendsMarkdown() {
-      // Register CWT language for SSR highlighting
-      registerCwt(Prism)
+    name: 'prism-paradox-csv',
+    extendsMarkdown(/* md */) {
+      // Register Paradox CSV language for SSR highlighting
+      registerParadoxCsv(Prism)
     },
   }
 }

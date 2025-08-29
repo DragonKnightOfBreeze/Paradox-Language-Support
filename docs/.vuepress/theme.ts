@@ -1,5 +1,10 @@
 import { hopeTheme } from "vuepress-theme-hope"
 import { navbarEn, navbarZh, sidebarEn, sidebarZh } from "./configs/index.js"
+import shikiCwt from "./highlighters/shiki/shiki-cwt.js";
+import shikiParadoxScript from "./highlighters/shiki/shiki-paradox-script.js";
+import shikiParadoxLocalisation from "./highlighters/shiki/shiki-paradox-localisation.js";
+import shikiParadoxCsvPlugin from "./plugins/shiki/shiki-paradox-csv-plugin.js";
+import shikiParadoxCsv from "./highlighters/shiki/shiki-paradox-csv.js";
 
 export default hopeTheme({
   hostname: "https://windea.icu",
@@ -45,7 +50,7 @@ export default hopeTheme({
   plugins: {
     components: {
       components: [
-          "ArtPlayer"
+        "ArtPlayer"
       ],
       componentOptions: {
         artPlayer: {
@@ -74,7 +79,14 @@ export default hopeTheme({
 
   markdown: {
     highlighter: {
-      type: "prismjs"
+      type: "shiki",
+      // Custom language supports
+      langs: [
+        () => shikiCwt(),
+        () => shikiParadoxScript(),
+        () => shikiParadoxLocalisation(),
+        () => shikiParadoxCsv(),
+      ]
     },
     gfm: true,
     breaks: false,
@@ -88,7 +100,7 @@ export default hopeTheme({
         matcher: /^\(New in .*\)$/,
         replacer: ({ tag, content }) => {
           if (tag === "em") {
-            return {tag: "Badge", attrs: {type: "tip"}, content: content.substring(1, content.length - 1)}
+            return { tag: "Badge", attrs: { type: "tip" }, content: content.substring(1, content.length - 1) }
           }
         }
       }

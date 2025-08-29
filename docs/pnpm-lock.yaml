@@ -11,7 +11,13 @@ importers:
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
+      shiki:
+        specifier: ^3.12.0
+        version: 3.12.0
     devDependencies:
+      '@types/prismjs':
+        specifier: ^1.26.5
+        version: 1.26.5
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.25
         version: 2.0.0-rc.25(@types/node@24.3.0)(sass@1.91.0)
@@ -747,6 +753,9 @@ packages:
 
   '@types/picomatch@4.0.2':
     resolution: {integrity: sha512-qHHxQ+P9PysNEGbALT8f8YOSHW0KJu6l2xU8DYY0fu/EmGxXdVnuTLvFUvBgPJMSqXq29SYHveejeAha+4AYgA==}
+
+  '@types/prismjs@1.26.5':
+    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -2617,6 +2626,8 @@ snapshots:
       undici-types: 7.10.0
 
   '@types/picomatch@4.0.2': {}
+
+  '@types/prismjs@1.26.5': {}
 
   '@types/sax@1.2.7':
     dependencies:

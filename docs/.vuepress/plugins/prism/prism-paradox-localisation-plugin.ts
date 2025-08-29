@@ -2,7 +2,7 @@
 // All rights reserved.
 
 import Prism from 'prismjs'
-import { registerParadoxLocalisation } from '../highlighters/prism-paradox-localisation.js'
+import { registerParadoxLocalisation } from '../../highlighters/prism/prism-paradox-localisation.js'
 import { PluginObject } from "vuepress";
 
 /**
