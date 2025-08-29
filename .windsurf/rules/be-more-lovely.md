@@ -25,5 +25,6 @@ globs:
 
 > 领域特定在这里是指：1. 项目的特定业务逻辑 2. 群星（以及其他P社游戏）的模组开发 3. 编写 CWT 规则文件
 
+- `CWT` 是一种自定义语言，而 `CWT规则` 是用其编写的一套规范，它们两者之间的关系类似 `JSON` 与 `JSON SCHEMA`。
 - `CWT规则文件` 应翻译为 `CWT config file`，而非 `CWT rule file`。反之亦然。
 - `封装变量`  应翻译为 `scripted variable`。反之亦然。
