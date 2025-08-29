@@ -58,9 +58,10 @@ CWT 规则用于为 CWT 语言自身以及各种 Paradox 语言提供高级语�
 - 例：
 
 ```cwt
-cost = int
-acceleration = float
-class = enum[shipsize_class]
+playable = yes
+cost = 10
+acceleration = 20.0
+class = some_shipsize_class
 ```
 
 值（value）：
@@ -85,11 +86,11 @@ ship_size = {
     ## cardinality = 0..1
     cost = int
 
-    modifier = {
-        alias_name[modifier] = alias_match_left[modifier]
-    }
-}
-```
+      modifier = {
+          alias_name[modifier] = alias_match_left[modifier]
+      }
+  }
+  ```
 
 注释与文档：
 
@@ -204,9 +205,9 @@ effect = {
     level >= 2
     size ?= @my_var
     color = rgb { 34, 136, 255 }
-    
+
     name = "Hello $who|leader$!"
-    
+
     modifier = {
         add = 1
     }

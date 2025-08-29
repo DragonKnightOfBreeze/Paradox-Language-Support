@@ -2,26 +2,27 @@
 
 <!-- TODO 人工改进与润色 -->
 
-## Positioning & Vision {#vision}
+## Position & Vision {#vision}
 
-This chapter aims to be an authoritative, practical, and concise reference for Paradox modding syntaxes. We strive to align with real-world usage and toolchain behaviour, and will continue refining it as the ecosystem evolves.
+This document aims to be the authoritative guide and quick reference for the syntax of the Domain-Specific Languages (DSLs) used when writing CWT config files and Paradox mods.
+We are confident in maintaining principles of clarity, accuracy, and practicality, ensuring consistency with actual usage and toolchain behavior. It will be continuously polished and improved alongside the evolution of the ecosystem and versions.
 
 ## Overview {#overview}
 
-This chapter covers the following syntaxes (examples use Prism code fences):
+This document covers the syntax specifications for the following languages:
 
-- **CWT config file** (`*.cwt`)
+- **CWT** (`*.cwt`)
   - Comments: `#`, `##` (option comment), `###` (doc comment)
-  - Code fence language id: `cwt`
+  - Code fence language ID: `cwt`
 - **Paradox Script**
   - Comments: `#`
-  - Code fence language id: `paradox_script`
-- **Paradox Localisation** (`.yml`)
+  - Code fence language ID: `paradox_script`
+- **Paradox Localisation** (Localization `.yml`)
   - Comments: `#`
-  - Code fence language id: `paradox_localisation`
-- **Paradox CSV** (semicolon-separated CSV)
+  - Code fence language ID: `paradox_localisation`
+- **Paradox CSV** (Semicolon-delimited CSV, `*.csv`)
   - Comments: `#`
-  - Code fence language id: `paradox_csv`
+  - Code fence language ID: `paradox_csv`
 
 ## CWT Language {#cwt}
 
@@ -37,24 +38,30 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/cwt/Cwt.OptionDocument.flex
 -->
 
-This section defines the syntax of CWT config files used to author and organize CWT configuration content. The surface form resembles Paradox Script with additional capabilities such as option comments.
+This chapter describes the syntax of the CWT language.
 
-Basics:
+The CWT language is a Domain-Specific Language used for writing CWT configs.
+CWT language files use the `.cwt` extension. Its syntax is similar to Paradox Script but additionally supports *option comments* and *documentation comments*.
 
-- **Member types**: property, value, block.
-- **Separators**: `=`/`==` mean equal; `!=`/`<>` mean not equal.
-- **Whitespace/newlines**: whitespace and newlines separate tokens; blank lines are allowed.
+CWT configs are used to provide advanced language features for the CWT language itself and various Paradox languages, including but not limited to syntax highlighting, code inspection, code completion, etc.
+
+Basic Concepts:
+
+- **Member Types**: Property, Value, Block.
+- **Separators**: `=`, `==` mean equals; `!=`, `<>` mean not equals.
+- **Whitespace/Newlines**: Whitespace and newlines are used to separate tokens; blank lines are allowed.
 
 Property:
 
-- Structure: `<key> <sep> <value>`, where `<sep>` is one of `=`/`==`/`!=`/`<>`.
-- Key: unquoted or double-quoted. Unquoted keys must not contain `# = { }` or whitespace.
+- Structure: `<key> <sep> <value>`, where `<sep>` is `=`/`==`/`!=`/`<>`.
+- Key: Unquoted or double-quoted; unquoted keys should not contain `# = { }` or whitespace.
 - Example:
 
 ```cwt
-cost = int
-acceleration = float
-class = enum[shipsize_class]
+playable = yes
+cost = 10
+acceleration = 20.0
+class = some_shipsize_class
 ```
 
 Value:
@@ -87,16 +94,16 @@ ship_size = {
 
 Comments and documentation:
 
-- **Line comment**: starts with `#`; the whole line is a comment.
-- **Option comment**: starts with `##`; declares metadata for the immediately following member (property/block/value).
-  - Syntax mirrors properties: `<optionKey> <sep> <optionValue>`.
+- **Line Comment**: Starts with `#`, the entire line is treated as a comment.
+- **Option Comment**: Starts with `##`; used to declare metadata for the member (property/block/value) immediately following it.
+  - Syntax is the same as a property: `<optionKey> <sep> <optionValue>`.
   - Common examples: `## cardinality = 0..1`, `## severity = warning`, `## push_scope = country`.
-- **Documentation comment**: starts with `###`; provides human-readable docs for a member (shown in completion/tooltips).
+- **Documentation Comment**: Starts with `###`; used to provide descriptive text for a member (shown in completion/documentation).
 
 Grammar highlights and example:
 
 ```cwt
-# regular comment
+# Regular comment
 types = {
     ### Documentation text
     ## option_key = option_value
@@ -124,9 +131,9 @@ types = {
 
 Notes:
 
-- An option comment applies to the immediately following member (and, depending on consumer semantics, may scope to its body).
-- Avoid reserved characters in unquoted keys/strings; use double quotes for complex content.
-- Both equal and not-equal separators are valid for properties and options; pick according to intended semantics.
+- An option comment only affects the single member immediately following it (or the content within that member, depending on implementation).
+- Avoid including whitespace and reserved symbols in unquoted keys and strings; use double quotes for complex content.
+- Both equals and not-equals symbols can be used for options and properties; choose based on semantics.
 
 ## Paradox Script Language {#paradox-script}
 
@@ -141,48 +148,51 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
 -->
 
-This section documents the surface syntax of Paradox Script and strives to match actual usage and toolchain behaviour.
+This chapter describes the basic syntax of the Paradox Script language.
 
-Basics:
+Paradox Script is a Domain-Specific Language used for writing game scripts.
+Its file extension is typically `.txt`. Files in specific locations may use other extensions, such as `.gfx` or `.gui`.
 
-- **Members**: property, value, block.
-- **Separators/relations**: `=`, `!=`, `<`, `>`, `<=`, `>=`, `?=`.
-- **Comment**: single-line comment starts with `#`.
+Basic Concepts:
+
+- **Member Types**: Property, Value, Block.
+- **Separators (Comparison/Assignment)**: `=`, `!=`, `<`, `>`, `<=`, `>=`, `?=`.
+- **Comments**: Single-line comments starting with `#`.
 
 Property:
 
-- Structure: `<key> <sep> <value>` where `<sep>` is one of the separators above.
-- Key: unquoted or double-quoted. Keys can be parameterized.
-- Examples: `enabled = yes`, `level >= 2`, `size ?= @var`.
+- Structure: `<key> <sep> <value>`, where `<sep>` is one of the separators listed above.
+- Key: Unquoted or double-quoted. Keys can be parameterized (see below).
+- Example: `enabled = yes`, `level >= 2`, `size ?= @var`.
 
-Values:
+Value:
 
 - **Boolean**: `yes`/`no`.
 - **Integer/Float**: e.g., `10`, `-5`, `1.25`.
-- **String**: unquoted or double-quoted; quoted strings may embed parameters and inline-parameter-conditions.
+- **String**: Unquoted or double-quoted; double-quoted strings can embed parameters and inline parameter conditions.
 - **Color**: `rgb{...}`, `hsv{...}`, `hsv360{...}`.
-- **Block**: `{ ... }` with nested properties/values/variables.
-- **Scripted variable reference**: `@name`.
-- **Inline math**: `@[ <expr> ]` with `+ - * / %`, unary `+/-`, absolute `|x|`, and parentheses.
+- **Block**: `{ ... }`, can contain comments, properties, values, scripted variables, etc., inside.
+- **Scripted Variable Reference**: `@name`.
+- **Inline Math Expression**: `@[ <expr> ]`, supports `+ - * / %`, unary plus/minus, absolute value `|x|`, and parentheses.
 
-Scripted variables:
+Scripted Variable:
 
-- Declaration: `@<name> = <value>` where value can be boolean/int/float/string/inline-math.
+- Declaration: `@<name> = <value>`, where `<value>` can be Boolean/Integer/Float/String/Inline math expression.
 - Reference: `@<name>`.
 
-Parameters:
+Parameter:
 
 - Syntax: `$name$` or `$name|argument$`.
-- Locations: may appear in variable names, variable references, keys, strings, and inline math.
+- Location: Can be used in scripted variable names, scripted variable reference names, keys, strings, inline math expressions.
 
-Parameter conditions:
+Parameter Condition:
 
-- Outer form: `[ [!]<parameter> <members...> ]`.
-- Purpose: conditionally define members in declaration contexts.
+- Syntax (outer): `[ [!]<parameter> <members...> ]`.
+- Description: Used to define conditional members within a declaration context (only valid in specific definitions).
 
-Inline parameter condition:
+Inline Parameter Condition:
 
-- Within strings, fragments like: `"a[[cond]b]c"`.
+- Used for conditional fragments inside strings, formatted like: `"a[[cond]b]c"`.
 
 Example:
 
@@ -194,6 +204,7 @@ effect = {
     enabled = yes
     level >= 2
     size ?= @my_var
+    color = rgb { 34, 136, 255 }
 
     name = "Hello $who|leader$!"
 
@@ -206,7 +217,7 @@ effect = {
 ```
 
 > [!warning]
-> Parameters, parameter conditions and inline math are advanced features, typically meaningful only in specific definitions (e.g., scripted effects/triggers) or when evaluated by the engine.
+> Parameters, parameter conditions, inline math, etc., are advanced syntax and are typically only evaluated by the engine or effective within specific definitions (like scripted effects/triggers).
 
 ## Paradox Localisation Language {#paradox-localisation}
 
@@ -222,27 +233,28 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex
 -->
 
-This section documents the surface syntax of Paradox Localisation and strives to match actual usage and toolchain behaviour.
+This chapter describes the basic syntax of the Paradox Localisation language.
 
-Paradox Localisation files use the `.yml` extension but are actually not valid YAML. They also require the file encoding to be **UTF-8 WITH BOM**.
+The Paradox Localisation language is a Domain-Specific Language used to provide internationalize rich text with dynamic content for the game.
+Its file extension is `.yml`, but it is not actually valid YAML and must use **UTF-8 WITH BOM** encoding.
 
 > [!tip]
-> PLS can detect encoding issues of localisation files and can auto-fix the file encoding when necessary.
+> PLS can detect file encoding issues in localisation files and supports automatically fixing the encoding.
 
-File layout:
+File Structure:
 
-- Optional **locale header** line(s): e.g., `l_english:` or `l_simp_chinese:` (multiple allowed to be compatible with `localisation/languages.yml`).
-- Multiple **key-value** entries: `<key>:<number?> "<text>"`, where `<number>` is an optional tracking number.
-- Comments: single-line comments start with `#`.
+- Optional **Language Identifier** line: e.g., `l_english:`, `l_simp_chinese:` (multiple can exist for compatibility with `localisation/languages.yml`).
+- Multiple **Key-Value Pairs**: `<key>:<number?> "<text>"`, where `<number>` is an optional internal tracking number.
+- Comments: Single-line comments starting with `#`.
 
-Markup inside the quoted text:
+Markup available inside the text (`"<text>"`):
 
-- **Color**: `§X ... §!` (`X` is a single-character id).
-- **Parameters**: `$name$` or `$name|argument$`. The `name` can be a localisation key, a command, or a scripted variable reference using `$@var$` (parse-equivalent).
-- **Bracket commands**: `[text|argument]`, `text` can be parameterized; often used for `Get...` functions/context lookups.
-- **Icon**: `£icon|frame£` (the `|frame` part is optional) to embed a GFX icon.
-- **Concept command (Stellaris)**: `['concept' <rich text>]` for linking a concept and showing rich text.
-- **Text format (CK3/Vic3)**: `#format ... #!` to style a text block; and **Text icon**: `@icon!`.
+- **Color**: `§X ... §!` (`X` is a single-character ID).
+- **Parameter**: `$name$` or `$name|argument$`. `name` can be a localisation key, command, or scripted variable reference (e.g., `$@var$` is equivalent at the parsing level).
+- **Square Bracket Command**: `[text|argument]`, where `text` can be parameterized; commonly used for `Get...`/context calls.
+- **Icon**: `£icon|frame£` (`|frame` can be omitted), embeds a GFX icon when rendered.
+- **Concept Command (Stellaris)**: `['concept' <rich text>]`, used to link concepts and display descriptive text.
+- **Text Format (CK3/Vic3)**: `#format ... #!`, used to style text blocks; and **Text Icons**: `@icon!` (starts with `@`, ends with `!`).
 
 Example:
 
@@ -254,11 +266,11 @@ l_english:
 
 Notes:
 
-- The number after the colon can be omitted.
-- Quoted text generally does not require escaping for quotes if kept balanced; avoid stray quotes.
+- The number (tracking number) after the colon can be omitted.
+- Double quotes inside the text generally do not need escaping, but avoid unpaired quotes.
 
 > [!warning]
-> `#format` and `@icon!` are advanced, game-specific constructs and only available in games that implement them. `['concept' ...]` is Stellaris-only.
+> `#format`, `@icon!`, etc., are advanced markup supported by specific games; they are only valid in those games. `['concept' ...]` is only supported in Stellaris.
 
 ## Paradox CSV Language {#paradox-csv}
 
@@ -273,11 +285,12 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.flex
 -->
 
-Paradox CSV files are typically regular CSV with project-specific conventions:
+This chapter describes the syntax of the Paradox CSV language.
+Paradox CSV language files use the `.csv` extension. Based on standard CSV, its conventions:
 
-- **Column separator**: semicolon `;`.
-- **Comments**: single-line comments starting with `#`.
-- **Strings**: double-quoted; inner quotes follow the regular CSV rule of doubling (`""`).
+- **Column Separator**: Semicolon `;` (common in early/tool-exported CSVs).
+- **Comments**: Whole-line comments starting with `#`.
+- **Strings**: Enclosed in double quotes; internal double quotes are represented by `""` (standard CSV rule).
 
 Example:
 
