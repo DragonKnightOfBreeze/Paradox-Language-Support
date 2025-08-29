@@ -36,9 +36,17 @@
       <option name="REPLACE_SUM" value="false" />
     </JavaCodeStyleSettings>
     <JetCodeStyleSettings>
+      <option name="PACKAGES_TO_USE_STAR_IMPORTS">
+        <value>
+          <package name="java.util" alias="false" withSubpackages="false" />
+          <package name="com.intellij.ui.dsl" alias="false" withSubpackages="true" />
+          <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
+          <package name="io.ktor" alias="false" withSubpackages="true" />
+        </value>
+      </option>
       <option name="LINE_BREAK_AFTER_MULTILINE_WHEN_ENTRY" value="false" />
-      <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="10" />
-      <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="10" />
+      <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="50" />
+      <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="50" />
       <option name="BLANK_LINES_BEFORE_DECLARATION_WITH_COMMENT_OR_ANNOTATION_ON_SEPARATE_LINE" value="0" />
     </JetCodeStyleSettings>
     <TypeScriptCodeStyleSettings version="0">
