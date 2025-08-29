@@ -7,8 +7,8 @@
     { "include": "#comments" },
     { "include": "#header" },
     { "include": "#property" },
-    { "include": "#string" },
-    { "include": "#number" }
+    { "include": "#strings" },
+    { "include": "#numbers" }
   ],
   "repository": {
     "comments": {
@@ -34,7 +34,7 @@
       "patterns": [
         {
           "name": "meta.property.paradox.localisation",
-          "match": "^(^|\\s)[A-Za-z0-9_.\\-']+",
+          "match": "(^|\\s)([A-Za-z0-9_.\\-']+)",
           "captures": {
             "2": { "name": "variable.other.key.paradox.localisation" }
           }

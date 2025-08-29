@@ -17,40 +17,25 @@
     "comments": {
       "patterns": [
         {
-          "name": "comment.line.triple-number-sign.cwt",
+          "name": "comment.line.doc.cwt",
           "match": "(^|\\s)(###).*",
           "captures": {
             "2": { "name": "punctuation.definition.comment.cwt" }
           }
         },
         {
-          "name": "comment.line.double-number-sign.cwt",
+          "name": "comment.line.option.cwt",
           "match": "(\\s*)(##).*",
           "captures": {
             "2": { "name": "punctuation.definition.comment.cwt" }
           }
         },
         {
-          "name": "comment.line.number-sign.cwt",
+          "name": "comment.line.cwt",
           "match": "(\\s*)(#).*",
           "captures": {
             "2": { "name": "punctuation.definition.comment.cwt" }
           }
-        }
-      ]
-    },
-    "property": {
-      "patterns": [
-        {
-          "name": "meta.property.cwt",
-          "match": "^(\\s*)([A-Za-z0-9_.'\\-]+)(?=\\s*(==|!=|<>|=))",
-          "captures": {
-            "2": { "name": "variable.other.key.cwt" }
-          }
-        },
-        {
-          "name": "support.function.dynamic.cwt",
-          "match": "(?x)(value|enum|scope|icon)\\s*\\[[^\\]\\r\\n]+\\]"
         }
       ]
     },
@@ -70,21 +55,45 @@
         { "name": "constant.numeric.integer.cwt", "match": "\\b-?\\d+\\b" }
       ]
     },
+    "property": {
+      "patterns": [
+        {
+          "name": "meta.property.cwt",
+          "match": "(\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?)(?=\\s*(?:==|=|!=|<>))",
+          "captures": {
+            "1": { "name": "variable.other.key.cwt" }
+          },
+          "patterns": [
+            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+          ]
+        },
+        {
+          "name": "meta.property.cwt",
+          "match": "([^#={}\\s\"]+\"?)(?=\\s*(?:==|=|!=|<>))",
+          "captures": {
+            "1": { "name": "variable.other.key.cwt" }
+          },
+          "patterns": [
+            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
     "strings": {
       "patterns": [
         {
           "name": "string.quoted.double.cwt",
-          "begin": "\"",
-          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.cwt" } },
-          "end": "\"",
-          "endCaptures": { "0": { "name": "punctuation.definition.string.end.cwt" } },
+          "match": "\"(?:[^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?",
           "patterns": [
             { "name": "constant.character.escape.cwt", "match": "\\\\." }
           ]
         },
         {
           "name": "string.unquoted.cwt",
-          "match": "(?x)(?:[A-Za-z0-9_.'\\-][^#=<>{}\\[\\]\\s\"(),]*)"
+          "match": "[^#={}\\s\"]+\"?",
+          "patterns": [
+            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+          ]
         }
       ]
     },

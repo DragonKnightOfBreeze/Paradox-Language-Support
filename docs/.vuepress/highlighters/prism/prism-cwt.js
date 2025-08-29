@@ -41,12 +41,23 @@ export function registerCwt(Prism) {
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
     // property key (before separator ==, =, !=, <>)
     'property': [
-      { pattern: /[^#={}\s"]+"?(?=\s*(?:==|=|!=|<>))/ },
-      { pattern: /"([^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:==|=|!=|<>))/, greedy: true },
+      {
+        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:==|=|!=|<>))/,
+        greedy: true,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
+      {
+        pattern: /[^#={}\s"]+"?(?=\s*(?:==|=|!=|<>))/,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
     ],
     'string': [
       {
-        pattern: /"([^"\\\r\n]|\\[\s\S])*"?/,
+        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?/,
         greedy: true,
         inside: {
           'escape': { pattern: /\\./ }

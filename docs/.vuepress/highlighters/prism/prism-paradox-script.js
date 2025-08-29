@@ -27,12 +27,7 @@ export function registerParadoxScript(Prism) {
     },
     // scripted variable (identifier after @)
     'variable': {
-      // pattern: /(^|\s\[\{)@[A-Za-z_$\[][^@#={}\s"]*/,
-      // lookbehind: true,
-      // greedy: true,
-      // alias: 'symbol',
-      pattern: /(^|[\s\[{])@[A-Za-z_$\[][^@#={}\s"]*/,
-      // pattern: /@[A-Za-z0-9_]+/,
+      pattern: /(^|[\s\[{<>=])@[A-Za-z_$\[][^@#={}\s"]*/,
       lookbehind: true,
       greedy: true,
       alias: 'symbol',
@@ -54,14 +49,25 @@ export function registerParadoxScript(Prism) {
     },
     // property key (before separator =, !=, <, >, <=, >=, ?=)
     'property': [
-      { pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/ },
-      { pattern: /"([^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/, greedy: true },
+      {
+        pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
+        greedy: true,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
+      {
+        pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
+        inside: {
+          'escape': { pattern: /\\./ }
+        }
+      },
     ],
     // string (must not before separator)
     'string': [
       // can be multiline
       {
-        pattern: /"([^"\\]|\\[\s\S])*"?/,
+        pattern: /"(?:[^"\\]|\\[\s\S])*"?/,
         greedy: true,
         inside: {
           'escape': { pattern: /\\./ }
