@@ -6,7 +6,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.application
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.inject.support.BaseCodeInjectorSupport
+import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool
 import javassist.CtClass
@@ -29,8 +29,9 @@ class CodeInjectorService {
     fun init() {
         val application = application
 
-        application.putUserData(continueInvocationExceptionKey, continueInvocationException)
         application.putUserData(invokeInjectMethodKey, javaClass.declaredMethods.first { it.name == "invokeInjectMethod" }.apply { trySetAccessible() })
+        application.putUserData(continueInvocationExceptionKey, continueInvocationException)
+        application.putUserData(checkContinueInvocationKey, javaClass.declaredMethods.first { it.name == "checkContinueInvocation" }.apply { trySetAccessible() })
 
         val classPool = getClassPool()
         classPool.importPackage("java.util")
@@ -72,10 +73,13 @@ class CodeInjectorService {
     companion object {
         //for Application
         @JvmField
+        val invokeInjectMethodKey = createKey<Method>("INVOKE_INJECT_METHOD_BY_WINDEA")
+        //for Application
+        @JvmField
         val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
         //for Application
         @JvmField
-        val invokeInjectMethodKey = createKey<Method>("INVOKE_INJECT_METHOD_BY_WINDEA")
+        val checkContinueInvocationKey = createKey<Method>("CHECK_CONTINUE_INVOCATION_BY_WINDEA")
 
         //for Application
         @JvmField
@@ -89,7 +93,7 @@ class CodeInjectorService {
         val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
         //for CodeInjector
         @JvmField
-        val injectMethodInfosKey = createKey<Map<String, BaseCodeInjectorSupport.InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
+        val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
 
         //method invoked by injected codes
 
@@ -133,5 +137,13 @@ class CodeInjectorService {
         @JvmStatic
         @Suppress("unused")
         private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
+
+        //method invoked by injected codes to check ContinueInvocationException
+
+        @JvmStatic
+        @Suppress("unused")
+        private fun checkContinueInvocation(e: InvocationTargetException): Boolean {
+            return e.cause == continueInvocationException || e.cause?.cause == continueInvocationException
+        }
     }
 }
