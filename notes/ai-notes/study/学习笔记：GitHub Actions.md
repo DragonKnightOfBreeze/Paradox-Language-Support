@@ -1,4 +1,4 @@
-# GitHub Actions 学习笔记
+# 学习笔记：GitHub Actions
 
 ## 概述
 

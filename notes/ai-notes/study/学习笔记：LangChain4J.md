@@ -1,17 +1,8 @@
-# LangChain4J 学习笔记
+# 学习笔记：LangChain4J
 
 ## 概述
 
 LangChain4J 是 Java/Kotlin 的 AI 应用框架，提供链式组件构建 AI 应用。支持本地和云模型。
-
-**官方参考链接**：
-- [GitHub 仓库](https://github.com/langchain4j/langchain4j)
-- [示例项目](https://github.com/langchain4j/langchain4j-examples)
-- [API 文档](https://javadoc.io/doc/dev.langchain4j/langchain4j)
-
-**其他参考链接**：
-- [Spring Boot 集成指南](https://github.com/langchain4j/langchain4j-spring-boot-starter)
-- [高级检索增强生成](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/main/java/dev/langchain4j/chain/ConversationalRetrievalChain.java)
 
 ## 核心组件
 
