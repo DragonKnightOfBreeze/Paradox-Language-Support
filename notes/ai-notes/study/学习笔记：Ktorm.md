@@ -1,4 +1,4 @@
-# 学习笔记：Storm
+# 学习笔记：Ktorm
 
 > 目标：聚焦“快速上手”与“集成 Spring Boot”等通用场景；示例使用 SQLite 作为数据库。
 
