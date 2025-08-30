@@ -206,6 +206,16 @@ plugins { id("com.github.johnrengelman.shadow") version "8.1.1" }
 - **CORS 失败**：对齐前端源域名、方法与头。
 - **Windows 运行脚本**：使用 `.\gradlew` 前缀（PowerShell）。
 
+## 可扩展内容
+
+- **架构与分层**：模块化路由与多模块结构、环境化配置、依赖注入（Koin/Dagger/Hilt）。
+- **Streaming**：SSE/WebSocket 背压处理、分块传输、超时与重试策略。
+- **安全**：Bearer/JWT/OAuth2、CORS 最佳实践、速率限制与熔断/隔离舱。
+- **观测性**：CallLogging 扩展、Micrometer/Prometheus 指标、OpenTelemetry Trace/Span。
+- **部署**：Docker 镜像与分层缓存、Nginx/Caddy 反代、TLS/HTTPS 终止、Ktor Native。
+- **测试**：契约测试、端到端测试、MockWebServer/Testcontainers。
+- **与 LangChain4J/MCP 集成**：AI 接口网关、SSE 流转发、工具/资源调用桥接。
+
 ## 参考链接
 
 - [Ktor 文档](https://ktor.io/docs/)

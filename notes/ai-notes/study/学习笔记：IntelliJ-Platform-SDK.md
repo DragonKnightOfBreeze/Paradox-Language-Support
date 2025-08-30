@@ -185,6 +185,17 @@ $env:CERTIFICATE_CHAIN = "..."       # PEM chain
 - **ClassLoader/版本不兼容**：校验 `sinceBuild`/`untilBuild`，使用 `runPluginVerifier` 覆盖目标 IDE 版本。
 - **VirtualFile vs java.io.File**：API 大多基于 `VirtualFile` 与 `Document`，避免直接 `File` 操作.
 
+## 可扩展内容
+
+- **插件架构**：模块化设计、扩展点（EP）建模、服务/组件边界、动态插件能力与限制。
+- **PSI/索引进阶**：自定义索引与 `StubIndex`、缓存一致性、Dumb 模式策略与回退。
+- **线程与性能**：Read/Write Action 规约、后台任务/取消、性能基线与快照分析。
+- **UI/UX**：UI DSL 最佳实践、可访问性（A11y）、设置页与持久化、通知与提示系统。
+- **检查与意图**：`LocalInspectionTool`、`IntentionAction`、`QuickFix` 模式与批量修复策略。
+- **测试与验证**：`LightPlatformTestCase`/Fixture、UI 测试、`runPluginVerifier` 与兼容矩阵。
+- **构建与发布**：签名/发布通道、Gradle 任务编排、CI 模板、跨 IDE 版本/类型兼容性。
+- **诊断与观测**：结构化日志、调试与 Profiler、问题最小复现与回归用例。
+
 ## 参考链接
 
 - [SDK 文档](https://plugins.jetbrains.com/docs/intellij/welcome.html)

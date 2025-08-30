@@ -208,6 +208,17 @@ val answer = chain.execute("根据给定文档解释 Gradle 配置缓存的限�
 - **非确定性**：降低 `temperature`；必要时固定随机种子（模型支持有限）。
 - **RAG 召回差**：优化分段策略、调整召回数量、选择合适的向量模型与度量方式。
 
+## 可扩展内容
+
+- **模型与供应商**：OpenAI/Azure/Ollama/本地模型切换；Provider 抽象与降级/回退策略。
+- **流式与背压**：`StreamingChatLanguageModel` 在 Ktor/SSE/WebSocket 集成与背压处理。
+- **记忆与多轮**：`MessageWindowChatMemory`/摘要记忆，持久化对话状态（DB/缓存）。
+- **RAG 体系**：分段与嵌入策略、向量库（pgvector/Elasticsearch/Milvus）集成与评测基线。
+- **工具与 Agent**：Tool/Function-Calling、外部服务编排、超时/重试/幂等性。
+- **观测与测试**：结构化日志、指标与追踪；回放测试与确定性用例。
+- **部署与安全**：配置分环境注入、API Key 管理、限流与熔断。
+- **与 Ktor/Spring 集成**：统一异常映射、依赖注入配置与启动生命周期管理。
+
 ## 参考链接
 
 - [LangChain4J](https://github.com/langchain4j/langchain4j)
