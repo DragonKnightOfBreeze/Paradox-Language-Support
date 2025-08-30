@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    // Configure Gradle IntelliJ Plugin
+    // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
     intellijPlatform {
         val type = properties("platformType")
         val version = properties("platformVersion")
@@ -172,6 +174,14 @@ intellijPlatform {
             untilBuild = null
         }
     }
+
+    // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
+    signing  {
+        certificateChain = envVars("CERTIFICATE_CHAIN_PLS")
+        privateKey = envVars("PRIVATE_KEY_PLS")
+        password = envVars("PRIVATE_KEY_PASSWORD_PLS")
+    }
+
     publishing {
         token = envVars("IDEA_TOKEN")
     }
