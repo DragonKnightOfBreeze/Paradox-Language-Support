@@ -32,7 +32,13 @@ object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
     fun checkColumnToken(b: PsiBuilder, l: Int): Boolean {
         val (next) = b.lookupWithOffset(0, forward = true)
         val (prev) = b.lookupWithOffset(-1, forward = false)
-        val isValid = next == COLUMN_TOKEN || next == SEPARATOR || prev == SEPARATOR
+        // Valid when:
+        // - next is a real column token, or
+        // - next is a separator, and we're either at line start (prev == EOL) or between two separators (prev == SEPARATOR)
+        //   (this allows empty first/middle columns),
+        // but NOT when at a trailing separator followed by EOL/EOF (next is neither COLUMN_TOKEN nor SEPARATOR).
+        val isValid = next == COLUMN_TOKEN ||
+            (next == SEPARATOR && (prev == SEPARATOR || prev == EOL))
         if (!isValid) return false
         b.isFirstColumn = prev == EOL
         b.isEmptyColumn = next != COLUMN_TOKEN

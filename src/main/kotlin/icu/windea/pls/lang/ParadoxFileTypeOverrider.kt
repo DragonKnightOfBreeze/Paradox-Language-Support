@@ -44,11 +44,16 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         val possibleFileType = ParadoxFileType.resolvePossible(file.name)
         if (possibleFileType == ParadoxFileType.Other) return null
 
+        // Inject user data for test data files
         runCatchingCancelable r@{
             if (!application.isUnitTestMode) return@r
+
+            // t_test.yml -> inject file type `ParadoxLocalisationFileType`
+            // t_test_stellaris.yml -> also inject game type `stellaris`
+
             val s1 = file.name.removePrefixOrNull(PlsConstants.testDataFileNamePrefix)
             if (s1 == null) return@r
-            val s2 = ParadoxGameType.entries.find { s1.startsWith(it.id + "_") }
+            val s2 = ParadoxGameType.entries.find { s1.contains("_" + it.id + ".") }
             if (s2 != null) file.putUserData(PlsKeys.injectedGameType, s2)
             return ParadoxFileManager.getFileType(possibleFileType)
         }

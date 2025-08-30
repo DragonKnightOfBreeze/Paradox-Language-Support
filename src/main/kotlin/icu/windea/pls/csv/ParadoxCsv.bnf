@@ -26,6 +26,7 @@ header ::= column_items {
   ]
   methods=[getIcon toString]
 }
+// Note that there are special codes to detect eol
 row ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
@@ -36,6 +37,7 @@ private column_items ::= column column_item * {
   pin=1
 }
 private column_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
+// Note that empty first/middle columns are allowed
 column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"

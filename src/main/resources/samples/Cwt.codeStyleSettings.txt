@@ -27,3 +27,6 @@ types = {
 		}
 	}
 }
+
+boolean_value = yes
+number_value = 1.0
