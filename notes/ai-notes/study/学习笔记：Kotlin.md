@@ -138,6 +138,17 @@ dependencies {
 }
 ```
 
+## 可扩展内容
+
+- **语言进阶**：inline/value classes、reified 泛型、contracts、context receivers（K2）。
+- **协程进阶**：取消与异常、超时与背压、`StateFlow/SharedFlow` 模式、结构化并发最佳实践。
+- **多平台（KMP）**：源集布局、expect/actual、并发内存模型与 Native 互操作。
+- **性能与内存**：对象分配与逃逸分析、集合与序列优化、编译器参数与内联策略。
+- **序列化**：多态/上下文序列化、自定义序列化器、与 Ktor/Spring 集成。
+- **KSP 实战**：增量处理、符号遍历模式、代码生成与测试。
+- **工具链**：Detekt/Ktlint、Gradle 构建缓存与性能调优、版本对齐（BOM）。
+- **与框架集成**：Ktor/Spring 中的协程上下文管理、异常映射与依赖注入。
+
 ## 参考链接
 
 - [Kotlin 文档](https://kotlinlang.org/docs/home.html)

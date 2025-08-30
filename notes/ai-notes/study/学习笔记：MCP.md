@@ -216,14 +216,23 @@ uv run mcp install server.py --name "My Analytics Server" -f .env
 
 ## 可扩展内容
 
-- 补充示例：加入「Streamable HTTP 最小 Express 代码片段」与「CORS 实例配置」的完整示例？我可追加到 学习笔记：MCP.md。
-- 联动说明：新增「MCP + Ktor/LangChain4J」的集成路线与最佳实践小节，彼此交叉引用，形成体系化学习路径。
+- **客户端集成**：实现自定义 `Host`/`Client`，会话与权限模型、审批流与人机协同。
+- **工具与资源进阶**：`zod`/Pydantic 模式校验、二进制内容与附件、订阅与模板化资源、增量更新。
+- **远程传输**：完整 Streamable HTTP 示例（Express/FastAPI），会话持久化、CORS、SSE 心跳与断线重连。
+- **观测性**：结构化日志、请求/会话 ID 关联、OpenTelemetry Trace/Span、失败注入与回放。
+- **安全**：多租户隔离、令牌透传防护、最小权限凭据托管、DNS 重绑定/CSRF 防护与审计。
+- **部署与版本**：SDK/协议版本管理、兼容性策略、端到端测试矩阵、CI 模板与合规清单。
+- **工具链**：MCP Inspector 自动化脚本、客户端模拟器、示例仓库模板化与脚手架。
+- **补充示例**：加入「Streamable HTTP 最小 Express 代码片段」与「CORS 实例配置」的完整示例。
+- **联动说明**：新增「MCP + Ktor/LangChain4J」的集成路线与最佳实践小节，彼此交叉引用。
+
+---
 
 ## 参考链接
-
-- [TypeScript SDK（npm）](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
-- [TypeScript SDK（GitHub）](https://github.com/modelcontextprotocol/typescript-sdk)
-- [Python SDK（GitHub）](https://github.com/modelcontextprotocol/python-sdk)
+ 
+- **TypeScript SDK（npm）**：https://www.npmjs.com/package/@modelcontextprotocol/sdk
+- **TypeScript SDK（GitHub）**：https://github.com/modelcontextprotocol/typescript-sdk
+- **Python SDK（GitHub）**：https://github.com/modelcontextprotocol/python-sdk
 - **官方规范与示例**：
   - [Transports（Streamable HTTP、stdio）](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
   - Example Servers & Inspector：官方站点导航
