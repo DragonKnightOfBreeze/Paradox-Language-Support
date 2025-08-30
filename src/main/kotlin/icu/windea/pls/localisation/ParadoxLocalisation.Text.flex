@@ -195,8 +195,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 BLANK=\s+
 
-PLAIN_TEXT_TOKEN=[^§\$\[\]£#@]+
-ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+ // pipe is allowed?
+PLAIN_TEXT_TOKEN=[^§£\$\[\]#@]+
+ARGUMENT_TOKEN=[^\"§£\$\[\]\r\n\\]+ // pipe is allowed?
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
@@ -214,7 +214,7 @@ ICON_TOKEN=[A-Za-z0-9\-_\\/]+
 CONCEPT_NAME_TOKEN=[A-Za-z0-9_:]+
 
 TEXT_FORMAT_CHECK=#.?
-TEXT_FORMAT_TOKEN=[\w:;]+ // "italic;color:green" is allowed
+TEXT_FORMAT_TOKEN=[\w:;]+ // `italic;color:green` is allowed
 
 TEXT_ICON_CHECK=@.?
 TEXT_ICON_TOKEN=\w+
