@@ -214,11 +214,16 @@ uv run mcp install server.py --name "My Analytics Server" -f .env
 
 ---
 
+## 可扩展内容
+
+- 补充示例：加入「Streamable HTTP 最小 Express 代码片段」与「CORS 实例配置」的完整示例？我可追加到 学习笔记：MCP.md。
+- 联动说明：新增「MCP + Ktor/LangChain4J」的集成路线与最佳实践小节，彼此交叉引用，形成体系化学习路径。
+
 ## 参考链接
 
-- **TypeScript SDK（npm）**：https://www.npmjs.com/package/@modelcontextprotocol/sdk
-- **TypeScript SDK（GitHub）**：https://github.com/modelcontextprotocol/typescript-sdk
-- **Python SDK（GitHub）**：https://github.com/modelcontextprotocol/python-sdk
+- [TypeScript SDK（npm）](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
+- [TypeScript SDK（GitHub）](https://github.com/modelcontextprotocol/typescript-sdk)
+- [Python SDK（GitHub）](https://github.com/modelcontextprotocol/python-sdk)
 - **官方规范与示例**：
-  - Transports（Streamable HTTP、stdio）：https://modelcontextprotocol.io/specification/2025-03-26/basic/transports
+  - [Transports（Streamable HTTP、stdio）](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
   - Example Servers & Inspector：官方站点导航

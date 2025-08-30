@@ -4,15 +4,6 @@
 
 GitHub Actions 是 GitHub 提供的持续集成和持续交付 (CI/CD) 平台，可用于自动化构建、测试和部署流程。它支持跨平台工作流，可直接集成在 GitHub 仓库中。
 
-**官方参考链接**：
-- [GitHub Actions 文档](https://docs.github.com/en/actions)
-- [预构建 Actions 市场](https://github.com/marketplace/actions)
-- [GitHub Actions 工作流语法](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
-
-**其他参考链接**：
-- [GitHub Actions 备忘单](https://github.com/actions-cheatsheet)
-- [高级工作流模式](https://github.com/actions/workflow-patterns)
-
 ## 核心概念
 
 1. **工作流 (Workflow)**
@@ -372,3 +363,12 @@ jobs:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         run: |
           ./gradlew publishPlugin --info
+```
+
+## 参考链接
+
+- [GitHub Actions 文档](https://docs.github.com/en/actions)
+- [预构建 Actions 市场](https://github.com/marketplace/actions)
+- [GitHub Actions 工作流语法](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
+- [GitHub Actions 备忘单](https://github.com/actions-cheatsheet)
+- [高级工作流模式](https://github.com/actions/workflow-patterns)

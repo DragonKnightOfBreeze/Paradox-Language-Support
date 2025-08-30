@@ -4,15 +4,6 @@
 
 Dependabot 是 GitHub 提供的依赖管理工具，可自动监控项目依赖并更新至最新版本，同时提供安全漏洞警报。支持多种包管理器和工作流集成。
 
-**官方参考链接**：
-- [Dependabot 文档](https://docs.github.com/en/code-security/dependabot)
-- [配置选项参考](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
-- [安全更新指南](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-dependencies-updated-automatically)
-
-**其他参考链接**：
-- [Dependabot 核心功能](https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/)
-- [依赖管理最佳实践](https://docs.github.com/en/get-started/using-github/managing-security-vulnerabilities)
-
 ## 核心功能
 
 1. **依赖更新**
@@ -187,3 +178,11 @@ updates:
 - **PR 过多**：使用 `groups` 合并低风险更新；提高 `interval` 至 monthly；限制 `open-pull-requests-limit`。
 - **提交未能合并**：确认 `required checks` 通过以及 auto-merge 条件满足（标签、更新类型）。
 - **安全警报未触发**：在仓库设置中启用 Dependabot Alerts 与 Security updates；定期检查安全中心（Security > Dependabot）。
+
+## 参考链接
+
+- [Dependabot 文档](https://docs.github.com/en/code-security/dependabot)
+- [配置选项参考](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
+- [安全更新指南](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-dependencies-updated-automatically)
+- [Dependabot 核心功能](https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/)
+- [依赖管理最佳实践](https://docs.github.com/en/get-started/using-github/managing-security-vulnerabilities)

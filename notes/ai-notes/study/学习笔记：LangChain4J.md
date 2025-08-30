@@ -79,72 +79,6 @@ class ChatService(private val model: ChatLanguageModel) {
 }
 ```
 
-## 与 Ollama 本地模型集成
-
-- **依赖**：
-```kotlin
-dependencies { implementation("dev.langchain4j:langchain4j-ollama:<version>") }
-```
-- **application.yml**：
-```yaml
-langchain4j:
-  ollama:
-    base-url: http://localhost:11434
-    model-name: llama3
-```
-- **说明**：确保本地已安装并启动 Ollama，且模型已 pull 完成。
-
-## 流式响应（Streaming）
-
-```kotlin
-import dev.langchain4j.model.chat.StreamingChatLanguageModel
-
-fun streamDemo(model: StreamingChatLanguageModel) {
-    val sb = StringBuilder()
-    model.generate("用 3 点解释 JVM 内存结构") { token ->
-        print(token)
-        sb.append(token)
-    }
-    println("\nFull: ${sb}")
-}
-```
-
-## 简易 RAG（检索增强生成）
-
-```kotlin
-// 伪代码示例，演示链式拼装思路
-// 1) 构建/加载向量索引（EmbeddingStore）
-// 2) 根据问题检索相似片段（Retriever）
-// 3) 将检索上下文 + 问题一并交给 Chat 模型
-
-/*
-val embeddingModel = OpenAiEmbeddingModel(...)
-val store = InMemoryEmbeddingStore<TextSegment>()
-indexDocuments(store, embeddingModel, documents)
-val retriever = EmbeddingStoreRetriever.from(store, embeddingModel)
-
-val chain = ConversationalRetrievalChain.builder()
-    .chatLanguageModel(chatModel)
-    .retriever(retriever)
-    .build()
-
-val answer = chain.execute("根据给定文档解释 Gradle 配置缓存的限制")
-*/
-```
-
-## 常见问题与排错
-
-- **认证失败**：检查 API Key 是否正确注入；在容器/CI 中留意环境变量与换行/编码。
-- **超时/连接问题**：设置超时与重试；必要时配置代理。
-- **长上下文报错**：裁剪历史、启用摘要记忆（MessageWindowChatMemory）、或提升模型的上下文长度。
-- **非确定性**：降低 `temperature`；必要时固定随机种子（模型支持有限）。
-- **RAG 召回差**：优化分段策略、调整召回数量、选择合适的向量模型与度量方式。
-
-## 参考链接
-- LangChain4J： https://github.com/langchain4j/langchain4j
-- Spring Boot Starter： https://github.com/langchain4j/langchain4j-spring-boot-starter
-- Ollama： https://ollama.ai/
-- Conversational Retrieval Chain 示例： https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/main/java/dev/langchain4j/chain/ConversationalRetrievalChain.java
 
 ## 与 Ktor 集成
 
@@ -212,3 +146,71 @@ fun main() {
 - 浏览器访问：`http://localhost:8080/chat?q=Ktor%20是什么`。
 
 说明：若使用本地模型（如 Ollama），请改用 `langchain4j-ollama` 依赖，并按其 base-url 与 model-name 初始化对应的模型构造器。
+
+## 与 Ollama 本地模型集成
+
+- **依赖**：
+```kotlin
+dependencies { implementation("dev.langchain4j:langchain4j-ollama:<version>") }
+```
+- **application.yml**：
+```yaml
+langchain4j:
+  ollama:
+    base-url: http://localhost:11434
+    model-name: llama3
+```
+- **说明**：确保本地已安装并启动 Ollama，且模型已 pull 完成。
+
+## 流式响应（Streaming）
+
+```kotlin
+import dev.langchain4j.model.chat.StreamingChatLanguageModel
+
+fun streamDemo(model: StreamingChatLanguageModel) {
+    val sb = StringBuilder()
+    model.generate("用 3 点解释 JVM 内存结构") { token ->
+        print(token)
+        sb.append(token)
+    }
+    println("\nFull: ${sb}")
+}
+```
+
+## 简易 RAG（检索增强生成）
+
+```kotlin
+// 伪代码示例，演示链式拼装思路
+// 1) 构建/加载向量索引（EmbeddingStore）
+// 2) 根据问题检索相似片段（Retriever）
+// 3) 将检索上下文 + 问题一并交给 Chat 模型
+
+/*
+val embeddingModel = OpenAiEmbeddingModel(...)
+val store = InMemoryEmbeddingStore<TextSegment>()
+indexDocuments(store, embeddingModel, documents)
+val retriever = EmbeddingStoreRetriever.from(store, embeddingModel)
+
+val chain = ConversationalRetrievalChain.builder()
+    .chatLanguageModel(chatModel)
+    .retriever(retriever)
+    .build()
+
+val answer = chain.execute("根据给定文档解释 Gradle 配置缓存的限制")
+*/
+```
+
+## 常见问题与排错
+
+- **认证失败**：检查 API Key 是否正确注入；在容器/CI 中留意环境变量与换行/编码。
+- **超时/连接问题**：设置超时与重试；必要时配置代理。
+- **长上下文报错**：裁剪历史、启用摘要记忆（MessageWindowChatMemory）、或提升模型的上下文长度。
+- **非确定性**：降低 `temperature`；必要时固定随机种子（模型支持有限）。
+- **RAG 召回差**：优化分段策略、调整召回数量、选择合适的向量模型与度量方式。
+
+## 参考链接
+
+- [LangChain4J](https://github.com/langchain4j/langchain4j)
+- [Spring Boot Starter](https://github.com/langchain4j/langchain4j-spring-boot-starter)
+- [Ollama](https://ollama.ai/)
+- [Conversational Retrieval Chain 示例](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/main/java/dev/langchain4j/chain/ConversationalRetrievalChain.java)

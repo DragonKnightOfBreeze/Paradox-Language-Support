@@ -4,15 +4,6 @@
 
 Gradle 是基于 JVM 的构建工具，支持多项目构建、增量编译和自定义任务。使用 Groovy/Kotlin DSL 进行配置。
 
-**官方参考链接**：
-- [Gradle 用户手册](https://docs.gradle.org/current/userguide/userguide.html)
-- [DSL 参考](https://docs.gradle.org/current/dsl/)
-- [插件门户](https://plugins.gradle.org/)
-
-**其他参考链接**：
-- [Gradle 性能优化](https://guides.gradle.org/performance/)
-- [自定义插件开发](https://docs.gradle.org/current/userguide/custom_plugins.html)
-
 ## 核心概念
 
 ### 构建脚本
@@ -149,3 +140,11 @@ dependencyVerificationMode=strict
 - 环境变量注入（PEM 多行）与 Windows 执行：
   - PowerShell 执行 Wrapper：`.\gradlew signPlugin verifyPluginSignature -i`
   - 保证 `PRIVATE_KEY` 为 PKCS#8（含头尾与换行），证书链完整.
+
+## 参考链接
+
+- [Gradle 用户手册](https://docs.gradle.org/current/userguide/userguide.html)
+- [DSL 参考](https://docs.gradle.org/current/dsl/)
+- [插件门户](https://plugins.gradle.org/)
+- [Gradle 性能优化](https://guides.gradle.org/performance/)
+- [自定义插件开发](https://docs.gradle.org/current/userguide/custom_plugins.html)

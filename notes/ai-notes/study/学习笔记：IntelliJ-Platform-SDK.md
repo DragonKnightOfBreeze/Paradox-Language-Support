@@ -4,15 +4,6 @@
 
 IntelliJ Platform SDK 用于开发 JetBrains IDE 的插件，提供 PSI、索引、UI 组件等 API。支持跨 IDE 兼容。
 
-**官方参考链接**：
-- [SDK 文档](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-- [API 参考](https://plugins.jetbrains.com/docs/intellij/plugin-components.html)
-- [开源示例](https://github.com/JetBrains/intellij-sdk-docs/tree/master/code_samples)
-
-**其他参考链接**：
-- [插件开发教程](https://plugins.jetbrains.com/docs/intellij/getting-started.html)
-- [UI 组件指南](https://plugins.jetbrains.com/docs/intellij/user-interface-components.html)
-
 ## 核心组件
 
 ### PSI (Program Structure Interface)
@@ -193,3 +184,9 @@ $env:CERTIFICATE_CHAIN = "..."       # PEM chain
 - **EDT 阻塞**：耗时操作放到后台任务（`ProgressManager.runBackgroundableTask`），UI 更新回到 EDT。
 - **ClassLoader/版本不兼容**：校验 `sinceBuild`/`untilBuild`，使用 `runPluginVerifier` 覆盖目标 IDE 版本。
 - **VirtualFile vs java.io.File**：API 大多基于 `VirtualFile` 与 `Document`，避免直接 `File` 操作.
+
+## 参考链接
+
+- [SDK 文档](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+- [API 参考](https://plugins.jetbrains.com/docs/intellij/plugin-components.html)
+- [开源示例](https://github.com/JetBrains/intellij-sdk-docs/tree/master/code_samples)

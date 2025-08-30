@@ -4,15 +4,6 @@
 
 人工智能技术基础，涵盖主流模型、应用场景和开发实践。面向 Java/Kotlin 开发者。
 
-**官方参考链接**：
-- [AI 技术全景图](https://www.deeplearning.ai/resources/ai-glossary/)
-- [Hugging Face 模型库](https://huggingface.co/models)
-- [OpenAI API 文档](https://platform.openai.com/docs/introduction)
-
-**其他参考链接**：
-- [AI 模型微调指南](https://huggingface.co/docs/transformers/training)
-- [生产环境部署最佳实践](https://mlflow.org/docs/latest/models.html#deployment)
-
 ## 核心概念
 
 ### 模型类型
@@ -191,9 +182,12 @@ client.newCall(ollamaReq).execute().use { println(it.body!!.string()) }
 - **流式打印乱码**：确认以行为单位处理 `data:`，并按 UTF-8 解码。
 - **上下文过长**：压缩检索结果、分段对话、模型切换至 128k+ 上下文。
 
-## 参考
+## 参考链接
 
-- HuggingFace Models: https://huggingface.co/models
-- OpenAI API: https://platform.openai.com/docs
-- LangChain4j: https://github.com/langchain4j/langchain4j
-- Ollama: https://github.com/ollama/ollama
+- [AI 技术全景图](https://www.deeplearning.ai/resources/ai-glossary/)
+- [HuggingFace Models](https://huggingface.co/models)
+- [OpenAI API](https://platform.openai.com/docs)
+- [LangChain4j](https://github.com/langchain4j/langchain4j)
+- [Ollama](https://github.com/ollama/ollama)
+- [AI 模型微调指南](https://huggingface.co/docs/transformers/training)
+- [生产环境部署最佳实践](https://mlflow.org/docs/latest/models.html#deployment)

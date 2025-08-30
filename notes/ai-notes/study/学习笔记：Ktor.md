@@ -206,8 +206,9 @@ plugins { id("com.github.johnrengelman.shadow") version "8.1.1" }
 - **CORS 失败**：对齐前端源域名、方法与头。
 - **Windows 运行脚本**：使用 `.\gradlew` 前缀（PowerShell）。
 
-## 参考
-- Ktor 文档：https://ktor.io/docs/
-- Ktor Client 指南：https://ktor.io/docs/client-create-new-application.html
-- ContentNegotiation：https://ktor.io/docs/serialization.html
-- WebSockets：https://ktor.io/docs/servers-features-websockets.html
+## 参考链接
+
+- [Ktor 文档](https://ktor.io/docs/)
+- [Ktor Client 指南](https://ktor.io/docs/client-create-new-application.html)
+- [Content Negotiation](https://ktor.io/docs/serialization.html)
+- [WebSockets](https://ktor.io/docs/servers-features-websockets.html)
