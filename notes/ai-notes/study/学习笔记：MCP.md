@@ -1,4 +1,4 @@
-# 学习笔记：MCP（Model Context Protocol）
+# MCP（Model Context Protocol）学习笔记
 
 > MCP 是一套让「AI 应用（客户端）」与「外部数据/工具（服务端）」以统一协议对接的标准。你可以把它理解为 AI 时代的“USB-C”：统一接入、能力协商、可移植。
 
