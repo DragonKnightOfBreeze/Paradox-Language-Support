@@ -1,3 +1,13 @@
-### Doc comment only
-## option comment only
-# normal comment only
+CWT_FILE(0,65)
+  CwtRootBlockImpl(ROOT_BLOCK)(0,65)
+    CwtDocCommentImpl(DOC_COMMENT)(0,20)
+      PsiElement(DOC_COMMENT_TOKEN)('### Doc comment only')(0,20)
+    PsiWhiteSpace('\n')(20,21)
+    CwtOptionCommentImpl(OPTION_COMMENT)(21,43)
+      PsiElement(OPTION_COMMENT_TOKEN)(21,43)
+        PsiElement(OPTION_COMMENT_START)('##')(21,23)
+        PsiWhiteSpace(' ')(23,24)
+        CwtStringImpl(STRING)(24,43)
+          PsiElement(STRING_TOKEN)('option comment only')(24,43)
+    PsiWhiteSpace('\n')(43,44)
+    PsiComment(COMMENT)('# normal comment only')(44,65)

@@ -1,7 +1,0 @@
-types = {
-	type[foo] = {
-		a = { b = { c = d } }
-		values = { 1 2 3 }
-		images = { icon = "#icon" }
-	}
-}

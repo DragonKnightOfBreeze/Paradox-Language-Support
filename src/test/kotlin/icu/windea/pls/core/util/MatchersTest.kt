@@ -1,11 +1,13 @@
 package icu.windea.pls.core.util
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
 class MatchersTest {
     @Suppress("DEPRECATION")
+    @Ignore
     @Test
     fun antBenchmarkTest() {
         val patterns = listOf(
@@ -69,6 +71,8 @@ class MatchersTest {
         // Regex impl: 14275 ms
         // Ratio: 0.5032574430823117
         // Dummy size: 51500000
+
+        Assert.assertEquals(51500000, dummy)
     }
 
     @Test

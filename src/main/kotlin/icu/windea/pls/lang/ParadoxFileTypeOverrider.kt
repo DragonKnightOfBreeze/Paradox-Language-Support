@@ -7,14 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
 import com.intellij.util.application
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * 文件类型重载器。
@@ -44,17 +41,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         val possibleFileType = ParadoxFileType.resolvePossible(file.name)
         if (possibleFileType == ParadoxFileType.Other) return null
 
-        // Inject user data for test data files
-        runCatchingCancelable r@{
-            if (!application.isUnitTestMode) return@r
-
-            // t_test.yml -> inject file type `ParadoxLocalisationFileType`
-            // t_test_stellaris.yml -> also inject game type `stellaris`
-
-            val s1 = file.name.removePrefixOrNull(PlsConstants.testDataFileNamePrefix)
-            if (s1 == null) return@r
-            val s2 = ParadoxGameType.entries.find { s1.contains("_" + it.id + ".") }
-            if (s2 != null) file.putUserData(PlsKeys.injectedGameType, s2)
+        if(ParadoxFileManager.isTestDataFile(file)) {
             return ParadoxFileManager.getFileType(possibleFileType)
         }
 

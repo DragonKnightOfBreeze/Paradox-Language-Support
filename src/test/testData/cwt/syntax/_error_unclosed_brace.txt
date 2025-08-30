@@ -1,2 +1,21 @@
-root = {
-  a = b
+CWT_FILE(0,18)
+  CwtRootBlockImpl(ROOT_BLOCK)(0,18)
+    CwtPropertyImpl(PROPERTY)(0,18)
+      CwtPropertyKeyImpl(PROPERTY_KEY)(0,4)
+        PsiElement(PROPERTY_KEY_TOKEN)('root')(0,4)
+      PsiWhiteSpace(' ')(4,5)
+      PsiElement(EQUAL_SIGN)('=')(5,6)
+      PsiWhiteSpace(' ')(6,7)
+      CwtBlockImpl(BLOCK)(7,18)
+        PsiElement(LEFT_BRACE)('{')(7,8)
+        PsiWhiteSpace('\n    ')(8,13)
+        CwtPropertyImpl(PROPERTY)(13,18)
+          CwtPropertyKeyImpl(PROPERTY_KEY)(13,14)
+            PsiElement(PROPERTY_KEY_TOKEN)('a')(13,14)
+          PsiWhiteSpace(' ')(14,15)
+          PsiElement(EQUAL_SIGN)('=')(15,16)
+          PsiWhiteSpace(' ')(16,17)
+          CwtStringImpl(STRING)(17,18)
+            PsiElement(STRING_TOKEN)('b')(17,18)
+        PsiErrorElement:<value>, COMMENT, DOC_COMMENT_TOKEN, OPTION_COMMENT_TOKEN, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN or RIGHT_BRACE expected(18,18)
+          <empty list>

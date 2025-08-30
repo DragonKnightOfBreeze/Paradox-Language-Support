@@ -4,7 +4,7 @@ import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 
 @TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "syntax.script", ParadoxScriptParserDefinition()) {
+class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
@@ -13,5 +13,5 @@ class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "syntax.
     fun test_attached_comments() = doTest(true)
     fun test_empty() = doTest(true)
     fun test_only_comments() = doTest(true)
-    fun test_unclosed_brace() = doTest(true)
+    fun test_error_unclosed_brace() = doTest(true)
 }

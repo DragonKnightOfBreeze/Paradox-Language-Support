@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
@@ -126,30 +125,6 @@ object ParadoxCoreManager {
         }
     }
 
-    private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
-        //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
-        if (file is LightVirtualFile) {
-            file.originalFile?.let { return it }
-            runReadAction { VfsUtil.findFile(filePath, false) }?.let { return it }
-            return null
-        }
-        return file
-    }
-
-    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
-        val fileType = when {
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
-            file.isDirectory -> ParadoxFileType.Other
-            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path)
-        }
-        val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
-        return fileInfo
-    }
-
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
         try {
             //直接尝试通过filePath获取fileInfo
@@ -170,6 +145,36 @@ object ParadoxCoreManager {
             thisLogger().warn(e)
             return null
         }
+    }
+
+    private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
+        //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
+        try {
+            if (file is LightVirtualFile) {
+                file.originalFile?.let { return it }
+                VfsUtil.findFile(filePath, false)?.let { return it }
+                return null
+            }
+            return file
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
+            return null
+        }
+    }
+
+    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
+        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
+        val fileType = when {
+            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
+            file.isDirectory -> ParadoxFileType.Other
+            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
+            else -> ParadoxFileType.resolve(path)
+        }
+        val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
+        return fileInfo
     }
 
     private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {

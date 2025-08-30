@@ -13,7 +13,7 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     fun testGetAttachedComments() {
-        myFixture.configureByFile("script/t_attached_comments.txt")
+        myFixture.configureByFile("script/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 
@@ -34,7 +34,7 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
     }
 
     fun testGetAttachingElement() {
-        myFixture.configureByFile("script/t_attached_comments.txt")
+        myFixture.configureByFile("script/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
 

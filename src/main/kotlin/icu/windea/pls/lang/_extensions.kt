@@ -35,6 +35,7 @@ import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
@@ -113,6 +114,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
 tailrec fun selectGameType(from: Any?): ParadoxGameType? {
     if (from == null) return null
     if (from is ParadoxGameType) return from
+    if (from is VirtualFile) ParadoxFileManager.getInjectedGameTypeForTestDataFile(from)
     if (from is UserDataHolder) from.getUserData(PlsKeys.injectedGameType)?.let { return it }
     return when {
         from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
