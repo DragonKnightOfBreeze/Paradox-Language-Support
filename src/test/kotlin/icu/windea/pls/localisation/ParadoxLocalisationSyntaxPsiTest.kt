@@ -40,4 +40,11 @@ class ParadoxLocalisationSyntaxPsiTest : BasePlatformTestCase() {
         val file = myFixture.file as ParadoxLocalisationFile
         Assert.assertTrue(ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file))
     }
+    
+    fun testEmptyFile() {
+        myFixture.configureByFile("localisation/t_syntax_empty.yml")
+        val file = myFixture.file as ParadoxLocalisationFile
+        Assert.assertNull(file.propertyList)
+        Assert.assertTrue(file.properties.isEmpty())
+    }
 }

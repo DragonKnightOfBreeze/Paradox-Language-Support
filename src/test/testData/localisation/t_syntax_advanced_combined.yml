@@ -1,0 +1,7 @@
+l_english:
+ # Advanced combined features
+ KEY1:0 "Basic value"
+ KEY2:0 "Color §GGreen§! and Icon £unity£"
+ KEY3:0 "Command: [Root.Owner.GetName] and scripted loc [some_scripted_loc]"
+ KEY4:0 "Concept: ['civic:some_civic'] and param $KEY1|Y$"
+ KEY5:0 "Text format: #v value#! and text icon: @icon!"

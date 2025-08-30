@@ -30,4 +30,16 @@ class ParadoxScriptSyntaxPsiTest : BasePlatformTestCase() {
         val file = myFixture.file as ParadoxScriptFile
         Assert.assertNotNull(file.block)
     }
+    
+    fun testCodeStyleSettingsSample() {
+        myFixture.configureByFile("script/t_syntax_codesettings.txt")
+        val file = myFixture.file as ParadoxScriptFile
+        Assert.assertNotNull(file.block)
+    }
+
+    fun testEmptyFile() {
+        myFixture.configureByFile("script/t_syntax_empty.txt")
+        val file = myFixture.file as ParadoxScriptFile
+        Assert.assertNull(file.block)
+    }
 }

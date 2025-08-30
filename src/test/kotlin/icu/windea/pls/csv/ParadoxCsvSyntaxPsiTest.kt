@@ -59,16 +59,37 @@ class ParadoxCsvSyntaxPsiTest : BasePlatformTestCase() {
         val rows = file.rows
         Assert.assertEquals(2, rows.size)
 
-        // row 1: first and last columns are empty
+        // row 1: first column is empty; trailing separator does NOT produce an empty column
         val r1 = rows[0]
-        Assert.assertEquals(3, r1.columnList.size)
+        Assert.assertEquals(2, r1.columnList.size)
         Assert.assertEquals("", r1.columnList[0].value)
         Assert.assertEquals("18", r1.columnList[1].value)
-        Assert.assertEquals("", r1.columnList[2].value)
 
         // row 2: quoted column with semicolons inside
         val r2 = rows[1]
         Assert.assertEquals(3, r2.columnList.size)
         Assert.assertEquals("a;b;c", r2.columnList[2].value)
+    }
+    
+    fun testCodeStyleSettingsSample() {
+        myFixture.configureByFile("csv/t_syntax_codesettings.csv")
+        val file = myFixture.file as ParadoxCsvFile
+        val header = file.header
+        Assert.assertNotNull(header)
+        header!!
+        // trailing separator does NOT create an extra empty column
+        Assert.assertEquals(4, header.columnList.size)
+
+        val rows = file.rows
+        Assert.assertEquals(1, rows.size)
+        Assert.assertEquals(4, rows[0].columnList.size)
+        Assert.assertEquals("yes", rows[0].columnList[3].value)
+    }
+
+    fun testEmptyFile() {
+        myFixture.configureByFile("csv/t_syntax_empty.csv")
+        val file = myFixture.file as ParadoxCsvFile
+        Assert.assertNull(file.header)
+        Assert.assertTrue(file.rows.isEmpty())
     }
 }

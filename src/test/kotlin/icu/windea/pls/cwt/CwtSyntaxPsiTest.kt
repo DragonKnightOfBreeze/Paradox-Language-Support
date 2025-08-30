@@ -27,4 +27,19 @@ class CwtSyntaxPsiTest : BasePlatformTestCase() {
         val file = myFixture.file as CwtFile
         Assert.assertNotNull(file.block)
     }
+    
+    fun testCodeStyleSettingsSample() {
+        myFixture.configureByFile("cwt/t_syntax_codesettings.cwt")
+        val file = myFixture.file as CwtFile
+        Assert.assertNotNull(file.block)
+        Assert.assertTrue(file.propertyList.isNotEmpty())
+    }
+
+    fun testEmptyFile() {
+        myFixture.configureByFile("cwt/t_syntax_empty.cwt")
+        val file = myFixture.file as CwtFile
+        Assert.assertNull(file.block)
+        Assert.assertTrue(file.propertyList.isEmpty())
+        Assert.assertTrue(file.valueList.isEmpty())
+    }
 }
