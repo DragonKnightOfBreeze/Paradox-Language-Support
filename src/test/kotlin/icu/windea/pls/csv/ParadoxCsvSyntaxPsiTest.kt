@@ -7,12 +7,12 @@ import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import org.junit.Assert
 
-@TestDataPath("$CONTENT_ROOT/testData")
+@TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCsvSyntaxPsiTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     fun testHeaderAndRowsBasic() {
-        myFixture.configureByFile("csv/t_header_and_rows.csv")
+        myFixture.configureByFile("csv/t_syntax_header_and_rows.csv")
         val file = myFixture.file as ParadoxCsvFile
         val header = file.header
         Assert.assertNotNull(header)
@@ -32,7 +32,7 @@ class ParadoxCsvSyntaxPsiTest : BasePlatformTestCase() {
     }
 
     fun testHeaderOnly() {
-        myFixture.configureByFile("csv/t_header_only.csv")
+        myFixture.configureByFile("csv/t_syntax_header_only.csv")
         val file = myFixture.file as ParadoxCsvFile
         val header = file.header
         Assert.assertNotNull(header)
@@ -41,14 +41,14 @@ class ParadoxCsvSyntaxPsiTest : BasePlatformTestCase() {
     }
 
     fun testOnlyComments() {
-        myFixture.configureByFile("csv/t_only_comments.csv")
+        myFixture.configureByFile("csv/t_syntax_only_comments.csv")
         val file = myFixture.file as ParadoxCsvFile
         Assert.assertNull(file.header)
         Assert.assertTrue(file.rows.isEmpty())
     }
 
     fun testEmptyColumnsAndQuoted() {
-        myFixture.configureByFile("csv/t_empty_columns.csv")
+        myFixture.configureByFile("csv/t_syntax_empty_columns.csv")
         val file = myFixture.file as ParadoxCsvFile
         val header = file.header
         Assert.assertNotNull(header)
