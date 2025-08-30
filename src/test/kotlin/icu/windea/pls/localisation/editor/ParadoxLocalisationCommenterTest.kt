@@ -1,5 +1,6 @@
 package icu.windea.pls.localisation.editor
 
+import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
@@ -26,5 +27,23 @@ class ParadoxLocalisationCommenterTest : BasePlatformTestCase() {
         assertNull(commenter.documentationCommentTokenType)
         // doc detection
         assertFalse(commenter.isDocumentationComment(null))
+    }
+
+    fun testCommenter() {
+        myFixture.configureByText("commenter.test.yml", """
+            l_simp_chinese:
+             <caret>KEY: "foo"
+        """.trimIndent())
+        val commentAction = CommentByLineCommentAction()
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("""
+            l_simp_chinese:
+             # KEY: "foo"
+        """.trimIndent())
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("""
+            l_simp_chinese:
+             KEY: "foo"
+        """.trimIndent())
     }
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.script.editor
 
+import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
@@ -26,5 +27,14 @@ class ParadoxScriptCommenterTest : BasePlatformTestCase() {
         assertNull(commenter.documentationCommentTokenType)
         // doc detection
         assertFalse(commenter.isDocumentationComment(null))
+    }
+
+    fun testCommenter() {
+        myFixture.configureByText("commenter.test.txt", "<caret>k = v")
+        val commentAction = CommentByLineCommentAction()
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("# k = v")
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("k = v")
     }
 }

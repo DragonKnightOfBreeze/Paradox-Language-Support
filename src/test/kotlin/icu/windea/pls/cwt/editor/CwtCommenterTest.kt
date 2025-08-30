@@ -1,5 +1,6 @@
 package icu.windea.pls.cwt.editor
 
+import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestDataPath
@@ -53,5 +54,14 @@ class CwtCommenterTest : BasePlatformTestCase() {
         val docFirstChild = doc.firstChild
         assertNotNull(docFirstChild)
         assertEquals(true, commenter.isDocumentationCommentText(docFirstChild!!))
+    }
+
+    fun testCommenter() {
+        myFixture.configureByText("commenter.test.cwt", "<caret>k = v")
+        val commentAction = CommentByLineCommentAction()
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("# k = v")
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("k = v")
     }
 }

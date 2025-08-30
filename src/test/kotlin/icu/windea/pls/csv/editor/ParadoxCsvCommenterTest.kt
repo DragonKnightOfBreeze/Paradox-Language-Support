@@ -1,8 +1,10 @@
 package icu.windea.pls.csv.editor
 
+import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
+
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCsvCommenterTest : BasePlatformTestCase() {
@@ -26,5 +28,14 @@ class ParadoxCsvCommenterTest : BasePlatformTestCase() {
         assertNull(commenter.documentationCommentTokenType)
         // doc detection
         assertFalse(commenter.isDocumentationComment(null))
+    }
+
+    fun testCommenter() {
+        myFixture.configureByText("commenter.test.csv", "<caret>foo;bar;1")
+        val commentAction = CommentByLineCommentAction()
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("# foo;bar;1")
+        commentAction.actionPerformedImpl(project, myFixture.editor)
+        myFixture.checkResult("foo;bar;1")
     }
 }
