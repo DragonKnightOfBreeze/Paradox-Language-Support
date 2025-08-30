@@ -1,0 +1,13 @@
+# root comment
+
+# root attached comment
+root = {
+    # comment
+
+    # attached comment
+    key_1 = value
+
+    # detached comment
+
+    key_2 = value
+}
