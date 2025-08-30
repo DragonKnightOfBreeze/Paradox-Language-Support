@@ -231,3 +231,144 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
+
+## 权限与安全
+
+- **最小权限原则**：显式声明 `permissions`，严格限制 `GITHUB_TOKEN` 能力。
+```yaml
+permissions:
+  contents: read
+  pull-requests: write
+```
+
+- **固定 Action 版本**：优先使用 `@vX` 或 commit SHA，避免 `@master`。
+- **机密管理**：使用 `secrets.*` 注入；避免直接回显到日志。
+
+## 并发与取消
+
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+## 可复用工作流（Reusable Workflows）
+
+```yaml
+# .github/workflows/reusable.yml
+name: Reusable Build
+on: workflow_call
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/setup-gradle@v3
+      - run: ./gradlew build --stacktrace
+```
+
+```yaml
+# 调用方 workflow
+jobs:
+  call-build:
+    uses: ./.github/workflows/reusable.yml
+```
+
+## Gradle 缓存
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '21'
+  - name: Setup Gradle
+    uses: gradle/actions/setup-gradle@v3
+  - run: ./gradlew build -x test
+```
+
+## OIDC 到云（示例：AWS）
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+steps:
+  - uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+      aws-region: ap-southeast-1
+  - run: aws sts get-caller-identity
+```
+
+## 调试与本地测试
+
+- **日志增强**：在仓库/环境 Secrets 中设置 `ACTIONS_STEP_DEBUG=true`。
+- **actionlint**：静态检查工作流 YAML。
+```yaml
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-actionlint@v1
+```
+
+- **本地运行**：使用 `act` 进行快速迭代测试。
+
+## 发布触发与环境保护
+
+```yaml
+on:
+  release:
+    types: [released]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Deploy tag ${{ github.ref_name }}"
+```
+
+说明：`environment: production` 可启用保护规则（审批人、机密隔离）。
+
+## JetBrains 插件发布（示例）
+
+```yaml
+name: Publish JetBrains Plugin
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Build & Sign
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+          CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
+        run: |
+          ./gradlew buildPlugin signPlugin --info
+      - name: Publish
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          ./gradlew publishPlugin --info
