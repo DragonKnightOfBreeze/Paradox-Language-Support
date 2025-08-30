@@ -1,4 +1,4 @@
-# IntelliJ Platform SDK 学习笔记
+# 学习笔记：IntelliJ Platform SDK
 
 ## 概述
 

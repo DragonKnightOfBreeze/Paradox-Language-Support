@@ -1,12 +1,6 @@
-# MCP（Model Context Protocol）学习笔记
+# ：学习笔记MCP（Model Context Protocol）
 
-> MCP 是一套让「AI 应用（客户端）」与「外部数据/工具（服务端）」以统一协议对接的标准。你可以把它理解为 AI 时代的“USB-C”：统一接入、能力协商、可移植。
-
-- **官方站点**：https://modelcontextprotocol.io/
-- **TS SDK（npm）**：@modelcontextprotocol/sdk
-- **Python SDK（pip/uv）**：mcp（可选 extras：cli）
-
----
+MCP 是一套让「AI 应用（客户端）」与「外部数据/工具（服务端）」以统一协议对接的标准。你可以把它理解为 AI 时代的“USB-C”：统一接入、能力协商、可移植。
 
 ## 核心概念速览
 
@@ -229,10 +223,15 @@ uv run mcp install server.py --name "My Analytics Server" -f .env
 ---
 
 ## 参考链接
- 
-- **TypeScript SDK（npm）**：https://www.npmjs.com/package/@modelcontextprotocol/sdk
-- **TypeScript SDK（GitHub）**：https://github.com/modelcontextprotocol/typescript-sdk
-- **Python SDK（GitHub）**：https://github.com/modelcontextprotocol/python-sdk
+
+
+- [官方站点](https://modelcontextprotocol.io/)
 - **官方规范与示例**：
   - [Transports（Streamable HTTP、stdio）](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports)
   - Example Servers & Inspector：官方站点导航
+- **SDKs**：
+  - **TS SDK（npm）**：@modelcontextprotocol/sdk
+  - **Python SDK（pip/uv）**：mcp（可选 extras：cli）
+  - **TypeScript SDK（npm）**：https://www.npmjs.com/package/@modelcontextprotocol/sdk
+  - **TypeScript SDK（GitHub）**：https://github.com/modelcontextprotocol/typescript-sdk
+  - **Python SDK（GitHub）**：https://github.com/modelcontextprotocol/python-sdk

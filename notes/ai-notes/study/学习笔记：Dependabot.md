@@ -1,4 +1,4 @@
-# Dependabot 学习笔记
+# 学习笔记：Dependabot
 
 ## 概述
 
