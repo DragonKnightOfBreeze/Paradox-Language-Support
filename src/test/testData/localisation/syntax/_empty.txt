@@ -1,0 +1,2 @@
+PARADOX_LOCALISATION_FILE(0,0)
+  <empty list>

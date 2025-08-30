@@ -1,0 +1,30 @@
+definitions = {
+	### doc
+	## type = army
+	ex_army
+}
+
+inline_scripts = {
+	### doc
+	ex_inline_script
+}
+
+parameters = {
+	### doc
+	## context_key = inline_script@ex_inline_script
+	ex_param
+}
+
+complex_enum_values = {
+	policy_flag = {
+		### doc
+		ex_policy_flag
+	}
+}
+
+dynamic_values = {
+	event_target = {
+		### doc
+		ex_event_target
+	}
+}

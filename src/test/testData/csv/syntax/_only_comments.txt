@@ -1,0 +1,4 @@
+PARADOX_CSV_FILE(0,34)
+  PsiComment(COMMENT)('# only comments')(0,15)
+  PsiWhiteSpace('\n')(15,16)
+  PsiComment(COMMENT)('# nothing to parse')(16,34)

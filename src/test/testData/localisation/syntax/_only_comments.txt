@@ -1,0 +1,4 @@
+PARADOX_LOCALISATION_FILE(0,43)
+  PsiComment(COMMENT)('# only comment line 1')(0,21)
+  PsiWhiteSpace('\n')(21,22)
+  PsiComment(COMMENT)('# only comment line 2')(22,43)

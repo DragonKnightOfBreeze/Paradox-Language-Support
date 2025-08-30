@@ -1,0 +1,2 @@
+PARADOX_SCRIPT_FILE(0,0)
+  <empty list>

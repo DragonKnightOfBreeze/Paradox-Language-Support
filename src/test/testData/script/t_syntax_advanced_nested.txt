@@ -1,8 +1,0 @@
-root = {
-  a = { b = { c = d } }
-  list = { 1 2 3 }
-  inline_math = @[1 + (2 * 3)]
-  color = rgb { 10 20 30 }
-  parameter = $PARAM$
-  [[!PARAM] param_cond = $PARAM$ ]
-}

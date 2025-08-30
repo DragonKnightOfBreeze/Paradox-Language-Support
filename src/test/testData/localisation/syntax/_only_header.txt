@@ -1,0 +1,8 @@
+PARADOX_LOCALISATION_FILE(0,10)
+  ParadoxLocalisationPropertyList: null(0,10)
+    ParadoxLocalisationProperty: l_english(0,10)
+      ParadoxLocalisationPropertyKeyImpl(PROPERTY_KEY)(0,9)
+        PsiElement(PROPERTY_KEY_TOKEN)('l_english')(0,9)
+      PsiElement(COLON)(':')(9,10)
+    PsiErrorElement:LEFT_QUOTE or PROPERTY_NUMBER expected(10,10)
+      <empty list>
