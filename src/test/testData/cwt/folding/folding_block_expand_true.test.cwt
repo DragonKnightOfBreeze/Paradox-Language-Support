@@ -1,0 +1,8 @@
+# block above to ensure not merged with comments
+
+block = <fold text='{...}' expand='true'>{
+  a = 1
+  b = 2
+}</fold>
+
+# tail comment

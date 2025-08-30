@@ -1,0 +1,5 @@
+<fold text='# ...' expand='false'># comment block 1
+# comment block 2
+# comment block 3</fold>
+
+key = 2
