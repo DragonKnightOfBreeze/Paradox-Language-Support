@@ -71,7 +71,7 @@ QQ群：653824651
 - 如果在使用过程中遇到意外问题，请尝试通过以下方式解决：
   - 更新 IDE 和插件到最新版本。
   - 如果可能与 IDE 索引有关，请尝试重建索引并重启 IDE。（点击 `File > Invalidate Caches... > Invalidate and Restart`）
-  - 如果可能与插件内置的规则有关，请尝试[编写自定义的规则文件](config.md#writing-cwt-config-files)。
+  - 如果可能与插件内置的规则有关，请尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)。
   - 如果可能与插件的配置有关，请尝试删除插件的配置文件。（`paradox-language-support.xml`，如果不知道具体位置，请使用 [Everything](https://www.voidtools.com)）
   - 通过 GitHub、Discord 等渠道进行反馈。
 
