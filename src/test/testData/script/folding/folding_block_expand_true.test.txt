@@ -1,0 +1,4 @@
+a = <fold text='{...}' expand='true'>{
+  b = 1
+  c = 2
+}</fold>

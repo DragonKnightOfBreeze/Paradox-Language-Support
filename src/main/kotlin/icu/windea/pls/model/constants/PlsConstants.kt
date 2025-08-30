@@ -12,7 +12,6 @@ object PlsConstants {
     val imageFileExtensions = arrayOf("png", "dds", "tga")
 
     const val dummyIdentifier = "windea"
-    const val testDataFileNamePrefix = "t_"
 
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)

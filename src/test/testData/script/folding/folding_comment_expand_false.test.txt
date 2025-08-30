@@ -1,0 +1,4 @@
+<fold text='# ...' expand='false'># comment A
+# comment B
+# comment C</fold>
+a = 2

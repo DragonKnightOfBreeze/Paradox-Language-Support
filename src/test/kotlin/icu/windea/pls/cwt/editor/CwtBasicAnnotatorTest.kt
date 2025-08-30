@@ -12,19 +12,17 @@ class CwtBasicAnnotatorTest : BasePlatformTestCase() {
         val errorMsg = PlsBundle.message("neighboring.literal.not.supported")
         val openingMsg = PlsBundle.message("missing.opening.quote")
         myFixture.configureByText(
-            "t_annotator_adjacent_literals.test.cwt",
-            // a"b  -> two annotations expected:
-            // 1) Missing opening quote on the first token 'a"' (unquoted string ending with a quote)
-            // 2) Neighboring literal on the second token (content part only) 'b'
+            "annotator_adjacent_literals.test.cwt",
+            // a"b  -> 两个标注：1) a" 缺失开引号；2) b 紧邻字面量
             """
             <error descr="$openingMsg">a"</error><error descr="$errorMsg">b</error>
             """.trimIndent()
         )
         myFixture.checkHighlighting(true, true, true)
 
-        // Apply quick-fix on a fresh file without markup
+        // Quick Fix: 插入空格
         val fixName = PlsBundle.message("neighboring.literal.not.supported.fix")
-        myFixture.configureByText("t_annotator_adjacent_literals_apply.test.cwt", "a\"<caret>b")
+        myFixture.configureByText("annotator_adjacent_literals_apply.test.cwt", "a\"<caret>b")
         val intention = myFixture.findSingleIntention(fixName)
         myFixture.launchAction(intention)
         assertEquals("a\" b", myFixture.editor.document.text)
@@ -34,10 +32,8 @@ class CwtBasicAnnotatorTest : BasePlatformTestCase() {
         val openingMsg = PlsBundle.message("missing.opening.quote")
         val closingMsg = PlsBundle.message("missing.closing.quote")
         myFixture.configureByText(
-            "t_annotator_missing_quotes.test.cwt",
-            // Two separate values to trigger missing opening / closing quote annotations
-            // 1) value"  -> missing opening quote
-            // 2) "value  -> missing closing quote
+            "annotator_missing_quotes.test.cwt",
+            // 两个标注：value" 缺失开引号；"value 缺失闭引号
             """
             <error descr="$openingMsg">value"</error>
             <error descr="$closingMsg">"value</error>

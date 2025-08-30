@@ -35,7 +35,7 @@ class CwtCommenterTest : BasePlatformTestCase() {
         assertNull(commenter.blockCommentTokenType)
 
         myFixture.configureByText(
-            "t_commenter_tokens.test.cwt",
+            "commenter_tokens.test.cwt",
             """
             # comment
             ## option=1

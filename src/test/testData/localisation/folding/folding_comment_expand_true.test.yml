@@ -1,0 +1,4 @@
+l_english:
+ <fold text='# ...' expand='true'># comment line 1
+ # comment line 2</fold>
+ KEY:0 "Value"

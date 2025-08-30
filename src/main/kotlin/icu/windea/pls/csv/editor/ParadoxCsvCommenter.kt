@@ -2,7 +2,7 @@ package icu.windea.pls.csv.editor
 
 import com.intellij.lang.CodeDocumentationAwareCommenter
 import com.intellij.psi.PsiComment
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 
 class ParadoxCsvCommenter : CodeDocumentationAwareCommenter {
     override fun getLineCommentPrefix() = "#"
@@ -21,7 +21,7 @@ class ParadoxCsvCommenter : CodeDocumentationAwareCommenter {
 
     override fun getDocumentationCommentSuffix() = null
 
-    override fun getLineCommentTokenType() = ParadoxLocalisationElementTypes.COMMENT
+    override fun getLineCommentTokenType() = ParadoxCsvElementTypes.COMMENT
 
     override fun getBlockCommentTokenType() = null
 

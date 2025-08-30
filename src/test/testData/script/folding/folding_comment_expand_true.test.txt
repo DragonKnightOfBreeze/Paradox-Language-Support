@@ -1,0 +1,3 @@
+<fold text='# ...' expand='true'># comment line 1
+# comment line 2</fold>
+a = 1

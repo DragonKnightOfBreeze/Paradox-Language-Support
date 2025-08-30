@@ -7,6 +7,7 @@ import com.intellij.lang.annotation.HighlightSeverity.INFORMATION
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
+import com.intellij.psi.util.PsiTreeUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
@@ -27,13 +28,40 @@ class ParadoxScriptBasicAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
+        // TODO 2.0.2-dev 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
         //不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
                 .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
-        //检测是否缺失一侧的双引号
+
+        // TODO 2.0.2-dev 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
+        // 针对字符串内的特殊情况：如 a"b 被解析为同一个字符串（多个 STRING_TOKEN 片段）
+        // 需要在第一个以右引号结尾但缺失左引号的片段上标记“缺失开引号”，并在紧随其后的片段上标记“紧邻字面量”
+        // if (element is ParadoxScriptString) {
+        //     val parts = PsiTreeUtil.findChildrenOfType(element, PsiElement::class.java)
+        //         .filter { it.elementType == ParadoxScriptElementTypes.STRING_TOKEN }
+        //         .sortedBy { it.textRange.startOffset }
+        //     if (parts.size >= 2) {
+        //         val idx = parts.indexOfFirst { !it.text.isLeftQuoted() && it.text.isRightQuoted() }
+        //         if (idx != -1 && idx + 1 < parts.size) {
+        //             // 缺失开引号：作用于以右引号结尾但未以左引号开始的片段（例如 a"）
+        //             holder.newAnnotation(ERROR, PlsBundle.message("missing.opening.quote"))
+        //                 .range(parts[idx])
+        //                 .create()
+        //             // 紧邻字面量：作用于紧随其后的下一个片段（例如 b）
+        //             val nextPart = parts[idx + 1]
+        //             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
+        //                 .range(nextPart)
+        //                 .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", nextPart.startOffset))
+        //                 .create()
+        //             return
+        //         }
+        //     }
+        // }
+
+        // 检测是否缺失一侧的双引号
         if (element.isQuoteAware()) {
             val text = element.text
             val isLeftQuoted = text.isLeftQuoted()

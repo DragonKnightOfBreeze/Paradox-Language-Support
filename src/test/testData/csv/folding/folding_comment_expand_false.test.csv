@@ -1,0 +1,5 @@
+<fold text='# ...' expand='false'># comment A
+# comment B
+# comment C</fold>
+name;desc
+bob;dev

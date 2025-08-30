@@ -20,13 +20,14 @@ class CwtBasicAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
-        //不允许紧邻的字面量
+        // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
                 .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
                 .create()
         }
-        //检测是否缺失一侧的双引号
+
+        // 检测是否缺失一侧的双引号
         if (element.isQuoteAware()) {
             val text = element.text
             val isLeftQuoted = text.isLeftQuoted()
