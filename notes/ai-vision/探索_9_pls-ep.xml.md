@@ -13,7 +13,7 @@
   - `quickDocTextProvider` → `ParadoxQuickDocTextProvider`
   - `hintTextProvider` → `ParadoxHintTextProvider`
   - `referenceLinkProvider` → `ReferenceLinkProvider`
-- CWT 配置生态
+- CWT 规则生态
   - `injectedConfigProvider`、`overriddenConfigProvider`、`relatedConfigProvider`
   - `configContextProvider`、`declarationConfigContextProvider`
   - `configGroupDataProvider`、`configGroupFileProvider`
@@ -54,8 +54,8 @@
   - Quick Doc：扩展脚本变量/定义/规则/on_action/复杂枚举值/动态值/参数等文本增强
   - Hint Text：定义、推断脚本变量/复杂枚举值/动态值，及扩展实体提示
 - 引用链接（ReferenceLinkProvider）
-  - CWT 配置、脚本变量、定义、本地化、文件路径、修饰符
-- CWT 配置相关
+  - CWT 规则、脚本变量、定义、本地化、文件路径、修饰符
+- CWT 规则相关
   - 注入：`CwtTechnologyWithLevelInjectedConfigProvider`、`CwtInOnActionInjectedConfigProvider`
   - 覆盖：`CwtSwitchOverriddenConfigProvider`、`CwtTriggerWithParametersAwareOverriddenConfigProvider`
   - 关联：Base/InComplexExpression/Extended/Column
