@@ -10,7 +10,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.lang.isIdentifier
 
-class CwtDeclarationConfigResolverImpl: CwtDeclarationConfig.Resolver {
+class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(name, config)
 
     private fun doResolve(name: String?, config: CwtPropertyConfig): CwtDeclarationConfigImpl? {
@@ -27,7 +27,7 @@ private class CwtDeclarationConfigImpl(
         CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
-    override  val subtypesUsedInDeclaration: Set<String> by lazy {
+    override val subtypesUsedInDeclaration: Set<String> by lazy {
         val result = sortedSetOf<String>()
         config.processDescendants {
             if (it is CwtPropertyConfig) {

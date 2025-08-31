@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig
 import icu.windea.pls.config.config.findOption
 import icu.windea.pls.config.config.stringValue
 
-class CwtExtendedComplexEnumValueConfigResolverImpl: CwtExtendedComplexEnumValueConfig.Resolver {
+class CwtExtendedComplexEnumValueConfigResolverImpl : CwtExtendedComplexEnumValueConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig = doResolve(config, type)
 
     private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfigImpl {

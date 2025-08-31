@@ -15,7 +15,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtComplexEnumConfigResolverImpl:CwtComplexEnumConfig.Resolver {
+class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfigImpl? {

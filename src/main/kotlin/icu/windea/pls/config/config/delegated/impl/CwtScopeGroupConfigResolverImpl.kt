@@ -16,8 +16,8 @@ internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver {
         val name = config.key
         val propertyConfigValues = config.values ?: return null
         if (propertyConfigValues.isEmpty()) return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
-        val values = caseInsensitiveStringSet() //忽略大小写
-        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
+        val values = caseInsensitiveStringSet() // 忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // 忽略大小写
         for (propertyConfigValue in propertyConfigValues) {
             values.add(propertyConfigValue.value)
             valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)

@@ -37,7 +37,7 @@ internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig
 
 private class CwtTypeLocalisationConfigImpl(
     override val config: CwtPropertyConfig,
-    override val locationConfigs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
+    override val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
 ) : UserDataHolderBase(), CwtTypeLocalisationConfig {
     private val configsCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
 

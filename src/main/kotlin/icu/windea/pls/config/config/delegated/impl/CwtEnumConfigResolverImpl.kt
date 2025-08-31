@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtEnumConfigResolverImpl: CwtEnumConfig.Resolver{
+internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver {
     // TODO an enum value can also be a template expression
 
     override fun resolve(config: CwtPropertyConfig): CwtEnumConfig? = doResolve(config)
@@ -23,8 +23,8 @@ internal class CwtEnumConfigResolverImpl: CwtEnumConfig.Resolver{
         if (propertyConfigValues.isEmpty()) {
             return CwtEnumConfigImpl(config, name, emptySet(), emptyMap())
         }
-        val values = caseInsensitiveStringSet() //忽略大小写
-        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
+        val values = caseInsensitiveStringSet() // 忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // 忽略大小写
         for (propertyConfigValue in propertyConfigValues) {
             val v = propertyConfigValue.value.intern()
             values.add(v)

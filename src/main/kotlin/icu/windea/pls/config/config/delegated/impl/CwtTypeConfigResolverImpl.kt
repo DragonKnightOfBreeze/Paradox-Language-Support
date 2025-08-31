@@ -74,12 +74,12 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
                 "unique" -> unique = prop.booleanValue ?: continue
                 "severity" -> severity = prop.stringValue ?: continue
                 "skip_root_key" -> {
-                    //值可能是string也可能是stringArray
+                    // 值可能是string也可能是stringArray
                     val list = prop.stringValue?.let { listOf(it) }
                         ?: prop.values?.mapNotNull { it.stringValue }
                         ?: continue
                     if (skipRootKey == null) skipRootKey = mutableListOf()
-                    skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
+                    skipRootKey.add(list) // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
                 }
                 "localisation" -> {
                     localisation = CwtTypeLocalisationConfig.resolve(prop)
@@ -120,9 +120,9 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
             if (option !is CwtOptionConfig) continue
             when (option.key) {
                 "type_key_filter" -> {
-                    //值可能是string也可能是stringArray
+                    // 值可能是string也可能是stringArray
                     val values = option.getOptionValueOrValues() ?: continue
-                    val set = caseInsensitiveStringSet() //忽略大小写
+                    val set = caseInsensitiveStringSet() // 忽略大小写
                     set.addAll(values)
                     val o = option.separatorType == CwtSeparatorType.EQUAL
                     typeKeyFilter = ReversibleValue(o, set.optimized())
@@ -130,7 +130,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
                 "type_key_regex" -> {
                     typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
                 }
-                "starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
+                "starts_with" -> startsWith = option.stringValue ?: continue // 忽略大小写
                 "graph_related_types" -> {
                     graphRelatedTypes = option.getOptionValues()
                 }

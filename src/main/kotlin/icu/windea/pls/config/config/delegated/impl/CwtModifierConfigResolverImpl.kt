@@ -18,7 +18,7 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
     override fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? = doResolveFromDefinitionModifier(config, name, typeExpression)
 
     private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
-        //string | string[]
+        // string | string[]
         val categories = config.stringValue?.let { setOf(it) }
             ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
             ?: return null
@@ -30,7 +30,7 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
     }
 
     private fun doResolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
-        //string | string[]
+        // string | string[]
         val modifierName = name.replace("$", "<$typeExpression>").intern()
         val categories = config.stringValue?.let { setOf(it) }
             ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
@@ -41,8 +41,8 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
 
 private class CwtModifierConfigImpl(
     override val config: CwtPropertyConfig,
-    override val name: String, //template name, not actual modifier name!
-    override val categories: Set<String> = emptySet() //category names
+    override val name: String, // template name, not actual modifier name!
+    override val categories: Set<String> = emptySet() // category names
 ) : UserDataHolderBase(), CwtModifierConfig {
     override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 
@@ -52,7 +52,7 @@ private class CwtModifierConfigImpl(
         if (categoryConfigMap.isNotEmpty()) {
             ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
-            //没有注明categories时从scopes选项中获取
+            // 没有注明categories时从scopes选项中获取
             config.supportedScopes
         }
     }

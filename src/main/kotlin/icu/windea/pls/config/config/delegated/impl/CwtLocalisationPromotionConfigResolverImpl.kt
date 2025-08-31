@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.values
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
-internal class CwtLocalisationPromotionConfigResolverImpl: CwtLocalisationPromotionConfig.Resolver {
+internal class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromotionConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {

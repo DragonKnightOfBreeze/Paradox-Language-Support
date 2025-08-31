@@ -26,7 +26,7 @@ private class CwtSingleAliasConfigImpl(
     override val name: String
 ) : UserDataHolderBase(), CwtSingleAliasConfig {
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
-        //inline all value and configs
+        // inline all value and configs
         val other = this.config
         val inlined = config.copy(
             value = other.value,

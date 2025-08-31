@@ -11,7 +11,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtRowConfigResolverImpl:CwtRowConfig.Resolver {
+internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
@@ -45,6 +45,7 @@ internal class CwtRowConfigResolverImpl:CwtRowConfig.Resolver {
         )
     }
 }
+
 private class CwtRowConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,

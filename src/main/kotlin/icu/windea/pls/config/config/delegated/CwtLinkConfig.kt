@@ -38,7 +38,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     fun forScope() = type != "value" /* type.isNullOrEmpty() || type == "both" || type == "scope" */
     fun forValue() = type == "both" || type == "value"
 
-   interface Resolver {
+    interface Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig?
         fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig?
         fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig

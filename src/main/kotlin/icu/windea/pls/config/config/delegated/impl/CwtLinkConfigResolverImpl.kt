@@ -44,10 +44,10 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
                 "for_definition_type" -> forDefinitionType = prop.stringValue
             }
         }
-        if (fromData && dataSource == null) return null //invalid
-        if (fromArgument && dataSource == null) return null //invalid
+        if (fromData && dataSource == null) return null // invalid
+        if (fromArgument && dataSource == null) return null // invalid
         if (prefix == "") prefix = null
-        if (prefix != null && !prefix.endsWith(':')) prefix += ":" //ensure prefix ends with ':'
+        if (prefix != null && !prefix.endsWith(':')) prefix += ":" // ensure prefix ends with ':'
         inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
         return CwtLinkConfigImpl(
             config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope,
@@ -79,7 +79,7 @@ private class CwtLinkConfigImpl(
     override val forDefinitionType: String?,
     override val forLocalisation: Boolean
 ) : UserDataHolderBase(), CwtLinkConfig {
-    //not much memory will be used, so cached
+    // not much memory will be used, so cached
     override val dataSourceExpression: CwtDataExpression? = dataSource?.let { CwtDataExpression.resolve(it, false) }
 
     override fun toString(): String {

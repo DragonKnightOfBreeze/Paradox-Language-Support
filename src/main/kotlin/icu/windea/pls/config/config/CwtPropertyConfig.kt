@@ -27,7 +27,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     companion object Resolver
 }
 
-//Resolve Methods
+// Resolve Methods
 
 fun CwtPropertyConfig.Resolver.resolve(
     pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -81,7 +81,7 @@ fun CwtPropertyConfig.copy(
     return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueType, separatorType, configs, optionConfigs)
 }
 
-//Implementations (interned)
+// Implementations (interned)
 
 private abstract class CwtPropertyConfigImpl(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -91,30 +91,30 @@ private abstract class CwtPropertyConfigImpl(
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL
 ) : UserDataHolderBase(), CwtPropertyConfig {
-    override val key = key.intern() //intern to optimize memory
-    override val value = value.intern() //intern to optimize memory
+    override val key = key.intern() // intern to optimize memory
+    override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimizeValue() //use enum id as field to optimize memory
+    private val valueTypeId = valueType.optimizeValue() // use enum id as field to optimize memory
     override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
-    private val separatorTypeId = separatorType.optimizeValue() //use enum id as field to optimize memory
+    private val separatorTypeId = separatorType.optimizeValue() // use enum id as field to optimize memory
     override val separatorType get() = separatorTypeId.deoptimizeValue<CwtSeparatorType>()
 
-    //use memory-optimized lazy property
+    // use memory-optimized lazy property
     @Volatile
     private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    //not cached to optimize memory
+    // not cached to optimize memory
     override val keyExpression get() = CwtDataExpression.resolve(key, true)
     override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString() = "$key ${separatorType} $value"
 }
 
-//12 + 9 * 4 + 2 * 1 = 50 -> 56
+// 12 + 9 * 4 + 2 * 1 = 50 -> 56
 private class CwtPropertyConfigImpl1(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -129,7 +129,7 @@ private class CwtPropertyConfigImpl1(
     override val optionConfigs = optionConfigs
 }
 
-//12 + 8 * 4 + 2 * 1 = 46 -> 48
+// 12 + 8 * 4 + 2 * 1 = 46 -> 48
 private class CwtPropertyConfigImpl2(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -143,7 +143,7 @@ private class CwtPropertyConfigImpl2(
     override val optionConfigs get() = null
 }
 
-//12 + 8 * 4 + 2 * 1 = 46 -> 48
+// 12 + 8 * 4 + 2 * 1 = 46 -> 48
 private class CwtPropertyConfigImpl3(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -157,7 +157,7 @@ private class CwtPropertyConfigImpl3(
     override val optionConfigs = optionConfigs
 }
 
-//12 + 7 * 4 + 2 * 1 = 42 -> 48
+// 12 + 7 * 4 + 2 * 1 = 42 -> 48
 private class CwtPropertyConfigImpl4(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
@@ -173,14 +173,14 @@ private class CwtPropertyConfigImpl4(
 private abstract class CwtPropertyConfigDelegate(
     private val delegate: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtPropertyConfig by delegate {
-    //use memory-optimized lazy property
+    // use memory-optimized lazy property
     @Volatile
     private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    //not cached to optimize memory
+    // not cached to optimize memory
     override val keyExpression get() = CwtDataExpression.resolve(key, true)
     override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
@@ -190,7 +190,7 @@ private abstract class CwtPropertyConfigDelegate(
     override fun toString() = "$key ${separatorType.id} $value"
 }
 
-//12 + 5 * 4 = 32 -> 32
+// 12 + 5 * 4 = 32 -> 32
 private class CwtPropertyConfigDelegate1(
     delegate: CwtPropertyConfig,
     configs: List<CwtMemberConfig<*>>? = null,
@@ -198,26 +198,26 @@ private class CwtPropertyConfigDelegate1(
     override val configs = configs
 }
 
-//12 + 4 * 4 = 28 -> 32
+// 12 + 4 * 4 = 28 -> 32
 private class CwtPropertyConfigDelegate2(
     delegate: CwtPropertyConfig,
 ) : CwtPropertyConfigDelegate(delegate) {
     override val configs get() = if (valueType == CwtType.Block) emptyList<CwtMemberConfig<*>>() else null
 }
 
-//12 + 6 * 4 = 36 -> 40
+// 12 + 6 * 4 = 36 -> 40
 private class CwtPropertyConfigDelegateWith(
     delegate: CwtPropertyConfig,
     key: String,
     value: String,
-    //configs should be always null here
+    // configs should be always null here
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val key = key.intern() //intern to optimize memory
-    override val value = value.intern() //intern to optimize memory
+    override val key = key.intern() // intern to optimize memory
+    override val value = value.intern() // intern to optimize memory
 }
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
-    //this function should be enough fast because there are no pointers to be created
+    // this function should be enough fast because there are no pointers to be created
     val resolvedPointer = this.resolved().pointer
     val valuePointer = when {
         resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer

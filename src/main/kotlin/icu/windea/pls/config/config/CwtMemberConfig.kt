@@ -53,20 +53,20 @@ val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.Str
 val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
 val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
 
-//val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
-//val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
+// val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
+// val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
-//fun CwtMemberConfig<*>.getOptionValue(): String? {
+// fun CwtMemberConfig<*>.getOptionValue(): String? {
 //    return stringValue
-//}
+// }
 
-//fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
+// fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
 //    return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
-//}
+// }
 
-//fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
+// fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
 //    return getOptionValue()?.let { it.singleton.set() } ?: getOptionValues()
-//}
+// }
 
 fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
     return optionConfigs?.find { it is CwtOptionConfig && it.key == key }?.cast()
@@ -91,7 +91,7 @@ fun CwtMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
 val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
     get() = configs != null
 
-//val CwtMemberConfig<*>.isRoot: Boolean
+// val CwtMemberConfig<*>.isRoot: Boolean
 //    get() = when (this) {
 //        is CwtPropertyConfig -> this.parentConfig == null
 //        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
@@ -123,7 +123,7 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
     return occurrence
 }
 
-//Accessors
+// Accessors
 
 val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>(CwtMemberConfig.Keys)
@@ -133,7 +133,7 @@ val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>(CwtMemb
 val CwtMemberConfig.Keys.pushScope by createKey<String>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConfig.Keys)
 
-//may on:
+// may on:
 // * a config expression in declaration config
 // * a config expression in subtype structure config
 
@@ -141,7 +141,7 @@ val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality) action@{
         val option = findOption("cardinality")
         if (option == null) {
-            //如果没有注明且类型是常量，则推断为 1..~1
+            // 如果没有注明且类型是常量，则推断为 1..~1
             if (configExpression.type == CwtDataTypes.Constant) {
                 return@action CwtCardinalityExpression.resolve("1..~1")
             }
@@ -159,7 +159,7 @@ val CwtMemberConfig<*>.cardinalityMaxDefine: String?
         option?.stringValue
     }
 
-//from replace_scopes and push_scope
+// from replace_scopes and push_scope
 
 val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
     get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext) action@{
@@ -169,13 +169,13 @@ val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
         scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
     }
 
-//ignore case for both system scopes and scopes (to lowercase)
-//may on:
-//* a data expression
-//* a declaration config
-//* a type config
-//* a subtype config
-//* an extended (definition / game_rule / on_action / inline_script / parameter) config
+// ignore case for both system scopes and scopes (to lowercase)
+// may on:
+// * a data expression
+// * a declaration config
+// * a type config
+// * a subtype config
+// * an extended (definition / game_rule / on_action / inline_script / parameter) config
 
 val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes) action@{
@@ -196,9 +196,9 @@ val CwtMemberConfig<*>.pushScope: String?
         option?.getOptionValue()?.let { v -> ParadoxScopeManager.getScopeId(v) }
     }
 
-//ignore case for scopes (to lowercase)
-//may on:
-//* a data expression
+// ignore case for scopes (to lowercase)
+// may on:
+// * a data expression
 
 val CwtMemberConfig<*>.supportedScopes: Set<String>
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
@@ -219,7 +219,7 @@ var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by creat
 var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKey(CwtMemberConfig.Keys)
 var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKey(CwtMemberConfig.Keys)
 
-//Resolve Methods
+// Resolve Methods
 
 fun CwtMemberConfig<*>.delegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,

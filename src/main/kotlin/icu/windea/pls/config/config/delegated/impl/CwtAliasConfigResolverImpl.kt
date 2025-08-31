@@ -14,7 +14,7 @@ import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtAliasConfigResolverImpl: CwtAliasConfig.Resolver {
+internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtAliasConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtAliasConfigImpl? {
@@ -32,13 +32,13 @@ private class CwtAliasConfigImpl(
     name: String,
     subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val name = name.intern() //intern to optimize memory
-    override val subName = subName.intern() //intern to optimize memory
+    override val name = name.intern() // intern to optimize memory
+    override val subName = subName.intern() // intern to optimize memory
 
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
 
-    //not much memory will be used, so cached
+    // not much memory will be used, so cached
     override val subNameExpression: CwtDataExpression = CwtDataExpression.resolve(subName, true)
 
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {

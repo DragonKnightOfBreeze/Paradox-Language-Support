@@ -20,7 +20,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     companion object Resolver
 }
 
-//Resolve Methods
+// Resolve Methods
 
 fun CwtValueConfig.Resolver.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
@@ -85,7 +85,7 @@ class CwtPropertyPointer(
     val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
 }
 
-//Implementations (interned)
+// Implementations (interned)
 
 private abstract class CwtValueConfigImpl(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
@@ -94,22 +94,22 @@ private abstract class CwtValueConfigImpl(
     valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : UserDataHolderBase(), CwtValueConfig {
-    override val value = value.intern() //intern to optimize memory
+    override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimizeValue() //use enum id to optimize memory
+    private val valueTypeId = valueType.optimizeValue() // use enum id to optimize memory
     override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
     override val propertyConfig = propertyConfig
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    //not cached to optimize memory
+    // not cached to optimize memory
     override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value
 }
 
-//12 + 8 * 4 + 1 * 1 = 45 -> 48
+// 12 + 8 * 4 + 1 * 1 = 45 -> 48
 private class CwtValueConfigImpl1(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
@@ -123,7 +123,7 @@ private class CwtValueConfigImpl1(
     override val optionConfigs = optionConfigs
 }
 
-//12 + 7 * 4 + 1 * 1 = 41 -> 48
+// 12 + 7 * 4 + 1 * 1 = 41 -> 48
 private class CwtValueConfigImpl2(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
@@ -136,7 +136,7 @@ private class CwtValueConfigImpl2(
     override val optionConfigs get() = null
 }
 
-//12 + 7 * 4 + 1 * 1 = 41 -> 48
+// 12 + 7 * 4 + 1 * 1 = 41 -> 48
 private class CwtValueConfigImpl3(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
@@ -149,7 +149,7 @@ private class CwtValueConfigImpl3(
     override val optionConfigs = optionConfigs
 }
 
-//12 + 6 * 4 + 1 * 1 = 37 -> 40
+// 12 + 6 * 4 + 1 * 1 = 37 -> 40
 private class CwtValueConfigImpl4(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
@@ -166,7 +166,7 @@ private abstract class CwtValueConfigDelegate(
 ) : UserDataHolderBase(), CwtValueConfig by delegate {
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    //not cached to optimize memory
+    // not cached to optimize memory
     override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
@@ -175,7 +175,7 @@ private abstract class CwtValueConfigDelegate(
     override fun toString(): String = value
 }
 
-//12 + 4 * 4 = 28 -> 32
+// 12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigDelegate1(
     delegate: CwtValueConfig,
     configs: List<CwtMemberConfig<*>>? = null,
@@ -183,23 +183,23 @@ private class CwtValueConfigDelegate1(
     override val configs = configs
 }
 
-//12 + 3 * 4 = 24 -> 24
+// 12 + 3 * 4 = 24 -> 24
 private class CwtValueConfigDelegate2(
     delegate: CwtValueConfig,
 ) : CwtValueConfigDelegate(delegate) {
     override val configs get() = if (valueType == CwtType.Block) emptyList<CwtMemberConfig<*>>() else null
 }
 
-//12 + 4 * 4 = 28 -> 32
+// 12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigDelegateWith(
     delegate: CwtValueConfig,
     value: String,
-    //configs should be always null here
+    // configs should be always null here
 ) : CwtValueConfigDelegate(delegate) {
-    override val value = value.intern() //intern to optimize memory
+    override val value = value.intern() // intern to optimize memory
 }
 
-//12 + 4 * 4 = 28 -> 32
+// 12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigFromPropertyConfig(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
     override val propertyConfig: CwtPropertyConfig,
@@ -212,7 +212,7 @@ private class CwtValueConfigFromPropertyConfig(
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    //not cached to optimize memory
+    // not cached to optimize memory
     override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value

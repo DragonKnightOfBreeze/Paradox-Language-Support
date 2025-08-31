@@ -21,7 +21,7 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver 
         valueType: CwtType,
         optionConfigs: List<CwtOptionMemberConfig<*>>?
     ): CwtOptionValueConfig {
-        //use cache if possible to optimize memory
+        // use cache if possible to optimize memory
         if (optionConfigs.isNullOrEmpty()) {
             val cacheKey = "${valueType.ordinal}#${value}"
             return cache.getOrPut(cacheKey) {
@@ -32,14 +32,14 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver 
     }
 }
 
-//12 + 2 * 4 + 1 * 1 = 21 -> 24
+// 12 + 2 * 4 + 1 * 1 = 21 -> 24
 private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtType,
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?
 ) : CwtOptionValueConfig {
-    override val value = value.intern() //intern to optimize memory
+    override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId: Byte = valueType.optimizeValue() //use enum id as field to optimize memory
+    private val valueTypeId: Byte = valueType.optimizeValue() // use enum id as field to optimize memory
     override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
 }

@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.values
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
-internal class CwtModifierCategoryConfigResolverImpl: CwtModifierCategoryConfig.Resolver {
+internal class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
@@ -19,7 +19,7 @@ internal class CwtModifierCategoryConfigResolverImpl: CwtModifierCategoryConfig.
         if (props.isNullOrEmpty()) return null
         for (prop in props) {
             when (prop.key) {
-                //may be empty here (e.g., "AI Economy")
+                // may be empty here (e.g., "AI Economy")
                 "supported_scopes" -> supportedScopes = buildSet {
                     prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
                     prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }

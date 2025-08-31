@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.findOptionValue
 import icu.windea.pls.config.config.stringValue
 
-internal class CwtLocationConfigResolverImpl: CwtLocationConfig.Resolver {
+internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtLocationConfig? {

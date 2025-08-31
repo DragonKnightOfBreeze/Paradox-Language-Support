@@ -30,10 +30,10 @@ internal class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver {
             val key = option.key
             when (key) {
                 "type_key_filter" -> {
-                    //值可能是string也可能是stringArray
+                    // 值可能是string也可能是stringArray
                     val values = option.getOptionValueOrValues()
                     if (values == null) continue
-                    val set = caseInsensitiveStringSet() //忽略大小写
+                    val set = caseInsensitiveStringSet() // 忽略大小写
                     set.addAll(values)
                     val o = option.separatorType == CwtSeparatorType.EQUAL
                     typeKeyFilter = ReversibleValue(o, set.optimized())
@@ -41,7 +41,7 @@ internal class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver {
                 "type_key_regex" -> {
                     typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
                 }
-                "starts_with" -> startsWith = option.stringValue ?: continue //不忽略大小写
+                "starts_with" -> startsWith = option.stringValue ?: continue // 不忽略大小写
                 "only_if_not" -> onlyIfNot = option.getOptionValueOrValues() ?: continue
             }
         }

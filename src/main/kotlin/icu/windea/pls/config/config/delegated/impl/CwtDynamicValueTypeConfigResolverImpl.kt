@@ -23,8 +23,8 @@ class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver
         if (propertyConfigValues.isEmpty()) {
             return CwtDynamicValueTypeConfigImpl(config, name, emptySet(), emptyMap())
         }
-        val values = caseInsensitiveStringSet() //忽略大小写
-        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
+        val values = caseInsensitiveStringSet() // 忽略大小写
+        val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // 忽略大小写
         for (propertyConfigValue in propertyConfigValues) {
             val v = propertyConfigValue.value.intern()
             values.add(v)
