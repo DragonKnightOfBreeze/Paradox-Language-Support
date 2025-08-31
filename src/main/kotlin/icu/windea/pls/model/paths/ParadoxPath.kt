@@ -27,6 +27,9 @@ interface ParadoxPath : Iterable<String> {
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
 
     interface Resolver {
         fun resolveEmpty(): ParadoxPath

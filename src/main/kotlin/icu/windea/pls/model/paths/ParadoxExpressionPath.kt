@@ -30,6 +30,9 @@ interface ParadoxExpressionPath : Iterable<String> {
     fun isNotEmpty(): Boolean = length != 0
 
     override fun iterator(): Iterator<String> = this.subPaths.iterator()
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
 
     interface Resolver {
         fun resolveEmpty(): ParadoxExpressionPath

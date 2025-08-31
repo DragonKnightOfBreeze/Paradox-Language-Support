@@ -9,8 +9,8 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
-import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.expression.complex.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.nodes.ParadoxScopeLinkNode
 
 interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
