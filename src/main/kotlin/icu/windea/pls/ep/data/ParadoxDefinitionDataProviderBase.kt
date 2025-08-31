@@ -16,6 +16,10 @@ abstract class ParadoxDefinitionDataProviderBase<T : ParadoxDefinitionData>() : 
     private val cachedDataKey: Key<CachedValue<T>> by lazy { createKey("cached.data.by.${javaClass.name}") }
 
     override fun getData(definition: ParadoxScriptDefinitionElement): T? {
+        return doGetDataFromCache(definition)
+    }
+
+    private fun ParadoxDefinitionDataProviderBase<T>.doGetDataFromCache(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
             value.withDependencyItems(

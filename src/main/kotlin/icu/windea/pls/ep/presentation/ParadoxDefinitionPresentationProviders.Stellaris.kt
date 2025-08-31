@@ -39,7 +39,7 @@ import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProviderDeleg
 /**
  * 提供科技的图形表示（科技卡）。
  */
-class StellarisTechnologyPresentation(definition: ParadoxScriptDefinitionElement) : ParadoxDefinitionPresentation {
+class StellarisTechnologyPresentationData(definition: ParadoxScriptDefinitionElement) : ParadoxDefinitionPresentationData {
     private val pointer = definition.createPointer()
 
     override fun createComponent(): JComponent? {
@@ -48,7 +48,7 @@ class StellarisTechnologyPresentation(definition: ParadoxScriptDefinitionElement
     }
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionPresentationProvider<ParadoxDefinitionPresentation> by Delegates.create(ParadoxDefinitionTypes.Technology)
+    class Provider : ParadoxDefinitionPresentationProvider<ParadoxDefinitionPresentationData> by Delegates.create(ParadoxDefinitionTypes.Technology)
 
     class ComponentBuilder(pointer: SmartPsiElementPointer<ParadoxScriptDefinitionElement>) {
         @Suppress("UseJBColor")

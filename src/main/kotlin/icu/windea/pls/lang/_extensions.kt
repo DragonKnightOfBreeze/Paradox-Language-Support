@@ -23,7 +23,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
-import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
+import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationData
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
@@ -206,8 +206,8 @@ inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.ge
     return ParadoxDefinitionDataProvider.getData(T::class.java, this)
 }
 
-inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getPresentation(): T? {
-    return ParadoxDefinitionPresentationProvider.getPresentation(T::class.java, this)
+inline fun <reified T : ParadoxDefinitionPresentationData> ParadoxScriptDefinitionElement.getPresentationData(): T? {
+    return ParadoxDefinitionPresentationProvider.getPresentationData(T::class.java, this)
 }
 
 inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {

@@ -28,14 +28,14 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.data.StellarisTechnologyData
-import icu.windea.pls.ep.presentation.StellarisTechnologyPresentation
+import icu.windea.pls.ep.presentation.StellarisTechnologyPresentationData
 import icu.windea.pls.extension.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxTechTreeDiagramSettings
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getData
-import icu.windea.pls.lang.getPresentation
+import icu.windea.pls.lang.getPresentationData
 import icu.windea.pls.lang.util.ParadoxPresentationManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -160,8 +160,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     ParadoxPresentationManager.getLabel(nodeItem.text.or.anonymous())
                 }
                 is Items.Presentation -> runReadAction r@{
-                    val presentation = nodeItem.definition.getPresentation<StellarisTechnologyPresentation>()
-                    presentation?.createComponent()
+                    val presentationData = nodeItem.definition.getPresentationData<StellarisTechnologyPresentationData>()
+                    presentationData?.createComponent()
                 }
                 else -> null
             }

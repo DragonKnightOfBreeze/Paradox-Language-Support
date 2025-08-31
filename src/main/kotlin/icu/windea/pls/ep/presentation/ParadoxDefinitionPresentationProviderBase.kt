@@ -8,12 +8,16 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
-abstract class ParadoxDefinitionPresentationProviderBase<T: ParadoxDefinitionPresentation>() : ParadoxDefinitionPresentationProvider<T> {
+abstract class ParadoxDefinitionPresentationProviderBase<T: ParadoxDefinitionPresentationData>() : ParadoxDefinitionPresentationProvider<T> {
     private val cachedPresentationKey: Key<CachedValue<T>> by lazy { createKey("cached.presentation.by.${javaClass.name}") }
 
-    override fun getPresentation(definition: ParadoxScriptDefinitionElement): T? {
+    override fun getPresentationData(definition: ParadoxScriptDefinitionElement): T? {
+        return doGetPresentationDataFromCache(definition)
+    }
+
+    private fun doGetPresentationDataFromCache(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedPresentationKey) {
-            val value = doGetPresentation(definition)
+            val value = doGetPresentationData(definition)
             value.withDependencyItems(
                 definition,
                 ParadoxModificationTrackers.FileTracker,
@@ -21,7 +25,7 @@ abstract class ParadoxDefinitionPresentationProviderBase<T: ParadoxDefinitionPre
         }
     }
 
-    private fun doGetPresentation(definition: ParadoxScriptDefinitionElement): T? {
+    private fun doGetPresentationData(definition: ParadoxScriptDefinitionElement): T? {
         return type.getConstructor(ParadoxScriptDefinitionElement::class.java).newInstance(definition)
     }
 }

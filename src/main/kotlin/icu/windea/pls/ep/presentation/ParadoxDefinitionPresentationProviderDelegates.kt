@@ -5,7 +5,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 object ParadoxDefinitionPresentationProviderDelegates {
-    class FromDefinitionType<T : ParadoxDefinitionPresentation>(
+    class FromDefinitionType<T : ParadoxDefinitionPresentationData>(
         override val type: Class<T>,
         definitionType: String
     ) : ParadoxDefinitionPresentationProviderBase<T>() {
@@ -16,7 +16,7 @@ object ParadoxDefinitionPresentationProviderDelegates {
         }
     }
 
-    inline fun <reified T : ParadoxDefinitionPresentation> create(definitionType: String): ParadoxDefinitionPresentationProvider<T> {
+    inline fun <reified T : ParadoxDefinitionPresentationData> create(definitionType: String): ParadoxDefinitionPresentationProvider<T> {
         return FromDefinitionType(T::class.java, definitionType)
     }
 }
