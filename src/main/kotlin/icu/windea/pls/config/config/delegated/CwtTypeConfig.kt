@@ -1,15 +1,12 @@
 package icu.windea.pls.config.config.delegated
 
-import icu.windea.pls.config.config.CwtDelegatedConfig
-import icu.windea.pls.config.config.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.ReversibleValue
-import icu.windea.pls.cwt.psi.CwtProperty
 
-interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
+interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromKey("type[$]")
     val name: String
     @FromProperty("base_type: string?")

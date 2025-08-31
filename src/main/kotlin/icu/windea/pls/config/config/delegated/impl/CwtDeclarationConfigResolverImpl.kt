@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config.delegated.impl
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.processDescendants
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized

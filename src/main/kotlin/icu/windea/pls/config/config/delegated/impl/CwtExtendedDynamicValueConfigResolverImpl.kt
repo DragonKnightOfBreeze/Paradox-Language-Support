@@ -1,9 +1,9 @@
 package icu.windea.pls.config.config.delegated.impl
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig
 import icu.windea.pls.config.config.findOption
 import icu.windea.pls.config.config.stringValue
 

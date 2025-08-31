@@ -2,9 +2,9 @@ package icu.windea.pls.config.configContext
 
 import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.util.KeyRegistry

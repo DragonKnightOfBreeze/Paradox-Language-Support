@@ -14,11 +14,11 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
-import icu.windea.pls.config.config.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.internal.impl.CwtSchemaConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.internal.impl.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtSchemaExpression

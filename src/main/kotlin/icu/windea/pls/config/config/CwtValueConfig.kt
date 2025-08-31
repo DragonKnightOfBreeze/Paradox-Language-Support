@@ -104,7 +104,7 @@ private abstract class CwtValueConfigImpl(
     override var parentConfig: CwtMemberConfig<*>? = null
 
     //not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.Companion.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value
 }
@@ -167,7 +167,7 @@ private abstract class CwtValueConfigDelegate(
     override var parentConfig: CwtMemberConfig<*>? = null
 
     //not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.Companion.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
@@ -213,7 +213,7 @@ private class CwtValueConfigFromPropertyConfig(
     override var parentConfig: CwtMemberConfig<*>? = null
 
     //not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.Companion.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value
 }

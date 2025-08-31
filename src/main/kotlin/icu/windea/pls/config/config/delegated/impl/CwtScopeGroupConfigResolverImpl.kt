@@ -2,8 +2,8 @@ package icu.windea.pls.config.config.delegated.impl
 
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.values
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
