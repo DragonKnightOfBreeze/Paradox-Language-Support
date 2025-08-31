@@ -2,13 +2,9 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.SimplePersistentStateComponent
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.XCollection
-import com.intellij.util.xmlb.annotations.Transient
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -16,7 +12,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.orDefault
 import icu.windea.pls.lang.settings.tools.DbBackedStateMap
 
@@ -26,21 +21,19 @@ import icu.windea.pls.lang.settings.tools.DbBackedStateMap
  * 由插件自动根据游戏信息与模组信息进行配置。
  */
 @Service(Service.Level.APP)
-@State(name = "ParadoxProfilesSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
-class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettingsState>(PlsProfilesSettingsState())
+class PlsProfilesSettings {
+    // 兼容原有 API：通过 PlsFacade.getProfilesSettings() 访问
+    val state: PlsProfilesSettingsState = PlsProfilesSettingsState()
+}
 
-class PlsProfilesSettingsState : BaseState() {
-    @get:Transient
+class PlsProfilesSettingsState {
     val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> =
         DbBackedStateMap.create("gameDescriptorSettings", ParadoxGameDescriptorSettingsState::class.java)
-    @get:Transient
     val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> =
         DbBackedStateMap.create("modDescriptorSettings", ParadoxModDescriptorSettingsState::class.java)
 
-    @get:Transient
     val gameSettings: MutableMap<String, ParadoxGameSettingsState> =
         DbBackedStateMap.create("gameSettings", ParadoxGameSettingsState::class.java)
-    @get:Transient
     val modSettings: MutableMap<String, ParadoxModSettingsState> =
         DbBackedStateMap.create("modSettings", ParadoxModSettingsState::class.java)
 
@@ -49,7 +42,6 @@ class PlsProfilesSettingsState : BaseState() {
         (modDescriptorSettings as? DbBackedStateMap<ParadoxModDescriptorSettingsState>)?.flush()
         (gameSettings as? DbBackedStateMap<ParadoxGameSettingsState>)?.flush()
         (modSettings as? DbBackedStateMap<ParadoxModSettingsState>)?.flush()
-        incrementModificationCount()
     }
 }
 

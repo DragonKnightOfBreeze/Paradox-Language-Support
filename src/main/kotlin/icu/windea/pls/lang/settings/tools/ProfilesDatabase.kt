@@ -10,10 +10,18 @@ import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Simple SQLite-backed key-value store for profile settings using Ktorm.
+ * 使用 Ktorm 的 SQLite 持久层，存储 Profiles 相关设置。
  *
- * Schema: single table with category + key + xml payload.
- * This design keeps refactor small by storing XML serialized state values as TEXT.
+ * 结构：按分类拆分四张业务表，另加一张 `profile_meta` 元信息表。
+ * - profile_game_descriptor(category 固定) / profile_mod_descriptor / profile_game_settings / profile_mod_settings
+ *   - key_path TEXT PRIMARY KEY
+ *   - value_xml TEXT NOT NULL
+ *   - updated_at INTEGER NOT NULL
+ * - profile_meta
+ *   - key TEXT PRIMARY KEY
+ *   - value TEXT NOT NULL
+ *
+ * 仍然通过 XML（XmlSerializer）序列化值对象，避免频繁变更表结构。
  */
 object ProfilesDatabase {
     private const val DEFAULT_DB_FILE_NAME = "profiles.db"
@@ -59,12 +67,45 @@ object ProfilesDatabase {
             conn.createStatement().use { st ->
                 st.execute(
                     """
-                    CREATE TABLE IF NOT EXISTS profile_entries (
-                      category TEXT NOT NULL,
-                      key_path TEXT NOT NULL,
+                    CREATE TABLE IF NOT EXISTS profile_game_descriptor (
+                      key_path TEXT PRIMARY KEY,
                       value_xml TEXT NOT NULL,
-                      updated_at INTEGER NOT NULL,
-                      PRIMARY KEY(category, key_path)
+                      updated_at INTEGER NOT NULL
+                    );
+                    """.trimIndent()
+                )
+                st.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS profile_mod_descriptor (
+                      key_path TEXT PRIMARY KEY,
+                      value_xml TEXT NOT NULL,
+                      updated_at INTEGER NOT NULL
+                    );
+                    """.trimIndent()
+                )
+                st.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS profile_game_settings (
+                      key_path TEXT PRIMARY KEY,
+                      value_xml TEXT NOT NULL,
+                      updated_at INTEGER NOT NULL
+                    );
+                    """.trimIndent()
+                )
+                st.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS profile_mod_settings (
+                      key_path TEXT PRIMARY KEY,
+                      value_xml TEXT NOT NULL,
+                      updated_at INTEGER NOT NULL
+                    );
+                    """.trimIndent()
+                )
+                st.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS profile_meta (
+                      key TEXT PRIMARY KEY,
+                      value TEXT NOT NULL
                     );
                     """.trimIndent()
                 )
@@ -72,40 +113,83 @@ object ProfilesDatabase {
         }
     }
 
-    object ProfileEntries : Table<Nothing>("profile_entries") {
-        val category = varchar("category")
-        val keyPath = varchar("key_path")
-        val valueXml = text("value_xml")
-        val updatedAt = long("updated_at")
+    private interface ProfileTableDef {
+        val table: Table<Nothing>
+        val keyPath: Column<String>
+        val valueXml: Column<String>
+        val updatedAt: Column<Long>
+    }
+
+    private object GameDescriptorEntries : Table<Nothing>("profile_game_descriptor"), ProfileTableDef {
+        override val table: Table<Nothing> get() = this
+        override val keyPath = varchar("key_path")
+        override val valueXml = text("value_xml")
+        override val updatedAt = long("updated_at")
+    }
+
+    private object ModDescriptorEntries : Table<Nothing>("profile_mod_descriptor"), ProfileTableDef {
+        override val table: Table<Nothing> get() = this
+        override val keyPath = varchar("key_path")
+        override val valueXml = text("value_xml")
+        override val updatedAt = long("updated_at")
+    }
+
+    private object GameSettingsEntries : Table<Nothing>("profile_game_settings"), ProfileTableDef {
+        override val table: Table<Nothing> get() = this
+        override val keyPath = varchar("key_path")
+        override val valueXml = text("value_xml")
+        override val updatedAt = long("updated_at")
+    }
+
+    private object ModSettingsEntries : Table<Nothing>("profile_mod_settings"), ProfileTableDef {
+        override val table: Table<Nothing> get() = this
+        override val keyPath = varchar("key_path")
+        override val valueXml = text("value_xml")
+        override val updatedAt = long("updated_at")
+    }
+
+    object ProfileMeta : Table<Nothing>("profile_meta") {
+        val key = varchar("key")
+        val value = text("value")
+    }
+
+    private fun resolve(category: String): ProfileTableDef = when (category) {
+        "gameDescriptorSettings" -> GameDescriptorEntries
+        "modDescriptorSettings" -> ModDescriptorEntries
+        "gameSettings" -> GameSettingsEntries
+        "modSettings" -> ModSettingsEntries
+        else -> throw IllegalArgumentException("Unknown category: $category")
     }
 
     fun get(category: String, key: String): String? {
         val db = ensureDatabase()
-        return db.from(ProfileEntries)
-            .select(ProfileEntries.valueXml)
-            .where { (ProfileEntries.category eq category) and (ProfileEntries.keyPath eq key) }
-            .map { it[ProfileEntries.valueXml] }
+        val def = resolve(category)
+        return db.from(def.table)
+            .select(def.valueXml)
+            .where { def.keyPath eq key }
+            .map { it[def.valueXml] }
             .firstOrNull()
     }
 
     fun put(category: String, key: String, xml: String) {
         val db = ensureDatabase()
+        val def = resolve(category)
+        val tableName = def.table.tableName
         val now = Instant.now().toEpochMilli()
         db.useConnection { conn ->
             conn.prepareStatement(
                 """
-                INSERT INTO profile_entries(category, key_path, value_xml, updated_at)
-                VALUES (?, ?, ?, ?)
-                ON CONFLICT(category, key_path) DO UPDATE SET
+                INSERT INTO $tableName(key_path, value_xml, updated_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(key_path) DO UPDATE SET
                   value_xml = excluded.value_xml,
                   updated_at = excluded.updated_at
                 ;
                 """.trimIndent()
             ).use { ps ->
-                ps.setString(1, category)
-                ps.setString(2, key)
-                ps.setString(3, xml)
-                ps.setLong(4, now)
+                ps.setString(1, key)
+                ps.setString(2, xml)
+                ps.setLong(3, now)
                 ps.executeUpdate()
             }
         }
@@ -113,29 +197,58 @@ object ProfilesDatabase {
 
     fun remove(category: String, key: String): Boolean {
         val db = ensureDatabase()
-        val affected = db.delete(ProfileEntries) { (it.category eq category) and (it.keyPath eq key) }
+        val def = resolve(category)
+        val affected = db.delete(def.table) { def.keyPath eq key }
         return affected > 0
     }
 
     fun clear(category: String) {
         val db = ensureDatabase()
-        db.delete(ProfileEntries) { it.category eq category }
+        val def = resolve(category)
+        db.delete(def.table) { def.keyPath like "%" } // 删除整表所有行
     }
 
     fun keys(category: String): Set<String> {
         val db = ensureDatabase()
-        return db.from(ProfileEntries)
-            .select(ProfileEntries.keyPath)
-            .where { ProfileEntries.category eq category }
-            .mapNotNull { it[ProfileEntries.keyPath] }
+        val def = resolve(category)
+        return db.from(def.table)
+            .select(def.keyPath)
+            .mapNotNull { it[def.keyPath] }
             .toSet()
     }
 
     fun entries(category: String): List<Pair<String, String>> {
         val db = ensureDatabase()
-        return db.from(ProfileEntries)
-            .select(ProfileEntries.keyPath, ProfileEntries.valueXml)
-            .where { ProfileEntries.category eq category }
-            .map { (it[ProfileEntries.keyPath]!! to it[ProfileEntries.valueXml]!!) }
+        val def = resolve(category)
+        return db.from(def.table)
+            .select(def.keyPath, def.valueXml)
+            .map { (it[def.keyPath]!! to it[def.valueXml]!!) }
+    }
+
+    fun getMeta(key: String): String? {
+        val db = ensureDatabase()
+        return db.from(ProfileMeta)
+            .select(ProfileMeta.value)
+            .where { ProfileMeta.key eq key }
+            .map { it[ProfileMeta.value] }
+            .firstOrNull()
+    }
+
+    fun putMeta(key: String, value: String) {
+        val db = ensureDatabase()
+        db.useConnection { conn ->
+            conn.prepareStatement(
+                """
+                INSERT INTO profile_meta(key, value)
+                VALUES(?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                ;
+                """.trimIndent()
+            ).use { ps ->
+                ps.setString(1, key)
+                ps.setString(2, value)
+                ps.executeUpdate()
+            }
+        }
     }
 }

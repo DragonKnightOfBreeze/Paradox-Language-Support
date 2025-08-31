@@ -19,6 +19,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.images.ImageManager
+import icu.windea.pls.lang.settings.tools.ProfilesMigrator
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
 
@@ -41,6 +42,9 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         service<PlsDataProvider>().init()
         getDefaultProject().service<CwtConfigGroupService>().init()
         PlsPathConstants.init()
+
+        // 一次性迁移旧版 XML 配置到 SQLite（后台静默）
+        ProfilesMigrator.migrateIfNeeded()
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
