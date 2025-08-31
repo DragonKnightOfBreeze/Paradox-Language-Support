@@ -29,6 +29,24 @@ import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.resolve
 import icu.windea.pls.model.resolveNext
 
+/**
+ * CWT 成员规则，表示一个属性或一个值。
+ *
+ * - 属性形如 `key = value`，对应 [CwtPropertyConfig]
+ * - 值为独立出现的文本/块，对应 [CwtValueConfig]
+ *
+ * 当成员为块（`isBlock == true`）时，可以包含子成员规则 [configs] 与选项 [optionConfigs]。
+ * 这些信息用于驱动校验、补全与导航等语言功能。
+ *
+ * @param T 成员对应的 PSI 类型（实现上为 [icu.windea.pls.cwt.psi.CwtProperty] 或 [icu.windea.pls.cwt.psi.CwtValue]）。
+ * @property value 成员的原始文本值（属性为“值”，值为“自身文本”）。
+ * @property valueType 值的类型 [CwtType]，用于静态检查与提示。
+ * @property configs 子成员规则列表；仅当为块时非空。
+ * @property optionConfigs 选项配置列表（包含 [CwtOptionConfig] 与 [CwtOptionValueConfig]），用于修饰/限定当前成员规则的语义。
+ * @property parentConfig 父成员规则；顶层成员为 null。
+ * @property valueExpression 值的数据表达式 [CwtDataExpression]。
+ * @property configExpression 当前规则的数据表达式；属性取“键表达式”，值取“值表达式”。
+ */
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     val value: String
     val valueType: CwtType

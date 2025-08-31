@@ -12,6 +12,16 @@ import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
 import icu.windea.pls.model.optimizeValue
 
+/**
+ * CWT 值规则，可独立出现，或作为属性的值出现。
+ *
+ * - 当值类型为 [CwtType.Block] 时，为块值，可能包含子成员规则 [configs] 与选项 [optionConfigs]。
+ * - [configExpression] 等价于 [valueExpression]。
+ * - 若该值来自某个属性，可通过 [propertyConfig] 访问其对应的属性规则。
+ *
+ * @property propertyConfig 若存在，指向“承载该值的属性规则”。
+ * @property configExpression 值的数据表达式，等价于 [valueExpression]。
+ */
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
 

@@ -6,6 +6,28 @@ import icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
+/**
+ * 链接规则：定义脚本作用域（或值）的跳转关系。
+ *
+ * - 游戏脚本：见 `config/links.cwt`，如 `owner`, `planet`, `leader` 等，将输入作用域映射到输出作用域。
+ * - 本地化：见 `config/localisation_links.cwt`，如 `Owner`, `Planet` 等，专用于本地化链接。
+ * - 也支持“来源于数据”的链接（from_data/from_argument），如 `event_target`、`parameter`、`variable`。
+ *
+ * 字段语义：
+ * - `name`: 链接名（键名）。
+ * - `type`: 链接类型，`scope`/`value`/`both`；若为空，视为 `scope`。
+ * - `fromData`: 是否从数据源取得链接目标（如 `value[event_target]`）。
+ * - `fromArgument`: 是否从参数取得链接目标（用于本地化命令参数等）。
+ * - `prefix`: 目标名称前缀（如 `parameter:`），为空表示无前缀。
+ * - `dataSource`: 数据源（支持 `value[...]` 或模板表达式）；解析为 [dataSourceExpression]。
+ * - `inputScopes`: 允许的输入作用域集合。
+ * - `outputScope`: 输出的目标作用域；若为空且 `fromData`，由数据源决定。
+ * - `forDefinitionType`: 仅用于特定 definition 类型（可选）。
+ *
+ * 便捷方法：
+ * - `forScope()`: 此链接是否适用于作用域跳转。
+ * - `forValue()`: 此链接是否适用于值链接（如变量名）。
+ */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("")
     val name: String

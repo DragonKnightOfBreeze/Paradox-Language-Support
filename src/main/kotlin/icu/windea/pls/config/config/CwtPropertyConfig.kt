@@ -15,6 +15,18 @@ import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
 import icu.windea.pls.model.optimizeValue
 
+/**
+ * CWT 属性规则，形如 `key <sep> value`。
+ *
+ * - 当值类型为 [CwtType.Block] 时，该属性为块，可能包含子成员规则 [configs] 与选项 [optionConfigs]。
+ * - 键/值对应的数据表达式分别为 [keyExpression] 与 [valueExpression]，其中 [configExpression] 等价于 [keyExpression]。
+ *
+ * @property key 属性名（键）。
+ * @property separatorType 分隔符类型 [CwtSeparatorType]（如 `=`、`<` 等）。
+ * @property valueConfig 值对应的规则对象（如果存在且可获取）。
+ * @property keyExpression 键的数据表达式 [CwtDataExpression]，用于匹配与提示。
+ * @property configExpression 规则的数据表达式，等价于 [keyExpression]。
+ */
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val key: String
     val separatorType: CwtSeparatorType

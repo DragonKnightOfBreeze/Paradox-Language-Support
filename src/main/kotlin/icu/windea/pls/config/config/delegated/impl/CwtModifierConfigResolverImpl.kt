@@ -18,7 +18,7 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
     override fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? = doResolveFromDefinitionModifier(config, name, typeExpression)
 
     private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
-        // string | string[]
+        // 从属性值解析修正的类别集合：支持 string | string[]
         val categories = config.stringValue?.let { setOf(it) }
             ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
             ?: return null
@@ -26,11 +26,13 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
     }
 
     private fun doResolveFromAlias(config: CwtAliasConfig): CwtModifierConfig {
+        // 从别名派生修正规则：采用 subName 作为模板名（非最终修正名）
         return CwtModifierConfigImpl(config.config, config.subName)
     }
 
     private fun doResolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
-        // string | string[]
+        // 从定义内修正解析：模板名中将 $ 替换为 <typeExpression> 以形成可区分键
+        // 支持 string | string[]
         val modifierName = name.replace("$", "<$typeExpression>").intern()
         val categories = config.stringValue?.let { setOf(it) }
             ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
@@ -41,18 +43,19 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
 
 private class CwtModifierConfigImpl(
     override val config: CwtPropertyConfig,
-    override val name: String, // template name, not actual modifier name!
-    override val categories: Set<String> = emptySet() // category names
+    override val name: String, // 模板名（非实际修正名）
+    override val categories: Set<String> = emptySet() // 类别名集合
 ) : UserDataHolderBase(), CwtModifierConfig {
     override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
 
+    // 解析模板表达式，用于后续根据上下文展开实际修正名
     override val template = CwtTemplateExpression.resolve(name)
 
     override val supportedScopes: Set<String> by lazy {
         if (categoryConfigMap.isNotEmpty()) {
             ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
-            // 没有注明categories时从scopes选项中获取
+            // 未提供类别映射时，从修正配置本身的 scopes 选项回退获取
             config.supportedScopes
         }
     }
