@@ -33,9 +33,9 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
-    //type = null -> default to "scope"
-    //output_scope = null -> transfer scope based on data source
-    //e.g., for event_target, output_scope should be null
+    // type = null -> default to "scope"
+    // output_scope = null -> transfer scope based on data source
+    // e.g., for event_target, output_scope should be null
 
     fun forScope() = type != "value" /* type.isNullOrEmpty() || type == "both" || type == "scope" */
     fun forValue() = type == "both" || type == "value"

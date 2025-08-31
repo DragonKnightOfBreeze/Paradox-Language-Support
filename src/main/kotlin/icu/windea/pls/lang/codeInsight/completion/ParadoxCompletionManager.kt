@@ -24,12 +24,8 @@ import icu.windea.pls.config.config.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.cardinality
 import icu.windea.pls.config.config.cardinalityMaxDefine
-import icu.windea.pls.config.config.forScope
-import icu.windea.pls.config.config.forValue
-import icu.windea.pls.config.config.getConfigForType
 import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.config.supportedScopes
-import icu.windea.pls.config.config.typeKeyPrefixConfig
 import icu.windea.pls.config.configContext.isDefinitionOrMember
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
@@ -87,10 +83,10 @@ import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.expression.ParadoxCommandExpression
 import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.expression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.expression.ParadoxScriptValueExpression
