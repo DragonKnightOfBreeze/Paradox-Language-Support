@@ -2,43 +2,27 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.delegated.FromKey
+import icu.windea.pls.config.config.delegated.FromProperty
+import icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+    @FromKey
     val id: String
+    @FromProperty("base_id: string")
     val baseId: String
+    @FromProperty(": string")
     val name: String
 
-    companion object {
-        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
+
+    interface Resolver {
+        fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig
     }
+
+    companion object : Resolver by CwtSystemScopeConfigResolverImpl()
 }
 
-//Implementations (interned if necessary)
-
-private fun doResolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
-    val id = config.key
-    val baseId = config.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
-    val name = config.stringValue ?: id
-    return CwtSystemScopeConfigImpl(config, id, baseId, name)
-}
-
-private class CwtSystemScopeConfigImpl(
-    override val config: CwtPropertyConfig,
-    override val id: String,
-    override val baseId: String,
-    override val name: String
-) : UserDataHolderBase(), CwtSystemScopeConfig {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSystemScopeConfig && id == other.id
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-
-    override fun toString(): String {
-        return "CwtSystemScopeConfigImpl(name='$name')"
-    }
-}

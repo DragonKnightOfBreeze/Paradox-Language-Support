@@ -2,6 +2,8 @@
 
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.config.delegated.FromKey
+import icu.windea.pls.config.config.delegated.FromProperty
 import icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty

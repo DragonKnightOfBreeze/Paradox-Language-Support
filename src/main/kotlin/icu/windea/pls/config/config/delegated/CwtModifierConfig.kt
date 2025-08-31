@@ -2,11 +2,9 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.util.ParadoxScopeManager
 
 //CWT规则文件中关于（生成的）修正的规则有多种写法
 //* 写在 type[xxx] = {...} 子句中的 modifiers = { ... } 子句中，允许按子类型进行匹配，格式为 <template_string> = <categories>
@@ -21,58 +19,11 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
 
-    companion object {
-        fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? = doResolve(config, name)
-
-        fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig = doResolveFromAlias(config)
-
-        fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? =
-            doResolveFromDefinitionModifier(config, name, typeExpression)
-    }
-}
-
-//Implementations (interned if necessary)
-
-private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
-    //string | string[]
-    val categories = config.stringValue?.let { setOf(it) }
-        ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-        ?: return null
-    return CwtModifierConfigImpl(config, name, categories.optimized())
-}
-
-private fun doResolveFromAlias(config: CwtAliasConfig): CwtModifierConfig {
-    return CwtModifierConfigImpl(config.config, config.subName)
-}
-
-private fun doResolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
-    //string | string[]
-    val modifierName = name.replace("$", "<$typeExpression>").intern()
-    val categories = config.stringValue?.let { setOf(it) }
-        ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
-        ?: return null
-    return CwtModifierConfigImpl(config, modifierName, categories)
-}
-
-private class CwtModifierConfigImpl(
-    override val config: CwtPropertyConfig,
-    override val name: String, //template name, not actual modifier name!
-    override val categories: Set<String> = emptySet() //category names
-) : UserDataHolderBase(), CwtModifierConfig {
-    override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-
-    override val template = CwtTemplateExpression.resolve(name)
-
-    override val supportedScopes: Set<String> by lazy {
-        if (categoryConfigMap.isNotEmpty()) {
-            ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
-        } else {
-            //没有注明categories时从scopes选项中获取
-            config.supportedScopes
-        }
+    interface Resolver {
+        fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig?
+        fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig
+        fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig?
     }
 
-    override fun toString(): String {
-        return "CwtModifierConfigImpl(name='$name')"
-    }
+    companion object : Resolver by CwtModifierConfigResolverImpl()
 }

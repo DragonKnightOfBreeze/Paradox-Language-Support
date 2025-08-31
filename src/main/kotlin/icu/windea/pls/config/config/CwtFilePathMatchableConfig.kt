@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.config.delegated.FromProperty
 import icu.windea.pls.cwt.psi.CwtProperty
 
 interface CwtFilePathMatchableConfig : CwtConfig<CwtProperty> {

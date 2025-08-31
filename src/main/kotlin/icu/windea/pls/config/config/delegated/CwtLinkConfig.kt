@@ -2,6 +2,8 @@
 
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.config.delegated.FromKey
+import icu.windea.pls.config.config.delegated.FromProperty
 import icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty

@@ -2,6 +2,8 @@
 
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.config.delegated.FromKey
+import icu.windea.pls.config.config.delegated.FromOption
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtMemberElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
