@@ -22,6 +22,10 @@ interface ParadoxScriptExpression {
     fun isFullParameterized(): Boolean
     fun matchesConstant(v: String): Boolean
 
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
+
     interface Resolver {
         fun resolveBlock(): ParadoxScriptExpression
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression

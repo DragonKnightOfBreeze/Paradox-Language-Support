@@ -26,7 +26,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath

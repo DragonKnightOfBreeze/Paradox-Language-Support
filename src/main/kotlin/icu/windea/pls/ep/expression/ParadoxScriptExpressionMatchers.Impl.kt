@@ -19,12 +19,12 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.expression.complex.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.expression.complex.ParadoxDefineReferenceExpression
-import icu.windea.pls.lang.expression.complex.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.expression.complex.ParadoxValueFieldExpression
+import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.expression.complex.getAllErrors
+import icu.windea.pls.lang.expression.getAllErrors
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager

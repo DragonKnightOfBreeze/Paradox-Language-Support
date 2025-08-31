@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.lang.expression.complex.ParadoxDefineReferenceExpression
-import icu.windea.pls.lang.expression.complex.getAllErrors
+import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.expression.getAllErrors
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

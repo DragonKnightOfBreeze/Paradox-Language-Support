@@ -84,9 +84,9 @@ import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.expression.complex.ParadoxComplexExpression
-import icu.windea.pls.lang.expression.complex.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.expression.complex.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.expression.ParadoxComplexExpression
+import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.expression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement

@@ -7,7 +7,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.processQuery
-import icu.windea.pls.lang.expression.complex.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.expression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition

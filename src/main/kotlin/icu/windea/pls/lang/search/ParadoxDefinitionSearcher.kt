@@ -76,7 +76,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     }
 
     private fun forFile(typeExpression: ParadoxDefinitionTypeExpression?, configGroup: CwtConfigGroup): Boolean {
-        if (typeExpression?.expressionString == "") return false
+        if (typeExpression?.text == "") return false
         return typeExpression == null || configGroup.types.get(typeExpression.type)?.typePerFile == true
     }
 
