@@ -4,6 +4,10 @@ tmp/
 cwt/cwtools-*-config
 local.properties
 
+.idea/dataSources
+.idea/data_source_mapping.xml
+.idea/dataSources.xml
+
 ### Kotlin template
 # Compiled class file
 *.class
