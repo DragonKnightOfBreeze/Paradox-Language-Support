@@ -3,7 +3,6 @@ package icu.windea.pls.lang.search.scope.type
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxBaseFileType
@@ -37,12 +36,14 @@ object ParadoxSearchScopeTypes {
         val rootInfo = fileInfo.rootInfo
         when (rootInfo) {
             is ParadoxRootInfo.Game -> {
+                result.add(RootFile)
                 result.add(Game)
                 if (isInProject) {
                     result.add(GameWithDependencies)
                 }
             }
             is ParadoxRootInfo.Mod -> {
+                result.add(RootFile)
                 result.add(Mod)
                 if (isInProject) {
                     result.add(Game)
@@ -57,63 +58,44 @@ object ParadoxSearchScopeTypes {
 
     //scope types
 
-    val Definition = object : ParadoxSearchScopeType("definition", PlsBundle.message("search.scope.type.name.definition")) {
-        override fun findRoot(project: Project, context: Any?): PsiElement? {
-            return when {
-                context is PsiElement -> context.findParentDefinition()
-                context is ParadoxIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)?.findParentDefinition()
-                else -> null
-            }
+    val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { project, context ->
+        val contextElement = when {
+            context is PsiElement -> context
+            context is ParadoxIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)
+            else -> null
         }
-
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return GlobalSearchScope.EMPTY_SCOPE
-            return GlobalSearchScope.fileScope(project, file) //限定在当前文件作用域
-        }
-
-        override fun distinctInFile(): Boolean {
-            return false
-        }
+        contextElement?.findParentDefinition()
     }.also { map.put(it.id, it) }
 
-    val File = object : ParadoxSearchScopeType("file", PlsBundle.message("search.scope.type.name.file")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return GlobalSearchScope.EMPTY_SCOPE
-            return GlobalSearchScope.fileScope(project, file) //限定在当前文件作用域
-        }
+    val File = ParadoxSearchScopeType.FromFiles("file", PlsBundle.message("search.scope.type.name.file")) { project, context ->
+        ParadoxSearchScope.fileScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val Mod = object : ParadoxSearchScopeType("mod", PlsBundle.message("search.scope.type.name.mod")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            return ParadoxSearchScope.modScope(project, context)
-        }
+    val RootFile = ParadoxSearchScopeType.FromFiles("rootFile", PlsBundle.message("search.scope.type.name.rootFile")) { project, context ->
+        ParadoxSearchScope.rootFileScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val Game = object : ParadoxSearchScopeType("game", PlsBundle.message("search.scope.type.name.game")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            return ParadoxSearchScope.gameScope(project, context)
-        }
+    val Mod = ParadoxSearchScopeType.FromFiles("mod", PlsBundle.message("search.scope.type.name.mod")) { project, context ->
+        ParadoxSearchScope.modScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val ModAndGame = object : ParadoxSearchScopeType("mod_and_game", PlsBundle.message("search.scope.type.name.modAndGame")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            return ParadoxSearchScope.modAndGameScope(project, context)
-        }
+    val Game = ParadoxSearchScopeType.FromFiles("game", PlsBundle.message("search.scope.type.name.game")) { project, context ->
+        ParadoxSearchScope.gameScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val ModWithDependencies = object : ParadoxSearchScopeType("mod_with_dependencies", PlsBundle.message("search.scope.type.name.mod.withDependencies")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            return ParadoxSearchScope.modWithDependenciesScope(project, context)
-        }
+    val ModAndGame = ParadoxSearchScopeType.FromFiles("mod_and_game", PlsBundle.message("search.scope.type.name.modAndGame")) { project, context ->
+        ParadoxSearchScope.modAndGameScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val GameWithDependencies = object : ParadoxSearchScopeType("game_with_dependencies", PlsBundle.message("search.scope.type.name.game.withDependencies")) {
-        override fun getGlobalSearchScope(project: Project, context: Any?): GlobalSearchScope {
-            return ParadoxSearchScope.gameWithDependenciesScope(project, context)
-        }
+    val ModWithDependencies = ParadoxSearchScopeType.FromFiles("mod_with_dependencies", PlsBundle.message("search.scope.type.name.mod.withDependencies")) { project, context ->
+        ParadoxSearchScope.modWithDependenciesScope(project, context)
     }.also { map.put(it.id, it) }
 
-    val All = object : ParadoxSearchScopeType("all", PlsBundle.message("search.scope.type.name.all")) {
+    val GameWithDependencies = ParadoxSearchScopeType.FromFiles("game_with_dependencies", PlsBundle.message("search.scope.type.name.game.withDependencies")) { project, context ->
+        ParadoxSearchScope.gameWithDependenciesScope(project, context)
+    }.also { map.put(it.id, it) }
 
+    val All = ParadoxSearchScopeType.FromFiles("all", PlsBundle.message("search.scope.type.name.all")) { project, context ->
+        ParadoxSearchScope.allScope(project, context)
     }.also { map.put(it.id, it) }
 }

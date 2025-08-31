@@ -81,6 +81,21 @@ open class ParadoxSearchScope(
         }
 
         @JvmStatic
+        fun fileScope(project: Project, context: Any?): GlobalSearchScope {
+            val file = selectFile(context) ?: return EMPTY_SCOPE //use empty scope here
+            return GlobalSearchScope.fileScope(project, file) //限定在当前文件作用域
+        }
+
+        @JvmStatic
+        fun rootFileScope(project: Project, context: Any?): GlobalSearchScope {
+            val file = selectFile(context) ?: return EMPTY_SCOPE //use empty scope here
+            val contextFile = file.findTopHostFileOrThis()
+            val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE //use empty scope here
+            val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
+            return ParadoxModSearchScope(project, contextFile, modDirectory)
+        }
+
+        @JvmStatic
         fun modScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE //use empty scope here
             val contextFile = file.findTopHostFileOrThis()
