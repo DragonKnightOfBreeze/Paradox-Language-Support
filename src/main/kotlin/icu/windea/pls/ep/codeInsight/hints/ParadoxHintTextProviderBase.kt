@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo

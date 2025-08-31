@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.codeInsight.hints
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.extendedComplexEnumValues
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedDynamicValues

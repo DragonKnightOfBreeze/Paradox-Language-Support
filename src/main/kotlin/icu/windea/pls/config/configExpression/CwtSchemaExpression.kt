@@ -20,7 +20,7 @@ import icu.windea.pls.config.configExpression.impl.CwtSchemaExpressionResolverIm
  * - 模板形态中，所有未被转义的 `$...$` 片段会被视为参数；其在 `pattern` 中将以 `*` 占位，
  *   同时记录每个参数在原始字符串中的范围，便于二次处理与高亮。
  *
- * @see icu.windea.pls.config.config.CwtSchemaConfig
+ * @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfig
  * @see icu.windea.pls.config.util.CwtConfigManager
  * @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
  */

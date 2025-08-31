@@ -1,8 +1,7 @@
-@file:Suppress("PackageDirectoryMismatch")
+package icu.windea.pls.config.config.delegated
 
-package icu.windea.pls.config.config
-
-import icu.windea.pls.config.config.delegated.FromKey
+import icu.windea.pls.config.config.CwtDelegatedConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 

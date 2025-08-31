@@ -1,7 +1,7 @@
 package icu.windea.pls.lang
 
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey

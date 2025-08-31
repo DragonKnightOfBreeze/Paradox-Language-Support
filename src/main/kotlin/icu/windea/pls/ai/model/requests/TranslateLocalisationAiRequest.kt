@@ -2,7 +2,7 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import java.util.concurrent.atomic.AtomicInteger
 

@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.config.config.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.model.ParadoxDefinitionInfo

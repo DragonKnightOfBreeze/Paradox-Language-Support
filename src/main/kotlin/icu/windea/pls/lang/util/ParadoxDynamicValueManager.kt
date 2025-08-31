@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup

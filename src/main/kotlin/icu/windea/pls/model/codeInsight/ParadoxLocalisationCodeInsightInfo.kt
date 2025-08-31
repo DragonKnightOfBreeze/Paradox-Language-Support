@@ -1,6 +1,6 @@
 package icu.windea.pls.model.codeInsight
 
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
 data class ParadoxLocalisationCodeInsightInfo(

@@ -16,7 +16,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull

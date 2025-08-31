@@ -5,7 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtLocalisationCommandConfig
+import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.localisationCommands
 import icu.windea.pls.core.psi.PsiResolvedReference

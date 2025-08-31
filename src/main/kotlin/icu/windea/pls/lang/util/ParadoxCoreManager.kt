@@ -14,7 +14,7 @@ import com.intellij.util.application
 import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull

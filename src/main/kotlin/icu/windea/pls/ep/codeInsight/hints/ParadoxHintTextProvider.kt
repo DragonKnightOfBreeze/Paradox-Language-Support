@@ -2,7 +2,7 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider

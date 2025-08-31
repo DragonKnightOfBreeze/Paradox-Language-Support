@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo

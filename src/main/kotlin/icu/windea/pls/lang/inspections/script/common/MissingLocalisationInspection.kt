@@ -11,7 +11,7 @@ import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix

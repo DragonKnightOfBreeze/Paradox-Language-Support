@@ -7,8 +7,8 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.config.config.CwtModifierCategoryConfig
-import icu.windea.pls.config.config.CwtModifierConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.documentation.DocumentationBuilder

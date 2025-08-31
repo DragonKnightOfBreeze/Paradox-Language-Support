@@ -3,7 +3,7 @@ package icu.windea.pls.lang.search.selector
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.lang.fileInfo

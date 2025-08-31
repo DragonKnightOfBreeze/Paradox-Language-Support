@@ -14,13 +14,13 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtSubtypeConfig
-import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.cardinality
 import icu.windea.pls.config.config.cardinalityMaxDefine

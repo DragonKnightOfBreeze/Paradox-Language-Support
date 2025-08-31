@@ -26,12 +26,12 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.tagType

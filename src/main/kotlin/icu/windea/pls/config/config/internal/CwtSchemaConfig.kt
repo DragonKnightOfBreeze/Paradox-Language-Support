@@ -1,32 +1,20 @@
-@file:Suppress("PackageDirectoryMismatch")
+package icu.windea.pls.config.config.internal
 
-package icu.windea.pls.config.config
-
-import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.config.config.CwtDetachedConfig
+import icu.windea.pls.config.config.CwtFileConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.schemas
 
-class CwtSchemaConfig(
+data class CwtSchemaConfig(
     val file: CwtFileConfig,
     val properties: List<CwtPropertyConfig>,
     val enums: Map<String, CwtPropertyConfig>,
     val constraints: Map<String, CwtPropertyConfig>
 ) : CwtDetachedConfig {
-    companion object Resolver {
-        fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
-            val properties = mutableListOf<CwtPropertyConfig>()
-            val enums = mutableMapOf<String, CwtPropertyConfig>()
-            val constraints = mutableMapOf<String, CwtPropertyConfig>()
-            fileConfig.properties.forEach { prop ->
-                val keyExpression = CwtSchemaExpression.resolve(prop.key)
-                when (keyExpression) {
-                    is CwtSchemaExpression.Enum -> enums[keyExpression.name] = prop
-                    is CwtSchemaExpression.Constraint -> constraints[keyExpression.name] = prop
-                    else -> properties += prop
-                }
-            }
-            val schemaConfig = CwtSchemaConfig(fileConfig, properties, enums, constraints)
-            configGroup.schemas += schemaConfig
-        }
+    interface Resolver {
+        fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup)
     }
+
+    companion object : Resolver by CwtSchemaConfigResolverImpl()
 }

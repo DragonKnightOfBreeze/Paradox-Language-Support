@@ -3,7 +3,7 @@ package icu.windea.pls.lang.expression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtModifierConfig
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtTemplateExpressionManager

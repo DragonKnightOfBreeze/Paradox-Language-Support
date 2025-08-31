@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.translation.tools
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.integrations.translation.TranslateCallback
 
 /**

@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtFoldingSettingsConfig
+import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.configGroup.foldingSettings
 import icu.windea.pls.core.annotations.WithInternalConfig
 import icu.windea.pls.core.collections.process

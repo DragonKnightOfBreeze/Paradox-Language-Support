@@ -32,7 +32,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.toPsiFile

@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.expression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

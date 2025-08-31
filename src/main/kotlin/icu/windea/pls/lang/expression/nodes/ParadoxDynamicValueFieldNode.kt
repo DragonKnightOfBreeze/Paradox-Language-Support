@@ -2,7 +2,7 @@ package icu.windea.pls.lang.expression.nodes
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.links
 import icu.windea.pls.config.sortedByPriority

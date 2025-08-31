@@ -6,7 +6,7 @@ import cn.yiiguxing.plugin.translate.trans.TranslateListener
 import cn.yiiguxing.plugin.translate.trans.TranslateService
 import cn.yiiguxing.plugin.translate.trans.Translation
 import com.intellij.openapi.application.UI
-import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.integrations.translation.TranslateCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

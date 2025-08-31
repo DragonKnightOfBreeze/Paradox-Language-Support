@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.priority
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.filePathPatternsForPriority

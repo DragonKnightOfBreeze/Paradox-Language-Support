@@ -11,6 +11,8 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.config.delegated.CwtEnumConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*

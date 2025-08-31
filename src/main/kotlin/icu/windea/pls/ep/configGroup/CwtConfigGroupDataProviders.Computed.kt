@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtDeclarationConfig
-import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value

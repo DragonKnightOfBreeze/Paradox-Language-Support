@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtTypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.createPointer

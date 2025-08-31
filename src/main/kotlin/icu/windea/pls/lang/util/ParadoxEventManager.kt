@@ -12,8 +12,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtSubtypeConfig
-import icu.windea.pls.config.config.inGroup
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.pushScope
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.types

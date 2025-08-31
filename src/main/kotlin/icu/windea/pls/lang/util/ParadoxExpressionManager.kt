@@ -20,12 +20,12 @@ import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
-import icu.windea.pls.config.config.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtSingleAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.cardinality

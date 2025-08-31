@@ -2,7 +2,7 @@ package icu.windea.pls.config.config.delegated.impl
 
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.config.config.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.findOption

@@ -5,9 +5,9 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtLinkConfig
-import icu.windea.pls.config.config.CwtLocalisationCommandConfig
-import icu.windea.pls.config.config.CwtSystemScopeConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
+import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums

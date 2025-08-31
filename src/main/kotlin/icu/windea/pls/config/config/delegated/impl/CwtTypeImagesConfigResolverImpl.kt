@@ -3,9 +3,9 @@ package icu.windea.pls.config.config.delegated.impl
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtLocationConfig
+import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtTypeImagesConfig
+import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.buildCache
