@@ -35,12 +35,15 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
     private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         val configGroup = config.configGroup
 
+        // 从 key 中提取类型名：type[<name>]
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
         var baseType: String? = null
+        // 路径字段：统一移除 game/ 前缀并归一化为相对游戏根路径，使用有序集合以获得稳定顺序
         val paths = sortedSetOf<String>()
         var pathFile: String? = null
         var pathExtension: String? = null
         var pathStrict = false
+        // 支持通配的路径规则
         val pathPatterns = sortedSetOf<String>()
         var nameField: String? = null
         var typeKeyPrefix: String? = null
@@ -82,12 +85,18 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
                     skipRootKey.add(list) // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
                 }
                 "localisation" -> {
+                    // 解析类型本地化位置的子配置
                     localisation = CwtTypeLocalisationConfig.resolve(prop)
                 }
                 "images" -> {
+                    // 解析类型图像位置的子配置
                     images = CwtTypeImagesConfig.resolve(prop)
                 }
                 "modifiers" -> {
+                    // 从类型定义中收集修正规则：
+                    // 1) 若写在 subtype[...] 内，则类型表达式为 <type>.<subtype>
+                    // 2) 否则类型表达式为 <type>
+                    // 将结果写入 configGroup.modifiers 与 configGroup.type2ModifiersMap，供后续索引/提示
                     val propProps = prop.properties ?: continue
                     for (p in propProps) {
                         val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
@@ -124,6 +133,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
                     val values = option.getOptionValueOrValues() ?: continue
                     val set = caseInsensitiveStringSet() // 忽略大小写
                     set.addAll(values)
+                    // 使用 ReversibleValue 记录运算符（= 表示正向匹配，其他表示反向），以便后续取值时保留语义
                     val o = option.separatorType == CwtSeparatorType.EQUAL
                     typeKeyFilter = ReversibleValue(o, set.optimized())
                 }
@@ -137,6 +147,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
             }
         }
 
+        // 构造最终的类型配置实例（包含路径过滤、命名策略、子类型、本地化与图像位置、以及修正收集结果等）
         return CwtTypeConfigImpl(
             config, name, baseType,
             paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
@@ -171,6 +182,7 @@ private class CwtTypeConfigImpl(
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
+    // 可能的根键集合：合并类型与所有子类型的 type_key_filter（忽略运算符），用于加速根键匹配与提示
     override val possibleRootKeys: Set<String> by lazy {
         caseInsensitiveStringSet().apply {
             typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
@@ -178,6 +190,7 @@ private class CwtTypeConfigImpl(
         }.optimized()
     }
 
+    // 记录并标注 type_key_prefix 的值节点，供 UI 高亮与跳转（绑定到 PSI 指针以保持稳定）
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {
         config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also {
             it.tagType = CwtTagType.TypeKeyPrefix

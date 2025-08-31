@@ -7,6 +7,16 @@ import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.model.CwtType
 
+/**
+ * CWT 选项成员规则。
+ *
+ * 用于修饰/限定某个成员规则的语义，通常以 `key = value` 或独立值的形式出现在成员规则的选项列表中。
+ *
+ * @param T 对应的 PSI 类型（实现上为 [icu.windea.pls.cwt.psi.CwtOption]）。
+ * @property value 选项的原始文本值。
+ * @property valueType 值类型 [CwtType]。
+ * @property optionConfigs 嵌套的选项（少量规则会在选项下继续声明选项）。
+ */
 sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
     val value: String
     val valueType: CwtType
