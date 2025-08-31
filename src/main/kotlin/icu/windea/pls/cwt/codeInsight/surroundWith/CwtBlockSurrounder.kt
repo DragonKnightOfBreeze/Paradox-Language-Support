@@ -8,13 +8,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementFactory
 
 class CwtBlockSurrounder : Surrounder {
     override fun getTemplateDescription(): String {
-        return PlsBundle.message("cwt.surroundWith.block.description")
+        return "{ }"
     }
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {

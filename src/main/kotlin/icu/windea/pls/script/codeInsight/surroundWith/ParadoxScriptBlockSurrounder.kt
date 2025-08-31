@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 
 class ParadoxScriptBlockSurrounder : Surrounder {
     override fun getTemplateDescription(): String {
-        return PlsBundle.message("script.surroundWith.block.description")
+        return "{ }"
     }
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {

@@ -230,7 +230,7 @@ interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {
 }
 
 /**
- * 定义引用表达式。对应的规则类型为 [CwtDataTypes.DefineReference]。
+ * 预设值引用表达式。对应的规则类型为 [CwtDataTypes.DefineReference]。
  *
  * 语法：
  * ```bnf

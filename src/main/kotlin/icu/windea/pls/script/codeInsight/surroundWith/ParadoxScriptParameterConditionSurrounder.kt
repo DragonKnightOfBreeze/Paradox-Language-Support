@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 class ParadoxScriptParameterConditionSurrounder : ParadoxScriptSurrounder() {
     override fun getTemplateDescription(): String {
-        return PlsBundle.message("script.surroundWith.parameterCondition.description")
+        return "[[PARAM] ]"
     }
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {

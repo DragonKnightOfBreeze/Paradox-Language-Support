@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptPropertySurrounder : Surrounder {
+    @Suppress("DialogTitleCapitalization")
     override fun getTemplateDescription(): String {
-        return PlsBundle.message("script.surroundWith.property.description")
+        return "key = { }"
     }
 
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
