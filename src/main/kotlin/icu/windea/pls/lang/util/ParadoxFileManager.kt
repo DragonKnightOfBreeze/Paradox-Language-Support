@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -29,7 +28,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.inMainEntry
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -184,19 +182,5 @@ object ParadoxFileManager {
             ParadoxFileType.ModDescriptor -> false
             ParadoxFileType.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
         }
-    }
-
-    fun isTestDataFile(file: VirtualFile): Boolean {
-        if (!application.isUnitTestMode) return false
-        val name = file.nameWithoutExtension
-        return name.split('_', '.').any { it == "test" }
-    }
-
-    fun getInjectedGameTypeForTestDataFile(file: VirtualFile): ParadoxGameType? {
-        if (!isTestDataFile(file)) return null
-        val name = file.nameWithoutExtension
-        val injectedGameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.resolve(it) }
-        file.putUserData(PlsKeys.injectedGameType, injectedGameType)
-        return injectedGameType
     }
 }

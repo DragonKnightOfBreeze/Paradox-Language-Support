@@ -91,6 +91,8 @@ object ParadoxCoreManager {
 
         //no fileInfo for VirtualFileWindow (injected PSI)
         if (PlsVfsManager.isInjectedFile(file)) return null
+        //no fileInfo for test data file
+        if (PlsVfsManager.isTestDataFile(file)) return null
 
         val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
         if (cachedFileInfo != null) return cachedFileInfo.castOrNull()

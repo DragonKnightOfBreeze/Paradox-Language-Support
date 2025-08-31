@@ -1,0 +1,32 @@
+<application>
+  <component name="ParadoxProfilesSettings">
+    <gameDescriptorSettings path="D:/Program Files/Steam/steamapps/common/Stellaris">
+      <settings>
+        <option name="gameDirectory" value="D:/Program Files/Steam/steamapps/common/Stellaris" />
+        <option name="gameType" value="Stellaris" />
+        <option name="gameVersion" value="v4.0.21" />
+      </settings>
+    </gameDescriptorSettings>
+    <gameSettings path="D:/Documents/Projects/Stellaris">
+      <settings>
+        <option name="gameDirectory" value="D:/Documents/Projects/Stellaris" />
+        <option name="gameType" value="Stellaris" />
+      </settings>
+    </gameSettings>
+    <modDescriptorSettings path="D:/Program Files/Steam/steamapps/workshop/content/281990/1067631798">
+      <settings>
+        <option name="modDirectory" value="D:/Program Files/Steam/steamapps/workshop/content/281990/1067631798" />
+        <option name="name" value="Expanded Stellaris Ascension Perks" />
+        <option name="picture" value="thumbnail.png" />
+        <option name="remoteId" value="1067631798" />
+        <option name="source" value="Steam" />
+        <option name="supportedVersion" value="3.7.*" />
+      </settings>
+    </modDescriptorSettings>
+    <modSettings path="D:/Program Files/Steam/steamapps/workshop/content/281990/946222466">
+      <settings>
+        <option name="modDirectory" value="D:/Program Files/Steam/steamapps/workshop/content/281990/946222466" />
+      </settings>
+    </modSettings>
+  </component>
+</application>
