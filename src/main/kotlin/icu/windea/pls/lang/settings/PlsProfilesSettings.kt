@@ -5,10 +5,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.xmlb.annotations.MapAnnotation
-import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.XCollection
+import com.intellij.util.xmlb.annotations.Transient
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -18,6 +18,7 @@ import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.orDefault
+import icu.windea.pls.lang.settings.tools.DbBackedStateMap
 
 /**
  * PLS资料设置。
@@ -29,21 +30,27 @@ import icu.windea.pls.model.orDefault
 class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettingsState>(PlsProfilesSettingsState())
 
 class PlsProfilesSettingsState : BaseState() {
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "gameDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> by linkedMap()
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "modDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> by linkedMap()
+    @get:Transient
+    val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> =
+        DbBackedStateMap.create("gameDescriptorSettings", ParadoxGameDescriptorSettingsState::class.java)
+    @get:Transient
+    val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> =
+        DbBackedStateMap.create("modDescriptorSettings", ParadoxModDescriptorSettingsState::class.java)
 
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "gameSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val gameSettings: MutableMap<String, ParadoxGameSettingsState> by linkedMap()
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "modSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val modSettings: MutableMap<String, ParadoxModSettingsState> by linkedMap()
+    @get:Transient
+    val gameSettings: MutableMap<String, ParadoxGameSettingsState> =
+        DbBackedStateMap.create("gameSettings", ParadoxGameSettingsState::class.java)
+    @get:Transient
+    val modSettings: MutableMap<String, ParadoxModSettingsState> =
+        DbBackedStateMap.create("modSettings", ParadoxModSettingsState::class.java)
 
-    fun updateSettings() = incrementModificationCount()
+    fun updateSettings() {
+        (gameDescriptorSettings as? DbBackedStateMap<ParadoxGameDescriptorSettingsState>)?.flush()
+        (modDescriptorSettings as? DbBackedStateMap<ParadoxModDescriptorSettingsState>)?.flush()
+        (gameSettings as? DbBackedStateMap<ParadoxGameSettingsState>)?.flush()
+        (modSettings as? DbBackedStateMap<ParadoxModSettingsState>)?.flush()
+        incrementModificationCount()
+    }
 }
 
 /**

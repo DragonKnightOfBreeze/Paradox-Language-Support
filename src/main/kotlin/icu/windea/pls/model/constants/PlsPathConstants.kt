@@ -18,6 +18,7 @@ object PlsPathConstants {
     private val _data = _userHome.resolve(".pls")
 
     val data by initializer.awaitDirectory(_data)
+    val database by initializer.awaitDirectory(_data.resolve("database"))
     val images by initializer.await(_data.resolve("images"))
     val imagesTemp by initializer.await(_data.resolve("images").resolve("_tmp"))
     val lintResults by initializer.await(_data.resolve("lint-results"))
