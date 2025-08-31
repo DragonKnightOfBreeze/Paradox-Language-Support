@@ -53,8 +53,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
         val (min0, max0) = configExpression.intRange ?: return
         val value = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
-            element is ParadoxCsvExpressionElement -> element.value.toIntOrNull()
-            else -> null
+            else -> element.value.toIntOrNull()
         }
         if (value == null) return
         val min = min0 ?: Int.MIN_VALUE
@@ -77,8 +76,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
         val (min0, max0) = configExpression.floatRange ?: return
         val value = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()
-            element is ParadoxCsvExpressionElement -> element.value.toFloatOrNull()
-            else -> null
+            else -> element.value.toFloatOrNull()
         }
         if (value == null) return
         val min = min0 ?: Float.MIN_VALUE
