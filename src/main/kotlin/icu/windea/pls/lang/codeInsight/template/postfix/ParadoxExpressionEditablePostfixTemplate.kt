@@ -5,7 +5,7 @@ import com.intellij.codeInsight.template.impl.TemplateImpl
 import com.intellij.codeInsight.template.postfix.templates.PostfixTemplateProvider
 import com.intellij.codeInsight.template.postfix.templates.editable.EditablePostfixTemplate
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfig
+import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.annotations.WithInternalConfig
 import icu.windea.pls.core.quote
 

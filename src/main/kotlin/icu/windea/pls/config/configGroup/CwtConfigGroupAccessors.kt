@@ -31,8 +31,8 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
-import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfig
-import icu.windea.pls.config.config.internal.impl.CwtSchemaConfig
+import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
+import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.Tags.Tag

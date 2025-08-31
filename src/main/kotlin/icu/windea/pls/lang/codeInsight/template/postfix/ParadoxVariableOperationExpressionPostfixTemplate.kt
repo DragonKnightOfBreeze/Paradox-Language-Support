@@ -5,8 +5,8 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
