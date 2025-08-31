@@ -1,4 +1,6 @@
-package icu.windea.pls.model.paths
+package icu.windea.pls.model.paths.impl
+
+import icu.windea.pls.model.paths.CwtConfigPath
 
 internal class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
     override fun resolveEmpty(): CwtConfigPath = EmptyCwtConfigPath

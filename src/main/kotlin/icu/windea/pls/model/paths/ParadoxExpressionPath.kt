@@ -1,5 +1,7 @@
 package icu.windea.pls.model.paths
 
+import icu.windea.pls.model.paths.impl.ParadoxExpressionPathResolverImpl
+
 /**
  * 表达式路径。保留大小写。
  *

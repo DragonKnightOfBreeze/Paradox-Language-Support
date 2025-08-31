@@ -507,7 +507,7 @@ object ParadoxExpressionManager {
             else -> return emptyList()
         }
         val valueExpression = when {
-            element is ParadoxScriptFile -> ParadoxScriptExpression.BlockExpression
+            element is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
             element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
             element is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
             else -> return emptyList()
@@ -650,7 +650,7 @@ object ParadoxExpressionManager {
         run r1@{
             if (newResult.isEmpty()) return@r1
             val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
-            val blockExpression = ParadoxScriptExpression.BlockExpression
+            val blockExpression = ParadoxScriptExpression.resolveBlock()
             val configsToRemove = mutableSetOf<CwtPropertyConfig>()
             val group: Collection<List<CwtPropertyConfig>> = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
             group.forEach f1@{ configs ->

@@ -1,5 +1,7 @@
 package icu.windea.pls.model.paths
 
+import icu.windea.pls.model.paths.impl.CwtConfigPathResolverImpl
+
 /**
  * CWT 规则的路径。保留大小写。忽略括起的双引号。
  */

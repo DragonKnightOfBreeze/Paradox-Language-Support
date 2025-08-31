@@ -2,6 +2,8 @@
 
 package icu.windea.pls.model.paths
 
+import icu.windea.pls.model.paths.impl.ParadoxPathResolverImpl
+
 /**
  * 文件路径。相对于游戏或模组入口目录（不一定是根目录）。保留大小写。
  *

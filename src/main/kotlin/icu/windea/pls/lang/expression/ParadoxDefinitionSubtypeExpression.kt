@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.expression
 
 import icu.windea.pls.core.util.ReversibleValue
-import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.lang.expression.impl.ParadoxDefinitionSubtypeExpressionResolver
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
 /**
@@ -9,9 +9,9 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  *
  * 示例：
  *
- * * `a`
- * * `!a`
- * * `a&b`
+ * - `a`
+ * - `!a`
+ * - `a&b`
  *
  * 用途：
  *
@@ -22,44 +22,11 @@ interface ParadoxDefinitionSubtypeExpression {
     val subtypes: List<ReversibleValue<String>>
 
     fun matches(subtypes: Collection<String>): Boolean
-
     fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean
 
-    companion object Resolver {
-        fun resolve(expressionString: String): ParadoxDefinitionSubtypeExpression {
-            return Impl(expressionString)
-        }
+    interface Resolver {
+        fun resolve(expressionString: String): ParadoxDefinitionSubtypeExpression
     }
 
-    //region Implementations
-
-    private class Impl(
-        override val expressionString: String
-    ) : ParadoxDefinitionSubtypeExpression {
-        override val subtypes: List<ReversibleValue<String>> = expressionString.split('&').map { ReversibleValue(it) }
-
-        override fun matches(subtypes: Collection<String>): Boolean {
-            //目前仅支持"!"和"&"的组合
-            return this.subtypes.all { t -> t.withOperator { subtypes.contains(it) } }
-        }
-
-        override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
-            return matches(definitionInfo.subtypes)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            return this === other || other is ParadoxDefinitionSubtypeExpression && expressionString == other.expressionString
-        }
-
-        override fun hashCode(): Int {
-            return expressionString.hashCode()
-        }
-
-        override fun toString(): String {
-            return expressionString
-        }
-    }
-
-    //endregion
+    companion object : Resolver by ParadoxDefinitionSubtypeExpressionResolver()
 }
-
