@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.isExpression
 import javax.swing.JComponent
 
 /**
- * 通过内嵌提示显示修正的本地化后的名字。
+ * 通过内嵌提示显示修正的本地化名称。
  * 来自对应的本地化。
  */
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {

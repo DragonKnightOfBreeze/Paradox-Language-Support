@@ -25,7 +25,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
- * 提供本地化后的名字的代码补全。
+ * 提供本地化名称的代码补全。
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

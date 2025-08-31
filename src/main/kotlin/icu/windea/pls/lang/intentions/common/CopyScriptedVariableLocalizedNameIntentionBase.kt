@@ -12,7 +12,7 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 复制封装变量的本地化后的名字到剪贴板。
+ * 复制封装变量的本地化名称到剪贴板。
  */
 abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyScriptedVariableLocalizedName")

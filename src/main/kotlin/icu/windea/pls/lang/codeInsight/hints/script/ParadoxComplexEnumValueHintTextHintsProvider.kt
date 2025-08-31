@@ -27,7 +27,7 @@ import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示复杂枚举值的提示文本。
- * 来自本地化后的名字（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ * 来自本地化名称（即同名的本地化），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.ComplexEnumValue
