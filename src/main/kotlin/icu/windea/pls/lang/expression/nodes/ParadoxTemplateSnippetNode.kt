@@ -20,8 +20,8 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxBaseLanguage
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxTemplateExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

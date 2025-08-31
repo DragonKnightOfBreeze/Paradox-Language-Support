@@ -43,14 +43,14 @@ class ParadoxValueFieldValueNode(
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
                 if (configs.isEmpty()) return@r1
                 val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)
-                if(node != null) nodes += node
+                if (node != null) nodes += node
             }
             run r1@{
                 if (nodes.isNotEmpty()) return@r1
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.ScopeField }
                 if (configs.isEmpty()) return@r1
                 val node = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup)
-                if(node != null) nodes += node
+                if (node != null) nodes += node
             }
             run r1@{
                 if (nodes.isNotEmpty()) return@r1

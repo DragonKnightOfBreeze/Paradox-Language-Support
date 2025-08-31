@@ -77,7 +77,7 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
     }
 }
 
-private class ParadoxScriptValueExpressionImpl (
+private class ParadoxScriptValueExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,

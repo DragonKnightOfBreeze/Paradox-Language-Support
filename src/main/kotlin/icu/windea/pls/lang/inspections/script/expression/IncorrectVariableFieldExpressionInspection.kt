@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeGroups
-import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.expression.getAllErrors
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile

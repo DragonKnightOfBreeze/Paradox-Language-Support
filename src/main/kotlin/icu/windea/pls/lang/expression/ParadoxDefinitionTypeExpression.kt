@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  *
  * 用途：
  * - 查询定义时指定定义类型表达式，以进行过滤。
- * - 在CWT规则文件中，`<X>`表示一个定义引用，其中`X`即是一个定义类型表达式。
+ * - 在 CWT 规则文件中，`<X>` 表示一个定义引用，其中 `X` 即是一个定义类型表达式。
  */
 interface ParadoxDefinitionTypeExpression {
     val text: String

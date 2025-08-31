@@ -15,7 +15,7 @@ import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
-internal class ParadoxScopeFieldExpressionResolverImpl: ParadoxScopeFieldExpression.Resolver {
+internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpression.Resolver {
     override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && expressionString.isEmpty()) return null

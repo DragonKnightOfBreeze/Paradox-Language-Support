@@ -4,14 +4,14 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.impl.ParadoxComplexExpressionResolverImpl
+import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 /**
  * 复杂表达式。
  *
- * 复杂对应脚本语言与本地化语言中的一段特定的标识符，它们可能包含数个节点，且允许嵌套包含。
+ * 对应脚本语言与本地化语言中的一段特定的表达式文本，它们可能包含数个节点，且允许嵌套包含。
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val errors: List<ParadoxComplexExpressionError>

@@ -13,10 +13,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

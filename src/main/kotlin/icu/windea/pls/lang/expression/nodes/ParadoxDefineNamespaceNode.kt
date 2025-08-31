@@ -11,8 +11,8 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

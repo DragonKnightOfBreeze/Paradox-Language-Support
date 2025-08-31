@@ -23,7 +23,7 @@ import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
-internal class ParadoxComplexExpressionResolverImpl: ParadoxComplexExpression.Resolver {
+internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.Resolver {
     override fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
         return when (element) {
             is ParadoxScriptExpressionElement -> {

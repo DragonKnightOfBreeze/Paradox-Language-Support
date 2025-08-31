@@ -14,8 +14,8 @@ import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager

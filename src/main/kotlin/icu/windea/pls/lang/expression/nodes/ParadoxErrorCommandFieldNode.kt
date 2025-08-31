@@ -2,8 +2,8 @@ package icu.windea.pls.lang.expression.nodes
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.isParameterized
 
 class ParadoxErrorCommandFieldNode(

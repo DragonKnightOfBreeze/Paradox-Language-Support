@@ -4,10 +4,10 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.linksOfVariable
 import icu.windea.pls.core.cast
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.expression.nodes.ParadoxErrorNode
@@ -19,7 +19,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxType
 
-internal class  ParadoxVariableFieldExpressionResolverImpl: ParadoxVariableFieldExpression.Resolver {
+internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableFieldExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null

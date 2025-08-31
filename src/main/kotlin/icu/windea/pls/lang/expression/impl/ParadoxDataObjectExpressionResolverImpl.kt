@@ -15,7 +15,7 @@ import icu.windea.pls.lang.expression.validateAllNodes
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.util.PlsCoreManager
 
-internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver{
+internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
@@ -63,7 +63,7 @@ internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectEx
     }
 }
 
-private class ParadoxDatabaseObjectExpressionImpl (
+private class ParadoxDatabaseObjectExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,

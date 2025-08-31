@@ -6,8 +6,6 @@ import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
-// region Visitors & Related Methods
-
 abstract class ParadoxComplexExpressionVisitor {
     open fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
         node.nodes.forEach {
@@ -48,7 +46,7 @@ fun ParadoxComplexExpression.getAllErrors(element: ParadoxExpressionElement?): L
     val errors = mutableListOf<ParadoxComplexExpressionError>()
     errors += this.errors
     this.accept(object : ParadoxComplexExpressionVisitor() {
-        override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?):Boolean {
+        override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
             node.getUnresolvedError()?.let { errors += it }
             if (element != null) node.getUnresolvedError(element)?.let { errors += it }
             return super.visit(node, parentNode)
@@ -67,5 +65,3 @@ fun ParadoxComplexExpression.getAllReferences(element: ParadoxExpressionElement)
     })
     return references
 }
-
-// endregion

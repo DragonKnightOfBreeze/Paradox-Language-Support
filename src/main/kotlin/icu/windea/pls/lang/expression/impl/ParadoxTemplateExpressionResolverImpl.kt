@@ -14,7 +14,7 @@ import icu.windea.pls.lang.expression.nodes.ParadoxTemplateSnippetConstantNode
 import icu.windea.pls.lang.expression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.util.PlsCoreManager
 
-internal class ParadoxTemplateExpressionResolverImpl: ParadoxTemplateExpression.Resolver {
+internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
     override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
         val templateExpression = when {
             config is CwtModifierConfig -> {

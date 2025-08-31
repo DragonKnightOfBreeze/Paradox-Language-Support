@@ -20,7 +20,7 @@ import icu.windea.pls.lang.expression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.expression.ParadoxTemplateExpression
 import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.expression.getAllReferences
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager

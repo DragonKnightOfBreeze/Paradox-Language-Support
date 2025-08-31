@@ -2,12 +2,17 @@ package icu.windea.pls.lang.expression.impl
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.expression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.expression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.expression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.expression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.expression.nodes.ParadoxScopeLinkNode
@@ -18,7 +23,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxType
 
-internal class ParadoxValueFieldExpressionResolverImpl:ParadoxValueFieldExpression.Resolver {
+internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpression.Resolver {
     override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && expressionString.isEmpty()) return null
@@ -77,12 +82,19 @@ internal class ParadoxValueFieldExpressionResolverImpl:ParadoxValueFieldExpressi
     }
 }
 
-private class ParadoxValueFieldExpressionImpl (
+private class ParadoxValueFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : ParadoxValueFieldExpression {
+    override val scopeNodes: List<ParadoxScopeLinkNode>
+        get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
+    override val valueFieldNode: ParadoxValueFieldNode
+        get() = nodes.last().cast()
+    override val scriptValueExpression: ParadoxScriptValueExpression?
+        get() = valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.valueNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
+
     override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
 
     private fun validate(): List<ParadoxComplexExpressionError> {

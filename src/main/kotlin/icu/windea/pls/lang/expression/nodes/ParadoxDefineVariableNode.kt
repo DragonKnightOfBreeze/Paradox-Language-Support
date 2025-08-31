@@ -11,8 +11,8 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.expression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -82,19 +82,20 @@ class ParadoxDefineVariableNode(
         }
 
         private fun doResolve(): PsiElement? {
-            if(namespace == null) return null
+            if (namespace == null) return null
             val selector = selector(project, element).define().contextSensitive()
             val defineInfo = ParadoxDefineSearch.search(namespace, variableName, selector).find() ?: return null
             return ParadoxDefineManager.getDefineElement(defineInfo, project)
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            if(namespace == null) return ResolveResult.EMPTY_ARRAY
+            if (namespace == null) return ResolveResult.EMPTY_ARRAY
             val selector = selector(project, element).define().contextSensitive()
             val defineInfos = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
             return ParadoxDefineManager.getDefineElements(defineInfos, project).mapToArray { PsiElementResolveResult(it) }
         }
     }
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDefineReferenceExpression): ParadoxDefineVariableNode {
             return ParadoxDefineVariableNode(text, textRange, configGroup, expression)

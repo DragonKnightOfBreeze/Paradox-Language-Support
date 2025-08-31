@@ -23,7 +23,7 @@ import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.expression.complex.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.expression.getAllErrors
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
