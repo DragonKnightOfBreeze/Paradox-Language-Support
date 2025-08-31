@@ -35,6 +35,7 @@ import icu.windea.pls.config.config.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.Tags.Tag
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
@@ -46,6 +47,19 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.priority.ParadoxPriority
 import icu.windea.pls.ep.scope.ParadoxBaseDefinitionInferredScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
+
+//region Annotations
+
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.PROPERTY)
+annotation class Tags(vararg val value: Tag) {
+    enum class Tag {
+        Internal, Extended, Computed, Collected
+    }
+}
+
+//endregion
 
 //region Internal Accessors
 
