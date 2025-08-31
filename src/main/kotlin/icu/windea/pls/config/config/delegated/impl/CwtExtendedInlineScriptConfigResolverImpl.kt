@@ -38,7 +38,7 @@ private class CwtExtendedInlineScriptConfigImpl(
 
     private fun doGetContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
-        // https:// github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
+        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 

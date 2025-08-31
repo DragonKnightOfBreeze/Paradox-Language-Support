@@ -78,7 +78,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
 
         override fun getPopupText(editor: Editor, value: PsiElement): String {
             val lineNumber = editor.document.getLineNumber(value.textOffset)
-            return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
+            return PlsBundle.message("fix.navigate.popup.text.2", key, lineNumber)
         }
     }
 }

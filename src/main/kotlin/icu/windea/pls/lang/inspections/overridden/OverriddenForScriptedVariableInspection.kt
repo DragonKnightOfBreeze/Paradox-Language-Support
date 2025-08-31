@@ -78,8 +78,8 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
             val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path
-            if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
-            return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
+            if (filePath == null) return PlsBundle.message("fix.navigate.popup.text.2", key, lineNumber)
+            return PlsBundle.message("fix.navigate.popup.text.3", key, lineNumber, filePath)
         }
     }
 }
