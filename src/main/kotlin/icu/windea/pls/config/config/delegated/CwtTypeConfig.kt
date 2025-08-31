@@ -5,8 +5,6 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.bindConfig
-import icu.windea.pls.config.config.CwtConfig.Option
-import icu.windea.pls.config.config.CwtConfig.Property
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -26,35 +24,35 @@ import icu.windea.pls.model.CwtSeparatorType
 
 interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
-    @Property("base_type: string?")
+    @FromProperty("base_type: string?")
     val baseType: String?
-    @Property("name_field: string?")
+    @FromProperty("name_field: string?")
     val nameField: String?
-    @Property("type_key_prefix: string?")
+    @FromProperty("type_key_prefix: string?")
     val typeKeyPrefix: String?
-    @Property("name_from_file: boolean", defaultValue = "false")
+    @FromProperty("name_from_file: boolean", defaultValue = "false")
     val nameFromFile: Boolean
-    @Property("type_per_file: boolean", defaultValue = "false")
+    @FromProperty("type_per_file: boolean", defaultValue = "false")
     val typePerFile: Boolean
-    @Property("unique: boolean", defaultValue = "false")
+    @FromProperty("unique: boolean", defaultValue = "false")
     val unique: Boolean
-    @Property("severity: string?")
+    @FromProperty("severity: string?")
     val severity: String?
-    @Property("skip_root_key: string | string[]", multiple = true)
+    @FromProperty("skip_root_key: string | string[]", multiple = true)
     val skipRootKey: List<List<@CaseInsensitive String>>?
-    @Option("type_key_filter: string | string[]")
+    @FromOption("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
-    @Option("type_key_regex: string?")
+    @FromOption("type_key_regex: string?")
     val typeKeyRegex: Regex?
-    @Option("starts_with: string?")
+    @FromOption("starts_with: string?")
     val startsWith: @CaseInsensitive String?
-    @Option("graph_related_types: string[]")
+    @FromOption("graph_related_types: string[]")
     val graphRelatedTypes: Set<String>?
-    @Property("subtype[*]: SubtypeInfo", multiple = true)
+    @FromProperty("subtype[*]: SubtypeInfo", multiple = true)
     val subtypes: Map<String, CwtSubtypeConfig>
-    @Property("localisation: LocalisationInfo")
+    @FromProperty("localisation: LocalisationInfo")
     val localisation: CwtTypeLocalisationConfig?
-    @Property("images: ImagesInfo")
+    @FromProperty("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
     object Keys : KeyRegistry()

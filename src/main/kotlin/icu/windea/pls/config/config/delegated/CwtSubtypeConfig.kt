@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtConfig.Option
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.optimized
@@ -15,13 +14,13 @@ import icu.windea.pls.model.CwtSeparatorType
 
 interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    @Option("type_key_filter: string | string[]")
+    @FromOption("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
-    @Option("type_key_regex: string?")
+    @FromOption("type_key_regex: string?")
     val typeKeyRegex: Regex?
-    @Option("starts_with: string?")
+    @FromOption("starts_with: string?")
     val startsWith: String?
-    @Option("only_if_not: string[]?")
+    @FromOption("only_if_not: string[]?")
     val onlyIfNot: Set<String>?
 
     companion object {

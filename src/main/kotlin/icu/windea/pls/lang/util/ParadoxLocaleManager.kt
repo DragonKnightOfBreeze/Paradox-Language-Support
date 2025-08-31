@@ -16,7 +16,7 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocaleConfig {
-        return getResolvedLocaleConfig(PlsFacade.getSettings().preferredLocale.orEmpty()) ?: CwtLocaleConfig.FALLBACK
+        return getResolvedLocaleConfig(PlsFacade.getSettings().preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {
@@ -28,12 +28,12 @@ object ParadoxLocaleManager {
             id.isEmpty() || id == ID_AUTO -> {
                 val ideLocale = DynamicBundle.getLocale()
                 val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
-                localesByCode[ideLocale.language] ?: CwtLocaleConfig.FALLBACK
+                localesByCode[ideLocale.language] ?: CwtLocaleConfig.resolveFallback()
             }
             id == ID_AUTO_OS -> {
                 val userLanguage = System.getProperty("user.language").orEmpty()
                 val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
-                localesByCode[userLanguage] ?: CwtLocaleConfig.FALLBACK
+                localesByCode[userLanguage] ?: CwtLocaleConfig.resolveFallback()
             }
             else -> null
         }
@@ -41,8 +41,8 @@ object ParadoxLocaleManager {
 
     fun getLocaleConfig(id: String, withAuto: Boolean = false, withDefault: Boolean = false): CwtLocaleConfig? {
         if (withAuto) {
-            if (id == ID_AUTO) return CwtLocaleConfig.AUTO
-            if (id == ID_AUTO_OS) return CwtLocaleConfig.AUTO_OS
+            if (id == ID_AUTO) return CwtLocaleConfig.resolveAuto()
+            if (id == ID_AUTO_OS) return CwtLocaleConfig.resolveAutoOs()
         }
         val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
         val locale = localesById[id] ?: return null
@@ -55,8 +55,8 @@ object ParadoxLocaleManager {
     fun getLocaleConfigs(withAuto: Boolean = false, withDefault: Boolean = false, pingPreferred: Boolean = true): List<CwtLocaleConfig> {
         val locales = mutableListOf<CwtLocaleConfig>()
         if (withAuto) {
-            locales += CwtLocaleConfig.AUTO
-            locales += CwtLocaleConfig.AUTO_OS
+            locales += CwtLocaleConfig.resolveAuto()
+            locales += CwtLocaleConfig.resolveAutoOs()
         }
         val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
         var locales0 = localesById.values.toList()

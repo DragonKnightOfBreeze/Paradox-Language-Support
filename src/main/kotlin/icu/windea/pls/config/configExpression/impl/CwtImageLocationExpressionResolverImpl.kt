@@ -14,6 +14,7 @@ internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpressi
         .maximumSize(4096)
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .buildCache<String, CwtImageLocationExpression> { doResolve(it) }
+
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")
 
     override fun resolveEmpty(): CwtImageLocationExpression = emptyExpression

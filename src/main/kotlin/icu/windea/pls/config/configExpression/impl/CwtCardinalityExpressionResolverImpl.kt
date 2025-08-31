@@ -16,6 +16,7 @@ internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.R
         .maximumSize(4096)
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .buildCache<String, CwtCardinalityExpression> { doResolve(it) }
+
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 
     override fun resolveEmpty(): CwtCardinalityExpression = emptyExpression
@@ -34,7 +35,7 @@ internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.R
         // 支持 "~" 宽松标记；min 解析失败时回退为 0；max 不区分大小写的 "inf" 视为无限
         val min = s1.removePrefix("~").let { n -> n.toIntOrNull()?.coerceAtLeast(0) ?: 0 }
         val max = s2.removePrefix("~").let { n -> if (n.equals("inf", true)) null else n.toIntOrNull()?.coerceAtLeast(0) }
-        if(max != null && min > max) {
+        if (max != null && min > max) {
             logger.warn("Invalid cardinality expression $expressionString, fallback to default")
             return emptyExpression
         }

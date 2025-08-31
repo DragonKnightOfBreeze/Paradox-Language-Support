@@ -22,7 +22,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxLocalisationManipulator.buildSequence(file)
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
-        val request = TranslateLocalisationAiRequest(file.project, file, contexts, CwtLocaleConfig.FALLBACK, null)
+        val request = TranslateLocalisationAiRequest(file.project, file, contexts, CwtLocaleConfig.resolveFallback(), null)
         val aiService = PlsAiFacade.getTranslateLocalisationService()
         val resultFlow = aiService.manipulate(request)
         runBlocking {

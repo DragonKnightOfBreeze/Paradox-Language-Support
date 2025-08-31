@@ -19,7 +19,7 @@ class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSe
 class PlsIntegrationsSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     var image by property(ImageState())
-    //@get:Property(surroundWithTag = false)
+    //@get:FromProperty(surroundWithTag = false)
     //var translation by property(TranslationState())
     @get:Property(surroundWithTag = false)
     var lint by property(LintState())

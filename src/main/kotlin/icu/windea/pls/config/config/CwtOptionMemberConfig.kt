@@ -30,7 +30,7 @@ fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? {
 }
 
 fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
-    return getOptionValue()?.let { it.singleton.set() } ?: getOptionValues()
+    return getOptionValue()?.singleton?.set() ?: getOptionValues()
 }
 
 fun CwtOptionMemberConfig<*>.findOption(key: String): CwtOptionConfig? {

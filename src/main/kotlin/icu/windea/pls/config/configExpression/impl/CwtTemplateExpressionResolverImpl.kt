@@ -29,6 +29,7 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
         .maximumSize(4096)
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .buildCache<String, CwtTemplateExpression> { doResolve(it) }
+
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
 
     override fun resolveEmpty(): CwtTemplateExpression = emptyExpression

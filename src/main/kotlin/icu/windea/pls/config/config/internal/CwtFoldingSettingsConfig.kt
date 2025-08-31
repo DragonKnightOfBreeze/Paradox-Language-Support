@@ -31,7 +31,7 @@ class CwtFoldingSettingsConfig(
                         }
                     }
                     if (placeholder != null) {
-                        val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder!!)
+                        val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder)
                         map.put(id, foldingSetting)
                     }
                 }

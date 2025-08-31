@@ -3,7 +3,6 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtConfig.Property
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -16,9 +15,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
-    @Property("columns: ColumnConfigs")
+    @FromProperty("columns: ColumnConfigs")
     val columns: Map<String, CwtPropertyConfig>
-    @Property("end_column: string?")
+    @FromProperty("end_column: string?")
     val endColumn: String?
 
     companion object Resolver {

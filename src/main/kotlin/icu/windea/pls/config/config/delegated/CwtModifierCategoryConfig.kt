@@ -3,14 +3,13 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtConfig.Property
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    @Property("supported_scopes: string | string[]")
+    @FromProperty("supported_scopes: string | string[]")
     val supportedScopes: Set<String>
 
     companion object Resolver {

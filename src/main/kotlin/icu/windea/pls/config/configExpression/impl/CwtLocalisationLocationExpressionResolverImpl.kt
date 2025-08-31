@@ -14,6 +14,7 @@ internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLo
         .maximumSize(4096)
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+
     private val emptyExpression = CwtLocalisationLocationExpressionImpl("", "")
 
     override fun resolveEmpty(): CwtLocalisationLocationExpression = emptyExpression

@@ -3,14 +3,13 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.CwtConfig.Property
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.cwt.psi.CwtProperty
 
 interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    @Property("aliases: string[]")
+    @FromProperty("aliases: string[]")
     val aliases: Set<@CaseInsensitive String>
 
     companion object Resolver {

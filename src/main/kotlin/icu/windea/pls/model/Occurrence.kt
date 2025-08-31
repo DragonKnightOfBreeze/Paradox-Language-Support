@@ -20,4 +20,3 @@ data class Occurrence(
         return true
     }
 }
-
