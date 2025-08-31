@@ -12,7 +12,6 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtSubtypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.inGroup
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.core.annotations.WithGameType

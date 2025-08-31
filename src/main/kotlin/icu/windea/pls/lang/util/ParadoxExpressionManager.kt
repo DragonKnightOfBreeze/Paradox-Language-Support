@@ -29,8 +29,6 @@ import icu.windea.pls.config.config.CwtSingleAliasConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.cardinality
-import icu.windea.pls.config.config.forScope
-import icu.windea.pls.config.config.forValue
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.singleAliasConfig

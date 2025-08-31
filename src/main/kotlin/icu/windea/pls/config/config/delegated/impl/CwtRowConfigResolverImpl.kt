@@ -10,8 +10,6 @@ import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import kotlin.collections.forEach
-import kotlin.collections.orEmpty
 
 internal class CwtRowConfigResolverImpl:CwtRowConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)

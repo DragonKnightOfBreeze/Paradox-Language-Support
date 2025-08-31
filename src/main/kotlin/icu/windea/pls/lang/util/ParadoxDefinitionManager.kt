@@ -20,7 +20,6 @@ import icu.windea.pls.config.config.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.cardinality
-import icu.windea.pls.config.config.possibleRootKeys
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence

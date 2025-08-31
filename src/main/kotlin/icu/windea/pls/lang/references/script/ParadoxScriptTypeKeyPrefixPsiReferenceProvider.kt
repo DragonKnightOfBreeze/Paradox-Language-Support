@@ -8,7 +8,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.config.config.typeKeyPrefixConfig
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized

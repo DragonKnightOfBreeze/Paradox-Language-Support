@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtLinkConfig
-import icu.windea.pls.config.config.forScope
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.links
 import icu.windea.pls.core.psi.PsiResolvedReference
