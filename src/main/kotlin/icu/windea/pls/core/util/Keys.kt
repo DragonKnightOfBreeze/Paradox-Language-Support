@@ -3,6 +3,7 @@
 package icu.windea.pls.core.util
 
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.core.cast
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KProperty
@@ -25,6 +26,21 @@ abstract class KeyRegistry {
     fun <T> getKey(name: String): Key<T>? {
         return keys.get(name) as? Key<T>
     }
+}
+
+abstract class SyncedKeyRegistry: KeyRegistry() {
+    val keysToSync: MutableSet<Key<*>> = mutableSetOf()
+
+    //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
+    fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
+        keysToSync.forEach { key ->
+            @Suppress("UNCHECKED_CAST")
+            key as Key<Any>
+            to.putUserData(key, from.getUserData(key))
+        }
+    }
+
+    fun <T : KeyProvider<*>> T.synced() = apply { callback { keysToSync += it } }
 }
 
 abstract class KeyProvider<T> {

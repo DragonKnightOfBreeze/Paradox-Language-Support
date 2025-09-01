@@ -11,6 +11,11 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 
+/**
+ * 模拟的 PSI 元素。
+ * 用于处理并不存在真正意义上的声明处的引用。
+ * 这个 API 相比 Symbol API 更加好用。
+ */
 @Suppress("UnstableApiUsage")
 abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
     override fun getNameIdentifier(): PsiElement? {

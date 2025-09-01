@@ -14,7 +14,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
-import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于监听Tiger检查工具的`.conf`配置文件的更改，以便在必要时刷新检查结果缓存。
@@ -51,7 +50,6 @@ class PlsTigerConfFileListener : AsyncFileListener {
         }
 
         if (changedConfFileNames.isEmpty()) return null
-        val gameTypes = mutableSetOf<ParadoxGameType>()
         val gameType2ConfFileName = enabledTools.associateBy({ it.forGameType }, { getConfFileName(it) })
         val gameTypeChanged = gameType2ConfFileName.filterValues { it in changedConfFileNames }.keys
 

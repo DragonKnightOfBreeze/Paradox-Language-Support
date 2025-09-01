@@ -2,23 +2,14 @@ package icu.windea.pls.ep.modifier
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.util.KeyProvider
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.setValue
-import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
+import icu.windea.pls.core.util.SyncedKeyRegistry
 import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.supportsByAnnotation
@@ -111,27 +102,5 @@ interface ParadoxModifierSupport {
         }
     }
 
-    object Keys : KeyRegistry() {
-        val keysToSync: MutableSet<Key<*>> = mutableSetOf()
-
-        //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-        fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
-            keysToSync.forEach { key ->
-                @Suppress("UNCHECKED_CAST")
-                key as Key<Any>
-                to.putUserData(key, from.getUserData(key))
-            }
-        }
-
-        fun <T : KeyProvider<*>> T.synced() = apply { callback { keysToSync += it } }
-    }
+    object Keys : SyncedKeyRegistry()
 }
-
-val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys).synced()
-val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys).synced()
-
-var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
-
-var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

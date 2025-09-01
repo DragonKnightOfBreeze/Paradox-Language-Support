@@ -1,21 +1,14 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.ep.parameter
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.PsiElement
-import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.util.KeyProvider
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.setValue
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport.Keys.synced
+import icu.windea.pls.core.util.SyncedKeyRegistry
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -143,44 +136,5 @@ interface ParadoxParameterSupport {
         }
     }
 
-    object Keys : KeyRegistry() {
-        val keysToSync: MutableSet<Key<*>> = mutableSetOf()
-
-        //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-        fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
-            keysToSync.forEach { key ->
-                @Suppress("UNCHECKED_CAST")
-                key as Key<Any>
-                to.putUserData(key, from.getUserData(key))
-            }
-        }
-
-        fun <T : KeyProvider<*>> T.synced() = apply { callback { keysToSync += it } }
-    }
+    object Keys : SyncedKeyRegistry()
 }
-
-val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys).synced()
-
-var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
-
-var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterElement.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterElement.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterElement.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterElement.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
-
-var ParadoxParameterContextReferenceInfo.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterContextReferenceInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterContextReferenceInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
-var ParadoxParameterContextReferenceInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterContextReferenceInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterContextReferenceInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression

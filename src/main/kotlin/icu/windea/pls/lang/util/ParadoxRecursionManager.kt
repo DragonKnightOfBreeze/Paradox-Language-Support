@@ -8,6 +8,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -86,7 +87,12 @@ object ParadoxRecursionManager {
                     e.references.orNull()?.forEach f@{ r ->
                         ProgressManager.checkCanceled()
                         if (!ParadoxResolveConstraint.Localisation.canResolve(r)) return@f
-                        val resolved = r.resolve()?.castOrNull<ParadoxLocalisationProperty>() ?: return@f
+                        val resolved = when {
+                            // use `resolveLocalisation()` to optimize performance
+                            r is ParadoxLocalisationParameterPsiReference -> r.resolveLocalisation()
+                            else -> r.resolve()?.castOrNull<ParadoxLocalisationProperty>()
+                        }
+                        if (resolved == null) return@f
                         if (resolved.name in stack) {
                             recursions?.add(e)
                             result = true
