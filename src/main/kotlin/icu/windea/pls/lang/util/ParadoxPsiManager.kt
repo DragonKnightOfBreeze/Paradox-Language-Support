@@ -179,11 +179,7 @@ object ParadoxPsiManager {
             val reference = file.findReferenceAt(offset) {
                 ParadoxResolveConstraint.Localisation.canResolve(it)
             }
-            val resolved = when {
-                reference == null -> null
-                reference is ParadoxLocalisationParameterPsiReference -> reference.resolveLocalisation() //直接解析为本地化以优化性能
-                else -> reference.resolve()
-            }?.castOrNull<ParadoxLocalisationProperty>()
+            val resolved = reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved
         }
         if (file.language !is ParadoxLocalisationLanguage) return null

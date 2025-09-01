@@ -14,9 +14,9 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
@@ -159,12 +159,12 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
     }
 
     override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
-        val name = element.name ?: return null
+        val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
     override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
-        val name = element.name ?: return null
+        val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
@@ -198,7 +198,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null //skip if context name is parameterized
         val definitionTypes = contextConfig.configExpression.value?.split('.') ?: return null
-        val name = element.name
+        val name = element.name.orNull() ?: return null
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
@@ -388,7 +388,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
             if (it.rangeInExpression != rangeInElement) return@f false
             true
         } as? ParadoxScriptValueArgumentNode ?: return null
-        val name = argumentNode.text
+        val name = argumentNode.text.orNull() ?: return null
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
@@ -498,12 +498,12 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
 
     override fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
-        val name = element.name ?: return null
+        val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
     override fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
-        val name = element.name ?: return null
+        val name = element.name?.orNull() ?: return null
         return doResolveParameter(element, name)
     }
 
@@ -533,7 +533,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if (expression.isParameterized()) return null //skip if context name is parameterized
-        val name = element.name
+        val name = element.name.orNull() ?: return null
         val contextName = expression
         val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"

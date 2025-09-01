@@ -2,21 +2,12 @@
 
 package icu.windea.pls.lang
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase
-import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.text.TextRangeUtil
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -25,22 +16,14 @@ import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationData
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
-import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
-import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
-import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
-import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -48,9 +31,7 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.indexInfo.CwtConfigIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

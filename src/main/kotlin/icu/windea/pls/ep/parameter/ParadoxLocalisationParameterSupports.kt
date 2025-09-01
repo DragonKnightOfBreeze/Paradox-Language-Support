@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unknown
@@ -36,9 +37,9 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     }
 
     override fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement? {
+        val name = element.name.orNull() ?: return null
         val localisationElement = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
-        val name = element.name
-        val localisationName = localisationElement.name
+        val localisationName = localisationElement.name.orNull() ?: return null
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
@@ -49,9 +50,9 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
 
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
+        val name = (rangeInElement?.substring(element.text) ?: element.name).orNull() ?: return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
-        val name = rangeInElement?.substring(element.text) ?: element.name
-        val localisationName = localisationReferenceElement.name
+        val localisationName = localisationReferenceElement.name.orNull() ?: return null
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val configGroup = config.configGroup
         val gameType = configGroup.gameType ?: return null
