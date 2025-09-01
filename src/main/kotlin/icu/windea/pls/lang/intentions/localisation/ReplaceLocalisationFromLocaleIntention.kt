@@ -18,7 +18,7 @@ import icu.windea.pls.lang.withErrorRef
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * 替换为来自特定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ * 替换为来自特定语言环境的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
 class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationFromLocale")

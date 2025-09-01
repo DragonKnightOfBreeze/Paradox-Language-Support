@@ -34,12 +34,12 @@ interface ParadoxHintTextProvider {
     val source: Source get() = Source.Other
 
     /**
-     * @param locale 提示文本来自本地化时，优先使用的语言区域，如果为null则优先使用偏好的语言区域。
+     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为null则优先使用偏好的语言环境。
      */
     fun getHintText(element: PsiElement, locale: CwtLocaleConfig? = null): String?
 
     /**
-     * @param locale 提示文本来自本地化时，优先使用的语言区域，如果为null则优先使用偏好的语言区域。
+     * @param locale 提示文本来自本地化时，优先使用的语言环境，如果为null则优先使用偏好的语言环境。
      */
     fun getHintLocalisation(element: PsiElement, locale: CwtLocaleConfig? = null): ParadoxLocalisationProperty?
 

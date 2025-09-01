@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
- * 本地化的实现的查询。加入所有作用域内的包括不同语言区域在内的同名本地化。
+ * 本地化的实现的查询。加入所有作用域内的包括不同语言环境在内的同名本地化。
  */
 class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
@@ -35,7 +35,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             val type = localisationInfo.type
             //这里不需要也无法进行排序
             val selector = selector(project, sourceElement).localisation()
-                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言区域
+                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言环境
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             val localisations = when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()

@@ -14,7 +14,7 @@ import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
 /**
- * 不支持的语言区域的检查。
+ * 不支持的语言环境的检查。
  */
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

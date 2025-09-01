@@ -29,7 +29,7 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettingsState>(PlsSettings
 /**
  * @property defaultGameType 默认的游戏类型。
  * @property defaultGameDirectories 默认的游戏目录映射。
- * @property preferredLocale 偏好的语言区域。
+ * @property preferredLocale 偏好的语言环境。
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
  */
 class PlsSettingsState : BaseState() {
@@ -174,7 +174,7 @@ class PlsSettingsState : BaseState() {
     /**
      * @property localisationStrategy 生成本地化时如何生成本地化文本。
      * @property localisationStrategyText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
-     * @property localisationStrategyLocale 生成本地化时如果基于特定语言区域的已有本地化文本，这个特定语言区域是什么。
+     * @property localisationStrategyLocale 生成本地化时如果基于特定语言环境的已有本地化文本，这个特定语言环境是什么。
      */
     @Tag("generation")
     class GenerationState : BaseState() {

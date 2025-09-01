@@ -174,7 +174,7 @@ object ParadoxLocalisationGenerator {
             LocalisationGenerationStrategy.EmptyText -> ""
             LocalisationGenerationStrategy.SpecificText -> generationSettings.localisationStrategyText.orEmpty()
             LocalisationGenerationStrategy.FromLocale -> {
-                //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
+                //使用对应语言环境的文本，如果不存在，以及其他任何意外，直接使用空字符串
                 val locale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
                 val selector = selector(project, file).localisation().contextSensitive().locale(locale)
                 val localisation = ParadoxLocalisationSearch.search(localisationName, selector).find()

@@ -33,7 +33,7 @@ import icu.windea.pls.model.paths.matches
  *
  * 提供快速修复：
  * * 改为正确的文件名
- * * 改为正确的语言区域名
+ * * 改为正确的语言环境名
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
@@ -61,7 +61,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
         val localeId = localeConfig.id
         val fileName = file.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
-        if (localeIdFromFile == localeId) return null //匹配语言区域，跳过
+        if (localeIdFromFile == localeId) return null //匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val quickFixes = buildList {

@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import kotlinx.coroutines.launch
 
 /**
- * 更改本地化语言区域。
+ * 更改本地化语言环境。
  */
 class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH

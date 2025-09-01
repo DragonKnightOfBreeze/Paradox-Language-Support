@@ -6,7 +6,7 @@ import com.intellij.usages.impl.FileStructureGroupRuleProvider
 import com.intellij.usages.rules.UsageGroupingRule
 
 /**
- * 文件结构支持 - 本地化语言区域的使用分组规则。
+ * 文件结构支持 - 本地化语言环境的使用分组规则。
  */
 class ParadoxLocalisationLocaleFileStructureGroupRuleProvider : FileStructureGroupRuleProvider {
     //com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider

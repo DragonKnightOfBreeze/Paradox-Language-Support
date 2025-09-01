@@ -20,7 +20,7 @@ import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * 复制来自特定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
+ * 复制来自特定语言环境的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */

@@ -12,9 +12,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import java.util.*
 
 /**
- * 用于索引文件的语言区域。
+ * 用于索引文件的语言环境。
  *
- * 当需要从PsiFile获取语言区域时，改为使用此索引以优化性能。
+ * 当需要从PsiFile获取语言环境时，改为使用此索引以优化性能。
  */
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     override fun getName() = ParadoxIndexKeys.FileLocale

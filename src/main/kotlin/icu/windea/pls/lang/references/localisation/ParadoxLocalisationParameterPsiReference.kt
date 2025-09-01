@@ -96,8 +96,8 @@ class ParadoxLocalisationParameterPsiReference(
         //尝试解析成localisation或者synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         val resolved = when (type) {
-            Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
-            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
+            Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言环境的
+            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言环境的
         }
         if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
         if (onlyLocalisation) return ResolveResult.EMPTY_ARRAY

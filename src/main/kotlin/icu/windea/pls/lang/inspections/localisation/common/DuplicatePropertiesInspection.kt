@@ -10,7 +10,7 @@ import icu.windea.pls.lang.quickfix.NavigateToFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
- * 同一文件中重复的（同一语言区域的）属性声明的检查。
+ * 同一文件中重复的（同一语言环境的）属性声明的检查。
  *
  * 提供快速修复：
  * * 导航到重复项

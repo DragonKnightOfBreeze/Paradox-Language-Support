@@ -15,7 +15,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
      * @param filePath 相对于入口目录的文件路径。或者写在脚本文件中的路径引用表达式。
      * @param configExpression 对应的CWT规则表达式。拥有数种写法的文件路径表达式。
      * @param selector 用于指定如何选择需要查找的文件，尤其是当存在覆盖与重载的情况时。
-     * @param ignoreLocale 使用指定的完整文件路径进行查找本地化文件时，是否忽略文件名中的本地化语言区域。
+     * @param ignoreLocale 使用指定的完整文件路径进行查找本地化文件时，是否忽略文件名中的本地化语言环境。
      */
     class SearchParameters(
         val filePath: String?,

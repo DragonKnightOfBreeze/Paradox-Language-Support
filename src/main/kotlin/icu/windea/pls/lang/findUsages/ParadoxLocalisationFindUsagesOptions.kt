@@ -2,7 +2,7 @@ package icu.windea.pls.lang.findUsages
 
 import com.intellij.openapi.project.Project
 
-// isCrossLocales - 是否查找不同的语言区域的本地化文件中的引用，不便实现，忽略
+// isCrossLocales - 是否查找不同的语言环境的本地化文件中的引用，不便实现，忽略
 
 class ParadoxLocalisationFindUsagesOptions(project: Project) : ParadoxFindUsagesOptions(project) {
     //@JvmField var isCrossLocales = true

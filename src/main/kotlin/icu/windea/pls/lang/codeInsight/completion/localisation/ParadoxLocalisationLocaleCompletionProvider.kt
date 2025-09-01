@@ -25,7 +25,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**
- * 提供语言区域名字的代码补全。
+ * 提供语言环境名字的代码补全。
  */
 class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
     //如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
@@ -71,10 +71,10 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(insertHandler)
                 .letIf(matched == false) {
-                    it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言区域的提示项置灰
+                    it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言环境的提示项置灰
                 }
                 .letIf(matched == true) {
-                    it.withPriority(ParadoxCompletionPriorities.pinned) //优先提示与文件名匹配的语言区域
+                    it.withPriority(ParadoxCompletionPriorities.pinned) //优先提示与文件名匹配的语言环境
                 }
             lookupElements.add(lookupElement)
         }

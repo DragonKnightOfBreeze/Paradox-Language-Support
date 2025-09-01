@@ -42,7 +42,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 用于从指定的本地化文件生成其他语言区域的本地化文件。
+ * 用于从指定的本地化文件生成其他语言环境的本地化文件。
  */
 class GenerateLocalisationFileAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -79,7 +79,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val specificText = generationSettings.localisationStrategyText.orEmpty()
                 val fromLocale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
 
-                //文件名以及文件所在的某个父目录中可以带有语言区域
+                //文件名以及文件所在的某个父目录中可以带有语言环境
                 //生成的本地化文件会使用合适的文件名，放到合适的目录下
 
                 val missingLocaleMap = mutableMapOf<String, Set<String>>()
@@ -119,7 +119,7 @@ class GenerateLocalisationFileAction : AnAction() {
                             newDocument.insertString(0, baseText)
                             documentManager.commitDocument(newDocument)
                             val newPsiFile = documentManager.getPsiFile(newDocument) as? ParadoxLocalisationFile ?: continue
-                            //替换文件中的语言区域和和本地化文本
+                            //替换文件中的语言环境和和本地化文本
                             val missingLocaleConfig = allLocales[missingLocale] ?: continue
                             val propertyList = newPsiFile.propertyLists.firstOrNull() ?: continue
                             propertyList.processChild { e ->
@@ -134,7 +134,7 @@ class GenerateLocalisationFileAction : AnAction() {
                                             e.setValue(specificText)
                                         }
                                         PlsStrategies.LocalisationGeneration.FromLocale -> {
-                                            //使用对应语言区域的文本，如果不存在，或者其他任何意外，直接使用空字符串
+                                            //使用对应语言环境的文本，如果不存在，或者其他任何意外，直接使用空字符串
                                             val selector = selector(project, baseFile).localisation().contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.search(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
@@ -182,7 +182,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun buildFileMap(files: Collection<VirtualFile>, allLocales: Map<String, CwtLocaleConfig>, project: Project): Map<String, VirtualFile> {
-        //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
+        //任意文件的文件名中必须带有某个语言环境，并且文件文本中必须仅带有这个语言环境
         val fileMap = mutableMapOf<String, VirtualFile>()
         files.forEach f@{ file ->
             val localeString = allLocales.keys.find { file.name.contains(it) }

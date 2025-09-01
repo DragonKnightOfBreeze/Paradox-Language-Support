@@ -29,7 +29,7 @@ import icu.windea.pls.lang.withErrorRef
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * 【AI】替换为翻译后的来自指定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ * 【AI】替换为翻译后的来自指定语言环境的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
 class AiReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale")

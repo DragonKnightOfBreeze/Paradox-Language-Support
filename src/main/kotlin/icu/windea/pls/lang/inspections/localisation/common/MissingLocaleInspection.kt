@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
 /**
- * 检查本地化文件中是否缺少语言区域声明。
+ * 检查本地化文件中是否缺少语言环境声明。
  *
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  */

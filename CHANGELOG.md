@@ -26,7 +26,7 @@
 - [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
 - [X] 修复：修复与图表（Diagrams）相关的一些问题并优化性能 / FIX: Fix some issues related to diagrams, together with performance optimization
 - [X] 新功能：适配上移/下移声明的功能，适用于CWT文件和脚本文件中的成员（封装变量、属性、值），以及本地化文件中的属性（即本地化条目）（入口：主菜单，点击`Code > Move Statement Up/Down`） / NEW: Support moving statements up/down, for members (scripted variables, properties, values) in cwt files and script files, and properties (aka localisation items) in localisation files. (Entry: Main menu, click `Code > Move Statement Up/Down`)
-- [X] 新功能：提供本地化操作任务，用于从另一语言区域的本地化翻译为当前语言区域 / NEW: Provide the localisation manipulation task to translate localisations from another locale to current locale
+- [X] 新功能：提供本地化操作任务，用于从另一语言环境的本地化翻译为当前语言环境 / NEW: Provide the localisation manipulation task to translate localisations from another locale to current locale
 - [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.1
@@ -93,7 +93,7 @@
 - [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 - [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
 - [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
-- [X] 修复：修复关于本地化的语言区域的一些问题 / FIX: Fix some problems about localisation locales
+- [X] 修复：修复关于本地化的语言环境的一些问题 / FIX: Fix some problems about localisation locales
 - [X] 修复：修复某些场合下可能无法提示动态值的问题 / FIX: Fix a problem that dynamic values may not be completed in some cases
 - [X] 优化：`icon[path]`现在优先匹配直接位于`path`下的图标 / OP: `icon[path]` now prefer to match icons directly under `path`
 - [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
@@ -102,7 +102,7 @@
 - [X] 优化：提供扩展点以更加灵活地解析本地化图标 / OP: Provides EP to resolve localisation icons more flexibly
 - [X] 优化：可以从复杂表达式节点所在位置导航到相关规则 / OP: Allow to navigate to related configs from the position of complex expression nodes
 - [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
-- [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files
+- [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言环境的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files
 - [X] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files
 - [X] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本格式（示例：`#v text#!`，其中`v`对应规则表达式`<text_format>`，`text`是富文本的组合） / NEW: [VIC3/CK3] Basic support for text formats in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<text_format>`, and `text` is a combination of rich text)
 - [X] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<text_icon>`） / NEW: [VIC3/CK3] Basic support for text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `<text_icon>`)
@@ -439,7 +439,7 @@
 ## 1.3.9
 
 - [X] 更新CWT规则文件以适配Stellaris 3.12.3
-- [X] 新功能：支持切换快速文档中的本地化使用的语言区域（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）
+- [X] 新功能：支持切换快速文档中的本地化使用的语言环境（如果可用，打开快速文档后，在右键菜单或者右下角更多菜单中，点击`Change Localisation Locale`）
 - [X] #78 优化：支持通过扩展的CWT规则文件为动态值（如`event_target`）指定作用域上下文 - 提供更加完善的支持（详见参考文档）
 - [X] 其他优化与BUG修复
 
