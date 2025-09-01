@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations.images.tools
 
-import icu.windea.pls.core.io.ImageInputStreamAdapter
+import icu.windea.pls.images.ImageInputStreamAdapter
 import icu.windea.pls.model.constants.PlsPathConstants
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
