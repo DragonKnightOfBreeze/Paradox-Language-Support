@@ -12,6 +12,7 @@ import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -48,8 +49,8 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
-                    run {
-                        if (contextsToHandle.isEmpty()) return@run
+                    runCatchingCancelable r@{
+                        if (contextsToHandle.isEmpty()) return@r
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {
                                 withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()

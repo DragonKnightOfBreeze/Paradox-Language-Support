@@ -12,6 +12,7 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.PlsCoreManager
@@ -38,8 +39,8 @@ class ReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisa
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            run {
-                if(contextsToHandle.isEmpty()) return@run
+            runCatchingCancelable r@{
+                if(contextsToHandle.isEmpty()) return@r
                 val locale = selectLocale(file)
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->

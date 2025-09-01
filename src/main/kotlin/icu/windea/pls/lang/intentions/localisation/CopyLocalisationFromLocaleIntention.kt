@@ -12,6 +12,7 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -35,8 +36,8 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            run {
-                if(contextsToHandle.isEmpty()) return@run
+            runCatchingCancelable r@{
+                if(contextsToHandle.isEmpty()) return@r
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
