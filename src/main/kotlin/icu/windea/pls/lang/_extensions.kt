@@ -4,7 +4,6 @@ package icu.windea.pls.lang
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.UserDataHolder
@@ -87,80 +86,6 @@ fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false
 
 fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
-}
-
-tailrec fun selectRootFile(from: Any?): VirtualFile? {
-    if (from == null) return null
-    return when {
-        from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
-        from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
-        from is VirtualFile -> from.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
-        else -> selectRootFile(selectFile(from))
-    }
-}
-
-tailrec fun selectFile(from: Any?): VirtualFile? {
-    if (from == null) return null
-    return when {
-        from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
-        from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
-        from is VirtualFile -> from
-        from is PsiDirectory -> selectFile(from.virtualFile)
-        from is PsiFile -> selectFile(from.originalFile.virtualFile)
-        from is PsiElement -> selectFile(from.containingFile)
-        from is ParadoxIndexInfo -> selectFile(from.virtualFile)
-        else -> null
-    }
-}
-
-tailrec fun selectGameType(from: Any?): ParadoxGameType? {
-    if (from == null) return null
-    if (from is ParadoxGameType) return from
-    if (from is VirtualFile) ParadoxFileManager.getInjectedGameTypeForTestDataFile(from)
-    if (from is UserDataHolder) from.getUserData(PlsKeys.injectedGameType)?.let { return it }
-    return when {
-        from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
-        from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
-        from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
-        from is PsiDirectory -> selectGameType(selectFile(from))
-        from is PsiFile -> selectGameType(selectFile(from))
-        from is CwtConfigMockPsiElement -> from.gameType
-        from is ParadoxMockPsiElement -> from.gameType
-        from is StubBasedPsiElementBase<*> -> selectGameType(getStubToSelectGameType(from) ?: from.containingFile)
-        from is ParadoxStub<*> -> from.gameType
-        from is PsiElement -> selectGameType(from.parent)
-        from is ParadoxIndexInfo -> from.gameType
-        from is CwtConfigIndexInfo -> from.gameType
-        else -> null
-    }
-}
-
-private fun getStubToSelectGameType(from: StubBasedPsiElementBase<*>): ParadoxStub<*>? {
-    return runReadAction { from.greenStub?.castOrNull<ParadoxStub<*>>() }
-}
-
-tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
-    if (from == null) return null
-    if (from is CwtLocaleConfig) return from
-    if (from is UserDataHolder) from.getUserData(PlsKeys.injectedLocaleConfig)?.let { return it }
-    return when {
-        from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
-        from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
-        from is ParadoxLocalisationLocale -> toLocale(from.name, from)
-        from is StubBasedPsiElementBase<*> -> selectLocale(getStubToSelectLocale(from) ?: from.parent)
-        from is ParadoxLocaleAwareStub<*> -> toLocale(from.locale, from.containingFileStub?.psi)
-        from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(from.parent)
-        else -> ParadoxLocaleManager.getPreferredLocaleConfig()
-    }
-}
-
-private fun getStubToSelectLocale(from: StubBasedPsiElementBase<*>): ParadoxLocaleAwareStub<*>? {
-    return runReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() }
-}
-
-private fun toLocale(localeId: String?, from: PsiElement?): CwtLocaleConfig? {
-    if (localeId == null || from == null) return null
-    return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(localeId)
 }
 
 /**
