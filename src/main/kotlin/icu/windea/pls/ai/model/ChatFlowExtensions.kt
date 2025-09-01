@@ -27,7 +27,7 @@ fun StreamingChatModel.chatFlow(chatRequest: ChatRequest): Flow<ChatFlowReply> =
 
 const val DEFAULT_BUFFER_CAPACITY: Int = 32768
 
-fun TokenStream.asChatFlow(bufferCapacity: Int = DEFAULT_BUFFER_CAPACITY, onBufferOverflow: BufferOverflow): Flow<ChatFlowReply> = callbackFlow {
+fun TokenStream.asChatFlow(bufferCapacity: Int = 32768, onBufferOverflow: BufferOverflow): Flow<ChatFlowReply> = callbackFlow {
     val tokenStream = this@asChatFlow
     val producer = ChatFlowProducer(this)
     producer.applyTo(tokenStream)
@@ -37,19 +37,41 @@ fun TokenStream.asChatFlow(bufferCapacity: Int = DEFAULT_BUFFER_CAPACITY, onBuff
     awaitClose()
 }.buffer(capacity = bufferCapacity, onBufferOverflow = onBufferOverflow)
 
-fun  Flow<ChatFlowReply>.onCompletionStatus(action: suspend FlowCollector<ChatFlowReply>.(status: ChatFlowCompletionStatus) -> Unit): Flow<ChatFlowReply> {
-    var status: ChatFlowCompletionStatus? = null
+fun Flow<ChatFlowReply>.onCompletionResult(action: suspend FlowCollector<ChatFlowReply>.(status: ChatFlowCompletionResult) -> Unit): Flow<ChatFlowReply> {
+    val result = ChatFlowCompletionResult()
     return onEach { apply ->
         when (apply) {
-            is ChatFlowReply.CompleteResponse -> status = ChatFlowCompletionStatus.Completed(apply.response)
-            is ChatFlowReply.Error -> status = ChatFlowCompletionStatus.Error(apply.error)
+            is ChatFlowReply.PartialThinking -> {
+                result.thinking.append(apply.token)
+            }
+            is ChatFlowReply.PartialResponse -> {
+                result.text.append(apply.token)
+            }
+            is ChatFlowReply.CompleteResponse -> {
+                result.status = ChatFlowCompletionStatus.Completed
+                result.response = apply.response
+            }
+            is ChatFlowReply.Error -> {
+                result.status = ChatFlowCompletionStatus.Error
+                result.error = apply.error
+            }
             else -> {}
         }
     }.onCompletion { e ->
-        if (e is CancellationException) status = ChatFlowCompletionStatus.Cancelled
-        if (e != null) status = ChatFlowCompletionStatus.Error(e)
-        if (status == null) status = ChatFlowCompletionStatus.Completed()
-        action(status)
+        when {
+            e is CancellationException -> {
+                result.status = ChatFlowCompletionStatus.Cancelled
+                result.error = e
+            }
+            e != null -> {
+                result.status = ChatFlowCompletionStatus.Error
+                result.error = e
+            }
+            result.status == ChatFlowCompletionStatus.Processing -> {
+                result.status = ChatFlowCompletionStatus.Completed
+            }
+        }
+        action(result)
     }
 }
 

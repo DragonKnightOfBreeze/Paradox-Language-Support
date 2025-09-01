@@ -12,7 +12,7 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.chat.request.ChatRequest
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.chatFlow
-import icu.windea.pls.ai.model.onCompletionStatus
+import icu.windea.pls.ai.model.onCompletionResult
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.model.toLineFlow
@@ -49,7 +49,12 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
                 memory.add(getUserMessage(request, chunk))
                 val chatRequest = ChatRequest.builder().messages(memory.messages()).build()
                 chatModel.chatFlow(chatRequest)
-                    .onCompletionStatus { status -> logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}") }
+                    .onCompletionResult { result ->
+                        logger.info("${request.logPrefix} Chunk #$chunkIndex: ${result.statusText()}")
+                        logger.info("${request.logPrefix} Chunk #$chunkIndex: ${result.metadataText()}")
+                        if (result.thinking.isNotEmpty()) logger.debug { "${request.logPrefix} Chunk #$chunkIndex: <THINKING>\n${result.thinking}" }
+                        if (result.text.isNotEmpty()) logger.debug { "${request.logPrefix} Chunk #$chunkIndex:\n${result.text}" }
+                    }
                     .toLineFlow()
                     .map { LocalisationAiResult.fromLine(it) }
             }

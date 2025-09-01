@@ -41,7 +41,7 @@ class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntent
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
-        val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
+        val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.progress.title")) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }

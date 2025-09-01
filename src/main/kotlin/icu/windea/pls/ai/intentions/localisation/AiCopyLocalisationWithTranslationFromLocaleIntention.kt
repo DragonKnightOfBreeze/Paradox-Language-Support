@@ -11,7 +11,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
-import com.intellij.platform.util.progress.reportProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
@@ -49,7 +48,7 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
-        val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
+        val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
@@ -58,13 +57,16 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
 
             run {
                 if (contextsToHandle.isEmpty()) return@run
-                reportProgress(contextsToHandle.size) { reporter ->
-                    contextsToHandle.forEachConcurrent f@{ context ->
-                        reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
-                            withErrorRef(errorRef) { searchText(context, project, selectedLocale) }.getOrNull()
-                        }
-                    }
+                contextsToHandle.forEachConcurrent { context ->
+                    withErrorRef(errorRef) { searchText(context, project, selectedLocale) }.getOrNull()
                 }
+                // reportProgress(contextsToHandle.size) { reporter ->
+                //     contextsToHandle.forEachConcurrent f@{ context ->
+                //         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
+                //             withErrorRef(errorRef) { searchText(context, project, selectedLocale) }.getOrNull()
+                //         }
+                //     }
+                // }
 
                 val locale = selectLocale(file) ?: return@run
                 val total = contextsToHandle.size

@@ -14,7 +14,6 @@ import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
@@ -64,10 +63,6 @@ object ParadoxLocalisationAiManipulator {
         if (result.key != context.key) { //不期望的结果，直接报错，中断收集
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.3", context.key, result.key))
         }
-    }
-
-    fun getOptimizedDescription(description: String?): String? {
-        return description?.orNull()?.substringBefore('\n')?.trim() //去除首尾空白，且截断换行符之后的文本
     }
 
     //ee.carlrobert.codegpt.ui.EditCodePopover

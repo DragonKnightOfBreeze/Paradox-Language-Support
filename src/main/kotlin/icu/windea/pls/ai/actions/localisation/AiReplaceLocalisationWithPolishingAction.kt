@@ -43,7 +43,7 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
         //并发性 - 文件级别
 
         val (files, data) = context
-        val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
+        val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.action.replaceLocalisationWithPolishing.progress.title")) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()

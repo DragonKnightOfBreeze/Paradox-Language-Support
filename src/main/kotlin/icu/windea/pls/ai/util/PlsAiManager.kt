@@ -2,22 +2,15 @@ package icu.windea.pls.ai.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import dev.langchain4j.exception.LangChain4jException
-import icu.windea.pls.ai.model.ChatFlowCompletionException
-import icu.windea.pls.ai.model.ChatFlowCompletionStatus
 import icu.windea.pls.ai.model.OpenAiErrorInfo
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.ObjectMappers
-import kotlin.coroutines.cancellation.CancellationException
 
 object PlsAiManager {
-    fun getChatFlowCompletionStatus(e: Throwable?): ChatFlowCompletionStatus {
-        return when {
-            e is ChatFlowCompletionException -> ChatFlowCompletionStatus.Completed(e.response)
-            e is CancellationException -> ChatFlowCompletionStatus.Cancelled
-            e != null -> ChatFlowCompletionStatus.Error(e)
-            else -> ChatFlowCompletionStatus.Completed()
-        }
+    fun getOptimizedDescription(description: String?): String? {
+        return description?.orNull()?.substringBefore('\n')?.trim() //去除首尾空白，且截断换行符之后的文本
     }
 
     fun getOptimizedErrorMessage(e: Throwable?): String? {

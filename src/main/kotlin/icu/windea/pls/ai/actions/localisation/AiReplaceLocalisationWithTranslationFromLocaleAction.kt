@@ -45,7 +45,7 @@ class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisat
         //并发性 - 文件级别
 
         val (files, selectedLocale, data) = context
-        val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
+        val description = PlsAiManager.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("ai.action.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()
