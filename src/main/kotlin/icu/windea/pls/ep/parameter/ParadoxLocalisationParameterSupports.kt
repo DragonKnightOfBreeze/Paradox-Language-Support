@@ -42,8 +42,6 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val file = localisationElement.containingFile
         val gameType = selectGameType(file) ?: return null
         val project = file.project
-        val parameterNames = ParadoxLocalisationParameterManager.getParameterNames(localisationElement)
-        if (name !in parameterNames) return null
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
