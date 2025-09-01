@@ -10,6 +10,13 @@ import java.nio.file.StandardCopyOption
 import kotlin.reflect.KProperty
 
 @Deprecated("")
+/**
+ * 基于源 `VirtualFile` 懒加载/同步目标路径的提供器。
+ *
+ * - 首次访问或目标缺失时，从 [sourceFileProvider] 拷贝到 [filePath] 并返回对应的 `VirtualFile`。
+ * - 之后根据时间戳/大小判断是否需要刷新拷贝。
+ * - 注意：该实现已废弃，仅保留兼容用途。
+ */
 class VirtualFileProvider(
     val filePath: Path,
     val sourceFileProvider: () -> VirtualFile,
@@ -19,6 +26,7 @@ class VirtualFileProvider(
     private val sourceFile by lazy { sourceFileProvider() }
     private val sourceFileSize by lazy { calculateFileSize(sourceFile) }
 
+    /** 线程安全地获取（并必要时刷新）目标 `VirtualFile`。 */
     fun get(): VirtualFile {
         return synchronized(this) { doGet() }
     }
@@ -56,6 +64,7 @@ class VirtualFileProvider(
         return file
     }
 
+    /** 以文件大小近似判断是否与源文件一致（不计算哈希以避免开销）。 */
     private fun isSameFile(): Boolean {
         //currently, check by file size, rather than file hash or file content
         return calculateFileSize(file!!) == sourceFileSize
@@ -66,5 +75,6 @@ class VirtualFileProvider(
     }
 
     @Suppress("NOTHING_TO_INLINE")
+    /** 属性委托：惰性获取目标 `VirtualFile`。 */
     operator fun getValue(thisRef: Any?, property: KProperty<*>): VirtualFile = get()
 }

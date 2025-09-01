@@ -2,6 +2,11 @@
 
 package icu.windea.pls.core.util.console
 
+/**
+ * 命令执行异常。
+ *
+ * 当外部命令进程返回非零退出码，或产生错误输出并被视为失败时抛出。
+ */
 class CommandExecutionException : IllegalStateException {
     constructor() : super()
     constructor(message: String) : super(message)

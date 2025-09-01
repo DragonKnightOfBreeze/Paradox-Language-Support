@@ -86,10 +86,16 @@ import kotlin.reflect.KProperty
 
 //region Common Extensions
 
+/**
+ * 忽略大小写比较两个字符串，语义等价于 `String.CASE_INSENSITIVE_ORDER`。
+ */
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
 
+/**
+ * 忽略大小写的字符串哈希与相等性策略。
+ */
 object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     override fun hashCode(s: String?): Int {
         return if (s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
@@ -100,16 +106,25 @@ object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     }
 }
 
+/**
+ * 创建一个忽略大小写的字符串集合。
+ */
 fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
     //com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
     return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
 }
 
+/**
+ * 创建一个键为忽略大小写字符串的可变映射。
+ */
 fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
     //com.intellij.util.containers.createCaseInsensitiveStringMap()
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
+/**
+ * 合并引用值：当 [value] 非空时与旧值通过 [mergeAction] 合并，并更新引用；返回最终是否为非空。
+ */
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
     val oldValue = this.get()
     val newValue = value
@@ -125,6 +140,9 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
     }
 }
 
+/**
+ * 在可取消上下文中执行 [block]：若捕获到 `ProcessCanceledException` 直接抛出，其它包装异常解包后再抛出。
+ */
 inline fun <T> cancelable(block: () -> T): T {
     try {
         return block()
@@ -141,6 +159,9 @@ inline fun <T> cancelable(block: () -> T): T {
     }
 }
 
+/**
+ * 在可取消上下文中执行 [block]，发生非取消异常时返回 [defaultValueOnException] 的结果。
+ */
 inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -> T): T {
     try {
         return block()
@@ -157,14 +178,23 @@ inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -
     }
 }
 
+/**
+ * 捕获执行异常但在遇到 `ProcessCanceledException` 时直接透传。
+ */
 inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
+/**
+ * 捕获接收者作用域执行异常但在遇到 `ProcessCanceledException` 时直接透传。
+ */
 inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
+/**
+ * 基于原始文本 [text]，去除当前范围两端的引号（若存在），返回新的范围。
+ */
 fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
     val leftQuoted = text.isLeftQuoted(quote)
     val rightQuoted = text.isRightQuoted(quote)
@@ -173,6 +203,9 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
     return TextRange.create(startOffset, endOffset)
 }
 
+/**
+ * 用 [replacement] 替换 [original] 的当前范围；必要时按 [quote]/[extraChars]/[blank] 规则包裹引号。
+ */
 fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
     if (this.length >= original.length - 1) {
         return replacement.quoteIfNecessary(quote, extraChars, blank)
@@ -187,6 +220,9 @@ fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, 
     }
 }
 
+/**
+ * 将字符串按转义边界切分为片段，返回 [TextRange] 与片段文本的二元组列表。
+ */
 fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     val result = mutableListOf<Tuple2<TextRange, String>>()
     var startIndex = 0
@@ -204,6 +240,9 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     return result
 }
 
+/**
+ * 在字符串中查找 [keywords] 并返回其范围及关键字，较长关键字优先匹配，结果按起始位置升序。
+ */
 fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<TextRange, String>> {
     val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
     val result = mutableListOf<Tuple2<TextRange, String>>()
@@ -216,31 +255,55 @@ fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<Tex
     return result.sortedBy { it.first.startOffset }
 }
 
+/**
+ * 创建 `CachedValue`。当 [trackValue] 为 true 时按值追踪依赖。
+ */
 fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
+/**
+ * 将接收者包装为 `CachedValueProvider.Result` 并附带依赖项；当无依赖时视为永不变更。
+ */
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
 }
 
+/**
+ * 逐项处理查询结果；当 [consumer] 返回 false 时提前终止。
+ */
 fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
     return this.forEach(consumer)
 }
 
+/**
+ * 并行处理查询结果；当 [consumer] 返回 false 时提前终止。
+ */
 fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
 
+/**
+ * 属性委托：从 [DataContext] 读取 `DataKey` 对应数据。
+ */
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
+/**
+ * 属性委托：从 [AnActionEvent] 的 `dataContext` 读取 `DataKey` 对应数据。
+ */
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 
+/**
+ * 获取默认项目 `defaultProject`。
+ */
 fun getDefaultProject(): Project {
     return ProjectManager.getInstance().defaultProject
 }
 
+/**
+ * 获取当前聚焦或可用的项目；若找不到则返回 null。
+ */
 fun getCurrentProject(): Project? {
     val recentFocusedWindow = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
     if (recentFocusedWindow is IdeFrame) return recentFocusedWindow.project

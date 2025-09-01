@@ -4,7 +4,13 @@ import com.google.common.cache.CacheBuilder
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.trimFast
 
+/**
+ * 文本与路径匹配工具集合。
+ *
+ * 提供 GLOB、ANT、正则以及子路径级别的匹配能力。
+ */
 object Matchers {
+    /** GLOB 表达式匹配器。支持 `?` 匹配单字符，`*` 匹配任意长度的字符序列。 */
     object GlobMatcher {
         /**
          * 判断当前输入是否匹配指定的GLOB表达式。使用 "?" 匹配单个字符，"*" 匹配任意个字符。
@@ -39,6 +45,7 @@ object Matchers {
         }
     }
 
+    /** ANT 风格路径匹配器。支持 `?`、`*` 以及 `**`。 */
     object AntMatcher {
         /**
          * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
@@ -100,6 +107,7 @@ object Matchers {
     }
 
     @Deprecated(message = "", replaceWith = ReplaceWith("AntMatcher"))
+    /** 基于正则实现的 ANT 匹配器（已废弃，建议改用 [AntMatcher]）。 */
     object AntFromRegexMatcher {
         /**
          * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
@@ -149,6 +157,7 @@ object Matchers {
         }
     }
 
+    /** 正则表达式匹配器，内部使用缓存提升性能。 */
     object RegexMatcher {
         /**
          * 判断当前输入是否匹配指定的正则表达式。
@@ -169,6 +178,7 @@ object Matchers {
         }
     }
 
+    /** 子路径级别匹配器，支持逐段匹配、相对路径计算等。 */
     object PathMatcher {
         /**
          * 判断输入的子路径是否匹配指定的子路径。

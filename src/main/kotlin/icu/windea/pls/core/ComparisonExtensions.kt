@@ -2,15 +2,19 @@
 
 package icu.windea.pls.core
 
+/**
+ * 安全地串联比较器：当且仅当两者都不为空时返回 `this.then(comparator)`，否则返回非空者或 null。
+ */
 infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {
     if (this == null || comparator == null) return this ?: comparator
     return this.then(comparator)
 }
 
 /**
- * 通过[selector]得到需要的结果之后（如果这里得到的结果是null，放到最后面），
- * 首先按照[comparableSelector]的结果进行正序排序（如果这里得到的结果是null，比较结果返回0），
- * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，比较结果返回0）。
+ * 复合排序：
+ * - 先用 [selector] 提取目标（null 排到最后）
+ * - 再按 [comparableSelector] 正序比较（为 null 时返回 0）
+ * - 最后将 [pinPredicate] 命中的元素置顶（多个命中时相互视为相等）
  */
 inline fun <T, R, C : Comparable<C>> complexCompareBy(
     crossinline selector: (T) -> R?,
@@ -36,9 +40,10 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 }
 
 /**
- * 通过[selector]得到需要的结果之后（如果这里得到的结果是null，放到最后面），
- * 首先按照[comparableSelector]的结果进行降序排序（如果这里得到的结果是null，比较结果返回0），
- * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，比较结果返回0）。
+ * 复合排序（降序）：
+ * - 先用 [selector] 提取目标（null 排到最后）
+ * - 再按 [comparableSelector] 降序比较（为 null 时返回 0）
+ * - 最后将 [pinPredicate] 命中的元素置顶（多个命中时相互视为相等）
  */
 inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
     crossinline selector: (T) -> R?,

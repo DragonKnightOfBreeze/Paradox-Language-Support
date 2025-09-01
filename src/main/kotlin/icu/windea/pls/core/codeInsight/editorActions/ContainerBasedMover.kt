@@ -19,6 +19,18 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.util.PlsPsiManager
 
+/**
+ * 基于“容器元素”的行上/下移动抽象基类。
+ *
+ * - 核心思路：将 IDE 的行移动行为限制在某个 PSI 容器元素内，仅在其成员范围内移动。
+ * - 自动对齐：把待移动范围扩展到“完整成员”（可包含附加注释）。
+ * - 辅助能力：可选跳过空白行、识别附加注释、精确计算目标行范围。
+ *
+ * 子类需实现：
+ * - `checkFileAvailable(...)`：判断当前文件是否适用该移动器。
+ * - `isContainerElement(element)`：判定作为成员集合的“容器”元素。
+ * - 如需自定义，重写 `isMemberElement`、`canAttachComments`、`canSkipBlankLines`、`getLineRangeForMemberElements`。
+ */
 abstract class ContainerBasedMover : LineMover() {
     override fun checkAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean): Boolean {
         if (!checkFileAvailable(editor, file, info, down)) return false

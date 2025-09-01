@@ -26,6 +26,11 @@ fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
 }
 
 class SmartRecursionGuard(val name: Any) {
+    /**
+     * 递归保护器。
+     *
+     * 通过维护栈轨迹 [stackTrace]，在同一线程内对相同 key 进行入栈检查，避免重复递归导致的溢出。
+     */
     val stackTrace = ArrayDeque<Any>()
 
     /**
@@ -44,6 +49,7 @@ class SmartRecursionGuard(val name: Any) {
     }
 
     companion object {
+        /** 每个线程维护的递归保护器缓存，按名称复用实例。 */
         val cache: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
     }
 }

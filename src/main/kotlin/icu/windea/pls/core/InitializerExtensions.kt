@@ -18,10 +18,16 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
+/**
+ * 支持聚合异步初始化任务的轻量工具：
+ * - 通过 [await] 注册初始化动作并返回延迟值
+ * - 调用 [initialize] 并发执行已注册动作，完成后统一解锁延迟值
+ */
 class SmartInitializer(
     private val completableDeferred: CompletableDeferred<Unit> = CompletableDeferred(),
     private val initializeActions: MutableList<suspend () -> Unit> = mutableListOf()
 ) {
+    /** 并发执行已注册的初始化动作，完成后解锁所有等待的延迟值。 */
     suspend fun initialize() {
         if (initializeActions.isEmpty()) return
         val logger = thisLogger()
@@ -36,10 +42,12 @@ class SmartInitializer(
         }
     }
 
+    /** 直接返回给定值的延迟包装（不注册初始化动作）。 */
     fun <T> await(value: T): Lazy<T> {
         return lazyOf(value)
     }
 
+    /** 注册初始化动作，延迟返回给定值；在 [initialize] 完成后才可获取。 */
     fun <T> await(value: T, initializeAction: suspend (T) -> Unit): Lazy<T> {
         initializeActions.add { initializeAction(value) }
         return lazy {
@@ -52,6 +60,7 @@ class SmartInitializer(
         }
     }
 
+    /** 注册初始化动作并在解锁后通过 [transform] 变换后返回。 */
     fun <T, R> await(value: T, initializeAction: suspend (T) -> Unit, transform: (T) -> R): Lazy<R> {
         initializeActions.add { initializeAction(value) }
         return lazy {
@@ -65,10 +74,12 @@ class SmartInitializer(
     }
 }
 
+/** 确保目录存在的延迟值，依赖 [initialize] 创建目录。 */
 fun SmartInitializer.awaitDirectory(value: Path): Lazy<Path> {
     return await(value) { withContext(Dispatchers.IO) { it.createDirectories() } }
 }
 
+/** 复制虚拟文件到给定路径并返回对应的 VirtualFile（延迟）。 */
 fun SmartInitializer.awaitFileFromVirtualFile(value: Path, sourceUrl: URL): Lazy<VirtualFile> {
     return await(value, { it.createFileFromVirtualFile(VfsUtil.findFileByURL(sourceUrl)!!) }, { VfsUtil.findFile(it, false)!! })
 }

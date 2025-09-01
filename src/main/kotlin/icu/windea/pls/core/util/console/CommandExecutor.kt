@@ -8,21 +8,46 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.text.Charsets
 
+/**
+ * 外部命令执行器。
+ *
+ * - 自动根据平台与 [CommandType] 选择合适的启动命令与输出编码。
+ * - 支持注入环境变量、工作目录与超时时间。
+ * - 当进程返回非 0 且无标准输出时，抛出 [CommandExecutionException]。
+ */
 class CommandExecutor(
+    /** 追加到进程环境变量的键值对。 */
     val environment: Map<String, String> = emptyMap(),
+    /** 进程工作目录。 */
     val directory: File? = null,
+    /** 等待进程结束的超时毫秒数；为 null 表示无限等待。 */
     val timeout: Long? = null
 ) {
     companion object {
         private val logger = logger<CommandExecutor>()
     }
 
+    /**
+     * 直接执行完整命令列表。
+     *
+     * @throws IOException 进程创建或 I/O 失败
+     * @throws InterruptedException 等待被中断
+     * @throws CommandExecutionException 命令执行失败
+     */
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(commands: List<String>): String {
         logger.info("Executing commands: $commands")
         return doExecute(commands, Charsets.UTF_8)
     }
 
+    /**
+     * 执行一条命令字符串。
+     * 会依据 [commandType]（为空则按平台推断）封装成底层实际命令（如 `powershell -Command ...`）。
+     *
+     * @throws IOException 进程创建或 I/O 失败
+     * @throws InterruptedException 等待被中断
+     * @throws CommandExecutionException 命令执行失败
+     */
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(command: String, commandType: CommandType?): String {
         logger.info("Executing command: $command")

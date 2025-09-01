@@ -2,6 +2,7 @@ package icu.windea.pls.core
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
+/** 高性能去除首尾指定字符。 */
 fun String.trimFast(c: Char): String {
     //Should be very fast
 
@@ -26,6 +27,7 @@ fun String.trimFast(c: Char): String {
     return substring(startIndex, endIndex + 1)
 }
 
+/** 高性能按单个分隔符切分字符串。 */
 fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
     //Should be very fast
 

@@ -4,6 +4,12 @@ import java.io.IOException
 import java.io.InputStream
 import javax.imageio.stream.ImageInputStream
 
+/**
+ * 将 [ImageInputStream] 适配为 `InputStream`。
+ *
+ * - 支持 `mark/reset`（基于 `streamPosition`）。
+ * - 其它读写行为直接委托给底层的 [imageInputStream]。
+ */
 class ImageInputStreamAdapter(
     val imageInputStream: ImageInputStream
 ) : InputStream() {

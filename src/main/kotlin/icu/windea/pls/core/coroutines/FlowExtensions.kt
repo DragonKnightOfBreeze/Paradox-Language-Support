@@ -3,6 +3,12 @@ package icu.windea.pls.core.coroutines
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * 将流按固定大小分块。
+ *
+ * @param chunkSize 分块大小（必须大于0）
+ * @return 每次发出一个大小不超过 [chunkSize] 的列表
+ */
 fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
     require(chunkSize > 0) { "chunkSize must be positive, but was $chunkSize" }
     val buffer = mutableListOf<T>()
@@ -18,6 +24,12 @@ fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
     }
 }
 
+/**
+ * 将字符串流按换行符切分为行流。
+ *
+ * - 支持跨 chunk 的行拼接。
+ * - 末尾无换行符时，会发出最后一行。
+ */
 fun Flow<String>.toLineFlow(): Flow<String> = flow {
     val buffer = StringBuilder()
     collect { input ->
