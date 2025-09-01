@@ -31,7 +31,6 @@ class CodeInjectorService {
 
         application.putUserData(invokeInjectMethodKey, javaClass.declaredMethods.first { it.name == "invokeInjectMethod" }.apply { trySetAccessible() })
         application.putUserData(continueInvocationExceptionKey, continueInvocationException)
-        application.putUserData(continueInvocationKey, javaClass.declaredMethods.first { it.name == "continueInvocation" }.apply { trySetAccessible() })
 
         val classPool = getClassPool()
         classPool.importPackage("java.util")
@@ -78,9 +77,6 @@ class CodeInjectorService {
         //for Application
         @JvmField
         val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
-        //for Application
-        @JvmField
-        val continueInvocationKey = createKey<Method>("CONTINUE_INVOCATION_BY_WINDEA")
 
         //for Application
         @JvmField
@@ -138,13 +134,5 @@ class CodeInjectorService {
         @JvmStatic
         @Suppress("unused")
         private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
-
-        //method invoked by injected codes to check ContinueInvocationException
-
-        @JvmStatic
-        @Suppress("unused")
-        private fun continueInvocation(e: InvocationTargetException): Boolean {
-            return e.cause == continueInvocationException || e.cause?.cause == continueInvocationException
-        }
     }
 }

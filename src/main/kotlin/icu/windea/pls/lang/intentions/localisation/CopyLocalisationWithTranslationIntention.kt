@@ -16,6 +16,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -63,7 +64,8 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-         ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+        val locale = selectLocale(context.element) ?: return
+         ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale, selectedLocale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

@@ -15,6 +15,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -40,7 +41,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
             val errorRef = AtomicReference<Throwable>()
 
             runCatchingCancelable r@{
-                if(contextsToHandle.isEmpty()) return@r
+                if (contextsToHandle.isEmpty()) return@r
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.replace.progress.itemStep", context.key)) {
@@ -59,12 +60,13 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-         ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+        val locale = selectLocale(context.element) ?: return
+        ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.translate.replace")
-         ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

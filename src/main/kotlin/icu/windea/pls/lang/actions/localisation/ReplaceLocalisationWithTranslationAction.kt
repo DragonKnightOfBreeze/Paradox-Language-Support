@@ -15,6 +15,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -56,7 +57,7 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
                     allContexts.addAll(contextsToHandle)
 
                     runCatchingCancelable r@{
-                        if(contextsToHandle.isEmpty())  return@r
+                        if (contextsToHandle.isEmpty()) return@r
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {
                                 withErrorRef(errorRef) { handleText(context, selectedLocale) }.getOrThrow()
@@ -80,7 +81,8 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+        val sourceLocale = selectLocale(context.element) ?: return
+        ParadoxLocalisationManipulator.handleTextWithTranslation(context, sourceLocale, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {

@@ -40,12 +40,11 @@ class ReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisa
             val errorRef = AtomicReference<Throwable>()
 
             runCatchingCancelable r@{
-                if(contextsToHandle.isEmpty()) return@r
-                val locale = selectLocale(file)
+                if (contextsToHandle.isEmpty()) return@r
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.translate.replace.progress.itemStep", context.key)) {
-                            withErrorRef(errorRef) { handleText(context, project, selectedLocale, locale) }.getOrThrow()
+                            withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
                             withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
                         }
                     }
@@ -59,9 +58,10 @@ class ReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisa
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig, locale: CwtLocaleConfig?) {
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
-        if (locale != null) ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale)
+        val locale = selectLocale(context.element) ?: return
+        ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale, locale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {

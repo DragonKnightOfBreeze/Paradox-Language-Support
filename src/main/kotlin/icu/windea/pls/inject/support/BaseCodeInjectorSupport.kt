@@ -55,10 +55,6 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val fieldCode = """private static volatile Method __invokeInjectMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("INVOKE_INJECT_METHOD_BY_WINDEA"));"""
             targetClass.addField(CtField.make(fieldCode, targetClass))
         }
-        run {
-            val fieldCode = """private static volatile Method __continueInvocation__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("CONTINUE_INVOCATION_BY_WINDEA"));"""
-            targetClass.addField(CtField.make(fieldCode, targetClass))
-        }
 
         injectMethodInfos.forEach f@{ (methodId, injectMethodInfo) ->
             val injectMethod = injectMethodInfo.method
@@ -69,22 +65,20 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             }
 
             val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnValueArg = if (injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_"
-            else "null"
+            val returnValueArg = if (injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_" else "null"
 
             val args = "new Object[] { \"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
             val expr = "(\$r) __invokeInjectMethod__.invoke(null, $args)"
-            val continueExpr = """(boolean) __continueInvocation__.invoke(null, new Object[] { __e__ })"""
             val code = when {
-                injectMethodInfo.pointer != InjectMethod.Pointer.BEFORE -> {
-                    """return $expr;"""
-                }
+                injectMethodInfo.pointer != InjectMethod.Pointer.BEFORE -> """return $expr;"""
                 else -> """
                 {
                     try {
                         return $expr;
                     } catch(InvocationTargetException __e__) {
-                        if ($continueExpr) throw __e__;
+                        boolean __ci__ = "CONTINUE_INVOCATION_BY_WINDEA".equals(__e__.getMessage()) ||
+                            (__e__.getCause() != null && "CONTINUE_INVOCATION_BY_WINDEA".equals(__e__.getCause().getMessage()));
+                        if(!__ci__) throw __e__;
                     }
                 }
                 """.trimIndent()

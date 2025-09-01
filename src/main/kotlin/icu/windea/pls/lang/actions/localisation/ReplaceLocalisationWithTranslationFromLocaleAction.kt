@@ -57,10 +57,9 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
 
                     runCatchingCancelable r@{
                         if(contextsToHandle.isEmpty()) return@r
-                        val locale = selectLocale(file)
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {
-                                withErrorRef(errorRef) { handleText(context, project, selectedLocale, locale) }.getOrThrow()
+                                withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
                                 withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
                                 emit(context)
                             }
@@ -80,9 +79,10 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig, locale: CwtLocaleConfig?) {
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
-        if (locale != null) ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale)
+        val locale = selectLocale(context.element) ?: return
+        ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale, locale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {

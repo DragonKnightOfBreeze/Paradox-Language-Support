@@ -27,7 +27,6 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -130,11 +129,10 @@ object ParadoxLocalisationManipulator {
         context.newText = newText
     }
 
-    suspend fun handleTextWithTranslation(context: ParadoxLocalisationContext, locale: CwtLocaleConfig) {
-        val sourceLocale = selectLocale(context.element)
+    suspend fun handleTextWithTranslation(context: ParadoxLocalisationContext, sourceLocale: CwtLocaleConfig, targetLocale: CwtLocaleConfig) {
         val newText = suspendCancellableCoroutine { continuation ->
             CoroutineScope(continuation.context).launch {
-                PlsTranslationManager.translate(context.newText, sourceLocale, locale) { translated, e ->
+                PlsTranslationManager.translate(context.newText, sourceLocale, targetLocale) { translated, e ->
                     if (e != null) {
                         continuation.resumeWithException(e)
                     } else {

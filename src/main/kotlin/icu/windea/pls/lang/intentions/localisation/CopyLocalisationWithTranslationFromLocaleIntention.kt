@@ -45,11 +45,10 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
 
             runCatchingCancelable r@{
                 if(contextsToHandle.isEmpty()) return@r
-                val locale = selectLocale(file)
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.translate.progress.itemStep", context.key)) {
-                            withErrorRef(errorRef) { handleText(context, project, selectedLocale, locale) }.getOrThrow()
+                            withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
                         }
                     }
                 }
@@ -63,9 +62,10 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig, locale: CwtLocaleConfig?) {
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
-        if (locale != null) ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale)
+        val locale = selectLocale(context.element) ?: return
+        ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale, locale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
