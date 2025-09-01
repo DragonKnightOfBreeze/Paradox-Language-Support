@@ -31,7 +31,7 @@ class CodeInjectorService {
 
         application.putUserData(invokeInjectMethodKey, javaClass.declaredMethods.first { it.name == "invokeInjectMethod" }.apply { trySetAccessible() })
         application.putUserData(continueInvocationExceptionKey, continueInvocationException)
-        application.putUserData(checkContinueInvocationKey, javaClass.declaredMethods.first { it.name == "checkContinueInvocation" }.apply { trySetAccessible() })
+        application.putUserData(continueInvocationKey, javaClass.declaredMethods.first { it.name == "continueInvocation" }.apply { trySetAccessible() })
 
         val classPool = getClassPool()
         classPool.importPackage("java.util")
@@ -47,6 +47,7 @@ class CodeInjectorService {
                 codeInjector.inject()
             } catch (e: Exception) {
                 //NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
+                logger.warn("Error when applying injector: ${codeInjector.id}")
                 logger.warn(e.message, e)
             }
             codeInjectors.put(codeInjector.id, codeInjector)
@@ -63,8 +64,8 @@ class CodeInjectorService {
         classPathList.split(separator).forEach {
             try {
                 pool.appendClassPath(it)
-            } catch (_: Exception) {
-                //ignore
+            } catch (e: Exception) {
+                logger.warn(e.message, e)
             }
         }
         return pool
@@ -79,7 +80,7 @@ class CodeInjectorService {
         val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
         //for Application
         @JvmField
-        val checkContinueInvocationKey = createKey<Method>("CHECK_CONTINUE_INVOCATION_BY_WINDEA")
+        val continueInvocationKey = createKey<Method>("CONTINUE_INVOCATION_BY_WINDEA")
 
         //for Application
         @JvmField
@@ -142,7 +143,7 @@ class CodeInjectorService {
 
         @JvmStatic
         @Suppress("unused")
-        private fun checkContinueInvocation(e: InvocationTargetException): Boolean {
+        private fun continueInvocation(e: InvocationTargetException): Boolean {
             return e.cause == continueInvocationException || e.cause?.cause == continueInvocationException
         }
     }
