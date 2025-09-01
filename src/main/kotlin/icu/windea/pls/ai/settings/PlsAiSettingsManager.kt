@@ -11,9 +11,9 @@ import icu.windea.pls.core.util.CallbackLock
 import java.util.*
 
 object PlsAiSettingsManager {
-    fun getDefaultLocalisationBatchSize(): Int {
-        return 40
-    }
+    fun getDefaultLocalisationChunkSize(): Int = 100
+
+    fun getDefaultLocalisationMemorySize(): Int = 10000
 
     //region Open AI
 

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import java.util.concurrent.atomic.AtomicInteger
 
+@Suppress("unused")
 class PolishLocalisationAiRequest(
    project: Project,
    file: PsiFile,

@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import java.util.concurrent.atomic.AtomicInteger
 
+@Suppress("unused")
 class TranslateLocalisationAiRequest(
     project: Project,
     file: PsiFile,

@@ -46,10 +46,12 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * @property localisationChunkSize 本地化的分块大小。即每次输入的本地化条目的最大数量。
+     * @property localisationChunkSize 本地化条目的分块大小。即每次输入的本地化条目的最大数量。
+     * @property localisationMemorySize 本地化条目的记忆大小。即会话记忆中本地化条目的最大数值。（TODO 更加精确的实现）
      */
     @Tag("features")
     class FeaturesState : BaseState() {
-        var localisationChunkSize by property(PlsAiSettingsManager.getDefaultLocalisationBatchSize())
+        var localisationChunkSize by property(PlsAiSettingsManager.getDefaultLocalisationChunkSize())
+        var localisationMemorySize by property(PlsAiSettingsManager.getDefaultLocalisationMemorySize())
     }
 }

@@ -7,10 +7,7 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.logger
 import dev.langchain4j.data.message.SystemMessage
 import dev.langchain4j.data.message.UserMessage
-import dev.langchain4j.memory.ChatMemory
-import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.chat.request.ChatRequest
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.chatFlow
 import icu.windea.pls.ai.model.onCompletionResult
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
@@ -38,7 +35,7 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
         val memory = getMemory()
 
         logger.info("${request.logPrefix} Translating localisation...")
-        val chunkSize = PlsAiFacade.getSettings().features.localisationChunkSize
+        val chunkSize = getChunkSize()
         var chunkIndex = 0
         val startTime = System.currentTimeMillis()
         memory.add(getSystemMessage(request))
@@ -63,10 +60,6 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
                 val cost = endTime - startTime
                 logger.info("${request.logPrefix} Translating localisation finished in $cost ms")
             }
-    }
-
-    private fun getMemory(): ChatMemory {
-        return MessageWindowChatMemory.withMaxMessages(Int.MAX_VALUE)
     }
 
     private fun getSystemMessage(request: TranslateLocalisationAiRequest): SystemMessage {

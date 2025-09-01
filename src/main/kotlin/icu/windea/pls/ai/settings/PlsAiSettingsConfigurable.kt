@@ -57,11 +57,17 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
             //features
             collapsibleGroup(PlsBundle.message("settings.ai.features")) {
-                //batchSizeOfLocalisations
+                //localisationBatchSize
                 row {
-                    label(PlsBundle.message("settings.ai.features.localisationBatchSize"))
+                    label(PlsBundle.message("settings.ai.features.localisationChunkSize"))
                     intTextField(1..Int.MAX_VALUE, 1).bindIntText(settings.features::localisationChunkSize)
-                    contextHelp(PlsBundle.message("settings.ai.features.localisationBatchSize.tip"))
+                    contextHelp(PlsBundle.message("settings.ai.features.localisationChunkSize.tip"))
+                }
+                //localisationMemorySize
+                row {
+                    label(PlsBundle.message("settings.ai.features.localisationMemorySize"))
+                    intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings.features::localisationMemorySize)
+                    contextHelp(PlsBundle.message("settings.ai.features.localisationMemorySize.tip"))
                 }
             }
         }
