@@ -8,7 +8,7 @@ import icu.windea.pls.PlsBundle
 class ParadoxScriptBasicAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    // TODO 2.0.2-dev 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
+    // TODO 2.0.2 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
     // fun testAdjacentLiterals_errorAndFix() {
     //     val errorMsg = PlsBundle.message("neighboring.literal.not.supported")
     //     val openingMsg = PlsBundle.message("missing.opening.quote")
