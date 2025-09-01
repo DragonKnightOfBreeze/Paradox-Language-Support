@@ -6,7 +6,6 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
@@ -14,11 +13,12 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup(), DumbAware {
+class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
@@ -42,11 +42,13 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (contextsToHandle.isNotEmpty()) {
+            run {
+                if(contextsToHandle.isEmpty()) return@run
+                val locale = selectLocale(file)
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
-                        reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", context.key)) {
-                            runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                        reporter.itemStep(PlsBundle.message("manipulation.localisation.search.translate.progress.itemStep", context.key)) {
+                            withErrorRef(errorRef) { handleText(context, project, selectedLocale, locale) }.getOrThrow()
                         }
                     }
                 }
@@ -60,9 +62,9 @@ class CopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisatio
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        TODO("TL")
-        // return ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig, locale: CwtLocaleConfig?) {
+        ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
+        if (locale != null) ParadoxLocalisationManipulator.handleTextWithTranslation(context, locale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

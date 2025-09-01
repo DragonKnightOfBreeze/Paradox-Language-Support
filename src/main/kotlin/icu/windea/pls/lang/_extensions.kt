@@ -20,6 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
@@ -54,6 +55,7 @@ import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import java.util.concurrent.atomic.AtomicReference
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -217,4 +219,8 @@ inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
     } finally {
         state.remove()
     }
+}
+
+inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
+    return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
 }

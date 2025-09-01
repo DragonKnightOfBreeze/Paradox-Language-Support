@@ -11,10 +11,10 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -31,12 +31,13 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (contextsToHandle.isNotEmpty()) {
+            run {
+                if(contextsToHandle.isEmpty()) return@run
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.search.replace.progress.itemStep", context.key)) {
-                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
-                            runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                            withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
+                            withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
                         }
                     }
                 }
@@ -50,7 +51,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-        return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
+         ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {

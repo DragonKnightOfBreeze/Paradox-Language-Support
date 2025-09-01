@@ -14,11 +14,11 @@ import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.integrations.translation.PlsTranslationManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -42,11 +42,12 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (contextsToHandle.isNotEmpty()) {
+            run {
+                if(contextsToHandle.isEmpty()) return@run
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", context.key)) {
-                            runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                            withErrorRef(errorRef) { handleText(context, selectedLocale) }.getOrThrow()
                         }
                     }
                 }
@@ -61,7 +62,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        return ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+         ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {

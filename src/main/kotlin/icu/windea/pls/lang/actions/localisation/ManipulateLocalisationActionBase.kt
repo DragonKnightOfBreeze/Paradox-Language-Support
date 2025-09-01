@@ -13,6 +13,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
@@ -24,6 +25,7 @@ import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.util.manipulators.PlsFileManipulator
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * 用于处理本地化的一类动作。

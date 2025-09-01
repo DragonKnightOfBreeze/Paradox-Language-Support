@@ -18,11 +18,11 @@ import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -61,13 +61,14 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
-                    if (contextsToHandle.isNotEmpty()) {
+                    run {
+                        if(contextsToHandle.isEmpty()) return@run
                         val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
                         val callback: suspend (LocalisationAiResult) -> Unit = {
                             val context = request.localisationContexts[request.index]
-                            runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                            withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
                         }
-                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                        withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 
                         //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                         if (request.index != contextsToHandle.size) withWarnings = true
@@ -92,7 +93,7 @@ class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBas
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.ai.polish.replace")
-        return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
     private fun createNotification(processed: Int, error: Throwable?, withWarnings: Boolean): Notification {

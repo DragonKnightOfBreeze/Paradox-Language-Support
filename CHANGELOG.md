@@ -26,6 +26,7 @@
 - [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
 - [X] 修复：修复与图表（Diagrams）相关的一些问题并优化性能 / FIX: Fix some issues related to diagrams, together with performance optimization
 - [X] 新功能：适配上移/下移声明的功能，适用于CWT文件和脚本文件中的成员（封装变量、属性、值），以及本地化文件中的属性（即本地化条目）（入口：主菜单，点击`Code > Move Statement Up/Down`） / NEW: Support moving statements up/down, for members (scripted variables, properties, values) in cwt files and script files, and properties (aka localisation items) in localisation files. (Entry: Main menu, click `Code > Move Statement Up/Down`)
+- [X] 新功能：提供本地化操作任务，用于从另一语言区域的本地化翻译为当前语言区域 / NEW: Provide the localisation manipulation task to translate localisations from another locale to current locale
 - [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.1

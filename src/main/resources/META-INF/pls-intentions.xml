@@ -157,6 +157,11 @@
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <categoryKey>intention.localisation.category</categoryKey>
       <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationFromLocaleIntention</className>
     </intentionAction>
     <!--endregion-->

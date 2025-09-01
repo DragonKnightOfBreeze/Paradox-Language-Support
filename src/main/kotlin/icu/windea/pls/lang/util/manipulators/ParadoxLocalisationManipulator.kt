@@ -120,21 +120,21 @@ object ParadoxLocalisationManipulator {
         }
     }
 
-    suspend fun handleTextFromLocale(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
+    suspend fun searchTextFromLocale(context: ParadoxLocalisationContext, project: Project, locale: CwtLocaleConfig) {
         val newText = readAction {
-            val selector = selector(project, context.element).localisation().contextSensitive().locale(selectedLocale)
-            val e = ParadoxLocalisationSearch.search(context.key, selector).find() ?: return@readAction null
-            e.value
+            val selector = selector(project, context.element).localisation().contextSensitive().locale(locale)
+            val e = ParadoxLocalisationSearch.search(context.key, selector).find()
+            e?.value
         }
         if (newText == null) return
         context.newText = newText
     }
 
-    suspend fun handleTextWithTranslation(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
+    suspend fun handleTextWithTranslation(context: ParadoxLocalisationContext, locale: CwtLocaleConfig) {
         val sourceLocale = selectLocale(context.element)
         val newText = suspendCancellableCoroutine { continuation ->
             CoroutineScope(continuation.context).launch {
-                PlsTranslationManager.translate(context.text, sourceLocale, selectedLocale) { translated, e ->
+                PlsTranslationManager.translate(context.newText, sourceLocale, locale) { translated, e ->
                     if (e != null) {
                         continuation.resumeWithException(e)
                     } else {

@@ -19,11 +19,11 @@ import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.AtomicReference
 
@@ -53,11 +53,13 @@ class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntenti
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
 
-            if (contextsToHandle.isNotEmpty()) {
+            run {
+                if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
                 var current = 0
-                reportRawProgress p@{ reporter ->
+                reportRawProgress { reporter ->
                     reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.step"))
+                    reporter.fraction(0.0)
 
                     val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, selectedLocale, description)
                     val callback: suspend (LocalisationAiResult) -> Unit = { data ->
@@ -65,7 +67,7 @@ class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntenti
                         reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
                         reporter.fraction(current / total.toDouble())
                     }
-                    runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                    withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 
                     //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                     if (request.index != contextsToHandle.size) withWarnings = true

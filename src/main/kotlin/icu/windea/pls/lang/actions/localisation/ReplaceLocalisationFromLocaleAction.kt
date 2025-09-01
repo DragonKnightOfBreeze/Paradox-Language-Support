@@ -12,10 +12,10 @@ import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.withErrorRef
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -48,11 +48,12 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
-                    if (contextsToHandle.isNotEmpty()) {
+                    run {
+                        if (contextsToHandle.isEmpty()) return@run
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {
-                                runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
-                                runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                                withErrorRef(errorRef) { handleText(context, project, selectedLocale) }.getOrThrow()
+                                withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
                                 emit(context)
                             }
                         }.collect()
@@ -72,12 +73,12 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
     }
 
     private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
-        return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
+        ParadoxLocalisationManipulator.searchTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
         val commandName = PlsBundle.message("manipulation.localisation.command.replace")
-        return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
+        ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {
