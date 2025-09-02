@@ -176,20 +176,25 @@ object CwtDocumentationManager {
                 element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsStringConstants.definitionValuePrefix
                 else -> configType?.prefix
             }
-            val typeCategory = configType?.category
+            val finalPrefix = when {
+                prefix != null -> prefix
+                element is CwtProperty -> PlsStringConstants.propertyPrefix
+                element is CwtString -> PlsStringConstants.stringPrefix
+                else -> null
+            }
 
-            if (prefix != null) {
-                append(prefix).append(" ")
+            if (finalPrefix != null) {
+                append(finalPrefix).append(" ")
             }
             append("<b>").append(shortName.escapeXml().or.anonymous()).append("</b>")
-            if (typeCategory != null) {
+            if (configType?.category != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
                 if (typeName.isNotNullOrEmpty()) {
                     //在脚本文件中显示为链接
                     if (configGroup != null) {
                         val gameType = configGroup.gameType
-                        val typeLink = ReferenceLinkType.CwtConfig.createLink(typeCategory, typeName, gameType)
+                        val typeLink = ReferenceLinkType.CwtConfig.createLink(configType.category, typeName, gameType)
                         append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
                     } else {
                         append(": ").append(typeName)

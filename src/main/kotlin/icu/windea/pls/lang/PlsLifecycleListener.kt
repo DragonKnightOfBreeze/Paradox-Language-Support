@@ -87,6 +87,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         //缓存的代码检查结果、内嵌提示等信息可能未正确刷新，仍然是过时的，需要通过文件更改来触发刷新
 
         //TODO 1.3.37+ 也许有更好的方式来解决这个问题
+        //TODO 2.0.2+ 似乎如果在编辑器中打开了规则文件，通过以下方式，对应的规则并不会正常刷新
 
         if (!PlsFacade.getInternalSettings().refreshOnProjectStartup) return
         if (!refreshedProjectIds.add(project.locationHash)) return

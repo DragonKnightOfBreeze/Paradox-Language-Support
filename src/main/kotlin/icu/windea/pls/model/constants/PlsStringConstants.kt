@@ -44,6 +44,7 @@ object PlsStringConstants {
     const val definitionPropertyPrefix = "(definition property)"
     const val definitionValuePrefix = "(definition value)"
     const val propertyPrefix = "(property)"
+    const val stringPrefix = "(string)"
     const val localePrefix = "(locale)"
     const val localisationPrefix = "(localisation)"
     const val localisationSyncedPrefix = "(localisation_synced)"
