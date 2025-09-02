@@ -2,7 +2,6 @@
 
 package icu.windea.pls.localisation.editor
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.IDENTIFIER
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_METHOD
@@ -20,7 +19,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
 import java.awt.Color
 
 object ParadoxLocalisationAttributesKeys {
@@ -90,11 +90,11 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT")
 
-    private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
+    private val colorKeyCache = CacheBuilder().build { color: Color ->
         createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
             foregroundColor = color
         })
-    }
+    }.cancelable()
 
     @JvmStatic
     fun getColorKey(color: Color): TextAttributesKey? {
@@ -102,11 +102,11 @@ object ParadoxLocalisationAttributesKeys {
         return colorKeyCache.get(color)
     }
 
-    private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
+    private val colorOnlyKeyCache = CacheBuilder().build { color: Color ->
         createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_${color.rgb}", TextAttributes().apply {
             foregroundColor = color
         })
-    }
+    }.cancelable()
 
     @JvmStatic
     fun getColorOnlyKey(color: Color): TextAttributesKey? {

@@ -1,14 +1,14 @@
 package icu.windea.pls.config.configContext
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createCachedValue
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -56,7 +56,7 @@ class CwtDeclarationConfigContext(
 //depends on config group
 private val CwtConfigGroup.declarationConfigCache by createKey(CwtDeclarationConfigContext.Keys) {
     createCachedValue(project) {
-        CacheBuilder.newBuilder().softValues().buildCache<String, CwtPropertyConfig>().withDependencyItems()
+        CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable().withDependencyItems()
     }
 }
 

@@ -1,37 +1,67 @@
 package icu.windea.pls.lang.util
 
-import com.google.common.cache.*
-import com.intellij.codeInsight.completion.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.util.ProcessingContext
+import com.intellij.util.Processor
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.modifier.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.getOptionValues
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.configGroup.dynamicValueTypes
+import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.config.configGroup.modifierCategories
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.pass
+import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cancelable
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.createNestedCache
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.trackedBy
+import icu.windea.pls.ep.modifier.ParadoxModifierIconProvider
+import icu.windea.pls.ep.modifier.ParadoxModifierNameDescProvider
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.modifier.support
+import icu.windea.pls.lang.codeInsight.completion.contextElement
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.complexEnumValue
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.dynamicValue
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
+import icu.windea.pls.model.elementInfo.toInfo
+import icu.windea.pls.model.elementInfo.toPsiElement
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
@@ -43,8 +73,8 @@ object ParadoxModifierManager {
     //rootFile -> cacheKey -> modifierInfo
     //depends on config group
     private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, _, _, _> {
-            CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker }
+        createNestedCache<VirtualFile, String, ParadoxModifierInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxModifierInfo>> {
+            CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }
 

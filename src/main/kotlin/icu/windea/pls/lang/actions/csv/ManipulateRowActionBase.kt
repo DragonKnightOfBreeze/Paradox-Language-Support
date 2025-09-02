@@ -37,7 +37,7 @@ abstract class ManipulateRowActionBase : AnAction() {
     }
 
     protected open fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {
-        val editor = e.editor ?: return ParadoxRowSequence()
+        val editor = e.editor ?: return ParadoxCsvManipulator.buildEmptyRowSequence()
         return ParadoxCsvManipulator.buildSelectedRowSequence(editor, file)
     }
 

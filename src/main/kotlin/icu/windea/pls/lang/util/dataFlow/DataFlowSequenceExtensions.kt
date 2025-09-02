@@ -5,5 +5,5 @@ inline fun <T, R, O : DataFlowOptions> DataFlowSequence<T, O>.transform(block: S
 }
 
 inline fun <T, O : DataFlowOptions> DataFlowSequence<T, O>.options(block: O.() -> Unit): DataFlowSequence<T, O> {
-    return apply { options?.block() }
+    return apply { options.block() }
 }

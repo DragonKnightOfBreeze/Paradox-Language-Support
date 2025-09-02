@@ -18,6 +18,10 @@ import icu.windea.pls.lang.util.dataFlow.ParadoxRowSequence
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Base as Options
 
 object ParadoxCsvManipulator {
+    fun buildEmptyRowSequence() : ParadoxRowSequence {
+        return ParadoxRowSequence(emptySequence(), Options())
+    }
+
     /**
      * 包含选取范围涉及到的所有行。
      */
@@ -59,6 +63,10 @@ object ParadoxCsvManipulator {
         }
         if (set.add(row)) yield(row)
         return row
+    }
+
+    fun buildEmptyColumnSequence() : ParadoxColumnSequence {
+        return ParadoxColumnSequence(emptySequence(), Options())
     }
 
     /**

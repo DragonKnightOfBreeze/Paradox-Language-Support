@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.google.common.util.concurrent.UncheckedExecutionException
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
@@ -81,7 +80,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
 import java.io.IOException
 import java.nio.file.Path
-import java.util.concurrent.ExecutionException
 import kotlin.reflect.KProperty
 
 //region Common Extensions
@@ -128,31 +126,11 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
 inline fun <T> cancelable(block: () -> T): T {
     try {
         return block()
-    } catch (e: ExecutionException) {
-        val cause = e.cause
-        if (cause is ProcessCanceledException) throw cause
-        throw cause ?: e
-    } catch (e: UncheckedExecutionException) {
-        val cause = e.cause
-        if (cause is ProcessCanceledException) throw cause
-        throw cause ?: e
     } catch (e: ProcessCanceledException) {
         throw e
-    }
-}
-
-inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -> T): T {
-    try {
-        return block()
-    } catch (e: ExecutionException) {
+    } catch (e: Exception) {
         val cause = e.cause
         if (cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch (e: UncheckedExecutionException) {
-        val cause = e.cause
-        if (cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch (e: ProcessCanceledException) {
         throw e
     }
 }

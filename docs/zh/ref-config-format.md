@@ -14,7 +14,6 @@
 
 <!-- AI: maps to icu.windea.pls.config.configExpression.CwtConfigExpression -->
 <!-- AI: impl-notes
-Resolvers (Schema/Cardinality/Template/Data(key|value|template)/ImageLocation/LocalisationLocation) share Guava caches: maximumSize=4096, expireAfterAccess=10 minutes.
 Schema: allow empty names for Type/Constraint; prefer Template when both ends are '$'; enum inside larger string -> Template; escaped dollars not replaced; odd dollars -> Constant; only escaped dollars -> Constant; Template.pattern replaces each unescaped '$...$' with '*', also records TextRanges.
 Template (data-driven): forbid blanks; a single snippet (pure const or pure dynamic) is not a template; choose leftmost earliest dynamic rule with prefix/suffix; special split to avoid combining symbol + rule-name as a single constant.
 Cardinality: '~' relax flags; negative min clamped to 0; 'inf' (case-insensitive) is unlimited; if invalid or min>max -> treat as empty constraint.

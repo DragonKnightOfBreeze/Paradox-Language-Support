@@ -1,43 +1,93 @@
 package icu.windea.pls.lang.util
 
-import com.google.common.cache.*
-import com.intellij.application.options.*
-import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.codeInsight.lookup.*
-import com.intellij.lang.injection.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icons.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.config.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.elementInfo.*
-import icu.windea.pls.model.injection.*
-import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Ref
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentsOfType
+import com.intellij.psi.util.startOffset
+import com.intellij.util.ProcessingContext
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.isBlock
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.extendedParameters
+import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.config.matchFromPattern
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.findChild
+import icu.windea.pls.core.getShreds
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.mergeValue
+import icu.windea.pls.core.processChild
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.cancelable
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.createNestedCache
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.trackedBy
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.ep.parameter.ParadoxParameterInferredConfigProvider
+import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.addElement
+import icu.windea.pls.lang.codeInsight.completion.argumentNames
+import icu.windea.pls.lang.codeInsight.completion.config
+import icu.windea.pls.lang.codeInsight.completion.contextKey
+import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
+import icu.windea.pls.lang.codeInsight.completion.parameters
+import icu.windea.pls.lang.codeInsight.completion.quoted
+import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.ParadoxParameterContextInfo
+import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
+import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
+import icu.windea.pls.model.elementInfo.toInfo
+import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
+import icu.windea.pls.script.psi.ParadoxConditionParameter
+import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isBlockMember
 import java.util.*
 
 object ParadoxParameterManager {
@@ -50,8 +100,8 @@ object ParadoxParameterManager {
     //rootFile -> cacheKey -> parameterInfo
     //depends on config group
     private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, _, _, _> {
-            CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
+        createNestedCache<VirtualFile, String, ParadoxParameterInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxParameterInfo>> {
+            CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }
 

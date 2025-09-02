@@ -1,30 +1,44 @@
 package icu.windea.pls.lang.util
 
-import com.google.common.cache.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import com.intellij.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
+import com.intellij.util.BitUtil
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.config.configContext.CwtConfigContext
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.core.createCachedValue
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.createNestedCache
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
+import icu.windea.pls.lang.search.selector.complexEnumValue
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.selectRootFile
 
 object ParadoxExpressionMatcher {
     object Options {
@@ -124,11 +138,9 @@ object ParadoxExpressionMatcher {
     //depends on config group and indices
     private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.Keys) {
         createCachedValue(project) {
-            createNestedCache<VirtualFile, _, _, _> {
-                CacheBuilder.newBuilder().buildCache<String, Result>()
-            }.withDependencyItems(
-                ParadoxModificationTrackers.FileTracker
-            )
+            createNestedCache<VirtualFile, String, Result, com.github.benmanes.caffeine.cache.Cache<String, Result>> {
+                CacheBuilder().build<String, Result>().cancelable<String, Result>()
+            }.withDependencyItems(ParadoxModificationTrackers.FileTracker)
         }
     }
 

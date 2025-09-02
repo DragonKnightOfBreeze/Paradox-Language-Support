@@ -37,7 +37,7 @@ abstract class ManipulateColumnActionBase : AnAction() {
     }
 
     protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): ParadoxColumnSequence {
-        val editor = e.editor ?: return ParadoxColumnSequence()
+        val editor = e.editor ?: return ParadoxCsvManipulator.buildEmptyColumnSequence()
         return ParadoxCsvManipulator.buildSelectedColumnSequence(editor, file)
     }
 

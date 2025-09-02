@@ -1,19 +1,17 @@
 package icu.windea.pls.config.configExpression.impl
 
-import com.google.common.cache.CacheBuilder
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.core.toCommaDelimitedStringSet
-import icu.windea.pls.core.util.buildCache
-import java.util.concurrent.TimeUnit
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
 
 internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpression.Resolver {
     // 解析结果缓存：图像路径表达式在索引/渲染等流程中会被反复解析
     // - maximumSize: 限制缓存容量，防止内存无限增长
     // - expireAfterAccess: 非热点表达式在一段时间未被访问后回收
-    private val cache = CacheBuilder.newBuilder()
-        .maximumSize(4096)
-        .expireAfterAccess(10, TimeUnit.MINUTES)
-        .buildCache<String, CwtImageLocationExpression> { doResolve(it) }
+    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+        .build<String, CwtImageLocationExpression> { doResolve(it) }
+        .cancelable()
 
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")
 

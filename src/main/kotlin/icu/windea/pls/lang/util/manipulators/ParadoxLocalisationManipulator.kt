@@ -40,6 +40,11 @@ import kotlin.coroutines.resumeWithException
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Localisation as LocalisationOptions
 
 object ParadoxLocalisationManipulator {
+    @Suppress("unused")
+    fun buildEmptySequence(): ParadoxLocalisationSequence {
+        return ParadoxLocalisationSequence(emptySequence(), LocalisationOptions())
+    }
+
     fun buildSequence(file: PsiFile): ParadoxLocalisationSequence {
         val options = LocalisationOptions()
         val delegate = doBuildSequence(file, options)

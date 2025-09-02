@@ -1,14 +1,13 @@
 package icu.windea.pls.config.config.delegated.impl
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
 
 internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.Resolver {
@@ -39,7 +38,7 @@ private class CwtTypeLocalisationConfigImpl(
     override val config: CwtPropertyConfig,
     override val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
 ) : UserDataHolderBase(), CwtTypeLocalisationConfig {
-    private val configsCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
+    private val configsCache = CacheBuilder().build<String, List<CwtLocationConfig>>().cancelable()
 
     override fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {
         val cacheKey = subtypes.joinToString(",")

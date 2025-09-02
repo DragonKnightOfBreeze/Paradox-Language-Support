@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configContext
 
-import com.google.common.cache.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.jetbrains.rd.util.*
@@ -87,7 +86,7 @@ class CwtConfigContext(
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         createNestedCache<VirtualFile, _, _, _> {
-            CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>()
+            CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
         }.withDependencyItems(
             ParadoxModificationTrackers.FileTracker,
             ParadoxModificationTrackers.ParameterConfigInferenceTracker,

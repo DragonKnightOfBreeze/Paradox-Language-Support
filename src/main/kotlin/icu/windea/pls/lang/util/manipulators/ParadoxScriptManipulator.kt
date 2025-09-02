@@ -11,6 +11,11 @@ import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Member as MemberOptions
 
 object ParadoxScriptManipulator {
+    @Suppress("unused")
+    fun buildEmptyMemberSequence(): ParadoxMemberSequence {
+        return ParadoxMemberSequence(emptySequence(), MemberOptions())
+    }
+
     fun buildMemberSequence(file: PsiFile): ParadoxMemberSequence {
         val options = MemberOptions()
         val delegate = doBuildMemberSequence(file, options)

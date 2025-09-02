@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.application.runReadAction
@@ -15,11 +14,11 @@ import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.cardinality
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
@@ -44,9 +43,10 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Matchers
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -104,9 +104,9 @@ object ParadoxDefinitionManager {
     }
 
     private val CwtConfigGroup.typeConfigsCache by createKey(CwtConfigGroup.Keys) {
-        CacheBuilder.newBuilder().buildCache<ParadoxPath, List<CwtTypeConfig>> { path ->
+        CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
-        }
+        }.cancelable()
     }
 
     // get info & match methods

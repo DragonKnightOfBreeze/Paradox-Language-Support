@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util
 
-import com.google.common.cache.CacheBuilder
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.trimFast
 
@@ -112,12 +111,12 @@ object Matchers {
             return cache.get(pattern0).matches(path0)
         }
 
-        private val regexCache1 by lazy {
-            CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex() }
-        }
-        private val regexCache2 by lazy {
-            CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
-        }
+        private val regexCache1 = CacheBuilder("maximumSize=10000")
+            .build<String, Regex> { key -> key.toRegex() }
+            .cancelable()
+        private val regexCache2 = CacheBuilder("maximumSize=10000")
+            .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
+            .cancelable()
 
         private fun String.antPatternToRegexString(): String {
             val s = this
@@ -161,12 +160,12 @@ object Matchers {
             return cache.get(pattern0).matches(path0)
         }
 
-        private val regexCache1 by lazy {
-            CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex() }
-        }
-        private val regexCache2 by lazy {
-            CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
-        }
+        private val regexCache1 = CacheBuilder("maximumSize=10000")
+            .build<String, Regex> { key -> key.toRegex() }
+            .cancelable()
+        private val regexCache2 = CacheBuilder("maximumSize=10000")
+            .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
+            .cancelable()
     }
 
     object PathMatcher {

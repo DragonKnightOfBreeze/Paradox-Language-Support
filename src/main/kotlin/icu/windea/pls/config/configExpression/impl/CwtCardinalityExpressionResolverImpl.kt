@@ -1,10 +1,9 @@
 package icu.windea.pls.config.configExpression.impl
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
-import icu.windea.pls.core.util.buildCache
-import java.util.concurrent.TimeUnit
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()
@@ -12,10 +11,9 @@ internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.R
     // 基于 expressionString 的缓存：
     // - maximumSize: 限制缓存上界，避免长时间运行导致内存无限增长
     // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收
-    private val cache = CacheBuilder.newBuilder()
-        .maximumSize(4096)
-        .expireAfterAccess(10, TimeUnit.MINUTES)
-        .buildCache<String, CwtCardinalityExpression> { doResolve(it) }
+    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+        .build<String, CwtCardinalityExpression> { key -> doResolve(key) }
+        .cancelable()
 
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 

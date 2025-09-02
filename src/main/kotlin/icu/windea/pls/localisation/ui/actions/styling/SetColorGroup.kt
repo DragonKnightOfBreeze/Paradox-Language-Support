@@ -1,11 +1,10 @@
 package icu.windea.pls.localisation.ui.actions.styling
 
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxTextColorInfo
@@ -13,12 +12,6 @@ import icu.windea.pls.model.ParadoxTextColorInfo
 //这里actions是基于project动态获取的，需要特殊处理
 
 class SetColorGroup : DefaultActionGroup() {
-    companion object {
-        private val setColorActionCache = CacheBuilder.newBuilder()
-            .weakKeys()
-            .build(CacheLoader.from<ParadoxTextColorInfo, SetColorAction> { SetColorAction(it) })
-    }
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
@@ -35,3 +28,5 @@ class SetColorGroup : DefaultActionGroup() {
         }
     }
 }
+
+private val setColorActionCache = CacheBuilder().weakKeys().build<ParadoxTextColorInfo, SetColorAction> { key -> SetColorAction(key) }

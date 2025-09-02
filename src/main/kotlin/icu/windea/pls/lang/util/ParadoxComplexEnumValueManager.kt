@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang.util
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
@@ -13,12 +12,12 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
 import icu.windea.pls.config.config.isBlock
@@ -31,8 +30,9 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -76,9 +76,9 @@ object ParadoxComplexEnumValueManager {
     }
 
     private val CwtConfigGroup.complexEnumConfigsCache by createKey(CwtConfigGroup.Keys) {
-        CacheBuilder.newBuilder().buildCache<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
+        CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
-        }
+        }.cancelable()
     }
 
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {

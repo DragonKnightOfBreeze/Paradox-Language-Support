@@ -1,31 +1,27 @@
 package icu.windea.pls.config.configExpression.impl
 
-import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
-import java.util.concurrent.TimeUnit
 
 internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     // 三类缓存分别对应 key / value / template 的解析结果
     // - maximumSize: 限制缓存容量，防止内存无限增长
     // - expireAfterAccess: 非热点条目在一段时间未被访问后回收
-    private val cacheForKey = CacheBuilder.newBuilder()
-        .maximumSize(4096)
-        .expireAfterAccess(10, TimeUnit.MINUTES)
-        .buildCache<String, CwtDataExpression> { doResolve(it, true) }
-    private val cacheForValue = CacheBuilder.newBuilder()
-        .maximumSize(4096)
-        .expireAfterAccess(10, TimeUnit.MINUTES)
-        .buildCache<String, CwtDataExpression> { doResolve(it, false) }
-    private val cacheForTemplate = CacheBuilder.newBuilder()
-        .maximumSize(4096)
-        .expireAfterAccess(10, TimeUnit.MINUTES)
-        .buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
+    private val cacheForKey = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+        .build<String, CwtDataExpression> { doResolve(it, true) }
+        .cancelable()
+    private val cacheForValue = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+        .build<String, CwtDataExpression> { doResolve(it, false) }
+        .cancelable()
+    private val cacheForTemplate = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+        .build<String, CwtDataExpression> { doResolveTemplate(it) }
+        .cancelable()
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant).apply { value = "" }
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant).apply { value = "" }
