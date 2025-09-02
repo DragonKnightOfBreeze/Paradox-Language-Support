@@ -65,24 +65,33 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             }
 
             val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnValueArg = if (injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_" else "null"
+            val returnValueArg = when (injectMethodInfo.pointer) {
+                InjectMethod.Pointer.AFTER, InjectMethod.Pointer.AFTER_FINALLY -> "\$_"
+                else -> "null"
+            }
+
+            // 需要兼容以下异常：
+            // - java.lang.reflect.InvocationTargetException
+            // - com.intellij.openapi.progress.ProcessCanceledException
+            // - icu.windea.pls.inject.ContinueInvocationException
 
             val args = "new Object[] { \"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
             val expr = "(\$r) __invokeInjectMethod__.invoke(null, $args)"
-            val code = when {
-                injectMethodInfo.pointer != InjectMethod.Pointer.BEFORE -> """return $expr;"""
-                else -> """
+            val throwExpr = when (injectMethodInfo.pointer) {
+                InjectMethod.Pointer.BEFORE -> "if (!\"CONTINUE_INVOCATION_BY_WINDEA\".equals(__cause__.getMessage())) throw __cause__;"
+                else -> "throw __cause__;"
+            }
+            val code = """
                 {
                     try {
                         return $expr;
                     } catch(InvocationTargetException __e__) {
-                        boolean __ci__ = "CONTINUE_INVOCATION_BY_WINDEA".equals(__e__.getMessage()) ||
-                            (__e__.getCause() != null && "CONTINUE_INVOCATION_BY_WINDEA".equals(__e__.getCause().getMessage()));
-                        if(!__ci__) throw __e__;
+                        Throwable __cause__ = __e__.getCause();
+                        if (__cause__ == null) throw __e__;
+                        $throwExpr
                     }
                 }
                 """.trimIndent()
-            }
 
             when (injectMethodInfo.pointer) {
                 InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
