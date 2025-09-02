@@ -8,7 +8,9 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.isDefinitionRootKey
 import icu.windea.pls.script.psi.isResolvableExpression
 
 class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
@@ -18,7 +20,10 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
         if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY //#131
 
-        //尝试解析为复杂枚举值声明
+        // 跳过 element 是定义的 rootKey 的情况
+        if(element is ParadoxScriptPropertyKey && element.isDefinitionRootKey()) return PsiReference.EMPTY_ARRAY
+
+        // 尝试解析为复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
