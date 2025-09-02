@@ -137,7 +137,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
                     val highlightType = when {
-                        relaxMax -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning
+                        relaxMax -> ProblemHighlightType.WEAK_WARNING // use weak warning (wave lines) instead
                         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                     }
                     val fileLevel = element is PsiFile

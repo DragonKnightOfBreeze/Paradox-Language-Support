@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -117,7 +118,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         //判断是否需要排除
                         if (isExcluded(expectedConfigs)) return true
                         //判断是否需要忽略
-                        if (isIgnoredByConfigs(element.propertyKey, expectedConfigs)) return true
+                        if (isIgnoredByConfigs(propertyKey, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
                     val expect = if (showExpectInfo) expectedExpressions.truncate(PlsFacade.getInternalSettings().itemLimit).joinToString() else null
@@ -126,8 +127,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", propertyKey.expression, expect)
                         else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.3", propertyKey.expression)
                     }
-                    val fixes = getFixes(element, expectedConfigs).toTypedArray()
-                    holder.registerProblem(element, message, *fixes)
+                    val highlightType = getHighlightType(propertyKey, expectedConfigs)
+                    val fixes = getFixes(propertyKey, expectedConfigs)
+                    holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
                     //skip checking children
                     return false
                 }
@@ -172,8 +174,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
                         else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
                     }
-                    val fixes = getFixes(element, expectedConfigs).toTypedArray()
-                    holder.registerProblem(element, message, *fixes)
+                    val highlightType = getHighlightType(element, expectedConfigs)
+                    val fixes = getFixes(element, expectedConfigs)
+                    holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
                     //skip checking children
                     return false
                 }
@@ -243,30 +246,32 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 return false
             }
 
+            private fun getHighlightType(expressionElement: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType {
+                if (expressionElement !is ParadoxScriptStringExpressionElement) return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                return when {
+                    expectedConfigs.any { it.configExpression.type in CwtDataTypeGroups.TextReference } -> ProblemHighlightType.WEAK_WARNING // use weak warning (wave lines) instead
+                    else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                }
+            }
+
+            private fun getFixes(expressionElement: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
+                if (expressionElement !is ParadoxScriptStringExpressionElement) return emptyList()
+                return buildList {
+                    val locales = ParadoxLocaleManager.getLocaleConfigs()
+                    val context = expectedConfigs.firstNotNullOfOrNull {
+                        ParadoxLocalisationCodeInsightContextBuilder.fromReference(expressionElement, it, locales, fromInspection = true)
+                    }
+                    if (context != null) {
+                        this += GenerateLocalisationsFix(expressionElement, context)
+                        this += GenerateLocalisationsInFileFix(expressionElement)
+                    }
+                }
+            }
+
             private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
                 //any规则不需要再向下检查
                 if (configs.any { it.configExpression.type == CwtDataTypes.Any }) return false
                 return true
-            }
-
-            private fun getFixes(element: PsiElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-                return buildList {
-                    val expressionElement = when (element) {
-                        is ParadoxScriptProperty -> element.propertyKey
-                        is ParadoxScriptStringExpressionElement -> element
-                        else -> null
-                    }
-                    if (expressionElement != null) {
-                        val locales = ParadoxLocaleManager.getLocaleConfigs()
-                        val context = expectedConfigs.firstNotNullOfOrNull {
-                            ParadoxLocalisationCodeInsightContextBuilder.fromReference(expressionElement, it, locales, fromInspection = true)
-                        }
-                        if (context != null) {
-                            this += GenerateLocalisationsFix(expressionElement, context)
-                            this += GenerateLocalisationsInFileFix(expressionElement)
-                        }
-                    }
-                }
             }
         }
     }

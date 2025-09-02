@@ -20,6 +20,11 @@ object CwtDataTypeGroups {
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
     )
+    val TextReference = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
+        CwtDataTypes.InlineLocalisation,
+    )
 
     val DynamicValue = arrayOf(
         CwtDataTypes.Value,
@@ -44,18 +49,18 @@ object CwtDataTypeGroups {
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
     )
-    val AliasNameLike = arrayOf(
-        CwtDataTypes.AliasName,
-        CwtDataTypes.AliasKeysField,
-    )
-    val KeyReference = arrayOf(
-        CwtDataTypes.Bool,
-        CwtDataTypes.Int,
-        CwtDataTypes.Float,
-        CwtDataTypes.Scalar,
-        CwtDataTypes.Constant,
-        CwtDataTypes.Any,
-    )
+    // val AliasNameLike = arrayOf(
+    //     CwtDataTypes.AliasName,
+    //     CwtDataTypes.AliasKeysField,
+    // )
+    // val KeyReference = arrayOf(
+    //     CwtDataTypes.Bool,
+    //     CwtDataTypes.Int,
+    //     CwtDataTypes.Float,
+    //     CwtDataTypes.Scalar,
+    //     CwtDataTypes.Constant,
+    //     CwtDataTypes.Any,
+    // )
 
     val ImageLocationResolved = arrayOf(
         CwtDataTypes.FilePath,
@@ -76,7 +81,6 @@ object CwtDataTypeGroups {
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation
     )
-
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
