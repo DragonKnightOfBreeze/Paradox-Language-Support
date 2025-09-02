@@ -1,8 +1,8 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
@@ -125,8 +125,8 @@ class ParadoxDefinitionInfo(
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
-        val configContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, gameType, configGroup)
-        return configContext?.getConfig(declarationConfig)
+        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, gameType, configGroup)
+        return declarationConfigContext?.getConfig(declarationConfig)
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {

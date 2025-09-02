@@ -78,10 +78,11 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
+        val declarationKey = declarationConfigCacheKey.replace("$gameTypeId#", "")
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
         val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
-        return "b@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${declarationConfigCacheKey.substringAfterLast('#')}:${elementPathFromRoot}"
+        return "b@$gameTypeId#${matchOptions}#${isPropertyValue.toInt()}#${declarationKey}:${elementPathFromRoot}"
     }
 
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
@@ -126,7 +127,7 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
         val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
-        return "isu@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}:${elementPathFromRoot}"
+        return "isu@$gameTypeId#${matchOptions}#${isPropertyValue.toInt()}:${elementPathFromRoot}"
     }
 
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
@@ -182,7 +183,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
         val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
-        return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${inlineScriptExpression}:${elementPathFromRoot}"
+        return "is@$gameTypeId#${matchOptions}#${isPropertyValue.toInt()}#${inlineScriptExpression}:${elementPathFromRoot}"
     }
 
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
@@ -258,7 +259,7 @@ class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
         val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
-        return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}:${elementPathFromRoot}"
+        return "is@$gameTypeId#${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}:${elementPathFromRoot}"
     }
 
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {

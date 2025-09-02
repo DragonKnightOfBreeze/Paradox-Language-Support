@@ -14,16 +14,16 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.cardinality
 import icu.windea.pls.config.config.cardinalityMaxDefine
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.config.supportedScopes
 import icu.windea.pls.config.configContext.isDefinitionOrMember
@@ -475,8 +475,8 @@ object ParadoxCompletionManager {
                 if (typeToUse == null) return@run null
                 if (typeConfigToUse.typeKeyPrefix != null) return@run typeConfigToUse.typeKeyPrefixConfig
                 val declarationConfig = configGroup.declarations.get(typeToUse) ?: return@run null
-                val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
-                configContext?.getConfig(declarationConfig)
+                val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
+                declarationConfigContext?.getConfig(declarationConfig)
             }
             val element = config?.pointer?.element
             val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
