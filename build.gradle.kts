@@ -52,6 +52,9 @@ dependencies {
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
+    // Caffeine - https://github.com/ben-manes/caffeine
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
+
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
     implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
     implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")

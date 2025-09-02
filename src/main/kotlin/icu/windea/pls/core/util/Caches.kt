@@ -110,7 +110,7 @@ class TrackingCache<K : Any, V : Any, C : Cache<K, V>>(
     private val delegate: C,
     private val modificationTrackerProvider: (V) -> ModificationTracker?
 ) : Cache<K, V> by delegate {
-    private val modificationCounts = hashMapOf<K, Long>()
+    private val modificationCounts: MutableMap<K, Long> = ConcurrentHashMap()
 
     override fun get(key: K, loader: Callable<out V>): V {
         val result = delegate.get(key, loader)

@@ -22,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
  * 用于获取协程作用域、各种服务以及插件设置状态。
  */
 object PlsFacade {
+    val isDebug = System.getProperty("pls.is.debug").toBoolean()
+
     //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
     @Service(Service.Level.PROJECT)
