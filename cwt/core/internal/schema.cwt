@@ -28,6 +28,7 @@ types = {
         path_file = $scalar
         path_extension = $scalar
         path_strict = $bool
+        path_pattern = $scalar
         name_field = $scalar
         type_key_prefix = $scalar
         name_from_file = $bool
@@ -75,6 +76,7 @@ rows = {
         path_file = $scalar
         path_extension = $scalar
         path_strict = $bool
+        path_pattern = $scalar
         columns = {
             $scalar = $data_expression
         }
@@ -91,6 +93,7 @@ enums = {
         path_file = $scalar
         path_extension = $scalar
         path_strict = $bool
+        path_pattern = $scalar
         start_from_root = $bool
         name = $any
     }
