@@ -24,7 +24,7 @@ object PlsPathConstants {
     val texconvExe by initializer.await(_data.resolve("texconv.exe"))
     val texconvExeFile by initializer.awaitFileFromVirtualFile(_data.resolve("texconv.exe"), "/tools/texconv.exe".toClasspathUrl())
 
-    fun init() {
+    fun initAsync() {
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             initializer.initialize()

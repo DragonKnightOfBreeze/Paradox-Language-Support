@@ -25,14 +25,11 @@ private val logger = logger<CwtConfigGroupService>()
 class CwtConfigGroupService(private val project: Project) {
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
-    fun init() {
-        //preload config groups
+    fun initAsync() {
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             getConfigGroup(null).init()
-            ParadoxGameType.entries.forEach { gameType ->
-                getConfigGroup(gameType).init()
-            }
+            ParadoxGameType.entries.forEach { gameType -> getConfigGroup(gameType).init() }
         }
     }
 

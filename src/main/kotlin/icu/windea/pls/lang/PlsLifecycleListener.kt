@@ -1,13 +1,9 @@
 package icu.windea.pls.lang
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
-import com.intellij.openapi.application.runInEdt
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.service
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.util.application
@@ -15,12 +11,14 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.images.ImageManager
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
+import kotlinx.coroutines.launch
 
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
@@ -30,7 +28,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
-
         // init caches for specific services and initializers
         initCaches()
     }
@@ -38,9 +35,9 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun initCaches() {
         if (application.isUnitTestMode) return
 
-        service<PlsDataProvider>().init()
-        getDefaultProject().service<CwtConfigGroupService>().init()
-        PlsPathConstants.init()
+        PlsPathConstants.initAsync()
+        service<PlsDataProvider>().initAsync()
+        getDefaultProject().service<CwtConfigGroupService>().initAsync()
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
@@ -58,14 +55,18 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     // for each project
 
     override suspend fun execute(project: Project) {
-        // refresh roots for libraries on project startup
-        refreshRootsForLibraries(project)
-
-        // refresh opened files on project startup (once only)
-        refreshOnlyForOpenedFiles(project)
-
         // init caches for specific services and initializers
         initCaches(project)
+        // refresh roots for libraries on project startup
+        refreshRootsForLibraries(project)
+        // refresh opened files on project startup (once only)
+        refreshOnlyForOpenedFiles(project)
+    }
+
+    private fun initCaches(project: Project) {
+        if (application.isUnitTestMode) return
+
+        project.service<CwtConfigGroupService>().initAsync()
     }
 
     private fun refreshRootsForLibraries(project: Project) {
@@ -85,28 +86,21 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         // 否则，如果插件更新后内置的规则文件也更新了，对于已打开的脚本文件和文本化文件，
         // 缓存的代码检查结果、内嵌提示等信息可能未正确刷新，仍然是过时的，需要通过文件更改来触发刷新
 
-        // TODO 1.3.37+ 也许有更好的方式来解决这个问题
-        // TODO 2.0.2+ 似乎如果在编辑器中打开了规则文件，通过以下方式，对应的规则并不会正常刷新
-
         if (!PlsFacade.getInternalSettings().refreshOnProjectStartup) return
         if (!refreshedProjectIds.add(project.locationHash)) return
 
-        val fileEditorManager = FileEditorManager.getInstance(project) ?: return
-        val daemonCodeAnalyzer = DaemonCodeAnalyzer.getInstance(project) ?: return
-        val openFiles = fileEditorManager.openFiles
-        if (openFiles.isEmpty()) return
-        val psiFiles = runReadAction {
-            openFiles.filter { it.fileType is ParadoxBaseFileType }.mapNotNull { it.toPsiFile(project) }
-        }
-        if (psiFiles.isEmpty()) return
-        runInEdt {
-            psiFiles.forEach { psiFile -> daemonCodeAnalyzer.restart(psiFile) }
-        }
-    }
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        if (openedFiles.isEmpty()) return
 
-    private fun initCaches(project: Project) {
-        if (application.isUnitTestMode) return
+        // 需要确保此项目的所有规则分组的数据已加载完毕
+        // 仅重启高亮可能不足以让依赖规则的解析/缓存失效，强制重解析可确保首次打开即使用最新规则
+        val coroutineScope = PlsFacade.getCoroutineScope()
+        coroutineScope.launch {
+            val configGroupService = project.service<CwtConfigGroupService>()
+            configGroupService.getConfigGroup(null).init()
+            ParadoxGameType.entries.forEach { gameType -> configGroupService.getConfigGroup(gameType).init() }
 
-        project.service<CwtConfigGroupService>().init()
+            PlsCoreManager.reparseFiles(openedFiles)
+        }
     }
 }

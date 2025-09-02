@@ -22,7 +22,7 @@ class PlsDataProvider {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
     private val EMPTY_PATH = Path.of("")
 
-    fun init() {
+    fun initAsync() {
         //preload cached values
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
