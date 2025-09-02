@@ -206,6 +206,7 @@ object CwtConfigManager {
         if (filePath.startsWith("internal/")) return null //排除内部规则文件
         val configPath = getConfigPath(element)
         if (configPath == null || configPath.isEmpty()) return null
+
         return when {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {
                 CwtConfigTypes.Type
@@ -500,8 +501,11 @@ object CwtConfigManager {
         return r
     }
 
-    fun getContextConfigs(element: PsiElement, containerElement: PsiElement, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
-        val configPath = getConfigPath(containerElement) ?: return emptyList()
+    fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
+        val filePath = getFilePath(file) ?: return emptyList()
+        if (filePath.startsWith("internal/")) return emptyList() //排除内部规则文件
+        val configPath = getConfigPath(containerElement)
+        if (configPath == null || configPath.isEmpty()) return emptyList()
 
         var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
         contextConfigs += schema.properties

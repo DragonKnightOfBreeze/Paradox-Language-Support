@@ -173,6 +173,7 @@ object CwtConfigCompletionManager {
     }
 
     fun initializeContextForConfigCompletions(context: ProcessingContext): Boolean {
+        val file = context.parameters?.originalFile ?: return false
         val contextElement = context.contextElement ?: return false
         val configGroup = context.configGroup ?: return false
 
@@ -182,7 +183,7 @@ object CwtConfigCompletionManager {
         val optionContainerIdToMatch = getOptionContainerIdToMatch(expressionElement)
 
         val schema = configGroup.schemas.firstOrNull() ?: return false
-        val contextConfigs = CwtConfigManager.getContextConfigs(expressionElement, containerElement, schema)
+        val contextConfigs = CwtConfigManager.getContextConfigs(expressionElement, containerElement, file, schema)
 
         val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionBlockValue())
         val isOptionBlockValue = contextElement is CwtString && contextElement.isOptionBlockValue()
