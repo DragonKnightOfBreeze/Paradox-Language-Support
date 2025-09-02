@@ -1,6 +1,7 @@
 package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.util.ModificationTracker
+import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -77,9 +78,11 @@ val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String
 
 //region Core Accessors
 
+// val CwtConfigGroup.files: MutableMap<String, CwtFileConfig>
+//     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
+
 val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-
 val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocaleConfig>

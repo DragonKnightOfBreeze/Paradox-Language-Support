@@ -36,7 +36,7 @@ interface CwtConfigGroupFileProvider {
 
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?
 
-    fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
+    fun processFiles(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean): Boolean
 
     fun getHintMessage(): String? = null
 

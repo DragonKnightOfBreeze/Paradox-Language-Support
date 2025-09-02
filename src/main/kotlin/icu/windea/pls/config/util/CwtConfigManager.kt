@@ -460,46 +460,46 @@ object CwtConfigManager {
         }
     }
 
-    fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
-        val separatorIndex = pathExpression.indexOf('#')
-        if (separatorIndex == -1) return emptyList()
-        val filePath = pathExpression.substring(0, separatorIndex)
-        if (filePath.isEmpty()) return emptyList()
-        val fileConfig = configGroup.files[filePath] ?: return emptyList()
-        val configPath = pathExpression.substring(separatorIndex + 1)
-        if (configPath.isEmpty()) return emptyList()
-        val pathList = configPath.split('/')
-        var r: List<CwtMemberConfig<*>> = emptyList()
-        pathList.forEach { p ->
-            if (p == "-") {
-                if (r.isEmpty()) {
-                    r = fileConfig.values
-                } else {
-                    r = buildList {
-                        r.forEach { c1 ->
-                            c1.configs?.forEach { c2 ->
-                                if (c2 is CwtValueConfig) this += c2
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (r.isEmpty()) {
-                    r = fileConfig.properties.filter { c -> c.key == p }
-                } else {
-                    r = buildList {
-                        r.forEach { c1 ->
-                            c1.configs?.forEach { c2 ->
-                                if (c2 is CwtPropertyConfig && c2.key == p) this += c2
-                            }
-                        }
-                    }
-                }
-            }
-            if (r.isEmpty()) return emptyList()
-        }
-        return r
-    }
+    // fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
+    //     val separatorIndex = pathExpression.indexOf('#')
+    //     if (separatorIndex == -1) return emptyList()
+    //     val filePath = pathExpression.substring(0, separatorIndex)
+    //     if (filePath.isEmpty()) return emptyList()
+    //     val fileConfig = configGroup.files[filePath] ?: return emptyList()
+    //     val configPath = pathExpression.substring(separatorIndex + 1)
+    //     if (configPath.isEmpty()) return emptyList()
+    //     val pathList = configPath.split('/')
+    //     var r: List<CwtMemberConfig<*>> = emptyList()
+    //     pathList.forEach { p ->
+    //         if (p == "-") {
+    //             if (r.isEmpty()) {
+    //                 r = fileConfig.values
+    //             } else {
+    //                 r = buildList {
+    //                     r.forEach { c1 ->
+    //                         c1.configs?.forEach { c2 ->
+    //                             if (c2 is CwtValueConfig) this += c2
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         } else {
+    //             if (r.isEmpty()) {
+    //                 r = fileConfig.properties.filter { c -> c.key == p }
+    //             } else {
+    //                 r = buildList {
+    //                     r.forEach { c1 ->
+    //                         c1.configs?.forEach { c2 ->
+    //                             if (c2 is CwtPropertyConfig && c2.key == p) this += c2
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         if (r.isEmpty()) return emptyList()
+    //     }
+    //     return r
+    // }
 
     fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
         val filePath = getFilePath(file) ?: return emptyList()

@@ -26,12 +26,12 @@ import icu.windea.pls.model.constants.PlsPathConstants
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
  */
 class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
-    //for whole application
+    // for whole application
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
 
-        //init caches for specific services and initializers
+        // init caches for specific services and initializers
         initCaches()
     }
 
@@ -55,16 +55,16 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         }
     }
 
-    //for each project
+    // for each project
 
     override suspend fun execute(project: Project) {
-        //refresh roots for libraries on project startup
+        // refresh roots for libraries on project startup
         refreshRootsForLibraries(project)
 
-        //refresh opened files on project startup (once only)
+        // refresh opened files on project startup (once only)
         refreshOnlyForOpenedFiles(project)
 
-        //init caches for specific services and initializers
+        // init caches for specific services and initializers
         initCaches(project)
     }
 
@@ -81,13 +81,12 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun refreshOnlyForOpenedFiles(project: Project) {
         if (application.isUnitTestMode) return
 
-        //在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件
+        // 在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件
+        // 否则，如果插件更新后内置的规则文件也更新了，对于已打开的脚本文件和文本化文件，
+        // 缓存的代码检查结果、内嵌提示等信息可能未正确刷新，仍然是过时的，需要通过文件更改来触发刷新
 
-        //否则，如果插件更新后内置的规则文件也更新了，对于已打开的脚本文件和文本化文件，
-        //缓存的代码检查结果、内嵌提示等信息可能未正确刷新，仍然是过时的，需要通过文件更改来触发刷新
-
-        //TODO 1.3.37+ 也许有更好的方式来解决这个问题
-        //TODO 2.0.2+ 似乎如果在编辑器中打开了规则文件，通过以下方式，对应的规则并不会正常刷新
+        // TODO 1.3.37+ 也许有更好的方式来解决这个问题
+        // TODO 2.0.2+ 似乎如果在编辑器中打开了规则文件，通过以下方式，对应的规则并不会正常刷新
 
         if (!PlsFacade.getInternalSettings().refreshOnProjectStartup) return
         if (!refreshedProjectIds.add(project.locationHash)) return

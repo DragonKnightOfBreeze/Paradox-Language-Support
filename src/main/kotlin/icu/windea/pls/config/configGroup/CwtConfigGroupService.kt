@@ -2,8 +2,6 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
@@ -14,7 +12,6 @@ import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.Project
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider
 import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
@@ -32,9 +29,9 @@ class CwtConfigGroupService(private val project: Project) {
         //preload config groups
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            readAction { getConfigGroup(null) }
+            getConfigGroup(null).init()
             ParadoxGameType.entries.forEach { gameType ->
-                readAction { getConfigGroup(gameType) }
+                getConfigGroup(gameType).init()
             }
         }
     }
@@ -49,12 +46,12 @@ class CwtConfigGroupService(private val project: Project) {
 
     fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val gameTypeId = gameType.id
-        val projectName = if(project.isDefault) "default project" else "project ${project.name}"
+        val projectName = if (project.isDefault) "default project" else "project ${project.name}"
 
         logger.info("Initializing config group '$gameTypeId' for $projectName...")
         val start = System.currentTimeMillis()
 
-        val configGroup = doCreateConfigGroup(gameType)
+        val configGroup = CwtConfigGroup(gameType, project)
 
         val end = System.currentTimeMillis()
         logger.info("Initialize config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
@@ -71,16 +68,14 @@ class CwtConfigGroupService(private val project: Project) {
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
-                    val projectName = if(project.isDefault) "default project" else "project ${project.name}"
+                    val projectName = if (project.isDefault) "default project" else "project ${project.name}"
 
                     logger.info("Refreshing config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
 
-                    ReadAction.nonBlocking<Unit> {
-                        val newConfigGroup = doCreateConfigGroup(configGroup.gameType)
-                        newConfigGroup.copyUserDataTo(configGroup)
-                        configGroup.modificationTracker.incModificationCount()
-                    }.expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
+                    configGroup.clear()
+                    configGroup.init()
+                    configGroup.modificationTracker.incModificationCount()
 
                     val end = System.currentTimeMillis()
                     logger.info("Refresh config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
@@ -117,15 +112,6 @@ class CwtConfigGroupService(private val project: Project) {
         }
         val progressIndicator = BackgroundableProcessIndicator(task)
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
-    }
-
-    private fun doCreateConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        val configGroup = CwtConfigGroup(gameType, project)
-        val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-        dataProviders.all f@{ dataProvider ->
-            dataProvider.process(configGroup)
-        }
-        return configGroup
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {

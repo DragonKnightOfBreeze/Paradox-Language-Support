@@ -84,7 +84,6 @@
 
 ## 三、Registry Key（可运行时调整）
 
-- `pls.settings.refreshOnProjectStartup = true`
 - `pls.settings.locFontSize = 18`
 - `pls.settings.locTextIconSizeLimit = 36`
 - `pls.settings.textLengthLimit = 36`

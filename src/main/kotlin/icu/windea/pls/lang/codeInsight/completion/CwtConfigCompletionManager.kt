@@ -745,7 +745,7 @@ object CwtConfigCompletionManager {
                 val elementOffset = caretMarker.startOffset - 1
                 val element = file.findElementAt(elementOffset)?.parent
                 if (element !is CwtPropertyKey && element !is CwtString) return@c
-                val startAction = StartMarkAction.start(editor, project, PlsBundle.message("config.command.expandTemplate.name"))
+                val startAction = StartMarkAction.start(editor, project, PlsBundle.message("command.expandTemplate.name"))
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
                 val shift = element.startOffset + if (context.quoted) 1 else 0
                 schemaExpression.parameterRanges.forEach { parameterRange ->
@@ -762,7 +762,7 @@ object CwtConfigCompletionManager {
                     FinishMarkAction.finish(project, editor, startAction)
                 })
             }
-            WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("config.command.expandTemplate.name"), null, command, file)
+            WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("command.expandTemplate.name"), null, command, file)
         }
     }
 
