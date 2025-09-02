@@ -5,7 +5,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.configExpression.RuleBasedCwtDataExpressionResolver
@@ -26,7 +25,6 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
     // - expireAfterAccess: 非热点在一段时间无访问后自动淘汰
     private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
         .build<String, CwtTemplateExpression> { doResolve(it) }
-        .cancelable()
 
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
 

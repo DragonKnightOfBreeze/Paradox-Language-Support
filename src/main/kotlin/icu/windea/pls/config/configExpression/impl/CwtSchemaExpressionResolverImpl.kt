@@ -8,7 +8,6 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     private val logger = thisLogger()
@@ -18,7 +17,6 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收，保持性能与内存的平衡
     private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
         .build<String, CwtSchemaExpression> { doResolve(it) }
-        .cancelable()
 
     // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）
     private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()

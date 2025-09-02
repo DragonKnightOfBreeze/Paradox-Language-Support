@@ -3,7 +3,6 @@ package icu.windea.pls.config.configExpression.impl
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()
@@ -13,7 +12,6 @@ internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.R
     // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收
     private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
         .build<String, CwtCardinalityExpression> { key -> doResolve(key) }
-        .cancelable()
 
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 

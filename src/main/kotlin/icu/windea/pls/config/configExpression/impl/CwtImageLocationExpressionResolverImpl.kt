@@ -3,7 +3,6 @@ package icu.windea.pls.config.configExpression.impl
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 
 internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpression.Resolver {
     // 解析结果缓存：图像路径表达式在索引/渲染等流程中会被反复解析
@@ -11,7 +10,6 @@ internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpressi
     // - expireAfterAccess: 非热点表达式在一段时间未被访问后回收
     private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
         .build<String, CwtImageLocationExpression> { doResolve(it) }
-        .cancelable()
 
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")
 

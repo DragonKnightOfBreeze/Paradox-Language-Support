@@ -113,10 +113,8 @@ object Matchers {
 
         private val regexCache1 = CacheBuilder("maximumSize=10000")
             .build<String, Regex> { key -> key.toRegex() }
-            .cancelable()
         private val regexCache2 = CacheBuilder("maximumSize=10000")
             .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
-            .cancelable()
 
         private fun String.antPatternToRegexString(): String {
             val s = this
@@ -162,10 +160,8 @@ object Matchers {
 
         private val regexCache1 = CacheBuilder("maximumSize=10000")
             .build<String, Regex> { key -> key.toRegex() }
-            .cancelable()
         private val regexCache2 = CacheBuilder("maximumSize=10000")
             .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
-            .cancelable()
     }
 
     object PathMatcher {

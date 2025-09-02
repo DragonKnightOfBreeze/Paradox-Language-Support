@@ -20,7 +20,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 import com.intellij.openapi.editor.markup.TextAttributes
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 import java.awt.Color
 
 object ParadoxLocalisationAttributesKeys {
@@ -94,11 +93,11 @@ object ParadoxLocalisationAttributesKeys {
         createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {
             foregroundColor = color
         })
-    }.cancelable()
+    }
 
     @JvmStatic
     fun getColorKey(color: Color): TextAttributesKey? {
-        if(!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
+        if (!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
         return colorKeyCache.get(color)
     }
 
@@ -106,11 +105,11 @@ object ParadoxLocalisationAttributesKeys {
         createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_${color.rgb}", TextAttributes().apply {
             foregroundColor = color
         })
-    }.cancelable()
+    }
 
     @JvmStatic
     fun getColorOnlyKey(color: Color): TextAttributesKey? {
-        if(!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
+        if (!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
         return colorOnlyKeyCache.get(color)
     }
 }
