@@ -94,8 +94,8 @@ dependencies {
     // sqlite - https://github.com/xerial/sqlite-jdbc
     testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")
     // ktorm - https://www.ktorm.org/
-    testImplementation("org.ktorm:ktorm-core:3.6.0")
-    testImplementation("org.ktorm:ktorm-support-sqlite:3.6.0")
+    testImplementation("org.ktorm:ktorm-core:4.1.1")
+    testImplementation("org.ktorm:ktorm-support-sqlite:4.1.1")
 
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.17.7")
