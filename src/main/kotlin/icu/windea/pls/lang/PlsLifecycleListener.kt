@@ -3,41 +3,39 @@ package icu.windea.pls.lang
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.application
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.withLock
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.images.ImageManager
-import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
  */
 class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
+    private val runOncePerApplication = AtomicBoolean(false)
+    private val mutex = Mutex()
+
     // for whole application
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
-        // init caches for specific services and initializers
-        initCaches()
-    }
-
-    private fun initCaches() {
-        if (application.isUnitTestMode) return
-
-        PlsPathConstants.initAsync()
-        service<PlsDataProvider>().initAsync()
-        getDefaultProject().service<CwtConfigGroupService>().initAsync()
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
@@ -55,52 +53,57 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     // for each project
 
     override suspend fun execute(project: Project) {
-        // init caches for specific services and initializers
-        initCaches(project)
-        // refresh roots for libraries on project startup
-        refreshRootsForLibraries(project)
-        // refresh opened files on project startup (once only)
-        refreshOnlyForOpenedFiles(project)
+        runOncePerApplication.withLock(mutex) {
+            // 这些操作仅需执行一次（应用范围）
+            initCachesAsync()
+            refreshBuiltInConfigRootDirectoriesAsync(project)
+            initConfigGroupsAsync(getDefaultProject())
+        }
+
+        refreshRootsForLibrariesAsync(project)
+        initConfigGroupsAsync(project)
     }
 
-    private fun initCaches(project: Project) {
+    private fun initCachesAsync() {
         if (application.isUnitTestMode) return
-
-        project.service<CwtConfigGroupService>().initAsync()
+        PlsPathConstants.initAsync()
+        service<PlsDataProvider>().initAsync()
     }
 
-    private fun refreshRootsForLibraries(project: Project) {
-        if (application.isUnitTestMode) return
+    @Suppress("ObsoleteDispatchersEdt")
+    private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
+        // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
 
+        if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
+        val builtInConfigRootDirectories = CwtConfigGroupFileProvider.EP_NAME.extensionList
+            .filter { it.type == CwtConfigGroupFileProvider.Type.BuiltIn }
+            .mapNotNull { it.getRootDirectory(project) }
+        if (builtInConfigRootDirectories.isEmpty()) return
+
+        // 必须先切换到 EDT
+        withContext(Dispatchers.EDT) {
+            // 显示可以取消的模态进度条
+            val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
+            runWithModalProgressBlocking(project, title) {
+                builtInConfigRootDirectories.forEach {
+                    VfsUtil.markDirtyAndRefresh(false, true, true, it)
+                }
+            }
+        }
+    }
+
+    private fun refreshRootsForLibrariesAsync(project: Project) {
+        // 在项目启动时,异步地刷新外部库的根目录
+        if (application.isUnitTestMode) return
+        if (project.isDisposed) return
         project.paradoxLibrary.refreshRoots()
         project.configGroupLibrary.refreshRoots()
     }
 
-    private val refreshedProjectIdsKey = createKey<MutableSet<String>>("pls.refreshedProjectIds")
-    private val refreshedProjectIds by lazy { application.getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
-
-    private fun refreshOnlyForOpenedFiles(project: Project) {
+    private fun initConfigGroupsAsync(project: Project) {
+        // 在项目启动时，异步地预加载规则数据
         if (application.isUnitTestMode) return
-
-        // 在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件
-        // 否则，如果插件更新后内置的规则文件也更新了，对于已打开的脚本文件和文本化文件，
-        // 缓存的代码检查结果、内嵌提示等信息可能未正确刷新，仍然是过时的，需要通过文件更改来触发刷新
-
-        if (!PlsFacade.getInternalSettings().refreshOnProjectStartup) return
-        if (!refreshedProjectIds.add(project.locationHash)) return
-
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        if (openedFiles.isEmpty()) return
-
-        // 需要确保此项目的所有规则分组的数据已加载完毕
-        // 仅重启高亮可能不足以让依赖规则的解析/缓存失效，强制重解析可确保首次打开即使用最新规则
-        val coroutineScope = PlsFacade.getCoroutineScope()
-        coroutineScope.launch {
-            val configGroupService = project.service<CwtConfigGroupService>()
-            configGroupService.getConfigGroup(null).init()
-            ParadoxGameType.entries.forEach { gameType -> configGroupService.getConfigGroup(gameType).init() }
-
-            PlsCoreManager.reparseFiles(openedFiles)
-        }
+        if (project.isDisposed) return
+        project.service<CwtConfigGroupService>().initAsync()
     }
 }

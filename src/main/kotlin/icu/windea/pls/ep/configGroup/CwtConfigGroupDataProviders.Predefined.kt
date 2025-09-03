@@ -11,7 +11,7 @@ import icu.windea.pls.config.configGroup.definitionTypesSupportScope
  * 用于初始规则分组中预先定义的那些数据。
  */
 class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override fun process(configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         run {
             with(configGroup.aliasNamesSupportScope) {
                 this += "modifier" //也支持，但不能切换作用域

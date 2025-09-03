@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -38,7 +38,7 @@ import icu.windea.pls.model.paths.CwtConfigPath
  * 用于初始规则分组中需要经过计算的那些数据。
  */
 class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override fun process(configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         //compute `generatedModifiers` and `predefinedModifiers`
         run {
             configGroup.modifiers.values

@@ -1,7 +1,9 @@
 package icu.windea.pls
 
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.settings.PlsConfigSettings
@@ -16,14 +18,13 @@ import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * 用于获取协程作用域、各种服务以及插件设置状态。
  */
 object PlsFacade {
-    val isDebug = System.getProperty("pls.is.debug").toBoolean()
-
     //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
     @Service(Service.Level.PROJECT)
@@ -67,4 +68,8 @@ object PlsFacade {
     }
 
     fun getInternalSettings() = service<PlsInternalSettings>()
+
+    fun isDebug() = System.getProperty("pls.is.debug").toBoolean()
+
+    fun isDevVersion() = PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
 }

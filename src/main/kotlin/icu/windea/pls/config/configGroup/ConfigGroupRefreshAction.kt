@@ -39,7 +39,5 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
         configGroupService.refreshConfigGroups(configGroups)
-        configGroupService.updateRefreshFloatingToolbar()
     }
 }
-

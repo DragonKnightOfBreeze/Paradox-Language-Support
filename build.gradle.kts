@@ -190,7 +190,7 @@ intellijPlatform {
     }
 
     // https://plugins.jetbrains.com/docs/intellij/plugin-signing.html
-    signing  {
+    signing {
         certificateChain = envVars("CERTIFICATE_CHAIN_PLS")
         privateKey = envVars("PRIVATE_KEY_PLS")
         password = envVars("PRIVATE_KEY_PASSWORD_PLS")
@@ -229,9 +229,6 @@ val cwtConfigDirs = listOf(
 )
 
 tasks {
-    withType<Copy> {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
     jar {
         // 添加项目文档和许可证
         from("README.md", "README_en.md", "LICENSE")
@@ -283,6 +280,16 @@ tasks {
         if (!hasProperty("pls.include.test.ai")) {
             exclude("icu/windea/pls/ai/**")
         }
+    }
+
+    withType<Copy> {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+    withType<AbstractArchiveTask> {
+        // 保证读取到最新的内置规则文件
+        // 让 entry 时间戳与写入时间一致（不再被规范化为常量）
+        // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
+        isPreserveFileTimestamps = true
     }
 
     // 让它正常工作有点太麻烦了

@@ -3,33 +3,42 @@ package icu.windea.pls.config.configGroup
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.TaskCancellation
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.ide.progress.withModalProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.id
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-
-private val logger = logger<CwtConfigGroupService>()
 
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(private val project: Project) {
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
     fun initAsync() {
+        val configGroups = mutableSetOf<CwtConfigGroup>()
+        configGroups.add(getConfigGroup(null))
+        ParadoxGameType.entries.forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            getConfigGroup(null).init()
-            ParadoxGameType.entries.forEach { gameType -> getConfigGroup(gameType).init() }
+            // 显示不可取消的后台进度条
+            val title = PlsBundle.message("configGroup.init.progressTitle")
+            withBackgroundProgress(project, title, false) {
+                configGroups.forEach { configGroup ->
+                    configGroup.init()
+                }
+            }
+            // 重新解析已打开的文件
+            val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsCoreManager.reparseFiles(openedFiles)
         }
     }
 
@@ -42,73 +51,50 @@ class CwtConfigGroupService(private val project: Project) {
     }
 
     fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
-        val gameTypeId = gameType.id
-        val projectName = if (project.isDefault) "default project" else "project ${project.name}"
-
-        logger.info("Initializing config group '$gameTypeId' for $projectName...")
-        val start = System.currentTimeMillis()
-
         val configGroup = CwtConfigGroup(gameType, project)
-
-        val end = System.currentTimeMillis()
-        logger.info("Initialize config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
-
         return configGroup
     }
 
     @Synchronized
     fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
-        //不替换configGroup，而是替换其中的userData
         if (configGroups.isEmpty()) return
-        val progressTitle = PlsBundle.message("configGroup.refresh.progressTitle")
-        val task = object : Task.Backgroundable(project, progressTitle, true) {
-            override fun run(indicator: ProgressIndicator) {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            // 显示可以取消的模态进度条
+            val title = PlsBundle.message("configGroup.refresh.progressTitle")
+            withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.cancellable()) {
                 configGroups.forEach { configGroup ->
-                    val gameTypeId = configGroup.gameType.id
-                    val projectName = if (project.isDefault) "default project" else "project ${project.name}"
-
-                    logger.info("Refreshing config group '$gameTypeId'...")
-                    val start = System.currentTimeMillis()
-
                     configGroup.clear()
                     configGroup.init()
-                    configGroup.modificationTracker.incModificationCount()
-
-                    val end = System.currentTimeMillis()
-                    logger.info("Refresh config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
                 }
-
-                //重新解析已打开的文件
-                val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-                PlsCoreManager.reparseFiles(openedFiles)
             }
+            // 重新解析已打开的文件
+            val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsCoreManager.reparseFiles(openedFiles)
+        }.invokeOnCompletion { e ->
+            if (e is CancellationException) {
+                PlsCoreManager.createNotification(
+                    NotificationType.INFORMATION,
+                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
+                    ""
+                ).notify(project)
+            } else if (e == null) {
+                updateRefreshFloatingToolbar()
 
-            override fun onSuccess() {
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
-                    //重新解析并刷新（IDE之后会自动请求重新索引）
-                    //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+                    // 重新解析并刷新（IDE之后会自动请求重新索引）
+                    // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
                     val rootFilePaths = getRootFilePaths(configGroups)
                     val files = PlsCoreManager.findFilesByRootFilePaths(rootFilePaths)
                     PlsCoreManager.reparseFiles(files)
                 }
-
                 PlsCoreManager.createNotification(
                     NotificationType.INFORMATION,
                     PlsBundle.message("configGroup.refresh.notification.finished.title"),
                     PlsBundle.message("configGroup.refresh.notification.finished.content")
                 ).addAction(action).notify(project)
             }
-
-            override fun onCancel() {
-                PlsCoreManager.createNotification(
-                    NotificationType.INFORMATION,
-                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
-                    ""
-                ).notify(project)
-            }
         }
-        val progressIndicator = BackgroundableProcessIndicator(task)
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
