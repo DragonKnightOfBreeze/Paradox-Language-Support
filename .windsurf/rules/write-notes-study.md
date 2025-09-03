@@ -4,7 +4,7 @@ description:
 globs: 
 ---
 
-请就之前讨论的技术话题编写一份学习笔记，放到 `notes/ai-notes/study`下面，文件名应为 `学习笔记：{topic}.md`
+请就之前讨论的技术话题编写一份学习笔记，放到 `documents/ai-notes/study`下面，文件名应为 `学习笔记：{topic}.md`
 
 - `{topic}`  - 技术话题。如果需要细分，请使用 `{topic}_{sub_topic}`的格式，可以有更多子话题。
 - 应当包含参考链接。

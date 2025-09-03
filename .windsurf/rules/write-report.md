@@ -20,7 +20,7 @@ globs:
 
 ## 文件命名与结构
 
-- 文件位置：`notes/ai-reports/`
+- 文件位置：`documents/ai-reports/`
 - 文件命名：`报告_<no>_<desc>.md`
   - `<no>` 从 1 开始自增，表示时间顺序；`<desc>` 为简短描述。
   - 示例：`报告_#1_生成单元测试.md`
