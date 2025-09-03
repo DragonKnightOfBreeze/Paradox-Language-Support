@@ -63,6 +63,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -483,8 +484,9 @@ object ParadoxDefinitionManager {
 
         val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.toOccurrence(definitionElement, configGroup.project) })
 
-        // 注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-        val matched = blockElement.properties().all p@{ propertyElement ->
+        // NOTE 这里需要兼容内联
+        // NOTE propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
+        val matched = blockElement.properties().options(inline = true).all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
@@ -517,7 +519,8 @@ object ParadoxDefinitionManager {
 
         val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.toOccurrence(blockElement, configGroup.project) })
 
-        val matched = blockElement.values().process p@{ valueElement ->
+        // NOTE 这里需要兼容内联
+        val matched = blockElement.values().options(inline = true).process p@{ valueElement ->
             // 如果没有匹配的规则则忽略
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
