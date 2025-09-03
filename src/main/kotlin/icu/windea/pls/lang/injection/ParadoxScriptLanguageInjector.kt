@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.unquote
+import icu.windea.pls.ep.configContext.ParameterValueCwtConfigContextProvider
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -32,8 +33,8 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  *
- * @see icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
- * @see icu.windea.pls.ep.configContext.ParameterValueCwtConfigContextProvider
+ * @see ParadoxParameterValueInjectionInfo
+ * @see ParameterValueCwtConfigContextProvider
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
@@ -67,6 +68,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         applyInjectionForArgumentValue(host, allInjectionInfos)
         ProgressManager.checkCanceled()
         applyInjectionForParameterDefaultValue(host, allInjectionInfos)
+        host.putUserData(ParadoxParameterManager.Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if (allInjectionInfos.isEmpty()) return true
         allInjectionInfos.forEach f@{ injectionInfo ->
             registrar.startInjecting(ParadoxScriptLanguage)
@@ -120,7 +122,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if (host !is ParadoxParameter) return
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if (injectionInfo == null) return
-        host.putUserData(ParadoxParameterManager.Keys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         allInjectionInfos.add(injectionInfo)
     }
 
