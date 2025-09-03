@@ -13,7 +13,6 @@ import icu.windea.pls.model.id
 import kotlinx.coroutines.sync.Mutex
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.system.measureTimeMillis
 
 private val logger = logger<CwtConfigGroup>()
 
@@ -35,17 +34,21 @@ class CwtConfigGroup(
     suspend fun init() {
         initialized.withLock(mutex) {
             // 按需加载数据（但是项目启动时会自动在后台预加载）
-            val projectName = if (project.isDefault) "default project" else project.name
-            logger.info("Initializing config group '${gameType.id}' for project '$projectName'...")
-            val time = measureTimeMillis {
-                val configGroupOnInit = CwtConfigGroup(gameType, project)
-                val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-                dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
-                configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
-                modificationTracker.incModificationCount() // 显式增加修改计数
-            }
-            logger.info("Initialized config group '${gameType.id}' for project '$projectName' in $time ms.")
+            doInit()
         }
+    }
+
+    private suspend fun doInit() {
+        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
+        logger.info("Initializing config group '${gameType.id}' for $projectTitle...")
+        val start = System.currentTimeMillis()
+        val configGroupOnInit = CwtConfigGroup(gameType, project)
+        val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+        dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
+        configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
+        modificationTracker.incModificationCount() // 显式增加修改计数
+        val end = System.currentTimeMillis()
+        logger.info("Initialized config group '${gameType.id}' for $projectTitle in ${end - start} ms.")
     }
 
     fun clear() {

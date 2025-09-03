@@ -3,12 +3,13 @@ package icu.windea.pls.config.configGroup
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.TaskCancellation
-import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.ide.progress.withModalProgress
+import com.intellij.platform.util.coroutines.forEachConcurrent
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.finalGameType
@@ -19,27 +20,50 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
+private val logger = logger<CwtConfigGroupService>()
+
+@Suppress("UnstableApiUsage")
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(private val project: Project) {
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
     fun initAsync() {
-        val configGroups = mutableSetOf<CwtConfigGroup>()
-        configGroups.add(getConfigGroup(null))
-        ParadoxGameType.entries.forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            // 显示不可取消的后台进度条
-            val title = PlsBundle.message("configGroup.init.progressTitle")
-            withBackgroundProgress(project, title, false) {
-                configGroups.forEach { configGroup ->
-                    configGroup.init()
+            if (project.isDefault) {
+                doInit()
+                return@launch
+            }
+
+            // 估计用时：2s
+            if (PlsFacade.getInternalSettings().showModalOnInitConfigGroups) {
+                // 显示不可取消的模态进度条
+                val title = PlsBundle.message("configGroup.init.progressTitle")
+                withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
+                    doInit()
                 }
+            } else {
+                // 静默执行
+                doInit()
             }
             // 重新解析已打开的文件
             val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
             PlsCoreManager.reparseFiles(openedFiles)
         }
+    }
+
+    private suspend fun doInit() {
+        val configGroups = mutableSetOf<CwtConfigGroup>()
+        configGroups.add(getConfigGroup(null))
+        ParadoxGameType.entries.forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
+        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
+        logger.info("Initializing config groups for $projectTitle...")
+        val start = System.currentTimeMillis()
+        configGroups.forEachConcurrent { configGroup ->
+            configGroup.init()
+        }
+        val end = System.currentTimeMillis()
+        logger.info("Initialized config groups for $projectTitle in ${end - start} ms.")
     }
 
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
@@ -63,10 +87,7 @@ class CwtConfigGroupService(private val project: Project) {
             // 显示可以取消的模态进度条
             val title = PlsBundle.message("configGroup.refresh.progressTitle")
             withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.cancellable()) {
-                configGroups.forEach { configGroup ->
-                    configGroup.clear()
-                    configGroup.init()
-                }
+                doRefresh(configGroups)
             }
             // 重新解析已打开的文件
             val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
@@ -95,6 +116,18 @@ class CwtConfigGroupService(private val project: Project) {
                 ).addAction(action).notify(project)
             }
         }
+    }
+
+    private suspend fun doRefresh(configGroups: Collection<CwtConfigGroup>) {
+        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
+        logger.info("Refreshing config groups for $projectTitle...")
+        val start = System.currentTimeMillis()
+        configGroups.forEachConcurrent { configGroup ->
+            configGroup.clear()
+            configGroup.init()
+        }
+        val end = System.currentTimeMillis()
+        logger.info("Refreshed config groups for $projectTitle in ${end - start} ms.")
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {

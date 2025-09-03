@@ -59,7 +59,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
             refreshBuiltInConfigRootDirectoriesAsync(project)
             initConfigGroupsAsync(getDefaultProject())
         }
-
         refreshRootsForLibrariesAsync(project)
         initConfigGroupsAsync(project)
     }

@@ -1,19 +1,19 @@
 package icu.windea.pls.config.configGroup
 
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.runReadAction
-import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.roots.SyntheticLibrary
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.util.PlsCoreManager
+import kotlinx.coroutines.launch
 import javax.swing.Icon
 
 //each library each project
@@ -56,8 +56,9 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         val newRoots = computeRoots()
         if (oldRoots == newRoots) return
         roots = newRoots
-        runInEdt(ModalityState.nonModal()) {
-            runWriteAction {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            edtWriteAction {
                 val libraryName = PlsBundle.message("configGroup.library.name")
                 AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
             }
@@ -77,7 +78,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(projectFileIndex.isInContent(rootDirectory)) return@f
+            if (projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
         newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }

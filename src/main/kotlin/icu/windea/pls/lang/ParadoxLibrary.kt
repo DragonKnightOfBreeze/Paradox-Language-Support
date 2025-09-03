@@ -1,10 +1,8 @@
 package icu.windea.pls.lang
 
 import com.intellij.navigation.ItemPresentation
-import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.runReadAction
-import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -16,6 +14,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.settings.finalGameDirectory
 import icu.windea.pls.lang.util.PlsCoreManager
+import kotlinx.coroutines.launch
 import javax.swing.Icon
 
 //each library each project
@@ -58,8 +57,9 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         val newRoots = computeRoots()
         if (oldRoots == newRoots) return
         roots = newRoots
-        runInEdt(ModalityState.nonModal()) {
-            runWriteAction {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            edtWriteAction {
                 val libraryName = PlsBundle.message("library.name")
                 AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
             }

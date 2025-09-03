@@ -91,17 +91,17 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvidersAndRootDirectories = mutableMapOf<CwtConfigGroupFileProvider, VirtualFile>()
-        fileProviders.forEach f@{ fileProvider ->
-            readAction {
-                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@readAction
+        readAction {
+            fileProviders.forEach f@{ fileProvider ->
+                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@f
                 fileProvidersAndRootDirectories.put(fileProvider, rootDirectory)
             }
         }
 
         val allInternalFiles = mutableMapOf<String, VirtualFile>()
         val allFiles = mutableMapOf<String, VirtualFile>()
-        fileProvidersAndRootDirectories.all { (fileProvider, rootDirectory) ->
-            readAction {
+        readAction {
+            fileProvidersAndRootDirectories.all { (fileProvider, rootDirectory) ->
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
                         if (fileProvider.type != CwtConfigGroupFileProvider.Type.BuiltIn) return@p true //不允许覆盖内部规则文件
@@ -112,17 +112,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     true
                 }
             }
-        }
-        allInternalFiles.forEach { (filePath, file) ->
-            readAction {
-                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@readAction
+            allInternalFiles.forEach f@{ (filePath, file) ->
+                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
                 val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
                 processInternalFile(filePath, fileConfig, configGroup)
             }
-        }
-        allFiles.forEach { (_, file) ->
-            readAction {
-                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@readAction
+            allFiles.forEach f@{ (_, file) ->
+                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
                 val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
                 processFile(fileConfig, configGroup)
                 //configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
