@@ -14,15 +14,15 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 
 **Core Features:**
 
-- **Multi-Language Support**: Full support for script language, localization language, and CSV language used in mod development, as well as CWT language for writing configs.
-- **Rich Language Features**: Offers syntax highlighting, navigation, code completion, inspection, refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other functionalities.
+- **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
+- **Rich Language Features**: Provides syntax highlighting, navigation, code completion, inspection, refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other functionalities.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS, TGA).
 - **Enhanced Information Hints**: Displays key information such as localized text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
 - **Advanced Language Features Support**: Compatible with various advanced features in scripting and localization languages, including parameters, scopes, inline scripts, and complex expressions.
 - **Extensible Config System**: Supports customizing and importing config files to enhance functionalities like code navigation, completion, and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
-- **Directory Recognition**: Automatically identifies game and mod directories, reducing manual configuration.
+- **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
 
 PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-cwt-config-files) config files to meet personalized development needs.
 
