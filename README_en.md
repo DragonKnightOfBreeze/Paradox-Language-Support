@@ -15,11 +15,11 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other features.
-- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS, TGA).
+- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing and many other features.
+- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
 - **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, inline scripts and complex expressions.
-- **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, completion, and documentation hints.
+- **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
 - **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
@@ -87,7 +87,7 @@ PLS implements its core language features based on its own [config system](https
 - Employs an extension point mechanism for dynamic functional expansion, facilitating customization and enhancement of plugin behavior by both the plugin itself and mod developers.
 - Includes a built-in custom code injectors for achieving IDE features that cannot be accomplished by conventional means.
 - Integrates image processing, translation and lint tools to optimize and extend plugin capabilities.
-- Preliminary integration of AI technology provides translation and polishing support for localisation text.
+- Preliminary integration of AI technology for translating and polishing localisation text.
 
 ## Reference Links
 
