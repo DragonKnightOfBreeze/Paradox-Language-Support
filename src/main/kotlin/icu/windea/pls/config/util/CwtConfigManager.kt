@@ -505,7 +505,7 @@ object CwtConfigManager {
         val filePath = getFilePath(file) ?: return emptyList()
         if (filePath.startsWith("internal/")) return emptyList() //排除内部规则文件
         val configPath = getConfigPath(containerElement)
-        if (configPath == null || configPath.isEmpty()) return emptyList()
+        if (configPath == null) return emptyList()
 
         var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
         contextConfigs += schema.properties
