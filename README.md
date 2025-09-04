@@ -31,7 +31,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 ## 快速开始
 
-### 使用步骤
+**使用步骤：**
 
 1. 在 IDE 中打开你的模组根目录。
 2. 打开模组描述符文件（`descriptor.mod`，VIC3 中为 `.metadata/metadata.json`）。
@@ -40,7 +40,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 5. 确认配置，等待 IDE 完成索引。
 6. 开始你的模组开发之旅吧！
 
-### 实用技巧
+**实用技巧：**
 
 - **全局搜索**：
   - 使用 `Ctrl + Shift + R` 或 `Ctrl + Shift + F` 在当前项目、目录或指定查询作用域中搜索。
@@ -75,7 +75,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
   - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 工具搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
-### 已知限制
+**已知限制：**
 
 - 对 Stellaris 中的部分复杂语言特性的支持仍在完善中。
 - 对非 Stellaris 游戏中的特有语言特性的支持尚不完整，欢迎反馈与贡献。

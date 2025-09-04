@@ -30,7 +30,7 @@ PLS implements its core language features based on its own [config system](https
 
 ## Getting Started
 
-### Usage Steps
+**Usage Steps:**
 
 1. Open your mod's root directory in the IDE.
 2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3).
@@ -39,7 +39,7 @@ PLS implements its core language features based on its own [config system](https
 5. Confirm the configuration and wait for the IDE to finish indexing.
 6. Begin your mod development journey!
 
-### Practical Tips
+**Practical Tips:**
 
 - **Global Search**:
   - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
@@ -74,7 +74,7 @@ PLS implements its core language features based on its own [config system](https
   - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
   - Feedback is welcome through GitHub, Discord, and other channels.
 
-### Known Limitations
+**Known Limitations:**
 
 - Support for some complex language features in Stellaris is still being improved.
 - Support for unique language features in non-Stellaris games is not yet complete; feedback and contributions are welcome.
