@@ -10,18 +10,18 @@
 
 ## Overview
 
-Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help ou easily achieve creativity.
+Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides syntax highlighting, navigation, code completion, inspection, refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other functionalities.
+- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other features.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS, TGA).
-- **Enhanced Information Hints**: Displays key information such as localized text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
-- **Advanced Language Features Support**: Compatible with various advanced features in scripting and localization languages, including parameters, scopes, inline scripts, and complex expressions.
-- **Extensible Config System**: Supports customizing and importing config files to enhance functionalities like code navigation, completion, and documentation hints.
-- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
-- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
+- **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
+- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, inline scripts and complex expressions.
+- **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, completion, and documentation hints.
+- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
+- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
 - **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
 
 PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-cwt-config-files) config files to meet personalized development needs.
@@ -37,7 +37,7 @@ PLS implements its core language features based on its own [config system](https
 3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
-6. Begin your mod development journey!
+6. Begin your mod development voyage!
 
 **Practical Tips:**
 
@@ -65,29 +65,29 @@ PLS implements its core language features based on its own [config system](https
     - Clicking the blue gear icon in the editor's top-right floating toolbar.
     - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
     - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
-  - Modify default language environment, default game type, default game directory, and other functional details in the global settings.
-  - Adjust game directory, mod dependencies, and other configurations in the mod settings.
+  - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
+  - Adjust game directory, mod dependencies and other configurations in the mod settings.
 - **Troubleshooting**:
   - Ensure both the IDE and the plugin are updated to the latest versions.
   - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
   - If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files).
-  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
-  - Feedback is welcome through GitHub, Discord, and other channels.
+  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
+  - Feedback is welcome through GitHub, Discord and other channels.
 
 **Known Limitations:**
 
 - Support for some complex language features in Stellaris is still being improved.
-- Support for unique language features in non-Stellaris games is not yet complete; feedback and contributions are welcome.
-- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files; Pull Requests are welcome.
+- Support for unique language features in non-Stellaris games is not yet complete. Feedback and contributions are welcome.
+- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files. Pull Requests are welcome.
 
 ## Technical Details
 
 - Built on the IntelliJ Platform SDK, developed with Kotlin, and utilizes [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)) for deep language parsing and manipulation.
 - Uses BNF for grammar parsing and JFlex for lexical analysis.
 - Employs an extension point mechanism for dynamic functional expansion, facilitating customization and enhancement of plugin behavior by both the plugin itself and mod developers.
-- Includes a built-in custom code injector for achieving IDE features that cannot be accomplished by conventional means.
-- Integrates image processing, translation, and lint tools to optimize and extend plugin capabilities.
-- Preliminary integration of AI technology provides translation and polishing support for localized text.
+- Includes a built-in custom code injectors for achieving IDE features that cannot be accomplished by conventional means.
+- Integrates image processing, translation and lint tools to optimize and extend plugin capabilities.
+- Preliminary integration of AI technology provides translation and polishing support for localisation text.
 
 ## Reference Links
 

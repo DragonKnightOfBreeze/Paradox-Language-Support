@@ -7,7 +7,7 @@
 3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
-6. Begin your mod development journey!
+6. Begin your mod development voyage!
 
 ## Practical Tips
 
@@ -35,17 +35,17 @@
     - Clicking the blue gear icon in the editor's top-right floating toolbar.
     - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
     - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
-  - Modify default language environment, default game type, default game directory, and other functional details in the global settings.
-  - Adjust game directory, mod dependencies, and other configurations in the mod settings.
+  - Modify preferred locale, default game type, default game directory and other functional details in the global settings.
+  - Adjust game directory, mod dependencies and other configurations in the mod settings.
 - **Troubleshooting**:
   - Ensure both the IDE and the plugin are updated to the latest versions.
   - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
   - If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files).
-  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
-  - Feedback is welcome through GitHub, Discord, and other channels.
+  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using [Everything](https://www.voidtools.com)).
+  - Feedback is welcome through GitHub, Discord and other channels.
 
 ## Known Limitations
 
 - Support for some complex language features in Stellaris is still being improved.
-- Support for unique language features in non-Stellaris games is not yet complete; feedback and contributions are welcome.
-- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files; Pull Requests are welcome.
+- Support for unique language features in non-Stellaris games is not yet complete. Feedback and contributions are welcome.
+- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files. Pull Requests are welcome.

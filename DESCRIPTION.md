@@ -1,15 +1,15 @@
-Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help ou easily achieve creativity.
+Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help you easily achieve creativity.
 
 **Core Features:**
 
 - **Multi-Language Support**: Full support for the script language, localization language and CSV language used in mod development, as well as the CWT language for writing configs.
-- **Rich Language Features**: Provides syntax highlighting, navigation, code completion, inspection, refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other functionalities.
+- **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other features.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS, TGA).
-- **Enhanced Information Hints**: Displays key information such as localized text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
-- **Advanced Language Features Support**: Compatible with various advanced features in scripting and localization languages, including parameters, scopes, inline scripts, and complex expressions.
-- **Extensible Config System**: Supports customizing and importing config files to enhance functionalities like code navigation, completion, and documentation hints.
-- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
-- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
+- **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
+- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, inline scripts and complex expressions.
+- **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, completion, and documentation hints.
+- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
+- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
 - **Directory Detection**: Automatically detects game and mod directories, reducing manual configuration.
 
 PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-cwt-config-files) config files to meet personalized development needs.

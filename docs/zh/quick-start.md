@@ -35,13 +35,13 @@
     - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
     - 点击编辑器右键菜单中的 `Paradox Language Support > Open Mod Settings...`。
     - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
-  - 可在全局设置中修改默认语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
+  - 可在全局设置中修改偏好语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
   - 可在模组设置中调整游戏目录、模组依赖等配置。
 - **问题排查**：
   - 确保 IDE 和插件均为最新版本。
   - 如果问题可能与索引有关，可尝试[清除缓存并重启 IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html)。
   - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#write-cwt-config-files)。
-  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 工具搜索定位）。
+  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
 ## 已知限制
