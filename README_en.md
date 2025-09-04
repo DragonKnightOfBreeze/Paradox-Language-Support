@@ -1,118 +1,125 @@
 # Paradox Language Support
 
-## Summary
+[![中文文档](https://img.shields.io/badge/文档-中文-blue)](README.md)
+[![English Documentation](https://img.shields.io/badge/Docs-English-green)](README_en.md)
 
-[中文文档](README.md) | [English Documentation](README_en.md)
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
+[![Reference Docs](https://img.shields.io/badge/Docs-Reference-orange)](https://windea.icu/Paradox-Language-Support)
+[![Plugin Marketplace](https://img.shields.io/badge/JetBrains-Marketplace-orange)](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
+[![Discord](https://img.shields.io/badge/Discord-Community-blue?logo=discord)](https://discord.gg/vBpbET2bXT)
 
-[GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Reference Documentation](https://windea.icu/Paradox-Language-Support) |
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
-[Discord](https://discord.gg/vBpbET2bXT)
+## Overview
 
-The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Interactive games), which is smart, convenient and with more potential.
+Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically for Paradox game mod developers, which provides an intelligent, efficient and feature-rich development experience to help ou easily achieve creativity.
 
-Features:
+**Core Features:**
 
-- Supports the script language, localisation language and csv languages used to write mods, and the CWT language used to write config files.
-- Provides a wide range of powerful language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
-- Supports previewing and rendering DDS and TGA pictures, and provides actions to convert image formats (PNG, DDS, TGA).
-- Supports rendering various useful information via quick documentation and inlay hints (such as localisation text, image, scope information and parameter information).
-- Supports most advanced features of script and localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
-- Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
-- Integrates image tools (such as [Image Magick](https://www.imagemagick.org)), translation tools (such as [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)) and linting tools (such as [Tiger](https://github.com/amtep/tiger)).
-- Integrates AI technologies initially, make it available to translating and polishing localisation text.
-- Recognizes game directories and mod directories automatically.
+- **Multi-Language Support**: Full support for script language, localization language, and CSV language used in mod development, as well as CWT language for writing configs.
+- **Rich Language Features**: Offers syntax highlighting, navigation, code completion, inspection, refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing, and many other functionalities.
+- **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS, TGA).
+- **Enhanced Information Hints**: Displays key information such as localized text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
+- **Advanced Language Features Support**: Compatible with various advanced features in scripting and localization languages, including parameters, scopes, inline scripts, and complex expressions.
+- **Extensible Config System**: Supports customizing and importing config files to enhance functionalities like code navigation, completion, and documentation hints.
+- **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
+- **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
+- **Directory Recognition**: Automatically identifies game and mod directories, reducing manual configuration.
 
-This plugin has implemented various advanced language features based on [config groups](https://windea.icu/Paradox-Language-Support/en/config.html#config-group), which consists of config files.
-The latest-version config files are already built into this plugin, make it works right out of the box.
-Besides, [customizing](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#importing-cwt-config-files) config files are also supported.
+PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports [customizing](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#importing-cwt-config-files) config files to meet personalized development needs.
 
 ![](docs/images/preview_1_en.png)
 
-## Quick Start
+## Getting Started
 
-Usages:
+### Usage Steps
 
-- Open your mod root directory through the IDE.
-- Open the mod descriptor file, which is `description.mod` under the root directory (for VIC3, it's `.metadata/metadata.json`).
-- Click the mod settings button in the floating toolbar at the top right of the editor.
-- Configure the game type, game directory, and additional mod dependencies of the mod.
-- Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
-- Start your mod programming journey.
+1. Open your mod's root directory in the IDE.
+2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3).
+3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
+4. Configure the mod's game type, game directory, and required mod dependencies.
+5. Confirm the configuration and wait for the IDE to finish indexing.
+6. Begin your mod development journey!
 
-Tips:
+### Practical Tips
 
-- To perform a global search, please refer to the following methods:
-  - Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
-  - Click `Shift Shift` to find files, definitions, scripted variables, and other symbols.
-- To perform a code navigation, please refer to the following methods:
-  - Hold down `Ctrl` and click on the target location, to navigate to the declarations or usages of the target.
-  - Hold down `Ctrl Shift` and click on the target location, to navigate to the type declarations of the target.
-  - Hold down `Alt` and click on the target location, to navigate to the related CWT config declarations of the target.
-  - Hold down `Shift Alt` and click on the target location, to navigate to the related localisation declarations of the target definition.
-  - Hold down `Ctrl Shift Alt` and click on the target location to navigate to the related image declarations of the target definition.
-  - Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
-  - Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
-  - Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localisations, scripted variables, etc.
-  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
-  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
-- To run a global code inspection, refer to the following method:
-  - Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
-  - Click `Code > Inspect Code...`, run a global code inspection for whole project.
-  - When code inspection is finished ,IDE will show detail inspection result in Problems panel.
-- To change the settings of mod types, game directories, mod dependencies, etc., open the mod settings dialog using one of the following methods:
-  - Click `Settings > Languages & Frameworks > Paradox Language Support` to configure default game directories.
-  - Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
-  - Open the context menu and click `Paradox Language Support > Open Mod Settings...` in the editor.
-  - Click `Tools > Paradox Language Support > Open Mod Settings...`.
-- To change the global settings of the plugin, refer to the following method:
-  - Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
-- If you encounter some unexpected problems during use, try the following:
-  - Update the IDE and plugin to the latest version.
-  - If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File > Invalidate Caches... > Invalidate and Restart`)
-  - If it may be related to plugin's built-in configs, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files).
-  - If it may be related to plugin configuration, try to delete the plugin configuration file. (`paradox-language-support.xml`. If you don't know the detailed location, use [Everything](https://www.voidtools.com))
-  - Send feedback via GitHub, Discord, etc.
+- **Global Search**:
+  - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
+  - Use `Shift + Shift` (Search Everywhere) to quickly find files, definitions, scripted variables, and other symbols.
+- **Code Navigation**:
+  - Use `Ctrl + Click` to jump to the declaration or usage of a target.
+  - Use `Ctrl + Shift + Click` to jump to the type declaration of a target.
+  - Use `Alt + Click` to jump to the declaration of the relevant config for a target.
+  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localization for a target.
+  - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the relevant image for a target.
+  - Use the `Navigate` menu (or the `Go To` option in the editor's right-click menu) for quick navigation.
+  - Use `Navigate > Definition Hierarchy` to open the type hierarchy window and view definitions of specific types.
+  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localizations, scripted variables, etc.
+  - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
+  - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
+- **Code Inspection**:
+  - View issues in the current file within the Problems panel.
+  - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
+- **Modifying Settings**:
+  - Access the plugin's global settings page via:
+    - `Settings > Languages & Frameworks > Paradox Language Support`
+  - Open the mod settings dialog via:
+    - Clicking the blue gear icon in the editor's top-right floating toolbar.
+    - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
+    - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
+  - Modify default language environment, default game type, default game directory, and other functional details in the global settings.
+  - Adjust game directory, mod dependencies, and other configurations in the mod settings.
+- **Troubleshooting**:
+  - Ensure both the IDE and the plugin are updated to the latest versions.
+  - If the issue might be index-related, try rebuilding the index and restarting the IDE (`File > Invalidate Caches… > Invalidate and Restart`).
+  - If the issue might be config-related, try [writing custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files).
+  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
+  - Feedback is welcome through GitHub, Discord, and other channels.
 
-Known Issues:
+### Known Limitations
 
-- Support for some of Stellaris' black-magic-like language features is not perfect.
-- Support for games exclude Stellaris is not yet perfect.
+- Support for some complex language features in Stellaris is still being improved.
+- Support for unique language features in non-Stellaris games is not yet complete; feedback and contributions are welcome.
+- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files; Pull Requests are welcome.
 
-## References
+## Technical Details
 
-Reference manuals:
+- Built on the IntelliJ Platform SDK, developed with Kotlin, and utilizes [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) (rather than [LSP](https://microsoft.github.io/language-server-protocol)) for deep language parsing and manipulation.
+- Uses BNF for grammar parsing and JFlex for lexical analysis.
+- Employs an extension point mechanism for dynamic functional expansion, facilitating customization and enhancement of plugin behavior by both the plugin itself and mod developers.
+- Includes a built-in custom code injector for achieving IDE features that cannot be accomplished by conventional means.
+- Integrates image processing, translation, and lint tools to optimize and extend plugin capabilities.
+- Preliminary integration of AI technology provides translation and polishing support for localized text.
+
+## Reference Links
+
+**Official Documentation:**
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-- [JFlex - manual](https://www.jflex.de/manual.html)
+- [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 
-Plugins:
+**Tools & Plugins:**
 
-- [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
+- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
+- [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
+- [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
+- [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
+- [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
+- [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
-Tools:
-
-- [cwtools/cwtools](https://github.com/cwtools/cwtools)
-- [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
-- [bcssov/IronyModManager](https://github.com/bcssov/IronyModManager)
-- [amtep/ck3-tiger](https://github.com/amtep/ck3-tiger)
-- [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-
-Wikis:
+**Game Wikis:**
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
-- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
+- [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5) (Stellaris Chinese Wiki)
 
-## Contribution
+## Contribution & Support
 
-You can support and contribute this project by the following ways:
+We welcome all forms of support and contribution, including but not limited to:
 
-- Star the project on GitHub
-- Send feedbacks (via [Discord](https://discord.gg/vBpbET2bXT), or via sending issues on GitHub directly)
-- Submit PRs (to plugin repository aka this project, or [these config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md))
-- Share this plugin with your friends, or in related communities
-- If you like this plugin, you can also consider donating via [afdian](https://afdian.com/a/dk_breeze)
+- ⭐ Star the project on GitHub.
+- 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).
+- 🔧 Submit code or config file Pull Requests (can be submitted to the [plugin repository](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) (this project) or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
+- 📢 Recommend this plugin to friends or in the community.
+- 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
 
-Besides, if you are willing to submit PRs, and have any questions about the plugin code and the config files, feel free to ask via email and [Discord](https://discord.gg/vBpbET2bXT).
+If you are interested in submitting a PR but have any questions about plugin development or config writing, please feel free to contact us via email or [Discord](https://discord.gg/vBpbET2bXT)!

@@ -1,54 +1,61 @@
 # 介绍
 
+[GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
+[插件市场](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Discord](https://discord.gg/vBpbET2bXT) |
+[群聊](https://qm.qq.com/q/oRPgLwrTZm)
+
 ## 概述
 
-[GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
-[Discord](https://discord.gg/vBpbET2bXT) |
-QQ群：653824651
+Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助您轻松实现创意。
 
-用于编写群星模组（也支持其他P社游戏）的Intellij IDEA插件，智能、便捷且更具潜力。
+**核心特性：**
 
-特性：
+- **多语言支持**：完整支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用编写规则的 CWT 语言。
+- **丰富的语言功能**：提供代码高亮、导航、补全、检查、重构、快速文档、内嵌提示、动态模板、代码层级、图表和差异比较等多项功能。
+- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在 PNG、DDS、TGA 等格式之间互相转换。
+- **信息增强提示**：通过快速文档和内嵌提示，直观展示本地化文本、图片、作用域和参数等关键信息。
+- **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、内联脚本及复杂表达式。
+- **可扩展的规则系统**：支持自定义和导入规则文件，强化代码导航、补全、文档提示等功能。
+- **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
+- **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
+- **目录识别**：自动识别游戏目录与模组目录，减少手动配置。
 
-- 支持编写模组所使用的脚本语言、本地化语言与CSV语言，以及编写规则文件所使用的CWT语言。
-- 提供诸多完备的语言功能，包括代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等。
-- 支持预览与渲染DDS和TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作。
-- 支持通过快速文档与内嵌提示等方式，渲染各种有用的信息（例如本地化文本、图片、作用域信息和参数信息）。
-- 支持脚本语言与本地化语言的多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式）。
-- 支持自定义扩展的规则文件，从而允许插件提供更加完善的语言功能（例如代码导航、代码补全、快速文档和内嵌提示）。
-- 集成图片工具（如[Image Magick](https://www.imagemagick.org)）、翻译工具（如[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)）与检查工具（如[Tiger](https://github.com/amtep/tiger)）。
-- 初步集成AI技术，可用于翻译和润色本地化文本。
-- 自动识别游戏目录和模组目录。
-
-此插件基于由规则文件组成的[规则分组](config.md#config-group)，实现了诸多语言功能。
-插件已经内置了最新版本的规则文件，以便开箱即用。
-除此之外，插件也支持[自定义](config.md#writing-cwt-config-files)与[导入](config.md#importing-cwt-config-files)规则文件。
+PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，并进行了一定的改进与扩展。插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#importing-cwt-config-files)规则文件，满足个性化开发需求。
 
 ![](../images/preview_1_zh.png)
 
-## 参考
+## 参考链接
 
-参考手册：
+**官方文档：**
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-- [JFlex - manual](https://www.jflex.de/manual.html)
+- [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 
-插件：
+**工具与插件：**
 
-- [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
+- [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
+- [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
+- [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
+- [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
+- [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
+- [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
-工具：
-
-- [cwtools/cwtools](https://github.com/cwtools/cwtools)
-- [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
-- [bcssov/IronyModManager](https://github.com/bcssov/IronyModManager)
-- [amtep/ck3-tiger](https://github.com/amtep/ck3-tiger)
-- [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-
-Wikis：
+**游戏 Wiki：**
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
+
+## 贡献与支持
+
+我们欢迎任何形式的支持与贡献，包括但不限于：
+
+- ⭐ 在 GitHub 上收藏项目。
+- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
+- 🔧 提交代码或规则文件 Pull Request（可提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）。
+- 📢 向朋友或社区推荐本插件。
+- 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
+
+如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系！

@@ -1,49 +1,51 @@
 # Quick Start
 
-## Usages
+## Usage Steps
 
-- Open your mod root directory through the IDE.
-- Open the mod descriptor file, which is `description.mod` under the root directory (for VIC3, it's `.metadata/metadata.json`). 
-- Click the mod settings button in the floating toolbar at the top right of the editor.
-- Configure the game type, game directory, and additional mod dependencies of the mod.
-- Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
-- Start your mod programming journey.
+1. Open your mod's root directory in the IDE.
+2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3).
+3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
+4. Configure the mod's game type, game directory, and required mod dependencies.
+5. Confirm the configuration and wait for the IDE to finish indexing.
+6. Begin your mod development journey!
 
-## Tips
+## Practical Tips
 
-- To perform a global search, please refer to the following methods:
-  - Click `Ctrl Shift R` or `Ctrl Shift F` to search within the current project, directory, or specified scope.
-  - Click `Shift Shift` to find files, definitions, scripted variables, and other symbols.
-- To perform a code navigation, please refer to the following methods:
-  - Hold down `Ctrl` and click on the target location, to navigate to the declarations or usages of the target.
-  - Hold down `Ctrl Shift` and click on the target location, to navigate to the type declarations of the target.
-  - Hold down `Alt` and click on the target location, to navigate to the related CWT config declarations of the target.
-  - Hold down `Shift Alt` and click on the target location, to navigate to the related localisation declarations of the target definition.
-  - Hold down `Ctrl Shift Alt` and click on the target location to navigate to the related image declarations of the target definition.
-  - Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
-  - Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
-  - Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localisations, scripted variables, etc.
-  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
-  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
-- To run a global code inspection, refer to the following method:
-  - Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
-  - Click `Code > Inspect Code...`, run a global code inspection for whole project.
-  - When code inspection is finished ,IDE will show detail inspection result in Problems panel.
-- To change the settings of mod types, game directories, mod dependencies, etc., open the mod settings dialog using one of the following methods:
-  - Click `Settings > Languages & Frameworks > Paradox Language Support` to configure default game directories.
-  - Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
-  - Open the context menu and click `Paradox Language Support > Open Mod Settings...` in the editor.
-  - Click `Tools > Paradox Language Support > Open Mod Settings...`.
-- To change the global settings of the plugin, refer to the following method:
-  - Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
-- If you encounter some unexpected problems during use, try the following:
-  - Update the IDE and plugin to the latest version.
-  - If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File > Invalidate Caches... > Invalidate and Restart`)
-  - If it may be related to plugin's built-in configs, try to [write custom config files](config.md#writing-cwt-config-files).
-  - If it may be related to plugin configuration, try to delete the plugin configuration file. (`paradox-language-support.xml`. If you don't know the detailed location, use [Everything](https://www.voidtools.com))
-  - Send feedback via GitHub, Discord, etc.
+- **Global Search**:
+  - Use `Ctrl + Shift + R` or `Ctrl + Shift + F` to search within the current project, directory, or a specified scope.
+  - Use `Shift + Shift` (Search Everywhere) to quickly find files, definitions, scripted variables, and other symbols.
+- **Code Navigation**:
+  - Use `Ctrl + Click` to jump to the declaration or usage of a target.
+  - Use `Ctrl + Shift + Click` to jump to the type declaration of a target.
+  - Use `Alt + Click` to jump to the declaration of the relevant config for a target.
+  - Use `Shift + Alt + Click` to jump to the declaration of the relevant localization for a target.
+  - Use `Ctrl + Shift + Alt + Click` to jump to the declaration of the relevant image for a target.
+  - Use the `Navigate` menu (or the `Go To` option in the editor's right-click menu) for quick navigation.
+  - Use `Navigate > Definition Hierarchy` to open the type hierarchy window and view definitions of specific types.
+  - Use `Navigate > Call Hierarchy` to open the call hierarchy window and view the call relationships of definitions, localizations, scripted variables, etc.
+  - Select the `Paradox Files` view in the project panel to browse aggregated game and mod files.
+  - Select the `CWT Config Files` view in the project panel to browse aggregated config files.
+- **Code Inspection**:
+  - View issues in the current file within the Problems panel.
+  - Use `Code > Inspect Code…` to perform a global code inspection and view the detailed report in the Problems panel upon completion.
+- **Modifying Settings**:
+  - Access the plugin's global settings page via:
+    - `Settings > Languages & Frameworks > Paradox Language Support`
+  - Open the mod settings dialog via:
+    - Clicking the blue gear icon in the editor's top-right floating toolbar.
+    - Selecting `Paradox Language Support > Open Mod Settings...` from the editor's right-click menu.
+    - Selecting `Tools > Paradox Language Support > Open Mod Settings...` from the main menu.
+  - Modify default language environment, default game type, default game directory, and other functional details in the global settings.
+  - Adjust game directory, mod dependencies, and other configurations in the mod settings.
+- **Troubleshooting**:
+  - Ensure both the IDE and the plugin are updated to the latest versions.
+  - If the issue might be index-related, try rebuilding the index and restarting the IDE (`File > Invalidate Caches… > Invalidate and Restart`).
+  - If the issue might be config-related, try [writing custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files).
+  - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
+  - Feedback is welcome through GitHub, Discord, and other channels.
 
-## Known Issues
+## Known Limitations
 
-- Support for some of Stellaris' black-magic-like language features is not perfect.
-- Support for games exclude Stellaris is not yet perfect.
+- Support for some complex language features in Stellaris is still being improved.
+- Support for unique language features in non-Stellaris games is not yet complete; feedback and contributions are welcome.
+- Currently, only Stellaris and Victoria 3 have relatively comprehensive built-in config files; Pull Requests are welcome.

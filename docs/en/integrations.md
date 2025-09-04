@@ -1,6 +1,6 @@
 # Integrations
 
-PLS deeply integrates with multiple useful tools to optimize and extend the plugin's features.
+PLS deeply integrates with multiple practical tools to optimize and extend the plugin's features.
 
 Although the plugin itself is fully functional, enabling these integrations in specific scenarios can solve particular problems and improve development efficiency.
 

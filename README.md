@@ -11,7 +11,7 @@
 
 ## 概述
 
-Paradox Language Support（PLS）是一款专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助您轻松实现创意。
+Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助您轻松实现创意。
 
 **核心特性：**
 
@@ -72,7 +72,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
   - 确保 IDE 和插件均为最新版本。
   - 如果问题可能与索引有关，请尝试重建索引并重启 IDE（`File > Invalidate Caches… > Invalidate and Restart`）。
   - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)。
-  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 Everything 工具搜索定位）。
+  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 工具搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
 ### 已知限制
@@ -117,13 +117,10 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 我们欢迎任何形式的支持与贡献，包括但不限于：
 
-- ⭐ 在 GitHub 上收藏项目
-- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[QQ 群](https://qm.qq.com/q/oRPgLwrTZm) 或 GitHub Issue）
-- 🔧 提交代码或规则文件 Pull Request（可提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）
-- 📢 向朋友或社区推荐本插件
-- 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目
+- ⭐ 在 GitHub 上收藏项目。
+- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
+- 🔧 提交代码或规则文件 Pull Request（可提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）。
+- 📢 向朋友或社区推荐本插件。
+- 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
 
 如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系！
-
----
-
