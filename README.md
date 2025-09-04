@@ -38,7 +38,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 3. 点击编辑器右上角的悬浮工具栏中的 *模组配置* 按钮。
 4. 配置模组的游戏类型、游戏目录及所需的模组依赖。
 5. 确认配置，等待 IDE 完成索引。
-6. 开始你的模组编程之旅吧！
+6. 开始你的模组开发之旅吧！
 
 ### 实用技巧
 
@@ -51,55 +51,55 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
   - 使用 `Alt + 点击` 跳转到目标的相关规则的声明。
   - 使用 `Shift + Alt + 点击` 跳转到目标相关本地化的声明。
   - 使用 `Ctrl + Shift + Alt + 点击` 跳转到目标的相关图片的声明。
-  - 使用 `Navigate` 菜单（或者编辑器右键菜单中的 `Go To` 选项）快速定位。
+  - 通过 `Navigate` 菜单（或者编辑器右键菜单中的 `Go To` 选项）快速定位。
   - 使用 `Navigate > Definition Hierarchy` 打开定义的类型层级窗口，从而查看特定类型的定义。
   - 使用 `Navigate > Call Hierarchy` 打开定义的调用层级窗口，从而查看定义、本地化、封装变量等的调用关系。
-  - 在项目面板中选择 `Paradox Files` 视图，查看汇总后的游戏与模组文件。
-  - 在项目面板中选择 `CWT Config Files` 视图，查看汇总后的规则文件。
+  - 在项目面板中选择 `Paradox Files` 视图，浏览汇总后的游戏与模组文件。
+  - 在项目面板中选择 `CWT Config Files` 视图，浏览汇总后的规则文件。
 - **代码检查**：
   - 在问题面板中查看当前文件的问题。
-  - 使用 `Code > Inspect Code…` 执行全局代码检查，并在完成后在问题面板中查看详细报告。
+  - 使用 `Code > Inspect Code…` 执行全局代码检查，并在问题面板中查看详细报告。
 - **设置修改**：
-  - 可以通过以下方式打开插件的全局设置页面：
+  - 可通过以下方式打开插件的全局设置页面：
     - 点击设置页面中的 `Languages & Frameworks > Paradox Language Support`。
-  - 可以通过以下方式打开模组设置对话框：
-    - 点击位于编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
+  - 可通过以下方式打开模组设置对话框：
+    - 点击编辑器右上角的悬浮工具栏中的蓝色齿轮图标。
     - 点击编辑器右键菜单中的 `Paradox Language Support > Open Mod Settings...`。
     - 点击主菜单中的 `Tools > Paradox Language Support > Open Mod Settings...`。
-  - 可在插件的全局设置页面中，修改默认语言环境、默认游戏类型、默认游戏目录等设置，以及各种功能的细节设置。
-  - 可在模组设置对话框中，修改游戏目录、模组依赖等设置。
+  - 可在全局设置中修改默认语言环境、默认游戏类型、默认游戏目录等配置，以及其他功能细节。
+  - 可在模组设置中调整游戏目录、模组依赖等配置。
 - **问题排查**：
-  - 确保更新 IDE 和插件到最新版本。
+  - 确保 IDE 和插件均为最新版本。
   - 如果问题可能与索引有关，请尝试重建索引并重启 IDE（`File > Invalidate Caches… > Invalidate and Restart`）。
-  - 如果问题可能与规则有关，请尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)。
-  - 如果问题可能与插件配置有关，请尝试删除插件的配置文件（`paradox-language-support.xml`，可使用 Everything 工具搜索定位）。
+  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)。
+  - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 Everything 工具搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
 ### 已知限制
 
-- 对 Stellaris 的部分复杂语言特性的支持仍在完善中。
-- 对非 Stellaris 游戏的特有语言特性的支持尚不完善，欢迎反馈和贡献。
+- 对 Stellaris 中的部分复杂语言特性的支持仍在完善中。
+- 对非 Stellaris 游戏中的特有语言特性的支持尚不完整，欢迎反馈与贡献。
 - 目前仅为 Stellaris 和 Victoria 3 提供了较为完善的内置规则文件，欢迎提交 Pull Request。
 
 ## 技术细节
 
-- 基于 IntelliJ Platform SDK 构建，使用 Kotlin 开发，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语言解析和操作。
-- 使用 BNF 进行语法解析，使用 JFlex 进行词法分析。
-- 通过扩展点机制实现功能的动态扩展，方便插件自身与模组开发者定制与增强插件行为。
-- 内置自定义的代码注入器，用于达成无法通过常规手段实现的 IDE 功能。
-- 内置与图像、翻译和检查工具的集成。用于优化和扩展插件的功能。
+- 基于 IntelliJ Platform SDK 构建，采用 Kotlin 开发，基于 [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html)（而非 [LSP](https://microsoft.github.io/language-server-protocol)）实现深度的语言解析与操作。
+- 使用 BNF 进行语法解析，JFlex 进行词法分析。
+- 通过扩展点机制实现功能的动态扩展，便于插件自身及模组开发者定制与增强插件行为。
+- 内置自定义的代码注入器，用于实现常规手段无法达成的 IDE 功能。
+- 内置与图片处理、翻译和检查工具的集成。以优化和扩展插件能力。
 - 初步集成 AI 技术，为本地化文本提供翻译和润色支持。
 
 ## 参考链接
 
-官方文档：
+**官方文档：**
 
 - [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 - [Getting started | IntelliJ IDEA Documentation](https://www.jetbrains.com/help/idea/getting-started.html)
 - [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
 - [LangChain4j | LangChain4j](https://docs.langchain4j.dev/)
 
-工具与插件：
+**工具与插件：**
 
 - [YiiGuxing/TranslationPlugin: Translation plugin for IntelliJ-based IDEs/Android Studio.](https://github.com/YiiGuxing/TranslationPlugin)
 - [cwtools/cwtools: A library for parsing, editing, and validating Paradox Interactive script files.](https://github.com/cwtools/cwtools)
@@ -108,7 +108,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
-游戏 Wiki：
+**游戏 Wiki：**
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
@@ -118,12 +118,12 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 我们欢迎任何形式的支持与贡献，包括但不限于：
 
 - ⭐ 在 GitHub 上收藏项目
-- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[QQ 群](https://qm.qq.com/q/oRPgLwrTZm)或在 GitHub 上提交 Issue）
-- 🔧 提交代码或规则文件 Pull Request（可向[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）
-- 📢 向朋友或在社区中推荐本插件
+- 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[QQ 群](https://qm.qq.com/q/oRPgLwrTZm) 或 GitHub Issue）
+- 🔧 提交代码或规则文件 Pull Request（可提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）
+- 📢 向朋友或社区推荐本插件
 - 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目
 
-如果你对提交 PR 感兴趣，但对插件代码或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系！
+如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系！
 
 ---
 
