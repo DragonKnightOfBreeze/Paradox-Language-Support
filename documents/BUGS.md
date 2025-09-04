@@ -28,7 +28,23 @@
 
 ## BUG分析
 
-### 涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题
+### 进行全局代码检查时，偶发误判的 *无法解析的值表达式* 报错
+
+全局代码检查的结果中，可能会报错 *无法解析值表达式 '20'，期望 '{...}'*。
+如果重新打开项目，或者更改文件，则报错消失。
+
+```paradox_script
+size = 20
+```
+
+```cwt
+## cardinality = 0..inf
+size = int
+## cardinality = 0..inf
+size = { min = int max = int }
+```
+
+### ［不再复现］涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题
 
 结论：
 
@@ -263,7 +279,7 @@ WAITING
  < icu.windea.pls.lang.index.ParadoxLocalisationParameterParameterIndexSupport.indexScriptElement
 ```
 
-### `ParadoxExpressionManager.getExpressionReferences`中使用的缓存可能不一致的问题
+### ［不再复现］`ParadoxExpressionManager.getExpressionReferences`中使用的缓存可能不一致的问题
 
 推测：
 
@@ -364,7 +380,7 @@ Recomputation gives com.intellij.util.CachedValueBase$Data@599dd127 which is equ
 	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:187)
 ```
 
-### 索引时报错`Indexing process should not rely on non-indexed file data.`
+### ［已解决］索引时报错`Indexing process should not rely on non-indexed file data.`
 
 推测：
 
