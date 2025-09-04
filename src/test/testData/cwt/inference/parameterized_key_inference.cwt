@@ -1,0 +1,22 @@
+parameters = {
+    ## context_key = scripted_trigger@has_alternative_ethics
+    THIS_SCOPE = scope[country]
+    ## context_key = scripted_trigger@has_alternative_ethics
+    REF_SCOPE = scope[country]
+}
+
+# # common/scripted_triggers/00_scripted_triggers.txt
+# has_alternative_ethics = {
+#     OR = {
+#         AND = {
+#             $THIS_SCOPE$ = {
+#                 is_pacifist = yes
+#             }
+#             $REF_SCOPE$ = {
+#                 is_pacifist = no
+#                 is_militarist = no
+#             }
+#         }
+#         # ...
+#     }
+# }
