@@ -213,7 +213,7 @@ fun PsiElement.findParentProperty(
 }
 
 /**
- * 基于路径向上查找指定的属性。如果路径为空，则返回查找到的第一个属性或值。
+ * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
  * @see ParadoxExpressionPath
  * @see ParadoxScriptMemberElement
@@ -223,7 +223,7 @@ fun ParadoxScriptMemberElement.findParentByPath(
     path: String = "",
     ignoreCase: Boolean = true,
     definitionType: String? = null
-): ParadoxScriptDefinitionElement? {
+): PsiElement? {
     if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
     if (path.isNotEmpty()) {
@@ -244,5 +244,5 @@ fun ParadoxScriptMemberElement.findParentByPath(
         }
         return result
     }
-    return current as? ParadoxScriptDefinitionElement?
+    return current
 }

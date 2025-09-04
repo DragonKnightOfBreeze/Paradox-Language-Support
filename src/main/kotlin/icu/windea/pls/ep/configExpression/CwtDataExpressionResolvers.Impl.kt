@@ -92,6 +92,15 @@ class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     )
 }
 
+class ConstantCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+    private val excludeCharacters = ":.@[]<>".toCharArray()
+
+    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+        if (expressionString.any { c -> c in excludeCharacters }) return null
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
+    }
+}
+
 class TemplateExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
@@ -126,14 +135,5 @@ class RegexCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Regex).apply { value = v.orNull() }.apply { ignoreCase = true }
         }
         return null
-    }
-}
-
-class ConstantCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
-    private val excludeCharacters = ":.@[]<>".toCharArray()
-
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString.any { c -> c in excludeCharacters }) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
     }
 }

@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
@@ -18,10 +19,10 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.expression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.expression.getAllErrors
@@ -48,24 +49,25 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (expression.type != ParadoxType.Block) return Result.NotMatch
                 if (config !is CwtMemberConfig) return Result.NotMatch
 
-                //* 如果子句中包含对应的任意子句规则中的任意必须的键（忽略大小写），则认为匹配
-                //* 如果存在子句规则内容为空，则仅当子句内容为空时才认为匹配
-                //* 不同的子句规则可以拥有部分相同的propertyKey
-
                 val blockElement = when {
                     element is ParadoxScriptProperty -> element.propertyValue()
                     element is ParadoxScriptBlock -> element
                     else -> null
                 } ?: return Result.NotMatch
+
+                // 如果存在子句规则内容为空，则仅当子句内容为空时才认为匹配
                 if (config.configs.isNullOrEmpty()) {
                     if (blockElement.members().none()) return Result.ExactMatch
                     return Result.FallbackMatch
                 }
+
                 Result.LazyBlockAwareMatch p@{
                     val keys = ParadoxExpressionManager.getInBlockKeys(config)
                     if (keys.isEmpty()) return@p true
+
+                    // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）
+                    // 如果子句中包含对应的任意子句规则中的任意必须的属性键（忽略大小写），则认为匹配
                     val actualKeys = mutableSetOf<String>()
-                    //注意这里需要考虑内联和可选的情况
                     blockElement.members().options(conditional = true, inline = true).forEach {
                         if (it is ParadoxScriptProperty) actualKeys.add(it.name)
                     }
@@ -328,6 +330,21 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
+class ConstantParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+        if (configExpression.type != CwtDataTypes.Constant) return null
+        val value = configExpression.value ?: return Result.NotMatch
+        if (!configExpression.isKey) {
+            //常量的值也可能是yes/no
+            val text = expression.value
+            if ((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
+        }
+        //这里也用来匹配空字符串
+        val r = expression.matchesConstant(value)
+        return Result.of(r)
+    }
+}
+
 class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type != CwtDataTypes.TemplateExpression) return null
@@ -358,17 +375,13 @@ class RegexParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionM
     }
 }
 
-class ConstantParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxScriptPredicateBasedExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type != CwtDataTypes.Constant) return null
-        val value = configExpression.value ?: return Result.NotMatch
-        if (!configExpression.isKey) {
-            //常量的值也可能是yes/no
-            val text = expression.value
-            if ((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
-        }
-        //这里也用来匹配空字符串
-        val r = expression.matchesConstant(value)
-        return Result.of(r)
+        // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
+        // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig
+        val memberConfig = if (config is CwtMemberConfig<*>) config.memberConfig else null
+        if (memberConfig == null) return null
+        if (!ParadoxExpressionMatcher.matchesByPredicate(element, memberConfig)) return Result.NotMatch
+        return null
     }
 }

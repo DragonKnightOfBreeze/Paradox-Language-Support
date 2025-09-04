@@ -14,6 +14,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -23,6 +24,7 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxScopeContext
@@ -157,6 +159,16 @@ val CwtMemberConfig<*>.cardinalityMaxDefine: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMaxDefine) {
         val option = findOption("cardinality_max_define")
         option?.stringValue
+    }
+
+// may on:
+// * a config expression in declaration config (value of containing property config must be a clause)
+
+//e.g., ## predicate = { scope = fleet type != country }
+val CwtMemberConfig<*>.predicate: Map<String, ReversibleValue<String>>
+    get() {
+        val option = findOption("predicate") ?: return emptyMap()
+        return option.options?.associate { it.key to ReversibleValue(it.separatorType == CwtSeparatorType.EQUAL, it.value) }.orEmpty()
     }
 
 // from replace_scopes and push_scope

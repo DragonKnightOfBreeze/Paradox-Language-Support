@@ -20,15 +20,15 @@ import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.cardinality
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.singleAliasConfig
@@ -81,8 +81,8 @@ import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.ParadoxComplexExpression
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.isParameterized
@@ -343,10 +343,14 @@ object ParadoxExpressionManager {
             val expression = ParadoxScriptExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
+            val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
+            val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.drop(i).dropLast(1))
+            val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMemberElement>() ?: return emptyList()
+
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null
                 if (!isFullParameterized) return@lazy emptyList() //must be full parameterized yet
-                ParadoxParameterManager.getParameterizedKeyConfigs(element, shift)
+                ParadoxParameterManager.getParameterizedKeyConfigs(elementToMatch)
             }
 
             run r1@{
@@ -382,10 +386,10 @@ object ParadoxExpressionManager {
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
                             if (matchesKey) {
-                                val matchResult = ParadoxScriptExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions)
+                                val matchResult = ParadoxScriptExpressionMatcher.matches(elementToMatch, expression, config.keyExpression, config, configGroup, matchOptions)
                                 if (!matchResult.get(matchOptions)) return@f3
                             }
-                            val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
+                            val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, isQuoted, config, matchOptions)
                             if (inlinedConfigs.isEmpty()) {
                                 addToMatchedConfigs(config)
                             } else {
@@ -405,10 +409,6 @@ object ParadoxExpressionManager {
 
             run r1@{
                 if (!matchesKey) return@r1
-                val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
-                val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.drop(i).dropLast(1))
-                val elementToMatch = memberElement.findParentByPath(pathToMatch.path)
-                if (elementToMatch == null) return@r1
                 ProgressManager.checkCanceled()
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
                 result.forEach f@{ config ->

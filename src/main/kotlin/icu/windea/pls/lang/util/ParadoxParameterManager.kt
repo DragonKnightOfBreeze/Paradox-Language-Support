@@ -15,7 +15,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
@@ -82,12 +81,10 @@ import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isBlockMember
 import java.util.*
 
 object ParadoxParameterManager {
@@ -434,14 +431,8 @@ object ParadoxParameterManager {
         return result.get().orEmpty()
     }
 
-    /**
-     * @param shift 从[element]开始向上的偏移，偏移量与[icu.windea.pls.model.paths.ParadoxExpressionPath]的长度的判定方式是一致的。
-     */
-    fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig> {
-        val parameterizedProperty = element.parentsOfType<ParadoxScriptMemberElement>()
-            .filter { it.isBlockMember() }
-            .elementAtOrNull(shift)
-            ?: return emptyList()
+    fun getParameterizedKeyConfigs(element: PsiElement): List<CwtValueConfig> {
+        val parameterizedProperty = element
         val propertyKey = parameterizedProperty.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return emptyList()
         val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
         val parameterElement = getParameterElement(parameter) ?: return emptyList()

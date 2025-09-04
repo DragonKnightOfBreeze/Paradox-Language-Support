@@ -236,9 +236,10 @@ alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 inline[$inline$] = $declaration
 
-## cardinality = $cardinality
 ## replace_scopes = $scope_context
 ## push_scope = $scope
+## cardinality = $cardinality
+## predicate = $predicate
 $$declaration = $declaration
 
 $$data_expression = {

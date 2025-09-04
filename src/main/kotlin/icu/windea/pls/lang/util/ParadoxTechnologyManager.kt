@@ -10,8 +10,8 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.core.annotations.WithGameType
@@ -40,6 +40,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.findParentByPath
 
@@ -179,6 +180,7 @@ object ParadoxTechnologyManager {
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
                         val rDefinition = refElement.findParentByPath("prerequisites/-", definitionType = type) ?: return@p true
+                        if (rDefinition !is ParadoxScriptProperty) return@p true
                         val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                         if (rDefinitionInfo.name.isEmpty()) return@p true
                         if (rDefinitionInfo.type != type) return@p true

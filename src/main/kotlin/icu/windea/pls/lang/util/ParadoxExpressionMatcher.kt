@@ -7,7 +7,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.BitUtil
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.predicate
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -23,6 +25,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.createNestedCache
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
@@ -39,6 +42,10 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.script.psi.ParadoxScriptBlockElement
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.stringValue
+import org.jetbrains.kotlin.analysis.utils.printer.parentOfType
 
 object ParadoxExpressionMatcher {
     object Options {
@@ -242,5 +249,23 @@ object ParadoxExpressionMatcher {
         return getCachedMatchResult(element, cacheKey) {
             CwtTemplateExpressionManager.matches(element, expression, CwtTemplateExpression.resolve(template), configGroup)
         }
+    }
+
+    /**
+     * 根据附加到 [config] 上的 `## predicate` 选项中的元数据，以及 [element] 所在的块（[ParadoxScriptBlockElement]）中的结构，进行简单的结构匹配。
+     */
+    fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
+        run {
+            val predicate = config.predicate
+            if (predicate.isEmpty()) return@run
+            val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
+            predicate.forEach f@{ (pk, pv) ->
+                val p1 = parentBlock.findProperty(pk, inline = true)
+                val pv1 = p1?.propertyValue?.stringValue()
+                val pr = pv.withOperator { it == pv1 }
+                if (!pr) return false
+            }
+        }
+        return true
     }
 }
