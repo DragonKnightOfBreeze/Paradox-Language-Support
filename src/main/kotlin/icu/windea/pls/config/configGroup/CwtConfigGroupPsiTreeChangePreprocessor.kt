@@ -26,6 +26,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f
+            if (!fileProvider.isEnabled) return@f // 如果未启用则不要把规则分组标记为已更改
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if (configGroup.gameType == null) {
                 ParadoxGameType.entries.forEach { gameType ->
