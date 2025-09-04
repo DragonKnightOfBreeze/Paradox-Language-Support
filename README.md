@@ -1,7 +1,5 @@
 # Paradox Language Support
 
-## 概述
-
 [![中文文档](https://img.shields.io/badge/文档-中文-blue)](README.md)
 [![English Documentation](https://img.shields.io/badge/Docs-English-green)](README_en.md)
 
@@ -11,22 +9,23 @@
 [![Discord](https://img.shields.io/badge/Discord-社区-blue?logo=discord)](https://discord.gg/vBpbET2bXT)
 [![群聊](https://img.shields.io/badge/群聊-653824651-blue?logo=qq)](https://qm.qq.com/q/oRPgLwrTZm)
 
-Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 Intellij IDEA 插件，提供智能、高效且功能丰富的开发体验，助力你的创意轻松实现。
+## 概述
+
+Paradox Language Support（PLS）是一款专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助您轻松实现创意。
 
 **核心特性：**
 
-- **多语言支持**：完整支持用于编写模组的脚本语言、本地化语言与CSV语言，以及用于编写规则文件的 CWT 语言。
-- **丰富的语言功能**：提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等诸多语言功能。
-- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，支持不同图片格式（PNG、DDS、TGA）之间的相互转换。
-- **信息增强提示**：通过快速文档与内嵌提示，渲染并展示本地化文本、图片、作用域、参数等关键信息。
-- **高级语言特性支持**：支持脚本语言与本地化语言中的多数高级特性，例如参数、作用域、内联脚本和各种复杂表达式。
-- **可扩展的规则系统**：支持自定义与导入规则文件，增强代码导航、代码补全、快速文档、内嵌提示等语言功能。
-- **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，增强开发体验。
+- **多语言支持**：完整支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用编写规则的 CWT 语言。
+- **丰富的语言功能**：提供代码高亮、导航、补全、检查、重构、快速文档、内嵌提示、动态模板、代码层级、图表和差异比较等多项功能。
+- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在 PNG、DDS、TGA 等格式之间互相转换。
+- **信息增强提示**：通过快速文档和内嵌提示，直观展示本地化文本、图片、作用域和参数等关键信息。
+- **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、内联脚本及复杂表达式。
+- **可扩展的规则系统**：支持自定义和导入规则文件，强化代码导航、补全、文档提示等功能。
+- **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
 - **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
 - **目录识别**：自动识别游戏目录与模组目录，减少手动配置。
 
-PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.htm)实现核心语言功能，其使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，但经过一定的改进与扩展。
-插件内置最新版本的规则，开箱即用。同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#importing-cwt-config-files)规则文件，满足个性化开发需求。
+PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，并进行了一定的改进与扩展。插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#importing-cwt-config-files)规则文件，满足个性化开发需求。
 
 ![](docs/images/preview_1_zh.png)
 

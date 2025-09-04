@@ -15,10 +15,11 @@ export default hopeTheme({
 
   pageInfo: ["Author", "Date", "Word", "ReadingTime"],
 
-  docsDir: "docs",
   docsBranch: "master",
+  docsDir: "docs",
 
   pure: true,
+  focus: false,
   breadcrumb: false,
   navbarLayout: {
     start: ["Brand"],
@@ -94,4 +95,3 @@ export default hopeTheme({
     ],
   },
 })
-
