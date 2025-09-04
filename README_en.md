@@ -24,7 +24,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
 - **Directory Recognition**: Automatically identifies game and mod directories, reducing manual configuration.
 
-PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports [customizing](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#importing-cwt-config-files) config files to meet personalized development needs.
+PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-cwt-config-files) config files to meet personalized development needs.
 
 ![](docs/images/preview_1_en.png)
 
@@ -69,8 +69,8 @@ PLS implements its core language features based on its own [config system](https
   - Adjust game directory, mod dependencies, and other configurations in the mod settings.
 - **Troubleshooting**:
   - Ensure both the IDE and the plugin are updated to the latest versions.
-  - If the issue might be index-related, try rebuilding the index and restarting the IDE (`File > Invalidate Caches… > Invalidate and Restart`).
-  - If the issue might be config-related, try [writing custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files).
+  - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
+  - If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files).
   - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
   - Feedback is welcome through GitHub, Discord, and other channels.
 

@@ -20,7 +20,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localized text.
 - **Directory Recognition**: Automatically identifies game and mod directories, reducing manual configuration.
 
-PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports [customizing](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#importing-cwt-config-files) config files to meet personalized development needs.
+PLS implements its core language features based on its own [config system](https://windea.icu/Paradox-Language-Support/en/config.html). The CWT config files it uses adhere to the same syntax and format as [CWTools](https://github.com/cwtools/cwtools), with certain improvements and extensions. The plugin comes with the latest built-in configs, ready to use out-of-the-box. It also supports to [customize](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files) and [import](https://windea.icu/Paradox-Language-Support/en/config.html#import-cwt-config-files) config files to meet personalized development needs.
 
 ![](../images/preview_1_en.png)
 

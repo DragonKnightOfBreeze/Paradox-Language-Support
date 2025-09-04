@@ -39,8 +39,8 @@
   - Adjust game directory, mod dependencies, and other configurations in the mod settings.
 - **Troubleshooting**:
   - Ensure both the IDE and the plugin are updated to the latest versions.
-  - If the issue might be index-related, try rebuilding the index and restarting the IDE (`File > Invalidate Caches… > Invalidate and Restart`).
-  - If the issue might be config-related, try [writing custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files).
+  - If the issue might be index-related, try to [invalidate caches and restart the IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html).
+  - If the issue might be config-related, try to [write custom config files](https://windea.icu/Paradox-Language-Support/en/config.html#write-cwt-config-files).
   - If the issue might be plugin configuration-related, try deleting the plugin's configuration file (`paradox-language-support.xml`, recommended to locate using the [Everything](https://www.voidtools.com) tool).
   - Feedback is welcome through GitHub, Discord, and other channels.
 

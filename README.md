@@ -25,7 +25,7 @@ Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计�
 - **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
 - **目录识别**：自动识别游戏目录与模组目录，减少手动配置。
 
-PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，并进行了一定的改进与扩展。插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#importing-cwt-config-files)规则文件，满足个性化开发需求。
+PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh/config.html)实现核心语言功能。其所使用的 CWT 规则文件与 [CWTools](https://github.com/cwtools/cwtools) 遵循一致的语法与格式，并进行了一定的改进与扩展。插件内置最新版本规则，开箱即用，同时也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#write-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#import-cwt-config-files)规则文件，满足个性化开发需求。
 
 ![](docs/images/preview_1_zh.png)
 
@@ -70,8 +70,8 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
   - 可在模组设置中调整游戏目录、模组依赖等配置。
 - **问题排查**：
   - 确保 IDE 和插件均为最新版本。
-  - 如果问题可能与索引有关，请尝试重建索引并重启 IDE（`File > Invalidate Caches… > Invalidate and Restart`）。
-  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)。
+  - 如果问题可能与索引有关，可尝试[清除缓存并重启 IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html)。
+  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#write-cwt-config-files)。
   - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 工具搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 

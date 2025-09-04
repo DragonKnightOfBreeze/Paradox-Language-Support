@@ -89,7 +89,7 @@ prop = {
 }
 ```
 
-## 编写CWT规则文件 {#writing-cwt-config-files}
+## 编写CWT规则文件 {#write-cwt-config-files}
 
 关于每种CWT规则的更加详细的编写规范，目前可以参考插件内置的规则文件中的写法。
 
@@ -422,7 +422,7 @@ some_config
 some_config
 ```
 
-## 导入CWT规则文件 {#importing-cwt-config-files}
+## 导入CWT规则文件 {#import-cwt-config-files}
 
 ### 概述
 

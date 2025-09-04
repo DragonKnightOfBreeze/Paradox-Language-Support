@@ -91,7 +91,7 @@ prop = {
 }
 ```
 
-## Writing CWT Config Files {#writing-cwt-config-files}
+## Writing CWT Config Files {#write-cwt-config-files}
 
 For more detailed writing specifications for each CWT config,
 currently you can refer to the writing style of the built-in config files.
@@ -427,7 +427,7 @@ some_config
 some_config
 ```
 
-## Importing CWT Config Files {#importing-cwt-config-files}
+## Importing CWT Config Files {#import-cwt-config-files}
 
 ### Summary
 
