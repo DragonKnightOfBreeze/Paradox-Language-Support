@@ -46,7 +46,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
                     var defaultGameType = settings.defaultGameType
-                    comboBox(ParadoxGameType.entries).bindItem(settings::defaultGameType.toNullableProperty())
+                    comboBox(ParadoxGameType.getAll()).bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             val oldDefaultGameType = defaultGameType
                             val newDefaultGameType = settings.defaultGameType
@@ -60,7 +60,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tip") }
                     val defaultGameDirectories = settings.defaultGameDirectories
-                    ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+                    ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = defaultGameDirectories.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->

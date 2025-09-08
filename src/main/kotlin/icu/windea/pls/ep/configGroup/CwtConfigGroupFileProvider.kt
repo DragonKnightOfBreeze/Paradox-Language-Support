@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.id
 
 /**
  * 用于获取规则分组中的文件。
@@ -23,7 +22,7 @@ interface CwtConfigGroupFileProvider {
     /**
      * 基于游戏类型，得到规则的根目录中的对应的规则分组的目录的名字。
      */
-    fun getDirectoryName(project: Project, gameType: ParadoxGameType?): String {
+    fun getDirectoryName(project: Project, gameType: ParadoxGameType): String {
         return gameType.id
     }
 
@@ -31,7 +30,7 @@ interface CwtConfigGroupFileProvider {
      * 基于规则分组的目录的名字，得到对应的游戏类型。
      */
     fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
-        return directoryName.takeIf { ParadoxGameType.canResolve(it) }
+        return directoryName
     }
 
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?

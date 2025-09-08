@@ -44,7 +44,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionSubtypes: List<String>? get() = null
         override val rootKey: String get() = ""
         override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.resolveEmpty()
-        override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
+        override val gameType: ParadoxGameType get() = ParadoxGameType.Core
 
         override fun toString(): String {
             return "ParadoxScriptPropertyStub.Dummy"

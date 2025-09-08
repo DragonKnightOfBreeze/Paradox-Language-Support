@@ -12,7 +12,6 @@ import com.intellij.psi.PsiDirectory
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.model.title
 
 class CwtConfigGameElementNode(
     project: Project,

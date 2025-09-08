@@ -11,7 +11,7 @@ import java.util.*
 class CwtConfigDirectoryElement(
     val project: Project,
     val path: String,
-    val gameType: ParadoxGameType?,
+    val gameType: ParadoxGameType,
 ) : RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val roots = mutableSetOf<VirtualFile>()

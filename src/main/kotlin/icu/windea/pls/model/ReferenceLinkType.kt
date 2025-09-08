@@ -25,7 +25,7 @@ abstract class ReferenceLinkType(
      * - `cwt:stellaris:modifiers/some_modifier`
      */
     data object CwtConfig : ReferenceLinkType("cwt:") {
-        fun createLink(category: String, name: String, gameType: ParadoxGameType? = null): String {
+        fun createLink(category: String, name: String, gameType: ParadoxGameType = ParadoxGameType.Core): String {
             return "$prefix${gameType.id}:$category/$name"
         }
 

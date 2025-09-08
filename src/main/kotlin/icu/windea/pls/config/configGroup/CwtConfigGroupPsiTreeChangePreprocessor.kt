@@ -28,12 +28,9 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f
             if (!fileProvider.isEnabled) return@f // 如果未启用则不要把规则分组标记为已更改
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
-            if (configGroup.gameType == null) {
-                ParadoxGameType.entries.forEach { gameType ->
-                    configGroups += configGroupService.getConfigGroup(gameType)
-                }
-            } else {
-                configGroups += configGroup
+            configGroups.add(configGroup)
+            if (configGroup.gameType == ParadoxGameType.Core) {
+                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
             }
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }

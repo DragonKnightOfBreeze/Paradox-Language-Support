@@ -84,7 +84,7 @@ class ParadoxModSettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.entries)
+                comboBox(ParadoxGameType.getAll())
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply

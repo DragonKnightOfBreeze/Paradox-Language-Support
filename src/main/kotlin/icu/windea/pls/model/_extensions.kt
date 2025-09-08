@@ -27,8 +27,8 @@ private fun toCwtType(value: Byte) = CwtType.entries[value.toInt()]
 private fun fromCwtSeparatorType(value: CwtSeparatorType) = value.ordinal.toByte()
 private fun toCwtSeparatorType(value: Byte) = CwtSeparatorType.entries[value.toInt()]
 
-private fun fromGameType(value: ParadoxGameType) = value.ordinal.toByte()
-private fun toGameType(value: Byte) = ParadoxGameType.entries[value.toInt()]
+private fun fromGameType(value: ParadoxGameType) = value.ordinal.toByte() - 1
+private fun toGameType(value: Byte) = ParadoxGameType.getAll(withCore = true)[value.toInt() + 1]
 
 private fun fromLocalisationType(value: ParadoxLocalisationType) = value.ordinal.toByte()
 private fun toLocalisationType(value: Byte) = ParadoxLocalisationType.resolve(value)

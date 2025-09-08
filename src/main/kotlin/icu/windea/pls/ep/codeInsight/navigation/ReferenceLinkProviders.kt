@@ -54,7 +54,8 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
@@ -301,7 +302,7 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
-        val gameType = gameType0 ?: selectGameType(contextElement)
+        val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
         val name = remain
         val project = contextElement.project
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
@@ -320,5 +321,5 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
 private fun getGameTypeAndRemain(shortLink: String): Tuple2<ParadoxGameType?, String> {
     val i = shortLink.indexOf(':')
     if (i == -1) return null to shortLink
-    return shortLink.substring(0, i).let { ParadoxGameType.resolve(it) } to shortLink.substring(i + 1)
+    return shortLink.substring(0, i).let { ParadoxGameType.get(it) } to shortLink.substring(i + 1)
 }

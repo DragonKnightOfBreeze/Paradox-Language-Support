@@ -9,7 +9,7 @@ import java.util.*
 
 class CwtConfigGameElement(
     val project: Project,
-    val gameType: ParadoxGameType?
+    val gameType: ParadoxGameType
 ) : RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val roots = mutableSetOf<VirtualFile>()

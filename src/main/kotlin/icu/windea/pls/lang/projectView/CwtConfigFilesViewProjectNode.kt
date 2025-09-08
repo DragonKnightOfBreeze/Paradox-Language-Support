@@ -45,17 +45,14 @@ class CwtConfigFilesViewProjectNode(
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val directoryName = relativePath.substringBefore('/')
             val gameTypeId = fileProvider.getGameTypeIdFromDirectoryName(project, directoryName) ?: return@f
-            if (ParadoxGameType.canResolve(gameTypeId)) return true
+            if (ParadoxGameType.get(gameTypeId, withCore = true) != null) return true
         }
         return false
     }
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         val result = mutableSetOf<AbstractTreeNode<*>>()
-        val coreElement = CwtConfigGameElement(project, null)
-        val coreElementNode = CwtConfigGameElementNode(project, coreElement, settings)
-        result += coreElementNode
-        ParadoxGameType.entries.forEach { gameType ->
+        ParadoxGameType.getAll(withCore = true).forEach { gameType ->
             val element = CwtConfigGameElement(project, gameType)
             val elementNode = CwtConfigGameElementNode(project, element, settings)
             result += elementNode

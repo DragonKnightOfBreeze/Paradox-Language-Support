@@ -29,7 +29,6 @@ import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.model.steamId
-import icu.windea.pls.model.title
 import icu.windea.pls.model.toScopeMap
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
@@ -160,7 +159,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     return this
 }
 
-fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): DocumentationBuilder {
+fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
     when {
         isUnsureScopeId(scopeId) -> append(scopeId)
         else -> {
@@ -190,16 +189,16 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     return this
 }
 
-fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
-    if (categories.isEmpty()) return ""
+fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
+    if (modifierCategories.isEmpty()) return ""
     return buildDocumentation {
         append("<pre>")
         var appendSeparator = false
-        for (category in categories) {
+        for (modifierCategory in modifierCategories) {
             if (appendSeparator) append(", ") else appendSeparator = true
             val category = ReferenceLinkType.CwtConfig.Categories.modifierCategories
-            val link = ReferenceLinkType.CwtConfig.createLink(category, category, gameType)
-            appendPsiLinkOrUnresolved(link.escapeXml(), category.escapeXml(), context = contextElement)
+            val link = ReferenceLinkType.CwtConfig.createLink(category, modifierCategory, gameType)
+            appendPsiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
         }
         append("</pre>")
     }

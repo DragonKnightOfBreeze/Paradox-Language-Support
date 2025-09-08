@@ -9,7 +9,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.id
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -24,7 +23,7 @@ private val logger = logger<CwtConfigGroup>()
  * @property project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
  */
 class CwtConfigGroup(
-    val gameType: ParadoxGameType?,
+    val gameType: ParadoxGameType,
     val project: Project,
 ) : UserDataHolderBase() {
     private val mutex = Mutex()

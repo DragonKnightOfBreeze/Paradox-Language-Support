@@ -195,7 +195,7 @@ object ParadoxFileManager {
     fun getInjectedGameTypeForTestDataFile(file: VirtualFile): ParadoxGameType? {
         if (!isTestDataFile(file)) return null
         val name = file.nameWithoutExtension
-        val injectedGameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.resolve(it) }
+        val injectedGameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
         file.putUserData(PlsKeys.injectedGameType, injectedGameType)
         return injectedGameType
     }

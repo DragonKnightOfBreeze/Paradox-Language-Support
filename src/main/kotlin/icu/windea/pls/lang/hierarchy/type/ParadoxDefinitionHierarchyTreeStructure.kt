@@ -23,6 +23,7 @@ import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
 import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
@@ -103,7 +104,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     @Suppress("SameParameterValue")
     private fun doBuildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>, nextNodeType: NodeType) {
         val gameType = typeConfig.configGroup.gameType
-        if (gameType == null) return
+        if (gameType == ParadoxGameType.Core) return
 
         val project = myProject
         when (nextNodeType) {
@@ -170,7 +171,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun doBuildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>, nextNodeType: NodeType) {
         val gameType = typeConfig.configGroup.gameType
-        if (gameType == null) return
+        if (gameType == ParadoxGameType.Core) return
 
         val project = myProject
         when (nextNodeType) {

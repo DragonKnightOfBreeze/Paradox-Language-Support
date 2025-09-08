@@ -24,7 +24,7 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
     override fun createCenterPanel(): DialogPanel {
         return panel {
             properties.forEach f@{ (gameTypeId, configRepositoryUrlProperty) ->
-                val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
+                val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
                 row {
                     //configRepositoryUrl
                     label(gameType.title + ":").widthGroup("left")

@@ -19,7 +19,7 @@ class ParadoxLocalisationStubBuilder : LightStubBuilder() {
     override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {
         if (file !is ParadoxLocalisationFile) return super.createStubForFile(file, tree)
         val type = ParadoxLocalisationType.resolve(file) ?: ParadoxLocalisationType.Normal
-        val gameType = selectGameType(file) ?: ParadoxGameType.placeholder()
+        val gameType = selectGameType(file) ?: ParadoxGameType.Core
         return ParadoxLocalisationFileStub.Impl(file, type, gameType)
     }
 

@@ -17,7 +17,6 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.id
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
@@ -31,8 +30,7 @@ class CwtConfigGroupService(private val project: Project) {
 
     fun initAsync() {
         val configGroups = mutableSetOf<CwtConfigGroup>()
-        configGroups.add(getConfigGroup(null))
-        ParadoxGameType.entries.forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
+        ParadoxGameType.getAll(withCore = true).forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -66,7 +64,7 @@ class CwtConfigGroupService(private val project: Project) {
         logger.info("Initialized config groups for $projectTitle in ${end - start} ms.")
     }
 
-    fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+    fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
         return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
     }
 
@@ -74,7 +72,7 @@ class CwtConfigGroupService(private val project: Project) {
         return cache
     }
 
-    fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
+    fun createConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
         val configGroup = CwtConfigGroup(gameType, project)
         return configGroup
     }
@@ -131,10 +129,10 @@ class CwtConfigGroupService(private val project: Project) {
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
-        val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
+        val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         PlsFacade.getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
-            val gameType = settings.gameType ?: return@f
+            val gameType = settings.finalGameType
             if (gameType !in gameTypes) return@f
             settings.gameDirectory?.let { gameDirectory -> rootFilePaths.add(gameDirectory) }
         }

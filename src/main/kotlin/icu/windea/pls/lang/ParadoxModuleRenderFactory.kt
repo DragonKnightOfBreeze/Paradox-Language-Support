@@ -8,7 +8,6 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.qualifiedName
-import icu.windea.pls.model.title
 
 /**
  * 用于在快速文档等处渲染目标的位置信息（规则目录/游戏目录/模组目录）。

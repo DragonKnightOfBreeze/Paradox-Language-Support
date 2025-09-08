@@ -22,7 +22,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val directoryName = relativePath.substringBefore('/')
         val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
-        val gameType = ParadoxGameType.resolve(gameTypeId)
+        val gameType = ParadoxGameType.get(gameTypeId, withCore = true) ?: ParadoxGameType.Core
         return PlsFacade.getConfigGroup(project, gameType)
     }
 
@@ -38,16 +38,11 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val configDirectories = mutableSetOf<VirtualFile>()
         val gameType = configGroup.gameType
         val project = configGroup.project
-        if (gameType == null) {
-            val coreDirectoryName = getDirectoryName(project, null)
-            rootDirectory.findChild(coreDirectoryName)?.let { configDirectories.add(it) }
-        } else {
-            val coreDirectoryName = getDirectoryName(project, null)
-            rootDirectory.findChild(coreDirectoryName)?.let { configDirectories.add(it) }
-            if (isEnabled) {
-                val directoryName = getDirectoryName(project, gameType)
-                rootDirectory.findChild(directoryName)?.let { configDirectories.add(it) }
-            }
+        val coreDirectoryName = getDirectoryName(project, ParadoxGameType.Core)
+        rootDirectory.findChild(coreDirectoryName)?.let { configDirectories.add(it) }
+        if (isEnabled && gameType != ParadoxGameType.Core) {
+            val directoryName = getDirectoryName(project, gameType)
+            rootDirectory.findChild(directoryName)?.let { configDirectories.add(it) }
         }
         configDirectories.forEach { configDirectory -> doProcessInConfigDirectory(configDirectory, consumer) }
     }
@@ -77,7 +72,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
         val gameType = configGroup.gameType
-        return if (gameType != null) {
+        return if (gameType != ParadoxGameType.Core) {
             if (isEnabled) {
                 PlsBundle.message("configGroup.notification", messageIndex, gameType)
             } else {
@@ -154,9 +149,9 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return file?.takeIf { it.isDirectory }
     }
 
-    override fun getDirectoryName(project: Project, gameType: ParadoxGameType?): String {
+    override fun getDirectoryName(project: Project, gameType: ParadoxGameType): String {
         // should be `cwtools-{gameType}-config` or `core`
-        if (gameType == null) return "core"
+        if (gameType == ParadoxGameType.Core) return "core"
         val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls[gameType.id]?.orNull()
             ?.let { PlsGitManager.getRepositoryPathFromUrl(it) }
         if (fromConfig != null) return fromConfig
@@ -165,7 +160,7 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     }
 
     override fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
-        if (directoryName == "core") return null
+        if (directoryName == "core") return directoryName
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
         val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls.entries

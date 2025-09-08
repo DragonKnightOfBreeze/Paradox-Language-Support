@@ -29,7 +29,7 @@ class PlsDataProvider {
             launch {
                 getSteamPath()
             }
-            ParadoxGameType.entries.forEach { gameType ->
+            ParadoxGameType.getAll().forEach { gameType ->
                 launch {
                     getSteamGamePath(gameType.steamId, gameType.title)
                 }

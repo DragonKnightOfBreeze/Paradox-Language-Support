@@ -40,7 +40,7 @@ class ParadoxGameSettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("game.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.entries)
+                comboBox(ParadoxGameType.getAll())
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(COLUMNS_SHORT)

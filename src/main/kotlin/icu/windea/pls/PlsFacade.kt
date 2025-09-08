@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.getDefaultProject
@@ -39,9 +40,16 @@ object PlsFacade {
 
     fun getDataProvider() = service<PlsDataProvider>()
 
-    fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
+    fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
+        val project = getDefaultProject()
+        val finalGameType = gameType ?: ParadoxGameType.Core
+        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+    }
 
-    fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
+    fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
+        val finalGameType = gameType ?: ParadoxGameType.Core
+        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+    }
 
     fun getSettings() = service<PlsSettings>().state
 

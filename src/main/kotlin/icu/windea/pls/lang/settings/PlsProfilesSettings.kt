@@ -17,7 +17,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.orDefault
 
 /**
  * PLS资料设置。
@@ -175,26 +174,31 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
     var enabled: Boolean by property(true)
 }
 
+val ParadoxGameDescriptorSettingsState.finalGameType: ParadoxGameType
+    get() = gameType ?: PlsFacade.getSettings().defaultGameType
+
 val ParadoxModDescriptorSettingsState.finalGameType: ParadoxGameType
     get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
+
+val ParadoxGameSettingsState.finalGameType: ParadoxGameType
+    get() = gameType ?: PlsFacade.getSettings().defaultGameType
 
 val ParadoxModDescriptorAwareSettingsState.finalGameType: ParadoxGameType
     get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
 
 val ParadoxModSettingsState.finalGameDirectory: String?
-    get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().defaultGameDirectories[finalGameType.id]
-        ?.orNull()
+    get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().defaultGameDirectories[finalGameType.id]?.orNull()
 
 val ParadoxGameOrModSettingsState.qualifiedName: String
     get() = when (this) {
         is ParadoxGameSettingsState -> buildString {
-            append(gameType.orDefault().title)
+            append(finalGameType.title)
             if (gameVersion.isNotNullOrEmpty()) {
                 append("@").append(gameVersion)
             }
         }
         is ParadoxModSettingsState -> buildString {
-            append(gameType.orDefault().title).append(" Mod: ")
+            append(finalGameType.title).append(" Mod: ")
             append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
             if (version.isNotNullOrEmpty()) {
                 append("@").append(version)

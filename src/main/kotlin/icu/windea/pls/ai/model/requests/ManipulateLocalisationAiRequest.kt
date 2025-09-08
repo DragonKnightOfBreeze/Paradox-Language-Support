@@ -10,7 +10,6 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.model.orDefault
 
 abstract class ManipulateLocalisationAiRequest(
     val project: Project,
@@ -28,7 +27,7 @@ abstract class ManipulateLocalisationAiRequest(
 
         fun isEmpty() = fileInfo == null
 
-        val gameType: ParadoxGameType by lazy { fileInfo?.rootInfo?.gameType.orDefault() }
+        val gameType: ParadoxGameType? by lazy { fileInfo?.rootInfo?.gameType }
         val filePath: String? by lazy { fileInfo?.path?.path }
         val fileName: String? by lazy { fileInfo?.path?.fileName }
         val modName: String? by lazy { fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name }

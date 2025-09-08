@@ -29,7 +29,7 @@ interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedV
         parent: StubElement<*>?,
     ) : Base(parent) {
         override val name: String get() = ""
-        override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
+        override val gameType: ParadoxGameType get() = ParadoxGameType.Core
 
         override fun toString(): String {
             return "ParadoxScriptScriptedVariableStub.Dummy"

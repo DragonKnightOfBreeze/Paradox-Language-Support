@@ -95,7 +95,7 @@ object CwtConfigManager {
     private fun doGetContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
         val gameTypeId = doGetGameTypeIdFromRepoFile(file, project)
         if (gameTypeId.isNullOrEmpty()) return null
-        val gameType = ParadoxGameType.resolve(gameTypeId)
+        val gameType = ParadoxGameType.get(gameTypeId, withCore = true) ?: return null
         return PlsFacade.getConfigGroup(project, gameType)
     }
 

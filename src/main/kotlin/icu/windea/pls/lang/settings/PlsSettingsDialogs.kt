@@ -30,7 +30,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
     override fun createCenterPanel(): DialogPanel {
         return panel {
             properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
-                val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
+                val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
                 row {
                     //gameDirectory
                     label(gameType.title + ":").widthGroup("left")
@@ -49,7 +49,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
             row {
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
-                        val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
+                        val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
                         val quickGameDirectory = ParadoxCoreManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
                         gameDirectoryProperty.set(quickGameDirectory)
                     }

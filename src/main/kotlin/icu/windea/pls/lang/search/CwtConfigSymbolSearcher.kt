@@ -11,6 +11,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.CwtConfigSymbolIndex
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>() {
@@ -29,7 +30,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
             //check game type at file level
             if (gameType != null) {
                 val configGroup = CwtConfigManager.getContainingConfigGroup(file, project) ?: return@p true
-                if (configGroup.gameType != null && configGroup.gameType != gameType) return@p true
+                if (configGroup.gameType != ParadoxGameType.Core && configGroup.gameType != gameType) return@p true
             }
 
             val fileData = findFileBasedIndex<CwtConfigSymbolIndex>().getFileData(file, project)

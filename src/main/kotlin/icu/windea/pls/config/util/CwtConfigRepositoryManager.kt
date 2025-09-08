@@ -43,8 +43,7 @@ object CwtConfigRepositoryManager {
     }
 
     fun getGameTypeIdFromDefaultDirectoryName(directoryName: String): String? {
-        if (directoryName == "core") return directoryName
-        return directoryName.removeSurroundingOrNull("cwtools-", "-config")?.takeIf { ParadoxGameType.canResolve(it) }
+        return directoryName.removeSurroundingOrNull("cwtools-", "-config")
     }
 
     fun validateUrl(builder: ValidationInfoBuilder, gameType: ParadoxGameType, url: String): ValidationInfo? {

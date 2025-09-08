@@ -113,7 +113,7 @@ class CwtConfigDirectoryElementNode(
                 presentation.presentableText = value.path.substringAfterLast('/')
                 return
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             //ignored
         }
         value = null

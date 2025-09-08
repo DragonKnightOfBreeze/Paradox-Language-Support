@@ -66,7 +66,7 @@ object PlsMarkdownManager {
         val extraInfos = infos.drop(1)
         val pathInfo = extraInfos.firstNotNullOfOrNull { it.removePrefixOrNull("path=") }
         if (pathInfo.isNullOrEmpty()) return null
-        val gameType = pathInfo.substringBefore(':', "").let { ParadoxGameType.resolve(it) }
+        val gameType = pathInfo.substringBefore(':', "").let { ParadoxGameType.get(it) }
         if (gameType == null) return null
         val path = pathInfo.substringAfter(':', "").trimFast('/')
         if (path.isEmpty()) return null

@@ -18,7 +18,7 @@ interface ParadoxLocalisationPropertyListStub : ParadoxLocaleAwareStub<ParadoxLo
         parent: StubElement<*>?
     ) : StubBase<ParadoxLocalisationPropertyList>(parent, PROPERTY_LIST), ParadoxLocalisationPropertyListStub {
         override val localisationType: ParadoxLocalisationType get() = parentStub?.localisationType ?: ParadoxLocalisationType.Normal
-        override val gameType: ParadoxGameType get() = parentStub?.gameType ?: ParadoxGameType.placeholder()
+        override val gameType: ParadoxGameType get() = parentStub?.gameType ?: ParadoxGameType.Core
 
         override fun getParentStub(): ParadoxLocalisationFileStub? {
             return super.getParentStub() as? ParadoxLocalisationFileStub

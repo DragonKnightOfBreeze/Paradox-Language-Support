@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
 class ParadoxScriptStubBuilder : LightStubBuilder() {
     override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {
         if (file !is ParadoxScriptFile) return super.createStubForFile(file, tree)
-        val gameType = selectGameType(file) ?: ParadoxGameType.placeholder()
+        val gameType = selectGameType(file) ?: ParadoxGameType.Core
         return ParadoxScriptFileStub.Impl(file, gameType)
     }
 

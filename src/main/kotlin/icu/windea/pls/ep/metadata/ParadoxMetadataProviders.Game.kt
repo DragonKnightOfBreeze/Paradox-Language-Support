@@ -30,7 +30,7 @@ class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
         override val entryFile: VirtualFile = doGetEntryFile()
 
         private fun doGetGameType(): ParadoxGameType {
-            return ParadoxGameType.entries.find { it.gameId == info.gameId } ?: throw IllegalStateException()
+            return ParadoxGameType.getAll().find { it.gameId == info.gameId } ?: throw IllegalStateException()
         }
 
         private fun doGetEntryFile(): VirtualFile {
