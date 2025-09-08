@@ -6,13 +6,18 @@ import icu.windea.pls.config.configGroup.definitionTypesIndirectSupportScope
 import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
 import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
 import icu.windea.pls.config.configGroup.definitionTypesSupportScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 /**
  * 用于初始规则分组中预先定义的那些数据。
  */
 class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
+        val currentCoroutineContext = currentCoroutineContext()
+
         run {
+            currentCoroutineContext.ensureActive()
             with(configGroup.aliasNamesSupportScope) {
                 this += "modifier" //也支持，但不能切换作用域
                 this += "trigger"

@@ -15,7 +15,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.withLock
+import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.model.constants.PlsConstants
@@ -36,6 +36,10 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
+        // 在应用启动时，异步地初始化缓存数据
+        initCachesAsync()
+        // 在应用启动时，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
+        initConfigGroupsAsync(getDefaultProject())
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
@@ -53,14 +57,16 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     // for each project
 
     override suspend fun execute(project: Project) {
-        runOncePerApplication.withLock(mutex) {
-            // 这些操作仅需执行一次（应用范围）
-            initCachesAsync()
+        // 这些操作仅需执行一次（应用范围）
+        mutex.withDoubleLock(runOncePerApplication) {
+            // 仅限一次，如果必要，刷新内置规则目录
             refreshBuiltInConfigRootDirectoriesAsync(project)
-            initConfigGroupsAsync(getDefaultProject())
         }
-        refreshRootsForLibrariesAsync(project)
+
+        // 在项目启动时，异步地预加载规则数据
         initConfigGroupsAsync(project)
+        // 在项目启动时，异步地刷新外部库的根目录
+        refreshRootsForLibrariesAsync(project)
     }
 
     private fun initCachesAsync() {
@@ -72,7 +78,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     @Suppress("ObsoleteDispatchersEdt")
     private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
         // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
-
         if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
         val builtInConfigRootDirectories = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.type == CwtConfigGroupFileProvider.Type.BuiltIn }
@@ -92,7 +97,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun refreshRootsForLibrariesAsync(project: Project) {
-        // 在项目启动时,异步地刷新外部库的根目录
         if (application.isUnitTestMode) return
         if (project.isDisposed) return
         project.paradoxLibrary.refreshRoots()
@@ -100,7 +104,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initConfigGroupsAsync(project: Project) {
-        // 在项目启动时，异步地预加载规则数据
         if (application.isUnitTestMode) return
         if (project.isDisposed) return
         project.service<CwtConfigGroupService>().initAsync()

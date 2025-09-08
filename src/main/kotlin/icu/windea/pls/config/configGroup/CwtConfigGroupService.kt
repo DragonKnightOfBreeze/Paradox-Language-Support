@@ -3,6 +3,7 @@ package icu.windea.pls.config.configGroup
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
@@ -12,6 +13,7 @@ import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
@@ -28,39 +30,37 @@ class CwtConfigGroupService(private val project: Project) {
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
     fun initAsync() {
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
-        coroutineScope.launch {
-            if (project.isDefault) {
-                doInit()
-                return@launch
-            }
-
-            // 估计用时：2s
-            if (PlsFacade.getInternalSettings().showModalOnInitConfigGroups) {
-                // 显示不可取消的模态进度条
-                val title = PlsBundle.message("configGroup.init.progressTitle")
-                withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
-                    doInit()
-                }
-            } else {
-                // 静默执行
-                doInit()
-            }
-            // 重新解析已打开的文件
-            val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsCoreManager.reparseFiles(openedFiles)
-        }
-    }
-
-    private suspend fun doInit() {
         val configGroups = mutableSetOf<CwtConfigGroup>()
         configGroups.add(getConfigGroup(null))
         ParadoxGameType.entries.forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
+
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            if (!project.isDefault && PlsFacade.getInternalSettings().showModalOnInitConfigGroups) {
+                // 显示不可取消的模态进度条
+                val title = PlsBundle.message("configGroup.init.progressTitle")
+                withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
+                    doInit(configGroups)
+                }
+            } else {
+                // 静默执行
+                doInit(configGroups)
+            }
+            if (!project.isDefault) {
+                // 重新解析已打开的文件
+                val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+                PlsCoreManager.reparseFiles(openedFiles)
+            }
+        }
+    }
+
+    private suspend fun doInit(configGroups: Collection<CwtConfigGroup>) {
         val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
         logger.info("Initializing config groups for $projectTitle...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
             configGroup.init()
+            getConfigGroupForDefaultProject(configGroup).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
         logger.info("Initialized config groups for $projectTitle in ${end - start} ms.")
@@ -123,8 +123,8 @@ class CwtConfigGroupService(private val project: Project) {
         logger.info("Refreshing config groups for $projectTitle...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
-            configGroup.clear()
             configGroup.init()
+            getConfigGroupForDefaultProject(configGroup).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
         logger.info("Refreshed config groups for $projectTitle in ${end - start} ms.")
@@ -144,6 +144,10 @@ class CwtConfigGroupService(private val project: Project) {
             settings.modDirectory?.let { modDirectory -> rootFilePaths.add(modDirectory) }
         }
         return rootFilePaths
+    }
+
+    private fun getConfigGroupForDefaultProject(configGroup: CwtConfigGroup): CwtConfigGroup {
+        return getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(configGroup.gameType)
     }
 
     fun updateRefreshFloatingToolbar() {

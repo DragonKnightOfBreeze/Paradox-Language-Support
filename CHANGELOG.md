@@ -15,7 +15,8 @@
 
 ## 2.0.3
 
-- [X] 修复：修复与切换类型有关的一处 BUG / FIX: Fix an issue related to swapped types.
+- [X] 修复：修复与切换类型有关的一处 BUG / FIX: Fix an issue related to swapped types
+- [X] 修复：修复规则数据可能在重启项目后被清空的问题 / FIX: Fix an issue that config data may be cleared after project reopening
 
 ## 2.0.2
 

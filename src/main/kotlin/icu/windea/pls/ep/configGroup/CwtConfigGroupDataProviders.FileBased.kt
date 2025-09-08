@@ -79,29 +79,37 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.priority.ParadoxPriority
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 /**
  * 用于初始规则分组中基于文件内容的那些数据。
  */
 class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
+        val currentCoroutineContext = currentCoroutineContext()
+
         // 按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
         // 后加入的规则文件会覆盖先加入的同路径的规则文件
         // 后加入的数据项会覆盖先加入的同名同类型的数据项
 
+        currentCoroutineContext.ensureActive()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvidersAndRootDirectories = mutableMapOf<CwtConfigGroupFileProvider, VirtualFile>()
         readAction {
             fileProviders.forEach f@{ fileProvider ->
+                currentCoroutineContext.ensureActive()
                 val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@f
                 fileProvidersAndRootDirectories.put(fileProvider, rootDirectory)
             }
         }
 
+        currentCoroutineContext.ensureActive()
         val allInternalFiles = mutableMapOf<String, VirtualFile>()
         val allFiles = mutableMapOf<String, VirtualFile>()
         readAction {
             fileProvidersAndRootDirectories.all { (fileProvider, rootDirectory) ->
+                currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
                         if (fileProvider.type != CwtConfigGroupFileProvider.Type.BuiltIn) return@p true //不允许覆盖内部规则文件
@@ -113,11 +121,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
             allInternalFiles.forEach f@{ (filePath, file) ->
+                currentCoroutineContext.ensureActive()
                 val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
                 val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
                 processInternalFile(filePath, fileConfig, configGroup)
             }
             allFiles.forEach f@{ (_, file) ->
+                currentCoroutineContext.ensureActive()
                 val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
                 val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
                 processFile(fileConfig, configGroup)

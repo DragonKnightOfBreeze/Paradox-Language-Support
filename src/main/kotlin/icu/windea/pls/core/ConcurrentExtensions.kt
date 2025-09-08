@@ -6,28 +6,28 @@ import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("unused")
-inline fun <T> AtomicBoolean.withLock(lock: Any, action: () -> T) {
-    if (get()) return
-    synchronized(lock) {
-        if (get()) return
+inline fun <T> Any.withDoubleLock(flag: AtomicBoolean, action: () -> T) {
+    if (flag.get()) return
+    synchronized(this) {
+        if (flag.get()) return
         try {
             action()
-            set(true)
+            flag.set(true)
         } catch (e: Exception) {
-            thisLogger().warn(e)
+            flag.thisLogger().warn(e)
         }
     }
 }
 
-suspend inline fun <T> AtomicBoolean.withLock(mutex: Mutex, action: () -> T) {
-    if (get()) return
-    mutex.withLock {
-        if (get()) return
+suspend inline fun <T> Mutex.withDoubleLock(flag: AtomicBoolean, action: () -> T) {
+    if (flag.get()) return
+    withLock {
+        if (flag.get()) return
         try {
             action()
-            set(true)
+            flag.set(true)
         } catch (e: Exception) {
-            thisLogger().warn(e)
+            flag.thisLogger().warn(e)
         }
     }
 }

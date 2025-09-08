@@ -33,14 +33,19 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.takeWithOperator
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.model.paths.CwtConfigPath
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 /**
  * 用于初始规则分组中需要经过计算的那些数据。
  */
 class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
+        val currentCoroutineContext = currentCoroutineContext()
+        
         //compute `generatedModifiers` and `predefinedModifiers`
         run {
+            currentCoroutineContext.ensureActive()
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
                 .sortedByDescending { it.template.snippetExpressions.size } //put xxx_<xxx>_xxx before xxx_<xxx>
@@ -52,6 +57,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //compute `swappedTypes` and add missing declarations with swapped type
         run {
+            currentCoroutineContext.ensureActive()
             for (typeConfig in configGroup.types.values) {
                 if (typeConfig.baseType == null) continue
                 val typeName = typeConfig.name
@@ -70,6 +76,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //add missing localisation links from links
         run {
+            currentCoroutineContext.ensureActive()
             val localisationLinksNotFromData = configGroup.localisationLinks.values.filter { !it.fromData }
             if (localisationLinksNotFromData.isNotEmpty()) return@run
             val linksNotFromData = configGroup.links.values.filter { !it.fromData }
@@ -80,12 +87,14 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //bind specific links and localisation links
         run {
+            currentCoroutineContext.ensureActive()
             configGroup.linksOfVariable += configGroup.links.values
                 .filter { it.forValue() && it.fromData && it.name == "variable" }
         }
 
         //bind `categoryConfigMap` for modifier configs
         run {
+            currentCoroutineContext.ensureActive()
             for (modifier in configGroup.modifiers.values) {
                 for (category in modifier.categories) {
                     val categoryConfig = configGroup.modifierCategories[category] ?: continue
@@ -96,6 +105,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
         run {
+            currentCoroutineContext.ensureActive()
             for ((k, v) in configGroup.aliasGroups) {
                 var keysConst: MutableMap<String, String>? = null
                 var keysNoConst: MutableSet<String>? = null
@@ -119,6 +129,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //compute `definitionTypesSupportParameters`
         run {
+            currentCoroutineContext.ensureActive()
             with(configGroup.definitionTypesSupportParameters) {
                 for (parameterConfig in configGroup.parameterConfigs) {
                     val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
@@ -135,6 +146,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         run {
             //按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
             //based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            currentCoroutineContext.ensureActive()
             with(configGroup.definitionTypesMayWithTypeKeyPrefix) {
                 val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
                 val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
@@ -148,6 +160,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //computer `relatedLocalisationPatterns`
         run {
+            currentCoroutineContext.ensureActive()
             with(configGroup.relatedLocalisationPatterns) {
                 val r = mutableSetOf<String>()
                 configGroup.types.values.forEach { c ->
