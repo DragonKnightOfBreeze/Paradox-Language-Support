@@ -13,6 +13,10 @@
 - [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
 - [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 
+## 2.0.3
+
+- [X] 修复：修复与切换类型有关的一处 BUG / FIX: Fix an issue related to swapped types.
+
 ## 2.0.2
 
 - [X] #165
