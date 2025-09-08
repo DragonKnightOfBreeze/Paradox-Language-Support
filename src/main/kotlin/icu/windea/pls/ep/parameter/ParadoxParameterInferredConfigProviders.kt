@@ -6,8 +6,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.delegated
-import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
@@ -46,7 +44,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        val finalConfigs = getConfig(parameterInfo, configGroup)?.let { it.singleton.list() } ?: return null
+        val finalConfigs = getConfig(parameterInfo, configGroup)?.singleton?.list() ?: return null
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -114,8 +112,8 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 return@map CwtValueConfig.resolve(emptyPointer(), configGroup, config.key)
             }
             when (config) {
-                is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
-                is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
+                is CwtValueConfig -> CwtValueConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
             }
         }
         if (finalConfigs.isEmpty()) return emptyList()
@@ -156,7 +154,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val expression = ParadoxComplexExpression.resolveByConfig(value, textRange, configGroup, expressionConfig) ?: return null
         val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: List<CwtValueConfig>? = null
-        expression.accept(object: ParadoxComplexExpressionVisitor() {
+        expression.accept(object : ParadoxComplexExpressionVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
                 if (node.rangeInExpression == rangeInExpressionElement) {
                     result = getConfigsFromNode(expressionElement, expressionConfig, node)

@@ -6,11 +6,8 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.copy
-import icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isBlock
-import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -80,7 +77,12 @@ object CwtConfigManipulator {
         if (cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
         cs1.forEach f1@{ c1 ->
-            result += c1.delegated(deepCopyConfigs(c1), parentConfig)
+            val configs = deepCopyConfigs(c1)
+            val c1Delegated = when (c1) {
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs, parentConfig)
+                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs, parentConfig)
+            }
+            result += c1Delegated
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
@@ -104,7 +106,12 @@ object CwtConfigManipulator {
                 }
             }
 
-            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, c1, context), parentConfig)
+            val configs = deepCopyConfigsInDeclarationConfig(c1, c1, context)
+            val c1Delegated = when (c1) {
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs, parentConfig)
+                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs, parentConfig)
+            }
+            result += c1Delegated
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
@@ -119,7 +126,8 @@ object CwtConfigManipulator {
     }
 
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: InlineMode): CwtPropertyConfig? {
-        val inlined = config.copy(
+        val inlined = CwtPropertyConfig.copy(
+            targetConfig = config,
             key = when (inlineMode) {
                 InlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
                 InlineMode.VALUE_TO_KEY -> otherConfig.value

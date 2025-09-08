@@ -4,7 +4,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.declarationConfigContext
-import icu.windea.pls.config.config.delegatedWith
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.core.annotations.WithGameType
@@ -28,7 +27,7 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
                     var i0 = i + 1
                     (injectedKeys ?: listOf(key)).forEach { injectedKey ->
                         (injectedValues ?: listOf(value)).forEach { injectedValue ->
-                            configs.add(i0, config.delegatedWith(injectedKey, injectedValue))
+                            configs.add(i0, CwtPropertyConfig.delegatedWith(config, injectedKey, injectedValue))
                             i0++
                         }
                     }
@@ -41,7 +40,7 @@ abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfi
                     if (injectedValues == null) continue
                     var i0 = i + 1
                     injectedValues.forEach { injectedValue ->
-                        configs.add(i0, config.delegatedWith(injectedValue))
+                        configs.add(i0, CwtValueConfig.delegatedWith(config, injectedValue))
                         i0++
                     }
                     if (!keepOrigin(config)) configs.removeAt(i)

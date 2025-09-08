@@ -1,13 +1,12 @@
 package icu.windea.pls.ep.configContext
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigContext
-import icu.windea.pls.config.config.delegated
+import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.extendedGameRules
@@ -45,7 +44,7 @@ class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-        val finalRootConfig = rootConfig.delegated(configs, null)
+        val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs, null)
         finalRootConfig.declarationConfigContext = context
         if (configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
@@ -76,7 +75,7 @@ class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         //如果存在，使用重载的声明规则
         val rootConfig = context.gameRuleConfig?.configForDeclaration ?: declarationConfig.configForDeclaration
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-        val finalRootConfig = rootConfig.delegated(configs, null)
+        val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs, null)
         finalRootConfig.declarationConfigContext = context
         if (configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
@@ -105,7 +104,7 @@ class OnActionCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-        val finalRootConfig = rootConfig.delegated(configs, null)
+        val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs, null)
         finalRootConfig.declarationConfigContext = context
         if (configs == null) return finalRootConfig
         configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()

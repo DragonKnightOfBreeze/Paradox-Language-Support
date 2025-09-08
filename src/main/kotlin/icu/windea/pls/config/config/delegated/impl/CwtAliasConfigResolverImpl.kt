@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.copy
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.pushScope
@@ -43,7 +42,8 @@ private class CwtAliasConfigImpl(
 
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config
-        val inlined = config.copy(
+        val inlined = CwtPropertyConfig.copy(
+            targetConfig = config,
             key = subName,
             value = other.value,
             valueType = other.valueType,

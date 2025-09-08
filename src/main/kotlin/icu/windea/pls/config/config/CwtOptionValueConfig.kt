@@ -9,7 +9,7 @@ interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtOption> {
         fun resolve(
             value: String,
             valueType: CwtType = CwtType.String,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = null
+            optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
         ): CwtOptionValueConfig
     }
 
