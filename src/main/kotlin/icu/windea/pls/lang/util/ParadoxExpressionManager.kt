@@ -967,7 +967,7 @@ object ParadoxExpressionManager {
         val resolvedConfig = config.resolved()
         if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
             //特殊处理合成的CWT规则
-            val gameType = configGroup.gameType ?: return null
+            val gameType = configGroup.gameType
             val project = configGroup.project
             return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
         }
