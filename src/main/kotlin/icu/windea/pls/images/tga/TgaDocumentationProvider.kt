@@ -36,8 +36,8 @@ class TgaDocumentationProvider : AbstractDocumentationProvider() {
             //加入图片的元数据信息
             run {
                 val message = buildString {
-                    append(metadata.width).append("x").append(metadata.height)
-                    append(", ").append(metadata.bpp)
+                    append(metadata.width).append("\u00D7").append(metadata.height)
+                    append(", ").append(metadata.bpp).append("bpp")
                 }
                 append(HtmlChunk.p().addText(message))
             }

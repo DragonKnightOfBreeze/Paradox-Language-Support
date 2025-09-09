@@ -220,13 +220,9 @@ class ImageEditorUI(
             if (fileType != DdsFileType) return@run
             val metadata = runReadAction { service<DdsMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
-                append(metadata.width).append("x").append(metadata.height)
+                append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)
-                append(" (")
-                append(metadata.d3dFormat?.orNull() ?: "UNKNOWN")
-                append(", ")
-                append(metadata.dxgiFormat?.orNull() ?: "UNKNOWN")
-                append(")")
+                append(" (").append(metadata.format).append(")")
                 append(" ").append(fileSize)
             }
             return
@@ -236,7 +232,7 @@ class ImageEditorUI(
             if (fileType != TgaFileType) return@run
             val metadata = runReadAction { service<TgaMetadataIndex>().getMetadata(file, project) } ?: return@run
             infoLabel.text = buildString {
-                append(metadata.width).append("x").append(metadata.height)
+                append(metadata.width).append("\u00D7").append(metadata.height)
                 append(" ").append(format)
                 append(" ").append(fileSize)
             }
@@ -245,7 +241,7 @@ class ImageEditorUI(
         run {
             val image = document.value ?: return@run
             infoLabel.text = buildString {
-                append(image.width).append("x").append(image.height)
+                append(image.width).append("\u00D7").append(image.height)
                 append(" ").append(format)
                 fileSize?.orNull()?.let { append(" ").append(it) }
             }

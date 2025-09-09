@@ -37,7 +37,7 @@ class TgaMetadataIndex {
             if (!file.isInLocalFileSystem) return@c null
             if (file.fileType != TgaFileType) return@c null
             if (file.length > Registry.get("ide.index.image.max.size").asDouble() * 1024 * 1024) return@c null
-            TgaManager.getMetadata(file)
+            TgaMetadataReader.read(file)
         }
     }
 

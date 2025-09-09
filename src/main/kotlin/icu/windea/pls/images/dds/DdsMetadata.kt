@@ -1,13 +1,16 @@
 package icu.windea.pls.images.dds
 
+/**
+ * DDS 图片的元数据。
+ *
+ * @property width 宽度。
+ * @property height 高度。
+ * @property format 资源格式。
+ *
+ * @see DdsMetadataReader
+ */
 data class DdsMetadata(
     val width: Int,
     val height: Int,
-    val hasMipMaps: Boolean? = null,
-    val isFlatTexture: Boolean? = null,
-    val isCubeMap: Boolean? = null,
-    val isVolumeTexture: Boolean? = null,
-    val isDxt10: Boolean? = null,
-    val d3dFormat: String? = null,
-    val dxgiFormat: String? = null,
+    val format: String,
 )

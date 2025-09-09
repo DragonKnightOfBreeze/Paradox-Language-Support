@@ -59,10 +59,6 @@ dependencies {
     implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
     implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")
 
-    // dds - https://github.com/iTitus/dds
-    implementation("io.github.ititus:dds:3.1.0")
-    // implementation("io.github.ititus:ddsiio:3.1.0")
-
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
 

@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.documentation.buildDocumentation
-import icu.windea.pls.core.orNull
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 
@@ -19,7 +18,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
         val project = element.project
         if (DumbService.isDumb(project)) return null
         val file = element.virtualFile
-        val metadata = runReadAction {  service<DdsMetadataIndex>().getMetadata(file, project) }
+        val metadata = runReadAction { service<DdsMetadataIndex>().getMetadata(file, project) }
         if (metadata == null) return null
 
         return buildDocumentation {
@@ -37,9 +36,8 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
             //加入图片的元数据信息
             run {
                 val info = buildString {
-                    append(metadata.width).append("x").append(metadata.height)
-                    append(", ").append(metadata.d3dFormat?.orNull() ?: "UNKNOWN")
-                    append(", ").append(metadata.dxgiFormat?.orNull() ?: "UNKNOWN")
+                    append(metadata.width).append("\u00D7").append(metadata.height)
+                    append(", ").append(metadata.format)
                 }
                 append(HtmlChunk.p().addText(info))
             }
