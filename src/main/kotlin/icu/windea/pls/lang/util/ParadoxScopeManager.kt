@@ -11,13 +11,12 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
-import icu.windea.pls.config.config.pushScope
-import icu.windea.pls.config.config.replaceScopes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -328,8 +327,8 @@ object ParadoxScopeManager {
             return result
         } else {
             //优先基于内联前的规则，如果没有，再基于内联后的规则
-            val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
-            val pushScope = config.pushScope ?: config.resolved().pushScope
+            val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
+            val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
             val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
             val result = scopeContext.resolveNext(pushScope)
             return result
@@ -621,8 +620,8 @@ object ParadoxScopeManager {
 
     fun getScopeContextFromConfigOptions(config: CwtMemberConfig<*>, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext? {
         //优先基于内联前的规则，如果没有，再基于内联后的规则
-        val replaceScopes = config.replaceScopes ?: config.resolvedOrNull()?.replaceScopes
-        val pushScope = config.pushScope ?: config.resolved().pushScope
+        val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
+        val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
         if (replaceScopes != null) {
             return ParadoxScopeContext.resolve(replaceScopes)
         } else if (pushScope != null) {

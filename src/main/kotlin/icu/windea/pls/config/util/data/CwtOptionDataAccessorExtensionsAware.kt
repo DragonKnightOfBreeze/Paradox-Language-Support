@@ -6,22 +6,23 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.optionValues
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.collections.findLastIsInstance
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
 /**
- * 提供了一些扩展方法，以用来方便地得到规则数据。
+ * 提供各种扩展方法，以方便地获取选项数据。
  */
+@Suppress("unused")
 interface CwtOptionDataAccessorExtensionsAware {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
-        return optionConfigs?.findIsInstance<CwtOptionConfig> { it.key == key }
+        return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }
     }
 
     fun CwtMemberConfig<*>.findOption(vararg keys: String): CwtOptionConfig? {
-        return optionConfigs?.findIsInstance<CwtOptionConfig> { it.key in keys }
+        return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key in keys }
     }
 
     fun CwtMemberConfig<*>.findOptions(key: String): List<CwtOptionConfig> {
@@ -33,7 +34,7 @@ interface CwtOptionDataAccessorExtensionsAware {
     }
 
     fun CwtMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
-        return optionConfigs?.find { it is CwtOptionValueConfig && it.value == value }?.cast()
+        return optionConfigs?.findIsInstance<CwtOptionValueConfig> { it.value == value }
     }
 
     fun CwtOptionMemberConfig<*>.getOptionValue(): String? {

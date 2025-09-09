@@ -9,7 +9,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.predicate
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
@@ -256,7 +256,7 @@ object ParadoxExpressionMatcher {
      */
     fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         run {
-            val predicate = config.predicate
+            val predicate = config.optionData { predicate }
             if (predicate.isEmpty()) return@run
             val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
             predicate.forEach f@{ (pk, pv) ->

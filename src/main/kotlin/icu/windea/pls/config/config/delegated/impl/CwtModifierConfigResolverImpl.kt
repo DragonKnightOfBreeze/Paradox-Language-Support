@@ -5,8 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.supportedScopes
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.core.collections.optimized
@@ -53,7 +53,7 @@ private class CwtModifierConfigImpl(
             ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
             // 没有注明categories时从scopes选项中获取
-            config.supportedScopes
+            config.optionData { this.supportedScopes }
         }
     }
 

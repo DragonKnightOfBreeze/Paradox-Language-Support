@@ -8,8 +8,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.originalConfig
-import icu.windea.pls.config.config.pushScope
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.core.castOrNull
@@ -50,7 +50,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData { pushScope }
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
     }
 }
@@ -94,7 +94,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
         val configGroup = finalConfig.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
-        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.pushScope
+        val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData { pushScope }
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
     }
 }

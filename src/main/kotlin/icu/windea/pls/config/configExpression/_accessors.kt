@@ -12,6 +12,7 @@ import icu.windea.pls.core.util.setValue
 // - intRange:  整型区间（min,max），用于规则限定。
 // - floatRange:浮点区间（min,max），用于规则限定。
 // - ignoreCase:是否忽略大小写匹配。
+
 var CwtDataExpression.value: String? by createKey(CwtDataExpression.Keys)
 var CwtDataExpression.intRange: TypedTuple2<Int?>? by createKey(CwtDataExpression.Keys)
 var CwtDataExpression.floatRange: TypedTuple2<Float?>? by createKey(CwtDataExpression.Keys)

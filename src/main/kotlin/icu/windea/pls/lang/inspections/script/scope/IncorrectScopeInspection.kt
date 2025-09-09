@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.supportedScopes
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.ep.modifier.ParadoxModifierSupport
@@ -93,7 +93,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(resolved, definitionInfo)
                     return supportedScopes
                 }
-                val supportedScopes = config.supportedScopes
+                val supportedScopes = config.optionData { supportedScopes }
                 return supportedScopes
             }
 

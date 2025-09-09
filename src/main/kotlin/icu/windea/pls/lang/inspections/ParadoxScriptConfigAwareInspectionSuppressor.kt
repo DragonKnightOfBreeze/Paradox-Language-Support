@@ -20,10 +20,10 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.isExpression
 
-//TODO 暂未使用，需要验证
-
 /**
  * 基于CWT规则，禁用适用于脚本文件的代码检查。
+ *
+ * TODO 暂未使用，需要验证
  */
 class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
     //ParadoxScriptUnresolvedExpression - 从定义级别向下检查

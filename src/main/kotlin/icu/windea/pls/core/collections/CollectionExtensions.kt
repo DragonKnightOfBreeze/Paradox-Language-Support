@@ -37,13 +37,21 @@ inline fun <R> Iterable<*>.filterIsInstance(klass: Class<R>, predicate: (R) -> B
 }
 
 inline fun <reified R> Iterable<*>.findIsInstance(predicate: (R) -> Boolean = { true }): R? {
-    return findIsInstance(R::class.java, predicate)
+    return find { it is R && predicate(it) } as R?
 }
 
 @Suppress("UNCHECKED_CAST")
 inline fun <R> Iterable<*>.findIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
-    for (element in this) if (klass.isInstance(element) && predicate(element as R)) return element
-    return null
+    return find { klass.isInstance(it) && predicate(it as R) } as R?
+}
+
+inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { true }): R? {
+    return findLast { it is R && predicate(it) } as R?
+}
+
+@Suppress("UNCHECKED_CAST")
+inline fun <R> List<*>.findLastIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
+    return findLast { klass.isInstance(it) && predicate(it as R) } as R?
 }
 
 inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {

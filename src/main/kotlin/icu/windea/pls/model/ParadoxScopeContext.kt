@@ -12,6 +12,9 @@ import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.expression.nodes.ParadoxScopeLinkNode
 
+/**
+ * 作用域上下文。
+ */
 interface ParadoxScopeContext : UserDataHolder {
     val scope: ParadoxScope
     val root: ParadoxScopeContext?

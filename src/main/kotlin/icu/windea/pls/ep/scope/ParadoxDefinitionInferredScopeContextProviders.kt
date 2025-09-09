@@ -10,7 +10,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.replaceScopes
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.config.configGroup.extendedOnActions
@@ -226,7 +226,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                         val config = configGroup.extendedOnActions.findFromPattern(containingOnActionName, psiFile, configGroup)
                         if (config == null) return@f //missing
                         if (config.eventType != thisEventType) return@f //invalid (mismatch)
-                        val map = config.config.replaceScopes ?: return@f
+                        val map = config.config.optionData { replaceScopes } ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
                             if (mergedMap != null) {

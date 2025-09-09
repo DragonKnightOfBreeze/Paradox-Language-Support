@@ -18,13 +18,11 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.cardinality
-import icu.windea.pls.config.config.cardinalityMaxDefine
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.config.supportedScopes
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.isDefinitionOrMember
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
@@ -337,10 +335,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         //如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
         //如果上限是动态的值（如，基于define的值），也不作限制
-        val cardinality = config.cardinality
+        val cardinality = config.optionData { cardinality }
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.cardinalityMaxDefine != null -> null
+            config.optionData { cardinalityMaxDefine } != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount
@@ -351,10 +349,10 @@ object ParadoxCompletionManager {
         val actualCount = occurrenceMap[expression]?.actual ?: 0
         //如果写明了cardinality，则为cardinality.max，否则如果类型为常量，则为1，否则为null，null表示没有限制
         //如果上限是动态的值（如，基于define的值），也不作限制
-        val cardinality = config.cardinality
+        val cardinality = config.optionData { cardinality }
         val maxCount = when {
             cardinality == null -> if (expression.type == CwtDataTypes.Constant) 1 else null
-            config.cardinalityMaxDefine != null -> null
+            config.optionData { cardinalityMaxDefine } != null -> null
             else -> cardinality.max
         }
         return maxCount == null || actualCount < maxCount
@@ -510,7 +508,7 @@ object ParadoxCompletionManager {
         //匹配作用域
         if (scopeMatched) {
             val supportedScopes = when {
-                config is CwtPropertyConfig -> config.supportedScopes
+                config is CwtPropertyConfig -> config.optionData { supportedScopes }
                 config is CwtAliasConfig -> config.supportedScopes
                 config is CwtLinkConfig -> config.inputScopes
                 else -> null
@@ -848,7 +846,7 @@ object ParadoxCompletionManager {
             .map { it.value }
             .toSet()
         val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }.values
-        if(columnConfigs.isEmpty()) return
+        if (columnConfigs.isEmpty()) return
         columnConfigs.forEach f@{ columnConfig ->
             ProgressManager.checkCanceled()
             context.config = columnConfig

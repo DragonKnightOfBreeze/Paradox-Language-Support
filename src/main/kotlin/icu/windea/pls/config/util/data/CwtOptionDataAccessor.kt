@@ -4,7 +4,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 
 /**
- * 用于从附加到规则（[CwtMemberConfig]）上的一组选项（[CwtOptionMemberConfig]）中获取需要的规则数据。
+ * 选项数据访问器。
+ *
+ * 用于以统一而限定的方式，从附加到规则（[CwtMemberConfig]）上的一组选项（[CwtOptionMemberConfig]）中获取需要的选项数据。
  *
  * @see CwtMemberConfig
  * @see CwtOptionMemberConfig

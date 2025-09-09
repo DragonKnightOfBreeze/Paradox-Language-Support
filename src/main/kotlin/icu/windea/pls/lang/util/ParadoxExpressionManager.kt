@@ -25,12 +25,12 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.cardinality
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.isBlock
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configContext.CwtConfigContext
@@ -1165,7 +1165,7 @@ object ParadoxExpressionManager {
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         if (config.key == ParadoxInlineScriptManager.inlineScriptKey) return false
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
-        if (config.cardinality?.isRequired() == false) return false
+        if (config.optionData { cardinality }?.isRequired() == false) return false
         return true
     }
 

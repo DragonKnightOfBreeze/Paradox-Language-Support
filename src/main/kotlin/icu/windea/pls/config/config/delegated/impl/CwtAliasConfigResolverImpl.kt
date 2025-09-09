@@ -5,9 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.pushScope
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.config.supportedScopes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.orNull
@@ -34,8 +33,8 @@ private class CwtAliasConfigImpl(
     override val name = name.intern() // intern to optimize memory
     override val subName = subName.intern() // intern to optimize memory
 
-    override val supportedScopes get() = config.supportedScopes
-    override val outputScope get() = config.pushScope
+    override val supportedScopes get() = config.optionData { this.supportedScopes }
+    override val outputScope get() = config.optionData { pushScope }
 
     // not much memory will be used, so cached
     override val subNameExpression: CwtDataExpression = CwtDataExpression.resolve(subName, true)

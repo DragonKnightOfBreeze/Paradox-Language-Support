@@ -16,9 +16,9 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
-import icu.windea.pls.config.config.cardinality
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
@@ -441,7 +441,7 @@ object ParadoxDefinitionManager {
     ): Boolean {
         val propValue = propertyElement.propertyValue
         // 对于propertyValue同样这样判断（可能脚本没有写完）
-        if (propValue == null) return propertyConfig.cardinality?.min == 0
+        if (propValue == null) return propertyConfig.optionData { cardinality }?.min == 0
 
         when {
             // 匹配布尔值
