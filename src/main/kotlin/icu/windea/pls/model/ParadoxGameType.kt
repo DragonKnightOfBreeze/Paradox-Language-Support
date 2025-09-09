@@ -25,8 +25,6 @@ enum class ParadoxGameType(
     Vic3("vic3", "Victoria 3", "victoria3", "529340", EntryNames.other),
     ;
 
-    override fun toString() = title
-
     private object EntryNames {
         val stellaris = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")
         val other = setOf("jomini")
