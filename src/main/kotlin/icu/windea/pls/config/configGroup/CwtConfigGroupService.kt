@@ -11,23 +11,24 @@ import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
+import com.intellij.util.application
+import fleet.multiplatform.shims.ConcurrentHashMap
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentHashMap
 
 private val logger = logger<CwtConfigGroupService>()
 
 @Suppress("UnstableApiUsage")
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(private val project: Project) {
-    private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
-
     fun initAsync() {
         val configGroups = mutableSetOf<CwtConfigGroup>()
         ParadoxGameType.getAll(withCore = true).forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
@@ -65,16 +66,26 @@ class CwtConfigGroupService(private val project: Project) {
     }
 
     fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
-        return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
+        return getConfigGroups().getValue(gameType)
     }
 
-    fun getConfigGroups(): Map<String, CwtConfigGroup> {
-        return cache
+    fun getConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
+        // #184
+        // 不能将规则数据缓存到默认项目的服务对象中，否则会被不定期清空
+        // 因此，目前改为缓存到应用（默认项目的规则数据）或项目（对应项目的规则数据）的用户数据中
+        val componentManager = if (project.isDefault) application else project
+        val configGroups = synchronized(this) { // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
+            componentManager.getOrPutUserData(PlsKeys.configGroups) { createConfigGroups() }
+        }
+        return configGroups
     }
 
-    fun createConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
-        val configGroup = CwtConfigGroup(gameType, project)
-        return configGroup
+    private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
+        val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>()
+        ParadoxGameType.getAll(withCore = true).forEach { gameType ->
+            configGroups.put(gameType, CwtConfigGroup(gameType, project))
+        }
+        return configGroups
     }
 
     @Synchronized

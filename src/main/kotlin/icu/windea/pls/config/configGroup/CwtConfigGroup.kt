@@ -19,7 +19,7 @@ private val logger = logger<CwtConfigGroup>()
 
 /**
  * 规则分组。
- * @property gameType 对应的游戏类型。如果为null，则会得到共享的规则分组。
+ * @property gameType 对应的游戏类型。
  * @property project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
  */
 class CwtConfigGroup(
