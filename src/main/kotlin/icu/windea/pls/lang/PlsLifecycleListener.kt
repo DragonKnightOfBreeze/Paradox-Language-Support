@@ -77,6 +77,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     @Suppress("ObsoleteDispatchersEdt")
     private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
+        if (application.isUnitTestMode) return
         // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
         if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
         val builtInConfigRootDirectories = CwtConfigGroupFileProvider.EP_NAME.extensionList
@@ -99,8 +100,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun refreshRootsForLibrariesAsync(project: Project) {
         if (application.isUnitTestMode) return
         if (project.isDisposed) return
-        project.paradoxLibrary.refreshRoots()
-        project.configGroupLibrary.refreshRoots()
+        project.paradoxLibrary.refreshRootsAsync()
+        project.configGroupLibrary.refreshRootsAsync()
     }
 
     private fun initConfigGroupsAsync(project: Project) {

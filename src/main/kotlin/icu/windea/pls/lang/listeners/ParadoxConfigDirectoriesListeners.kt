@@ -37,7 +37,7 @@ class ParadoxUpdateLibraryOnConfigDirectoriesChangedListener : ParadoxConfigDire
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
             val library = project.configGroupLibrary
-            library.refreshRoots()
+            library.refreshRootsAsync()
         }
     }
 }

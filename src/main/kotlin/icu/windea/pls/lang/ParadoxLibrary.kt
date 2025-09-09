@@ -2,7 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.AdditionalLibraryRootsListener
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -22,6 +22,66 @@ import javax.swing.Icon
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile
     var roots: Set<VirtualFile> = emptySet()
+
+    fun refreshRootsAsync() {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            val oldRoots = roots
+            val newRoots = readAction { computeRoots() }
+            if (oldRoots == newRoots) return@launch
+            roots = newRoots
+            edtWriteAction { refreshRoots(oldRoots, newRoots) }
+        }
+    }
+
+    private fun computeRoots(): Set<VirtualFile> {
+        // 这里仅需要收集不在项目中的游戏目录和模组目录
+        val newRoots = mutableSetOf<VirtualFile>()
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
+        val profilesSettings = PlsFacade.getProfilesSettings()
+        profilesSettings.modSettings.values.forEach f@{ modSettings ->
+            val modDirectory = modSettings.modDirectory ?: return@f
+            val modFile = modDirectory.toVirtualFile(false) ?: return@f
+            if (!modFile.exists()) return@f
+            if (!projectFileIndex.isInContent(modFile)) return@f
+            run {
+                val gameDirectory = modSettings.finalGameDirectory ?: return@run
+                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
+                if (!gameFile.exists()) return@run
+                if (projectFileIndex.isInContent(gameFile)) return@run
+                newRoots += gameFile
+            }
+            modSettings.modDependencies.forEach f1@{ modDependencySettings ->
+                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
+                if (modDependencyDirectory == modDirectory) return@f1 //需要排除这种情况
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                if (!modDependencyFile.exists()) return@f1
+                if (projectFileIndex.isInContent(modDependencyFile)) return@f1
+                newRoots += modDependencyFile
+            }
+        }
+        profilesSettings.gameSettings.values.forEach f@{ gameSettings ->
+            val gameDirectory = gameSettings.gameDirectory ?: return@f
+            val gameFile = gameDirectory.toVirtualFile(false) ?: return@f
+            if (!gameFile.exists()) return@f
+            if (!projectFileIndex.isInContent(gameFile)) return@f
+            gameSettings.modDependencies.forEach f1@{ modDependencySettings ->
+                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                if (!modDependencyFile.exists()) return@f1
+                if (projectFileIndex.isInContent(modDependencyFile)) return@f1
+                newRoots += modDependencyFile
+            }
+        }
+        newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }
+        return newRoots
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun refreshRoots(oldRoots: Set<VirtualFile>, newRoots: Set<VirtualFile>) {
+        val libraryName = PlsBundle.message("library.name")
+        AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
+    }
 
     override fun getSourceRoots(): Collection<VirtualFile> {
         return roots
@@ -49,68 +109,5 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
 
     override fun toString(): String {
         return "ParadoxLibrary(project=$project)"
-    }
-
-    @Suppress("UnstableApiUsage")
-    fun refreshRoots() {
-        val oldRoots = roots
-        val newRoots = computeRoots()
-        if (oldRoots == newRoots) return
-        roots = newRoots
-        val coroutineScope = PlsFacade.getCoroutineScope(project)
-        coroutineScope.launch {
-            edtWriteAction {
-                val libraryName = PlsBundle.message("library.name")
-                AdditionalLibraryRootsListener.fireAdditionalLibraryChanged(project, libraryName, oldRoots, newRoots, libraryName)
-            }
-        }
-    }
-
-    fun computeRoots(): Set<VirtualFile> {
-        return runReadAction { doComputeRoots() }
-    }
-
-    private fun doComputeRoots(): Set<VirtualFile> {
-        //这里仅需要收集不在项目中的游戏目录和模组目录
-
-        val newRoots = mutableSetOf<VirtualFile>()
-        val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val profilesSettings = PlsFacade.getProfilesSettings()
-        profilesSettings.modSettings.values.forEach f@{ modSettings ->
-            val modDirectory = modSettings.modDirectory ?: return@f
-            val modFile = modDirectory.toVirtualFile(false) ?: return@f
-            if(!modFile.exists()) return@f
-            if(!projectFileIndex.isInContent(modFile)) return@f
-            run {
-                val gameDirectory = modSettings.finalGameDirectory ?: return@run
-                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
-                if(!gameFile.exists()) return@run
-                if(projectFileIndex.isInContent(gameFile)) return@run
-                newRoots += gameFile
-            }
-            modSettings.modDependencies.forEach f1@{ modDependencySettings ->
-                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                if(modDependencyDirectory == modDirectory) return@f1 //需要排除这种情况
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
-                if(!modDependencyFile.exists()) return@f1
-                if(projectFileIndex.isInContent(modDependencyFile)) return@f1
-                newRoots += modDependencyFile
-            }
-        }
-        profilesSettings.gameSettings.values.forEach f@{ gameSettings ->
-            val gameDirectory = gameSettings.gameDirectory ?: return@f
-            val gameFile = gameDirectory.toVirtualFile(false) ?: return@f
-            if(!gameFile.exists()) return@f
-            if(!projectFileIndex.isInContent(gameFile)) return@f
-            gameSettings.modDependencies.forEach f1@{ modDependencySettings ->
-                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
-                if(!modDependencyFile.exists()) return@f1
-                if(projectFileIndex.isInContent(modDependencyFile)) return@f1
-                newRoots += modDependencyFile
-            }
-        }
-        newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }
-        return newRoots
     }
 }

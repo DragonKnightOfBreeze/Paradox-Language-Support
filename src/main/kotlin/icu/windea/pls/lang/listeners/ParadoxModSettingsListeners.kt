@@ -37,7 +37,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
             val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
             if (!isInProject) continue
             val paradoxLibrary = project.paradoxLibrary
-            paradoxLibrary.refreshRoots()
+            paradoxLibrary.refreshRootsAsync()
         }
 
         //重新解析已打开的文件

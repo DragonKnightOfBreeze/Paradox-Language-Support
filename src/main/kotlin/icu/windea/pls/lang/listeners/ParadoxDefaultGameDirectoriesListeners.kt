@@ -36,7 +36,7 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
             val library = project.paradoxLibrary
-            library.refreshRoots()
+            library.refreshRootsAsync()
         }
 
         //重新解析已打开的文件
