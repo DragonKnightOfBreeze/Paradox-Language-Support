@@ -14,7 +14,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Assign to me if unassigned
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
