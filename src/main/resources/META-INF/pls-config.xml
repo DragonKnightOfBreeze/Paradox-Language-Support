@@ -2,6 +2,9 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.config" parentId="pls" bundle="messages.PlsBundle" key="settings.config" instance="icu.windea.pls.config.settings.PlsConfigSettingsConfigurable"/>
 
+    <!--commented out since it's light service-->
+    <!--<applicationService serviceImplementation="icu.windea.pls.config.configGroup.CwtConfigGroupService"/>-->
+
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>

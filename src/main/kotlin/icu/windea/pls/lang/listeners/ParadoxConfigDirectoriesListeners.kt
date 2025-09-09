@@ -1,14 +1,13 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider
-import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 
 /**
@@ -56,11 +55,11 @@ class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfig
     private fun doUpdate() {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
-            val configGroupService = project.service<CwtConfigGroupService>()
-            configGroupService.getConfigGroups().values.forEach { configGroup ->
+            val configGroupService = PlsFacade.getConfigGroupService()
+            configGroupService.getConfigGroups(project).values.forEach { configGroup ->
                 configGroup.changed.set(true)
             }
-            configGroupService.updateRefreshFloatingToolbar()
+            configGroupService.updateRefreshFloatingToolbar(project)
         }
     }
 }

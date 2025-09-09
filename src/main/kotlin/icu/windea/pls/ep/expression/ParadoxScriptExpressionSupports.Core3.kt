@@ -9,7 +9,6 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.resolve
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isExactDigit

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.AsyncFileListener
@@ -10,6 +9,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
@@ -57,7 +57,7 @@ class CwtConfigFileListener : AsyncFileListener {
 
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
                 ProjectManager.getInstance().openProjects.forEach f1@{ project ->
-                    val configGroupService = project.service<CwtConfigGroupService>()
+                    val configGroupService = PlsFacade.getConfigGroupService()
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
                         if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f2
@@ -66,14 +66,14 @@ class CwtConfigFileListener : AsyncFileListener {
                             val configGroup = fileProvider.getContainingConfigGroup(rootDirectory, project) ?: return@f3
                             configGroups.add(configGroup)
                             if (configGroup.gameType == ParadoxGameType.Core) {
-                                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
+                                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(project, gameType)) }
                             }
                         }
                     }
                     val configGroupsToChange = configGroups.filter { !it.changed.get() }
                     if (configGroupsToChange.isEmpty()) return@f1
                     configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-                    configGroupService.updateRefreshFloatingToolbar()
+                    configGroupService.updateRefreshFloatingToolbar(project)
                 }
             }
         }

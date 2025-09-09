@@ -4,7 +4,6 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VfsUtil
@@ -12,7 +11,6 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.withDoubleLock
@@ -72,7 +70,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun initCachesAsync() {
         if (application.isUnitTestMode) return
         PlsPathConstants.initAsync()
-        service<PlsDataProvider>().initAsync()
+        PlsFacade.getDataProvider().initAsync()
     }
 
     @Suppress("ObsoleteDispatchersEdt")
@@ -107,6 +105,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun initConfigGroupsAsync(project: Project) {
         if (application.isUnitTestMode) return
         if (project.isDisposed) return
-        project.service<CwtConfigGroupService>().initAsync()
+        PlsFacade.getConfigGroupService().initAsync(project)
     }
 }

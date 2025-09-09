@@ -1,9 +1,9 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.service
 import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
@@ -21,7 +21,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (file !is CwtFile) return
         val vFile = file.virtualFile ?: return
         val project = file.project
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = PlsFacade.getConfigGroupService()
         val configGroups = mutableSetOf<CwtConfigGroup>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
@@ -30,12 +30,12 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             configGroups.add(configGroup)
             if (configGroup.gameType == ParadoxGameType.Core) {
-                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
+                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(project, gameType)) }
             }
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
         if (configGroupsToChange.isEmpty()) return
         configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-        configGroupService.updateRefreshFloatingToolbar()
+        configGroupService.updateRefreshFloatingToolbar(project)
     }
 }

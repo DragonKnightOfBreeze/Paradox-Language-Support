@@ -3,7 +3,6 @@ package icu.windea.pls.config.configGroup
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
@@ -26,12 +25,14 @@ import kotlinx.coroutines.launch
 
 private val logger = logger<CwtConfigGroupService>()
 
+/**
+ * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
+ */
+@Service
 @Suppress("UnstableApiUsage")
-@Service(Service.Level.PROJECT)
-class CwtConfigGroupService(private val project: Project) {
-    fun initAsync() {
-        val configGroups = mutableSetOf<CwtConfigGroup>()
-        ParadoxGameType.getAll(withCore = true).forEach { gameType -> configGroups.add(getConfigGroup(gameType)) }
+class CwtConfigGroupService {
+    fun initAsync(project: Project) {
+        val configGroups = getConfigGroups(project).values
 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -39,11 +40,11 @@ class CwtConfigGroupService(private val project: Project) {
                 // 显示不可取消的模态进度条
                 val title = PlsBundle.message("configGroup.init.progressTitle")
                 withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
-                    doInit(configGroups)
+                    doInit(configGroups, project)
                 }
             } else {
                 // 静默执行
-                doInit(configGroups)
+                doInit(configGroups, project)
             }
             if (!project.isDefault) {
                 // 重新解析已打开的文件
@@ -53,50 +54,57 @@ class CwtConfigGroupService(private val project: Project) {
         }
     }
 
-    private suspend fun doInit(configGroups: Collection<CwtConfigGroup>) {
-        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
-        logger.info("Initializing config groups for $projectTitle...")
+    private suspend fun doInit(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Initializing config groups for $targetName...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
             configGroup.init()
-            getConfigGroupForDefaultProject(configGroup).init() // 之后也要刷新默认项目的规则数据
+            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
-        logger.info("Initialized config groups for $projectTitle in ${end - start} ms.")
+        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
     }
 
-    fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
-        return getConfigGroups().getValue(gameType)
+    /**
+     * 得到指定项目与游戏类型的规则分组。
+     */
+    fun getConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
+        return getConfigGroups(project).getValue(gameType)
     }
 
-    fun getConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
+    /**
+     * 得到指定项目的所有规则分组。
+     */
+    fun getConfigGroups(project: Project): Map<ParadoxGameType, CwtConfigGroup> {
         // #184
         // 不能将规则数据缓存到默认项目的服务对象中，否则会被不定期清空
         // 因此，目前改为缓存到应用（默认项目的规则数据）或项目（对应项目的规则数据）的用户数据中
         val componentManager = if (project.isDefault) application else project
         val configGroups = synchronized(this) { // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
-            componentManager.getOrPutUserData(PlsKeys.configGroups) { createConfigGroups() }
+            componentManager.getOrPutUserData(PlsKeys.configGroups) { createConfigGroups(project) }
         }
         return configGroups
     }
 
-    private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
+    private fun createConfigGroups(project: Project): Map<ParadoxGameType, CwtConfigGroup> {
+        // 直接创建所有游戏类型的规则分组（之后再预加载规则数据）
         val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>()
         ParadoxGameType.getAll(withCore = true).forEach { gameType ->
-            configGroups.put(gameType, CwtConfigGroup(gameType, project))
+            configGroups.put(gameType, CwtConfigGroup(project, gameType))
         }
         return configGroups
     }
 
     @Synchronized
-    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>, project: Project) {
         if (configGroups.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             // 显示可以取消的模态进度条
             val title = PlsBundle.message("configGroup.refresh.progressTitle")
             withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.cancellable()) {
-                doRefresh(configGroups)
+                doRefresh(configGroups, project)
             }
             // 重新解析已打开的文件
             val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
@@ -109,7 +117,7 @@ class CwtConfigGroupService(private val project: Project) {
                     ""
                 ).notify(project)
             } else if (e == null) {
-                updateRefreshFloatingToolbar()
+                updateRefreshFloatingToolbar(project)
 
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     // 重新解析并刷新（IDE之后会自动请求重新索引）
@@ -127,16 +135,16 @@ class CwtConfigGroupService(private val project: Project) {
         }
     }
 
-    private suspend fun doRefresh(configGroups: Collection<CwtConfigGroup>) {
-        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
-        logger.info("Refreshing config groups for $projectTitle...")
+    private suspend fun doRefresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Refreshing config groups for $targetName...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
             configGroup.init()
-            getConfigGroupForDefaultProject(configGroup).init() // 之后也要刷新默认项目的规则数据
+            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
-        logger.info("Refreshed config groups for $projectTitle in ${end - start} ms.")
+        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
@@ -155,11 +163,7 @@ class CwtConfigGroupService(private val project: Project) {
         return rootFilePaths
     }
 
-    private fun getConfigGroupForDefaultProject(configGroup: CwtConfigGroup): CwtConfigGroup {
-        return getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(configGroup.gameType)
-    }
-
-    fun updateRefreshFloatingToolbar() {
+    fun updateRefreshFloatingToolbar(project: Project) {
         val provider = FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java)
         provider.updateToolbarComponents(project)
     }

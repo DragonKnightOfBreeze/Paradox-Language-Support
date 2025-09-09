@@ -216,7 +216,7 @@ object ParadoxCoreManager {
 
             val indexId = ParadoxIndexKeys.FileLocale
             val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-            val localeConfig = PlsFacade.getConfigGroup(project, null).localisationLocalesById.get(localeId)
+            val localeConfig = PlsFacade.getConfigGroup(project).localisationLocalesById.get(localeId)
             file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
             return localeConfig
         }

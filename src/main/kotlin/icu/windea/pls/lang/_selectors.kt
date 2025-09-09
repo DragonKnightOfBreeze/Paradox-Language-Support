@@ -98,5 +98,5 @@ private fun getStubToSelectLocale(from: StubBasedPsiElementBase<*>): ParadoxLoca
 
 private fun toLocale(localeId: String?, from: PsiElement?): CwtLocaleConfig? {
     if (localeId == null || from == null) return null
-    return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(localeId)
+    return PlsFacade.getConfigGroup(from.project).localisationLocalesById.get(localeId)
 }

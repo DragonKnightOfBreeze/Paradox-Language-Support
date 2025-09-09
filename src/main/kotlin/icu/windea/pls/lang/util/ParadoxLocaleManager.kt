@@ -20,19 +20,19 @@ object ParadoxLocaleManager {
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {
-        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup().localisationLocalesById
         val locale = localesById[id]
         if (locale != null) return locale
 
         return when {
             id.isEmpty() || id == ID_AUTO -> {
                 val ideLocale = DynamicBundle.getLocale()
-                val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
+                val localesByCode = PlsFacade.getConfigGroup().localisationLocalesByCode
                 localesByCode[ideLocale.language] ?: CwtLocaleConfig.resolveFallback()
             }
             id == ID_AUTO_OS -> {
                 val userLanguage = System.getProperty("user.language").orEmpty()
-                val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
+                val localesByCode = PlsFacade.getConfigGroup().localisationLocalesByCode
                 localesByCode[userLanguage] ?: CwtLocaleConfig.resolveFallback()
             }
             else -> null
@@ -44,7 +44,7 @@ object ParadoxLocaleManager {
             if (id == ID_AUTO) return CwtLocaleConfig.resolveAuto()
             if (id == ID_AUTO_OS) return CwtLocaleConfig.resolveAutoOs()
         }
-        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup().localisationLocalesById
         val locale = localesById[id] ?: return null
         if (!withDefault) {
             if (locale.id == ID_DEFAULT) return null
@@ -58,7 +58,7 @@ object ParadoxLocaleManager {
             locales += CwtLocaleConfig.resolveAuto()
             locales += CwtLocaleConfig.resolveAutoOs()
         }
-        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup().localisationLocalesById
         var locales0 = localesById.values.toList()
         if (!withDefault) {
             locales0 = locales0.filter { it.id != ID_DEFAULT }

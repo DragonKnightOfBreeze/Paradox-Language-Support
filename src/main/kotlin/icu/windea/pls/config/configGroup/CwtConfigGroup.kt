@@ -18,13 +18,18 @@ import java.util.concurrent.atomic.AtomicBoolean
 private val logger = logger<CwtConfigGroup>()
 
 /**
- * 规则分组。
- * @property gameType 对应的游戏类型。
- * @property project 对应的项目。如果不需要访问PSI，可以直接传入默认项目。
+ * 规则分组。用于保存处理后的所有规则数据。
+ *
+ * 规则分组会在获取时就保证已经被创建，而其中的规则数据的初始化是在打开 IDE 或项目时异步进行的。
+ *
+ * @property project 对应的项目。如果是默认项目，则不能用来访问 PSI。
+ * @property gameType 对应的游戏类型。如果是 [ParadoxGameType.Core]，则为共享的规则分组。
+ *
+ * @see CwtConfigGroupService
  */
 class CwtConfigGroup(
-    val gameType: ParadoxGameType,
     val project: Project,
+    val gameType: ParadoxGameType,
 ) : UserDataHolderBase() {
     private val mutex = Mutex()
 
@@ -39,11 +44,11 @@ class CwtConfigGroup(
     }
 
     private suspend fun doInit() {
-        val projectTitle = if (project.isDefault) "default project" else "project '${project.name}'"
-        logger.info("Initializing config group '${gameType.id}' for $projectTitle...")
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Initializing config group '${gameType.id}' for $targetName...")
         val start = System.currentTimeMillis()
         try {
-            val configGroupOnInit = CwtConfigGroup(gameType, project)
+            val configGroupOnInit = CwtConfigGroup(project, gameType)
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
             dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
             configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
@@ -54,7 +59,7 @@ class CwtConfigGroup(
             logger.error(e) // 不期望在这里出现常规异常
         } finally {
             val end = System.currentTimeMillis()
-            logger.info("Initialized config group '${gameType.id}' for $projectTitle in ${end - start} ms.")
+            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
         }
     }
 

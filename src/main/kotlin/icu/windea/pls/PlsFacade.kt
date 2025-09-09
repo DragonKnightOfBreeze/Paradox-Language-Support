@@ -23,7 +23,7 @@ import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * 用于获取协程作用域、各种服务以及插件设置状态。
+ * 用于获取协程作用域、各种服务以及各种插件设置。
  */
 object PlsFacade {
     //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
@@ -40,15 +40,27 @@ object PlsFacade {
 
     fun getDataProvider() = service<PlsDataProvider>()
 
+    fun getConfigGroupService() = service<CwtConfigGroupService>()
+
+    /**
+     * 得到默认项目的指定游戏类型的规则分组。不能用来访问 PSI。
+     *
+     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
+     */
     fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
-        val project = getDefaultProject()
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+        return getConfigGroupService().getConfigGroup(getDefaultProject(), finalGameType)
     }
 
+    /**
+     * 得到指定项目与游戏类型的规则分组。
+     *
+     * @param project 指定的项目。如果是默认项目，则不能用来访问 PSI。
+     * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
+     */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+        return getConfigGroupService().getConfigGroup(project, finalGameType)
     }
 
     fun getSettings() = service<PlsSettings>().state
@@ -77,7 +89,13 @@ object PlsFacade {
 
     fun getInternalSettings() = service<PlsInternalSettings>()
 
+    /**
+     * 是否正在调试。
+     */
     fun isDebug() = System.getProperty("pls.is.debug").toBoolean()
 
+    /**
+     * 是否是开发中版本。
+     */
     fun isDevVersion() = PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
 }

@@ -37,7 +37,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val localeConfigs = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values
+        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values
         val popup = Popup(project, element, localeConfigs.toTypedArray())
         JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
     }

@@ -3,12 +3,12 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.toolbar.floating.AbstractFloatingToolbarProvider
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarComponent
 import com.intellij.openapi.editor.toolbar.floating.isInsideMainEditor
 import com.intellij.openapi.project.Project
 import com.intellij.util.containers.DisposableWrapperList
+import icu.windea.pls.PlsFacade
 
 //com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
@@ -34,8 +34,8 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
     }
 
     private fun updateToolbarComponent(project: Project, component: FloatingToolbarComponent) {
-        val configGroupService = project.service<CwtConfigGroupService>()
-        val isChanged = configGroupService.getConfigGroups().values.any { it.changed.get() }
+        val configGroupService = PlsFacade.getConfigGroupService()
+        val isChanged = configGroupService.getConfigGroups(project).values.any { it.changed.get() }
         when (isChanged) {
             true -> component.scheduleShow()
             else -> component.scheduleHide()

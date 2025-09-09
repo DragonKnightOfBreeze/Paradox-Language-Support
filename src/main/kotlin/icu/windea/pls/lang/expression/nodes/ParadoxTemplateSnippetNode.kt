@@ -11,7 +11,6 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.resolve
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray

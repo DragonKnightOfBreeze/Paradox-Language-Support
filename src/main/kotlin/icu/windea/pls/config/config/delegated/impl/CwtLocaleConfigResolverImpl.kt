@@ -24,7 +24,6 @@ internal class CwtLocaleConfigResolverImpl : CwtLocaleConfig.Resolver {
         val codes = config.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
         return CwtLocaleConfigImpl(config, id, codes)
     }
-
 }
 
 private class CwtLocaleConfigImpl(

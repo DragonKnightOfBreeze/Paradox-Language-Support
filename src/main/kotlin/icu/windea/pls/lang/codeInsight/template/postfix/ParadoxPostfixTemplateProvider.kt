@@ -11,7 +11,7 @@ class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
     private val defaultTemplates by lazy {
         buildSet<PostfixTemplate> {
             val provider = this@ParadoxPostfixTemplateProvider
-            val postfixTemplateSettings = PlsFacade.getConfigGroup(null).postfixTemplateSettings
+            val postfixTemplateSettings = PlsFacade.getConfigGroup().postfixTemplateSettings
             for ((groupName, settings) in postfixTemplateSettings) {
                 when (groupName) {
                     ParadoxVariableOperationExpressionPostfixTemplate.Constants.GROUP_NAME -> {

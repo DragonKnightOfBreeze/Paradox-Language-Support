@@ -85,7 +85,6 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
             return ParadoxCoreManager.getInferredGameType(rootFile)
         }
 
-        @Suppress("RedundantNullableReturnType")
         private fun doGetInferredGameTypeFromInfo(): ParadoxGameType? {
             return when (info.gameId) {
                 "victoria3" -> ParadoxGameType.Vic3
