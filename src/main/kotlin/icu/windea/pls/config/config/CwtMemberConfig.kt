@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
@@ -9,7 +10,6 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.util.data.CwtOptionDataAccessors
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toBooleanYesNo
@@ -140,7 +140,16 @@ val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConf
 // * a config expression in subtype structure config
 
 val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality) { CwtOptionDataAccessors.cardinality.get(this) }
+    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality) action@{
+        val option = findOption("cardinality")
+        if (option == null) {
+            // 如果没有注明且类型是常量，则推断为 1..~1
+            if (configExpression.type == CwtDataTypes.Constant) {
+                return@action CwtCardinalityExpression.resolve("1..~1")
+            }
+        }
+        option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
+    }
 val CwtMemberConfig<*>.cardinalityMinDefine: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMinDefine) {
         val option = findOption("cardinality_min_define")
