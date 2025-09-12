@@ -34,10 +34,11 @@ class CwtParserDefinition : ParserDefinition {
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
         val leftType = left?.elementType
+        val rightType = right?.elementType
         return when {
             leftType == COMMENT -> MUST_LINE_BREAK
-            leftType == OPTION_COMMENT -> MUST_LINE_BREAK
-            leftType == DOC_COMMENT -> MUST_LINE_BREAK
+            leftType == OPTION_COMMENT || rightType == OPTION_COMMENT -> MUST_LINE_BREAK
+            leftType == DOC_COMMENT || rightType == DOC_COMMENT -> MUST_LINE_BREAK
             else -> MAY
         }
     }
