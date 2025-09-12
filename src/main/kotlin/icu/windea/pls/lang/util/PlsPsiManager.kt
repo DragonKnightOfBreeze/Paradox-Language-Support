@@ -13,6 +13,10 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 
 object PlsPsiManager {
+    // fun containsLineBreak(element: PsiWhiteSpace): Boolean {
+    //     return StringUtil.containsLineBreak(element.text)
+    // }
+
     fun containsBlankLine(element: PsiWhiteSpace): Boolean {
         return StringUtil.getLineBreakCount(element.text) > 1
     }

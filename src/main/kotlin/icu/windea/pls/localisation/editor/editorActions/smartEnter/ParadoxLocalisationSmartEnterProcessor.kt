@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.isAtLineEnd
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.model.ParadoxLocalisationType
@@ -21,16 +20,16 @@ class ParadoxLocalisationSmartEnterProcessor : SmartEnterProcessorWithFixers() {
 
     class AfterLocalisationKeyFixer : Fixer<ParadoxLocalisationSmartEnterProcessor>() {
         override fun apply(editor: Editor, processor: ParadoxLocalisationSmartEnterProcessor, element: PsiElement) {
-            //要求光标位于行尾（忽略空白），且位于属性名（propertyKey）的末尾（忽略空白）
-            val caretOffset = editor.caretModel.offset
-            if (!editor.document.isAtLineEnd(caretOffset, true)) return
-            val targetElement = element
-                .parent.castOrNull<ParadoxLocalisationPropertyKey>()
-            //.parentOfType<ParadoxLocalisationPropertyKey>()
-                ?: return
+            // 要求光标位于行尾（忽略空白），且位于属性名（propertyKey）的末尾（忽略空白）
+            val offset = editor.caretModel.offset
+            val document = editor.document
+            val lineEndOffset = document.getLineEndOffset(document.getLineNumber(offset))
+            val s = document.immutableCharSequence.subSequence(offset, lineEndOffset)
+            if (s.isNotBlank()) return
+            val targetElement = element.parent.castOrNull<ParadoxLocalisationPropertyKey>() ?: return
             val endOffset = element.endOffset
-            if (caretOffset != endOffset) {
-                editor.document.deleteString(caretOffset, endOffset)
+            if (offset != endOffset) {
+                document.deleteString(offset, endOffset)
             }
             val property = targetElement.parent as? ParadoxLocalisationProperty ?: return
             val type = ParadoxLocalisationType.resolve(property)

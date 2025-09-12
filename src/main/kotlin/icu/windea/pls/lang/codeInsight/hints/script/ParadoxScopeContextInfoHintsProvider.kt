@@ -21,7 +21,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.isAtLineEnd
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.Settings
 import icu.windea.pls.lang.selectGameType
@@ -68,12 +67,14 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (file !is ParadoxScriptFile) return true
         if (element !is ParadoxScriptProperty) return true
-        //show only for properties with clause value, and left curly brace should be at end of line
+        // 要求属性的值是一个块（block），且块的左花括号位于行尾（忽略空白和注释）
         val block = element.propertyValue as? ParadoxScriptBlock ?: return true
         val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return true
         val offset = leftCurlyBrace.endOffset
-        val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
-        if (!isAtLineEnd) return true //show only if there are no non-blank characters after '{'
+        val document = editor.document
+        val lineEndOffset = document.getLineEndOffset(document.getLineNumber(offset))
+        val s = document.immutableCharSequence.subSequence(offset, lineEndOffset).toString().substringBefore("#")
+        if (s.isNotBlank()) return true
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return true
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
         if (scopeContext != null) {
@@ -83,7 +84,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
             val presentation = doCollect(scopeContext, configGroup)
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
-            sink.addInlineElement(offset, true, finalPresentation, true)
+            sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
         }
         return true
     }
