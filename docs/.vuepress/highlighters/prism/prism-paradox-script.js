@@ -45,7 +45,7 @@ export function registerParadoxScript(Prism) {
         'punctuation': /@\[|[()\[\]|]/,
         'parameter': parameter,
         'scripted-variable': {
-          pattern: /[A-Za-z_$\[][^@#={}\s"]*/,
+          pattern: /[A-Za-z_$\[][^@#={},\s"]*/,
           alias: [ 'keyword' ],
           inside: {
             'parameter': parameter,
@@ -55,7 +55,7 @@ export function registerParadoxScript(Prism) {
     },
     // scripted variable (identifier after @)
     'scripted-variable': {
-      pattern: /(^|[\s\[\]{}<>=])@[A-Za-z_$\[][^@#={}\s"]*/,
+      pattern: /(^|[\s\[\]{}<>=])@[A-Za-z_$\[][^@#={},\s"]*/,
       lookbehind: true,
       greedy: true,
       alias: [ 'keyword' ],
@@ -74,7 +74,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
+        pattern: /[^@#=<>?{},\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
         inside: {
           'parameter': parameter,
           'escape': escape,
@@ -93,7 +93,7 @@ export function registerParadoxScript(Prism) {
         }
       },
       {
-        pattern: /[^@#=<>?{}\[\]\s"]+"?/,
+        pattern: /[^@#=<>?{},\s"]+"?/,
         inside: {
           'parameter': parameter,
           'escape': escape,

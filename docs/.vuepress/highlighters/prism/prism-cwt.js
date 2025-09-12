@@ -50,7 +50,7 @@ export function registerCwt(Prism) {
         }
       },
       {
-        pattern: /[^#={}\s"]+"?(?=\s*(?:==|=|!=|<>))/,
+        pattern: /[^#={},\s"]+"?(?=\s*(?:==|=|!=|<>))/,
         inside: {
           'escape': escape
         }
@@ -65,7 +65,7 @@ export function registerCwt(Prism) {
         }
       },
       {
-        pattern: /[^#={}\s"]+"?/,
+        pattern: /[^#={},\s"]+"?/,
         inside: {
           'escape': escape
         }

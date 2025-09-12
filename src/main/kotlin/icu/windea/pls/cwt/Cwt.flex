@@ -43,13 +43,13 @@ PROPERTY_KEY_CHECK=({PROPERTY_KEY_TOKEN})\s*{SEPARATOR_CHECK}
 // [^#={}\s\"]+\"?
 
 PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_KEY_TOKEN})
-UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
+UNQUOTED_PROPERTY_KEY_TOKEN=[^#={},\s\"]+\"?
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes|no)
 INT_TOKEN=[+-]?\d+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is permitted
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
-UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
+UNQUOTED_STRING_TOKEN=[^#={},\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 %%
