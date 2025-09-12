@@ -15,24 +15,46 @@ class OpenAiChatModelProvider : ChatModelProvider<OpenAiChatModelProvider.Option
     override val options: Options? get() = Options.get()
 
     override fun getChatModel(): OpenAiChatModel? {
-        val options = options ?: return null
-        return OpenAiChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .apiKey(options.apiKey)
-            .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)
-            .strictJsonSchema(true)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedChatModel == null) {
+            cachedChatModel = OpenAiChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .apiKey(opts.apiKey)
+                .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)
+                .strictJsonSchema(true)
+                .build()
+        }
+        return cachedChatModel
     }
 
     override fun getStreamingChatModel(): OpenAiStreamingChatModel? {
-        val options = options ?: return null
-        return OpenAiStreamingChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .apiKey(options.apiKey)
-            .strictJsonSchema(true)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedStreamingChatModel == null) {
+            cachedStreamingChatModel = OpenAiStreamingChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .apiKey(opts.apiKey)
+                .strictJsonSchema(true)
+                .build()
+        }
+        return cachedStreamingChatModel
+    }
+
+    override fun isAvailable(): Boolean = options != null
+
+    @Volatile private var cachedOptions: Options? = null
+    @Volatile private var cachedChatModel: OpenAiChatModel? = null
+    @Volatile private var cachedStreamingChatModel: OpenAiStreamingChatModel? = null
+
+    private fun ensureCache(newOptions: Options) {
+        if (cachedOptions != newOptions) {
+            cachedOptions = newOptions
+            cachedChatModel = null
+            cachedStreamingChatModel = null
+        }
     }
 
     data class Options(

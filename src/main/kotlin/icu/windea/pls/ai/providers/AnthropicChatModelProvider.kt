@@ -23,21 +23,43 @@ class AnthropicChatModelProvider : ChatModelProvider<AnthropicChatModelProvider.
     override val options: Options? get() = Options.get()
 
     override fun getChatModel(): AnthropicChatModel? {
-        val options = options ?: return null
-        return AnthropicChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .apiKey(options.apiKey)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedChatModel == null) {
+            cachedChatModel = AnthropicChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .apiKey(opts.apiKey)
+                .build()
+        }
+        return cachedChatModel
     }
 
     override fun getStreamingChatModel(): AnthropicStreamingChatModel? {
-        val options = options ?: return null
-        return AnthropicStreamingChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .apiKey(options.apiKey)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedStreamingChatModel == null) {
+            cachedStreamingChatModel = AnthropicStreamingChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .apiKey(opts.apiKey)
+                .build()
+        }
+        return cachedStreamingChatModel
+    }
+
+    override fun isAvailable(): Boolean = options != null
+
+    @Volatile private var cachedOptions: Options? = null
+    @Volatile private var cachedChatModel: AnthropicChatModel? = null
+    @Volatile private var cachedStreamingChatModel: AnthropicStreamingChatModel? = null
+
+    private fun ensureCache(newOptions: Options) {
+        if (cachedOptions != newOptions) {
+            cachedOptions = newOptions
+            cachedChatModel = null
+            cachedStreamingChatModel = null
+        }
     }
 
     data class Options(

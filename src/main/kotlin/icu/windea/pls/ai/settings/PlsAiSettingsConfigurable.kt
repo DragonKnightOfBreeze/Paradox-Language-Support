@@ -3,6 +3,7 @@ package icu.windea.pls.ai.settings
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
@@ -14,6 +15,11 @@ import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.providers.ChatModelProviderType
+import icu.windea.pls.ai.providers.OpenAiChatModelProvider
+import icu.windea.pls.ai.providers.AnthropicChatModelProvider
+import icu.windea.pls.ai.providers.LocalChatModelProvider
+import java.net.HttpURLConnection
+import java.net.URL
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
@@ -106,6 +112,8 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 row {
                     checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.openAI::fromEnv)
                         .applyToComponent { envCheckBox = this }
+
+                    button(PlsBundle.message("settings.ai.test")) { testOpenAI() }.align(AlignX.RIGHT)
                 }
             }
 
@@ -158,6 +166,8 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 row {
                     checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.anthropic::fromEnv)
                         .applyToComponent { envCheckBox = this }
+
+                    button(PlsBundle.message("settings.ai.test")) { testAnthropic() }.align(AlignX.RIGHT)
                 }
             }
 
@@ -195,15 +205,138 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 row {
                     checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.local::fromEnv)
                         .applyToComponent { envCheckBox = this }
+
+                    button(PlsBundle.message("settings.ai.test")) { testLocal() }.align(AlignX.RIGHT)
                 }
             }
         }
     }
 
+    private fun testOpenAI() {
+        val opts = OpenAiChatModelProvider.Options.get()
+        if (opts == null) {
+            Messages.showWarningDialog(
+                PlsBundle.message("ai.test.error.missingConfig"),
+                PlsBundle.message("ai.test.error.title")
+            )
+            return
+        }
+        val base = ensureSuffix(opts.apiEndpoint, "/v1")
+        val url = base + "/models"
+        val (ok, msg) = try {
+            val conn = (URL(url).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 3000
+                readTimeout = 3000
+                setRequestProperty("Authorization", "Bearer ${opts.apiKey}")
+            }
+            val code = conn.responseCode
+            if (code in 200..299) true to "HTTP $code"
+            else false to "HTTP $code"
+        } catch (e: Exception) {
+            false to (e.message ?: e::class.java.simpleName)
+        }
+        if (ok) Messages.showInfoMessage(
+            PlsBundle.message("ai.test.success", msg),
+            PlsBundle.message("ai.test.success.title")
+        ) else Messages.showWarningDialog(
+            PlsBundle.message("ai.test.error", msg),
+            PlsBundle.message("ai.test.error.title")
+        )
+    }
+
+    private fun testAnthropic() {
+        val opts = AnthropicChatModelProvider.Options.get()
+        if (opts == null) {
+            Messages.showWarningDialog(
+                PlsBundle.message("ai.test.error.missingConfig"),
+                PlsBundle.message("ai.test.error.title")
+            )
+            return
+        }
+        val base = ensureSuffix(opts.apiEndpoint, "/v1")
+        val url = base + "/models"
+        val (ok, msg) = try {
+            val conn = (URL(url).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 3000
+                readTimeout = 3000
+                setRequestProperty("x-api-key", opts.apiKey)
+                setRequestProperty("anthropic-version", "2023-06-01")
+            }
+            val code = conn.responseCode
+            if (code in 200..299) true to "HTTP $code"
+            else false to "HTTP $code"
+        } catch (e: Exception) {
+            false to (e.message ?: e::class.java.simpleName)
+        }
+        if (ok) Messages.showInfoMessage(
+            PlsBundle.message("ai.test.success", msg),
+            PlsBundle.message("ai.test.success.title")
+        ) else Messages.showWarningDialog(
+            PlsBundle.message("ai.test.error", msg),
+            PlsBundle.message("ai.test.error.title")
+        )
+    }
+
+    private fun testLocal() {
+        val opts = LocalChatModelProvider.Options.get()
+        if (opts == null) {
+            Messages.showWarningDialog(
+                PlsBundle.message("ai.test.error.missingConfig"),
+                PlsBundle.message("ai.test.error.title")
+            )
+            return
+        }
+        val versionUrl = opts.apiEndpoint.trimEnd('/') + "/api/version"
+        val tagsUrl = opts.apiEndpoint.trimEnd('/') + "/api/tags"
+        val versionOk = try {
+            val conn = (URL(versionUrl).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 2000
+                readTimeout = 2000
+            }
+            conn.responseCode in 200..299
+        } catch (_: Exception) { false }
+        if (!versionOk) {
+            Messages.showWarningDialog(
+                PlsBundle.message("ai.local.health.unreachable", versionUrl),
+                PlsBundle.message("ai.test.error.title")
+            )
+            return
+        }
+        val hasModel = try {
+            val conn = (URL(tagsUrl).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 2000
+                readTimeout = 2000
+            }
+            if (conn.responseCode !in 200..299) false
+            else {
+                val text = conn.inputStream.bufferedReader().use { it.readText() }
+                val n1 = "\"name\":\"${opts.modelName}\""
+                val n2 = "\"model\":\"${opts.modelName}\""
+                text.contains(n1) || text.contains(n2)
+            }
+        } catch (_: Exception) { false }
+        if (hasModel) Messages.showInfoMessage(
+            PlsBundle.message("ai.test.success", tagsUrl),
+            PlsBundle.message("ai.test.success.title")
+        ) else Messages.showWarningDialog(
+            PlsBundle.message("ai.local.health.modelMissing", opts.modelName),
+            PlsBundle.message("ai.test.error.title")
+        )
+    }
+
+    private fun ensureSuffix(base: String, suffix: String): String {
+        val b = base.trimEnd('/')
+        return if (b.endsWith(suffix)) b else b + suffix
+    }
+
     private fun validateApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
         // 目前仅在输入时验证，不在应用时验证
         // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.error.missingApiKey"))
+        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("ai.missingApiKey"))
         return null
     }
 }

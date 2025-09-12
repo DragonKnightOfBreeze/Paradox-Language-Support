@@ -29,21 +29,41 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
     override val options: Options? get() = Options.get()
 
     override fun getChatModel(): OllamaChatModel? {
-        val options = options ?: return null
-        if (!healthCheck(options)) return null
-        return OllamaChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedChatModel == null) {
+            cachedChatModel = OllamaChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .build()
+        }
+        return cachedChatModel
     }
 
     override fun getStreamingChatModel(): OllamaStreamingChatModel? {
-        val options = options ?: return null
-        if (!healthCheck(options)) return null
-        return OllamaStreamingChatModel.builder()
-            .modelName(options.modelName)
-            .baseUrl(options.apiEndpoint)
-            .build()
+        val opts = options ?: return null
+        ensureCache(opts)
+        if (cachedStreamingChatModel == null) {
+            cachedStreamingChatModel = OllamaStreamingChatModel.builder()
+                .modelName(opts.modelName)
+                .baseUrl(opts.apiEndpoint)
+                .build()
+        }
+        return cachedStreamingChatModel
+    }
+
+    override fun isAvailable(): Boolean = options != null
+
+    @Volatile private var cachedOptions: Options? = null
+    @Volatile private var cachedChatModel: OllamaChatModel? = null
+    @Volatile private var cachedStreamingChatModel: OllamaStreamingChatModel? = null
+
+    private fun ensureCache(newOptions: Options) {
+        if (cachedOptions != newOptions) {
+            cachedOptions = newOptions
+            cachedChatModel = null
+            cachedStreamingChatModel = null
+        }
     }
 
     data class Options(
@@ -90,14 +110,14 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
             if (code !in 200..299) {
                 PlsCoreManager.createNotification(
                     NotificationType.WARNING,
-                    PlsBundle.message("settings.ai.error.local.health.unreachable", "$code")
+                    PlsBundle.message("ai.local.health.unreachable", "$code")
                 ).notify(null)
                 return false
             }
         } catch (e: Exception) {
             PlsCoreManager.createNotification(
                 NotificationType.WARNING,
-                PlsBundle.message("settings.ai.error.local.health.unreachable", e.message ?: "")
+                PlsBundle.message("ai.local.health.unreachable", e.message ?: "")
             ).notify(null)
             return false
         }
@@ -117,7 +137,7 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
                 if (needle1 !in content && needle2 !in content) {
                     PlsCoreManager.createNotification(
                         NotificationType.WARNING,
-                        PlsBundle.message("settings.ai.error.local.health.modelMissing", options.modelName)
+                        PlsBundle.message("ai.local.health.modelMissing", options.modelName)
                     ).notify(null)
                     return false
                 }
