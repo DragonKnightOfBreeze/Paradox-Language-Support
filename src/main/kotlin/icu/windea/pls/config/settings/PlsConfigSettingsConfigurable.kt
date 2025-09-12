@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent
 class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.config")), SearchableConfigurable {
     override fun getId() = "pls.config"
 
+    override fun getHelpTopic() = "icu.windea.pls.config.settings"
+
     private val groupName = "pls.config"
     private val callbackLock = CallbackLock()
 

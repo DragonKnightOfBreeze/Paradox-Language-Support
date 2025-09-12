@@ -7,7 +7,7 @@
 
 PLS deeply integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
 
-### Links
+### Link {#link}
 
 Through specially formatted link text, PLS can parse Markdown links into matching target references (definitions, localizations, etc.), 
 providing language features such as code navigation and quick documentation in the editor, offering powerful support for mod documentation writing.
@@ -91,7 +91,7 @@ Notes:
 - `{gameType}` - <GameTypeNote />
 - `{typeExpression}` - <DefinitionTypeNote />
 
-### Inline Code
+### Inline Code {#inline-code}
 
 > [!note]
 > This feature requires enabling a specific advanced setting (`Advanced Settings > Paradox Language Support > Resolve Markdown Inline Code`).
@@ -130,7 +130,7 @@ Note:
 
 - If both definition and localization can be resolved, definition takes precedence.
 
-### Code Blocks
+### Code Block {#code-block}
 
 By injecting additional information after the language ID in Markdown code blocks, you can specify the game type and file path for script / localization / csv file fragments. 
 PLS will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
@@ -180,7 +180,7 @@ Currently, only event trees and technology trees are provided.
 > 
 > ![](../images/extensions/diagram_hierarchy_1.png)
 
-### Settings Page
+### Settings Page {#diagram-settings-page}
 
 In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
 
@@ -188,7 +188,7 @@ Here you can configure which nodes to display for various diagram types based on
 
 ![](../images/extensions/diagram_settings_1.png)
 
-### Event Tree
+### Event Tree {#event-tree-diagram}
 
 You can open event tree diagrams in several ways:
 
@@ -207,7 +207,7 @@ Event tree diagrams display key information about events and their invocation re
 > [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
 
-### Technology Tree
+### Technology Tree {#tech-tree-diagram}
 
 If the current game type is *Stellaris*, you can open technology tree diagrams in several ways:
 

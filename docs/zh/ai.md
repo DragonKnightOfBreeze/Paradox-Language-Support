@@ -7,7 +7,7 @@
 强调AI作为提升效率的工具，开发者始终保持最终决策权。
 -->
 
-## AI 设置页面 {#settings_page}
+## AI 设置页面 {#settings-page}
 
 待编写。
 

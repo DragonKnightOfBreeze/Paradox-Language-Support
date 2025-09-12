@@ -12,7 +12,7 @@ PLS 集成了多种实用工具，用于优化和扩展插件的功能。
 
 ![](../images/integrations/integrations_settings_1.png)
 
-## 图片工具
+## 图片工具 {#image-tools}
 
 PLS 集成了以下图片工具，可用于提供更好的对 DDS 和 TGA 图片的支持。
 
@@ -66,7 +66,7 @@ PLS 集成了以下图片工具，可用于提供更好的对 DDS 和 TGA 图片
 > 
 > ![](../images/integrations/jump_to_image_editor_2.png)
 
-## 翻译工具
+## 翻译工具 {#translation-tools}
 
 PLS 集成了以下翻译工具，可用于批量翻译本地化文本。
 
@@ -97,7 +97,7 @@ PLS 集成了以下翻译工具，可用于批量翻译本地化文本。
 > * 完成任务后，会弹出通知，提示任务的执行状态，并提供回退与重新应用操作的入口。
 > * 随时可以取消当前正在执行的任务。
 
-## 检查工具
+## 检查工具 {#linting-tools}
 
 PLS 集成了以下检查工具，可用于提供额外的代码检查。
 

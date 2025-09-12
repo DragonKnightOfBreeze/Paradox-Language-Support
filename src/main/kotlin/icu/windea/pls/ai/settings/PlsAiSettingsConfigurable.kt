@@ -14,15 +14,17 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiFacade
-import icu.windea.pls.ai.providers.ChatModelProviderType
-import icu.windea.pls.ai.providers.OpenAiChatModelProvider
 import icu.windea.pls.ai.providers.AnthropicChatModelProvider
+import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.ai.providers.LocalChatModelProvider
+import icu.windea.pls.ai.providers.OpenAiChatModelProvider
 import java.net.HttpURLConnection
 import java.net.URL
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
+
+    override fun getHelpTopic() = "icu.windea.pls.ai.settings"
 
     private val groupNameOpenAI = "pls.ai.openAI"
     private val groupNameAnthropic = "pls.ai.anthropic"

@@ -14,6 +14,8 @@ class PlsDiagramSettingsConfigurable(
 ) : BoundConfigurable(PlsDiagramBundle.message("settings.diagram")), SearchableConfigurable {
     override fun getId() = "pls.diagram"
 
+    override fun getHelpTopic() = "icu.windea.pls.diagram.settings"
+
     override fun createPanel(): DialogPanel {
         return panel {
             row {

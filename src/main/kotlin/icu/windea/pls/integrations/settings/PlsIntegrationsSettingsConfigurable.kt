@@ -22,6 +22,8 @@ import icu.windea.pls.model.ParadoxGameType
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
 
+    override fun getHelpTopic() = "icu.windea.pls.integrations.settings"
+
     private val groupNameImage = "pls.integrations.image"
     private val groupNameLint = "pls.integrations.lint"
     private val callbackLock = CallbackLock()

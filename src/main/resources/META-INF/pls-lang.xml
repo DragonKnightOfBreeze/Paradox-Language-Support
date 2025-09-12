@@ -18,12 +18,14 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls" groupId="language" key="settings" instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
 
-    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
-    <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
+    <webHelpProvider implementation="icu.windea.pls.lang.PlsWebHelpProvider"/>
 
     <!--suppress PluginXmlValidity -->
     <!--make first to optimize performance (before JSLibraryOverrider)-->
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
+
+    <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
+    <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
 
     <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxFileListener"/>

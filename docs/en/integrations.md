@@ -12,7 +12,7 @@ Here you can configure which tool integrations to enable and specify their optio
 
 ![](../images/integrations/integrations_settings_1.png)
 
-## Image Tools
+## Image Tools {#image-tools}
 
 PLS integrates the following image tools to provide better support for DDS and TGA images.
 
@@ -66,7 +66,7 @@ The plugin also allows selecting multiple images in the project view and perform
 > 
 > ![](../images/integrations/jump_to_image_editor_2.png)
 
-## Translation Tools
+## Translation Tools {#translation-tools}
 
 PLS integrates the following translation tools for batch translation of localization texts.
 
@@ -97,7 +97,7 @@ Here is a demonstration of using AI to batch translate localization texts:
 > * After completing the task, a notification will pop up to indicate the task's execution status and provide options to revert or reapply the manipulations.
 > * You can cancel the currently executing task at any time.
 
-## Linting Tools
+## Linting Tools {#linting-tools}
 
 PLS integrates the following linting tools to provide additional code inspections.
 

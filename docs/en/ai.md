@@ -1,6 +1,6 @@
 # AI
 
-## The Settings Page {#settings_page}
+## The Settings Page {#settings-page}
 
 To be completed.
 

@@ -7,7 +7,7 @@
 
 PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链接、内联代码和代码块的处理。
 
-### 链接
+### 链接 {#link}
 
 通过特定语法格式的链接文本，PLS 可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
 从而在编辑器中提供代码导航、快速文档等语言功能，为模组文档编写提供有力支持。
@@ -91,7 +91,7 @@ PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链
 - `{gameType}` - <GameTypeNote />
 - `{typeExpression}` - <DefinitionTypeNote />
 
-### 内联代码
+### 内联代码 {#inline-code}
 
 > [!note]
 > 本章节的功能需要启用特定的高级设置项（`高级设置 > Paradox Language Support > 解析 Markdown 内联代码`）。
@@ -130,7 +130,7 @@ PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义
 
 - 如果可以同时解析为定义和本地化，则会优先解析为定义。
 
-### 代码块
+### 代码块 {#code-block}
 
 通过在 Markdown 代码块的语言 ID 后面注入额外的信息，可以为其中的脚本/本地化/CSV文件的片段指定游戏类型和文件路径。
 PLS 会根据这些信息来匹配 CWT 规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
@@ -180,7 +180,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 > 
 > ![](../images/extensions/diagram_hierarchy_1.png)
 
-### 设置页面
+### 设置页面 {#diagram-settings-page}
 
 在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 图表`，可以打开图表的设置页面。
 
@@ -188,7 +188,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 ![](../images/extensions/diagram_settings_1.png)
 
-### 事件树
+### 事件树 {#event-tree-diagram}
 
 可以通过以下几种方式打开事件树的图表：
 
@@ -207,7 +207,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 > [!warning]
 > IDE 需要花费一定时间来完成数据加载与图形渲染。如果需要渲染的节点与节点元素过多，这个耗时可能相当长。
 
-### 科技树
+### 科技树 {#tech-tree-diagram}
 
 如果当前游戏类型为 *Stellaris*，可以通过以下几种方式打开科技树的图表：
 

@@ -17,7 +17,7 @@ object PlsIntegrationConstants {
 
         fun pathTip(): String {
             val suffix = if(OS.isWindows()) ".exe" else ""
-            return "path/to/magick$suffix"
+            return "/path/to/magick$suffix"
         }
     }
 
@@ -40,13 +40,13 @@ object PlsIntegrationConstants {
         fun pathTip(gameType: ParadoxGameType): String {
             val name = PlsTigerLintManager.findTigerTool(gameType)?.exePath ?: "tiger"
             val suffix = if(OS.isWindows()) ".exe" else ""
-            return "path/to/$name$suffix"
+            return "/path/to/$name$suffix"
         }
 
         fun confPathTip(gameType: ParadoxGameType): String {
             val name = PlsTigerLintManager.findTigerTool(gameType)?.exePath ?: "tiger"
             val suffix = ".conf"
-            return "path/to/$name$suffix"
+            return "/path/to/$name$suffix"
         }
     }
 }
