@@ -43,7 +43,7 @@ class PlsAiSettingsState : BaseState() {
     var local by property(LocalState())
 
     /**
-     * 功能相关的设置。
+     * 功能的相关设置。
      *
      * @property localisationChunkSize 本地化条目的分块大小。即每次输入的本地化条目的最大数量。
      * @property localisationMemorySize 本地化条目的记忆大小。即会话记忆中本地化条目的最大数值。（TODO 更加精确的实现）
@@ -55,7 +55,7 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * OPEN AI API 相关的设置。
+     * OPEN AI API 的相关设置。
      *
      * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiEndpoint API 端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
@@ -73,7 +73,7 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * ANTHROPIC API 相关的设置。
+     * ANTHROPIC API 的相关设置。
      *
      * @property modelName 模型名称。
      * @property apiEndpoint API 端点。
@@ -91,7 +91,7 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * 本地（Ollama）相关的设置。
+     * 本地模型（Ollama）的相关设置。
      *
      * @property modelName 模型名称。
      * @property apiEndpoint API 端点。

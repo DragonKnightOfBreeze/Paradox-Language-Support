@@ -17,7 +17,7 @@ enum class ChatModelProviderType(val text: String) {
      */
     ANTHROPIC(PlsBundle.message("ai.providerType.anthropic")),
     /**
-     * 使用本地模型。
+     * 使用本地模型（Ollama）。
      */
     LOCAL(PlsBundle.message("ai.providerType.local")),
     ;

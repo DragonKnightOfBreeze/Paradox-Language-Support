@@ -53,7 +53,7 @@ object ParadoxLocalisationAiManipulator {
         contract {
             returns() implies (resultFlow != null)
         }
-        if (resultFlow == null) { // 这意味着 AI 设置不合法，例如 API KEY 未填写（但不包括已填写但不正确的情况）
+        if (resultFlow == null) { // 这意味着 AI 设置不正确，例如 API KEY 未填写（但不包括已填写但不正确的情况）
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.1"))
         }
     }

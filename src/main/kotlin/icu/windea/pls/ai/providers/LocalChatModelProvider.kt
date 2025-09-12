@@ -15,55 +15,27 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-/**
- * 本地（Ollama）模型提供者。
- *
- * - 通过环境变量读取配置：
- *   - OLLAMA_MODEL（必填，例如：qwen2.5:7b-instruct-q4_K_M 或 llama3.1:8b）
- *   - OLLAMA_BASE_URL（默认：http://localhost:11434）
- * - 单元测试模式下同样从环境变量读取。
- */
-class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options> {
+class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Options>() {
     override val type: ChatModelProviderType = ChatModelProviderType.LOCAL
 
     override val options: Options? get() = Options.get()
 
-    override fun getChatModel(): OllamaChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedChatModel == null) {
-            cachedChatModel = OllamaChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .build()
-        }
-        return cachedChatModel
+    override fun doGetChatModel(options: Options): OllamaChatModel? {
+        return OllamaChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .build()
     }
 
-    override fun getStreamingChatModel(): OllamaStreamingChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedStreamingChatModel == null) {
-            cachedStreamingChatModel = OllamaStreamingChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .build()
-        }
-        return cachedStreamingChatModel
+    override fun doGetStreamingChatModel(options: Options): OllamaStreamingChatModel? {
+        return OllamaStreamingChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .build()
     }
 
-    override fun isAvailable(): Boolean = options != null
-
-    @Volatile private var cachedOptions: Options? = null
-    @Volatile private var cachedChatModel: OllamaChatModel? = null
-    @Volatile private var cachedStreamingChatModel: OllamaStreamingChatModel? = null
-
-    private fun ensureCache(newOptions: Options) {
-        if (cachedOptions != newOptions) {
-            cachedOptions = newOptions
-            cachedChatModel = null
-            cachedStreamingChatModel = null
-        }
+    override fun doCHeckStatus(): ChatModelProvider.StatusResult {
+        TODO("Not yet implemented")
     }
 
     data class Options(

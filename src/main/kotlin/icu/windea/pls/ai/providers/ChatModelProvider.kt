@@ -14,19 +14,22 @@ interface ChatModelProvider<S : ChatModelProvider.Options> {
 
     val options: S?
 
-    /**
-     * 快速检查该 AI 服务是否可用。
-     * 注意：这里的检查应尽可能轻量（例如仅检验配置是否完整或基础连通性），
-     * 真实调用建议在“测试”入口中完成。
-     */
-    fun isAvailable(): Boolean
-
     fun getChatModel(): ChatModel?
 
     fun getStreamingChatModel(): StreamingChatModel?
 
     /**
+     * 通过检查选项、发起网络请求、检查本地 AI 服务状态等方式，测试 AI 服务是否可用。
+     */
+    fun checkStatus(): StatusResult
+
+    /**
      * AI 服务提供者的选项。再次封装一层,可由用户配置或者来自环境变量。
      */
     interface Options
+
+    /**
+     * AI 服务状态的测试结果。
+     */
+    data class StatusResult(val status: Boolean, val title: String, val message: String)
 }

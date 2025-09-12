@@ -9,52 +9,32 @@ import icu.windea.pls.ai.settings.PlsAiSettingsManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 
-class OpenAiChatModelProvider : ChatModelProvider<OpenAiChatModelProvider.Options> {
+class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Options>() {
     override val type: ChatModelProviderType = ChatModelProviderType.OPEN_AI
 
     override val options: Options? get() = Options.get()
 
-    override fun getChatModel(): OpenAiChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedChatModel == null) {
-            cachedChatModel = OpenAiChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .apiKey(opts.apiKey)
-                .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)
-                .strictJsonSchema(true)
-                .build()
-        }
-        return cachedChatModel
+    override fun doGetChatModel(options: Options): OpenAiChatModel? {
+        return OpenAiChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .apiKey(options.apiKey)
+            .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)
+            .strictJsonSchema(true)
+            .build()
     }
 
-    override fun getStreamingChatModel(): OpenAiStreamingChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedStreamingChatModel == null) {
-            cachedStreamingChatModel = OpenAiStreamingChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .apiKey(opts.apiKey)
-                .strictJsonSchema(true)
-                .build()
-        }
-        return cachedStreamingChatModel
+    override fun doGetStreamingChatModel(options: Options): OpenAiStreamingChatModel? {
+        return OpenAiStreamingChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .apiKey(options.apiKey)
+            .strictJsonSchema(true)
+            .build()
     }
 
-    override fun isAvailable(): Boolean = options != null
-
-    @Volatile private var cachedOptions: Options? = null
-    @Volatile private var cachedChatModel: OpenAiChatModel? = null
-    @Volatile private var cachedStreamingChatModel: OpenAiStreamingChatModel? = null
-
-    private fun ensureCache(newOptions: Options) {
-        if (cachedOptions != newOptions) {
-            cachedOptions = newOptions
-            cachedChatModel = null
-            cachedStreamingChatModel = null
-        }
+    override fun doCHeckStatus(): ChatModelProvider.StatusResult {
+        TODO("Not yet implemented")
     }
 
     data class Options(

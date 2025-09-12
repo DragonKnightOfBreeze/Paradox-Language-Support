@@ -8,58 +8,29 @@ import icu.windea.pls.ai.settings.PlsAiSettingsManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 
-/**
- * ANTHROPIC 模型提供者。
- *
- * - 支持通过环境变量读取配置：
- *   - ANTHROPIC_MODEL（默认：claude-3-5-sonnet-latest）
- *   - ANTHROPIC_BASE_URL（默认：https://api.anthropic.com）
- *   - ANTHROPIC_API_KEY（必填）
- * - 单元测试模式下同样从环境变量读取。
- */
-class AnthropicChatModelProvider : ChatModelProvider<AnthropicChatModelProvider.Options> {
+class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvider.Options>() {
     override val type: ChatModelProviderType = ChatModelProviderType.ANTHROPIC
 
     override val options: Options? get() = Options.get()
 
-    override fun getChatModel(): AnthropicChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedChatModel == null) {
-            cachedChatModel = AnthropicChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .apiKey(opts.apiKey)
-                .build()
-        }
-        return cachedChatModel
+    override fun doGetChatModel(options: Options): AnthropicChatModel? {
+        return AnthropicChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .apiKey(options.apiKey)
+            .build()
     }
 
-    override fun getStreamingChatModel(): AnthropicStreamingChatModel? {
-        val opts = options ?: return null
-        ensureCache(opts)
-        if (cachedStreamingChatModel == null) {
-            cachedStreamingChatModel = AnthropicStreamingChatModel.builder()
-                .modelName(opts.modelName)
-                .baseUrl(opts.apiEndpoint)
-                .apiKey(opts.apiKey)
-                .build()
-        }
-        return cachedStreamingChatModel
+    override fun doGetStreamingChatModel(options: Options): AnthropicStreamingChatModel? {
+        return AnthropicStreamingChatModel.builder()
+            .modelName(options.modelName)
+            .baseUrl(options.apiEndpoint)
+            .apiKey(options.apiKey)
+            .build()
     }
 
-    override fun isAvailable(): Boolean = options != null
-
-    @Volatile private var cachedOptions: Options? = null
-    @Volatile private var cachedChatModel: AnthropicChatModel? = null
-    @Volatile private var cachedStreamingChatModel: AnthropicStreamingChatModel? = null
-
-    private fun ensureCache(newOptions: Options) {
-        if (cachedOptions != newOptions) {
-            cachedOptions = newOptions
-            cachedChatModel = null
-            cachedStreamingChatModel = null
-        }
+    override fun doCHeckStatus(): ChatModelProvider.StatusResult {
+        TODO("Not yet implemented")
     }
 
     data class Options(
