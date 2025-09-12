@@ -9,6 +9,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
@@ -27,6 +28,8 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
         val project = queryParameters.project
         val selector = queryParameters.selector
         val gameType = selector.gameType
+
+        if (expression.isNotEmpty() && expression.isParameterized()) return // skip if expression is parameterized
 
         doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()

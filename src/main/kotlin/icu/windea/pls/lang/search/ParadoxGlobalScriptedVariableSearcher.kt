@@ -16,7 +16,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 /**
  * 全局封装变量的查询器。
  *
- * 全局封装变量：位于`common/scripted_variables`目录中的脚本文件中的封装变量。
+ * 全局封装变量：位于特定位置（`common/scripted_variables/**/*.txt`）的脚本文件中的封装变量。
+ * -
  */
 class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxGlobalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxGlobalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {

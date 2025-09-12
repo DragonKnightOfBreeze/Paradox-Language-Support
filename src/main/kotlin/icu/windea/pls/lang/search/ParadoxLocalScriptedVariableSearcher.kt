@@ -20,6 +20,7 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -31,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * 本地封装变量的查询器。
  *
- * 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况。
+ * 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况（除非内联脚本表达式带有参数，或者需要传递内联脚本的传入参数）。
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
@@ -63,8 +64,9 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
         processedFiles: MutableSet<VirtualFile>,
         consumer: Processor<in ParadoxScriptScriptedVariable>
     ): Boolean {
-        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93 - inline script files -> invoker file
-        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/151 - inline script arguments -> related inline script file
+        // #93 in inline script files -> invoker file (SUPPORTED)
+        // #151 in inline script arguments -> invoked inline script file (SUPPORTED)
+        // #153 in passed inline script arguments -> outer invoked inline script file (UNSUPPORTED, but unresolved references can be suppressed)
 
         ProgressManager.checkCanceled()
 
@@ -96,6 +98,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
         processedFiles: MutableSet<VirtualFile>,
         consumer: Processor<in ParadoxScriptScriptedVariable>
     ): Boolean {
+        if (inlineScriptExpression.isParameterized()) return true // skip if is inlineScriptExpression parameterized
         val name = queryParameters.name
         val project = queryParameters.project
         val context = queryParameters.selector.context
@@ -120,6 +123,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
         processedFiles: MutableSet<VirtualFile>,
         consumer: Processor<in ParadoxScriptScriptedVariable>
     ): Boolean {
+        if (inlineScriptExpression.isParameterized()) return true // skip if is inlineScriptExpression parameterized
         val name = queryParameters.name
         val project = queryParameters.project
         val selector = selector(project, file).inlineScriptUsage()
