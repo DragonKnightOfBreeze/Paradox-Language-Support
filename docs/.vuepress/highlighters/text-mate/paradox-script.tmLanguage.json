@@ -4,14 +4,14 @@
   "scopeName": "source.paradox.script",
   "patterns": [
     { "include": "#comments" },
-    { "include": "#property" },
-    { "include": "#variables" },
     { "include": "#operators" },
-    { "include": "#colors" },
     { "include": "#booleans" },
     { "include": "#numbers" },
-    { "include": "#strings" },
+    { "include": "#colors" },
     { "include": "#inline-math" },
+    { "include": "#scripted-variables" },
+    { "include": "#property" },
+    { "include": "#strings" },
     { "include": "#punctuation" },
     { "include": "#braces" }
   ],
@@ -20,21 +20,8 @@
       "patterns": [
         {
           "name": "comment.line.number-sign.paradox.script",
-          "match": "(^|\\s)(#).*",
-          "captures": {
-            "2": { "name": "punctuation.definition.comment.paradox.script" }
-          }
-        }
-      ]
-    },
-    "variables": {
-      "patterns": [
-        {
-          "name": "variable.other.scripted.paradox.script",
-          "match": "(^|[\\s\\[{<>=])@[A-Za-z_$\\[][^@#={}\\s\"]*",
-          "captures": {
-            "2": { "name": "variable.other.scripted.key.paradox.script" }
-          }
+          "begin": "#",
+          "end": "$"
         }
       ]
     },
@@ -47,6 +34,12 @@
     "booleans": {
       "patterns": [
         { "name": "constant.language.boolean.paradox.script", "match": "\\b(?:yes|no)\\b" }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "name": "constant.numeric.float.paradox.script", "match": "\\b-?\\d+\\.\\d+\\b" },
+        { "name": "constant.numeric.integer.paradox.script", "match": "\\b-?\\d+\\b" }
       ]
     },
     "colors": {
@@ -66,7 +59,27 @@
             { "name": "keyword.operator.arithmetic.paradox.script", "match": "[+*/%\\-|]" },
             { "name": "punctuation.section.group.paradox.script", "match": "[()]" },
             { "name": "constant.numeric.number.paradox.script", "match": "-?\\d+(?:\\.\\d+)?" },
-            { "name": "variable.other.scripted.paradox.script", "match": "@[A-Za-z_][A-Za-z0-9_]*" }
+            { "include": "#parameters" },
+            {
+              "name": "keyword.other.scripted-variable.paradox.script",
+              "begin": "(?<=^|[\\s\\[\\]{}<>=])(?=[A-Za-z_$\\[])",
+              "end": "$|(?=[@#={}\\s\"])",
+              "patterns": [
+                { "include": "#parameters" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "scripted-variables": {
+      "patterns": [
+        {
+          "name": "keyword.other.scripted-variable.paradox.script",
+          "begin": "(?<=^|[\\s\\[\\]{}<>=])@(?=[A-Za-z_$\\[])",
+          "end": "$|(?=[@#={}\\s\"])",
+          "patterns": [
+            { "include": "#parameters" }
           ]
         }
       ]
@@ -74,23 +87,21 @@
     "property": {
       "patterns": [
         {
-          "name": "meta.property.paradox.script",
-          "match": "(\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?)(?=\\s*(?:=|!=|<|>|<=|>=|\\?=))",
-          "captures": {
-            "1": { "name": "variable.other.key.paradox.script" }
-          },
+          "name": "variable.key.quoted.double.paradox.script",
+          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#parameters" },
+            { "include": "#escapes" }
           ]
         },
         {
-          "name": "meta.property.paradox.script",
-          "match": "([^@#=<>?{}\\[\\]\\s\"]+\"?)(?=\\s*(?:=|!=|<|>|<=|>=|\\?=))",
-          "captures": {
-            "1": { "name": "variable.other.key.paradox.script" }
-          },
+          "name": "variable.key.unquoted.paradox.script",
+          "begin": "(?=[^@#=<>?{}\\[\\]\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#parameters" },
+            { "include": "#escapes" }
           ]
         }
       ]
@@ -99,39 +110,48 @@
       "patterns": [
         {
           "name": "string.quoted.double.paradox.script",
-          "match": "\"([^\"\\\\]|\\\\[\\s\\S])*\"?",
+          "begin": "\"",
+          "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.paradox.script", "match": "\\\\." }
+            { "include": "#parameters" },
+            { "include": "#escapes" }
           ]
         },
         {
           "name": "string.unquoted.paradox.script",
-          "match": "[^@#=<>?{}\\[\\]\\s\"]+\"?",
+          "begin": "(?=[^@#=<>?{}\\[\\]\\s])",
+          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#parameters" },
+            { "include": "#escapes" }
           ]
         }
       ]
     },
-    "numbers": {
+    "parameters": {
       "patterns": [
-        { "name": "constant.numeric.float.paradox.script", "match": "\\b-?\\d+\\.\\d+\\b" },
-        { "name": "constant.numeric.integer.paradox.script", "match": "\\b-?\\d+\\b" }
+        {
+          "name": "variable.interpolation.paradox.script",
+          "match": "\\$[A-Za-z_][A-Za-z0-9_]*(?:\\|[^#$=<>?{}\\[\\]\\s]+)?\\$"
+        }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        { "name": "constant.character.escape.paradox.script", "match": "\\\\." }
       ]
     },
     "punctuation": {
       "patterns": [
-        { "name": "punctuation.section.group.begin.paradox.script", "match": "\\(" },
-        { "name": "punctuation.section.group.end.paradox.script", "match": "\\)" },
-        { "name": "punctuation.section.brackets.begin.paradox.script", "match": "\\[" },
-        { "name": "punctuation.section.brackets.end.paradox.script", "match": "\\]" },
         { "name": "punctuation.separator.comma.paradox.script", "match": "," }
       ]
     },
     "braces": {
       "patterns": [
         { "name": "punctuation.section.block.begin.paradox.script", "match": "\\{" },
-        { "name": "punctuation.section.block.end.paradox.script", "match": "\\}" }
+        { "name": "punctuation.section.block.end.paradox.script", "match": "\\}" },
+        { "name": "punctuation.section.brackets.begin.paradox.script", "match": "\\[" },
+        { "name": "punctuation.section.brackets.end.paradox.script", "match": "\\]" }
       ]
     }
   }

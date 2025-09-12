@@ -28,7 +28,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   public static final int CHECK_COLORFUL_TEXT = 2;
   public static final int IN_COLOR_ID = 4;
   public static final int IN_COLORFUL_TEXT = 6;
-  public static final int CHECK_REFERENCE = 8;
+  public static final int CHECK_PARAMETER = 8;
   public static final int IN_PARAMETER = 10;
   public static final int IN_PARAMETER_ARGUMENT = 12;
   public static final int IN_SCRIPTED_VARIABLE_REFERENCE = 14;
@@ -590,7 +590,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         return yycharat(yylength() - 1) == '$';
     }
 
-    private IElementType checkReference() {
+    private IElementType checkParameter() {
         if (isReference()) {
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
@@ -944,7 +944,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 49: break;
           case 3:
-            { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE);
+            { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER);
             }
           // fall through
           case 50: break;
@@ -996,7 +996,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 59: break;
           case 13:
-            { return checkReference();
+            { return checkParameter();
             }
           // fall through
           case 60: break;
@@ -1026,7 +1026,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 65: break;
           case 19:
-            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
+            { return SCRIPTED_VARIABLE_PARAMETER_TOKEN;
             }
           // fall through
           case 66: break;
@@ -1131,7 +1131,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 85: break;
           case 39:
-            { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_REFERENCE);
+            { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_PARAMETER);
             }
           // fall through
           case 86: break;

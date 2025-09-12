@@ -112,16 +112,18 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
+SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={}\s\"]*
+PROPERTY_SEPARTOR_CHECK=[=<>!?]
+PROPERTY_KEY_CHECK=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{PROPERTY_SEPARTOR_CHECK}
+
 // leading number is not permitted for parameter names
 PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 
 // leading number is not permitted for scripted variable names
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+
-CHECK_SCRIPTED_VARIABLE_NAME=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
-CHECK_SCRIPTED_VARIABLE_REFERENCE=[A-Za-z_$\[][^@#={}\s\"]*
+SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
 
-CHECK_PROPERTY_SEPARTOR=[=<>!?]
-CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{CHECK_PROPERTY_SEPARTOR}
+
 WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
 PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
@@ -134,7 +136,7 @@ FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
-CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
+STRING_CHECK={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
@@ -161,7 +163,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {CHECK_SCRIPTED_VARIABLE_NAME} {
+    {SCRIPTED_VARIABLE_NAME_CHECK} {
         // 如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
@@ -198,7 +200,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {CHECK_SCRIPTED_VARIABLE_REFERENCE} {
+    {SCRIPTED_VARIABLE_REFERENCE_CHECK} {
         yypushback(yylength());
         enterState(templateStateRef, yystate());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
@@ -330,7 +332,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }
-    {CHECK_PROPERTY_KEY} {
+    {PROPERTY_KEY_CHECK} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);
@@ -347,7 +349,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {INT_TOKEN} { enterState(templateStateRef, yystate());  return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate());  return FLOAT_TOKEN; }
     {COLOR_TOKEN} { enterState(templateStateRef, yystate());  return COLOR_TOKEN; }
-    {CHECK_STRING} {
+    {STRING_CHECK} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);

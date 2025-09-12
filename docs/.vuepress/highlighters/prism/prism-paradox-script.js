@@ -19,32 +19,48 @@
 export function registerParadoxScript(Prism) {
   if (!Prism || Prism.languages.paradox_script) return;
 
+  const parameter = {
+    pattern: /\$[A-Za-z_][A-Za-z0-9_]*(?:\|[^#$=<>?{}\[\]\s]+)?\$/,
+    greedy: true,
+    alias: 'class-name',
+  }
+  const escape = { pattern: /\\./ }
+
   Prism.languages.paradox_script = {
     // line comment (# ...)
     'comment': {
-      pattern: /(^|\s)#.*/,
-      lookbehind: true,
-    },
-    // scripted variable (identifier after @)
-    'variable': {
-      pattern: /(^|[\s\[{<>=])@[A-Za-z_$\[][^@#={}\s"]*/,
-      lookbehind: true,
-      greedy: true,
-      alias: 'symbol',
+      pattern: /#.*$/m,
     },
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
-    // color (rgb{...}, hsv{...}, hsv360{...})
+    // color (rgb {...}, hsv {...}, hsv360 {...})
     'function': /\b(?:rgb|hsv|hsv360)\b/,
     // inline math (@[ ... ])
     'inline-math': {
       pattern: /@\[[\s\S]*?]/,
       greedy: true,
       inside: {
-        'variable': /@[A-Za-z_$\[][^@#={}\s"]*/,
         'operator': /[+\-*/%]/,
         'number': /[+-]?(?:\d*\.\d+|\d+)/,
-        'punctuation': /@\[|[()\[\]|]/
+        'punctuation': /@\[|[()\[\]|]/,
+        'parameter': parameter,
+        'scripted-variable': {
+          pattern: /[A-Za-z_$\[][^@#={}\s"]*/,
+          alias: [ 'keyword' ],
+          inside: {
+            'parameter': parameter,
+          },
+        },
+      }
+    },
+    // scripted variable (identifier after @)
+    'scripted-variable': {
+      pattern: /(^|[\s\[\]{}<>=])@[A-Za-z_$\[][^@#={}\s"]*/,
+      lookbehind: true,
+      greedy: true,
+      alias: [ 'keyword' ],
+      inside: {
+        'parameter': parameter,
       }
     },
     // property key (before separator =, !=, <, >, <=, >=, ?=)
@@ -53,13 +69,15 @@ export function registerParadoxScript(Prism) {
         pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
         greedy: true,
         inside: {
-          'escape': { pattern: /\\./ }
+          'parameter': parameter,
+          'escape': escape,
         }
       },
       {
         pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/,
         inside: {
-          'escape': { pattern: /\\./ }
+          'parameter': parameter,
+          'escape': escape,
         }
       },
     ],
@@ -70,18 +88,20 @@ export function registerParadoxScript(Prism) {
         pattern: /"(?:[^"\\]|\\[\s\S])*"?/,
         greedy: true,
         inside: {
-          'escape': { pattern: /\\./ }
+          'parameter': parameter,
+          'escape': escape,
         }
       },
       {
         pattern: /[^@#=<>?{}\[\]\s"]+"?/,
         inside: {
-          'escape': { pattern: /\\./ }
+          'parameter': parameter,
+          'escape': escape,
         }
       },
     ],
     'operator': /!=|<=|>=|\?=|=|<|>|[+\-*/%]/,
-    'punctuation': /[{}\[\](),]/,
+    'punctuation': /[{}\[\],]/,
   };
 }
 

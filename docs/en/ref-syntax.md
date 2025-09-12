@@ -62,6 +62,7 @@ playable = yes
 cost = 10
 acceleration = 20.0
 class = some_shipsize_class
+"text" = "line\nnext line"
 ```
 
 Value:
@@ -200,6 +201,8 @@ Example:
 # comment
 @my_var = 42
 
+id = event.id.01
+
 effect = {
     enabled = yes
     level >= 2
@@ -212,7 +215,7 @@ effect = {
         add = 1
     }
 
-    result = @[ 1 + 2 * 3 ]
+    result = @[ 1 + 2 * $PARAM$ / var ]
 }
 ```
 
@@ -298,5 +301,5 @@ Example:
 # comment
 key;col1;col2
 id1;"text with ; semicolon";42
-id2;plain;"quoted"
+id2;plain;"line\nnext line"
 ```

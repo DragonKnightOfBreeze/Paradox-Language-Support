@@ -15,10 +15,8 @@
       "patterns": [
         {
           "name": "comment.line.number-sign.paradox.csv",
-          "match": "^(^|\\s)(#).*",
-          "captures": {
-            "2": { "name": "punctuation.definition.comment.paradox.csv" }
-          }
+          "begin": "#",
+          "end": "$"
         }
       ]
     },
@@ -37,18 +35,25 @@
       "patterns": [
         {
           "name": "string.quoted.double.paradox.csv",
-          "match": "[^#;\"\\s]([^#;\"\\r\\n]*[^#;\\s])?",
+          "begin": "\"",
+          "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.paradox.csv", "match": "\"\"" }
+            { "include": "#escapes" }
           ]
         },
         {
           "name": "string.unquoted.paradox.csv",
-          "match": "\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?",
+          "begin": "(?=[^#;\\s])",
+          "end": "$|(?=[#;\\s])",
           "patterns": [
-            { "name": "constant.character.escape.paradox.csv", "match": "\"\"" }
+            { "include": "#escapes" }
           ]
         }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        { "name": "constant.character.escape.paradox.csv", "match": "\\\\." }
       ]
     },
     "punctuation": {

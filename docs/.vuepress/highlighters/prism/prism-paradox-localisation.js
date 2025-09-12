@@ -19,11 +19,23 @@
 export function registerParadoxLocalisation(Prism) {
   if (!Prism || Prism.languages.paradox_localisation) return;
 
+  const parameter = {
+    pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/,
+    greedy: true,
+    alias: 'class-name',
+    inside: {
+      'variable': {
+        pattern: /@[A-Za-z_$\[][^@#={}\s"]*/,
+        alias: 'keyword',
+      }
+    },
+  }
+  const escape = { pattern: /\\./ }
+
   Prism.languages.paradox_localisation = {
     // line comment (# ...)
     'comment': {
-      pattern: /(^|\s)#.*/,
-      lookbehind: true,
+      pattern: /#.*$/m,
     },
     // locale (l_english:)
     'locale': {
@@ -37,25 +49,20 @@ export function registerParadoxLocalisation(Prism) {
     },
     'number': /\b\d+\b/,
     'string': {
-      pattern: /"[^\r\n]+"?/,
+      pattern: /"[^\r\n]+(?=\s*(?:#[^"\r\n]*)?$)/m,
       greedy: true,
       inside: {
         'color-end': { pattern: /§!/, alias: 'important' },
         'color-start': { pattern: /§[A-Za-z0-9]/, alias: 'important' },
-        'parameter': {
-          pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/,
-          greedy: true,
-          alias: 'variable'
-        },
-        'icon': { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true },
-        'command': { pattern: /\[[^\]\r\n]*]/, greedy: true },
-        'text-format-start': { pattern: /#(?!!)[\w:;]+/, alias: 'function' },
-        'text-format-end': { pattern: /#!/, alias: 'important' },
-        'text-icon': { pattern: /@[A-Za-z0-9_]+!/, alias: 'function' },
-        'escape': { pattern: /\\./ }
+        'parameter': parameter,
+        'icon': { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true, alias: 'symbol' },
+        'command': { pattern: /\[[^\]\r\n]*]/, greedy: true, alias: 'function' },
+        'text-format-start': { pattern: /#(?!!)[\w:;]+/, alias: 'symbol' },
+        'text-format-end': { pattern: /#!/, alias: 'symbol' },
+        'text-icon': { pattern: /@[A-Za-z0-9_]+!/, alias: 'symbol' },
+        'escape': escape,
       }
     },
-    'punctuation': /[:\[\]]/
   };
 }
 

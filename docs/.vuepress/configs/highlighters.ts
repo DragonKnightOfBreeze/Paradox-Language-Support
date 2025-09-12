@@ -12,7 +12,7 @@ import shikiParadoxScriptPlugin from "../plugins/shiki/shiki-paradox-script-plug
 import shikiParadoxLocalisationPlugin from "../plugins/shiki/shiki-paradox-localisation-plugin.js";
 import shikiParadoxCsvPlugin from "../plugins/shiki/shiki-paradox-csv-plugin.js";
 
-export const usePrism = false;
+export const usePrism = true;
 
 export function getPrismPlugins() {
   if (!usePrism) return [];

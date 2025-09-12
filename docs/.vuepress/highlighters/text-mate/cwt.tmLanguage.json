@@ -5,10 +5,10 @@
   "fileTypes": ["cwt"],
   "patterns": [
     { "include": "#comments" },
-    { "include": "#property" },
     { "include": "#operators" },
     { "include": "#booleans" },
     { "include": "#numbers" },
+    { "include": "#property" },
     { "include": "#strings" },
     { "include": "#punctuation" },
     { "include": "#braces" }
@@ -17,31 +17,25 @@
     "comments": {
       "patterns": [
         {
-          "name": "comment.line.doc.cwt",
-          "match": "(^|\\s)(###).*",
-          "captures": {
-            "2": { "name": "punctuation.definition.comment.cwt" }
-          }
+          "name": "comment.line.number-sign.doc.cwt",
+          "begin": "(?<=^\\s*)###",
+          "end": "$"
         },
         {
-          "name": "comment.line.option.cwt",
-          "match": "(\\s*)(##).*",
-          "captures": {
-            "2": { "name": "punctuation.definition.comment.cwt" }
-          }
+          "name": "comment.line.number-sign.option.cwt",
+          "begin": "(?<=^\\s*)##",
+          "end": "$"
         },
         {
-          "name": "comment.line.cwt",
-          "match": "(\\s*)(#).*",
-          "captures": {
-            "2": { "name": "punctuation.definition.comment.cwt" }
-          }
+          "name": "comment.line.number-sign.cwt",
+          "begin": "#",
+          "end": "$"
         }
       ]
     },
     "operators": {
       "patterns": [
-        { "name": "keyword.operator.comparison.cwt", "match": "==|!=|<>|=" }
+        { "name": "keyword.operator.comparison.cwt", "match": "==|=|!=|<>" }
       ]
     },
     "booleans": {
@@ -58,23 +52,19 @@
     "property": {
       "patterns": [
         {
-          "name": "meta.property.cwt",
-          "match": "(\"([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?)(?=\\s*(?:==|=|!=|<>))",
-          "captures": {
-            "1": { "name": "variable.other.key.cwt" }
-          },
+          "name": "variable.key.quoted.double.cwt",
+          "begin": "\"(?=([^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?\\s*(?:==|=|!=|<>))",
+          "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#escapes" }
           ]
         },
         {
-          "name": "meta.property.cwt",
-          "match": "([^#={}\\s\"]+\"?)(?=\\s*(?:==|=|!=|<>))",
-          "captures": {
-            "1": { "name": "variable.other.key.cwt" }
-          },
+          "name": "variable.key.unquoted.cwt",
+          "begin": "(?=[^#={}\\s\"]+\"?\\s*(?:==|=|!=|<>))",
+          "end": "$|(?=[#={}\\s])",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#escapes" }
           ]
         }
       ]
@@ -83,27 +73,25 @@
       "patterns": [
         {
           "name": "string.quoted.double.cwt",
-          "match": "\"(?:[^\"\\\\\\r\\n]|\\\\[\\s\\S])*\"?",
+          "begin": "\"",
+          "end": "\"",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#escapes" }
           ]
         },
         {
           "name": "string.unquoted.cwt",
-          "match": "[^#={}\\s\"]+\"?",
+          "begin": "(?=[^#={}\\s])",
+          "end": "$|(?=[#={}\\s])",
           "patterns": [
-            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+            { "include": "#escapes" }
           ]
         }
       ]
     },
-    "punctuation": {
+    "escapes": {
       "patterns": [
-        { "name": "punctuation.section.group.begin.cwt", "match": "\\(" },
-        { "name": "punctuation.section.group.end.cwt", "match": "\\)" },
-        { "name": "punctuation.section.brackets.begin.cwt", "match": "\\[" },
-        { "name": "punctuation.section.brackets.end.cwt", "match": "\\]" },
-        { "name": "punctuation.separator.comma.cwt", "match": "," }
+        { "name": "constant.character.escape.cwt", "match": "\\\\." }
       ]
     },
     "braces": {

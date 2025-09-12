@@ -54,7 +54,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return yycharat(yylength() - 1) == '$';
     }
 
-    private IElementType checkReference() {
+    private IElementType checkParameter() {
         if (isReference()) {
             yypushback(yylength() - 1);
             yybegin(IN_PARAMETER);
@@ -165,7 +165,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_COLOR_ID
 %s IN_COLORFUL_TEXT
 
-%s CHECK_REFERENCE
+%s CHECK_PARAMETER
 %s IN_PARAMETER
 %s IN_PARAMETER_ARGUMENT
 
@@ -200,8 +200,8 @@ ARGUMENT_TOKEN=[^\"§£\$\[\]\r\n\\]+ // pipe is allowed?
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
-REFERENCE_CHECK=\$(\S*\$|.?) // no blank in $...$
-REFERENCE_TOKEN=[A-Za-z0-9_.\-']+
+PARAMETER_CHECK=\$(\S*\$|.?) // no blank in $...$
+PARAMETER_TOKEN=[A-Za-z0-9_.\-']+
 
 SCRIPTED_VARIABLE_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 
@@ -224,7 +224,7 @@ TEXT_ICON_TOKEN=\w+
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
     "#" {
@@ -259,10 +259,10 @@ TEXT_ICON_TOKEN=\w+
     [^] { yypushback(yylength()); beginNextState(); }
 }
 
-// localisation reference rules
+// localisation parameter rules
 
-<CHECK_REFERENCE> {
-    {REFERENCE_CHECK} { return checkReference(); }
+<CHECK_PARAMETER> {
+    {PARAMETER_CHECK} { return checkParameter(); }
 }
 <IN_PARAMETER>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
@@ -272,7 +272,7 @@ TEXT_ICON_TOKEN=\w+
     "$" { beginNextState(); return PARAMETER_END; }
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
-    {REFERENCE_TOKEN} { return PARAMETER_TOKEN; }
+    {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
 }
 <IN_PARAMETER_ARGUMENT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
@@ -288,7 +288,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_SCRIPTED_VARIABLE_REFERENCE>{
     "$" { beginNextState(); return PARAMETER_END; }
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
-    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_PARAMETER_TOKEN; }
 }
 
 // localisation command rules
@@ -309,7 +309,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_COMMAND_TEXT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
     "]" { beginNextState(); return RIGHT_BRACKET; }
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
@@ -319,7 +319,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_COMMAND_ARGUMENT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
     "]" { beginNextState(); return RIGHT_BRACKET; }
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
@@ -333,7 +333,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_ICON>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "£" { beginNextState(); return ICON_END; }
@@ -343,7 +343,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_ICON_ARGUMENT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "£" { beginNextState(); return ICON_END; }
@@ -355,7 +355,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_CONCEPT_NAME> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
     "]" { beginNextState(); return RIGHT_BRACKET; }
     "'" { return RIGHT_SINGLE_QUOTE; }
@@ -378,7 +378,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_TEXT_FORMAT_ID> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
@@ -398,7 +398,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_TEXT_ICON>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "!" { beginNextState(); return TEXT_ICON_END; }

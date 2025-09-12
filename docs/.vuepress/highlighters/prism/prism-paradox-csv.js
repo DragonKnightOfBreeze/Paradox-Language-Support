@@ -19,11 +19,12 @@
 export function registerParadoxCsv(Prism) {
   if (!Prism || Prism.languages.paradox_csv) return;
 
+  const escape = { pattern: /\\./ }
+
   Prism.languages.paradox_csv = {
     // line comment (# ...) (must at line start)
     'comment': {
-      pattern: /(^|\s+)#.*/,
-      lookbehind: true,
+      pattern: /(^\s*)#.*$/m,
     },
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
@@ -32,14 +33,13 @@ export function registerParadoxCsv(Prism) {
         pattern: /"([^"\\\r\n]|\\[\s\S])*"?/,
         greedy: true,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
-      // middle whitespaces are permitted
       {
-        pattern: /[^#;"\s]([^#;"\r\n]*[^#;\s])?/,
+        pattern: /[^#;"\s]+"?/,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
     ],

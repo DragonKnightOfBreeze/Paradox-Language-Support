@@ -19,23 +19,24 @@
 export function registerCwt(Prism) {
   if (!Prism || Prism.languages.cwt) return;
 
+  const escape = { pattern: /\\./ }
+
   Prism.languages.cwt = {
-    // doc comment (### ...)
+    // doc comment (### ...) (must at line start)
     'doc-comment': {
-      pattern: /(^|\s)###.*/,
+      pattern: /(^\s*)###.*$/m,
       lookbehind: true,
       alias: 'comment',
     },
-    // option comment (## ...)
+    // option comment (## ...) (must at line start)
     'option-comment': {
-      pattern: /(^|\s)##.*/,
+      pattern: /(^\s*)##.*$/m,
       lookbehind: true,
       alias: 'comment',
     },
     // line comment (# ...)
     'comment': {
-      pattern: /(^|\s)#.*/,
-      lookbehind: true,
+      pattern: /#.*$/m,
     },
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
@@ -45,13 +46,13 @@ export function registerCwt(Prism) {
         pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:==|=|!=|<>))/,
         greedy: true,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
       {
         pattern: /[^#={}\s"]+"?(?=\s*(?:==|=|!=|<>))/,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
     ],
@@ -60,18 +61,18 @@ export function registerCwt(Prism) {
         pattern: /"(?:[^"\\\r\n]|\\[\s\S])*"?/,
         greedy: true,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
       {
         pattern: /[^#={}\s"]+"?/,
         inside: {
-          'escape': { pattern: /\\./ }
+          'escape': escape
         }
       },
     ],
     'operator': /==|=|!=|<>/,
-    'punctuation': /[{}\[\]]/,
+    'punctuation': /[{}]/,
   };
 }
 

@@ -62,6 +62,7 @@ playable = yes
 cost = 10
 acceleration = 20.0
 class = some_shipsize_class
+"text" = "line\nnext line"
 ```
 
 值（value）：
@@ -86,11 +87,11 @@ ship_size = {
     ## cardinality = 0..1
     cost = int
 
-      modifier = {
-          alias_name[modifier] = alias_match_left[modifier]
-      }
-  }
-  ```
+    modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
+}
+```
 
 注释与文档：
 
@@ -200,6 +201,8 @@ Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
 # comment
 @my_var = 42
 
+id = event.id.01
+
 effect = {
     enabled = yes
     level >= 2
@@ -212,7 +215,7 @@ effect = {
         add = 1
     }
 
-    result = @[ 1 + 2 * 3 ]
+    result = @[ 1 + 2 * $PARAM$ / var ]
 }
 ```
 
@@ -298,5 +301,5 @@ Paradox CSV 语言的文件扩展名是 `.csv`，其在常规 CSV 的基础上�
 # comment
 key;col1;col2
 id1;"text with ; semicolon";42
-id2;plain;"quoted"
+id2;plain;"line\nnext line"
 ```
