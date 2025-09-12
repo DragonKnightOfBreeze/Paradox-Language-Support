@@ -5,13 +5,12 @@
   "fileTypes": ["cwt"],
   "patterns": [
     { "include": "#comments" },
-    { "include": "#operators" },
     { "include": "#booleans" },
     { "include": "#numbers" },
     { "include": "#property" },
     { "include": "#strings" },
     { "include": "#punctuation" },
-    { "include": "#braces" }
+    { "include": "#operators" }
   ],
   "repository": {
     "comments": {
@@ -31,11 +30,6 @@
           "begin": "#",
           "end": "$"
         }
-      ]
-    },
-    "operators": {
-      "patterns": [
-        { "name": "keyword.operator.comparison.cwt", "match": "==|=|!=|<>" }
       ]
     },
     "booleans": {
@@ -94,10 +88,15 @@
         { "name": "constant.character.escape.cwt", "match": "\\\\." }
       ]
     },
-    "braces": {
+    "punctuation": {
       "patterns": [
         { "name": "punctuation.section.block.begin.cwt", "match": "\\{" },
         { "name": "punctuation.section.block.end.cwt", "match": "\\}" }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.comparison.cwt", "match": "==|=|!=|<>" }
       ]
     }
   }

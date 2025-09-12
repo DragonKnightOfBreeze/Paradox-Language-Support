@@ -24,9 +24,9 @@ export function registerParadoxLocalisation(Prism) {
     greedy: true,
     alias: 'class-name',
     inside: {
-      'variable': {
+      'scripted-variable': {
         pattern: /@[A-Za-z_$\[][^@#={}\s"]*/,
-        alias: 'keyword',
+        alias: 'variable',
       }
     },
   }
@@ -63,6 +63,7 @@ export function registerParadoxLocalisation(Prism) {
         'escape': escape,
       }
     },
+    'punctuation': /:/,
   };
 }
 

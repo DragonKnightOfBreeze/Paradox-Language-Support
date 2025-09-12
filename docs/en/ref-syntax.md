@@ -171,7 +171,7 @@ Value:
 - **Boolean**: `yes`/`no`.
 - **Integer/Float**: e.g., `10`, `-5`, `1.25`.
 - **String**: Unquoted or double-quoted; double-quoted strings can embed parameters and inline parameter conditions.
-- **Color**: `rgb{...}`, `hsv{...}`, `hsv360{...}`.
+- **Color**: `rgb {...}`, `hsv {...}`, `hsv360 {...}`.
 - **Block**: `{ ... }`, can contain comments, properties, values, scripted variables, etc., inside.
 - **Scripted Variable Reference**: `@name`.
 - **Inline Math Expression**: `@[ <expr> ]`, supports `+ - * / %`, unary plus/minus, absolute value `|x|`, and parentheses.
@@ -201,8 +201,6 @@ Example:
 # comment
 @my_var = 42
 
-id = event.id.01
-
 effect = {
     enabled = yes
     level >= 2
@@ -210,9 +208,13 @@ effect = {
     color = rgb { 34, 136, 255 }
 
     name = "Hello $who|leader$!"
+    "tooltip" = "line\nnext line"
 
     modifier = {
         add = 1
+        [[!PARAM]
+            factor = 10
+        ]
     }
 
     result = @[ 1 + 2 * $PARAM$ / var ]
@@ -263,8 +265,11 @@ Example:
 
 ```paradox_localisation
 l_english:
-  my_key:0 "Hello §Y$target$§! [GetPlayerName] £alloys£"
-  concept_key:0 "['pop_growth', §G+10%§!]"
+ # comment
+ key:0 "line\nnext line"
+ another_key:0 "§Y$target$§! produces £unity£"
+ command_key:0 "Name: [Root.GetName]"
+ concept_command_key:0 "['pop_growth', §G+10%§!]"
 ```
 
 Notes:

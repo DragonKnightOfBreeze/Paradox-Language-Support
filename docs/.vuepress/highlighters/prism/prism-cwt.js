@@ -71,8 +71,8 @@ export function registerCwt(Prism) {
         }
       },
     ],
-    'operator': /==|=|!=|<>/,
     'punctuation': /[{}]/,
+    'operator': /==|=|!=|<>/,
   };
 }
 

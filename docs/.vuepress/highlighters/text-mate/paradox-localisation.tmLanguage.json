@@ -8,7 +8,8 @@
     { "include": "#header" },
     { "include": "#property" },
     { "include": "#numbers" },
-    { "include": "#strings" }
+    { "include": "#strings" },
+    { "include": "#punctuation" }
   ],
   "repository": {
     "comments": {
@@ -72,6 +73,11 @@
     "escapes": {
       "patterns": [
         { "name": "constant.character.escape.paradox.localisation", "match": "\\\\." }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "name": "punctuation.separator.colon.paradox.localisation", "match": ":" }
       ]
     }
   }

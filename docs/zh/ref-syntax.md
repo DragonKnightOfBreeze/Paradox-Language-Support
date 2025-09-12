@@ -171,7 +171,7 @@ Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
 - **布尔**：`yes`/`no`。
 - **整数/浮点**：如 `10`、`-5`、`1.25`。
 - **字符串**：未加引号或双引号；双引号字符串中可嵌入参数、内联参数条件。
-- **颜色**：`rgb{...}`、`hsv{...}`、`hsv360{...}`。
+- **颜色**：`rgb {...}`、`hsv {...}`、`hsv360 {...}`。
 - **块**：`{ ... }`，内部可包含注释、属性、值与脚本变量等。
 - **脚本变量引用**：`@name`。
 - **内联数学表达式**：`@[ <expr> ]`，支持 `+ - * / %`、一元正负号、绝对值 `|x|` 与括号。
@@ -201,8 +201,6 @@ Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
 # comment
 @my_var = 42
 
-id = event.id.01
-
 effect = {
     enabled = yes
     level >= 2
@@ -210,9 +208,13 @@ effect = {
     color = rgb { 34, 136, 255 }
 
     name = "Hello $who|leader$!"
+    "tooltip" = "line\nnext line"
 
     modifier = {
         add = 1
+        [[!PARAM]
+            factor = 10
+        ]
     }
 
     result = @[ 1 + 2 * $PARAM$ / var ]
@@ -263,8 +265,11 @@ Paradox 本地化语言是一种领域特定语言，用于为游戏提供可国
 
 ```paradox_localisation
 l_english:
-  my_key:0 "Hello §Y$target$§! [GetPlayerName] £alloys£"
-  concept_key:0 "['pop_growth', §G+10%§!]"
+ # comment
+ key:0 "line\nnext line"
+ another_key:0 "§Y$target$§! produces £unity£"
+ command_key:0 "Name: [Root.GetName]"
+ concept_command_key:0 "['pop_growth', §G+10%§!]"
 ```
 
 注意事项：
