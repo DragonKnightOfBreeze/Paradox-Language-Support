@@ -288,7 +288,7 @@ TEXT_ICON_TOKEN=\w+
 <IN_SCRIPTED_VARIABLE_REFERENCE>{
     "$" { beginNextState(); return PARAMETER_END; }
     "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
-    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_PARAMETER_TOKEN; }
+    {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }
 
 // localisation command rules
