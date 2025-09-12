@@ -53,7 +53,10 @@ dependencies {
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // Caffeine - https://github.com/ben-manes/caffeine
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2") {
+        exclude(group = "com.google.errorprone", module = "error_prone_annotations")
+        exclude(group = "org.jspecify", module = "jspecify")
+    }
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
     implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
@@ -63,22 +66,33 @@ dependencies {
     implementation("org.javassist:javassist:3.30.2-GA")
 
     // pebble - https://github.com/PebbleTemplates/pebble
-    implementation("io.pebbletemplates:pebble:3.2.4")
+    implementation("io.pebbletemplates:pebble:3.2.4") {
+        exclude(group = "org.slf4j", module = "slf4j-api")
+    }
 
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
     implementation("dev.langchain4j:langchain4j:1.4.0") {
+        exclude(group = "org.jspecify", module = "jspecify")
+        exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
     implementation("dev.langchain4j:langchain4j-open-ai:1.4.0") {
+        exclude(group = "org.jspecify", module = "jspecify")
+        exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    // implementation("dev.langchain4j:langchain4j-kotlin:1.4.0-beta10") {
-    //     exclude(group = "org.jetbrains.kotlin")
-    //     exclude(group = "org.jetbrains.kotlinx")
-    //     exclude(group = "com.fasterxml.jackson.core")
-    // }
+    implementation("dev.langchain4j:langchain4j-anthropic:1.4.0") {
+        exclude(group = "org.jspecify", module = "jspecify")
+        exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    implementation("dev.langchain4j:langchain4j-ollama:1.4.0") {
+        exclude(group = "org.jspecify", module = "jspecify")
+        exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
 
     // 持久化（等待重构）
 
@@ -87,6 +101,10 @@ dependencies {
     // // ktorm - https://www.ktorm.org/
     // implementation("org.ktorm:ktorm-core:3.6.0")
     // implementation("org.ktorm:ktorm-support-sqlite:3.6.0")
+
+    compileOnly("com.google.errorprone:error_prone_annotations:2.40.0")
+    compileOnly("org.jspecify:jspecify:1.0.0")
+    compileOnly("org.slf4j:slf4j-api:2.0.17")
 
     // 目前仅用作参考
 
