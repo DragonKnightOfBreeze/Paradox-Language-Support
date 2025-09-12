@@ -34,7 +34,7 @@ class AiReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocali
     override fun getFamilyName() = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
+        return super.isAvailable(project, editor, file) && PlsAiFacade.isEnabled()
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {

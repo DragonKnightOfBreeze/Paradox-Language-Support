@@ -36,9 +36,8 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) } // If not configured, do not use default repo urls
                         .validationOnInput { CwtConfigRepositoryManager.validateUrl(this, gameType, configRepositoryUrlProperty.get()) }
 
-                    button(PlsBundle.message("reset")) {
-                        configRepositoryUrlProperty.set(CwtConfigRepositoryManager.getDefaultUrl(gameType))
-                    }.align(AlignX.RIGHT)
+                    button(PlsBundle.message("reset")) { configRepositoryUrlProperty.set(CwtConfigRepositoryManager.getDefaultUrl(gameType)) }
+                        .align(AlignX.RIGHT)
                 }
             }
         }

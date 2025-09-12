@@ -8,6 +8,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.core.getValue
 import icu.windea.pls.core.setValue
 import icu.windea.pls.model.constants.PlsConstants
@@ -20,38 +21,48 @@ import icu.windea.pls.model.constants.PlsConstants
 class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettingsState>(PlsAiSettingsState())
 
 /**
- * @property enable 是否启用基于AI的各种功能。
- * @property withContext 是否在提示中附加上下文信息。
+ * @property enable 是否启用基于 AI 的各种功能。
+ * @property providerType 当前使用的 AI 服务提供者的类型。
+ * @property withContext 是否向提示中注入上下文信息。
  */
 class PlsAiSettingsState : BaseState() {
     var enable by property(false)
+    var providerType by enum<ChatModelProviderType>(ChatModelProviderType.OPEN_AI)
     var withContext by property(false)
-
-    @get:Property(surroundWithTag = false)
-    var openAI by property(OpenAiState())
 
     @get:Property(surroundWithTag = false)
     var features by property(FeaturesState())
 
-    /**
-     * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
-     * @property apiEndpoint API端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
-     * @property apiKey API密钥。密文保存。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
-     */
-    @Tag("openAI")
-    class OpenAiState : BaseState() {
-        var modelName by string() // e.g., gpt-4o-mini or deepseek-chat
-        var apiEndpoint by string() // e.g., https://api.openai.com or https://api.deepseek.com
-        var apiKey by CredentialAttributes("PLS_AI_OPEN_AI_API_KEY")
-    }
+    @get:Property(surroundWithTag = false)
+    var openAI by property(OpenAiState())
 
     /**
+     * 功能相关的设置。
+     *
      * @property localisationChunkSize 本地化条目的分块大小。即每次输入的本地化条目的最大数量。
      * @property localisationMemorySize 本地化条目的记忆大小。即会话记忆中本地化条目的最大数值。（TODO 更加精确的实现）
      */
     @Tag("features")
     class FeaturesState : BaseState() {
-        var localisationChunkSize by property(PlsAiSettingsManager.getDefaultLocalisationChunkSize())
-        var localisationMemorySize by property(PlsAiSettingsManager.getDefaultLocalisationMemorySize())
+        var localisationChunkSize by property(PlsAiSettingsManager.defaultLocalisationChunkSize)
+        var localisationMemorySize by property(PlsAiSettingsManager.defaultLocalisationMemorySize)
+    }
+
+    /**
+     * OPEN AI API 相关的设置。
+     *
+     * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
+     * @property apiEndpoint API 端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
+     * @property apiKey API 密钥。密文保存。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
+     */
+    @Tag("openAI")
+    class OpenAiState : BaseState() {
+        var modelName by string() // default: deepseek-chat or gpt-4o-mini
+        var apiEndpoint by string() // default: https://api.deepseek.com or https://api.openai.com/v1
+        var apiKey by CredentialAttributes("PLS_AI_OPEN_AI_API_KEY")
+        var fromEnv by property(false)
+        var modelNameEnv by string() // default: OPENAI_MODEL
+        var apiEndpointEnv by string() // default: OPENAI_BASE_URL
+        var apiKeyEnv by string() // default: OPENAI_API_KEY
     }
 }

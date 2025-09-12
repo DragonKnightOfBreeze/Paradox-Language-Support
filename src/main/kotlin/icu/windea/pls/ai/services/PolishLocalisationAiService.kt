@@ -13,8 +13,8 @@ import icu.windea.pls.ai.model.onCompletionResult
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.model.toLineFlow
+import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.PlsChatMessageManager
-import icu.windea.pls.ai.util.PlsChatModelManager
 import icu.windea.pls.ai.util.PlsPrompts
 import icu.windea.pls.core.coroutines.chunked
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
@@ -31,7 +31,7 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
     override fun manipulate(request: PolishLocalisationAiRequest): Flow<LocalisationAiResult>? {
         //得到输入的本地化上下文，按特定数量进行分块，然后逐个发送请求（附带记忆）
 
-        val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
+        val chatModel = ChatModelManager.getStreamingChatModel() ?: return null
         val memory = getMemory()
 
         logger.info("${request.logPrefix} Polishing localisation...")

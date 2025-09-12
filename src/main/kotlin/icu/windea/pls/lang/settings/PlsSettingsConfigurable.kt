@@ -46,7 +46,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
                     var defaultGameType = settings.defaultGameType
-                    comboBox(ParadoxGameType.getAll()).bindItem(settings::defaultGameType.toNullableProperty())
+                    comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                        .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             val oldDefaultGameType = defaultGameType
                             val newDefaultGameType = settings.defaultGameType

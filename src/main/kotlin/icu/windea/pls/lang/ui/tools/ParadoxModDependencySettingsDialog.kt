@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
@@ -56,7 +57,7 @@ class ParadoxModDependencySettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.getAll())
+                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(false)

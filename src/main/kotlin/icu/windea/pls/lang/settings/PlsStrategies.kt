@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.settings
 
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.util.TextAware
 
 interface PlsStrategies {
     /**
-     * 生成本地化的策略。
+     * 本地化的生成策略。
      */
-    enum class LocalisationGeneration(val text: String) {
+    enum class LocalisationGeneration(override val text: String): TextAware {
         EmptyText(PlsBundle.message("settings.strategy.localisationGeneration0")),
         SpecificText(PlsBundle.message("settings.strategy.localisationGeneration1")),
         FromLocale(PlsBundle.message("settings.strategy.localisationGeneration2")),
@@ -14,18 +15,19 @@ interface PlsStrategies {
     }
 
     /**
-     * 默认DIFF分组的策略。
+     * 默认 DIFF 分组的策略。
      */
-    enum class DiffGroup(val text: String) {
+    enum class DiffGroup(override val text: String):TextAware {
         VsCopy(PlsBundle.message("settings.strategy.diffGroup.0")),
         First(PlsBundle.message("settings.strategy.diffGroup.1")),
         Last(PlsBundle.message("settings.strategy.diffGroup.2")),
         ;
     }
 
-    interface Grouping {
-        val text: String
-    }
+    /**
+     * 层级视图的分组策略。
+     */
+    interface Grouping: TextAware
 
     /**
      * 事件树的层级视图的分组策略。

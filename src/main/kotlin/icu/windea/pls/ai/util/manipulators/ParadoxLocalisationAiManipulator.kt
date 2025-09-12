@@ -8,12 +8,14 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.util.MinimizeButton
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
@@ -51,16 +53,16 @@ object ParadoxLocalisationAiManipulator {
         contract {
             returns() implies (resultFlow != null)
         }
-        if (resultFlow == null) { //resultFlow返回null，这意味着AI设置不合法，例如API KEY未填写（但不包括API kEY已填写但正确的情况）
+        if (resultFlow == null) { // 这意味着 AI 设置不合法，例如 API KEY 未填写（但不包括已填写但不正确的情况）
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.1"))
         }
     }
 
     private fun checkResult(context: ParadoxLocalisationContext, result: LocalisationAiResult) {
-        if (result.key.isEmpty()) { //输出内容的格式不合法
+        if (result.key.isEmpty()) { // 输出内容的格式不正确
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.2"))
         }
-        if (result.key != context.key) { //不期望的结果，直接报错，中断收集
+        if (result.key != context.key) { // 输出的本地化的键不匹配
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.3", context.key, result.key))
         }
     }
@@ -72,6 +74,7 @@ object ParadoxLocalisationAiManipulator {
     ): JBPopup {
         val submitted = AtomicBooleanProperty(false)
         val textField = JBTextField().apply { addActionListener { submitted.set(true) } } //目前不使用 TextFieldWithStoredHistory
+        val settings = PlsAiFacade.getSettings()
         val panel = panel {
             row {
                 cell(textField).align(AlignX.FILL).focused().smaller()
@@ -83,6 +86,11 @@ object ParadoxLocalisationAiManipulator {
             separator()
             row {
                 text(PlsBundle.message("ai.manipulation.localisation.popup.tip")).align(AlignX.LEFT).smaller().smallerFont()
+
+                label(PlsBundle.message("ai.popup.provider"))
+                comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
+                    .bindItem(settings::providerType.toNullableProperty())
+                    .align(AlignX.RIGHT)
             }
         }
         val popup = JBPopupFactory.getInstance()

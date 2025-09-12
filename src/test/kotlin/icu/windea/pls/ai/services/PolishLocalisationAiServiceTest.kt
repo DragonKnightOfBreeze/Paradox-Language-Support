@@ -5,6 +5,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
+import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
@@ -16,7 +17,17 @@ import org.junit.Assert
 class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun test() {
+    fun testOpenAi() {
+        System.setProperty("pls.ai.providerType", "OPEN_AI")
+        doTest()
+    }
+
+    fun testAnthropic() {
+        System.setProperty("pls.ai.providerType", "ANTHROPIC")
+        doTest()
+    }
+
+    private fun doTest() {
         myFixture.configureByFile("ai/t_wilderness_l_simp_chinese.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxLocalisationManipulator.buildSequence(file)
@@ -30,8 +41,9 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
         }
         Assert.assertEquals(contexts.size, request.index)
 
-        val text = ParadoxLocalisationManipulator.joinText(contexts)
+        println("AI SERVICE PROVIDER:")
+        println(ChatModelManager.getProviderType())
         println("AI OUTPUT:")
-        println(text)
+        println(ParadoxLocalisationManipulator.joinText(contexts))
     }
 }

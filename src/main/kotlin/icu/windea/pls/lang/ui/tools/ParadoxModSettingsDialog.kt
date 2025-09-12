@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.jbTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -84,7 +85,7 @@ class ParadoxModSettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
-                comboBox(ParadoxGameType.getAll())
+                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply

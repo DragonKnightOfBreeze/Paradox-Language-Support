@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class AiReplaceLocalisationWithPolishingAction : ManipulateLocalisationActionBase.WithPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsAiFacade.isAvailable()
+        return super.isAvailable(e, project) && PlsAiFacade.isEnabled()
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {
