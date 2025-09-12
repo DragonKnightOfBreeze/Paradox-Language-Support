@@ -17,8 +17,8 @@ object ChatModelManager {
     fun getProvider(type: ChatModelProviderType = getProviderType()): ChatModelProvider<*> {
         return when (type) {
             ChatModelProviderType.OPEN_AI -> OpenAiChatModelProvider()
-            ChatModelProviderType.ANTHROPIC -> TODO()
-            ChatModelProviderType.LOCAL -> TODO()
+            ChatModelProviderType.ANTHROPIC -> AnthropicChatModelProvider()
+            ChatModelProviderType.LOCAL -> LocalChatModelProvider()
         }
     }
 

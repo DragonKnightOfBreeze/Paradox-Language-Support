@@ -36,6 +36,12 @@ class PlsAiSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     var openAI by property(OpenAiState())
 
+    @get:Property(surroundWithTag = false)
+    var anthropic by property(AnthropicState())
+
+    @get:Property(surroundWithTag = false)
+    var local by property(LocalState())
+
     /**
      * 功能相关的设置。
      *
@@ -64,5 +70,38 @@ class PlsAiSettingsState : BaseState() {
         var modelNameEnv by string() // default: OPENAI_MODEL
         var apiEndpointEnv by string() // default: OPENAI_BASE_URL
         var apiKeyEnv by string() // default: OPENAI_API_KEY
+    }
+
+    /**
+     * ANTHROPIC API 相关的设置。
+     *
+     * @property modelName 模型名称。
+     * @property apiEndpoint API 端点。
+     * @property apiKey API 密钥。密文保存。
+     */
+    @Tag("anthropic")
+    class AnthropicState : BaseState() {
+        var modelName by string() // default: deepseek-chat or claude-3-5-sonnet-latest
+        var apiEndpoint by string() // default: https://api.deepseek.com or https://api.anthropic.com
+        var apiKey by CredentialAttributes("PLS_AI_ANTHROPIC_API_KEY")
+        var fromEnv by property(false)
+        var modelNameEnv by string() // default: ANTHROPIC_MODEL
+        var apiEndpointEnv by string() // default: ANTHROPIC_BASE_URL
+        var apiKeyEnv by string() // default: ANTHROPIC_API_KEY
+    }
+
+    /**
+     * 本地（Ollama）相关的设置。
+     *
+     * @property modelName 模型名称。
+     * @property apiEndpoint API 端点。
+     */
+    @Tag("local")
+    class LocalState : BaseState() {
+        var modelName by string() // no default
+        var apiEndpoint by string() // default: http://localhost:11434
+        var fromEnv by property(false)
+        var modelNameEnv by string() // default: OLLAMA_MODEL
+        var apiEndpointEnv by string() // default: OLLAMA_BASE_URL
     }
 }

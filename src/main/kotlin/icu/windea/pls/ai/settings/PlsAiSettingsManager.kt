@@ -11,6 +11,10 @@ object PlsAiSettingsManager {
     const val defaultLocalisationChunkSize: Int = 100
     const val defaultLocalisationMemorySize: Int = 10000
 
+    // 通用（单测场景）
+    val defaultModelNameInUnitTest: String get() = "deepseek-chat"
+    val defaultApiEndpointInUnitTest: String get() = "https://api.deepseek.com"
+
     // region Open AI
 
     // 基于 IDE 界面语言
@@ -30,6 +34,35 @@ object PlsAiSettingsManager {
         if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.openAI.apiKey.1"))
         return null
     }
+
+    // endregion
+
+    // region Anthropic
+
+    // 基于 IDE 界面语言
+    val defaultAnthropicModelName: String
+        get() = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "deepseek-chat" else "claude-3-5-sonnet-latest"
+    // 基于 IDE 界面语言
+    val defaultAnthropicApiEndpoint: String
+        get() = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "https://api.deepseek.com" else "https://api.anthropic.com"
+
+    const val defaultAnthropicModelNameEnv: String = "ANTHROPIC_MODEL"
+    const val defaultAnthropicApiEndpointEnv: String = "ANTHROPIC_BASE_URL"
+    const val defaultAnthropicApiKeyEnv: String = "ANTHROPIC_API_KEY"
+
+    fun validateAnthropicApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
+        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.openAI.apiKey.1"))
+        return null
+    }
+
+    // endregion
+
+    // region Local (Ollama)
+
+    const val defaultLocalApiEndpoint: String = "http://localhost:11434"
+
+    const val defaultLocalModelNameEnv: String = "OLLAMA_MODEL"
+    const val defaultLocalApiEndpointEnv: String = "OLLAMA_BASE_URL"
 
     // endregion
 }

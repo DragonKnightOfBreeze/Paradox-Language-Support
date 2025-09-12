@@ -16,6 +16,8 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
     override fun getId() = "pls.ai"
 
     private val groupNameOpenAI = "pls.ai.openAI"
+    private val groupNameAnthropic = "pls.ai.anthropic"
+    private val groupNameLocal = "pls.ai.local"
 
     override fun createPanel(): DialogPanel {
         val settings = PlsAiFacade.getSettings()
@@ -100,6 +102,95 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 }
                 row {
                     checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.openAI::fromEnv)
+                        .applyToComponent { envCheckBox = this }
+                }
+            }
+
+            //anthropic
+            collapsibleGroup(PlsBundle.message("settings.ai.anthropic")) {
+                lateinit var envCheckBox: JBCheckBox
+
+                //modelName
+                row {
+                    label(PlsBundle.message("settings.ai.anthropic.modelName")).widthGroup(groupNameAnthropic)
+                    textField().bindText(settings.anthropic::modelName.toNonNullableProperty(""))
+                        .columns(COLUMNS_MEDIUM)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicModelName) }
+
+                    label(PlsBundle.message("settings.ai.openAI.env"))
+                        .visibleIf(envCheckBox.selected)
+                    textField().bindText(settings.anthropic::modelNameEnv.toNonNullableProperty(""))
+                        .columns(COLUMNS_SHORT)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicModelNameEnv) }
+                        .visibleIf(envCheckBox.selected)
+                }
+                //apiEndpoint
+                row {
+                    label(PlsBundle.message("settings.ai.anthropic.apiEndpoint")).widthGroup(groupNameAnthropic)
+                    textField().bindText(settings.anthropic::apiEndpoint.toNonNullableProperty(""))
+                        .columns(COLUMNS_LARGE)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicApiEndpoint) }
+
+                    label(PlsBundle.message("settings.ai.openAI.env"))
+                        .visibleIf(envCheckBox.selected)
+                    textField().bindText(settings.anthropic::apiEndpointEnv.toNonNullableProperty(""))
+                        .columns(COLUMNS_SHORT)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicApiEndpointEnv) }
+                        .visibleIf(envCheckBox.selected)
+                }
+                //apiKey
+                row {
+                    label(PlsBundle.message("settings.ai.anthropic.apiKey")).widthGroup(groupNameAnthropic)
+                    passwordField().bindText(settings.anthropic::apiKey.toNonNullableProperty(""))
+                        .columns(COLUMNS_LARGE)
+                        .validationOnInput { PlsAiSettingsManager.validateAnthropicApiKey(this, it) }
+
+                    label(PlsBundle.message("settings.ai.openAI.env"))
+                        .visibleIf(envCheckBox.selected)
+                    passwordField().bindText(settings.anthropic::apiKeyEnv.toNonNullableProperty(""))
+                        .columns(COLUMNS_SHORT)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicApiKeyEnv) }
+                        .visibleIf(envCheckBox.selected)
+                }
+                row {
+                    checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.anthropic::fromEnv)
+                        .applyToComponent { envCheckBox = this }
+                }
+            }
+
+            //local (Ollama)
+            collapsibleGroup(PlsBundle.message("settings.ai.local")) {
+                lateinit var envCheckBox: JBCheckBox
+
+                //modelName
+                row {
+                    label(PlsBundle.message("settings.ai.local.modelName")).widthGroup(groupNameLocal)
+                    textField().bindText(settings.local::modelName.toNonNullableProperty(""))
+                        .columns(COLUMNS_MEDIUM)
+
+                    label(PlsBundle.message("settings.ai.openAI.env"))
+                        .visibleIf(envCheckBox.selected)
+                    textField().bindText(settings.local::modelNameEnv.toNonNullableProperty(""))
+                        .columns(COLUMNS_SHORT)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultLocalModelNameEnv) }
+                        .visibleIf(envCheckBox.selected)
+                }
+                //apiEndpoint
+                row {
+                    label(PlsBundle.message("settings.ai.local.apiEndpoint")).widthGroup(groupNameLocal)
+                    textField().bindText(settings.local::apiEndpoint.toNonNullableProperty(""))
+                        .columns(COLUMNS_LARGE)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultLocalApiEndpoint) }
+
+                    label(PlsBundle.message("settings.ai.openAI.env"))
+                        .visibleIf(envCheckBox.selected)
+                    textField().bindText(settings.local::apiEndpointEnv.toNonNullableProperty(""))
+                        .columns(COLUMNS_SHORT)
+                        .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultLocalApiEndpointEnv) }
+                        .visibleIf(envCheckBox.selected)
+                }
+                row {
+                    checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.local::fromEnv)
                         .applyToComponent { envCheckBox = this }
                 }
             }
