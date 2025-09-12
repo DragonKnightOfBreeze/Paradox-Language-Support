@@ -49,8 +49,8 @@ class OpenAiChatModelProvider : ChatModelProvider<OpenAiChatModelProvider.Option
             }
 
             fun forUnitTest(): Options? {
-                val modelName = PlsAiSettingsManager.defaultModelNameInUnitTest
-                val apiEndpoint = PlsAiSettingsManager.defaultApiEndpointInUnitTest
+                val modelName = "deepseek-chat"
+                val apiEndpoint = "https://api.deepseek.com"
                 val apiKey = System.getenv("DEEPSEEK_KEY")?.orNull() ?: return null
                 return Options(modelName, apiEndpoint, apiKey)
             }

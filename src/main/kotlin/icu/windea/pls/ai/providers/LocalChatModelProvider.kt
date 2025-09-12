@@ -60,7 +60,7 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
 
             fun forUnitTest(): Options? {
                 val modelName = System.getenv("OLLAMA_MODEL")?.orNull() ?: return null
-                val apiEndpoint = System.getenv("OLLAMA_BASE_URL")?.orNull() ?: PlsAiSettingsManager.defaultLocalApiEndpoint
+                val apiEndpoint = System.getenv("OLLAMA_BASE_URL")?.orNull() ?: return null
                 return Options(modelName, apiEndpoint)
             }
 
@@ -90,14 +90,14 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
             if (code !in 200..299) {
                 PlsCoreManager.createNotification(
                     NotificationType.WARNING,
-                    PlsBundle.message("ai.local.health.unreachable", "$code")
+                    PlsBundle.message("settings.ai.error.local.health.unreachable", "$code")
                 ).notify(null)
                 return false
             }
         } catch (e: Exception) {
             PlsCoreManager.createNotification(
                 NotificationType.WARNING,
-                PlsBundle.message("ai.local.health.unreachable", e.message ?: "")
+                PlsBundle.message("settings.ai.error.local.health.unreachable", e.message ?: "")
             ).notify(null)
             return false
         }
@@ -117,7 +117,7 @@ class LocalChatModelProvider : ChatModelProvider<LocalChatModelProvider.Options>
                 if (needle1 !in content && needle2 !in content) {
                     PlsCoreManager.createNotification(
                         NotificationType.WARNING,
-                        PlsBundle.message("ai.local.health.modelMissing", options.modelName)
+                        PlsBundle.message("settings.ai.error.local.health.modelMissing", options.modelName)
                     ).notify(null)
                     return false
                 }

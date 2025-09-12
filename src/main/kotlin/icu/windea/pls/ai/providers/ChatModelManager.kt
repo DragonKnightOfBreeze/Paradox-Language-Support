@@ -7,6 +7,12 @@ import icu.windea.pls.ai.PlsAiFacade
 
 @Suppress("unused")
 object ChatModelManager {
+    private val providers = mapOf(
+        ChatModelProviderType.OPEN_AI to OpenAiChatModelProvider(),
+        ChatModelProviderType.ANTHROPIC to AnthropicChatModelProvider(),
+        ChatModelProviderType.LOCAL to LocalChatModelProvider()
+    )
+
     fun getProviderType(): ChatModelProviderType {
         return when {
             application.isUnitTestMode -> ChatModelProviderType.resolve(System.getProperty("pls.ai.providerType", "OPEN_AI"))
@@ -15,11 +21,7 @@ object ChatModelManager {
     }
 
     fun getProvider(type: ChatModelProviderType = getProviderType()): ChatModelProvider<*> {
-        return when (type) {
-            ChatModelProviderType.OPEN_AI -> OpenAiChatModelProvider()
-            ChatModelProviderType.ANTHROPIC -> AnthropicChatModelProvider()
-            ChatModelProviderType.LOCAL -> LocalChatModelProvider()
-        }
+        return providers.getValue(type)
     }
 
     fun getChatModel(type: ChatModelProviderType = getProviderType()): ChatModel? {

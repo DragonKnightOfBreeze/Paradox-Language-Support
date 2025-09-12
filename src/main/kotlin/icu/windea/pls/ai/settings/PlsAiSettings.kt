@@ -82,7 +82,7 @@ class PlsAiSettingsState : BaseState() {
     @Tag("anthropic")
     class AnthropicState : BaseState() {
         var modelName by string() // default: deepseek-chat or claude-3-5-sonnet-latest
-        var apiEndpoint by string() // default: https://api.deepseek.com or https://api.anthropic.com
+        var apiEndpoint by string() // default: https://api.deepseek.com/anthropic or https://api.anthropic.com
         var apiKey by CredentialAttributes("PLS_AI_ANTHROPIC_API_KEY")
         var fromEnv by property(false)
         var modelNameEnv by string() // default: ANTHROPIC_MODEL

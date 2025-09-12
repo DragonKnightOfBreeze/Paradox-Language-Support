@@ -3,10 +3,13 @@ package icu.windea.pls.ai.settings
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
+import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiFacade
@@ -65,7 +68,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .columns(COLUMNS_MEDIUM)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultOpenAiModelName) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.openAI::modelNameEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -79,7 +82,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .columns(COLUMNS_LARGE)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultOpenAiApiEndpoint) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.openAI::apiEndpointEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -91,9 +94,9 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                     label(PlsBundle.message("settings.ai.openAI.apiKey")).widthGroup(groupNameOpenAI)
                     passwordField().bindText(settings.openAI::apiKey.toNonNullableProperty(""))
                         .columns(COLUMNS_LARGE)
-                        .validationOnInput { PlsAiSettingsManager.validateOpenAiApiKey(this, it) }
+                        .validationOnInput { validateApiKey(this, it) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     passwordField().bindText(settings.openAI::apiKeyEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -101,7 +104,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .visibleIf(envCheckBox.selected)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.openAI::fromEnv)
+                    checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.openAI::fromEnv)
                         .applyToComponent { envCheckBox = this }
                 }
             }
@@ -117,7 +120,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .columns(COLUMNS_MEDIUM)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicModelName) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.anthropic::modelNameEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -131,7 +134,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .columns(COLUMNS_LARGE)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultAnthropicApiEndpoint) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.anthropic::apiEndpointEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -143,9 +146,9 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                     label(PlsBundle.message("settings.ai.anthropic.apiKey")).widthGroup(groupNameAnthropic)
                     passwordField().bindText(settings.anthropic::apiKey.toNonNullableProperty(""))
                         .columns(COLUMNS_LARGE)
-                        .validationOnInput { PlsAiSettingsManager.validateAnthropicApiKey(this, it) }
+                        .validationOnInput { validateApiKey(this, it) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     passwordField().bindText(settings.anthropic::apiKeyEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -153,7 +156,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .visibleIf(envCheckBox.selected)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.anthropic::fromEnv)
+                    checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.anthropic::fromEnv)
                         .applyToComponent { envCheckBox = this }
                 }
             }
@@ -168,7 +171,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                     textField().bindText(settings.local::modelName.toNonNullableProperty(""))
                         .columns(COLUMNS_MEDIUM)
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.local::modelNameEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -182,7 +185,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .columns(COLUMNS_LARGE)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.defaultLocalApiEndpoint) }
 
-                    label(PlsBundle.message("settings.ai.openAI.env"))
+                    label(PlsBundle.message("settings.ai.env"))
                         .visibleIf(envCheckBox.selected)
                     textField().bindText(settings.local::apiEndpointEnv.toNonNullableProperty(""))
                         .columns(COLUMNS_SHORT)
@@ -190,10 +193,17 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .visibleIf(envCheckBox.selected)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.ai.openAI.fromEnv")).bindSelected(settings.local::fromEnv)
+                    checkBox(PlsBundle.message("settings.ai.fromEnv")).bindSelected(settings.local::fromEnv)
                         .applyToComponent { envCheckBox = this }
                 }
             }
         }
+    }
+
+    private fun validateApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
+        // 目前仅在输入时验证，不在应用时验证
+        // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
+        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.error.missingApiKey"))
+        return null
     }
 }

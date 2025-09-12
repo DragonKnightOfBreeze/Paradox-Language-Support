@@ -1,19 +1,15 @@
 package icu.windea.pls.ai.settings
 
 import com.intellij.DynamicBundle
-import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.ui.components.JBPasswordField
-import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.PlsBundle
 import java.util.*
 
 object PlsAiSettingsManager {
+    // region Feature Specific
+
     const val defaultLocalisationChunkSize: Int = 100
     const val defaultLocalisationMemorySize: Int = 10000
 
-    // 通用（单测场景）
-    val defaultModelNameInUnitTest: String get() = "deepseek-chat"
-    val defaultApiEndpointInUnitTest: String get() = "https://api.deepseek.com"
+    // endregion
 
     // region Open AI
 
@@ -28,13 +24,6 @@ object PlsAiSettingsManager {
     const val defaultOpenAiApiEndpointEnv: String = "OPENAI_BASE_URL"
     const val defaultOpenAiApiKeyEnv: String = "OPENAI_API_KEY"
 
-    fun validateOpenAiApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
-        // 目前仅在输入时验证，不在应用时验证
-        // 如果启用 AI 集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.openAI.apiKey.1"))
-        return null
-    }
-
     // endregion
 
     // region Anthropic
@@ -44,16 +33,11 @@ object PlsAiSettingsManager {
         get() = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "deepseek-chat" else "claude-3-5-sonnet-latest"
     // 基于 IDE 界面语言
     val defaultAnthropicApiEndpoint: String
-        get() = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "https://api.deepseek.com" else "https://api.anthropic.com"
+        get() = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "https://api.deepseek.com/anthropic" else "https://api.anthropic.com"
 
     const val defaultAnthropicModelNameEnv: String = "ANTHROPIC_MODEL"
     const val defaultAnthropicApiEndpointEnv: String = "ANTHROPIC_BASE_URL"
     const val defaultAnthropicApiKeyEnv: String = "ANTHROPIC_API_KEY"
-
-    fun validateAnthropicApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
-        if (field.password.isEmpty()) return builder.warning(PlsBundle.message("settings.ai.openAI.apiKey.1"))
-        return null
-    }
 
     // endregion
 
