@@ -2,6 +2,8 @@
 
 package icu.windea.pls.ai.model
 
+import dev.langchain4j.data.message.ChatMessage
+import dev.langchain4j.data.message.UserMessage
 import dev.langchain4j.model.chat.StreamingChatModel
 import dev.langchain4j.model.chat.request.ChatRequest
 import dev.langchain4j.service.TokenStream
@@ -12,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transform
@@ -25,6 +29,10 @@ fun StreamingChatModel.chatFlow(chatRequest: ChatRequest): Flow<ChatFlowReply> =
     awaitClose()
 }
 
+fun StreamingChatModel.chatFlow(userMessage: String): Flow<ChatFlowReply> = chatFlow(ChatRequest.builder().messages(UserMessage.from(userMessage)).build())
+
+fun StreamingChatModel.chatFlow(messages: List<ChatMessage>): Flow<ChatFlowReply> = chatFlow(ChatRequest.builder().messages(messages).build())
+
 const val DEFAULT_BUFFER_CAPACITY: Int = 32768
 
 fun TokenStream.asChatFlow(bufferCapacity: Int = 32768, onBufferOverflow: BufferOverflow): Flow<ChatFlowReply> = callbackFlow {
@@ -37,7 +45,7 @@ fun TokenStream.asChatFlow(bufferCapacity: Int = 32768, onBufferOverflow: Buffer
     awaitClose()
 }.buffer(capacity = bufferCapacity, onBufferOverflow = onBufferOverflow)
 
-fun Flow<ChatFlowReply>.onCompletionResult(action: suspend FlowCollector<ChatFlowReply>.(status: ChatFlowCompletionResult) -> Unit): Flow<ChatFlowReply> {
+fun Flow<ChatFlowReply>.onCompletionResult(action: suspend FlowCollector<ChatFlowReply>.(result: ChatFlowCompletionResult) -> Unit): Flow<ChatFlowReply> {
     val result = ChatFlowCompletionResult()
     return onEach { apply ->
         when (apply) {
@@ -73,6 +81,10 @@ fun Flow<ChatFlowReply>.onCompletionResult(action: suspend FlowCollector<ChatFlo
         }
         action(result)
     }
+}
+
+suspend fun Flow<ChatFlowReply>.toCompletionResult(): ChatFlowCompletionResult {
+    return transform { onCompletionResult { emit(it) }.collect() }.first()
 }
 
 fun Flow<ChatFlowReply>.toTokenFlow(): Flow<String> {

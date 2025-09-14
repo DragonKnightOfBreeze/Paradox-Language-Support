@@ -2,12 +2,13 @@ package icu.windea.pls.core.util.console
 
 import org.jdesktop.swingx.util.OS
 import org.junit.Assert
+import org.junit.Assume
 import org.junit.Test
 
 class CommandExecutorTest {
     @Test
     fun testUtf8OutputForCmd() {
-        if (!OS.isWindows()) return
+        Assume.assumeTrue("Windows only", OS.isWindows())
 
         val command = "echo 中文测试"
         val expect = "中文测试"
@@ -16,7 +17,7 @@ class CommandExecutorTest {
 
     @Test
     fun testUtf8OutputForPowerShell() {
-        if (!OS.isWindows()) return
+        Assume.assumeTrue("Windows only", OS.isWindows())
 
         val command = "echo 中文测试"
         val expect = "中文测试"

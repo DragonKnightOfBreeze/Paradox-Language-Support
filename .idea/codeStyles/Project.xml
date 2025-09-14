@@ -39,6 +39,7 @@
       <option name="PACKAGES_TO_USE_STAR_IMPORTS">
         <value>
           <package name="java.util" alias="false" withSubpackages="false" />
+          <package name="org.junit.Assert" alias="false" withSubpackages="true" />
           <package name="com.intellij.ui.dsl" alias="false" withSubpackages="true" />
           <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
           <package name="io.ktor" alias="false" withSubpackages="true" />

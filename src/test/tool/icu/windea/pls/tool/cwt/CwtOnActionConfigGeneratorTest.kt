@@ -1,11 +1,14 @@
 package icu.windea.pls.tool.cwt
 
 import icu.windea.pls.model.ParadoxGameType
-import org.junit.Ignore
+import icu.windea.pls.test.AssumePredicates
+import org.junit.Before
 import org.junit.Test
 
-@Ignore
 class CwtOnActionConfigGeneratorTest {
+    @Before
+    fun before() = AssumePredicates.includeTool()
+
     @Test
     fun testForStellaris() {
         CwtOnActionConfigGenerator(

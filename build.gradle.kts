@@ -289,11 +289,10 @@ tasks {
         systemProperty("ide.slow.operations.assertion", "false")
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
         systemProperty("pls.is.debug", "true")
-    }
-    test {
-        if (!hasProperty("pls.include.test.ai")) {
-            exclude("icu/windea/pls/ai/**")
-        }
+        // 转发所有以 pls.test. 开头的命令行 -D 属性
+        System.getProperties().stringPropertyNames()
+            .filter { it.startsWith("pls.test.") }
+            .forEach { k -> systemProperty(k, System.getProperty(k)) }
     }
 
     withType<Copy> {

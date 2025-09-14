@@ -8,6 +8,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.ai.PlsAiConstants
 import icu.windea.pls.ai.providers.ChatModelProviderType
 import icu.windea.pls.core.getValue
 import icu.windea.pls.core.setValue
@@ -50,8 +51,8 @@ class PlsAiSettingsState : BaseState() {
      */
     @Tag("features")
     class FeaturesState : BaseState() {
-        var localisationChunkSize by property(PlsAiSettingsManager.defaultLocalisationChunkSize)
-        var localisationMemorySize by property(PlsAiSettingsManager.defaultLocalisationMemorySize)
+        var localisationChunkSize by property(PlsAiConstants.Settings.defaultLocalisationChunkSize)
+        var localisationMemorySize by property(PlsAiConstants.Settings.defaultLocalisationMemorySize)
     }
 
     /**

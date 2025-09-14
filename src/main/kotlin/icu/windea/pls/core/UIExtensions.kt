@@ -4,16 +4,12 @@ package icu.windea.pls.core
 
 import com.intellij.ide.CopyProvider
 import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.whenTextChanged
 import com.intellij.openapi.ui.getOrPutUserData
 import com.intellij.openapi.util.IconLoader
-import com.intellij.refactoring.RefactoringBundle
 import com.intellij.ui.ClickListener
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
@@ -92,10 +88,17 @@ fun <T : JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
     }
 }
 
-fun Row.pathCompletionShortcutComment() {
-    val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION))
-    comment(RefactoringBundle.message("path.completion.shortcut", shortcutText))
-}
+// fun KMutableProperty0<Boolean>.toAtomicProperty(): AtomicBooleanProperty {
+//     return AtomicBooleanProperty(get()).apply { afterChange { set(it) } }
+// }
+//
+// fun <T> KMutableProperty0<T>.toAtomicProperty(): AtomicProperty<T> {
+//     return AtomicProperty(get()).apply { afterChange { set(it) } }
+// }
+//
+// fun <T : Any> KMutableProperty0<T?>.toAtomicProperty(defaultValue: T): AtomicProperty<T> {
+//     return AtomicProperty(get() ?: defaultValue).apply { afterChange { set(it) } }
+// }
 
 fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any?, ThreeStateCheckBox.State> {
     val map = this@toThreeStateProperty

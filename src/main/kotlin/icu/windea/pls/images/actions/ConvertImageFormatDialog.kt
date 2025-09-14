@@ -1,10 +1,13 @@
 package icu.windea.pls.images.actions
 
 import com.intellij.ide.util.DirectoryUtil
+import com.intellij.openapi.actionSystem.ActionManager.getInstance
+import com.intellij.openapi.actionSystem.IdeActions.ACTION_CODE_COMPLETION
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.fileChooser.impl.FileChooserUtil
+import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.Messages
@@ -15,13 +18,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import com.intellij.refactoring.RefactoringBundle.message
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.pathCompletionShortcutComment
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 
@@ -80,7 +83,8 @@ class ConvertImageFormatDialog(
                 .resizableColumn()
         }
         row {
-            pathCompletionShortcutComment()
+            val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+            comment(message("path.completion.shortcut", shortcutText))
         }
     }
 

@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroupLibrary
@@ -68,14 +67,14 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCachesAsync() {
-        if (application.isUnitTestMode) return
+        if (PlsFacade.isUnitTestMode()) return
         PlsPathConstants.initAsync()
         PlsFacade.getDataProvider().initAsync()
     }
 
     @Suppress("ObsoleteDispatchersEdt")
     private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
-        if (application.isUnitTestMode) return
+        if (PlsFacade.isUnitTestMode()) return
         // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
         if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
         val builtInConfigRootDirectories = CwtConfigGroupFileProvider.EP_NAME.extensionList
@@ -96,14 +95,14 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun refreshRootsForLibrariesAsync(project: Project) {
-        if (application.isUnitTestMode) return
+        if (PlsFacade.isUnitTestMode()) return
         if (project.isDisposed) return
         project.paradoxLibrary.refreshRootsAsync()
         project.configGroupLibrary.refreshRootsAsync()
     }
 
     private fun initConfigGroupsAsync(project: Project) {
-        if (application.isUnitTestMode) return
+        if (PlsFacade.isUnitTestMode()) return
         if (project.isDisposed) return
         PlsFacade.getConfigGroupService().initAsync(project)
     }

@@ -1,15 +1,16 @@
 package icu.windea.pls.core.util
 
+import icu.windea.pls.test.AssumePredicates
 import org.junit.Assert
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
 class MatchersTest {
     @Suppress("DEPRECATION")
-    @Ignore
     @Test
     fun antBenchmarkTest() {
+        AssumePredicates.includeBenchmark()
+
         val patterns = listOf(
             "foo/bar/baz",
             "foo/*/baz",

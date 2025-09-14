@@ -21,7 +21,7 @@ interface ChatModelProvider<S : ChatModelProvider.Options> {
     /**
      * 通过检查选项、发起网络请求、检查本地 AI 服务状态等方式，测试 AI 服务是否可用。
      */
-    fun checkStatus(): StatusResult
+    fun checkStatus(options: S? = this.options): StatusResult
 
     /**
      * AI 服务提供者的选项。再次封装一层,可由用户配置或者来自环境变量。

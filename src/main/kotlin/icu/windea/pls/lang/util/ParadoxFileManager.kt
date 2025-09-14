@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -187,7 +186,7 @@ object ParadoxFileManager {
     }
 
     fun isTestDataFile(file: VirtualFile): Boolean {
-        if (!application.isUnitTestMode) return false
+        if (!PlsFacade.isUnitTestMode()) return false
         val name = file.nameWithoutExtension
         return name.split('_', '.').any { it == "test" }
     }

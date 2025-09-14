@@ -1,6 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
@@ -90,12 +91,23 @@ object PlsFacade {
     fun getInternalSettings() = service<PlsInternalSettings>()
 
     /**
+     * 是否正在进行单元测试。
+     */
+    fun isUnitTestMode(): Boolean {
+        return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
+    }
+
+    /**
      * 是否正在调试。
      */
-    fun isDebug() = System.getProperty("pls.is.debug").toBoolean()
+    fun isDebug(): Boolean {
+        return System.getProperty("pls.is.debug").toBoolean()
+    }
 
     /**
      * 是否是开发中版本。
      */
-    fun isDevVersion() = PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
+    fun isDevVersion(): Boolean {
+        return PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
+    }
 }

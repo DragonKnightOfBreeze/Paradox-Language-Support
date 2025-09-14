@@ -11,25 +11,35 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.test.AssumePredicates
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Before
+    fun before() = AssumePredicates.includeAi()
+
+    @Test
     fun testOpenAi() {
         System.setProperty("pls.ai.providerType", "OPEN_AI")
         doTest()
     }
 
+    @Test
     fun testAnthropic() {
         System.setProperty("pls.ai.providerType", "ANTHROPIC")
         doTest()
     }
 
     private fun doTest() {
-        myFixture.configureByFile("ai/t_wilderness_l_simp_chinese.yml")
+        myFixture.configureByFile("ai/wilderness_l_simp_chinese.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
         val elements = ParadoxLocalisationManipulator.buildSequence(file)
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
@@ -39,7 +49,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
         runBlocking {
             ParadoxLocalisationAiManipulator.collectResultFlow(request, resultFlow)
         }
-        Assert.assertEquals(contexts.size, request.index)
+        assertEquals(contexts.size, request.index)
 
         println("AI SERVICE PROVIDER:")
         println(ChatModelManager.getProviderType())

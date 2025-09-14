@@ -2,6 +2,7 @@ package icu.windea.pls.ai.util.manipulators
 
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -74,7 +75,11 @@ object ParadoxLocalisationAiManipulator {
     ): JBPopup {
         val submitted = AtomicBooleanProperty(false)
         val textField = JBTextField().apply { addActionListener { submitted.set(true) } } //目前不使用 TextFieldWithStoredHistory
+
+        // 需要在 UI 发生变化时就更新设置
         val settings = PlsAiFacade.getSettings()
+        val providerType = AtomicProperty(settings.providerType).apply { afterChange { settings.providerType = it } }
+
         val panel = panel {
             row {
                 cell(textField).align(AlignX.FILL).focused().smaller()
@@ -88,9 +93,7 @@ object ParadoxLocalisationAiManipulator {
                 text(PlsBundle.message("ai.manipulation.localisation.popup.tip")).align(AlignX.LEFT).smaller().smallerFont()
 
                 label(PlsBundle.message("ai.popup.provider"))
-                comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
-                    .bindItem(settings::providerType.toNullableProperty())
-                    .align(AlignX.RIGHT)
+                comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text }).align(AlignX.RIGHT).bindItem(providerType)
             }
         }
         val popup = JBPopupFactory.getInstance()

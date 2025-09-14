@@ -1,6 +1,9 @@
 package icu.windea.pls.lang.refactoring.actions
 
+import com.intellij.openapi.actionSystem.ActionManager.getInstance
+import com.intellij.openapi.actionSystem.IdeActions.ACTION_CODE_COMPLETION
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.whenTextChanged
 import com.intellij.openapi.project.Project
@@ -9,13 +12,13 @@ import com.intellij.openapi.ui.TextComponentAccessors
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.refactoring.RefactoringBundle.message
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
-import icu.windea.pls.core.pathCompletionShortcutComment
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.fileInfo
@@ -100,7 +103,8 @@ class IntroduceGlobalScriptedVariableDialog(
                 .validationOnApply { validateScriptedVariableFilePath() }
         }
         row {
-            pathCompletionShortcutComment()
+            val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+            comment(message("path.completion.shortcut", shortcutText))
         }
     }.apply {
         withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
