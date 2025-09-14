@@ -7,7 +7,7 @@
 
 ## 概述
 
-Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助您轻松实现创意。
+Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计的 IntelliJ IDEA 插件，提供智能、高效且功能全面的开发体验，助你轻松实现创意。
 
 **核心特性：**
 
