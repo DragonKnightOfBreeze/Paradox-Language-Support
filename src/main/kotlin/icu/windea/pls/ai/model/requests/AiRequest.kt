@@ -4,6 +4,4 @@ interface AiRequest {
     val requestId: String
 
     val logPrefix get() = "[AI REQUEST #${requestId}]"
-
-    fun toPromptVariables(variables: MutableMap<String, Any?> = mutableMapOf()): Map<String, Any?> = variables
 }

@@ -1,12 +1,10 @@
 package icu.windea.pls.ai.prompts
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 class PromptTemplateEngineTest {
     private val engine = PromptTemplateEngine()
-
-    private fun norm(s: String) = s.replace("\r\n", "\n").trimEnd()
 
     @Test
     fun testPlaceholders_basicAndNoNested() {
@@ -22,7 +20,7 @@ class PromptTemplateEngineTest {
             HelloAgain, World!
             Literal: {{should_not_expand}}
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -39,7 +37,7 @@ class PromptTemplateEngineTest {
             B
             C
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
 
         val outFalse = engine.render(
             "prompts/template_if.md",
@@ -52,7 +50,7 @@ class PromptTemplateEngineTest {
             B
             C
         """.trimIndent()
-        assertEquals(norm(expectedFalse), norm(outFalse))
+        assertEquals(expectedFalse, outFalse)
     }
 
     @Test
@@ -70,7 +68,7 @@ class PromptTemplateEngineTest {
             A2
             End
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -83,7 +81,7 @@ class PromptTemplateEngineTest {
             P2
             After
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -94,12 +92,12 @@ class PromptTemplateEngineTest {
             Start
             A
             B
-            
+
             B-end
             A-end
             End
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -108,10 +106,10 @@ class PromptTemplateEngineTest {
         // 缺失路径：移除指令，并保留紧随其后的换行
         val expected = """
             X
-            
+
             Y
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -122,7 +120,7 @@ class PromptTemplateEngineTest {
             Top
             Bottom
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 
     @Test
@@ -137,6 +135,6 @@ class PromptTemplateEngineTest {
             Middle
             Bottom
         """.trimIndent()
-        assertEquals(norm(expected), norm(out))
+        assertEquals(expected, out)
     }
 }

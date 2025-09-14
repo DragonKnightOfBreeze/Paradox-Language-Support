@@ -1,12 +1,8 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
-{# @pebvariable name="eol" type="java.lang.String" #}
 Context information:
-{% if request.context.modName %}
-- Current mod name: {{ request.context.modName }}
-{% endif %}
-{% if request.context.filePath %}
-- Current file path: {{ request.context.filePath }}{{ eol }}
-{% endif %}
-{% if request.context.fileName %}
-- Current file name: {{ request.context.fileName }}{{ eol }}
-{% endif %}
+Game type: {{game_type_title}}
+<!-- @if mod_name -->
+- Current mod name: {{mod_name}}
+<!-- @endif -->
+<!-- @if file_path -->
+- Current file path: {{file_path}}
+<!-- @endif -->

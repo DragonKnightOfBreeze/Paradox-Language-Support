@@ -2,8 +2,7 @@ package icu.windea.pls.ai.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import dev.langchain4j.exception.LangChain4jException
-import icu.windea.pls.ai.model.AnthropicErrorInfo
-import icu.windea.pls.ai.model.OpenAiErrorInfo
+import icu.windea.pls.ai.model.ErrorInfos
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
@@ -21,11 +20,11 @@ object PlsAiManager {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
                     runCatchingCancelable {
-                        val errorInfo = ObjectMappers.jsonMapper.readValue<OpenAiErrorInfo>(message)
+                        val errorInfo = ObjectMappers.jsonMapper.readValue<ErrorInfos.OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
                     runCatchingCancelable {
-                        val errorInfo = ObjectMappers.jsonMapper.readValue<AnthropicErrorInfo>(message)
+                        val errorInfo = ObjectMappers.jsonMapper.readValue<ErrorInfos.AnthropicErrorInfo>(message)
                         return "[${errorInfo.error.type}] ${errorInfo.error.message}"
                     }
                 }

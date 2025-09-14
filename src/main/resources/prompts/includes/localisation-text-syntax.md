@@ -1,4 +1,3 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
 The following special syntax can be used in localisation text:
 - Colored text
   - Format: `§{colorId}{richText}§!`
@@ -20,7 +19,7 @@ The following special syntax can be used in localisation text:
   - Example: `£unity£`, `£leader_skill|3£`
   - `{id}` is the icon ID, used to reference icons, DO NOT PROCESS
   - `{args}` are rendering arguments, DO NOT PROCESS
-{% if request.predicates.supportsConceptCommand %}
+<!-- @if supports_concept_command -->
 - Concept commands
   - Format: `['{expression}']` or `['{expression}', {richText}]`
   - Example: `['concept_id']`, `['concept_id', replacement text]`
@@ -28,19 +27,19 @@ The following special syntax can be used in localisation text:
   - `{richText}` is nested localisation text, used to replace the original concept text, which may use special syntax and SHOULD BE PROCESSED
   - Note: The `{richText}` to be translated must appear after the English comma (ignoring leading whitespaces). If not found, treat as non-existent
   - Note: In-game, concept commands are rendered as hyperlinks with tooltips on hover, and can be nested
-{% endif %}
-{% if request.predicates.supportsTextFormat %}
-- Text formatting
+<!-- @endif -->
+<!-- @if supports_text_format -->
+- Text format
   - Format: `#{expression} {richText}!#`
   - Example: `#v text#!`
   - `{expression}` is the text format expression, specifying how to render the text, DO NOT PROCESS
   - `{richText}` is nested localisation text, which may use special syntax and SHOULD BE PROCESSED
   - Note: The `{richText}` to be translated must appear after whitespaces. If not found, treat as non-existent
   - Note: The end marker `!#` can appear alone, keep it as is
-{% endif %}
-{% if request.predicates.supportsTextIcon %}
+<!-- @endif -->
+<!-- @if supports_text_icon -->
 - Text icons
   - Format: `@{id} {richText}!#`
   - Example: `@icon!`
   - `{id}` is the text icon ID, used to reference text icons, DO NOT PROCESS
-{% endif %}
+<!-- @endif -->

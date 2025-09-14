@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 
+private val logger = logger<PolishLocalisationAiService>()
+
 @Service
 class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocalisationAiRequest>() {
-    private val logger = logger<PolishLocalisationAiService>()
-
     override fun manipulate(request: PolishLocalisationAiRequest): Flow<LocalisationAiResult>? {
         //得到输入的本地化上下文，按特定数量进行分块，然后逐个发送请求（附带记忆）
 

@@ -65,11 +65,6 @@ dependencies {
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
 
-    // pebble - https://github.com/PebbleTemplates/pebble
-    implementation("io.pebbletemplates:pebble:3.2.4") {
-        exclude(group = "org.slf4j", module = "slf4j-api")
-    }
-
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
@@ -121,6 +116,11 @@ dependencies {
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")
     testCompileOnly("gg.jte:jte-kotlin:3.2.1")
+
+    // pebble - https://github.com/PebbleTemplates/pebble
+    testImplementation("io.pebbletemplates:pebble:3.2.4") {
+        exclude(group = "org.slf4j", module = "slf4j-api")
+    }
 
     // 用于工具代码（src/test/tool）
 
