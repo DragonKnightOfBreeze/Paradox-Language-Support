@@ -14,7 +14,6 @@ import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.model.toLineFlow
 import icu.windea.pls.ai.providers.ChatModelManager
-import icu.windea.pls.ai.util.PlsChatMessageManager
 import icu.windea.pls.ai.util.PlsPrompts
 import icu.windea.pls.core.coroutines.chunked
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
@@ -63,13 +62,13 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
     }
 
     private fun getSystemMessage(request: PolishLocalisationAiRequest): SystemMessage {
-        val text = PlsChatMessageManager.fromTemplate(PlsPrompts.PolishLocalisation, request)
+        val text = PlsPrompts.polishLocalisation(request)
         logger.debug { "${request.logPrefix} System message: \n$text" }
         return SystemMessage.from(text)
     }
 
     private fun getUserMessage(request: PolishLocalisationAiRequest, chunk: List<ParadoxLocalisationContext>): UserMessage {
-        val text = PlsChatMessageManager.fromLocalisationContexts(chunk)
+        val text = PlsPrompts.fromLocalisationContexts(chunk)
         logger.debug { "${request.logPrefix} User message: \n$text" }
         return UserMessage.from(text)
     }

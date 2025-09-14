@@ -38,5 +38,24 @@ abstract class ManipulateLocalisationAiRequest(
         val supportsTextIcon = ParadoxSyntaxConstraint.LocalisationTextIcon.supports(request.file)
         val supportsTextFormat = ParadoxSyntaxConstraint.LocalisationTextFormat.supports(request.file)
     }
+
+    override fun toPromptVariables(variables: MutableMap<String, Any?>): Map<String, Any?> {
+        variables.put("index", index)
+        variables.put("total", localisationContexts.size)
+
+        val fileInfo: ParadoxFileInfo? by lazy { selectFile(file)?.fileInfo }
+        val gameType = fileInfo?.rootInfo?.gameType
+        variables["game_type_id"] = gameType?.id
+        variables["game_type_title"] = gameType?.title
+        variables["file_path"] = fileInfo?.path?.path
+        variables["file_name"] = fileInfo?.path?.fileName
+        variables["mod_name"] = fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name
+
+        variables["supports_concept_command"] = ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(file)
+        variables["supports_text_icon"] = ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)
+        variables["supports_text_format"] = ParadoxSyntaxConstraint.LocalisationTextFormat.supports(file)
+
+        return variables
+    }
 }
 

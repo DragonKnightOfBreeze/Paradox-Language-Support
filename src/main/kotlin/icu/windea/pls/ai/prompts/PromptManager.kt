@@ -1,14 +1,13 @@
-package icu.windea.pls.ai.util
+package icu.windea.pls.ai.prompts
 
-import com.intellij.DynamicBundle.getLocale
+import com.intellij.DynamicBundle
 import icu.windea.pls.ai.model.requests.AiRequest
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import io.pebbletemplates.pebble.PebbleEngine
 import io.pebbletemplates.pebble.loader.ClasspathLoader
 import java.io.StringWriter
-import java.util.Locale.SIMPLIFIED_CHINESE
+import java.util.*
 
-object PlsChatMessageManager {
+object PromptManager {
     private val engine by lazy {
         val loader = ClasspathLoader().apply { prefix = "prompts/" }
         PebbleEngine.Builder().loader(loader).autoEscaping(false).build()
@@ -36,12 +35,7 @@ object PlsChatMessageManager {
     }
 
     private fun getTemplateName(templateId: String): String {
-        val suffix = if (getLocale() == SIMPLIFIED_CHINESE) "_zh.md" else ".md"
+        val suffix = if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "_zh.md" else ".md"
         return templateId + suffix
-    }
-
-    fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationContext>): String {
-        //去除首尾空白
-        return localisationContexts.joinToString("\n") { context -> "${context.key}: \"${context.newText}\"" }.trim()
     }
 }
