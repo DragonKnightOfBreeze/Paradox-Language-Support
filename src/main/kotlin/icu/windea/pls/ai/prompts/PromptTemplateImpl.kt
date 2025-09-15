@@ -117,6 +117,7 @@ class PromptTemplateImpl(
 
                     // 匹配特殊指令
                     val directive = PromptTemplateDirectiveRegistry.directives.find { it.name == snippet.directiveName }
+                    var nlMode = NLMode.NONE
                     run {
                         when (directive) {
                             IncludePromptTemplateDirective -> {
@@ -125,15 +126,10 @@ class PromptTemplateImpl(
                                     // 与循环/缺参/缺失文件不同：深度超限时不保留紧随其后的换行
                                     return@run
                                 }
+
                                 val includePath = resolveIncludeDirectiveArgs(snippet, context)
                                 if (includePath == null) {
-                                    if (snippet.atLineEnd) {
-                                        val next = if (i < snippets.size) snippets[i] else null
-                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
-                                        if (!nextIsLineStartDirective) {
-                                            builder.appendLine()
-                                        }
-                                    }
+                                    if (snippet.atLineEnd) nlMode = NLMode.ALWAYS
                                     return@run
                                 }
 
@@ -142,13 +138,7 @@ class PromptTemplateImpl(
                                 if (context.includeStack.contains(resolved)) {
                                     val cycle = (context.includeStack + listOf(resolved)).joinToString(" -> ")
                                     logger.warn("${location(snippet, context)} Detected include cycle: $cycle. Skipping $resolved.")
-                                    if (snippet.atLineEnd) {
-                                        val next = if (i < snippets.size) snippets[i] else null
-                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
-                                        if (!nextIsLineStartDirective) {
-                                            builder.appendLine()
-                                        }
-                                    }
+                                    if (snippet.atLineEnd) nlMode = NLMode.ALWAYS
                                     return@run
                                 }
 
@@ -157,13 +147,7 @@ class PromptTemplateImpl(
                                 if (includedText == null) {
                                     logger.warn("${location(snippet, context)} Included file not found: $resolved. Removing directive.")
                                     context.includeStack.removeLast()
-                                    if (snippet.atLineEnd) {
-                                        val next = if (i < snippets.size) snippets[i] else null
-                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
-                                        if (!nextIsLineStartDirective) {
-                                            builder.appendLine()
-                                        }
-                                    }
+                                    if (snippet.atLineEnd) nlMode = NLMode.ALWAYS
                                     return@run
                                 }
 
@@ -172,14 +156,7 @@ class PromptTemplateImpl(
 
                                 builder.append(includedRendered)
                                 // 如果本行只包含该指令（或指令位于行尾），并且下一个片段不是行首指令，则按需补一个换行
-                                if (snippet.atLineEnd) {
-                                    val next = if (i < snippets.size) snippets[i] else null
-                                    val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
-                                    if (!nextIsLineStartDirective) {
-                                        val needLf = builder.isEmpty() || builder[builder.length - 1] != '\n'
-                                        if (needLf) builder.appendLine()
-                                    }
-                                }
+                                if (snippet.atLineEnd) nlMode = NLMode.IF_MISSING
                             }
                             IfPromptTemplateDirective -> {
                                 val condition = resolveConditionDirectiveArgs(snippet, context)
@@ -246,10 +223,7 @@ class PromptTemplateImpl(
                                 // 等价于处理 @endif：在行首会补一个换行（与通用渲染一致），避免重复换行
                                 if (renderedBranch) {
                                     val endIfSnippet = snippets[endIfIndex] as Snippet.Directive
-                                    if (endIfSnippet.atLineStart) {
-                                        val needLf = builder.isEmpty() || builder[builder.length - 1] != '\n'
-                                        if (needLf) builder.appendLine()
-                                    }
+                                    if (endIfSnippet.atLineStart) nlMode = NLMode.IF_MISSING
                                 }
 
                                 // 跳过整个 if 块
@@ -263,15 +237,18 @@ class PromptTemplateImpl(
                                 // 未知指令：若以 @ 开头但未匹配到任何指令，输出警告；仍按普通注释原样输出
                                 logger.warn("${location(snippet, context)} Invalid or unknown directive '@${snippet.directiveName}'. Treating as normal comment.")
                                 builder.append(snippet.text)
+                                nlMode = NLMode.ALWAYS
                             }
                         }
                     }
 
-                    // 如果是未知指令或内联指令（排除 include），则按需保留本行结尾的换行
-                    if ((directive == null || directive.type == PromptTemplateDirective.Type.Inline) && directive != IncludePromptTemplateDirective) {
-                        val next = if (i < snippets.size) snippets[i] else null
-                        if (next !is Snippet.Directive || !next.atLineStart) {
-                            builder.appendLine()
+                    // 统一处理结尾换行
+                    val next = if (i < snippets.size) snippets[i] else null
+                    if (!(next is Snippet.Directive && next.atLineStart)) {
+                        when (nlMode) {
+                            NLMode.IF_MISSING -> if (builder.isEmpty() || builder[builder.length - 1] != '\n') builder.appendLine()
+                            NLMode.ALWAYS -> builder.appendLine()
+                            else -> {}
                         }
                     }
                 }
@@ -473,5 +450,9 @@ class PromptTemplateImpl(
 
     private enum class ConditionBranchType {
         THEN, ELSE_IF, ELSE
+    }
+
+    private enum class NLMode {
+        NONE, IF_MISSING, ALWAYS
     }
 }
