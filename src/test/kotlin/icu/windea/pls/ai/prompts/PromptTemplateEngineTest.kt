@@ -421,4 +421,232 @@ class PromptTemplateEngineTest {
         """.trimIndent()
         assertEquals(expected, out)
     }
+
+    @Test
+    fun testDanglingElse_removed() {
+        val out = engine.render("prompts/template_dangling_else.md")
+        val expected = """
+            A
+            X
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testDanglingElseIf_removed() {
+        val out = engine.render("prompts/template_dangling_elseif.md")
+        val expected = """
+            A
+            X
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testElse_extraArgs_thenSelected() {
+        val out = engine.render(
+            "prompts/template_else_extra_args.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            A
+            T
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testElse_extraArgs_elseSelected() {
+        val out = engine.render(
+            "prompts/template_else_extra_args.md",
+            mapOf("flag" to false)
+        )
+        val expected = """
+            A
+            E
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testElseIf_extraArgs_branches() {
+        val outT = engine.render(
+            "prompts/template_elseif_extra_args.md",
+            mapOf("flag" to true)
+        )
+        val expectedT = """
+            A
+            T
+            B
+        """.trimIndent()
+        assertEquals(expectedT, outT)
+
+        val outE = engine.render(
+            "prompts/template_elseif_extra_args.md",
+            mapOf("flag" to false, "other" to true)
+        )
+        val expectedE = """
+            A
+            E
+            B
+        """.trimIndent()
+        assertEquals(expectedE, outE)
+
+        val outElse = engine.render(
+            "prompts/template_elseif_extra_args.md",
+            mapOf("flag" to false, "other" to false)
+        )
+        val expectedElse = """
+            A
+            ELSE
+            B
+        """.trimIndent()
+        assertEquals(expectedElse, outElse)
+    }
+
+    @Test
+    fun testTruthy_condition_evaluation() {
+        fun render(v: Any?) = engine.render("prompts/template_truthy.md", mapOf("v" to v))
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(null)
+        )
+
+        assertEquals(
+            """
+                Start
+                T
+                End
+            """.trimIndent(),
+            render(true)
+        )
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(false)
+        )
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(0)
+        )
+        assertEquals(
+            """
+                Start
+                T
+                End
+            """.trimIndent(),
+            render(1)
+        )
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render("")
+        )
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(" ")
+        )
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render("0")
+        )
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render("false")
+        )
+        assertEquals(
+            """
+                Start
+                T
+                End
+            """.trimIndent(),
+            render("true")
+        )
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(emptyList<String>())
+        )
+        assertEquals(
+            """
+                Start
+                T
+                End
+            """.trimIndent(),
+            render(listOf(1))
+        )
+
+        assertEquals(
+            """
+                Start
+                F
+                End
+            """.trimIndent(),
+            render(emptyMap<String, Any>())
+        )
+        assertEquals(
+            """
+                Start
+                T
+                End
+            """.trimIndent(),
+            render(mapOf("a" to 1))
+        )
+    }
+
+    @Test
+    fun testInclude_depth_limit() {
+        val old = engine.maxIncludeDepth
+        try {
+            engine.maxIncludeDepth = 1
+            val out = engine.render("prompts/template_deep_include_root.md")
+            val expected = """
+                Start
+                L1
+                L1E
+                End
+            """.trimIndent()
+            assertEquals(expected, out)
+        } finally {
+            engine.maxIncludeDepth = old
+        }
+    }
 }

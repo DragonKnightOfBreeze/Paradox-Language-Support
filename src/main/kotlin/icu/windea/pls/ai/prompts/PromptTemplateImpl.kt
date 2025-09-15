@@ -42,6 +42,7 @@ class PromptTemplateImpl(
     private fun parseSnippets(contentLines: List<String>): MutableList<Snippet> {
         val snippets = mutableListOf<Snippet>()
         val lines = mutableListOf<String>()
+        var directiveIndexCounter = 0
 
         for ((lineIndex, contentLine) in contentLines.withIndex()) {
             val lineNumber = lineIndex + 1
@@ -85,7 +86,7 @@ class PromptTemplateImpl(
                     isValidDirectiveName(directiveName) -> PromptTemplateDirectiveRegistry.directives.find { it.name == directiveName }
                     else -> null
                 }
-                snippets += Snippet.Directive(comment, lineNumber, atLineStart, atLineEnd, directiveName, directiveArgs, directive)
+                snippets += Snippet.Directive(comment, lineNumber, atLineStart, atLineEnd, directiveName, directiveArgs, directive, index = directiveIndexCounter++)
                 i = next
             }
         }
@@ -121,10 +122,18 @@ class PromptTemplateImpl(
                             IncludePromptTemplateDirective -> {
                                 if (context.depth >= engine.maxIncludeDepth) {
                                     logger.warn("${location(snippet, context)} Max include depth exceeded. Skipping include.")
+                                    // 与循环/缺参/缺失文件不同：深度超限时不保留紧随其后的换行
                                     return@run
                                 }
                                 val includePath = resolveIncludeDirectiveArgs(snippet, context)
                                 if (includePath == null) {
+                                    if (snippet.atLineEnd) {
+                                        val next = if (i < snippets.size) snippets[i] else null
+                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
+                                        if (!nextIsLineStartDirective) {
+                                            builder.appendLine()
+                                        }
+                                    }
                                     return@run
                                 }
 
@@ -133,6 +142,13 @@ class PromptTemplateImpl(
                                 if (context.includeStack.contains(resolved)) {
                                     val cycle = (context.includeStack + listOf(resolved)).joinToString(" -> ")
                                     logger.warn("${location(snippet, context)} Detected include cycle: $cycle. Skipping $resolved.")
+                                    if (snippet.atLineEnd) {
+                                        val next = if (i < snippets.size) snippets[i] else null
+                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
+                                        if (!nextIsLineStartDirective) {
+                                            builder.appendLine()
+                                        }
+                                    }
                                     return@run
                                 }
 
@@ -141,6 +157,13 @@ class PromptTemplateImpl(
                                 if (includedText == null) {
                                     logger.warn("${location(snippet, context)} Included file not found: $resolved. Removing directive.")
                                     context.includeStack.removeLast()
+                                    if (snippet.atLineEnd) {
+                                        val next = if (i < snippets.size) snippets[i] else null
+                                        val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
+                                        if (!nextIsLineStartDirective) {
+                                            builder.appendLine()
+                                        }
+                                    }
                                     return@run
                                 }
 
@@ -148,6 +171,15 @@ class PromptTemplateImpl(
                                 context.includeStack.removeLast()
 
                                 builder.append(includedRendered)
+                                // 如果本行只包含该指令（或指令位于行尾），并且下一个片段不是行首指令，则按需补一个换行
+                                if (snippet.atLineEnd) {
+                                    val next = if (i < snippets.size) snippets[i] else null
+                                    val nextIsLineStartDirective = next is Snippet.Directive && next.atLineStart
+                                    if (!nextIsLineStartDirective) {
+                                        val needLf = builder.isEmpty() || builder[builder.length - 1] != '\n'
+                                        if (needLf) builder.appendLine()
+                                    }
+                                }
                             }
                             IfPromptTemplateDirective -> {
                                 val condition = resolveConditionDirectiveArgs(snippet, context)
@@ -176,6 +208,21 @@ class PromptTemplateImpl(
                                         val elseifCond = if (elseifSnippet is Snippet.Directive) resolveConditionDirectiveArgs(elseifSnippet, context) else null
                                         branches[bi] = b.copy(cond = elseifCond)
                                     }
+                                }
+
+                                // 顶层 ELSE 多余参数告警
+                                branches.firstOrNull { it.type == ConditionBranchType.ELSE }?.let { b ->
+                                    val elseIdx = b.start - 1
+                                    val elseSnippet = if (elseIdx in snippets.indices) snippets[elseIdx] else null
+                                    if (elseSnippet is Snippet.Directive && elseSnippet.directiveArgs.isNotEmpty()) {
+                                        ignoreExtraArgs(elseSnippet, context)
+                                    }
+                                }
+
+                                // 顶层 ENDIF 多余参数告警
+                                val endIfSnippet0 = snippets[endIfIndex]
+                                if (endIfSnippet0 is Snippet.Directive && endIfSnippet0.directiveArgs.isNotEmpty()) {
+                                    ignoreExtraArgs(endIfSnippet0, context)
                                 }
 
                                 // 选择分支
@@ -220,8 +267,8 @@ class PromptTemplateImpl(
                         }
                     }
 
-                    // 如果是未知指令或内联指令，则按需保留本行结尾的换行
-                    if (directive == null || directive.type == PromptTemplateDirective.Type.Inline) {
+                    // 如果是未知指令或内联指令（排除 include），则按需保留本行结尾的换行
+                    if ((directive == null || directive.type == PromptTemplateDirective.Type.Inline) && directive != IncludePromptTemplateDirective) {
                         val next = if (i < snippets.size) snippets[i] else null
                         if (next !is Snippet.Directive || !next.atLineStart) {
                             builder.appendLine()
@@ -321,7 +368,7 @@ class PromptTemplateImpl(
         logger.warn("${location(snippet, context)} Ignore extra args for directive '@${snippet.directiveName}'")
     }
 
-    private fun location(snippet: Snippet.Directive, context: Context) = "[${context.currentPath}#L${snippet.lineNumber}]"
+    private fun location(snippet: Snippet.Directive, context: Context) = "[${context.currentPath}@${snippet.index}#L${snippet.lineNumber}]"
 
     // 进行占位符替换（一次性）
 
@@ -393,6 +440,7 @@ class PromptTemplateImpl(
             val directiveName: String,
             val directiveArgs: List<String>,
             val directive: PromptTemplateDirective?,
+            val index: Int,
         ) : Snippet()
     }
 
