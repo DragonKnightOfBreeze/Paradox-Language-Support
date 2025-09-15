@@ -26,18 +26,6 @@ class ClasspathPromptTemplateLoader(
         val normalized = path.replace('\\', '/').trimStart('/')
         return classLoader.getResource(normalized)?.readText()
     }
-
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is ClasspathPromptTemplateLoader && classLoader == other.classLoader
-    }
-
-    override fun hashCode(): Int {
-        return classLoader.hashCode()
-    }
-
-    override fun toString(): String {
-        return "ClasspathPromptTemplateLoader(classLoader=$classLoader)"
-    }
 }
 
 /**
@@ -62,17 +50,5 @@ data class FilePromptTemplateLoader(
         if (!resolved.startsWith(baseDir)) return null
         if (!Files.exists(resolved) || !Files.isRegularFile(resolved)) return null
         return Files.readString(resolved, StandardCharsets.UTF_8)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is FilePromptTemplateLoader && baseDir == other.baseDir
-    }
-
-    override fun hashCode(): Int {
-        return baseDir.hashCode()
-    }
-
-    override fun toString(): String {
-        return "FilePromptTemplateLoader(baseDir=$baseDir)"
     }
 }

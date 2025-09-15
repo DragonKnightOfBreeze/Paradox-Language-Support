@@ -1,35 +1,38 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * 提示模板的指令。
+ * 提示模版的指令。
  *
- * 指令必须放在 Markdown/HTML 注释中。
+ * 指令是一种特殊的 Markdown/HTML 单行注释，
+ * 格式为 `<!-- @{directiveName} {params...} -->`。
  *
- * 语法：
- * - `<!-- @{directiveName} {params...} -->`
+ * 以 `@` 前缀开始，之后是指令名称。
+ * 在空白之后是一组指令参数，用空白分隔。
+ * 注释的开始标记之后与结束标记之前的空白会被忽略。
  *
- * 分类：
- * - 内联指令（inline）：如 include。默认不移除紧随其后的换行。
- * - 块指令（block）：如 if。默认移除紧随其后的换行。
- *
- * @property name 指令名称（不含 `@` 前缀）。
- * @property isBlock 是否为块指令。块指令会默认移除指令注释后的紧邻换行。
+ * @property name 指令名称。由小写字母与连字符组成，不含 `@` 前缀。
+ * @property type 指令类型。
  */
 interface PromptTemplateDirective {
     val name: String
-
-    val isBlock: Boolean
-
-    /**
-     * 是否移除指令注释后的紧邻换行。
-     *
-     * 注意：该行为与 [isBlock] 不再强绑定，未来个别指令可自定义此行为。
-     */
-    val removeFollowingNewline: Boolean
+    val type: Type
 
     /**
-     * 判断注释内容是否匹配当前指令。
-     * 传入的字符串已为注释内文本并去除了首尾空白，例如："@include path.md" / "@if !flag"。
+     * 指令的类型。
      */
-    fun matches(trimmedComment: String): Boolean
+    enum class Type {
+        /**
+         * 内联指令。
+         *
+         * 内联指令不需要与其他指令结合使用。
+         */
+        Inline,
+        /**
+         * 块指令。
+         *
+         * 块指令需要与其他指令结合使用，其后的紧邻换行会在渲染时被去除。
+         */
+        Block,
+        ;
+    }
 }
