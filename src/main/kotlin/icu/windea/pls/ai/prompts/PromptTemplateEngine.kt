@@ -7,7 +7,7 @@ package icu.windea.pls.ai.prompts
  *
  * @see PromptTemplate
  * @see PromptTemplateLoader
- * @see PromptTemplateDirectiveOld
+ * @see PromptTemplateDirective
  */
 class PromptTemplateEngine(
     val loader: PromptTemplateLoader = ClasspathPromptTemplateLoader(),

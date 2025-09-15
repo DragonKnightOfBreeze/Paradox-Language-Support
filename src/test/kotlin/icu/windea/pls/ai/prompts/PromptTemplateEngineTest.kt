@@ -259,4 +259,166 @@ class PromptTemplateEngineTest {
         """.trimIndent()
         assertEquals(expected, out)
     }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_then_then() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to true, "b" to true)
+        )
+        val expected = """
+            Start
+            TA
+            TAB
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_then_elseif() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to true, "b" to false, "c" to true)
+        )
+        val expected = """
+            Start
+            TA
+            TAC
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_then_else() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to true, "b" to false, "c" to false)
+        )
+        val expected = """
+            Start
+            TA
+            TAE
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_elseif_inner_if_true() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to false, "d" to true, "e" to false)
+        )
+        val expected = """
+            Start
+            ED
+            ED_not_e
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_elseif_inner_if_false() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to false, "d" to true, "e" to true)
+        )
+        val expected = """
+            Start
+            ED
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_nested_else() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else_nested.md",
+            mapOf("a" to false, "d" to false)
+        )
+        val expected = """
+            Start
+            ELSE
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_withInclude_then() {
+        val out = engine.render(
+            "prompts/template_if_with_include.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            Start
+            P1
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_withInclude_elseif() {
+        val out = engine.render(
+            "prompts/template_if_with_include.md",
+            mapOf("flag" to false, "other" to true)
+        )
+        val expected = """
+            Start
+            P2
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_withInclude_else() {
+        val out = engine.render(
+            "prompts/template_if_with_include.md",
+            mapOf("flag" to false, "other" to false)
+        )
+        val expected = """
+            Start
+            ELSE
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testInclude_withIf_true() {
+        val out = engine.render(
+            "prompts/template_include_with_if.md",
+            mapOf("cond" to true)
+        )
+        val expected = """
+            Start
+            First
+            T
+            Last
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testInclude_withIf_false() {
+        val out = engine.render(
+            "prompts/template_include_with_if.md",
+            mapOf("cond" to false)
+        )
+        val expected = """
+            Start
+            First
+            F
+            Last
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
 }

@@ -110,7 +110,7 @@ class PromptTemplateImpl(
                     builder.append(snippet.text)
                 }
                 is Snippet.Directive -> {
-                    if (snippet.atLineStart) {
+                    if (snippet.atLineStart && builder.isNotEmpty()) {
                         builder.appendLine()
                     }
 
@@ -196,10 +196,13 @@ class PromptTemplateImpl(
                                     renderedBranch = true
                                 }
 
-                                // 等价于处理 @endif：在行首会补一个换行（与通用渲染一致）
+                                // 等价于处理 @endif：在行首会补一个换行（与通用渲染一致），避免重复换行
                                 if (renderedBranch) {
                                     val endIfSnippet = snippets[endIfIndex] as Snippet.Directive
-                                    if (endIfSnippet.atLineStart) builder.appendLine()
+                                    if (endIfSnippet.atLineStart) {
+                                        val needLf = builder.isEmpty() || builder[builder.length - 1] != '\n'
+                                        if (needLf) builder.appendLine()
+                                    }
                                 }
 
                                 // 跳过整个 if 块
