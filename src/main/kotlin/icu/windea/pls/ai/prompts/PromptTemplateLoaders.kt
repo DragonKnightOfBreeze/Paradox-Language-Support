@@ -9,9 +9,9 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
- * 从类路径加载模板文本。
+ * 从类路径加载模板内容。
  *
- * 缓存加载结果。
+ * - 缓存加载结果。
  */
 class ClasspathPromptTemplateLoader(
     private val classLoader: ClassLoader = PromptTemplateEngine::class.java.classLoader
@@ -41,9 +41,10 @@ class ClasspathPromptTemplateLoader(
 }
 
 /**
- * 从文件系统加载模板文本。
+ * 从文件系统加载模板内容。
  *
- * 缓存加载结果，且使用 [baseDir] 作为路径解析的根目录，所有加载都被限制在此目录内。
+ * - 缓存加载结果。
+ * - 使用 [baseDir] 作为路径解析的根目录，所有加载都被限制在此目录内。
  */
 data class FilePromptTemplateLoader(
     private val baseDir: Path

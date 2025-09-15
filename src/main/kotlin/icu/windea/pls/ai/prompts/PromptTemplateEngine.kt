@@ -1,24 +1,27 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * 自定义提示模板引擎（轻量实现）。
+ * 轻量的提示模版引擎。
+ *
+ * 支持占位符语法（如 `{{param}}`）以及数种指令语法（如 `<!-- @if predicate -->`）。
  *
  * @see PromptTemplate
- * @see PromptTemplateImpl
  * @see PromptTemplateLoader
+ * @see PromptTemplateDirective
  */
 class PromptTemplateEngine(
-    private val templateLoader: PromptTemplateLoader = ClasspathPromptTemplateLoader(),
-    private val maxIncludeDepth: Int = 16,
+    val loader: PromptTemplateLoader = ClasspathPromptTemplateLoader(),
 ) {
+    var maxIncludeDepth: Int = 16
+
     /**
      * 从资源路径渲染模板。
      *
-     * @param path 模版路径（例如：`prompts/template.md`）
+     * @param path 资源路径（如 `prompts/template.md`）
      * @param variables 作为占位符与条件的一组变量
      */
     fun render(path: String, variables: Map<String, Any?> = emptyMap()): String {
-        val template = PromptTemplateImpl(templateLoader, path, maxIncludeDepth)
+        val template = PromptTemplateImpl(path, this)
         return template.render(variables)
     }
 }

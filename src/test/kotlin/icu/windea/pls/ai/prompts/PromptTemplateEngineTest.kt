@@ -137,4 +137,126 @@ class PromptTemplateEngineTest {
         """.trimIndent()
         assertEquals(expected, out)
     }
+
+    @Test
+    fun testIf_strict_notRecognizedWhenHasSuffix() {
+        val out = engine.render(
+            "prompts/template_if_strict_not_recognized_suffix.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            A
+            <!-- @if_flag -->
+            T
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_strict_notRecognizedWhenNoSpaceBeforeBang() {
+        val out = engine.render(
+            "prompts/template_if_strict_no_space.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            A
+            <!-- @if!flag -->
+            T
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_missingArg_warningAndKeepBlockAsText() {
+        val out = engine.render(
+            "prompts/template_if_missing_arg.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            A
+            X
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testInclude_extraArgs_ignored() {
+        val out = engine.render("prompts/template_include_extra_args.md")
+        val expected = """
+            Before
+            Q
+            After
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testEndif_extraArgs_ignored() {
+        val out = engine.render(
+            "prompts/template_endif_extra_args.md",
+            mapOf("flag" to true)
+        )
+        val expected = """
+            A
+            T
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testUnknownDirective_treatedAsPlainComment() {
+        val out = engine.render("prompts/template_unknown_directive.md")
+        val expected = """
+            A
+            <!-- @unknown foo bar -->
+            B
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_thenBranch() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else.md",
+            mapOf("a" to true, "b" to false)
+        )
+        val expected = """
+            Start
+            A1
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_elseifBranch() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else.md",
+            mapOf("a" to false, "b" to true)
+        )
+        val expected = """
+            Start
+            B1
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
+
+    @Test
+    fun testIf_ElseIf_Else_elseBranch() {
+        val out = engine.render(
+            "prompts/template_if_elseif_else.md",
+            mapOf("a" to false, "b" to false)
+        )
+        val expected = """
+            Start
+            E1
+            End
+        """.trimIndent()
+        assertEquals(expected, out)
+    }
 }

@@ -12,212 +12,212 @@
           <option name="linkRegexp" value="https://github.com/kaiser-chris/cwtools-vic3-config/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
           <option name="issueRegexp" value="([^/\n ]+/[^#\n]+)#(\d+)" />
           <option name="linkRegexp" value="https://github.com/$1/issues/$2" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com//cwtools/cwtools-eu4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-hoi4-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ir-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck2-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-ck3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/cwtools/cwtools-ck3-config/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="\(#(\d+)\)" />

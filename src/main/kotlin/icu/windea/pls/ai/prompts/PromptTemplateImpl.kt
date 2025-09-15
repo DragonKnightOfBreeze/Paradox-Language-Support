@@ -3,24 +3,9 @@ package icu.windea.pls.ai.prompts
 import org.slf4j.LoggerFactory
 import java.util.*
 
-/**
- * 提示模板的默认实现。
- *
- * 支持能力与说明：
- * - 占位符：`{{ paramName }}`（忽略参数名与前后缀之间的空白，单次替换，不支持嵌套再次解析）
- * - 条件语法：`<!-- @if name -->...<!-- @endif -->` 与 `<!-- @if !name -->...<!-- @endif -->`
- *     - 忽略注释开始与结尾的空白
- *     - 不渲染紧接在 `@if` 或 `@endif` 注释之后的换行符
- * - 导入语法：`<!-- @include path -->`（相对当前模板文件路径）
- *     - 忽略注释开始与结尾的空白
- *     - 会渲染紧接在 `@include` 注释之后的换行符
- * - 去除模板文件（包括导入的模板文件）中的首尾空白，并将换行符统一为 `\n`
- * - 如果模板中存在语法错误，则会输出警告日志，并在渲染结果中去除不合法的特殊注释
- */
 class PromptTemplateImpl(
-    private val loader: PromptTemplateLoader,
     override val path: String,
-    private val maxIncludeDepth: Int = 16,
+    private val engine: PromptTemplateEngine
 ) : PromptTemplate {
     override fun render(variables: Map<String, Any?>): String {
         val normalized = normalizePath(path)
@@ -34,12 +19,16 @@ class PromptTemplateImpl(
         return renderPlaceholders(finalProcessed, variables)
     }
 
-    // region 渲染主流程（包含 include/if 处理，最后再做占位符替换）
-
     private fun load(normalized: String): String? {
-        val text = loader.load(normalized)
+        val text = engine.loader.load(normalized)
         return text?.trim()?.split("\r\n", "\r")?.joinToString("\n") // 去除首尾空白 + 规范化换行符
     }
+
+    // 渲染主流程
+    // 1. 按指令切分模版文本成一组片段
+    // 2. 按指令的语义重新组织模版片段
+    // 3. 按指令的语义渲染模版文本
+    // 4. 进行占位符替换（一次性）
 
     private fun process(
         content: String,
@@ -48,7 +37,7 @@ class PromptTemplateImpl(
         depth: Int,
         includeStack: ArrayDeque<String>,
     ): String {
-        if (depth > maxIncludeDepth) {
+        if (depth > engine.maxIncludeDepth) {
             logger.warn("Max include depth exceeded at $currentPath. Possible include cycle or too deep nesting.")
             return ""
         }
@@ -71,7 +60,7 @@ class PromptTemplateImpl(
             val close = content.indexOf("-->", start + 4)
             if (close < 0) {
                 // 注释未闭合：当作普通文本处理并告警
-                logger.warn("Unterminated HTML comment in template: $currentPath at index=$start. Treating as literal text.")
+                logger.warn("${uid(currentPath, start)} Unterminated HTML comment. Treating as literal text.")
                 sb.append(content.substring(start))
                 break
             }
@@ -81,13 +70,16 @@ class PromptTemplateImpl(
             val trimmed = rawComment.trim()
 
             // 匹配特殊指令
-            when {
-                isIncludeDirective(trimmed) -> {
-                    val includePath = parseIncludePath(trimmed)
+            when (val directive = PromptTemplateDirectiveRegistry.match(trimmed)) {
+                is IncludePromptTemplateDirective -> {
+                    val (includePath, hasExtra) = IncludePromptTemplateDirective.parsePathAndExtras(trimmed)
+                    if (hasExtra) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @include ignored: '$rawComment'")
+                    }
                     if (includePath.isNullOrBlank()) {
-                        logger.warn("Invalid @include directive (missing path): $currentPath at index=$start. Removing directive.")
-                        // 移除不合法特殊注释（不剥离换行，符合 include 规则）
-                        i = close + 3
+                        logger.warn("${uid(currentPath, start)} Invalid @include directive (missing path). Removing directive.")
+                        // 根据指令定义决定是否剥离紧邻换行
+                        i = advanceAfterDirective(content, close + 3, directive)
                         continue
                     }
 
@@ -95,17 +87,17 @@ class PromptTemplateImpl(
                     // 循环检测
                     if (includeStack.contains(resolved)) {
                         val cycle = (includeStack + listOf(resolved)).joinToString(" -> ")
-                        logger.warn("Detected include cycle: $cycle. Skipping $resolved.")
-                        i = close + 3 // 保留换行（include 规则）
+                        logger.warn("${uid(currentPath, start)} Detected include cycle: $cycle. Skipping $resolved.")
+                        i = advanceAfterDirective(content, close + 3, directive)
                         continue
                     }
 
                     includeStack.addLast(resolved)
                     val includedText = load(resolved)
                     if (includedText == null) {
-                        logger.warn("Included file not found: $resolved (from $currentPath). Removing directive.")
+                        logger.warn("${uid(currentPath, start)} Included file not found: $resolved. Removing directive.")
                         includeStack.removeLast()
-                        i = close + 3 // 保留换行（include 规则）
+                        i = advanceAfterDirective(content, close + 3, directive)
                         continue
                     }
 
@@ -113,54 +105,89 @@ class PromptTemplateImpl(
                     includeStack.removeLast()
 
                     sb.append(includedRendered)
-                    // include 后保留紧接其后的换行（不额外处理，继续扫描）
-                    i = close + 3
+                    // include：按指令定义处理紧邻换行
+                    i = advanceAfterDirective(content, close + 3, directive)
                     continue
                 }
 
-                isIfDirective(trimmed) -> {
-                    val cond = parseIfCondition(trimmed)
+                is IfPromptTemplateDirective -> {
+                    val (cond, hasExtra) = IfPromptTemplateDirective.parseConditionAndExtras(trimmed)
                     if (cond == null) {
-                        logger.warn("Invalid @if directive: $currentPath at index=$start. Removing directive.")
-                        // 去除不合法的特殊注释，并且不渲染紧随其后的换行（按条件语法规则处理）
-                        i = skipFollowingNewline(content, close + 3)
+                        logger.warn("${uid(currentPath, start)} Invalid @if directive. Removing directive.")
+                        // 按指令定义处理紧邻换行
+                        i = advanceAfterDirective(content, close + 3, directive)
                         continue
                     }
+                    if (hasExtra) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @if ignored: '$rawComment'")
+                    }
 
-                    // @if 后不渲染紧接的换行
-                    val blockStart = skipFollowingNewline(content, close + 3)
+                    // @if：按指令定义处理紧邻换行
+                    val blockStart = advanceAfterDirective(content, close + 3, directive)
 
                     // 寻找匹配的 @endif（支持嵌套）
-                    val match = findMatchingEndif(content, blockStart)
+                    val match = findMatchingEndif(content, currentPath, blockStart)
                     if (match == null) {
                         // 未找到匹配的 @endif：语法错误。删除 @if 注释本身并告警；块内容按普通文本继续渲染。
-                        logger.warn("Unmatched @if without @endif in $currentPath at index=$start. Removing @if directive.")
+                        logger.warn("${uid(currentPath, start)} Unmatched @if without @endif. Removing @if directive.")
                         i = blockStart
                         continue
                     }
 
                     val (blockEndStart, endifCloseIdx) = match
-                    val block = content.substring(blockStart, blockEndStart)
 
-                    val result = evalCondition(cond, variables)
-                    if (result) {
-                        val renderedBlock = process(block, currentPath, variables, depth, includeStack)
-                        sb.append(renderedBlock)
+                    // 分割 then/elseif/else 分支
+                    val branches = splitIfBranches(content, currentPath, blockStart, blockEndStart)
+                    // 计算选择的分支
+                    var selected: Pair<Int, Int>? = null
+                    if (evalCondition(cond, variables)) {
+                        selected = branches.firstOrNull { it.type == BranchType.THEN }?.range
+                    } else {
+                        // 按顺序检查 elseif
+                        for (b in branches) {
+                            if (b.type == BranchType.ELSEIF) {
+                                val c = b.condition
+                                if (c != null && evalCondition(c, variables)) {
+                                    selected = b.range
+                                    break
+                                }
+                            }
+                        }
+                        // 若未命中，检查 else
+                        if (selected == null) {
+                            selected = branches.firstOrNull { it.type == BranchType.ELSE }?.range
+                        }
                     }
 
-                    // 跳过 @endif 注释，并且不渲染紧接的换行
-                    i = skipFollowingNewline(content, endifCloseIdx + 3)
+                    if (selected != null) {
+                        val (s1, e1) = selected
+                        if (s1 < e1) {
+                            val block = content.substring(s1, e1)
+                            val renderedBlock = process(block, currentPath, variables, depth, includeStack)
+                            sb.append(renderedBlock)
+                        }
+                    }
+
+                    // 跳过 @endif 注释，并按 @endif 定义处理紧邻换行
+                    i = advanceAfterDirective(content, endifCloseIdx + 3, EndIfPromptTemplateDirective)
                     continue
                 }
 
-                isEndifDirective(trimmed) -> {
+                is EndIfPromptTemplateDirective -> {
                     // 顶层遇到 @endif（未配对）：语法错误，去除注释并剥离紧随换行
-                    logger.warn("Unmatched @endif in $currentPath at index=$start. Removing directive.")
-                    i = skipFollowingNewline(content, close + 3)
+                    if (EndIfPromptTemplateDirective.hasExtraArgs(trimmed)) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @endif ignored: '$rawComment'")
+                    }
+                    logger.warn("${uid(currentPath, start)} Unmatched @endif. Removing directive.")
+                    i = advanceAfterDirective(content, close + 3, EndIfPromptTemplateDirective)
                     continue
                 }
 
                 else -> {
+                    // 未知指令：若以 @ 开头但未匹配到任何指令，输出警告；仍按普通注释原样输出
+                    if (trimmed.startsWith("@")) {
+                        logger.warn("${uid(currentPath, start)} Unknown directive '$trimmed'. Treating as plain comment.")
+                    }
                     // 普通 HTML 注释，原样输出
                     sb.append("<!--").append(rawComment).append("-->")
                     i = close + 3
@@ -183,8 +210,13 @@ class PromptTemplateImpl(
         }
     }
 
+    /** 按指令定义处理注释后的前进位置。*/
+    private fun advanceAfterDirective(text: String, afterCommentIndex: Int, directive: PromptTemplateDirective): Int {
+        return if (directive.removeFollowingNewline) skipFollowingNewline(text, afterCommentIndex) else afterCommentIndex
+    }
+
     /** 在 [from] 起搜索匹配的 `@endif`，返回 Pair(块结束位置（endif 起始处）, endif 注释结束位置)。*/
-    private fun findMatchingEndif(text: String, from: Int): Pair<Int, Int>? {
+    private fun findMatchingEndif(text: String, currentPath: String, from: Int): Pair<Int, Int>? {
         var i = from
         val n = text.length
         var level = 1
@@ -197,9 +229,15 @@ class PromptTemplateImpl(
 
             val raw = text.substring(start + 4, close)
             val trimmed = raw.trim()
-            when {
-                isIfDirective(trimmed) -> level++
-                isEndifDirective(trimmed) -> level--
+            when (PromptTemplateDirectiveRegistry.match(trimmed)) {
+                is IfPromptTemplateDirective -> level++
+                is EndIfPromptTemplateDirective -> {
+                    if (EndIfPromptTemplateDirective.hasExtraArgs(trimmed)) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @endif ignored: '$raw'")
+                    }
+                    level--
+                }
+                else -> {}
             }
             if (level == 0) {
                 // 块内容结束于 endif 起始处
@@ -210,40 +248,9 @@ class PromptTemplateImpl(
         return null
     }
 
-    // endregion
+    // 指令解析与条件求值
 
-    // region 指令解析与条件求值
-
-    private fun isIncludeDirective(s: String): Boolean = s.startsWith("@include")
-    private fun isIfDirective(s: String): Boolean = s.startsWith("@if")
-    private fun isEndifDirective(s: String): Boolean = s == "@endif" || s == "@endif;" || s == "@endif." // 容忍轻微误写
-
-    private fun parseIncludePath(s: String): String? {
-        // @include <path>
-        val i = s.indexOf(' ')
-        if (i < 0) return null
-        return s.substring(i + 1).trim().removeSurrounding("\"", "\"")
-    }
-
-    private data class IfCondition(val name: String, val negate: Boolean)
-
-    private fun parseIfCondition(s: String): IfCondition? {
-        // @if <name> | @if !<name>
-        val i = s.indexOf(' ')
-        if (i < 0) return null
-        var expr = s.substring(i + 1).trim()
-        var negate = false
-        if (expr.startsWith("!")) {
-            negate = true
-            expr = expr.substring(1).trim()
-        }
-        if (expr.isEmpty()) return null
-        // 允许字母/数字/下划线/点/中划线
-        if (!expr.matches(Regex("[A-Za-z_][A-Za-z0-9_.-]*"))) return null
-        return IfCondition(expr, negate)
-    }
-
-    private fun evalCondition(cond: IfCondition, variables: Map<String, Any?>): Boolean {
+    private fun evalCondition(cond: IfPromptTemplateDirective.Condition, variables: Map<String, Any?>): Boolean {
         val v = variables[cond.name]
         val truthy = when (v) {
             null -> false
@@ -257,9 +264,78 @@ class PromptTemplateImpl(
         return if (cond.negate) !truthy else truthy
     }
 
-    // endregion
+    // if/elseif/else 分支处理
+    private enum class BranchType { THEN, ELSEIF, ELSE }
+    private data class Branch(
+        val type: BranchType,
+        val range: Pair<Int, Int>,
+        val condition: IfPromptTemplateDirective.Condition? = null,
+    )
 
-    // region 占位符替换（单次）
+    /**
+     * 将 [blockStart, blockEndStart) 区间内的顶层 then/elseif/else 内容切分出来。
+     * 每个分支的 range 均不包含其指令注释，且已经根据对应指令的 removeFollowingNewline 行为裁剪了起始换行。
+     */
+    private fun splitIfBranches(text: String, currentPath: String, blockStart: Int, blockEndStart: Int): List<Branch> {
+        val branches = mutableListOf<Branch>()
+        var level = 1
+        var i = blockStart
+        var currentType = BranchType.THEN
+        var currentStart = blockStart
+        var currentCondition: IfPromptTemplateDirective.Condition? = null
+
+        while (i < blockEndStart) {
+            val start = text.indexOf("<!--", i)
+            if (start < 0 || start >= blockEndStart) break
+            val close = text.indexOf("-->", start + 4)
+            if (close < 0 || close > blockEndStart) break
+            val raw = text.substring(start + 4, close)
+            val trimmed = raw.trim()
+            when (PromptTemplateDirectiveRegistry.match(trimmed)) {
+                is IfPromptTemplateDirective -> level++
+                is EndIfPromptTemplateDirective -> level--
+                is ElseIfPromptTemplateDirective -> if (level == 1) {
+                    // 关闭上一段
+                    if (currentStart < start) {
+                        branches.add(Branch(currentType, currentStart to start, if (currentType == BranchType.ELSEIF) currentCondition else null))
+                    }
+                    // 解析新的 elseif 条件
+                    val parsed = ElseIfPromptTemplateDirective.parseConditionAndExtras(trimmed)
+                    if (parsed.hasExtra) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @elseif ignored: '$raw'")
+                    }
+                    currentType = BranchType.ELSEIF
+                    currentCondition = parsed.condition?.let { IfPromptTemplateDirective.Condition(it.name, it.negate) }
+                    currentStart = advanceAfterDirective(text, close + 3, ElseIfPromptTemplateDirective)
+                }
+                is ElsePromptTemplateDirective -> if (level == 1) {
+                    // 关闭上一段
+                    if (currentStart < start) {
+                        branches.add(Branch(currentType, currentStart to start, if (currentType == BranchType.ELSEIF) currentCondition else null))
+                    }
+                    if (ElsePromptTemplateDirective.hasExtraArgs(trimmed)) {
+                        logger.warn("${uid(currentPath, start)} Extra arguments for @else ignored: '$raw'")
+                    }
+                    currentType = BranchType.ELSE
+                    currentCondition = null
+                    currentStart = advanceAfterDirective(text, close + 3, ElsePromptTemplateDirective)
+                }
+                else -> {}
+            }
+            i = close + 3
+        }
+
+        // 收束最后一段
+        if (currentStart < blockEndStart) {
+            branches.add(Branch(currentType, currentStart to blockEndStart, if (currentType == BranchType.ELSEIF) currentCondition else null))
+        }
+        // 为 THEN 与 ELSE 分支清空条件
+        return branches.map { b -> if (b.type == BranchType.ELSEIF) b else b.copy(condition = null) }
+    }
+
+    private fun uid(path: String, index: Int): String = "[$path@$index]"
+
+    // 占位符替换（单次）
 
     private val placeholderRegex = Regex("""\{\{\s*([A-Za-z_][A-Za-z0-9_.-]*)\s*}}""")
 
@@ -274,9 +350,7 @@ class PromptTemplateImpl(
         }
     }
 
-    // endregion
-
-    // region 路径解析
+    // 路径解析
 
     private fun resolveRelativePath(currentPath: String, includePath: String): String {
         val baseDir = currentPath.replace('\\', '/').substringBeforeLast('/', "")
@@ -301,6 +375,4 @@ class PromptTemplateImpl(
     companion object {
         private val logger = LoggerFactory.getLogger(PromptTemplateImpl::class.java)
     }
-
-    // endregion
 }

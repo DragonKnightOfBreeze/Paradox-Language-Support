@@ -1,19 +1,16 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * 模板加载器。
+ * 提示模板的加载器。
  *
- * 用于按给定的相对路径（使用 `/` 作为分隔符）加载模板的原始文本内容。
- * 具体实现可来自类路径、文件系统等位置。
+ * 用于根据指定的相对路径（使用 `/` 作为分隔符），从类路径、文件系统等位置加载模板内容。
  *
  * @see ClasspathPromptTemplateLoader
  * @see FilePromptTemplateLoader
  */
 interface PromptTemplateLoader {
     /**
-     * 加载给定路径的模板原始文本。
-     *
-     * @param path 模版路径（例如：`prompts/template.md`）
+     * 加载指定资源路径的模板的原始文本。
      */
     fun load(path: String): String?
 }
