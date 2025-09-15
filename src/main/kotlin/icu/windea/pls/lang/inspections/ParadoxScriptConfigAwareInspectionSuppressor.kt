@@ -7,10 +7,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.findOption
 import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.processParent
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -65,8 +64,8 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
     }
 
     private fun isSuppressed(config: CwtMemberConfig<*>, toolId: String): Boolean {
-        //基于"## suppress TOOL_ID"，跳过对应的代码检查
-        if (config.findOption { it.key == "suppress" && it.stringValue == toolId } != null) return true
+        // 基于 "## suppress TOOL_ID"，跳过对应的代码检查
+        if (config.optionData { suppressSet }.contains(toolId)) return true
         return false
     }
 

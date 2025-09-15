@@ -7,15 +7,14 @@ import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.optionValues
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.core.collections.filterIsInstance
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.findLastIsInstance
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
 /**
  * 提供各种扩展方法，以方便地获取选项数据。
  */
-@Suppress("unused")
 interface CwtOptionDataAccessorExtensionsAware {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
         return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }
@@ -33,8 +32,9 @@ interface CwtOptionDataAccessorExtensionsAware {
         return optionConfigs?.filterIsInstance<CwtOptionConfig> { it.key in keys }.orEmpty()
     }
 
-    fun CwtMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
-        return optionConfigs?.findIsInstance<CwtOptionValueConfig> { it.value == value }
+    @Suppress("unused")
+    fun CwtMemberConfig<*>.findOptionValues(): Set<String> {
+        return optionConfigs?.filterIsInstance<CwtOptionValueConfig>()?.mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull() }.orEmpty()
     }
 
     fun CwtOptionMemberConfig<*>.getOptionValue(): String? {
@@ -42,12 +42,13 @@ interface CwtOptionDataAccessorExtensionsAware {
     }
 
     fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? {
-        return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
+        return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue }
     }
 
     fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
         return getOptionValue()?.singleton?.set() ?: getOptionValues()
     }
 
+    @Suppress("unused")
     companion object : CwtOptionDataAccessorExtensionsAware
 }

@@ -14,14 +14,8 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.getOptionValueOrValues
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.fileInfo
@@ -37,9 +31,6 @@ import java.nio.file.Path
 import java.util.*
 
 object ParadoxFileManager {
-    object Keys : KeyRegistry() {
-        val fileExtensions by createKey<Set<String>>(Keys)
-    }
 
     private val logger = logger<ParadoxFileManager>()
 
@@ -55,9 +46,8 @@ object ParadoxFileManager {
     }
 
     fun getFileExtensionOptionValues(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.fileExtensions) {
-            config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
-        }
+        // 统一走 CwtOptionDataAccessors 的缓存
+        return config.optionData { fileExtensions }
     }
 
     /**

@@ -4,16 +4,15 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 
 class CwtExtendedDefinitionConfigResolverImpl : CwtExtendedDefinitionConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? = doResolve(config)
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfigImpl? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val type = config.findOption("type")?.stringValue ?: return null
-        val hint = config.findOption("hint")?.stringValue
+        val type = config.optionData { type } ?: return null
+        val hint = config.optionData { hint }
         return CwtExtendedDefinitionConfigImpl(config, name, type, hint)
     }
 }

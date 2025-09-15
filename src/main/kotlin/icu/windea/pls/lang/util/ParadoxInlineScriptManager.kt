@@ -13,12 +13,11 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.extendedInlineScripts
@@ -72,7 +71,6 @@ object ParadoxInlineScriptManager {
     }
 
     const val inlineScriptKey = "inline_script"
-    const val inlineScriptExpressionOptionName = "inline_script_expression"
     const val inlineScriptPathExpressionString = "filepath[common/inline_scripts/,.txt]"
 
     val inlineScriptPathExpression = CwtDataExpression.resolve(inlineScriptPathExpressionString, false)
@@ -156,7 +154,7 @@ object ParadoxInlineScriptManager {
     fun getInlineScriptExpressionFromInlineConfig(element: ParadoxScriptProperty, inlineConfig: CwtInlineConfig): String? {
         if (element.name.lowercase() != inlineScriptKey) return null
         if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
         val expressionElement = element.findByPath(expressionLocation, ParadoxScriptValue::class.java)
         val expression = expressionElement?.stringValue() ?: return null
         return expression
@@ -167,7 +165,7 @@ object ParadoxInlineScriptManager {
         val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
         val inlineConfig = config.inlineConfig ?: return null
         if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
         val expressionElement = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
         return expressionElement
     }
@@ -182,7 +180,7 @@ object ParadoxInlineScriptManager {
         val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
         val inlineConfig = config.inlineConfig ?: return null
         if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
+        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
         val expressionElement0 = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
         if (expressionElement0 != expressionElement) return null
         return contextReferenceElement
@@ -232,7 +230,7 @@ object ParadoxInlineScriptManager {
                 val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p1 true
                 val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p1 true
                 val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-                if(fastInference && usageConfigs.isNotNullOrEmpty()) {
+                if (fastInference && usageConfigs.isNotNullOrEmpty()) {
                     result.set(usageConfigs)
                     return@p1 false
                 }

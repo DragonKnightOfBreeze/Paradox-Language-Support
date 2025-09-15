@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.findOptionValue
+import icu.windea.pls.config.config.optionFlags
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
@@ -59,7 +59,7 @@ object CwtConfigCollector {
 
     private fun applyTagOption(config: CwtMemberConfig<*>) {
         //#123 mark tag type as predefined for config
-        if (config is CwtValueConfig && config.findOptionValue("tag") != null) {
+        if (config is CwtValueConfig && config.optionFlags.tag) {
             config.tagType = CwtTagType.Predefined
         }
     }

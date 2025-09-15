@@ -4,8 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.component1
 import icu.windea.pls.core.component2
 import icu.windea.pls.core.component3
@@ -142,6 +141,6 @@ object ParadoxColorManager {
     }
 
     private fun getColorType(configToGetOption: CwtMemberConfig<*>): String? {
-        return configToGetOption.findOption { it.key == "color_type" }?.stringValue
+        return configToGetOption.optionData { colorType }
     }
 }

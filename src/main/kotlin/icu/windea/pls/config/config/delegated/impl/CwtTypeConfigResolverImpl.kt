@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.bindConfig
-import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
@@ -12,8 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
-import icu.windea.pls.config.config.getOptionValueOrValues
-import icu.windea.pls.config.config.getOptionValues
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
@@ -27,7 +25,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
-import icu.windea.pls.model.CwtSeparatorType
+
 
 internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
@@ -49,10 +47,10 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
         var unique = false
         var severity: String? = null
         var skipRootKey: MutableList<List<String>>? = null
-        var typeKeyFilter: ReversibleValue<Set<String>>? = null
-        var typeKeyRegex: Regex? = null
-        var startsWith: String? = null
-        var graphRelatedTypes: Set<String>? = null
+        val typeKeyFilter = config.optionData { typeKeyFilter }
+        val typeKeyRegex = config.optionData { typeKeyRegex }
+        val startsWith = config.optionData { startsWith }
+        val graphRelatedTypes = config.optionData { graphRelatedTypes }
         val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
         var localisation: CwtTypeLocalisationConfig? = null
         var images: CwtTypeImagesConfig? = null
@@ -112,28 +110,6 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
             run {
                 val subtypeConfig = CwtSubtypeConfig.resolve(prop) ?: return@run
                 subtypes[subtypeConfig.name] = subtypeConfig
-            }
-        }
-
-        val options = config.optionConfigs.orEmpty()
-        for (option in options) {
-            if (option !is CwtOptionConfig) continue
-            when (option.key) {
-                "type_key_filter" -> {
-                    // 值可能是string也可能是stringArray
-                    val values = option.getOptionValueOrValues() ?: continue
-                    val set = caseInsensitiveStringSet() // 忽略大小写
-                    set.addAll(values)
-                    val o = option.separatorType == CwtSeparatorType.EQUAL
-                    typeKeyFilter = ReversibleValue(o, set.optimized())
-                }
-                "type_key_regex" -> {
-                    typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
-                }
-                "starts_with" -> startsWith = option.stringValue ?: continue // 忽略大小写
-                "graph_related_types" -> {
-                    graphRelatedTypes = option.getOptionValues()
-                }
             }
         }
 

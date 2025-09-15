@@ -4,15 +4,14 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 
 class CwtExtendedComplexEnumValueConfigResolverImpl : CwtExtendedComplexEnumValueConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig = doResolve(config, type)
 
     private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfigImpl {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.findOption("hint")?.stringValue
+        val hint = config.optionData { hint }
         return CwtExtendedComplexEnumValueConfigImpl(config, name, type, hint)
     }
 }

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.findOption
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.processDescendants
@@ -42,7 +42,7 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
             }
         }
 
-        val searchScopeType = config.findOption("search_scope_type")?.stringValue
+        val searchScopeType = config.optionData { searchScopeType }
 
         if (nameConfig == null) return null
         return CwtComplexEnumConfigImpl(

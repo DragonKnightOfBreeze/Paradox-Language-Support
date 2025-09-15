@@ -5,9 +5,8 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.findOptionValue
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
+import icu.windea.pls.config.config.optionFlags
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -22,9 +21,9 @@ internal class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConf
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfigImpl? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextKey = config.findOption("context_key")?.stringValue ?: return null
-        val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
-        val inherit = config.findOptionValue("inherit") != null
+        val contextKey = config.optionData { contextKey } ?: return null
+        val contextConfigsType = config.optionData { contextConfigsType }
+        val inherit = config.optionFlags.inherit
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
 }

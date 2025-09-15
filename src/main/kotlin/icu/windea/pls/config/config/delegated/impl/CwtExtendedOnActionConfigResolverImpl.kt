@@ -4,16 +4,15 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 
 internal class CwtExtendedOnActionConfigResolverImpl : CwtExtendedOnActionConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? = doResolve(config)
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfigImpl? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val eventType = config.findOption("event_type")?.stringValue ?: return null
-        val hint = config.findOption("hint")?.stringValue
+        val eventType = config.optionData { eventType } ?: return null
+        val hint = config.optionData { hint }
         return CwtExtendedOnActionConfigImpl(config, name, eventType, hint)
     }
 }

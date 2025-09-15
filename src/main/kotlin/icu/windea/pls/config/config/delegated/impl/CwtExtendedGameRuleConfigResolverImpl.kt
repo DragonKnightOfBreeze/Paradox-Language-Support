@@ -4,8 +4,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigManipulator
 
 internal class CwtExtendedGameRuleConfigResolverImpl : CwtExtendedGameRuleConfig.Resolver {
@@ -13,7 +12,7 @@ internal class CwtExtendedGameRuleConfigResolverImpl : CwtExtendedGameRuleConfig
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfigImpl {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val hint = config.findOption("hint")?.stringValue
+        val hint = config.optionData { hint }
         return CwtExtendedGameRuleConfigImpl(config, name, hint)
     }
 }

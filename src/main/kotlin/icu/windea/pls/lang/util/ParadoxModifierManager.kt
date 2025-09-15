@@ -11,8 +11,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.getOptionValues
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -290,8 +289,7 @@ object ParadoxModifierManager {
 
     private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[finalValue] ?: return null
-        return valueConfig.getOrPutUserData(ParadoxEconomicCategoryManager.Keys.modifierCategories) {
-            valueConfig.findOption("modifier_categories")?.getOptionValues()
-        }
+        // 统一使用选项数据访问器的缓存
+        return valueConfig.optionData { modifierCategories }
     }
 }

@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.util.data.CwtOptionDataAccessor
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors
+import icu.windea.pls.config.util.data.CwtOptionFlags
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -26,6 +27,9 @@ val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float
 val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
 val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
+
+/** 通过 [CwtOptionFlags] 获取选项标志。 */
+val CwtMemberConfig<*>.optionFlags: CwtOptionFlags get() = CwtOptionFlags.from(this)
 
 /** 通过 [CwtOptionDataAccessor] 获取选项数据。 */
 fun <T> CwtMemberConfig<*>.optionData(accessor: CwtOptionDataAccessor<T>): T = accessor.get(this)

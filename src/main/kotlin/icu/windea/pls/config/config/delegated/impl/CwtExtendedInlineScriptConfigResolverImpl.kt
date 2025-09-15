@@ -4,8 +4,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
-import icu.windea.pls.config.config.findOption
-import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -15,7 +14,7 @@ internal class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScri
 
     private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfigImpl {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextConfigsType = config.findOption("context_configs_type")?.stringValue ?: "single"
+        val contextConfigsType = config.optionData { contextConfigsType }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }
 }
