@@ -32,7 +32,7 @@ object PlsTigerLintManager {
         val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
     }
 
-    //追踪相关配置（包括可执行文件路径和.conf配置文件）的更改
+    // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     val modificationTrackers = mutableMapOf<ParadoxGameType, SimpleModificationTracker>().withDefault { SimpleModificationTracker() }
 
     fun isEnabled(): Boolean = PlsFacade.getIntegrationsSettings().lint.enableTiger
@@ -47,21 +47,21 @@ object PlsTigerLintManager {
         if (file.language !is ParadoxBaseLanguage) return false
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Mod) return false //目前的实现：仅适用于模组目录（中的文件）
-        if (PlsFacade.getGameOrModSettings(rootInfo)?.options?.disableTiger == true) return false //检查是否在游戏或模组设置中禁用
+        if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）
+        if (PlsFacade.getGameOrModSettings(rootInfo)?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         return findTigerTool(gameType) != null
     }
 
     fun getTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
-        //Tiger执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
+        // Tiger 执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
 
         if (!isEnabled()) return null
-        return doGetTigerLintResultForFileFromCache(file)
+        return runReadAction { doGetTigerLintResultForFileFromCache(file) }
     }
 
     private fun doGetTigerLintResultForFileFromCache(file: PsiFile): PlsTigerLintResult? {
-        //当当前文件发生变化时，或者相关配置发生变化时，刷新缓存
+        // 当当前文件发生变化时，或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(file) ?: return null
         return CachedValuesManager.getCachedValue(file, Keys.cachedTigerLintResult) {
@@ -76,27 +76,30 @@ object PlsTigerLintManager {
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val rootFile = rootInfo.rootFile
-        val rootDirectory = runReadAction { rootFile.toPsiDirectory(file.project) } ?: return null
-        val allResult = getTigerLintResultForRootDirectory(rootDirectory) ?: return null
+        val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
+        val allResult = synchronized(rootDirectory.virtualFile) { // 这里需要加锁
+            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
+        } ?: return null
         val result = allResult.fromPath(fileInfo.path.path)
         return result
     }
 
+    @Suppress("unused")
     fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
         if (!isEnabled()) return null
-        return synchronized(rootDirectory.virtualFile) {
-            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
+        return synchronized(rootDirectory.virtualFile) { // 这里需要加锁
+            runReadAction { doGetTigerLintResultForRootDirectoryFromCache(rootDirectory) }
         }
     }
 
     private fun doGetTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): PlsTigerLintResult? {
-        //当当前文件（即根目录）发生变化时，或者任意脚本或本地化文件发生变化时（这个条件已经足够），或者相关配置发生变化时，刷新缓存
+        // 当当前文件（即根目录）发生变化时，或者任意脚本或本地化文件发生变化时（这个条件已经足够），或者相关配置发生变化时，刷新缓存
 
         val gameType = selectGameType(rootDirectory) ?: return null
         return CachedValuesManager.getCachedValue(rootDirectory, Keys.cachedTigerLintResult) {
             val value = doGetTigerLintResultForRootDirectory(rootDirectory)
             val trackers = mutableListOf(rootDirectory, modificationTrackers.getValue(gameType))
-            if (value == null || value.error != null) { //如果执行Tiger检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
+            if (value == null || value.error != null) { // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
                 trackers += ParadoxModificationTrackers.FileTracker
             }
             value.withDependencyItems(trackers.toTypedArray())

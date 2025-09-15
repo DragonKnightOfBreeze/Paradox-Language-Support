@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.lints.tools
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.executeCommand
@@ -53,13 +54,14 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         val wd = fullExePath.parent?.toFile()
         val exe = fullExePath.name
 
+        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
         val command = "./$exe --version"
-        executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
         return true
     }
 
     final override fun validateFile(file: VirtualFile): PlsTigerLintResult? {
-        return null //unsupported
+        return null // unsupported
     }
 
     final override fun validateRootDirectory(rootDirectory: VirtualFile): PlsTigerLintResult? {
@@ -81,14 +83,15 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootPath)
         val argGamePath = modSettings?.gameDirectory?.orNull()?.quote('\'')
         val argConfPath = confPath?.orNull()?.quote('\'')
-        val argPath = rootPath.quote('\'') //这里应该都可以直接输入模组目录
+        val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
 
-        //必须指定输出的json文件，然后从中读取检查结果（之后不删除这个临时文件）
+        // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
         val lintResultsPath = PlsPathConstants.lintResults
         lintResultsPath.createDirectories()
         val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
         val argOutputPath = outputPath.toString().quote('\'')
 
+        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
         val command = buildString {
             append("./$exe --json")
             if (argGamePath != null) append(" --game ").append(argGamePath)
@@ -96,9 +99,9 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
             append(" ").append(argPath)
             append(" > ").append(argOutputPath)
         }
-        executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
 
-        return PlsTigerLintResult.parse(name, outputPath.toFile()) //如果无法解析json，这里会直接报错
+        return PlsTigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
     }
 
     class Ck3 : PlsTigerLintToolProvider() {
