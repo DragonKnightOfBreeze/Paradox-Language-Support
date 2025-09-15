@@ -97,7 +97,7 @@ dependencies {
     // implementation("org.ktorm:ktorm-core:3.6.0")
     // implementation("org.ktorm:ktorm-support-sqlite:3.6.0")
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.40.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.41.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
 
