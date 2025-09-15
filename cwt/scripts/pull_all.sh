@@ -14,6 +14,10 @@ cd $root_path/cwtools-eu4-config
 git pull https://github.com/cwtools/cwtools-eu4-config master && echo "git pull cwtools/cwtools-eu4-config: DONE" 2>&1
 git pull origin master && echo "git pull cwtools-eu4-config: DONE" 2>&1
 
+cd $root_path/cwtools-eu5-config
+git pull https://github.com/cwtools/cwtools-eu5-config master && echo "git pull cwtools/cwtools-eu5-config: DONE" 2>&1
+git pull origin master && echo "git pull cwtools-eu5-config: DONE" 2>&1
+
 cd $root_path/cwtools-hoi4-config
 git pull https://github.com/cwtools/cwtools-hoi4-config master && echo "git pull cwtools/cwtools-hoi4-config: DONE" 2>&1
 git pull origin master && echo "git pull cwtools-hoi4-config: DONE" 2>&1

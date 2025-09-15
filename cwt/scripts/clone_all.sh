@@ -13,6 +13,9 @@ git clone git@github.com:DragonKnightOfBreeze/cwtools-ck3-config && echo "git cl
 # rm -rf cwtools-eu4-config
 git clone git@github.com:DragonKnightOfBreeze/cwtools-eu4-config && echo "git clone cwtools-eu4-config: DONE" 2>&1
 
+# rm -rf cwtools-eu5-config
+git clone git@github.com:DragonKnightOfBreeze/cwtools-eu5-config && echo "git clone cwtools-eu5-config: DONE" 2>&1
+
 # rm -rf cwtools-hoi4-config
 git clone git@github.com:DragonKnightOfBreeze/cwtools-hoi4-config && echo "git clone cwtools-hoi4-config: DONE" 2>&1
 

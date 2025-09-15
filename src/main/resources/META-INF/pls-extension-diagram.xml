@@ -9,6 +9,7 @@
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck2EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck3EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Eu4EventTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extension.diagram.provider.Eu5EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Hoi4EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.IrEventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Vic2EventTreeDiagramProvider"/>

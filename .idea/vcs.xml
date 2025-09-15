@@ -219,6 +219,22 @@
           <option name="issueRegexp" value="([^/\n ]+/[^#\n]+)#(\d+)" />
           <option name="linkRegexp" value="https://github.com/$1/issues/$2" />
         </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu5-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu5-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-eu5-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="([^/\n\s]+/[^#\n\s]+)#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/$1/issues/$2" />
+        </IssueNavigationLink>
       </list>
     </option>
   </component>
@@ -227,6 +243,7 @@
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-ck2-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-ck3-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-eu4-config" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cwt/cwtools-eu5-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-hoi4-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-ir-config" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/cwt/cwtools-stellaris-config" vcs="Git" />

@@ -38,6 +38,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
         val settings = PlsFacade.getSettings()
+        val gameTypes = ParadoxGameType.getAll()
+            .filter { it != ParadoxGameType.Eu5 } // TODO hidden in plugin settings page until eu5 is released
         return panel {
             //general
             group(PlsBundle.message("settings.general")) {
@@ -46,7 +48,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
                     var defaultGameType = settings.defaultGameType
-                    comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                    comboBox(gameTypes, textListCellRenderer { it?.title })
                         .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             val oldDefaultGameType = defaultGameType
@@ -61,7 +63,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tip") }
                     val defaultGameDirectories = settings.defaultGameDirectories
-                    ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+                    gameTypes.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = defaultGameDirectories.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->

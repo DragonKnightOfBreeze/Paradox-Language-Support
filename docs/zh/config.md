@@ -61,7 +61,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 ### 游戏类型ID {#game-type-id}
 
-游戏类型ID目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`。（对于共享的规则分组则为`core`）
+游戏类型ID目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `eu5`, `hoi4`, `ir`, `vic2`, `vic3`。（对于共享的规则分组则为`core`）
 
 ## CWT规则文件 {#cwt-config-file}
 

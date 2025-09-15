@@ -235,6 +235,7 @@ val cwtConfigDirs = listOf(
     "cwtools-ck2-config" to "ck2",
     "cwtools-ck3-config" to "ck3",
     "cwtools-eu4-config" to "eu4",
+    "cwtools-eu5-config" to "eu5",
     "cwtools-hoi4-config" to "hoi4",
     "cwtools-ir-config" to "ir",
     "cwtools-stellaris-config" to "stellaris",

@@ -8,6 +8,7 @@ export const gameTypes = [
   'ck2',
   'ck3',
   'eu4',
+  'eu5',
   'hoi4',
   'ir',
   'vic2',

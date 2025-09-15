@@ -62,7 +62,7 @@ If these are no content in the custom config file, after applied, the plugin wil
 
 ### 游戏类型ID {#game-type-id}
 
-Here is the list of available game type ids: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`. (for shared config group, it is `core`)
+Here is the list of available game type ids: `stellaris`, `ck2`, `ck3`, `eu4`, `eu5`, `hoi4`, `ir`, `vic2`, `vic3`. (for shared config group, it is `core`)
 
 ## CWT Config File {#cwt-config-file}
 

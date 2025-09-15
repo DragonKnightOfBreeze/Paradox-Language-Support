@@ -28,6 +28,15 @@ class CwtOnActionConfigFromCsvGeneratorTest {
     }
 
     @Test
+    fun testForEu5() {
+        CwtOnActionConfigFromCsvGenerator(
+            ParadoxGameType.Eu5,
+            "cwt/cwtools-eu5-config/on_actions.csv",
+            "cwt/cwtools-eu5-config/on_actions.cwt",
+        ).generate()
+    }
+
+    @Test
     fun testForHoi4() {
         CwtOnActionConfigFromCsvGenerator(
             ParadoxGameType.Hoi4,

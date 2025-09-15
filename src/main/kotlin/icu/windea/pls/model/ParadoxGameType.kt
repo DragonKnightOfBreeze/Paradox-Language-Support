@@ -19,6 +19,7 @@ enum class ParadoxGameType(
     Ck2("ck2", "Crusader Kings II", "ck2", "203770", EntryNames.other),
     Ck3("ck3", "Crusader Kings III", "ck3", "1158310", EntryNames.other),
     Eu4("eu4", "Europa Universalis IV", "eu4", "236850", EntryNames.other),
+    Eu5("eu5", "Europa Universalis V", "eu5", "3450310", EntryNames.other),
     Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360", EntryNames.other),
     Ir("ir", "Imperator: Rome", "ir", "859580", EntryNames.other),
     Vic2("vic2", "Victoria 2", "victoria2", "42960", EntryNames.other),
