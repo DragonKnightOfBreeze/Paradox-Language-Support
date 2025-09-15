@@ -29,8 +29,9 @@ class PromptTemplateImpl(
             logger.warn("Prompt template not found: $normalized")
             return ""
         }
-        val rendered = process(text, normalized, variables, 0, ArrayDeque())
-        return renderPlaceholders(rendered, variables)
+        val process = process(text, normalized, variables, 0, ArrayDeque<String>())
+        val finalProcessed = process
+        return renderPlaceholders(finalProcessed, variables)
     }
 
     // region 渲染主流程（包含 include/if 处理，最后再做占位符替换）
@@ -168,7 +169,7 @@ class PromptTemplateImpl(
             }
         }
 
-        return sb.toString().trim() // 再次去除首尾空白
+        return sb.toString()
     }
 
     /**
