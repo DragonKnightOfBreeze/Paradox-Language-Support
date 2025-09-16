@@ -5,7 +5,8 @@
 ## Position & Vision {#vision}
 
 This document aims to be the authoritative guide and quick reference for the syntax of the Domain-Specific Languages (DSLs) used when writing CWT config files and Paradox mods.
-We are confident in maintaining principles of clarity, accuracy, and practicality, ensuring consistency with actual usage and toolchain behavior. It will be continuously polished and improved alongside the evolution of the ecosystem and versions.
+It is in maintaining principles of clarity, accuracy, and practicality, ensuring consistency with actual usage and toolchain behavior, 
+and will be continuously polished and improved alongside the evolution of the ecosystem and versions.
 
 ## Overview {#overview}
 

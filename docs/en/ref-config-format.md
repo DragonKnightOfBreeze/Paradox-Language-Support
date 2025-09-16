@@ -1,14 +1,20 @@
 # Appendix: Config Formats Reference
 
-## Summary
+<!-- TODO 人工改进与润色 -->
+
+## Position & Vision {#vision}
 
 To be completed.
 
-## Configs
+## Overview {#overview}
 
 To be completed.
 
-## Config Expressions
+## Configs {#configs}
+
+To be completed.
+
+## Config Expressions {#config-expressions}
 
 > This section explains the purpose, syntax, default and edge-case behaviors of "config expressions" used in CWT config files (.cwt) and extension capabilities, helping mod authors write configs correctly.
 
@@ -122,7 +128,7 @@ a_enum[weight_or_base]_b
 Pitfalls:
 
 - When a constant snippet is immediately followed by something that looks like a config name, prefer correct recognition of dynamic configs to avoid treating "symbol + config-name" as a single constant.
-- If whitespace is needed, use a more appropriate matcher (e.g. ANT/regex).
+- If whitespace is needed, use a more appropriate matcher (e.g., ANT/regex).
 
 ---
 
@@ -161,7 +167,7 @@ Examples (from comment conventions):
 
 <!-- AI: maps to icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
-Locate target resources (images / localisations). If `$` appears in `location`, it denotes a placeholder and is typically substituted later (e.g. with definition names or attribute values).
+Locate target resources (images / localisations). If `$` appears in `location`, it denotes a placeholder and is typically substituted later (e.g., with definition names or attribute values).
 
 Defaults and edge cases:
 
