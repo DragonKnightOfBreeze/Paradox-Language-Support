@@ -30,7 +30,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
+ * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
  * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
  * @property elementPath 相对于所属文件的定义成员路径。
  */

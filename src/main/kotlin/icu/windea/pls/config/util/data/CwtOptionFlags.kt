@@ -23,16 +23,18 @@ class CwtOptionFlags private constructor(value: Set<String>) {
     /**
      * 用于在位置规则中，将对应位置的本地化和图片标记为必需项。
      *
-     * - 适用对象：位置规则（[CwtLocationConfig]）。
-     * - 兼容性：兼容。
+     * 适用对象：位置规则（[CwtLocationConfig]）。
+     *
+     * CWTools 兼容性：兼容。
      */
     val required = value.contains("required")
 
     /**
      * 用于在位置规则中，将对应位置的本地化和图片标记为可选项。
      *
-     * - 适用对象：位置规则（[CwtLocationConfig]）。
-     * - 兼容性：兼容。
+     * 适用对象：位置规则（[CwtLocationConfig]）。
+     *
+     * CWTools 兼容性：兼容。
      */
     val optional = value.contains("optional")
 
@@ -40,8 +42,9 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 用于在位置规则中，将对应位置的本地化和图片标记为主要项。
      * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
      *
-     * - 适用对象：位置规则（[CwtLocationConfig]）。
-     * - 兼容性：兼容。
+     * 适用对象：位置规则（[CwtLocationConfig]）。
+     *
+     * CWTools 兼容性：兼容。
      */
     val primary = value.contains("primary")
 
@@ -49,8 +52,9 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 用于在部分扩展规则中，注明规则上下文与作用域上下文将会被继承。
      * 即，继承自对应的使用处，与其保持一致。
      *
-     * - 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
-     * - 兼容性：PLS 扩展。
+     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
      *
      * @see CwtExtendedInlineScriptConfig
      * @see CwtExtendedParameterConfig
@@ -61,8 +65,9 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 用于将作为单独的值的成员规则标记为预定义的标签。
      * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
      *
-     * - 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
-     * - 兼容性：PLS 扩展。
+     * 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
      *
      * @see CwtTagType
      */
@@ -79,12 +84,12 @@ class CwtOptionFlags private constructor(value: Set<String>) {
          * 示例：
          * ```cwt
          * type[technology] = {
-         * 	# ...
-         * 	localisation = {
-         * 		## required
-         * 		## primary
-         * 		name = "$"
-         * 	}
+         *     # ...
+         *     localisation = {
+         *         ## required
+         *         ## primary
+         *         name = "$"
+         *     }
          * }
          * ```
          */

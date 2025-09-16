@@ -4,7 +4,9 @@ import icu.windea.pls.config.configExpression.impl.CwtLocalisationLocationExpres
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * CWT 本地化位置表达式。用于定位定义的相关本地化。
+ * CWT 本地化位置表达式。
+ *
+ * 用于定位定义的相关本地化。
  *
  * 语法与约定：
  * - 以 `|` 分隔参数：`<location>|<args...>`。
@@ -12,15 +14,20 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * - 参数 `u` 表示将最终名称强制转为大写（[forceUpperCase]）。仅限使用占位符时有效。
  * - 当 [location] 含 `$` 时表示存在占位符，需要在后续步骤以“定义名或属性值”等替换。
  *
- * 示例：
+ * CWTools 兼容性：兼容，但语法上存在一定扩展。
  *
- * * "$_desc" -> 用当前定义的名字替换占位符，解析为本地化的名字。
- * * "$_desc|$name" -> 在前者基础上，改为用指定路径（`name`）的属性值替换占位符（多路径逗号分隔）。
- * * "$_desc|$name|u" -> 在前者基础上，强制解析为大写的本地化的名字。
- * * "title" -> 得到当前定义声明中指定路径（`title`）的属性的值，解析为本地化的名字。
+ * 示例：
+ * ```cwt
+ * desc = "$_desc" # 用当前定义的名字替换占位符，解析为本地化的名字。
+ * desc = "$_desc|$name" # 在前者基础上，改为用指定路径（`name`）的属性值替换占位符（多路径逗号分隔）。
+ * desc = "$_desc|$name|u" # 在前者基础上，强制解析为大写的本地化的名字。
+ * title = "title" # 得到当前定义声明中指定路径（`title`）的属性的值，解析为本地化的名字。
+ * ```
  *
  * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
  * @property forceUpperCase 本地化的名字是否需要强制大写。
+ *
+ * @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
  */
 interface CwtLocalisationLocationExpression : CwtLocationExpression {
     val namePaths: Set<String>

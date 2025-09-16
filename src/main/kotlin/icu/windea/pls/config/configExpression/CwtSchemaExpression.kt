@@ -6,7 +6,8 @@ import icu.windea.pls.config.configExpression.impl.CwtSchemaExpressionResolverIm
 /**
  * CWT 架构（schema）表达式。
  *
- * 该表达式用于描述规则右侧允许的取值形态，常见于 `.cwt` 的数据类型或占位模板中。
+ * 用于描述规则右侧允许的取值形态，从而为规则文件本身提供代码补全、代码检查等功能。
+ * 目前仅用于提供基础的代码补全，且仅在 `cwt/core/schema.cwt` 中有用到。
  *
  * 支持的形态：
  * - 常量（[Constant]）：不包含 `$` 的原样字符串。
@@ -20,7 +21,9 @@ import icu.windea.pls.config.configExpression.impl.CwtSchemaExpressionResolverIm
  * - 模板形态中，所有未被转义的 `$...$` 片段会被视为参数；其在 `pattern` 中将以 `*` 占位，
  *   同时记录每个参数在原始字符串中的范围，便于二次处理与高亮。
  *
- * @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfig
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * @see icu.windea.pls.config.config.internal.CwtSchemaConfig
  * @see icu.windea.pls.config.util.CwtConfigManager
  * @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
  */
