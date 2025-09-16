@@ -1,8 +1,16 @@
 package icu.windea.pls.config.util.data
 
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.options
 import icu.windea.pls.config.config.stringValue
@@ -46,7 +54,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 指定后续规则项的匹配次数上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
      * 若未显式指定且该成员为“常量类型”，PLS 默认推断为 `1..~1`（必须出现一次，超过仅作弱警告）。
      *
-     * - 适用对象：绝大多数成员规则（属性、值、别名等）
+     * - 适用对象：绝大多数成员规则（属性、值、别名等）。
      * - 示例（.cwt）：`## cardinality = 0..1`
      * - 兼容性：兼容。默认推断逻辑为 PLS 的增强（详见 [config.md](https://windea.icu/Paradox-Language-Support/config.md)）。
      */
@@ -66,6 +74,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 通过字符串路径（如 `NGameplay/ETHOS_MIN_POINTS`）动态指定最小次数。
      *
+     * - 适用对象：一般成员规则。
      * - 示例（.cwt）：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
      * - 兼容性：PLS 扩展。
      */
@@ -76,6 +85,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     /**
      * 最大基数（从 Define 预设动态获取）。
      *
+     * - 适用对象：一般成员规则。
      * - 示例（.cwt）：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
      * - 兼容性：PLS 扩展。
      */
@@ -108,6 +118,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
      * - 示例（.cwt）：`## replace_scopes = { this = country root = country }`
      * - 兼容性：兼容。PLS 会做作用域 ID 归一化。
+     *
+     * @see ParadoxScopeManager
+     * @see icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProviders
      */
     val replaceScopes: CwtOptionDataAccessor<Map<String, String>?> by create(cached = true) {
         val option = findOption("replace_scope", "replace_scopes")
@@ -132,6 +145,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
      * - 示例（.cwt）：`## push_scope = country`
      * - 兼容性：兼容。PLS 会做作用域 ID 归一化。
+     *
+     * @see ParadoxScopeManager
+     * @see icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProviders
      */
     val pushScope: CwtOptionDataAccessor<String?> by create(cached = true) {
         val option = findOption("push_scope")
@@ -145,6 +161,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * - 适用对象：各种可存在作用域上下文的规则（如定义、别名、扩展规则等）。
      * - 兼容性：兼容。PLS 会做作用域 ID 归一化。
+     *
+     * @see ParadoxScopeManager
+     * @see icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProviders
      */
     val scopeContext: CwtOptionDataAccessor<ParadoxScopeContext?> by create(cached = true) {
         val replaceScopes = optionData { replaceScopes }
@@ -156,11 +175,14 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     /**
      * 支持的作用域。默认支持任意作用域。
      *
-     * - 适用对象：触发（trigger）与效应（effect）对应的别名改规则。
+     * - 适用对象：触发（trigger）与效应（effect）对应的别名规则。
      * - 示例（.cwt）：
-     *   - `## scope = country`
-     *   - `## scopes = { country planet }`
+       - `## scope = country`
+       - `## scopes = { country planet }`
      * - 兼容性：兼容。PLS 会做作用域 ID 归一化。
+     *
+     * @see CwtAliasConfig
+     * @see icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl
      */
     val supportedScopes: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
         // ignore case for scopes (to lowercase)
@@ -174,7 +196,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 用于在扩展的定义规则中声明定义的类型。
      *
-     * - 适用对象：扩展的定义规则（`CwtExtendedDefinitionConfig`）。
+     * - 适用对象：扩展的定义规则（[CwtExtendedDefinitionConfig]）。
+     *
+     * @see CwtExtendedDefinitionConfig
      * - 示例（.cwt）：`## type = scripted_trigger`
      * - 兼容性：PLS 扩展。
      */
@@ -188,6 +212,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 用于在部分扩展规则中使用，以提供额外的内嵌提示。
      *
      * - 适用对象：部分扩展规则。
+     * - 示例（.cwt）：`## hint = "一些提示"`
      * - 兼容性：PLS 扩展。
      */
     val hint: CwtOptionDataAccessor<String?> by create(cached = true) {
@@ -198,8 +223,10 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 事件类型。
      *
      * 用于在扩展的 on_action 规则中指示事件类型（如 `country`、`system`）。
-     *
+     * - 示例（.cwt）：`## event_type = country`
      * - 适用对象：扩展的 on_action 规则（[CwtExtendedOnActionConfig]）。
+     *
+     * @see CwtExtendedOnActionConfig
      * - 兼容性：PLS 扩展。用于 on_action 相关的解析与显示。
      */
     val eventType: CwtOptionDataAccessor<String?> by create(cached = true) {
@@ -225,7 +252,10 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
      * 未指定时默认 `single`。
      *
-     * - 适用对象：部分可指定规则上下文的扩展规则（如 `CwtExtendedInlineScriptConfig`）。
+     * - 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     * - 示例（.cwt）：`## context_configs_type = multiple`
+     *
+     * @see CwtExtendedInlineScriptConfig
      * - 兼容性：PLS 扩展。见 `inline_scripts`、`parameters` 章节。
      */
     val contextConfigsType: CwtOptionDataAccessor<String> by create(cached = true) {
@@ -236,6 +266,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 分组名（group）。
      *
      * 常用于 `subtype[...]` 的分组管理，也可在 UI 展示中使用。
+     *
+     * - 适用对象：子类型规则（[CwtSubtypeConfig]）、以及其它需要分组展示的扩展规则。
+     * - 示例（.cwt）：`## group = ships`
      *
      * - 兼容性：PLS 扩展。
      */
@@ -248,7 +281,10 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 用于约束查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：definition）。
      *
-     * - 适用对象：复杂枚举规则（`CwtComplexEnumConfig`）。
+     * - 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
+     * - 示例（.cwt）：`## search_scope_type = definition`
+     *
+     * @see CwtComplexEnumConfig
      * - 兼容性：PLS 扩展。
      */
     val searchScopeType: CwtOptionDataAccessor<String?> by create(cached = true) {
@@ -261,11 +297,16 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 用于 `type[...]` 与 `subtype[...]` 的候选过滤，值可为单个或列表。忽略大小写。
      * 分隔符决定“正/反”含义：`=` 为包含、`!=`（或 `<>`）为排除。
      *
-     * - 适用对象：类型规则（`CwtTypeConfig`）与子类型规则（`CwtSubtypeConfig`）。
+     * - 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
      * - 示例（.cwt）：
      *   - `## type_key_filter = country_event`
      *   - `## type_key_filter = { ship country }`
      * - 兼容性：兼容。PLS 在实现层面进行了大小写与集合优化。
+     *
+     * @see CwtTypeConfig
+     * @see CwtSubtypeConfig
+     * @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
+     * @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl
      */
     val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<String>>?> by create(cached = true) {
         // 值可能是 string 也可能是 stringArray
@@ -279,7 +320,12 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     /**
      * 类型键正则过滤器（忽略大小写）。
      *
-     * - 适用对象：类型规则（`CwtTypeConfig`）与子类型规则（`CwtSubtypeConfig`）。
+     * - 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
+     *
+     * @see CwtTypeConfig
+     * @see CwtSubtypeConfig
+     * @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
+     * @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl
      * - 示例（.cwt）：`## type_key_regex = "^ship_.*$"`
      * - 兼容性：PLS 扩展。
      */
@@ -292,7 +338,12 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 限定类型/子类型键必须以指定前缀开头。PLS 不做大小写归一化，按字面匹配。
      *
-     * - 适用对象：类型规则（`CwtTypeConfig`）与子类型规则（`CwtSubtypeConfig`）。
+     * - 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
+     *
+     * @see CwtTypeConfig
+     * @see CwtSubtypeConfig
+     * @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
+     * @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl
      * - 示例（.cwt）：`## starts_with = ship_`
      * - 兼容性：兼容。
      */
@@ -306,7 +357,10 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 指定一个集合，只要“名称不在集合内”即可匹配。
      *
-     * - 适用对象：子类型规则（`CwtSubtypeConfig`）。
+     * - 适用对象：子类型规则（[CwtSubtypeConfig]）。
+     *
+     * @see CwtSubtypeConfig
+     * @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl
      * - 示例（.cwt）：`## only_if_not = { simple complex }`
      * - 兼容性：兼容。
      */
@@ -331,7 +385,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 用于约束路径引用，从而提供代码检查与过滤代码补全。
      *
-     * - 适用对象：值为路径引用（`CwtDataTypeGroups.PathReference`）的成员规则。
+     * - 适用对象：值为路径引用（参见 [CwtDataTypeGroups]）的成员规则。
      * - 示例（.cwt）：`## file_extensions = { txt md }`
      * - 兼容性：PLS 扩展。
      *

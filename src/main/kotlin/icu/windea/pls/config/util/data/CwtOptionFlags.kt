@@ -1,49 +1,71 @@
 package icu.windea.pls.config.util.data
 
+import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigCollector
+import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
+import icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 
 /**
  * 选项标志（Option Flags）。
  *
- * 描述与用处：
- * - 在 `.cwt` 规则中，某些“无键的选项值”（形如 `## required`、`## primary`）用于给规则项增加布尔型标志。
+ * 概述：
+ * - 在 `.cwt` 规则中，某些“无键的选项值”（如 `## required`、`## primary`）用于给规则项增加布尔型标志。
  * - 本类将这些标志统一解析为布尔字段，便于在各解析/提示流程中快速判断。
- * - PLS 对以下标志提供支持：`required`、`optional`、`primary`、`inherit`、`tag`。
+ * - 支持的标志包括：`required`、`optional`、`primary`、`inherit`、`tag`。
  *
- * 差异与兼容性：
- * - `required`、`primary`：与 CWTools 行为一致，常用于 Localisation 规则；PLS 亦用于其他扩展场景（如位置字段）。
- * - `optional`：PLS 扩展；有些场景可用 `cardinality` 表达“可选”，但 PLS 仍允许显式 `## optional` 参与本地判定。
- * - `inherit`：PLS 扩展；用于参数（parameters）等场景，指示继承上下文配置（见 `CwtExtendedParameterConfigResolverImpl`）。
- * - `tag`：PLS 扩展；用于将 `CwtValueConfig` 标记为“预定义标签”（见 `CwtConfigCollector.applyTagOption`）。
- *
- * 示例（.cwt）：
- * ```cwt
- * localisation = {
- *     name = "$"
- *     ## required
- *     ## primary
- *     desc = "$_desc"
- * }
- * ```
+ * 兼容性：
+ * - 与 CWTools 的同名标志兼容；个别标志为 PLS 扩展，具体见对应属性的文档注释。
  */
 class CwtOptionFlags private constructor(value: Set<String>) {
-    /** 是否标记为必需。与 CWTools 规则兼容，常见于 Localisation 条目。 */
+    /**
+     * 是否标记为必需。
+     *
+     * - 兼容性：兼容。常见于本地化位置条目（Localisation）。
+     *
+     * @see CwtLocationConfigResolverImpl
+     */
     val required = value.contains("required")
 
-    /** 是否标记为可选。PLS 扩展；在部分地方与 `cardinality` 可互补/冗余。 */
+    /**
+     * 是否标记为可选。
+     *
+     * - 兼容性：PLS 扩展。在部分场景可与 `cardinality` 互补/冗余。
+     *
+     * @see CwtLocationConfigResolverImpl
+     */
     val optional = value.contains("optional")
 
-    /** 是否标记为主要（Primary）。与 CWTools 规则兼容，常见于 Localisation 的主要展示文本。 */
+    /**
+     * 是否标记为主要（Primary）。
+     *
+     * - 兼容性：兼容。常用于本地化的主要展示文本标记。
+     *
+     * @see CwtLocationConfigResolverImpl
+     */
     val primary = value.contains("primary")
 
-    /** 是否启用继承（inherit）。PLS 扩展；用于参数等场景以继承其上下文配置与作用域上下文。 */
+    /**
+     * 是否启用继承（inherit）。
+     *
+     * - 兼容性：PLS 扩展。用于参数等场景以继承其上下文配置与作用域上下文。
+     *
+     * @see CwtExtendedParameterConfigResolverImpl
+     */
     val inherit = value.contains("inherit")
 
-    /** 是否为标签（tag）。PLS 扩展；用于把值规则标记为“预定义标签”，影响类型标记与 UI 展示。 */
+    /**
+     * 是否为标签（tag）。
+     *
+     * - 兼容性：PLS 扩展。用于把值规则标记为“预定义标签”，影响类型标记与 UI 展示（[CwtTagType]）。
+     *
+     * @see CwtConfigCollector
+     * @see CwtTagType
+     */
     val tag = value.contains("tag")
 
     companion object {

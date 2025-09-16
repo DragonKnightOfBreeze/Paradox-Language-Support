@@ -13,7 +13,23 @@ import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
 /**
- * 提供各种扩展方法，以方便地获取选项数据。
+ * 选项数据读取扩展（Extensions Aware）。
+ *
+ * 概述：
+ * - 为规则成员（[CwtMemberConfig]）提供一组便捷方法，以在访问器实现中统一检索选项（[CwtOptionMemberConfig]）。
+ * - 常用于 [CwtOptionDataAccessors] 内部以及各类 Resolver 中，作为“底层原语”供上层访问器封装。
+ * - 通过这些扩展，可快速获取：单个/多个选项、选项值集合、或将标量/集合统一为集合（`getOptionValueOrValues()`）。
+ *
+ * 典型用法：
+ * - 在具体 accessor 中：`val option = findOption("push_scope")`、`option?.getOptionValue()`。
+ * - 在调用侧：`config.optionData { someAccessor }`（详见 [CwtOptionDataAccessors]）。
+ *
+ * 参考：
+ * - `references/cwt/guidance.md`（CWTools 指引，了解选项在规则中的语义）
+ * - `docs/zh/config.md`（PLS 规则系统说明与扩展）
+ *
+ * @see CwtOptionDataAccessors
+ * @see CwtOptionDataAccessor
  */
 interface CwtOptionDataAccessorExtensionsAware {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
