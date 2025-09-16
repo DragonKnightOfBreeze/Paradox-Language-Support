@@ -1,7 +1,10 @@
 package icu.windea.pls.config
 
 /**
- * 标签类型。用于标记特殊的值规则。脚本文件中的对应的值会启用特殊高亮。
+ * 标签类型。
+ *
+ * 用于标记特殊的值规则。
+ * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
  */
 enum class CwtTagType(
     val id: String

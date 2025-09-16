@@ -59,7 +59,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
 
     /**
      * 用于将作为单独的值的成员规则标记为预定义的标签。
-     * 这会提供特殊的语义高亮与快速文档。
+     * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
      *
      * - 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
      * - 兼容性：PLS 扩展。

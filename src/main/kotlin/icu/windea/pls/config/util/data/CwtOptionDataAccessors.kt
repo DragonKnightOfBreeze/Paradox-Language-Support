@@ -176,8 +176,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * - 适用对象：触发（trigger）与效应（effect）对应的别名规则（[CwtAliasConfig]）。
      * - 示例（.cwt）：
-       - `## scope = country`
-       - `## scopes = { country planet }`
+    - `## scope = country`
+    - `## scopes = { country planet }`
      * - 兼容性：兼容。PLS 会做作用域 ID 归一化。
      */
     val supportedScopes: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
@@ -196,7 +196,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## type = scripted_trigger`
      * - 兼容性：PLS 扩展。
      */
-    val type: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val type: CwtOptionDataAccessor<String?> by create {
         findOption("type")?.stringValue
     }
 
@@ -209,7 +209,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## hint = "一些提示"`
      * - 兼容性：PLS 扩展。
      */
-    val hint: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val hint: CwtOptionDataAccessor<String?> by create {
         findOption("hint")?.stringValue
     }
 
@@ -221,7 +221,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 适用对象：扩展的 on_action 规则（[CwtExtendedOnActionConfig]）。
      * - 兼容性：PLS 扩展。用于 on_action 相关的解析与显示。
      */
-    val eventType: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val eventType: CwtOptionDataAccessor<String?> by create {
         findOption("event_type")?.stringValue
     }
 
@@ -234,7 +234,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 适用对象：部分扩展规则。
      * - 兼容性：PLS 扩展。
      */
-    val contextKey: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val contextKey: CwtOptionDataAccessor<String?> by create {
         findOption("context_key")?.stringValue
     }
 
@@ -251,7 +251,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * @see CwtExtendedInlineScriptConfig
      * @see CwtExtendedParameterConfig
      */
-    val contextConfigsType: CwtOptionDataAccessor<String> by create(cached = true) {
+    val contextConfigsType: CwtOptionDataAccessor<String> by create {
         findOption("context_configs_type")?.stringValue ?: "single"
     }
 
@@ -277,7 +277,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## search_scope_type = definition`
      * - 兼容性：PLS 扩展。
      */
-    val searchScopeType: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val searchScopeType: CwtOptionDataAccessor<String?> by create {
         findOption("search_scope_type")?.stringValue
     }
 
@@ -293,7 +293,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *   - `## type_key_filter = { ship country }`
      * - 兼容性：兼容。PLS 在实现层面进行了大小写与集合优化。
      */
-    val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<String>>?> by create(cached = true) {
+    val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<String>>?> by create {
         // 值可能是 string 也可能是 stringArray
         val option = findOption("type_key_filter") ?: return@create null
         val values = option.getOptionValueOrValues() ?: return@create null
@@ -309,7 +309,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## type_key_regex = "^ship_.*$"`
      * - 兼容性：PLS 扩展。
      */
-    val typeKeyRegex: CwtOptionDataAccessor<Regex?> by create(cached = true) {
+    val typeKeyRegex: CwtOptionDataAccessor<Regex?> by create {
         findOption("type_key_regex")?.stringValue?.toRegex(RegexOption.IGNORE_CASE)
     }
 
@@ -322,7 +322,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## starts_with = ship_`
      * - 兼容性：兼容。
      */
-    val startsWith: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val startsWith: CwtOptionDataAccessor<String?> by create {
         // 不忽略大小写
         findOption("starts_with")?.stringValue
     }
@@ -336,7 +336,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## only_if_not = { simple complex }`
      * - 兼容性：兼容。
      */
-    val onlyIfNot: CwtOptionDataAccessor<Set<String>?> by create(cached = true) {
+    val onlyIfNot: CwtOptionDataAccessor<Set<String>?> by create {
         findOption("only_if_not")?.getOptionValueOrValues()
     }
 
@@ -348,7 +348,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * - 示例（.cwt）：`## graph_related_types = { special_project anomaly_category }`
      * - 兼容性：PLS 未实现相关功能。
      */
-    val graphRelatedTypes: CwtOptionDataAccessor<Set<String>?> by create(cached = true) {
+    val graphRelatedTypes: CwtOptionDataAccessor<Set<String>?> by create {
         findOption("graph_related_types")?.getOptionValues()
     }
 
@@ -393,7 +393,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * @see icu.windea.pls.lang.util.ParadoxColorManager.getColorType
      */
-    val colorType: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val colorType: CwtOptionDataAccessor<String?> by create {
         findOption("color_type")?.stringValue
     }
 
@@ -409,7 +409,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * @see icu.windea.pls.lang.inspections.ParadoxScriptConfigAwareInspectionSuppressor
      */
-    val suppressSet: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
+    val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
         findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }
     }
 

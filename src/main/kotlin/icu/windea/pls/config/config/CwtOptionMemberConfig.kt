@@ -8,4 +8,3 @@ sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
     val valueType: CwtType
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
 }
-

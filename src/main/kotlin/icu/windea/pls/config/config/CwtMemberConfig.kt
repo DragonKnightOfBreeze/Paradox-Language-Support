@@ -20,5 +20,3 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
 
     object Keys : KeyRegistry()
 }
-
-
