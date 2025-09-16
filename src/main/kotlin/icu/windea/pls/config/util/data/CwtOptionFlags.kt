@@ -3,67 +3,67 @@ package icu.windea.pls.config.util.data
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
+import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
+import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigCollector
-import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
-import icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 
 /**
  * 选项标志（Option Flags）。
  *
- * 概述：
- * - 在 `.cwt` 规则中，某些“无键的选项值”（如 `## required`、`## primary`）用于给规则项增加布尔型标志。
- * - 本类将这些标志统一解析为布尔字段，便于在各解析/提示流程中快速判断。
- * - 支持的标志包括：`required`、`optional`、`primary`、`inherit`、`tag`。
+ * 成员规则上可以存在多个单独且类似标识符的选项值，用于附加布尔型标志。
+ * 本类统一解析这些标志，便于检查特定的状态。
  *
- * 兼容性：
- * - 与 CWTools 的同名标志兼容；个别标志为 PLS 扩展，具体见对应属性的文档注释。
+ * @see CwtOptionValueConfig
  */
 class CwtOptionFlags private constructor(value: Set<String>) {
     /**
-     * 是否标记为必需。
+     * 用于在位置规则中，将对应位置的本地化和图片标记为必需项。
      *
-     * - 兼容性：兼容。常见于本地化位置条目（Localisation）。
-     *
-     * @see CwtLocationConfigResolverImpl
+     * - 适用对象：位置规则（[CwtLocationConfig]）。
+     * - 兼容性：兼容。
      */
     val required = value.contains("required")
 
     /**
-     * 是否标记为可选。
+     * 用于在位置规则中，将对应位置的本地化和图片标记为可选项。
      *
-     * - 兼容性：PLS 扩展。在部分场景可与 `cardinality` 互补/冗余。
-     *
-     * @see CwtLocationConfigResolverImpl
+     * - 适用对象：位置规则（[CwtLocationConfig]）。
+     * - 兼容性：兼容。
      */
     val optional = value.contains("optional")
 
     /**
-     * 是否标记为主要（Primary）。
+     * 用于在位置规则中，将对应位置的本地化和图片标记为主要项。
+     * 这意味着它们会作为最相关的本地化和图片，优先显示在快速文档和内嵌提示中。
      *
-     * - 兼容性：兼容。常用于本地化的主要展示文本标记。
-     *
-     * @see CwtLocationConfigResolverImpl
+     * - 适用对象：位置规则（[CwtLocationConfig]）。
+     * - 兼容性：兼容。
      */
     val primary = value.contains("primary")
 
     /**
-     * 是否启用继承（inherit）。
+     * 用于在部分扩展规则中，注明规则上下文与作用域上下文将会被继承。
+     * 即，继承自对应的使用处，与其保持一致。
      *
-     * - 兼容性：PLS 扩展。用于参数等场景以继承其上下文配置与作用域上下文。
+     * - 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     * - 兼容性：PLS 扩展。
      *
-     * @see CwtExtendedParameterConfigResolverImpl
+     * @see CwtExtendedInlineScriptConfig
+     * @see CwtExtendedParameterConfig
      */
     val inherit = value.contains("inherit")
 
     /**
-     * 是否为标签（tag）。
+     * 用于将作为单独的值的成员规则标记为预定义的标签。
+     * 这会提供特殊的语义高亮与快速文档。
      *
-     * - 兼容性：PLS 扩展。用于把值规则标记为“预定义标签”，影响类型标记与 UI 展示（[CwtTagType]）。
+     * - 适用对象：作为单独的值的成员规则（[CwtValueConfig]）。
+     * - 兼容性：PLS 扩展。
      *
-     * @see CwtConfigCollector
      * @see CwtTagType
      */
     val tag = value.contains("tag")
@@ -72,18 +72,19 @@ class CwtOptionFlags private constructor(value: Set<String>) {
         private val EMPTY = CwtOptionFlags(emptySet())
 
         /**
-         * 从给定的成员规则中提取选项标志。
+         * 提取指定的成员规则上的选项标志。
          *
-         * 实现说明：
-         * - 仅收集“无键的选项值”（`CwtOptionValueConfig`），并要求其文本是合法标识符（`isIdentifier()`）。
-         * - 支持的典型写法：`## required`、`## primary`、`## tag`、`## inherit` 等。
+         * 仅收集单独且类似标识符的选项值，如 `## required`。
          *
          * 示例：
          * ```cwt
-         * some_rule = {
-         *     ## required
-         *     ## primary
-         *     value = scalar
+         * type[technology] = {
+         * 	# ...
+         * 	localisation = {
+         * 		## required
+         * 		## primary
+         * 		name = "$"
+         * 	}
          * }
          * ```
          */

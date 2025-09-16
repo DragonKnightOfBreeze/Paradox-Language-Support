@@ -24,12 +24,8 @@ import icu.windea.pls.core.util.singleton
  * - 在具体 accessor 中：`val option = findOption("push_scope")`、`option?.getOptionValue()`。
  * - 在调用侧：`config.optionData { someAccessor }`（详见 [CwtOptionDataAccessors]）。
  *
- * 参考：
- * - `references/cwt/guidance.md`（CWTools 指引，了解选项在规则中的语义）
- * - `docs/zh/config.md`（PLS 规则系统说明与扩展）
- *
- * @see CwtOptionDataAccessors
  * @see CwtOptionDataAccessor
+ * @see CwtOptionDataAccessors
  */
 interface CwtOptionDataAccessorExtensionsAware {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
