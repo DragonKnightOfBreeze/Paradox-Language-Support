@@ -6,6 +6,20 @@ import icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
+/**
+ * 别名规则（alias）。
+ *
+ * 概述：
+ * - 为触发（trigger）/效应（effect）等提供“别名名-子名”到真实规则的映射与约束，提升可读性与复用性。
+ * - 由 `alias[name:subName] = { ... }` 声明。
+ * - 本规则的 [configExpression] 等同于 [subNameExpression]。
+ *
+ * @property name 别名名（`alias[$:*]`）。
+ * @property subName 子名（`alias[*:$]`）。
+ * @property supportedScopes 允许的作用域集合（`## scope/scopes`）。
+ * @property outputScope 推入/输出的作用域（`## push_scope`）。
+ * @property subNameExpression 子名对应的规则表达式。
+ */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("alias[$:*]")
     val name: String
@@ -20,9 +34,11 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
     override val configExpression: CwtDataExpression get() = subNameExpression
 
+    /** 将别名内联为普通属性规则，便于下游流程直接消费。*/
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
 
     interface Resolver {
+        /** 由 `alias[...]` 的属性规则解析为别名规则。*/
         fun resolve(config: CwtPropertyConfig): CwtAliasConfig?
     }
 

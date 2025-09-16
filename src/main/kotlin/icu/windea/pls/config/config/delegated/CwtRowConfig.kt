@@ -4,8 +4,15 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl
 
 /**
- * @property columns 各个列对应的CWT规则。
- * @property endColumn 如果匹配最后一列的列名，则该列可以省略。
+ * 行规则（row[...]）。
+ *
+ * 概述：
+ * - 声明一行由若干“列”组成的结构，并指明列的规则与末列省略规则。
+ * - 由 `row[name] = { columns = {...} }` 声明。
+ *
+ * @property name 行名（来自 `row[$]`）。
+ * @property columns 各列名到对应列规则的映射。
+ * @property endColumn 若匹配到该列名，视作最后一列，可在之后省略。
  */
 interface CwtRowConfig : CwtFilePathMatchableConfig {
     @FromKey("row[$]")
@@ -16,6 +23,7 @@ interface CwtRowConfig : CwtFilePathMatchableConfig {
     val endColumn: String?
 
     interface Resolver {
+        /** 由 `row[...]` 的属性规则解析为行规则。*/
         fun resolve(config: CwtPropertyConfig): CwtRowConfig?
     }
 

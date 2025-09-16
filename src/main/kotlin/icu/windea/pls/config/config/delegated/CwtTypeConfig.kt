@@ -6,6 +6,34 @@ import icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.ReversibleValue
 
+/**
+ * 类型规则（type[...]）。
+ *
+ * 概述：
+ * - 描述某一“定义类型”的结构、名称推导、唯一性、子类型、可用根键等。
+ * - 由 `type[xxx] = { ... }` 声明，通常用于定义解析与导航、补全、校验等场景。
+ *
+ * @property name 类型名（来自 `type[$]`）。
+ * @property baseType 基类型名，若存在表示继承/复用另一类型的部分语义。
+ * @property nameField 名称字段键，用于从属性中抽取“展示名称”。
+ * @property typeKeyPrefix 类型键前缀（用于限定/推导 `rootKey`）。
+ * @property nameFromFile 是否从文件名推导名称（默认 false）。
+ * @property typePerFile 是否“一文件一类型实例”（默认 false）。
+ * @property unique 是否唯一（用于冲突检查/导航等）。
+ * @property severity 严重级别标签（用于标注告警/错误等展示维度）。
+ * @property skipRootKey 允许跳过的根键（支持多组设置，大小写不敏感）。
+ * @property typeKeyFilter 类型键过滤器（包含/排除，大小写不敏感）。
+ * @property typeKeyRegex 类型键正则过滤器（忽略大小写）。
+ * @property startsWith 类型键前缀要求（大小写不敏感）。
+ * @property graphRelatedTypes 图相关的关联类型集合（尚未启用的扩展能力）。
+ * @property subtypes 子类型规则集合。
+ * @property localisation 该类型的本地化展示设置规则。
+ * @property images 该类型的图片展示设置规则。
+ *
+ * 计算字段：
+ * @property possibleRootKeys 可能的根键集合。
+ * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。
+ */
 interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromKey("type[$]")
     val name: String
@@ -44,6 +72,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
     interface Resolver {
+        /** 由 `type[...]` 的属性规则解析为类型规则。*/
         fun resolve(config: CwtPropertyConfig): CwtTypeConfig?
     }
 
