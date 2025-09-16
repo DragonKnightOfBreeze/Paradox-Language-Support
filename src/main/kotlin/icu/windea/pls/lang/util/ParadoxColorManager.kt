@@ -3,7 +3,6 @@ package icu.windea.pls.lang.util
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.component1
 import icu.windea.pls.core.component2
@@ -137,10 +136,6 @@ object ParadoxColorManager {
     fun getColorType(element: PsiElement): String? {
         val configToGetOption = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition).firstOrNull()
         if (configToGetOption == null) return null
-        return getColorType(configToGetOption)
-    }
-
-    private fun getColorType(configToGetOption: CwtMemberConfig<*>): String? {
         return configToGetOption.optionData { colorType }
     }
 }
