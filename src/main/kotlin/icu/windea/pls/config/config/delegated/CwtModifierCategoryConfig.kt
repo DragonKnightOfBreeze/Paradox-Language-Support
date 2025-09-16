@@ -12,6 +12,18 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 声明某个“修正分类”以及该分类允许出现的作用域集合。
  * - 常与修正规则（见 [CwtModifierConfig]）配合使用，用于校验与提示。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `modifier_categories` 下的每个成员属性。
+ * - 分类名取自成员属性键，即 `name`（如 `Pops`、`Armies`）。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/cwtools-stellaris-config/config/modifier_categories.cwt
+ * modifier_categories = {
+ *     Pops = { supported_scopes = { species pop_group planet ... } }
+ * }
+ * ```
+ *
  * @property name 分类名。
  * @property supportedScopes 允许的作用域集合。
  */

@@ -13,6 +13,21 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 为某类“数据库对象”（如 UI/图片/音频等外部资源的条目）声明类型与本地化信息，并支持在“基础/替换”两种视角下取值。
  * - 由 `database_object_type[name] = { ... }` 或相关扩展写法声明。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `database_object_types` 下的每个成员属性。
+ * - 规则名取自成员属性键，即 `name`（如 `ascension_perk`、`technology`）。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/cwtools-stellaris-config/config/database_object_types.cwt
+ * database_object_types = {
+ *     technology = {
+ *         type = technology
+ *         swap_type = swapped_technology
+ *     }
+ * }
+ * ```
+ *
  * @property name 名称。
  * @property type 类型标识（可选）。
  * @property swapType 替换时使用的类型标识（可选）。

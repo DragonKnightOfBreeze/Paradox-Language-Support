@@ -19,6 +19,32 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 统一描述“修正（modifier）”的名称模板、分类与作用域支持，兼容多种 CWT 写法（见下方注释）。
  * - 支持从别名与定义上下文中解析生成，便于在补全、跳转与校验中复用。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中来自三个来源：
+ *   1) 顶层键 `modifiers` 下的成员属性，按键名作为 `name`。
+ *   2) 顶层 `alias[modifier:...]`（见 `aliases.cwt`），从别名解析生成，`name` 为 `subName`（可能是模板）。
+ *   3) `type[...]{ modifiers { ... } }` 中的条目（在 `CwtTypeConfigResolverImpl` 中处理），以 `typeExpression` 展开 `$` 得到模板化 `name`，并建立 `type2ModifiersMap` 映射。
+ *
+ * 例：
+ * ```cwt
+ * # 1) 来自 cwt/cwtools-stellaris-config/config/modifiers.cwt
+ * modifiers = {
+ *     pop_happiness = { Pops }
+ * }
+ *
+ * # 2) 来自 cwt/cwtools-stellaris-config/config/aliases.cwt
+ * alias[modifier:<modifier>] = float
+ *
+ * # 3) 类型内声明（示意）
+ * types = {
+ *   type[my_type] = {
+ *     modifiers = {
+ *       my_type_$ = { Pops }
+ *     }
+ *   }
+ * }
+ * ```
+ *
  * @property name 修正名称（可能来自模板展开后的常量名）。
  * @property categories 分类名称集合。
  * @property categoryConfigMap 分类名到分类规则的映射。

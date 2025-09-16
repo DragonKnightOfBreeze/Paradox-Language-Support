@@ -12,6 +12,23 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * - 为复杂枚举的具体值声明类型标识与可选提示。
  * - 由 `complex_enum_value[name] = { ... }` 或相关扩展写法声明。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `complex_enum_values` 下的每个成员块：
+ *   - 外层键为复杂枚举名（作为 `type` 传入解析器）。
+ *   - 内部的成员（属性键或单值）解析为本规则的 `name`，可附带 `## hint = ...` 注记。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/core/internal/schema.cwt
+ * # extended
+ * complex_enum_values = {
+ *     $complex_enum$ = {
+ *         ## hint = $scalar
+ *         $complex_enum_value$
+ *     }
+ * }
+ * ```
+ *
  * @property name 名称。
  * @property type 值类型标识。
  * @property hint 额外提示信息（可选）。

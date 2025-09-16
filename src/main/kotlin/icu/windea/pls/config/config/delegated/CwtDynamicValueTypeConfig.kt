@@ -14,11 +14,23 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 声明一组“动态值名称”的集合，通常与具体的值解析器/引用机制配合，提供补全与校验。
  * - 由 `value[name] = { values = [...] }` 声明。
  *
- * @property name 名称（来自 `value[$]`）。
- * @property values 可选项集合（模板表达式，大小写不敏感比对）。
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `values` 下的每个成员属性。
+ * - 名称从成员属性键中提取：去除前后缀 `value[` 与 `]`，得到 `name`。
  *
- * 计算字段：
- * @property valueConfigMap 可选项到其原始值规则的映射。
+ * 例：
+ * ```cwt
+ * # 模式参考：cwt/core/internal/schema.cwt
+ * values = {
+ *     value[dynamic_type] = {
+ *         $dynamic_value
+ *     }
+ * }
+ * ```
+ *
+ * @property name 名称。
+ * @property values 可选项集合（模板表达式，大小写不敏感比对）。
+ * @property valueConfigMap （计算属性）可选项到其原始值规则的映射。
  */
 interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("value[$]")

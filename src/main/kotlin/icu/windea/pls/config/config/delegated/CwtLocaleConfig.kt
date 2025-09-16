@@ -12,6 +12,20 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 描述一种语言环境 ID 与其变体代码列表，并提供便捷的派生字段用于 UI 展示。
  * - 由 `locale[id] = { codes = [...] }` 或相关扩展写法解析而来。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `locales` 下的每个成员属性。
+ * - 规则名取自成员属性键，即 `id`，如 `l_english`。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/core/locales.core.cwt
+ * locales = {
+ *     l_english = {
+ *         codes = { "en" }
+ *     }
+ * }
+ * ```
+ *
  * @property id 语言环境 ID（例如 `l_english`）。
  * @property codes 该语言环境包含的代码列表（如 `en`, `en-US` 等）。
  * @property text 该语言环境的展示文本（依具体实现）。

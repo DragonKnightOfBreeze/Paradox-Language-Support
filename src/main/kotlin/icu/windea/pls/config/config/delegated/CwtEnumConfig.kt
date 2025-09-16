@@ -14,11 +14,19 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 声明一组“固定可选项”，用于限定值域、提供补全与校验。
  * - 由 `enum[name] = { values = [...] }` 声明。
  *
- * @property name 名称（来自 `enum[$]`）。
- * @property values 可选项集合（模板表达式，大小写不敏感比对）。
+ * 定位与命名：`enums/enum[\$]`，`$` 匹配规则名称。
  *
- * 计算字段：
- * @property valueConfigMap 可选项到其原始值规则的映射。
+ * 示例：
+ * ```cwt
+ * # stellaris:enums.cwt
+ * enums = {
+ *     enum[weight_or_base] = { weight base }
+ * }
+ * ```
+ *
+ * @property name 名称。
+ * @property values 可选项集合（模板表达式，大小写不敏感比对）。
+ * @property valueConfigMap （计算属性）可选项到其原始值规则的映射。
  */
 interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("enum[$]")

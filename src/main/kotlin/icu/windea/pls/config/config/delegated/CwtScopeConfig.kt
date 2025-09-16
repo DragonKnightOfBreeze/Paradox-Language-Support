@@ -13,6 +13,16 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 声明一个作用域 ID 及其别名集合，用于作用域匹配、规范化与提示。
  * - 通常在作用域管理与规则校验中使用。
  *
+ * 定位与命名：`scopes/$`，`$` 匹配规则名称。
+ *
+ * 示例：
+ * ```cwt
+ * # stellaris:scopes.cwt
+ * scopes = {
+ *     Country = { aliases = { country } }
+ * }
+ * ```
+ *
  * @property name 作用域 ID。
  * @property aliases 该作用域的别名集合（大小写不敏感）。
  */

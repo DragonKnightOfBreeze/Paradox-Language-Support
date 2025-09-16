@@ -14,11 +14,24 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 从类型规则（[CwtTypeConfig]）中拆分出的细分分组，用于限定“类型键”的匹配范围与命名约束。
  * - 常用于过滤特定前缀、排除名单等，以优化补全与校验体验。
  *
- * @property name 子类型名（来自 `subtype[$]`）。
+ * @property name 子类型名。
  * @property typeKeyFilter 类型键过滤器（包含/排除，大小写不敏感）。
  * @property typeKeyRegex 类型键正则过滤器（忽略大小写）。
  * @property startsWith 类型键前缀要求（大小写敏感与否取决于实现，这里按字面匹配）。
  * @property onlyIfNot 排除名单：名称不在集合内才匹配。
+ *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，先读取 `types`，随后在每个 `type[...]` 的成员属性中读取 `subtype[...]`。
+ * - 子类型名从成员属性键中提取：去除前后缀 `subtype[` 与 `]`，得到 `name`。
+ *
+ * 例：
+ * ```cwt
+ * types = {
+ *     type[my_type] = {
+ *         subtype[my_subtype] = { starts_with = my_ }
+ *     }
+ * }
+ * ```
  */
 interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("subtype[$]")

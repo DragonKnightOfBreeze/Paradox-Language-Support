@@ -14,6 +14,17 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 由 `alias[name:subName] = { ... }` 声明。
  * - 本规则的 [configExpression] 等同于 [subNameExpression]。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 的顶层 `else` 分支中处理未匹配的键。
+ * - 当键形如 `alias[...]` 时，尝试解析为本规则；`name` 与 `subName` 由 `alias[<name>:<subName>]` 的方括号内容按冒号拆分得到。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/cwtools-stellaris-config/config/aliases.cwt
+ * alias[name:name] = localisation
+ * alias[modifier:<modifier>] = float
+ * ```
+ *
  * @property name 别名名（`alias[$:*]`）。
  * @property subName 子名（`alias[*:$]`）。
  * @property supportedScopes 允许的作用域集合（`## scope/scopes`）。

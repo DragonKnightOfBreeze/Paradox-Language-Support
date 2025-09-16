@@ -12,6 +12,24 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 描述一条位置键-值（如本地化/图片位置）的要求，并可标注“必需/主要”。
  * - 常用于类型本地化/图片配置等场景中（见 [CwtTypeLocalisationConfig]、[CwtTypeImagesConfig]）。
  *
+ * 定位：
+ * - 作为 `types` → `type[...]` 下 `localisation = { ... }` 或 `images = { ... }` 的成员属性存在。
+ * - 键名即为 `key`，值为对应的 `value`，并可带 `required/optional/primary` 注记。
+ *
+ * 例：
+ * ```cwt
+ * # 本地化/图片位置示例
+ * types = {
+ *   type[mod_descriptor] = {
+ *     images = {
+ *       ## primary
+ *       ## optional
+ *       picture = picture
+ *     }
+ *   }
+ * }
+ * ```
+ *
  * @property key 位置键。
  * @property value 位置值（通常为模板表达式或占位符字符串）。
  * @property required 是否必需。

@@ -13,6 +13,22 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 由 `type_images[...]`（或等效扩展）中的条目解析而来。
  *
  * @property locationConfigs 子类型表达式与位置规则的配对列表（`Pair<subtypeExpression?, CwtLocationConfig>`）。
+ *
+ * 定位：
+ * - 在 `CwtTypeConfigResolverImpl` 中，当处理 `type[...]` 的成员属性键为 `images` 时，解析为本规则。
+ * - `locationConfigs` 来自 `images = { ... }` 的成员属性与可选的 `subtype[...]` 分节。
+ *
+ * 例：
+ * ```cwt
+ * types = {
+ *   type[mod_descriptor] = {
+ *     images = {
+ *       ## primary
+ *       picture = picture
+ *     }
+ *   }
+ * }
+ * ```
  */
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)

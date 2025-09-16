@@ -12,6 +12,19 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * - 为封装变量声明提示等元信息，便于在脚本中统一引用与提示。
  * - 由 `scripted_variable[name] = { ... }` 或相关扩展写法声明。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `scripted_variables` 下的每个成员规则，解析为本规则。
+ * - 可用注记：`## hint = ...`。
+ *
+ * 例：
+ * ```cwt
+ * # 来自 cwt/core/internal/schema.cwt
+ * # extended
+ * scripted_variables = {
+ *     $scripted_variable$
+ * }
+ * ```
+ *
  * @property name 名称。
  * @property hint 额外提示信息（可选）。
  */

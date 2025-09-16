@@ -14,6 +14,12 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * - 由 `link[name] = { ... }` 声明；当用于本地化时会生成本地化专用变体。
  * - 本规则的 [configExpression] 通常等同于 [dataSourceExpression]。
  *
+ * 定位：
+ * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中：
+ *   - 读取顶层键 `links` 下的每个成员属性，调用 `resolve`，并按 `name` 存入 `configGroup.links`。
+ *   - 读取顶层键 `localisation_links` 下的每个成员属性，调用 `resolveForLocalisation`，并按 `name` 存入 `configGroup.localisationLinks`。
+ * - 规则名取自成员属性键，即 `name`。
+ *
  * @property name 链接名。
  * @property type 链接类型（`scope`/`value`/`both` 等，缺省按 `scope` 处理）。
  * @property fromData 是否从数据环境中读取（`from_data`）。
@@ -23,13 +29,12 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property inputScopes 输入作用域集合（`input_scopes`）。
  * @property outputScope 输出作用域（`output_scope`）。
  * @property forDefinitionType 仅用于指定的定义类型。
- *
- * 计算字段：
- * @property forLocalisation 是否为本地化上下文的变体。
- * @property dataSourceExpression 数据源对应的规则表达式。
+ * @property forDefinitionType 仅用于指定的定义类型。
+ * @property forLocalisation （计算属性）是否为本地化上下文的变体。
+ * @property dataSourceExpression （计算属性）数据源对应的规则表达式。
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
-    @FromKey("")
+    @FromKey
     val name: String
     @FromProperty("type: string?")
     val type: String?
