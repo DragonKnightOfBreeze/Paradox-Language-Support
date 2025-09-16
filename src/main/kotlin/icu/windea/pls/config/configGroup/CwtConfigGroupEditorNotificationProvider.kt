@@ -33,7 +33,7 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, Dum
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
             panel.createActionLabel(PlsBundle.message("configGroup.config.file.guidance")) {
                 val url = "https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md"
-                //val url = "https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance"
+                // val url = "https://github.com/cwtools/cwtools/wiki/.cwt-config-file-guidance"
                 BrowserUtil.browse(url)
             }
             panel.createActionLabel(PlsBundle.message("configGroup.config.file.repositories")) {

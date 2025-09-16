@@ -33,7 +33,7 @@ import java.util.concurrent.*
  * @see CwtConfigContextProvider
  */
 class CwtConfigContext(
-    val element: ParadoxScriptMemberElement, //use element directly here
+    val element: ParadoxScriptMemberElement, // use element directly here
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxExpressionPath?,
     val gameType: ParadoxGameType,
@@ -47,17 +47,17 @@ class CwtConfigContext(
             withRecursionCheck(cachedKey) action@{
                 try {
                     PlsCoreManager.dynamicContextConfigs.set(false)
-                    //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
+                    // use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
                         doGetConfigs(matchOptions)?.optimized().orEmpty()
                     }
                 } finally {
-                    //use uncached result if result context configs are dynamic (e.g., based on script context)
+                    // use uncached result if result context configs are dynamic (e.g., based on script context)
                     if (PlsCoreManager.dynamicContextConfigs.get() == true) cache.invalidate(cachedKey)
                     PlsCoreManager.dynamicContextConfigs.remove()
                 }
             }
-        } ?: emptyList() //unexpected recursion, return empty list
+        } ?: emptyList() // unexpected recursion, return empty list
         return cached
     }
 
@@ -80,9 +80,9 @@ class CwtConfigContext(
     object Keys : KeyRegistry()
 }
 
-//rootFile -> cacheKey -> configs
-//use soft values to optimize memory
-//depends on config group, indices and inference statuses
+// rootFile -> cacheKey -> configs
+// use soft values to optimize memory
+// depends on config group, indices and inference statuses
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         createNestedCache<VirtualFile, _, _, _> {

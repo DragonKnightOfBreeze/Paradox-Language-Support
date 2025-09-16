@@ -42,16 +42,16 @@ object CwtDataTypes {
     val Parameter = CwtDataType("Parameter", isReference = true)
     val ParameterValue = CwtDataType("ParameterValue", isReference = true)
     val LocalisationParameter = CwtDataType("LocalisationParameter", isReference = true)
-    //effects in .shader files
+    // effects in .shader files
     val ShaderEffect = CwtDataType("ShaderEffect"/*, isReference = true*/)
 
-    //e.g., civic:xxx:xxx
+    // e.g., civic:xxx:xxx
     /** @since 1.3.9 */
-    //@WithGameType(ParadoxGameType.Stellaris) //not limited yet
+    // @WithGameType(ParadoxGameType.Stellaris) // not limited yet
     val DatabaseObject = CwtDataType("DatabaseObject", isReference = true)
-    //e.g., define:NPortrait|GRACEFUL_AGING_START
+    // e.g., define:NPortrait|GRACEFUL_AGING_START
     /** @since 1.3.25 */
-    //@WithGameType(ParadoxGameType.Vic3) //not limited yet
+    // @WithGameType(ParadoxGameType.Vic3) // not limited yet
     val DefineReference = CwtDataType("DefineReference", isReference = true)
 
     @WithGameType(ParadoxGameType.Stellaris)
@@ -60,12 +60,12 @@ object CwtDataTypes {
     val TechnologyWithLevel = CwtDataType("TechnologyWithLevel", isReference = true)
 
     val Constant = CwtDataType("Constant")
-    //e.g., a_<b>_enum[c]_value[d]
+    // e.g., a_<b>_enum[c]_value[d]
     val TemplateExpression = CwtDataType("TemplateExpression", isReference = true)
-    //e.g., /foo/bar?/*
+    // e.g., /foo/bar?/*
     /** @since 1.3.6 */
     val AntExpression = CwtDataType("AntExpression")
-    //e.g., foo.*bar
+    // e.g., foo.*bar
     /** @since 1.3.6 */
     val Regex = CwtDataType("Regex")
 }

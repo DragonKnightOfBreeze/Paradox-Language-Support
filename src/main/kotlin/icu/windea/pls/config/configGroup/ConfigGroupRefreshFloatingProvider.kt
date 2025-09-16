@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.containers.DisposableWrapperList
 import icu.windea.pls.PlsFacade
 
-//com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
+// com.intellij.openapi.externalSystem.autoimport.ProjectRefreshFloatingProvider
 
 class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTION_GROUP) {
     override val autoHideable = false

@@ -8,7 +8,7 @@ import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 
-//each library each project
+// each library each project
 
 class CwtConfigGroupLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {

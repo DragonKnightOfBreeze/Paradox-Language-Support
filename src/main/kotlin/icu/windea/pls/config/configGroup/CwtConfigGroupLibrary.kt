@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import kotlinx.coroutines.launch
 import javax.swing.Icon
 
-//each library each project
+// each library each project
 
 class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile

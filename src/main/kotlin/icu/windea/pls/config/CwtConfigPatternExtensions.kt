@@ -27,7 +27,7 @@ fun String.matchFromPattern(
 ): Boolean {
     if (this == key) return true
     if (key.isEmpty()) return this.isEmpty()
-    if (fromIndex < 0 || fromIndex >= this.length || fromIndex >= key.length) return false //invalid
+    if (fromIndex < 0 || fromIndex >= this.length || fromIndex >= key.length) return false // invalid
     if (fromIndex > 0) {
         val p1 = this.substring(0, fromIndex)
         val p2 = key.substring(0, fromIndex)

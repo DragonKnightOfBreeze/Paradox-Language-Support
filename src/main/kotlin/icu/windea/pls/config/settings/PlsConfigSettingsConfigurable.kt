@@ -34,14 +34,14 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             lateinit var cbLocal: JBCheckBox
             lateinit var cbProjectLocal: JBCheckBox
 
-            //enableBuiltInConfigGroups
+            // enableBuiltInConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
                     .bindSelected(settings::enableBuiltInConfigGroups)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
             }
-            //enableRemoteConfigGroups
+            // enableRemoteConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
                     .bindSelected(settings::enableRemoteConfigGroups)
@@ -50,7 +50,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
-            //remoteConfigDirectory
+            // remoteConfigDirectory
             row {
                 label(PlsBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.remoteConfigDirectory.tip") }
@@ -65,7 +65,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                         PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
                     }
             }.enabledIf(cbRemote.selected)
-            //configRepositoryUrls
+            // configRepositoryUrls
             row {
                 label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.configRepositoryUrls.tip") }
@@ -88,7 +88,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .onReset { list = defaultList }
                     .onIsModified { list != defaultList }
             }.enabledIf(cbRemote.selected)
-            //enableLocalConfigGroups
+            // enableLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
                     .bindSelected(settings::enableLocalConfigGroups)
@@ -96,7 +96,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .applyToComponent { cbLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
             }
-            //localConfigDirectory
+            // localConfigDirectory
             row {
                 label(PlsBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.localConfigDirectory.tip") }
@@ -108,7 +108,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .align(Align.FILL)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             }.enabledIf(cbLocal.selected)
-            //enableProjectLocalConfigGroups
+            // enableProjectLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
                     .bindSelected(settings::enableProjectLocalConfigGroups)
@@ -116,7 +116,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .applyToComponent { cbProjectLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
             }
-            //projectLocalConfigDirectoryName
+            // projectLocalConfigDirectoryName
             row {
                 label(PlsBundle.message("settings.config.projectLocalConfigDirectoryName")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.projectLocalConfigDirectoryName.tip") }

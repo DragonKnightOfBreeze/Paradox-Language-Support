@@ -9,7 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
 
-//com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
+// com.intellij.openapi.externalSystem.autoimport.HideProjectRefreshActions
 
 class HideConfigGroupRefreshAction : DumbAwareAction() {
     init {

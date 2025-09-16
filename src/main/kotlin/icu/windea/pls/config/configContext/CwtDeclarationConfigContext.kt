@@ -21,7 +21,7 @@ import icu.windea.pls.model.ParadoxGameType
  * CWT声明规则上下文。
  */
 class CwtDeclarationConfigContext(
-    //val element: PsiElement, //unused yet
+    // val element: PsiElement, // unused yet
     val definitionName: String?,
     val definitionType: String,
     val definitionSubtypes: List<String>?,
@@ -51,9 +51,9 @@ class CwtDeclarationConfigContext(
     object Keys : KeyRegistry()
 }
 
-//cacheKey -> declarationConfig
-//use soft values to optimize memory
-//depends on config group
+// cacheKey -> declarationConfig
+// use soft values to optimize memory
+// depends on config group
 private val CwtConfigGroup.declarationConfigCache by createKey(CwtDeclarationConfigContext.Keys) {
     createCachedValue(project) {
         CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable().withDependencyItems()

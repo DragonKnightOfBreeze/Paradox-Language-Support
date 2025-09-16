@@ -47,7 +47,7 @@ object CwtConfigRepositoryManager {
     }
 
     fun validateUrl(builder: ValidationInfoBuilder, gameType: ParadoxGameType, url: String): ValidationInfo? {
-        //规则仓库URL应当包含对应的游戏类型ID
+        // 规则仓库URL应当包含对应的游戏类型ID
 
         if (url.isEmpty()) return builder.warning(PlsBundle.message("config.repo.validation.urlNotConfigured"))
         if (!url.contains(gameType.id)) return builder.error(PlsBundle.message("config.repo.validation.urlMustContainGameTypeId", gameType.id))
@@ -56,7 +56,7 @@ object CwtConfigRepositoryManager {
 
     @Synchronized
     fun validateUrlsByGit(urls: List<String>): Boolean {
-        //NOTE 这里需要执行git命令的校验，需要并发进行
+        // NOTE 这里需要执行git命令的校验，需要并发进行
 
         val results = runWithModalProgressBlocking(ModalTaskOwner.guess(), PlsBundle.message("config.repo.validation.progress.title")) r@{
             reportRawProgress { reporter ->
@@ -73,7 +73,7 @@ object CwtConfigRepositoryManager {
                 resultFutures.awaitAll()
             }
         }
-        //如果存在报错，显示错误弹窗并直接返回
+        // 如果存在报错，显示错误弹窗并直接返回
         if (results.any { it.isFailure }) {
             val errorMessage = results
                 .filter { it.isFailure }
@@ -84,7 +84,7 @@ object CwtConfigRepositoryManager {
             return false
         }
 
-        //显示成功的消息弹窗
+        // 显示成功的消息弹窗
         Messages.showInfoMessage(PlsBundle.message("config.repo.validation.result.0"), PlsBundle.message("config.repo.validation.result.title"))
         return true
     }
@@ -104,18 +104,18 @@ object CwtConfigRepositoryManager {
 
     @Synchronized
     fun syncFromUrls() {
-        //NOTE 这里需要先获取一个project，但是应当如何获取呢……
+        // NOTE 这里需要先获取一个project，但是应当如何获取呢……
         val openProjects = ProjectManager.getInstance().openProjects
         val project = openProjects.firstOrNull() ?: return
 
-        //NOTE 这里需要先验证是否真的需要刷新
+        // NOTE 这里需要先验证是否真的需要刷新
         if (!isValidToSync()) return
 
         val settings = PlsFacade.getConfigSettings()
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 
-        //创建父目录，如果存在报错，发送通知并直接返回
+        // 创建父目录，如果存在报错，发送通知并直接返回
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = PlsBundle.message("config.repo.sync.createDirectoryFailed")
@@ -145,7 +145,7 @@ object CwtConfigRepositoryManager {
                 BrowserUtil.open(parentDirectory)
             }
 
-            //如果存在报错，发送通知并直接返回
+            // 如果存在报错，发送通知并直接返回
             if (results.any { it.isFailure }) {
                 val warningMessage = PlsBundle.message("config.repo.sync.result.2")
                 val notification = PlsCoreManager.createNotification(NotificationType.WARNING, PlsBundle.message("config.repo.sync.result.title"), warningMessage)
@@ -156,14 +156,14 @@ object CwtConfigRepositoryManager {
 
             val updated = results.any { result -> result.getOrNull().let { !PlsGitManager.isUpdateToDate(it) } }
 
-            //发送成功的通知
+            // 发送成功的通知
             val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0")
             else PlsBundle.message("config.repo.sync.result.1")
             val notification = PlsCoreManager.createNotification(NotificationType.INFORMATION, PlsBundle.message("config.repo.sync.result.title"), successMessage)
                 .addAction(action)
             openProjects.forEach { notification.notify(it) }
 
-            //如果需要刷新规则分组数据，则通知规则目录发生变更
+            // 如果需要刷新规则分组数据，则通知规则目录发生变更
             if (updated) {
                 application.messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
             }

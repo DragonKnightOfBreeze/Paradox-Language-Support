@@ -53,8 +53,8 @@ object CwtConfigFileResolver {
             return null
         }
 
-        //1. use EmptyPointer for default project to optimize memory
-        //2. use CwtPropertyPointer to optimize performance and memory
+        // 1. use EmptyPointer for default project to optimize memory
+        // 2. use CwtPropertyPointer to optimize performance and memory
         val pointer = when {
             configGroup.project.isDefault -> emptyPointer()
             else -> propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
@@ -76,7 +76,7 @@ object CwtConfigFileResolver {
     private fun resolveValue(valueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtValueConfig {
         val configGroup = fileConfig.configGroup
 
-        //1. use EmptyPointer for default project to optimize memory
+        // 1. use EmptyPointer for default project to optimize memory
         val pointer = when {
             configGroup.project.isDefault -> emptyPointer()
             else -> valueElement.createPointer(file)
@@ -107,7 +107,7 @@ object CwtConfigFileResolver {
                 }
             }
         }
-        return configs.optimized() //optimized to optimize memory
+        return configs.optimized() // optimized to optimize memory
     }
 
     private fun doGetOptionConfigs(element: PsiElement, file: CwtFile, fileConfig: CwtFileConfig): List<CwtOptionMemberConfig<*>>? {
@@ -133,7 +133,7 @@ object CwtConfigFileResolver {
                 else -> break
             }
         }
-        return optionConfigs?.optimized() //optimized to optimize memory
+        return optionConfigs?.optimized() // optimized to optimize memory
     }
 
     private fun resolveOption(optionElement: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
@@ -173,6 +173,6 @@ object CwtConfigFileResolver {
                 }
             }
         }
-        return optionConfigs.optimized() //optimized to optimize memory
+        return optionConfigs.optimized() // optimized to optimize memory
     }
 }

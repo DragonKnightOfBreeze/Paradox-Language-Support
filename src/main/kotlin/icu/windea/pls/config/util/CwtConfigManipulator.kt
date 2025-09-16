@@ -28,7 +28,7 @@ import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
 
 object CwtConfigManipulator {
-    //region Core Methods
+    // region Core Methods
 
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
@@ -36,7 +36,7 @@ object CwtConfigManipulator {
 
     private fun doGetDistinctKey(config: CwtMemberConfig<*>, guardStack: MutableSet<String>? = null): String {
         run {
-            //处理规则需要内联的情况，并且尝试避免SOF
+            // 处理规则需要内联的情况，并且尝试避免SOF
             if (config !is CwtPropertyConfig) return@run
             val inlinedConfig = inlineSingleAlias(config) ?: return@run
             val guardKey = inlinedConfig.singleAliasConfig?.let { "sa:${it.name}" } ?: return@run
@@ -68,9 +68,9 @@ object CwtConfigManipulator {
         }
     }
 
-    //endregion
+    // endregion
 
-    //region Deep Copy Methods
+    // region Deep Copy Methods
 
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
@@ -117,9 +117,9 @@ object CwtConfigManipulator {
         return result
     }
 
-    //endregion
+    // endregion
 
-    //region Inline Methods
+    // region Inline Methods
 
     enum class InlineMode {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
@@ -177,9 +177,9 @@ object CwtConfigManipulator {
         return singleAliasConfig.inline(config)
     }
 
-    //endregion
+    // endregion
 
-    //region Merge Methods
+    // region Merge Methods
 
     fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()

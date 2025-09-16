@@ -13,7 +13,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 用于监听规则文件的PSI的更改，以便在必要时通知规则分组发生更改。
  */
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
-    //这个方法应当尽可能地快
+    // 这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if (!PsiModificationTrackerImpl.canAffectPsi(event)) return
 

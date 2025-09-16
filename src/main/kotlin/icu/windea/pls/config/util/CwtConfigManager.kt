@@ -151,7 +151,7 @@ object CwtConfigManager {
     }
 
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
-        //invalidated on file modification
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             runReadAction {
                 val file = element.containingFile
@@ -178,7 +178,7 @@ object CwtConfigManager {
             }
             current = current.parent ?: break
         }
-        if (current !is CwtFile) return null //unexpected
+        if (current !is CwtFile) return null // unexpected
         return CwtConfigPath.resolve(subPaths)
     }
 
@@ -190,7 +190,7 @@ object CwtConfigManager {
     }
 
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
-        //invalidated on file modification
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
             runReadAction {
                 val file = element.containingFile
@@ -203,7 +203,7 @@ object CwtConfigManager {
     private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         val filePath = getFilePath(file) ?: return null
-        if (filePath.startsWith("internal/")) return null //排除内部规则文件
+        if (filePath.startsWith("internal/")) return null // 排除内部规则文件
         val configPath = getConfigPath(element)
         if (configPath == null || configPath.isEmpty()) return null
 

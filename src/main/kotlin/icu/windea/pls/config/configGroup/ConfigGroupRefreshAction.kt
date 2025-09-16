@@ -10,7 +10,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.fileInfo
 
-//com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
+// com.intellij.openapi.externalSystem.autoimport.ProjectRefreshAction
 
 class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
     init {

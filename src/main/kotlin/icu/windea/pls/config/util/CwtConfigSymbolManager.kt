@@ -40,7 +40,7 @@ object CwtConfigSymbolManager {
         val cachedSymbolInfos by createKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
     }
 
-    //NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）
+    // NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）
 
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         if (!element.isExpression()) return emptyList()
@@ -108,7 +108,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromReferences(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        //TODO 2.0.1-dev+ 实际上可以引用于很多地方，如果需要精确实现，需要考虑进一步完善对规则文件的 schema 的支持
+        // TODO 2.0.1-dev+ 实际上可以引用于很多地方，如果需要精确实现，需要考虑进一步完善对规则文件的 schema 的支持
 
         val configType = CwtConfigManager.getConfigType(element)
         run {
@@ -134,7 +134,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromSubtypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        //尝试从 typeExpression 中获取
+        // 尝试从 typeExpression 中获取
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
@@ -152,7 +152,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromTypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        //尝试从 typeExpression 中获取
+        // 尝试从 typeExpression 中获取
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return

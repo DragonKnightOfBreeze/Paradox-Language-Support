@@ -26,7 +26,7 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
             properties.forEach f@{ (gameTypeId, configRepositoryUrlProperty) ->
                 val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
                 row {
-                    //configRepositoryUrl
+                    // configRepositoryUrl
                     label(gameType.title + ":").widthGroup("left")
                     textField()
                         .bindText(configRepositoryUrlProperty)
@@ -44,9 +44,9 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
     }
 
     override fun doOKAction() {
-        //即使配置并未更改，也要使用 git ls-remote 检查
+        // 即使配置并未更改，也要使用 git ls-remote 检查
         val newValues = properties.map { it.value.get() }
-        if (!CwtConfigRepositoryManager.validateUrlsByGit(newValues)) return //invalid
+        if (!CwtConfigRepositoryManager.validateUrlsByGit(newValues)) return // invalid
 
         resultList.clear()
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }

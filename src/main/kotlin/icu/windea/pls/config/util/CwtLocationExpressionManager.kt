@@ -150,7 +150,7 @@ object CwtLocationExpressionManager {
                     val resolvedDefinition = resolved ?: return null
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                    if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                    if (primaryImageConfigs.isEmpty()) return null // 没有或者CWT规则不完善
                     return withRecursionGuard {
                         withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -183,12 +183,12 @@ object CwtLocationExpressionManager {
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.configExpression, false)
         when {
-            //由filePath解析为图片文件
+            // 由filePath解析为图片文件
             resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {
                 val filePath = resolved.fileInfo?.path?.path ?: return null
                 return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
             }
-            //由name解析为定义（如果不是sprite，就继续向下解析）
+            // 由name解析为定义（如果不是sprite，就继续向下解析）
             resolved is ParadoxScriptDefinitionElement -> {
                 val resolvedDefinition = resolved
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -197,7 +197,7 @@ object CwtLocationExpressionManager {
                     return createImageResolveResult(spriteName, newFrameInfo, definition, project)
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                if (primaryImageConfigs.isEmpty()) return null // 没有或者CWT规则不完善
                 return withRecursionGuard {
                     withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
