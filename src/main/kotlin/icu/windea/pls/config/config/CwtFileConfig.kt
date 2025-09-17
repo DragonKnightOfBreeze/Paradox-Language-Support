@@ -5,6 +5,13 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
 
+/**
+ * 文件规则。
+ *
+ * 对应一整个 CWT 规则文件。
+ *
+ * @see CwtFile
+ */
 class CwtFileConfig(
     override val pointer: SmartPsiElementPointer<CwtFile>,
     override val configGroup: CwtConfigGroup,

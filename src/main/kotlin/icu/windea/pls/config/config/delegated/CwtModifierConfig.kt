@@ -12,6 +12,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
 // * 写在 modifier.cwt 中的 modifiers = { ... } 子句中，格式为 <template_string> == <categories>
 // 目前PLS支持以上所有三种写法
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 修正规则（modifier）。
  *
@@ -59,9 +61,9 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由成员属性规则与覆盖名称 [name] 解析为修正规则。*/
+        /** 由属性规则解析为修正规则。*/
         fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig?
-        /** 从别名规则解析为修正规则（`alias[modifier:...]`）。*/
+        /** 由别名规则（`alias[modifier:...] = ...`）解析为修正规则。*/
         fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig
         /** 从定义上下文中的 modifiers 条目解析为修正规则，可指定 [name] 与类型表达式。*/
         fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig?

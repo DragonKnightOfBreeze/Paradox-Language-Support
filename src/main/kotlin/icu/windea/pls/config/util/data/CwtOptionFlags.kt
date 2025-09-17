@@ -56,7 +56,6 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      *
      * CWTools 兼容性：PLS 扩展。
      *
-     * @see CwtExtendedInlineScriptConfig
      * @see CwtExtendedParameterConfig
      */
     val inherit = value.contains("inherit")

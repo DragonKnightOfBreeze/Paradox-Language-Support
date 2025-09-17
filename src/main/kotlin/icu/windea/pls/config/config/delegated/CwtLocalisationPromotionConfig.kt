@@ -5,6 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocalisationPromotionConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 本地化提升规则（localisation promotion）。
  *
@@ -34,7 +36,7 @@ interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPr
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由成员属性规则解析为本地化提升规则。*/
+        /** 由属性规则解析为本地化提升规则。*/
         fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig
     }
 

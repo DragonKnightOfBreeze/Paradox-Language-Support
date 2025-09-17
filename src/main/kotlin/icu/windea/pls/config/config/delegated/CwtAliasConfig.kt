@@ -7,29 +7,34 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
- * 别名规则（alias）。
+ * 别名规则。
  *
- * 概述：
- * - 为触发（trigger）/效应（effect）等提供“别名名-子名”到真实规则的映射与约束，提升可读性与复用性。
- * - 由 `alias[name:subName] = { ... }` 声明。
- * - 本规则的 [configExpression] 等同于 [subNameExpression]。
+ * 别名规则是一种可以按一对多的形式，在多个位置复用（作为属性）的规则。
+ * 别名规则可用来简化规则文件，提升可读性和复用性。
+ * 另外，包括触发（trigger）、效应（effect）在内的多种概念对应的规则，都是以别名规则的形式提供的。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 的顶层 `else` 分支中处理未匹配的键。
- * - 当键形如 `alias[...]` 时，尝试解析为本规则；`name` 与 `subName` 由 `alias[<name>:<subName>]` 的方括号内容按冒号拆分得到。
+ * 路径定位：`alias[{name}:{subName}]`，`{name}` 匹配名称，`{subName}`匹配子名（受限支持的数据表达式）。
  *
- * 例：
+ * CWTools 兼容性：兼容。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/cwtools-stellaris-config/config/aliases.cwt
- * alias[name:name] = localisation
- * alias[modifier:<modifier>] = float
+ * # declaration
+ * alias[effect:some_effect] = { ... }
+ * alias[effect:some_other_effect] = { ... }
+ *
+ * # usage
+ * scripted_effect = {
+ *     alias_name[effect] = alias_match_left[effect]
+ * }
  * ```
  *
- * @property name 别名名（`alias[$:*]`）。
- * @property subName 子名（`alias[*:$]`）。
- * @property supportedScopes 允许的作用域集合（`## scope/scopes`）。
- * @property outputScope 推入/输出的作用域（`## push_scope`）。
- * @property subNameExpression 子名对应的规则表达式。
+ * @property name 名称。
+ * @property subName 子名（受限支持的数据表达式）。
+ * @property supportedScopes 允许的作用域集合。
+ * @property outputScope 输出的作用域。
+ * @property subNameExpression 子名对应的数据表达式。
+ * @property configExpression 当前规则的规则表达式（等同于 [subNameExpression]）。
  */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("alias[$:*]")
@@ -49,7 +54,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
 
     interface Resolver {
-        /** 由 `alias[...]` 的属性规则解析为别名规则。*/
+        /** 由属性规则解析为别名规则。*/
         fun resolve(config: CwtPropertyConfig): CwtAliasConfig?
     }
 

@@ -15,7 +15,7 @@ import icu.windea.pls.model.ImageFrameInfo
  * - 其他参数表示帧数来源路径（支持逗号分隔多路径），映射到 [framePaths]。
  * - 当 [location] 含 `$` 时表示存在占位符，需要在后续步骤以“定义名或属性值”等替换。
  *
- * CWTools 兼容性：兼容，但语法上存在一定扩展。
+ * CWTools 兼容性：兼容，但存在一定的扩展。
  *
  * 示例：
  * ```cwt

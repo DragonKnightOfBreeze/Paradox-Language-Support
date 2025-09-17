@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl
@@ -7,36 +8,41 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 
 /**
- * 扩展：参数规则（parameters）。
+ * 参数的扩展规则。
  *
- * 概述：
- * - 为“参数化规则”定义其上下文键与上下文规则（单个/多个），并可选择继承调用处的上下文。
- * - 由 `parameters[name] = { ... }` 或相关扩展写法声明。
+ * 用于为对应的参数（parameter）提供额外的提示信息（如文档注释），以及指定规则上下文与作用域上下文。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `parameters` 下的每个成员规则，解析为本规则。
- * - 可用注记：`## context_key`、`## context_configs_type`、`## inherit`。
+ * 说明：
+ * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 参数是指触发（trigger）、效应（effect）或内联脚本（inline script）的参数，格式为 `$PARAM$` 或 `$PARAM|DEFAULT_VALUE$`。
+ * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 例：
+ * 路径定位：`parameters/{name}`，`{name}` 匹配规则名称。
+ *
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * # extended
  * parameters = {
- *     ## context_key = $scalar
- *     ## context_configs_type = $enum:context_configs_type$
- *     ## inherit
- *     $parameter$
- *     ## context_key = $scalar
- *     ## context_configs_type = $enum:context_configs_type$
- *     ## inherit
- *     $parameter$ = $declaration
+ *     ## replace_scopes = { this = country root = country }
+ *     ## context_key = some_trigger
+ *     PARAM
+ *     ## context_configs_type = multiple
+ *     ## context_key = some_trigger
+ *     PARAM = { ... }
+ *     ## context_configs_type = multiple
+ *     ## context_key = some_trigger
+ *     PARAM = single_alias_right[trigger_clause]
  * }
  * ```
  *
  * @property name 名称。
  * @property contextKey 上下文键（如 `scripted_trigger@X`）。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
- * @property inherit 是否继承调用处的上下文（规则与作用域上下文）。
+ * @property inherit 是否继承使用处的规则上下文与作用域上下文。
+ *
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
  */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     @FromKey
@@ -55,7 +61,7 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtM
     fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>>
 
     interface Resolver {
-        /** 由成员规则解析为“扩展的参数规则”。*/
+        /** 由成员规则解析为参数的扩展规则。*/
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig?
     }
 

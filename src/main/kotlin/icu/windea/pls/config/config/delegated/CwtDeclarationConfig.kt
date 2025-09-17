@@ -5,30 +5,47 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+
 /**
- * 声明规则（declaration）。
+ * 声明规则。
  *
- * 概述：
- * - 描述某一可声明实体（如“游戏规则项”等）在声明处需要满足的属性结构与子类型使用情况。
- * - 由 `declaration[name] = { ... }` 或相关扩展写法声明。
+ * 用于描述定义声明的结构，从而在定义声明中提供代码补全、代码检查等功能。
  *
- * 定位：
- * - 常作为扩展规则内部的“属性形式成员”出现：例如 `game_rules`、`inline_scripts`、`parameters`、`dynamic_values` 等，当成员以属性规则形式声明时，为其生成“声明处配置”。
- * - 亦兼容直接的 `declaration[name] = { ... }` 写法（若出现）。
+ * 说明：
+ * - 可在其中通过子类型表达式（[ParadoxDefinitionSubtypeExpression]）限定定义声明的结构。
+ * - 可在其中引用别名规则（[CwtAliasConfig]）与单别名规则（[CwtSingleAliasConfig]），从而简化声明规则的编写。
+ * - 切换类型（swapped type）的声明规则可以直接嵌套在对应的基础类型（base type）的声明规则中。
  *
- * 例：
+ * 路径定位：
+ * - `{name}`，`{name}` 匹配规则名称（定义类型）。
+ * - 任何无法在解析其他规则的过程中被匹配到的顶级属性，如果键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
+ *
+ * CWTools 兼容性：兼容。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt 的通用映射
- * ## replace_scopes = $scope_context
- * ## push_scope = $scope
- * ## cardinality = $cardinality
- * ## predicate = $predicate
- * $$declaration = $declaration
+ * event = {
+ *     id = scalar
+ *     subtype[triggered] = { # 通过子类型表达式限定定义声明的结构
+ *         ## cardinality = 0..1
+ *         weight_multiplier = {
+ *             factor = float
+ *             alias_name[modifier_rule] = alias_match_left[modifier_rule] # 引用别名规则
+ *         }
+ *     }
+ *     ## cardinality = 0..1
+ *     trigger = single_alias_right[trigger_clause] # 引用单别名规则
+ *     # ...
+ * }
  * ```
  *
  * @property name 名称。
- * @property configForDeclaration 对应“声明处”的属性规则。
- * @property subtypesUsedInDeclaration 在声明中实际使用到的子类型集合。
+ * @property configForDeclaration 可直接用于检查定义声明的结构，经过处理后的属性规则。
+ * @property subtypesUsedInDeclaration 其中的子类型表达式（[ParadoxDefinitionSubtypeExpression]）中使用到的子类型的集合。
+ *
+ * @see CwtTypeConfig
+ * @see CwtSubtypeConfig
  */
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey
@@ -38,7 +55,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val subtypesUsedInDeclaration: Set<String>
 
     interface Resolver {
-        /** 由成员属性规则解析为声明规则；可选指定 [name] 覆盖键侧名称。*/
+        /** 由属性规则解析为声明规则，可指定 [name] 以覆盖规则名称。*/
         fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig?
     }
 

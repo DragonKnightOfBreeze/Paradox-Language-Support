@@ -1,42 +1,38 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtMemberElement
 
 /**
- * 扩展：on_action 规则。
+ * on action 的扩展规则。
  *
- * 概述：
- * - 为 on_action 声明其事件类型（如 `country`、`system`），并可附带提示信息。
- * - 由 `on_action[name] = { ... }` 或相关扩展写法声明。
+ * 用于为对应的 on action 提供额外的提示信息（如文档注释、内嵌提示），以及指定事件类型。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `on_actions` 下的每个成员规则，解析为本规则。
- * - 可用注记：`## event_type = ...`、`## hint = ...`。
+ * 说明：
+ * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - on action 即类型为 `on_action` 的定义。
+ * - 事件类型是通过 `## event_type` 选项指定的。这会重载声明规则中的所有对事件的引用为对该类型事件的引用。
  *
- * 例：
+ * 路径定位：`on_actions/{name}`，`{name}` 匹配规则名称。
+ *
+ * CWTools 兼容性：不兼容，拥有不同的格式与行为。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * # extended
  * on_actions = {
- *     $on_action$
- * }
- * ```
- *
- * ```cwt
- * # 来自 cwt/cwtools-stellaris-config/config/on_actions.cwt（节选）
- * on_actions = {
- *     ## event_type = scopeless
- *     on_game_start
+ *     ### Some documentation
+ *     ## hint = §RSome hint text§!
+ *     ## replace_scopes = { this = country root = country }
  *     ## event_type = country
- *     on_game_start_country
+ *     x
  * }
  * ```
  *
  * @property name 名称。
- * @property eventType 事件类型（如 `country`、`system`）。
+ * @property eventType 事件类型。
  * @property hint 额外提示信息（可选）。
  */
 interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
@@ -48,7 +44,7 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMe
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则解析为“扩展的 on_action 规则”。*/
+        /** 由成员规则解析为 on action 的扩展规则。*/
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig?
     }
 

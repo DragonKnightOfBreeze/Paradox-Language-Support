@@ -1,34 +1,41 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtMemberElement
 
 /**
- * 扩展：定义规则（definition）。
+ * 定义的扩展规则。
  *
- * 概述：
- * - 在常规成员规则的基础上，声明“定义”的补充信息，如类型标识与提示。
- * - 常用于把某段脚本标记为某种定义（definition）并参与导航/校验。
+ * 用于为对应的定义提供额外的提示信息（如文档注释、内嵌提示），以及指定作用域上下文（如果支持）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `definitions` 下的每个成员规则，解析为本规则。
- * - 可通过注记 `## type = ...` 指定定义类型；可选 `## hint = ...`。
+ * 说明：
+ * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
- * 例：
+ * 路径定位：`definitions/{name}`，`{name}` 匹配规则名称。
+ *
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * # extended
  * definitions = {
- *     ## type = $scalar
- *     $definition$
+ *     ### Some documentation
+ *     ## hint = §RSome hint text§!
+ *     ## replace_scopes = { this = country root = country }
+ *     ## type = scripted_trigger
+ *     x # or `x = xxx`
  * }
  * ```
  *
  * @property name 名称。
- * @property type 定义类型标识（如 `scripted_trigger`）。
- * @property hint 额外提示信息（可选）。
+ * @property type 定义类型。
+ * @property hint 提示文本（可选）。
+ *
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     @FromKey
@@ -39,7 +46,7 @@ interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, Cwt
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则解析为“扩展的定义规则”。*/
+        /** 由成员规则解析为定义的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig?
     }
 

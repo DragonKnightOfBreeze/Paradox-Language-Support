@@ -3,32 +3,36 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl
+import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
  * 类型图片规则。
  *
- * 概述：
- * - 为某个“定义类型”的不同子类型声明对应的图片位置配置列表，便于在 UI 与文档中展示。
- * - 由 `type_images[...]`（或等效扩展）中的条目解析而来。
+ * 用于定位对应类型的定义的相关图片，以便在 UI 与各种提示信息中展示。
+ * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位，并最终解析为处理后的图片。
  *
- * @property locationConfigs 子类型表达式与位置规则的配对列表（`Pair<subtypeExpression?, CwtLocationConfig>`）。
+ * 路径定位：`types/type[{type}]/images`，`{type}` 匹配定义类型。
  *
- * 定位：
- * - 在 `CwtTypeConfigResolverImpl` 中，当处理 `type[...]` 的成员属性键为 `images` 时，解析为本规则。
- * - `locationConfigs` 来自 `images = { ... }` 的成员属性与可选的 `subtype[...]` 分节。
+ * CWTools 兼容性：兼容，但存在一定的扩展。
  *
- * 例：
+ * 示例：
  * ```cwt
  * types = {
- *   type[mod_descriptor] = {
- *     images = {
- *       ## primary
- *       picture = picture
+ *     type[component_template] = {
+ *         # ...
+ *         images = {
+ *             ## primary
+ *             ## required
+ *             icon = "icon|icon_frame"
+ *         }
  *     }
- *   }
  * }
  * ```
+ *
+ * @property locationConfigs 子类型表达式与位置规则的配对列表。
+ *
+ * @see CwtLocationExpression
  */
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)
@@ -37,7 +41,7 @@ interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     fun getConfigs(subtypes: List<String>): List<CwtLocationConfig>
 
     interface Resolver {
-        /** 由成员属性规则解析为类型图片规则。*/
+        /** 由属性规则解析为类型图片规则。*/
         fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig?
     }
 

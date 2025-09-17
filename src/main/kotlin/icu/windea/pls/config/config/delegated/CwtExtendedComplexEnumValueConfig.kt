@@ -1,37 +1,37 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtMemberElement
 
 /**
- * 扩展：复杂枚举值规则（complex_enum value）。
+ * 复杂枚举值的扩展规则。
  *
- * 概述：
- * - 为复杂枚举的具体值声明类型标识与可选提示。
- * - 由 `complex_enum_value[name] = { ... }` 或相关扩展写法声明。
+ * 用于为对应的复杂枚举值提供额外的提示信息（如文档注释、内嵌提示）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `complex_enum_values` 下的每个成员块：
- *   - 外层键为复杂枚举名（作为 `type` 传入解析器）。
- *   - 内部的成员（属性键或单值）解析为本规则的 `name`，可附带 `## hint = ...` 注记。
+ * 说明：
+ * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
  *
- * 例：
+ * 路径定位：`complex_enum_values/{type}/{name}`，`{type}` 匹配枚举名，`{name}` 匹配规则名称。
+ *
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * # extended
  * complex_enum_values = {
- *     $complex_enum$ = {
- *         ## hint = $scalar
- *         $complex_enum_value$
+ *     component_tag = {
+ *         ### Some documentation
+ *         ## hint = §RSome hint text§!
+ *         x # or `x = xxx`
  *     }
  * }
  * ```
  *
  * @property name 名称。
- * @property type 值类型标识。
- * @property hint 额外提示信息（可选）。
+ * @property type 枚举名。
+ * @property hint 提示文本（可选）。
  */
 interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     @FromKey
@@ -41,7 +41,7 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElemen
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则与 [type] 解析为“扩展的复杂枚举值规则”。*/
+        /** 由成员规则解析为复杂枚举值的扩展规则。 */
         fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig
     }
 

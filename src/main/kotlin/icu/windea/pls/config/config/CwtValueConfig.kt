@@ -8,14 +8,14 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
 
 /**
- * 值型成员规则。
+ * 值规则（值型成员规则）。
  *
- * 概述：
- * - 对应 `.cwt` 中的“单独值条目”（非 `key = value` 形式），如：`some_value` 或在属性值一侧展开的嵌套值。
- * - 若该值来自某个属性的值一侧，允许通过 [propertyConfig] 反向关联其来源属性。
- * - 本规则的 [configExpression] 等同于值侧的规则表达式 [valueExpression]。
+ * 对应 CWT 规则文件中的一个值（`v`）。可以是属性的值，也可以是单独的值。
  *
- * @property propertyConfig 当该值由属性值一侧“展开/提升”为独立值规则时，指向其来源 [CwtPropertyConfig]；否则为 null。
+ * @property propertyConfig 对应属性的值时，所属的属性规则。
+ * @property configExpression 当前规则的规则表达式（等同于 [valueExpression]）。
+ *
+ * @see CwtValue
  */
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
@@ -24,7 +24,8 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
 
     interface Resolver {
         /**
-         * 依据 [pointer]/[configGroup]/[value] 等解析生成规则；[valueType] 默认为字符串，可携带下级 [configs]/[optionConfigs]，若来源为属性值侧可指定 [propertyConfig]。
+         * 依据 [pointer]/[configGroup]/[value] 等解析生成规则；
+         * [valueType] 默认为字符串，可携带下级 [configs]/[optionConfigs]，若来源为属性值侧可指定 [propertyConfig]。
          */
         fun resolve(
             pointer: SmartPsiElementPointer<out CwtValue>,
@@ -36,26 +37,34 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             propertyConfig: CwtPropertyConfig? = null
         ): CwtValueConfig
 
-        /** 基于属性型成员规则，解析出其值侧对应的值型成员规则。 */
+        /**
+         * 基于属性型成员规则，解析出其值侧对应的值型成员规则。
+         */
         fun resolveFromPropertyConfig(
             pointer: SmartPsiElementPointer<out CwtValue>,
             propertyConfig: CwtPropertyConfig
         ): CwtValueConfig
 
-        /** 构造一个委托版本（wrapper），共享来源与上下文，仅按需覆盖部分字段。 */
+        /**
+         * 构造一个委托版本（wrapper），共享来源与上下文，仅按需覆盖部分字段。
+         */
         fun delegated(
             targetConfig: CwtValueConfig,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
             parentConfig: CwtMemberConfig<*>? = targetConfig.parentConfig,
         ): CwtValueConfig
 
-        /** 基于现有规则，快速替换 `value`，用于生成变体。 */
+        /**
+         * 基于现有规则，快速替换 `value`，用于生成变体。
+         */
         fun delegatedWith(
             targetConfig: CwtValueConfig,
             value: String
         ): CwtValueConfig
 
-        /** 拷贝一个新的值型成员规则，可选择性修改若干字段。 */
+        /**
+         * 拷贝一个新的值型成员规则，可选择性修改若干字段。
+         */
         fun copy(
             targetConfig: CwtValueConfig,
             pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
@@ -67,5 +76,5 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         ): CwtValueConfig
     }
 
-    companion object: Resolver by CwtValueConfigResolverImpl()
+    companion object : Resolver by CwtValueConfigResolverImpl()
 }

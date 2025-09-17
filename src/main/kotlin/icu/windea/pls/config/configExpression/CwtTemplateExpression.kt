@@ -7,13 +7,12 @@ import icu.windea.pls.config.CwtDataTypes.Icon
 import icu.windea.pls.config.CwtDataTypes.Scope
 import icu.windea.pls.config.CwtDataTypes.Value
 import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolverImpl
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 
 /**
  * CWT 模板表达式。
  *
  * 用于描述脚本文件中的键或值的更复杂的取值形态，可视为多个数据表达式的组合。
- * 由数个片段拼接而成：常量字段 + 动态片段（受限支持）。
+ * 由数个片段拼接而成：常量字段 + 动态片段（受限支持的数据表达式）。
  *
  * 说明：
  * - 不允许包含空白字符；包含空白将直接返回空表达式。
@@ -37,7 +36,7 @@ import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
  * @property referenceExpressions 过滤后的“引用片段”（即非 [Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
- * @see CwtDataExpressionResolver
+ * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
  */
 interface CwtTemplateExpression : CwtConfigExpression {
     val snippetExpressions: List<CwtDataExpression>

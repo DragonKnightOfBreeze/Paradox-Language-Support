@@ -7,27 +7,28 @@ import icu.windea.pls.config.config.delegated.impl.CwtScopeGroupConfigResolverIm
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 作用域分组规则。
  *
  * 概述：
- * - 将一组作用域 ID 聚合为命名分组，便于在其它规则中按分组引用与校验。
+ * - 将若干作用域 ID 聚合为命名分组，便于在其它规则中按分组引用与校验（如触发/效应的 `scope_group[...]`）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `scope_groups` 下的每个成员属性。
- * - 规则名取自成员属性键，即 `name`（如 `celestial_coordinate`）。
+ * 路径定位：`scope_groups/{name}`，`{name}` 匹配规则名称（分组名）。
  *
- * 例：
+ * CWTools 兼容性：兼容。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/cwtools-stellaris-config/config/scopes.cwt
  * scope_groups = {
- *     celestial_coordinate = {
- *         planet ship fleet system ambient_object megastructure ...
+ *     target_species = {
+ *         country pop_group leader planet ship fleet army species first_contact
  *     }
  * }
  * ```
  *
- * @property name 分组名。
+ * @property name 名称（分组名）。
  * @property values 分组内的作用域 ID 集合（大小写不敏感）。
  * @property valueConfigMap （计算属性）每个作用域 ID 到其原始值规则的映射。
  */
@@ -40,7 +41,7 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 
     interface Resolver {
-        /** 由成员属性规则解析为作用域分组规则。*/
+        /** 由属性规则解析为作用域分组规则。*/
         fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig?
     }
 

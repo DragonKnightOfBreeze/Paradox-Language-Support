@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -8,29 +9,26 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
- * 动态值类型规则（value[...]）。
+ * 动态值类型规则。
  *
- * 概述：
- * - 声明一组“动态值名称”的集合，通常与具体的值解析器/引用机制配合，提供补全与校验。
- * - 由 `value[name] = { values = [...] }` 声明。
+ * 用于为对应的动态值类型提供预定义（硬编码）的动态值。
+ * 动态值是一组不固定的可选项，通常是合法的标识符，使用同名本地化的文本作为 UI 显示。
+ * 事件目标（event target）、变量（variable）、标志（flag）等通常都会被视为动态值。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `values` 下的每个成员属性。
- * - 名称从成员属性键中提取：去除前后缀 `value[` 与 `]`，得到 `name`。
+ * CWTools 兼容性：部分兼容。PLS 仅支持常量类型（[CwtDataTypes.Constant]）的可选项。
  *
- * 例：
+ * 路径定位：`values/value[{name}]`，`{name}` 匹配规则名称（动态值类型）。
+ *
+ * 示例：
  * ```cwt
- * # 模式参考：cwt/core/internal/schema.cwt
  * values = {
- *     value[dynamic_type] = {
- *         $dynamic_value
- *     }
+ *     value[event_target] = { owner }
  * }
  * ```
  *
- * @property name 名称。
- * @property values 可选项集合（模板表达式，大小写不敏感比对）。
- * @property valueConfigMap （计算属性）可选项到其原始值规则的映射。
+ * @property name 名称（动态值类型）。
+ * @property values 可选项集合（忽略大小写）。
+ * @property valueConfigMap 可选项到对应的值规则的映射。
  */
 interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("value[$]")
@@ -41,7 +39,7 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
 
     interface Resolver {
-        /** 由 `value[...]` 的属性规则解析为动态值类型规则。*/
+        /** 由属性规则解析为动态值类型规则。 */
         fun resolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig?
     }
 

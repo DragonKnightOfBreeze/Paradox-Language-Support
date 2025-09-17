@@ -53,4 +53,6 @@ private class CwtOptionConfigImpl(
 
     private val separatorTypeId: Byte = separatorType.optimizeValue() // use enum id as field to optimize memory
     override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
+
+    override fun toString() = "(option) $key $separatorType $value"
 }

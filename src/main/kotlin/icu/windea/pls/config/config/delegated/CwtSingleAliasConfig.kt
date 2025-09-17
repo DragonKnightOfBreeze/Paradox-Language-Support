@@ -5,24 +5,33 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
- * 单别名规则（single_alias[...]）。
+ * 单别名规则。
  *
- * 概述：
- * - 定义一个只包含“名称”的简单别名，常用于将某个名称直接映射为一段可复用规则结构。
- * - 由 `single_alias[name] = { ... }` 声明。
+ * 单别名规则是一种可以按一对一的形式，在多个位置复用（作为属性的值）的规则。
+ * 单别名规则可用来简化规则文件，提升可读性和复用性。
+ * 另外，包括触发块（trigger clause）、效应块（effect clause）在内的多种代码片段对应的规则，都建议以单别名规则的形式提供。
  *
- * @property name 别名名称。
+ * 路径定位：`single_alias[{name}]`，`{name}` 匹配名称。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 的顶层 `else` 分支中处理未匹配的键。
- * - 当键形如 `single_alias[...]` 时，解析为本规则；`name` 取自方括号中的标识。
+ * CWTools 兼容性：兼容。
  *
- * 例：
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * single_alias[$single_alias$] = $declaration
+ * # declaration
+ * single_alias[trigger_clause] = {
+ *     alias_name[trigger] = alias_match_left[trigger]
+ * }
+ *
+ * # usage
+ * army = {
+ *     ## cardinality = 0..1
+ * 	   potential = single_alias_right[trigger_clause]
+ * }
  * ```
+ * @property name 名称。
  */
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("single_alias[$]")
@@ -32,7 +41,7 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
 
     interface Resolver {
-        /** 由 `single_alias[...]` 的属性规则解析为单别名规则。*/
+        /** 由属性规规则解析为单别名规则。*/
         fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig?
     }
 

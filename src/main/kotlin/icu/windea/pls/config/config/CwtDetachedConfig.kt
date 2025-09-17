@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.emptyPointer
 
 /**
- * 脱离 PSI 的规则。
+ * 脱离 PSI 的规则的统一抽象。
  *
  * 概述：
  * - 与常规 [CwtConfig] 不同，脱离型规则不再依赖具体 PSI 元素与规则组（`configGroup`）。

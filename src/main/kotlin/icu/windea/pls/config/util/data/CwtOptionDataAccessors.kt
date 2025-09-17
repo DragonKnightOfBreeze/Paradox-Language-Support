@@ -300,7 +300,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     /**
      * 查询作用域类型。
      *
-     * 用于约束查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：definition）。
+     * 用于控制查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：`definition`）。
      *
      * 适用对象：复杂枚举规则（[CwtComplexEnumConfig]）。
      *

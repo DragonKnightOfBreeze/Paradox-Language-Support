@@ -5,30 +5,31 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverImpl
 
 /**
- * 复杂枚举规则（complex_enum[...]）。
+ * 复杂枚举规则。
  *
- * 概述：
- * - 用于描述基于“锚点（enum_name）”聚合的复杂枚举集合，支持从根或从当前上下文开始查询。
- * - 由 `complex_enum[name] = { ... }` 声明。
+ * 用于描述需要基于锚点动态定位可选项（即枚举值）的复杂枚举。
+ * 按照路径模式匹配脚本文件，并在其中进一步匹配锚点。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，顶层键 `enums` 的每个成员既可能解析为 `enum[...]`，也可能解析为 `complex_enum[...]`。
- * - 名称从成员属性键中提取：去除前后缀 `complex_enum[` 与 `]`，得到 `name`。
+ * 路径定位：`enums/complex_enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
  *
- * 例：
+ * CWTools 兼容性：兼容，但存在一定的扩展。
+ *
+ * 示例：
  * ```cwt
- * # 模式参考：cwt/core/internal/schema.cwt
  * enums = {
- *     complex_enum[my_complex] = {
+ *     complex_enum[component_tag] = {
+ *         path = "game/common/component_tags"
+ *         name = {
+ *         	enum_name
+ *         }
  *         start_from_root = yes
- *         name = <definition_type_expression>
  *     }
  * }
  * ```
  *
- * @property name 名称。
- * @property startFromRoot 是否从根开始查询（默认 false）。
- * @property searchScopeType 查询作用域类型，用于控制查询对象的等效性（目前支持：`definition`）。
+ * @property name 名称（枚举名）。
+ * @property startFromRoot 是否从文件顶部而非顶级属性开始查询（默认 false）。
+ * @property searchScopeType （扩展）查询作用域类型。用于控制查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：`definition`）。
  * @property nameConfig `name` 对应的规则。
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。
  */
@@ -44,7 +45,7 @@ interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
     val enumNameConfigs: List<CwtMemberConfig<*>>
 
     interface Resolver {
-        /** 由 `complex_enum[...]` 的属性规则解析为复杂枚举规则。*/
+        /** 由属性规则解析为复杂枚举规则。*/
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig?
     }
 

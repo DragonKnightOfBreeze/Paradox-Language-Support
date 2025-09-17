@@ -7,11 +7,24 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.util.ReversibleValue
 
 /**
- * 类型规则（type[...]）。
+ * 类型规则。
  *
- * 概述：
- * - 描述某一“定义类型”的结构、名称推导、唯一性、子类型、可用根键等。
- * - 由 `type[xxx] = { ... }` 声明，通常用于定义解析与导航、补全、校验等场景。
+ * 用于描述如何定位、匹配与命名对应类型的定义，以及如何提供相关本地化、相关图片等额外信息。
+ *
+ * 路径定位：`types/type[{type}]`，`{type}` 匹配定义类型。
+ *
+ * CWTools 兼容性：兼容，但存在一定的扩展。
+ *
+ * 示例：
+ * ```cwt
+ * types = {
+ *     type[civic_or_origin] = {
+ *         path = "game/common/governments/civics"
+ *         file_extension = .txt
+ *         # ...
+ *     }
+ * }
+ * ```
  *
  * @property name 类型名。
  * @property baseType 基类型名，若存在表示继承/复用另一类型的部分语义。
@@ -29,29 +42,11 @@ import icu.windea.pls.core.util.ReversibleValue
  * @property subtypes 子类型规则集合。
  * @property localisation 该类型的本地化展示设置规则。
  * @property images 该类型的图片展示设置规则。
- *
- * 计算字段：
  * @property possibleRootKeys 可能的根键集合。
  * @property typeKeyPrefixConfig 当以值条目形式声明前缀时，对应的原始值规则。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `types` 下的每个成员属性。
- * - 类型名从成员属性键中提取：去除前后缀 `type[` 与 `]`，得到 `name`。
- *
- * 例：
- * ```cwt
- * # 来自 cwt/core/descriptor.core.cwt
- * types = {
- *     type[mod_descriptor] = {
- *         path_file = descriptor.mod
- *         type_per_file = yes
- *         name_field = name
- *         images = {
- *             picture = picture
- *         }
- *     }
- * }
- * ```
+ * @see CwtSubtypeConfig
+ * @see CwtDeclarationConfig
  */
 interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromKey("type[$]")
@@ -91,7 +86,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
     interface Resolver {
-        /** 由 `type[...]` 的属性规则解析为类型规则。*/
+        /** 由属性规规则解析为类型规则。*/
         fun resolve(config: CwtPropertyConfig): CwtTypeConfig?
     }
 

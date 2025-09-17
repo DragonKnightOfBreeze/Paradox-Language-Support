@@ -6,18 +6,17 @@ import icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
- * 作用域规则（scope）。
+ * 作用域规则。
  *
- * 概述：
- * - 声明一个作用域 ID 及其别名集合，用于作用域匹配、规范化与提示。
- * - 通常在作用域管理与规则校验中使用。
+ * 用于提供作用域（scope）的相关信息（快速文档、别名）。
  *
- * 定位与命名：`scopes/$`，`$` 匹配规则名称。
+ * 路径定位：`scopes/{name}`，`{name}` 匹配规则名称（作用域 ID）。
  *
  * 示例：
  * ```cwt
- * # stellaris:scopes.cwt
  * scopes = {
  *     Country = { aliases = { country } }
  * }
@@ -33,7 +32,7 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val aliases: Set<@CaseInsensitive String>
 
     interface Resolver {
-        /** 由成员属性规则解析为作用域规则。*/
+        /** 由属性规则解析为作用域规则。*/
         fun resolve(config: CwtPropertyConfig): CwtScopeConfig?
     }
 

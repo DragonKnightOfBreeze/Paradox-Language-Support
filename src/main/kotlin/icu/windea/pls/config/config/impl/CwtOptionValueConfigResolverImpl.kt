@@ -42,4 +42,6 @@ private class CwtOptionValueConfigImpl(
 
     private val valueTypeId: Byte = valueType.optimizeValue() // use enum id as field to optimize memory
     override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+
+    override fun toString() = "(option value) $value"
 }

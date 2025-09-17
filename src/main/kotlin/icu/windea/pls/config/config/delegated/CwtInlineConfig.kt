@@ -6,23 +6,23 @@ import icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
- * 内联规则（inline）。
+ * 内联规则。
  *
- * 概述：
- * - 将一段可复用的属性结构以“内联”的方式注入到使用处，减少重复书写。
- * - 由 `inline[name] = { ... }` 声明。
+ * 用于描述内联逻辑的使用处的结构，从而在脚本文件中提供代码补全、代码检查等功能。
+ * 内联逻辑使得一段代码片段可以在编写时被复用。在运行时，其使用处会被替换为内联后的实际代码片段。
+ * 目前仅适用于内联脚本（inline script）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 的顶层 `else` 分支中处理未匹配的键。
- * - 当键形如 `inline[...]` 时，解析为本规则；`name` 取自方括号中的标识。
+ * 路径定位：`inline[{name}]`，`{name}` 匹配规则名称。
  *
- * 例：
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * inline[$inline$] = $declaration
+ * ## inline_script_expression = ""
+ * inline[inline_script] = filepath[common/inline_scripts/,.txt]
  * ```
  *
- * @property name 内联名称。
+ * @property name 名称。
  */
 interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("inline[$]")
@@ -32,7 +32,7 @@ interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     fun inline(): CwtPropertyConfig
 
     interface Resolver {
-        /** 由 `inline[...]` 的属性规则解析为内联规则。*/
+        /** 由属性规则解析为内联规则。*/
         fun resolve(config: CwtPropertyConfig): CwtInlineConfig?
     }
 

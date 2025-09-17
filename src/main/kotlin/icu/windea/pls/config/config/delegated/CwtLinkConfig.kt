@@ -6,19 +6,27 @@ import icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 链接规则（link）。
  *
  * 概述：
- * - 将“数据源/作用域/值”等上下文与目标内容建立关联，用于解析跳转、补全与校验（如 event_target、var 等）。
- * - 由 `link[name] = { ... }` 声明；当用于本地化时会生成本地化专用变体。
- * - 本规则的 [configExpression] 通常等同于 [dataSourceExpression]。
+ * - 声明“链接名称”与其数据来源、输入/输出作用域等，从而将脚本上下文（作用域/值）与目标实体建立关联，用于跳转、补全与校验（如 `event_target`、`var`）。
+ * - 由 `link[name] = { ... }` 声明；当用于本地化上下文时会生成对应的本地化变体。
+ * - 本规则的 [configExpression] 与 [dataSourceExpression] 一致（即数据来源表达式）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中：
- *   - 读取顶层键 `links` 下的每个成员属性，调用 `resolve`，并按 `name` 存入 `configGroup.links`。
- *   - 读取顶层键 `localisation_links` 下的每个成员属性，调用 `resolveForLocalisation`，并按 `name` 存入 `configGroup.localisationLinks`。
- * - 规则名取自成员属性键，即 `name`。
+ * 路径定位：`links/\$`、`localisation_links/\$`
+ * - `\$`：链接名。
+ *
+ * 示例（通用示意）：
+ *     links = {
+ *         event_target = {
+ *             input_scopes = { any }
+ *             output_scope = any
+ *             data_source = scope
+ *         }
+ *     }
  *
  * @property name 链接名。
  * @property type 链接类型（`scope`/`value`/`both` 等，缺省按 `scope` 处理）。

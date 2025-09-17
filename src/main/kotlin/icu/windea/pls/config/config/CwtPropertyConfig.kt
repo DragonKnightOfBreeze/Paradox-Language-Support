@@ -9,29 +9,37 @@ import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 
 /**
- * 属性型成员规则。
+ * 属性规则（属性型成员规则）。
  *
- * 概述：
- * - 对应 `.cwt` 中形如 `key = value` 的属性条目，承载键、值（及其类型）、分隔符、子成员与选项。
- * - 暴露键侧的规则表达式 [keyExpression]，且本规则的 [configExpression] 等同于该表达式。
+ * 对应 CWT 规则文件中的一个属性（`k = v` 或 `k = { ... }`）。
  *
- * @property key 属性键原文。
- * @property separatorType 分隔符类型（`=`/`:` 等）。
- * @property valueConfig 当值一侧进一步展开为结构（对象/数组）时，对应的值规则；否则为 null。
- * @property keyExpression 键侧规则表达式；[configExpression] 等同于该表达式。
+ * @property key 属性键（去除首尾的双引号）。
+ * @property separatorType 分隔符类型。
+ * @property value 属性值（去除首尾的双引号）。
+ * @property valueType 属性值的类型，用于驱动解析与校验。
+ * @property valueConfig 属性值对应的值规则。懒加载，且在属性值无法解析时返回 null。
+ * @property keyExpression 属性键对应的数据表达式，用于驱动解析与校验。
+ * @property valueExpression 属性值对应的数据表达式，用于驱动解析与校验。
+ * @property configExpression 当前规则的规则表达式（等同于 [keyExpression]）。
+ *
+ * @see CwtProperty
  */
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val key: String
     val separatorType: CwtSeparatorType
+    override val value: String
+    override val valueType: CwtType
 
     val valueConfig: CwtValueConfig?
 
     val keyExpression: CwtDataExpression
+    override val valueExpression: CwtDataExpression
     override val configExpression: CwtDataExpression get() = keyExpression
 
     interface Resolver {
         /**
-         * 依据 [pointer]/[configGroup]/[key]/[value] 等解析生成规则；[valueType] 默认为字符串，[separatorType] 默认为 `=`，可携带下级 [configs]/[optionConfigs]。
+         * 依据 [pointer]/[configGroup]/[key]/[value] 等解析生成规则；
+         * [valueType] 默认为字符串，[separatorType] 默认为 `=`，可携带下级 [configs]/[optionConfigs]。
          */
         fun resolve(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -44,21 +52,27 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null
         ): CwtPropertyConfig
 
-        /** 构造一个委托版本（wrapper），共享来源与上下文，仅按需覆盖部分字段。 */
+        /**
+         * 构造一个委托版本（wrapper），共享来源与上下文，仅按需覆盖部分字段。
+         */
         fun delegated(
             targetConfig: CwtPropertyConfig,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
             parentConfig: CwtMemberConfig<*>? = targetConfig.parentConfig
         ): CwtPropertyConfig
 
-        /** 基于现有规则，快速替换 `key` 与 `value`，用于生成变体。 */
+        /**
+         * 基于现有规则，快速替换 `key` 与 `value`，用于生成变体。
+         */
         fun delegatedWith(
             targetConfig: CwtPropertyConfig,
             key: String,
             value: String
         ): CwtPropertyConfig
 
-        /** 拷贝一个新的属性规则，可选择性修改若干字段。 */
+        /**
+         * 拷贝一个新的属性规则，可选择性修改若干字段。
+         */
         fun copy(
             targetConfig: CwtPropertyConfig,
             pointer: SmartPsiElementPointer<out CwtProperty> = targetConfig.pointer,
@@ -71,5 +85,5 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         ): CwtPropertyConfig
     }
 
-    companion object: Resolver by CwtPropertyConfigResolverImpl()
+    companion object : Resolver by CwtPropertyConfigResolverImpl()
 }

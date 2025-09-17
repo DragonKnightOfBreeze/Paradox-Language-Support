@@ -1,27 +1,29 @@
 package icu.windea.pls.config.config.delegated
 
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtMemberElement
 
 /**
- * 扩展：封装变量规则（scripted_variable）。
+ * 封装变量的扩展规则。
  *
- * 概述：
- * - 为封装变量声明提示等元信息，便于在脚本中统一引用与提示。
- * - 由 `scripted_variable[name] = { ... }` 或相关扩展写法声明。
+ * 用于为对应的封装变量（scripted variable）提供额外的提示信息（如文档注释、内嵌提示）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `scripted_variables` 下的每个成员规则，解析为本规则。
- * - 可用注记：`## hint = ...`。
+ * 说明：
+ * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
  *
- * 例：
+ * 路径定位：`scripted_variables/{name}`，`{name}` 匹配规则名称。
+ *
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/internal/schema.cwt
- * # extended
  * scripted_variables = {
- *     $scripted_variable$
+ *     ### Some documentation
+ *     ## hint = §RSome hint text§!
+ *     x # or `x = xxx`
  * }
  * ```
  *
@@ -35,7 +37,7 @@ interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMemberElemen
     val hint: String?
 
     interface Resolver {
-        /** 由成员规则解析为“扩展的封装变量规则”。*/
+        /** 由成员规则解析为封装变量的扩展规则。*/
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig?
     }
 

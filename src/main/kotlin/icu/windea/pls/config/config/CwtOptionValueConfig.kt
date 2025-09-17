@@ -1,18 +1,26 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.config.impl.CwtOptionValueConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtOptionComment
+import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
 
 /**
- * 值选项（value option）对应的规则。
+ * 选项值规则。
  *
- * 概述：
- * - 对应成员规则（[CwtMemberConfig]）下以“无键”的形式声明的选项项，如：`## required`、`## primary`。
- * - 与 [CwtOptionConfig] 相对，后者是具有键的选项（`## key = value`）。
- * - 常用于为成员补充布尔标记或较短的语义标签。
+ * 对应 CWT 规则文件中的一个没有键的选项值（`## v`）。需要位于附加到成员上的选项注释中。
+ *
+ * 用于提供额外的选项数据，自身也可以嵌套下级选项和选项值，以提供更复杂的数据表述。
+ * 在选项注释中单独使用时，常用来提供布尔标志或较短的语义标签。
+ *
+ * @see CwtMemberElement
+ * @see CwtOptionComment
+ * @see CwtValue
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessor
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors
  */
-interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtOption> {
+interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {
         /**
          * 从 [value] 等信息解析生成规则；[valueType] 默认按字符串处理，可携带下级 [optionConfigs]。

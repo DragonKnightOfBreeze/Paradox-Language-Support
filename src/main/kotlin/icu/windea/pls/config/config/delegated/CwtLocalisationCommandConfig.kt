@@ -5,6 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 本地化命令规则（localisation command）。
  *
@@ -35,7 +37,7 @@ interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtProp
     val supportedScopes: Set<String>
 
     interface Resolver {
-        /** 由成员属性规则解析为本地化命令规则。*/
+        /** 由属性规则解析为本地化命令规则。*/
         fun resolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig
     }
 

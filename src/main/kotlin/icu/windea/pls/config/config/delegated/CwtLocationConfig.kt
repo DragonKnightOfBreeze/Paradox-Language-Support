@@ -5,6 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 位置规则（location）。
  *
@@ -46,7 +48,7 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val primary: Boolean
 
     interface Resolver {
-        /** 由成员属性规则解析为位置规则。*/
+        /** 由属性规则解析为位置规则。*/
         fun resolve(config: CwtPropertyConfig): CwtLocationConfig?
     }
 

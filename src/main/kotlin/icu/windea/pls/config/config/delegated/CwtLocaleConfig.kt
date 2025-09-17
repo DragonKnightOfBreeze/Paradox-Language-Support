@@ -5,6 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 语言环境规则（locale）。
  *
@@ -53,7 +55,7 @@ interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
         fun resolveAutoOs(): CwtLocaleConfig
         /** 解析为后备（fallback）语言环境规则。*/
         fun resolveFallback(): CwtLocaleConfig
-        /** 由成员属性规则解析为语言环境规则。*/
+        /** 由属性规则解析为语言环境规则。*/
         fun resolve(config: CwtPropertyConfig): CwtLocaleConfig
     }
 

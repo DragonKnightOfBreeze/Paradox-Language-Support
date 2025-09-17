@@ -5,7 +5,6 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes.Constant
 import icu.windea.pls.config.configExpression.impl.CwtDataExpressionResolverImpl
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 
 /**
  * CWT 数据表达式。
@@ -20,12 +19,12 @@ import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
  *
  * 适用对象：定义成员对应的规则的键或值。
  *
- * CWTools 兼容性：兼容，但存在较多扩展与改进。
+ * CWTools 兼容性：兼容，但存在较多的扩展与改进。
  *
  * @property isKey 是否来源于“键”（true）或“值”（false）。
  * @property type 解析得到的表达式类型（即 CWT 规则中的 dataType）。
  *
- * @see CwtDataExpressionResolver
+ * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
  */
 interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
     val isKey: Boolean

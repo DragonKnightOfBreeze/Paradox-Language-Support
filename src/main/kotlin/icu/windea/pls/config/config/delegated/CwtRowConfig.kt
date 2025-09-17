@@ -3,6 +3,8 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl
 
+// TODO 2.0.4+ refine doc
+
 /**
  * 行规则（row[...]）。
  *
@@ -38,7 +40,7 @@ interface CwtRowConfig : CwtFilePathMatchableConfig {
     val endColumn: String?
 
     interface Resolver {
-        /** 由 `row[...]` 的属性规则解析为行规则。*/
+        /** 由属性规则解析为行规则。*/
         fun resolve(config: CwtPropertyConfig): CwtRowConfig?
     }
 

@@ -201,7 +201,7 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
 /**
  * 数据库对象表达式。对应的规则类型为 [CwtDataTypes.DatabaseObject]。
  *
- * 可以在本地化文件中作为概念名称使用。（如，`['civic:some_civic', ...]`）
+ * 可以在本地化文件中作为概念名称使用（如 `['civic:some_civic', ...]`）。
  *
  * 语法：
  * ```bnf

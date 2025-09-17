@@ -15,8 +15,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * - 暴露所属的规则组与可选的规则表达式，用于匹配与校验。
  *
  * 参考：
- * - references/cwt/guidance.md（CWTools 指引）
- * - docs/zh/config.md（PLS 规则系统说明）
+ * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+ * - PLS 规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
  *
  * @property pointer 指向承载该规则的 PSI 元素的智能指针（[SmartPsiElementPointer]）。
  * @property configGroup 所属规则组（按游戏、版本、模块划分）。
