@@ -108,10 +108,11 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
-**游戏 Wiki：**
+**教程与百科：**
 
 - [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 - [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
+- [Stellaris Mod 教程](https://main--pdxdoc-next.netlify.app)
 
 ## 贡献与支持
 
