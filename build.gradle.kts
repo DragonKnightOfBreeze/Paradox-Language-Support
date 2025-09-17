@@ -68,22 +68,22 @@ dependencies {
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.4.0") {
+    implementation("dev.langchain4j:langchain4j:1.5.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.4.0") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.5.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.4.0") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.5.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-ollama:1.4.0") {
+    implementation("dev.langchain4j:langchain4j-ollama:1.5.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
         exclude(group = "com.fasterxml.jackson.core")
@@ -97,7 +97,7 @@ dependencies {
     // implementation("org.ktorm:ktorm-core:3.6.0")
     // implementation("org.ktorm:ktorm-support-sqlite:3.6.0")
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.40.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.41.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
 
