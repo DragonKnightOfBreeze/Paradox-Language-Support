@@ -5,42 +5,68 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
-
-// TODO 2.0.4+ refine doc
+import icu.windea.pls.lang.expression.ParadoxCommandExpression
+import icu.windea.pls.lang.expression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
 
 /**
- * 链接规则（link）。
+ * 链接规则。
  *
- * 概述：
- * - 声明“链接名称”与其数据来源、输入/输出作用域等，从而将脚本上下文（作用域/值）与目标实体建立关联，用于跳转、补全与校验（如 `event_target`、`var`）。
- * - 由 `link[name] = { ... }` 声明；当用于本地化上下文时会生成对应的本地化变体。
- * - 本规则的 [configExpression] 与 [dataSourceExpression] 一致（即数据来源表达式）。
+ * 用于描述部分复杂表达式中的部分节点的格式，并为其指定允许的作用域类型。
+ * 这些节点被称为 **链接（link）**，它们通常用于切换作用域或取值，可以链式调用。
+ * 可参见：`scopes.log`。
  *
- * 路径定位：`links/\$`、`localisation_links/\$`
- * - `\$`：链接名。
+ * 链接可以以静态（静态链接）或动态（动态链接）两种方式声明。具体而言，动态链接可以：
+ * - 整个文本作为动态数据（如 `var`）。
+ * - 带前缀（如 `modifier:x`）。
+ * - 使用函数调用形式（如 `relations(x)`）。
+ * - 使用更复杂的函数调用形式。注意，PLS 尚未提供完整支持。
  *
- * 示例（通用示意）：
- *     links = {
- *         event_target = {
- *             input_scopes = { any }
- *             output_scope = any
- *             data_source = scope
- *         }
+ * 以下是一些常见的链接形式：
+ * - **作用域链接（scope link）** - 如 `owner`。
+ * - **系统作用域（system scope）** - 如 `root`。
+ * - **本地化命令字段（localisation command field）** - 如 `GetName`。
+ * - **事件对象引用（event target reference）** - 如 `event_target:xxx`。
+ * - **动态数据引用（dynamic data reference）** - 如 `modifier:xxx` `value:xxx`。
+ *
+ * 在语义与格式上，它们类似编程语言中的函数、属性或字段。
+ *
+ * 路径定位：
+ * 1. 常规链接：`links/{name}`，`{name}` 匹配规则名称（链接名）。
+ * 2. 本地化链接：`localisation_links/{name}`，`{name}` 匹配规则名称（链接名）。
+ * 3. 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
+ *
+ * CWTools 兼容性：兼容，但存在一定的扩展。
+ *
+ * 示例：
+ * ```cwt
+ * links = {
+ *     event_target = {
+ *         input_scopes = { any }
+ *         output_scope = any
  *     }
+ *     # ...
+ * }
+ * ```
  *
- * @property name 链接名。
- * @property type 链接类型（`scope`/`value`/`both` 等，缺省按 `scope` 处理）。
- * @property fromData 是否从数据环境中读取（`from_data`）。
- * @property fromArgument 是否从参数中读取（`from_argument`）。
- * @property prefix 前缀（如 `prev`/`root` 等）。
- * @property dataSource 数据源标识（数据表达式）。
- * @property inputScopes 输入作用域集合（`input_scopes`）。
- * @property outputScope 输出作用域（`output_scope`）。
+ * @property name 规则名称（链接名）。
+ * @property type 链接类型（`scope`/`value`/`both`，默认为 `scope`）。
+ * @property fromData 为动态链接时，是否从数据中读取动态数据。对应的节点格式形如 `prefix:data`。
+ * @property fromArgument （PLS 扩展）为动态链接时，是否从传入参数中读取动态数据。对应的节点格式形如 `func(arg)`。
+ * @property prefix 为动态链接时，携带的前缀。如果为 null，则将整个文本作为动态数据。
+ * @property dataSource 数据源（数据表达式）。如果不为 null，则被视为动态链接。
+ * @property inputScopes 输入作用域（类型）的集合。
+ * @property outputScope 输出作用域（类型）。
  * @property forDefinitionType 仅用于指定的定义类型。
- * @property forDefinitionType 仅用于指定的定义类型。
- * @property forLocalisation 是否为本地化上下文的变体。
- * @property dataSourceExpression 数据源对应的规则表达式。
+ * @property forLocalisation 是否为本地化链接（在本地化文件而非脚本文件中使用）。
+ * @property dataSourceExpression 数据源对应的数据表达式。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [dataSourceExpression]）。
+ *
+ * @see ParadoxScopeFieldExpression
+ * @see ParadoxValueFieldExpression
+ * @see ParadoxVariableFieldExpression
+ * @see ParadoxCommandExpression
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey
@@ -77,11 +103,11 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     fun forValue() = type == "both" || type == "value"
 
     interface Resolver {
-        /** 由 `link[...]` 的属性规则解析为链接规则。*/
+        /** 由属性规则解析为（常规）链接规则。*/
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig?
-        /** 从 `link[...]` 解析本地化上下文的链接规则变体。*/
+        /** 由属性规则解析为本地化链接规则。 */
         fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig?
-        /** 基于已有链接规则生成本地化上下文的变体。*/
+        /** 由已有的（常规）链接规则，解析为本地化链接规则。*/
         fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig
     }
 

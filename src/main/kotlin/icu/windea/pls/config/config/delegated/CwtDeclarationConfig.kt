@@ -17,8 +17,7 @@ import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
  * - 可在其中引用别名规则（[CwtAliasConfig]）与单别名规则（[CwtSingleAliasConfig]），从而简化声明规则的编写。
  * - 切换类型（swapped type）的声明规则可以直接嵌套在对应的基础类型（base type）的声明规则中。
  *
- * 路径定位：
- * - `{name}`，`{name}` 匹配规则名称（定义类型）。
+ * 路径定位：`{name}`，`{name}` 匹配规则名称（定义类型）。
  * - 任何无法在解析其他规则的过程中被匹配到的顶级属性，如果键是一个合法的标识符，最终都会在回退时尝试解析为声明规则。
  *
  * CWTools 兼容性：兼容。

@@ -3,6 +3,7 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
@@ -10,7 +11,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 类型本地化规则。
  *
  * 用于定位对应类型的定义的相关本地化，以便在 UI 与各种提示信息中展示。
- * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位，并最终解析为本地化。
+ * 具体而言，通过位置表达式（[CwtLocalisationLocationExpression]）进行定位，并最终解析为本地化。
  *
  * 路径定位：`types/type[{type}]/localisation`，`{type}` 匹配定义类型。
  *
@@ -34,7 +35,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property locationConfigs 子类型表达式与位置规则的配对列表。
  *
+ * @see CwtLocationConfig
  * @see CwtLocationExpression
+ * @see CwtLocalisationLocationExpression
  */
 interface CwtTypeLocalisationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)

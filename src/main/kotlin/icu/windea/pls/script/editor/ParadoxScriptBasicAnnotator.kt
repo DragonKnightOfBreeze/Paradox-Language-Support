@@ -28,7 +28,7 @@ class ParadoxScriptBasicAnnotator : Annotator {
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
-        // TODO 2.0.2 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
+        // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
         //不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
@@ -36,7 +36,7 @@ class ParadoxScriptBasicAnnotator : Annotator {
                 .create()
         }
 
-        // TODO 2.0.2 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
+        // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
         // 针对字符串内的特殊情况：如 a"b 被解析为同一个字符串（多个 STRING_TOKEN 片段）
         // 需要在第一个以右引号结尾但缺失左引号的片段上标记“缺失开引号”，并在紧随其后的片段上标记“紧邻字面量”
         // if (element is ParadoxScriptString) {

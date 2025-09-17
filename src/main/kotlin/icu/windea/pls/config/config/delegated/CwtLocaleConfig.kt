@@ -5,26 +5,25 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
-// TODO 2.0.4+ refine doc
-
 /**
- * 语言环境规则（locale）。
+ * 语言环境规则。
  *
- * 概述：
- * - 描述一种语言环境 ID 与其变体代码列表，并提供便捷的派生字段用于 UI 展示。
- * - 由 `locale[id] = { codes = [...] }` 或相关扩展写法解析而来。
+ * 用于提供语言环境（locale）的相关信息（快速文档、ID、代码等）。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `locales` 下的每个成员属性。
- * - 规则名取自成员属性键，即 `id`，如 `l_english`。
+ * PLS 基于这些规则，识别和推断上下文（如本地化文件）中的语言环境，或用户偏好的语言环境，
+ * 以提供更恰当的 UI 展示与提示信息。
  *
- * 例：
+ * 路径定位：`locales/{id}`，`{name}` 匹配语言环境 ID。
+ *
+ * CWTools 兼容性：PLS 扩展。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/core/locales.core.cwt
  * locales = {
  *     l_english = {
  *         codes = { "en" }
  *     }
+ *     # ...
  * }
  * ```
  *
@@ -32,7 +31,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property codes 该语言环境包含的代码列表（如 `en`, `en-US` 等）。
  * @property text 该语言环境的展示文本（依具体实现）。
  * @property shortId 去除前缀 `l_` 的简短 ID。
- * @property idWithText 带展示文本的 ID（若存在）。
+ * @property idWithText 带展示文本的 ID。
  */
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

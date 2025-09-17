@@ -29,7 +29,7 @@ import icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverI
  *
  * @property name 名称（枚举名）。
  * @property startFromRoot 是否从文件顶部而非顶级属性开始查询（默认 false）。
- * @property searchScopeType （扩展）查询作用域类型。用于控制查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：`definition`）。
+ * @property searchScopeType （PLS 扩展）查询作用域类型。用于控制查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：`definition`）。
  * @property nameConfig `name` 对应的规则。
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。
  */

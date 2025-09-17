@@ -6,7 +6,7 @@ import icu.windea.pls.model.ParadoxGameType
 import java.io.File
 
 /**
- * 用于从`localisations.log`生成
+ * 用于从`localisations.log`生成`localisations.cwt`。
  */
 class CwtLocalisationConfigGenerator(
     val gameType: ParadoxGameType,

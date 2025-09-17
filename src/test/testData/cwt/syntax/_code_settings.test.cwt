@@ -1,32 +1,27 @@
+boolean_value = yes
+number_value = 1.0
+string_value = "text"
+
+# Regular comment
 types = {
     ### Doc comment
     type[army] = {
         path = "game/common/armies"
-        subtype[buildable] = {
-            potential = {
-                ## cardinality = 0..0
-                always = no
-            }
-        }
-        subtype[pop_spawned] = {
-            is_pop_spawned = yes
-        }
+        file_extension = .txt
         subtype[has_species] = {
             ## cardinality = 0..0
             has_species = no
         }
         localisation = {
             ## required
+            ## primary
             name = "$"
-            ## required
+            plural = "$_plural"
             desc = "$_desc"
         }
         images = {
             ## primary
-            icon = "#icon" # <sprite>
+            icon = icon # <sprite>
         }
     }
 }
-
-boolean_value = yes
-number_value = 1.0

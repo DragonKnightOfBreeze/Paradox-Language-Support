@@ -3,6 +3,7 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl
+import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
@@ -10,7 +11,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 类型图片规则。
  *
  * 用于定位对应类型的定义的相关图片，以便在 UI 与各种提示信息中展示。
- * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位，并最终解析为处理后的图片。
+ * 具体而言，通过位置表达式（[CwtImageLocationExpression]）进行定位，并最终解析为处理后的图片。
  *
  * 路径定位：`types/type[{type}]/images`，`{type}` 匹配定义类型。
  *
@@ -32,7 +33,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property locationConfigs 子类型表达式与位置规则的配对列表。
  *
+ * @see CwtLocationConfig
  * @see CwtLocationExpression
+ * @see CwtImageLocationExpression
  */
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> // (subtypeExpression, locationConfig)

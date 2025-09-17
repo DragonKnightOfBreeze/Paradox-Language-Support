@@ -105,27 +105,30 @@ ship_size = {
 语法要点与示例：
 
 ```cwt
-# 普通注释
+boolean_value = yes
+number_value = 1.0
+string_value = "text"
+
+# Regular comment
 types = {
-    ### Documentation text
-    ## option_key = option_value
+    ### Doc comment
     type[army] = {
         path = "game/common/armies"
-        subtype[buildable] = {
-            potential = {
-                ## cardinality = 0..0
-                always = no
-            }
+        file_extension = .txt
+        subtype[has_species] = {
+            ## cardinality = 0..0
+            has_species = no
         }
         localisation = {
             ## required
+            ## primary
             name = "$"
-            ## required
+            plural = "$_plural"
             desc = "$_desc"
         }
         images = {
             ## primary
-            icon = "#icon"
+            icon = icon # <sprite>
         }
     }
 }

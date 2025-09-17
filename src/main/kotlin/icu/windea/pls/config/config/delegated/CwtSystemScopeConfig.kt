@@ -4,19 +4,19 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
-
-// TODO 2.0.4+ refine doc
+import icu.windea.pls.model.ParadoxScope
+import icu.windea.pls.model.ParadoxScopeContext
 
 /**
  * 系统作用域规则。
  *
  * 用于提供系统作用域（system scope）的相关信息（快速文档、基底 ID、可读名称）。
  *
- * 系统作用域（system scope）是一组预定义的作用域连接（scope link），用来获取或切换到需要的作用域。
+ * **系统作用域（system scope）** 是一组预定义的 **作用域连接（scope link）**，用于获取或切换到需要的作用域。
  *
- * 定位：`system_scopes/{name}`，`{name}` 匹配规则名称（系统作用域 ID）。
+ * 路径定位：`system_scopes/{name}`，`{name}` 匹配规则名称（系统作用域 ID）。
  *
- * CWTools 兼容性：PLS 扩展。
+ * CWTools 兼容性：兼容。
  *
  * 示例：
  * ```cwt
@@ -32,6 +32,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property id 系统作用域 ID。
  * @property baseId 基底作用域 ID（用于继承/归类）。
  * @property name 可读名称。
+ *
+ * @see ParadoxScope
+ * @see ParadoxScopeContext
  */
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

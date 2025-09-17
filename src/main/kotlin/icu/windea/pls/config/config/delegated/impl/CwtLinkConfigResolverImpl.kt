@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
@@ -35,7 +36,7 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
                 "from_data" -> fromData = prop.booleanValue ?: false
                 "from_argument" -> fromArgument = prop.booleanValue ?: false
                 "prefix" -> prefix = prop.stringValue
-                "data_source" -> dataSource = prop.value
+                "data_source" -> dataSource = prop.stringValue?.orNull()
                 "input_scopes", "input_scope" -> inputScopes = buildSet {
                     prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
                     prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }

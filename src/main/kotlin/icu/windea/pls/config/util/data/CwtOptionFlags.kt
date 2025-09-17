@@ -17,6 +17,10 @@ import icu.windea.pls.lang.isIdentifier
  * 成员规则上可以存在多个单独且类似标识符的选项值，用于附加布尔型标志。
  * 本类统一解析这些标志，便于检查特定的状态。
  *
+ * 参考：
+ * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+ * - PLS 规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
+ *
  * @see CwtOptionValueConfig
  */
 class CwtOptionFlags private constructor(value: Set<String>) {
@@ -29,6 +33,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      */
     val required = value.contains("required")
 
+    // TODO 2.0.5+ 考虑移除这个标志：CWTools 指引文档中并未提及，同时也是不必要的（默认即为可选）
     /**
      * 用于在位置规则中，将对应位置的本地化和图片标记为可选项。
      *

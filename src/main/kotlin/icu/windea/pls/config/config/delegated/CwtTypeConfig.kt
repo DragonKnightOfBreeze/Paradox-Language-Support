@@ -10,8 +10,9 @@ import icu.windea.pls.core.util.ReversibleValue
  * 类型规则。
  *
  * 用于描述如何定位、匹配与命名对应类型的定义，以及如何提供相关本地化、相关图片等额外信息。
+ * 按照路径模式匹配脚本文件，并在其中进一步匹配定义类型。
  *
- * 路径定位：`types/type[{type}]`，`{type}` 匹配定义类型。
+ * 路径定位：`types/type[{type}]`，`{type}` 匹配规则名称（定义类型）。
  *
  * CWTools 兼容性：兼容，但存在一定的扩展。
  *

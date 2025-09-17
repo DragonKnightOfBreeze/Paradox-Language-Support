@@ -5,8 +5,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
-// TODO 2.0.4+ refine doc
-
 /**
  * 单别名规则。
  *

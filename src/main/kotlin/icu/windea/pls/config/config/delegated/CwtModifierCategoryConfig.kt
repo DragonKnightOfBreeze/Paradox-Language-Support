@@ -5,29 +5,29 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtModifierCategoryConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
-// TODO 2.0.4+ refine doc
-
 /**
- * 修正分类规则（modifier category）。
+ * 修正分类规则。
  *
- * 概述：
- * - 声明某个“修正分类”以及该分类允许出现的作用域集合。
- * - 常与修正规则（见 [CwtModifierConfig]）配合使用，用于校验与提示。
+ * 用于分组修正（modifier），为其指定允许的作用域类型。
  *
- * 定位：
- * - 在 `FileBasedCwtConfigGroupDataProvider.processFile` 中，读取顶层键 `modifier_categories` 下的每个成员属性。
- * - 分类名取自成员属性键，即 `name`（如 `Pops`、`Armies`）。
+ * 路径定位：`modifier_categories/{name}`，`{name}` 匹配规则名称（分类名）。
  *
- * 例：
+ * CWTools 兼容性：兼容。
+ *
+ * 示例：
  * ```cwt
- * # 来自 cwt/cwtools-stellaris-config/config/modifier_categories.cwt
  * modifier_categories = {
  *     Pops = { supported_scopes = { species pop_group planet ... } }
  * }
  * ```
  *
- * @property name 分类名。
- * @property supportedScopes 允许的作用域集合。
+ * @property name 名称（分类名）。
+ * @property supportedScopes 允许的作用域（类型）的集合。
+ *
+ * @see CwtModifierConfig
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
+ * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
+ * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

@@ -3,39 +3,42 @@ package icu.windea.pls.config.config.delegated
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl
+import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.cwt.psi.CwtProperty
 
-// TODO 2.0.4+ refine doc
-
 /**
- * 位置规则（location）。
+ * 位置规则。
  *
- * 概述：
- * - 描述一条位置键-值（如本地化/图片位置）的要求，并可标注“必需/主要”。
- * - 常用于类型本地化/图片配置等场景中（见 [CwtTypeLocalisationConfig]、[CwtTypeImagesConfig]）。
+ * 用于定位目标资源（图片、本地化等）的来源。
+ * 具体而言，通过位置表达式（[CwtLocationExpression]）进行定位。
  *
- * 定位：
- * - 作为 `types` → `type[...]` 下 `localisation = { ... }` 或 `images = { ... }` 的成员属性存在。
- * - 键名即为 `key`，值为对应的 `value`，并可带 `required/optional/primary` 注记。
+ * 路径定位：
+ * 1. 本地化资源：`types/type[{type}]/localisation/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
+ * 2. 图片资源：`types/type[{type}]/images/{key}`，`{type}` 匹配定义类型，`{key}` 匹配键名。
  *
- * 例：
+ * CWTools 兼容性：兼容。
+ *
+ * 示例：
  * ```cwt
- * # 本地化/图片位置示例
  * types = {
- *   type[mod_descriptor] = {
- *     images = {
- *       ## primary
- *       ## optional
- *       picture = picture
+ *     type[army] = {
+ *         # ...
+ *         images = {
+ *             ## primary
+ *             icon = icon # <sprite>
+ *         }
  *     }
- *   }
  * }
  * ```
  *
- * @property key 位置键。
- * @property value 位置值（通常为模板表达式或占位符字符串）。
- * @property required 是否必需。
- * @property primary 是否主要展示项。
+ * @property key 资源的名字。
+ * @property value 资源的位置表达式（[CwtLocationExpression]）。
+ * @property required 是否是必需项。
+ * @property primary 是否是主要项。
+ *
+ * @see CwtTypeImagesConfig
+ * @see CwtTypeLocalisationConfig
+ * @see CwtLocationExpression
  */
 interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

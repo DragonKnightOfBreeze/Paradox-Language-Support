@@ -42,7 +42,7 @@ import kotlinx.coroutines.ensureActive
 class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
-        
+
         //compute `generatedModifiers` and `predefinedModifiers`
         run {
             currentCoroutineContext.ensureActive()
@@ -77,10 +77,10 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         //add missing localisation links from links
         run {
             currentCoroutineContext.ensureActive()
-            val localisationLinksNotFromData = configGroup.localisationLinks.values.filter { !it.fromData }
-            if (localisationLinksNotFromData.isNotEmpty()) return@run
-            val linksNotFromData = configGroup.links.values.filter { !it.fromData }
-            for (linkConfig in linksNotFromData) {
+            val localisationLinksStatic = configGroup.localisationLinks.values.filter { it.dataSource == null }
+            if (localisationLinksStatic.isNotEmpty()) return@run
+            val linksStatic = configGroup.links.values.filter { it.dataSource == null }
+            for (linkConfig in linksStatic) {
                 configGroup.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
             }
         }
