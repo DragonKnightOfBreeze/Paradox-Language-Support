@@ -14,7 +14,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
-import icu.windea.pls.lang.settings.finalGameDirectory
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxRootInfo
 

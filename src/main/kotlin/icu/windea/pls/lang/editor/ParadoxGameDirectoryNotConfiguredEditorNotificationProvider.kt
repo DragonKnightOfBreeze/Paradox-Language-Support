@@ -16,7 +16,6 @@ import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
-import icu.windea.pls.lang.settings.finalGameDirectory
 import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo

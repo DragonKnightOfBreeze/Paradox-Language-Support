@@ -10,7 +10,6 @@ import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
-import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.Component
 

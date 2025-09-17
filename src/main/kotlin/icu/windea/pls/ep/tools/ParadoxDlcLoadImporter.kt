@@ -34,7 +34,7 @@ class ParadoxDlcLoadImporter : ParadoxModImporter {
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
         val qualifiedName = settings.qualifiedName
-        val gameType = settings.gameType ?: return
+        val gameType = settings.finalGameType
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title) ?: return
         if (!gameDataPath.exists()) {
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)).notify(project)

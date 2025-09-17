@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
+import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -25,8 +25,10 @@ class ParadoxGameSettingsDialog(
 ) : DialogWrapper(project, true) {
     private val callbackLock = CallbackLock()
 
+    val gameType = settings.finalGameType
+
     val graph = PropertyGraph()
-    val gameTypeProperty = graph.property(settings.gameType ?: PlsFacade.getSettings().defaultGameType)
+    val gameTypeProperty = graph.property(gameType)
 
     val modDependencies = settings.copyModDependencies()
 

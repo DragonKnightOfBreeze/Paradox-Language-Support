@@ -12,7 +12,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.lang.settings.finalGameDirectory
 import icu.windea.pls.lang.util.PlsCoreManager
 import kotlinx.coroutines.launch
 import javax.swing.Icon

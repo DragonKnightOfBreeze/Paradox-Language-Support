@@ -17,7 +17,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException

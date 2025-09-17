@@ -18,7 +18,6 @@ import icu.windea.pls.lang.search.scope.ParadoxModSearchScope
 import icu.windea.pls.lang.search.scope.ParadoxModWithDependenciesSearchScope
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.settings.finalGameDirectory
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**

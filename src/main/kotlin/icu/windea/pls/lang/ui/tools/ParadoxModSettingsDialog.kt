@@ -7,7 +7,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.jbTextField
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
+import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -20,7 +20,6 @@ import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.settings.finalGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.ParadoxGameType
 
@@ -32,7 +31,6 @@ class ParadoxModSettingsDialog(
     private val callbackLock = CallbackLock()
 
     val oldGameType = settings.finalGameType
-
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
     val defaultGameDirectory get() = PlsFacade.getSettings().defaultGameDirectories[oldGameType.id]
 

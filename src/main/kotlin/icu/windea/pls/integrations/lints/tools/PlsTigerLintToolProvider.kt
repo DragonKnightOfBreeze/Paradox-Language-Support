@@ -81,7 +81,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         val rootFile = rootInfo.rootFile
         val rootPath = rootFile.path
         val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootPath)
-        val argGamePath = modSettings?.gameDirectory?.orNull()?.quote('\'')
+        val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote('\'')
         val argConfPath = confPath?.orNull()?.quote('\'')
         val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
 

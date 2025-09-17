@@ -33,7 +33,7 @@ class ParadoxLauncherJsonV3Exporter : ParadoxModExporter {
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
         val qualifiedName = settings.qualifiedName
-        val gameType = settings.gameType ?: return
+        val gameType = settings.finalGameType
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
         val defaultSavedDir = gameDataPath?.resolve(playlistsName)
         val defaultSavedFileName = playlistJsonName
