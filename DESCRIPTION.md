@@ -34,6 +34,10 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 <br/>
 
+KEYWORDS: PLS, CWTools, Paradox, Stellaris, Crusader Kings, Europa Universalis, Hearts of Iron, Imperator: Rome, Victoria
+
+<br/>
+
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
