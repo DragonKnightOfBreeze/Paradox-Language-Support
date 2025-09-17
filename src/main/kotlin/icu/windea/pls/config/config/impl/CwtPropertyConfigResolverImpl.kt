@@ -231,5 +231,5 @@ private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)
 }
 
-private val CwtMemberConfig.Keys.keyExpression by createKey<_, CwtPropertyConfig>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(key, false) }
+private val CwtMemberConfig.Keys.keyExpression by createKey<_, CwtPropertyConfig>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(key, true) }
 private val CwtMemberConfig.Keys.valueExpression by createKey<_, CwtMemberConfig<*>>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(value, false) }
