@@ -6,7 +6,7 @@ import java.util.*
 /**
  * 文件信息。
  * @property path 匹配规则时使用的路径。相对于入口目录。
- * @property entryName 入口名称。即入口目录相对于游戏或模组目录的路径。
+ * @property entryName 入口名称。即入口目录相对于游戏或模组根目录的路径。游戏或模组文件需要位于各个入口目录中。
  * @property fileType 检测得到的文件类型。
  * @property rootInfo 游戏或模组的根信息。
  */

@@ -18,7 +18,8 @@
 - [X] #186
 - [ ] #187
 - [X] 优化：可在设置页面中通过 OpenAI API、Anthropic API 或本地模型提供 AI 服务 / OP: AI Service can be provided via OpenAI API, Anthropic API or local LLM in settings page
-- [ ] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports
+- [X] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports
+- [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.4
 

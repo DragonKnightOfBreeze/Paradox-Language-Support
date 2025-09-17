@@ -1,11 +1,13 @@
 package icu.windea.pls.model
 
 /**
+ * 游戏类型。
+ *
  * @property id ID。
  * @property title 标题。
- * @property gameId `launcher-settings.json`中使用的游戏ID。
- * @property steamId Steam使用的游戏ID。
- * @property entryNames 额外的入口名称。即入口目录相对于游戏或模组目录的路径。
+ * @property gameId `launcher-settings.json` 中使用的游戏 ID。
+ * @property steamId Steam 使用的游戏 ID。
+ * @property entryNames 额外的入口名称，即入口目录相对于游戏或模组根目录的路径。游戏或模组文件需要位于各个入口目录中。
  */
 enum class ParadoxGameType(
     val id: String,
