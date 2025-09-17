@@ -34,7 +34,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property supportedScopes 允许的作用域集合。
  * @property outputScope 输出的作用域。
  * @property subNameExpression 子名对应的数据表达式。
- * @property configExpression 当前规则的规则表达式（等同于 [subNameExpression]）。
+ * @property configExpression 绑定到该规则的数据表达式（等同于 [subNameExpression]）。
  */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("alias[$:*]")
@@ -47,7 +47,6 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
-
     override val configExpression: CwtDataExpression get() = subNameExpression
 
     /** 将别名内联为普通属性规则，便于下游流程直接消费。*/

@@ -28,7 +28,7 @@ abstract class KeyRegistry {
     }
 }
 
-abstract class SyncedKeyRegistry: KeyRegistry() {
+abstract class SyncedKeyRegistry : KeyRegistry() {
     val keysToSync: MutableSet<Key<*>> = mutableSetOf()
 
     //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
@@ -57,20 +57,20 @@ abstract class KeyProvider<T> {
 }
 
 interface KeyProviders {
-    class Normal<T>(val registry: KeyRegistry): KeyProvider<T>() {
+    class Normal<T>(val registry: KeyRegistry) : KeyProvider<T>() {
         fun getKey(propName: String): Key<T> {
             val name = registry.getKeyName(propName)
             return registry.keys.getOrPut(name) { createKey<T>(name).runCallback() }.cast()
         }
     }
 
-    class Named<T>(val registry: KeyRegistry, val name: String): KeyProvider<T>() {
+    class Named<T>(val registry: KeyRegistry, val name: String) : KeyProvider<T>() {
         fun getKey(): Key<T> {
             return registry.keys.getOrPut(name) { createKey<T>(name).runCallback() }.cast()
         }
     }
 
-    class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T): KeyProvider<T>() {
+    class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T) : KeyProvider<T>() {
         fun getKey(propName: String): KeyWithFactory<T, THIS> {
             val name = registry.getKeyName(propName)
             return registry.keys.getOrPut(name) { createKey(name, factory).runCallback() }.cast()
@@ -84,20 +84,20 @@ interface KeyProviders {
     }
 }
 
-inline fun <T> createKey(registry: KeyRegistry) = KeyProviders.Normal<T>(registry)
+inline fun <T> createKey(registry: KeyRegistry): KeyProviders.Normal<T> = KeyProviders.Normal(registry)
 
-inline fun <T> createKey(registry: KeyRegistry, name: String) = KeyProviders.Named<T>(registry, name)
+inline fun <T> createKey(registry: KeyRegistry, name: String): KeyProviders.Named<T> = KeyProviders.Named(registry, name)
 
-inline fun <T, THIS> createKey(registry: KeyRegistry, noinline factory: THIS.() -> T) = KeyProviders.WithFactory(registry, factory)
+inline fun <T, THIS> createKey(registry: KeyRegistry, noinline factory: THIS.() -> T): KeyProviders.WithFactory<T, THIS> = KeyProviders.WithFactory(registry, factory)
 
-inline fun <T, THIS> createKey(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T) = KeyProviders.NamedWithFactory(registry, name, factory)
+inline fun <T, THIS> createKey(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T): KeyProviders.NamedWithFactory<T, THIS> = KeyProviders.NamedWithFactory(registry, name, factory)
 
-inline operator fun <T> KeyProviders.Normal<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey(property.name)
+inline operator fun <T> KeyProviders.Normal<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): Key<T> = getKey(property.name)
 
-inline operator fun <T> KeyProviders.Named<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey()
+inline operator fun <T> KeyProviders.Named<T>.provideDelegate(thisRef: Any?, property: KProperty<*>): Key<T> = getKey()
 
-inline operator fun <T, THIS> KeyProviders.WithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey(property.name)
+inline operator fun <T, THIS> KeyProviders.WithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithFactory<T, THIS> = getKey(property.name)
 
-inline operator fun <T, THIS> KeyProviders.NamedWithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey()
+inline operator fun <T, THIS> KeyProviders.NamedWithFactory<T, THIS>.provideDelegate(thisRef: Any?, property: KProperty<*>): KeyWithFactory<T, THIS> = getKey()
 
-inline operator fun <T, THIS : KeyRegistry> Key<T>.getValue(thisRef: THIS, property: KProperty<*>) = this
+inline operator fun <T, THIS : KeyRegistry, K : Key<T>> K.getValue(thisRef: THIS, property: KProperty<*>): K = this

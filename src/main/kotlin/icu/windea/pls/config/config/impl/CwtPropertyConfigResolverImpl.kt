@@ -8,13 +8,16 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtPropertyPointer
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getUserDataOrDefault
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
@@ -105,9 +108,9 @@ private abstract class CwtPropertyConfigImpl(
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    // not cached to optimize memory
-    override val keyExpression get() = CwtDataExpression.resolve(key, true)
-    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    // cached into user data to optimize performance and memory
+    override val keyExpression get() = getUserDataOrDefault(CwtMemberConfig.Keys.keyExpression)
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
     override fun toString() = "$key $separatorType $value"
 }
@@ -178,9 +181,9 @@ private abstract class CwtPropertyConfigDelegate(
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    // not cached to optimize memory
-    override val keyExpression get() = CwtDataExpression.resolve(key, true)
-    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    // cached into user data to optimize performance and memory
+    override val keyExpression get() = getUserDataOrDefault(CwtMemberConfig.Keys.keyExpression)
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
@@ -212,6 +215,10 @@ private class CwtPropertyConfigDelegateWith(
 ) : CwtPropertyConfigDelegate(delegate) {
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
+
+    // do not use cache here, since key and value are overridden
+    override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, true)
+    override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 }
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
@@ -223,3 +230,6 @@ private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     } ?: return null
     return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)
 }
+
+private val CwtMemberConfig.Keys.keyExpression by createKey<_, CwtPropertyConfig>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(key, false) }
+private val CwtMemberConfig.Keys.valueExpression by createKey<_, CwtMemberConfig<*>>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(value, false) }

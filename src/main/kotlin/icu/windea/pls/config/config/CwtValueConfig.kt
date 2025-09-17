@@ -13,7 +13,7 @@ import icu.windea.pls.model.CwtType
  * 对应 CWT 规则文件中的一个值（`v`）。可以是属性的值，也可以是单独的值。
  *
  * @property propertyConfig 对应属性的值时，所属的属性规则。
- * @property configExpression 当前规则的规则表达式（等同于 [valueExpression]）。
+ * @property configExpression 绑定到该规则的数据表达式（等同于 [valueExpression]）。
  *
  * @see CwtValue
  */

@@ -466,7 +466,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
@@ -739,7 +739,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return

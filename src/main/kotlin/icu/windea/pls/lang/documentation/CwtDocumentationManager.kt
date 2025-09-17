@@ -310,7 +310,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
+        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
 
         if (!PlsFacade.getSettings().documentation.showScopes) return
 

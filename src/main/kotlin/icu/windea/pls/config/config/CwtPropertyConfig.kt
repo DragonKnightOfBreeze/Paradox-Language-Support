@@ -20,7 +20,7 @@ import icu.windea.pls.model.CwtType
  * @property valueConfig 属性值对应的值规则。懒加载，且在属性值无法解析时返回 null。
  * @property keyExpression 属性键对应的数据表达式，用于驱动解析与校验。
  * @property valueExpression 属性值对应的数据表达式，用于驱动解析与校验。
- * @property configExpression 当前规则的规则表达式（等同于 [keyExpression]）。
+ * @property configExpression 绑定到该规则的数据表达式（等同于 [keyExpression]）。
  *
  * @see CwtProperty
  */

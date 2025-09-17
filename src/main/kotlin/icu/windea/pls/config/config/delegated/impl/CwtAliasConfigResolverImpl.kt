@@ -36,8 +36,7 @@ private class CwtAliasConfigImpl(
     override val supportedScopes get() = config.optionData { this.supportedScopes }
     override val outputScope get() = config.optionData { pushScope }
 
-    // not much memory will be used, so cached
-    override val subNameExpression: CwtDataExpression = CwtDataExpression.resolve(subName, true)
+    override val subNameExpression = CwtDataExpression.resolve(subName, true) // cached
 
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config

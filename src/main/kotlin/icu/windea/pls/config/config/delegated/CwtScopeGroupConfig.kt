@@ -30,7 +30,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 名称（分组名）。
  * @property values 分组内的作用域 ID 集合（大小写不敏感）。
- * @property valueConfigMap （计算属性）每个作用域 ID 到其原始值规则的映射。
+ * @property valueConfigMap 每个作用域 ID 到其原始值规则的映射。
  */
 interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey

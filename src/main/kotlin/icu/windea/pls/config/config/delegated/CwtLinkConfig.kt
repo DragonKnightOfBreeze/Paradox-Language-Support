@@ -33,13 +33,14 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property fromData 是否从数据环境中读取（`from_data`）。
  * @property fromArgument 是否从参数中读取（`from_argument`）。
  * @property prefix 前缀（如 `prev`/`root` 等）。
- * @property dataSource 数据源标识（可为表达式，见 [dataSourceExpression]）。
+ * @property dataSource 数据源标识（数据表达式）。
  * @property inputScopes 输入作用域集合（`input_scopes`）。
  * @property outputScope 输出作用域（`output_scope`）。
  * @property forDefinitionType 仅用于指定的定义类型。
  * @property forDefinitionType 仅用于指定的定义类型。
- * @property forLocalisation （计算属性）是否为本地化上下文的变体。
- * @property dataSourceExpression （计算属性）数据源对应的规则表达式。
+ * @property forLocalisation 是否为本地化上下文的变体。
+ * @property dataSourceExpression 数据源对应的规则表达式。
+ * @property configExpression 绑定到该规则的数据表达式（等同于 [dataSourceExpression]）。
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey
@@ -62,8 +63,8 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val forDefinitionType: String?
 
     val forLocalisation: Boolean
-    val dataSourceExpression: CwtDataExpression?
 
+    val dataSourceExpression: CwtDataExpression?
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     // type = null -> default to "scope"

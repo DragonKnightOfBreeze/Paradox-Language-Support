@@ -16,7 +16,7 @@ import icu.windea.pls.model.CwtType
  * @property optionConfigs 附加的选项成员规则列表（来自附加的选项注释，以 `## ...` 的形式声明）。
  * @property parentConfig 父级成员规则（若存在），用于溯源与继承/推断。
  * @property valueExpression 值对应的数据表达式，用于驱动解析与校验。
- * @property configExpression 当前规则的规则表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
+ * @property configExpression 绑定到该规则的数据表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
  *
  * @see CwtMemberElement
  */

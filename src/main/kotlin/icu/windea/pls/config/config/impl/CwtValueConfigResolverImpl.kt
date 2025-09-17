@@ -7,9 +7,12 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getUserDataOrDefault
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
@@ -95,8 +98,8 @@ private abstract class CwtValueConfigImpl(
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    // not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    // cached into user data to optimize performance and memory
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
     override fun toString(): String = value
 }
@@ -158,8 +161,8 @@ private abstract class CwtValueConfigDelegate(
 ) : UserDataHolderBase(), CwtValueConfig by delegate {
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    // not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    // cached into user data to optimize performance and memory
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
@@ -189,6 +192,9 @@ private class CwtValueConfigDelegateWith(
     // configs should be always null here
 ) : CwtValueConfigDelegate(delegate) {
     override val value = value.intern() // intern to optimize memory
+
+    // do not use cache here, since value is overridden
+    override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 }
 
 // 12 + 4 * 4 = 28 -> 32
@@ -204,8 +210,10 @@ private class CwtValueConfigFromPropertyConfig(
 
     override var parentConfig: CwtMemberConfig<*>? = null
 
-    // not cached to optimize memory
-    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    // cached into user data to optimize performance and memory
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
     override fun toString(): String = value
 }
+
+private val CwtMemberConfig.Keys.valueExpression by createKey<_, CwtMemberConfig<*>>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(value, false) }
