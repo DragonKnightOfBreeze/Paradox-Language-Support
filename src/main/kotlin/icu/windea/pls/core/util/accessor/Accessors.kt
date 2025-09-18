@@ -16,7 +16,7 @@ class PropertyAccessor<T : Any, V>(
     val target: T,
     val propertyName: String,
     val targetClassProvider: () -> KClass<T>
-): Accessor<T> {
+) : Accessor<T> {
     override val targetClass by lazy { targetClassProvider() }
     override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
 

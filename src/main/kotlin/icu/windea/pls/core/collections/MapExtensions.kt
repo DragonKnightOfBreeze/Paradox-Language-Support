@@ -1,11 +1,11 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package icu.windea.pls.core.collections
 
 import java.util.*
 import kotlin.reflect.KProperty
 
-/** 当映射为 `null` 或为空时返回 `null`，否则返回自身。*/
+/** 如果当前映射为 `null` 或为空，则返回 `null`。否则返回自身。*/
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 /** 将只读 [Map] 视为 [MutableMap]（要求实际类型可变，否则抛出异常）。*/

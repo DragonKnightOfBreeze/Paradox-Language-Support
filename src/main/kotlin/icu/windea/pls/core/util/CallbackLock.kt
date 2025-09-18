@@ -2,8 +2,6 @@ package icu.windea.pls.core.util
 
 /**
  * 用于避免重复的回调。
- *
- * 通过记录已处理的键，确保同一 [key] 的回调仅执行一次。
  */
 class CallbackLock {
     private val keys = mutableSetOf<String>()

@@ -24,7 +24,7 @@ inline fun <R> Sequence<*>.findIsInstance(klass: Class<R>, predicate: (R) -> Boo
     return null
 }
 
-/** 将序列映射为数组。注意：会收集到 [List] 后再转换为数组。*/
+/** 将当前序列映射为数组。注意：会先转为列表。*/
 inline fun <T, reified R> Sequence<T>.mapToArray(transform: (T) -> R): Array<R> {
     return toList().mapToArray(transform)
 }

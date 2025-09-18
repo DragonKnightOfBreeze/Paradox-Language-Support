@@ -5,7 +5,7 @@ package icu.windea.pls.core.collections
 import icu.windea.pls.core.cast
 import java.util.*
 
-/** 当集合为 `null` 或为空时返回 `null`，否则返回自身。*/
+/** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。*/
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 /** 将只读 [List] 视为 [MutableList]（要求实际类型可变，否则抛出异常）。*/
@@ -69,12 +69,12 @@ inline fun <R> List<*>.findLastIsInstance(klass: Class<R>, predicate: (R) -> Boo
     return findLast { klass.isInstance(it) && predicate(it as R) } as R?
 }
 
-/** 将列表映射为数组，按下标应用 [transform]。*/
+/** 将当前列表映射为数组。*/
 inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
     return Array(size) { transform(this[it]) }
 }
 
-/** 将集合映射为数组；若为 [List] 走下标路径，否则顺序遍历。*/
+/** 将当前集合映射为数组。若为列表则走下标路径，否则顺序遍历。*/
 inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
     if (this is List) return this.mapToArray(transform)
     val result = arrayOfNulls<R>(this.size)

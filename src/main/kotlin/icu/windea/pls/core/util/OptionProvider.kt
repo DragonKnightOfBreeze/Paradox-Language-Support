@@ -14,7 +14,6 @@ import icu.windea.pls.core.orNull
  *
  * 读取到的空字符串会被视为缺省（等价于 `null`）。
  */
-@Suppress("unused")
 data class OptionProvider<T : String?>(
     val value: T?,
     val defaultValue: T,

@@ -20,7 +20,7 @@ enum class OS {
         val version = System.getProperty("os.version")
 
         /**
-         * 当前平台：若 [name] 为空或包含 "windows"（忽略大小写），视为 [Windows]，否则为 [Linux]。
+         * 当前平台：如果名字为空或包含 "windows"（忽略大小写），视为 [Windows]，否则为 [Linux]。
          */
         @JvmField
         val value = if (name.isNullOrEmpty() || name.contains("windows", true)) Windows else Linux

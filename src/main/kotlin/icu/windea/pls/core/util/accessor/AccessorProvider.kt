@@ -18,6 +18,5 @@ interface AccessorProvider<T : Any> {
     fun <V> set(target: T?, propertyName: String, value: V)
 
     /** 调用函数 [functionName]，参数为 [args]（[target] 为 `null` 表示静态上下文）。*/
-    fun  invoke(target: T?, functionName: String, vararg args: Any?): Any?
+    fun invoke(target: T?, functionName: String, vararg args: Any?): Any?
 }
-

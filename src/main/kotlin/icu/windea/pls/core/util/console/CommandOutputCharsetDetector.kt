@@ -6,7 +6,7 @@ import java.nio.charset.Charset
  * 命令输出编码探测器。
  *
  * - 对 Shell/PowerShell 固定为 UTF-8；
- * - 对 CMD 通过执行 `cmd /c "echo 中文"`，在候选集 [charsetsToDetect] 中匹配“中文”的正确编码；
+ * - 对 CMD 通过执行 `cmd /c "echo 中文"`，在候选集中匹配“中文”的正确编码；
  * - 若未匹配成功则回退到 UTF-8。
  */
 object CommandOutputCharsetDetector {

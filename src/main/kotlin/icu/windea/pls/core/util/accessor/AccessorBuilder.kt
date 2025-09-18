@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.core.util.accessor
 
 import icu.windea.pls.core.cast

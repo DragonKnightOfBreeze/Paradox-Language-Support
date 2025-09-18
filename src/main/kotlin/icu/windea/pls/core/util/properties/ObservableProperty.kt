@@ -1,4 +1,3 @@
-
 package icu.windea.pls.core.util.properties
 
 import icu.windea.pls.core.EMPTY_OBJECT

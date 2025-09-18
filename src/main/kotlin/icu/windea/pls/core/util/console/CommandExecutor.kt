@@ -25,20 +25,20 @@ class CommandExecutor(
         private val logger = logger<CommandExecutor>()
     }
 
-    @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     /** 直接执行完整的命令数组 [commands] 并以 UTF-8 解析输出。*/
+    @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(commands: List<String>): String {
         logger.info("Executing commands: $commands")
         return doExecute(commands, Charsets.UTF_8)
     }
 
-    @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     /**
      * 以命令行字符串 [command] 执行。
      *
      * - [commandType] 未指定时按当前 OS 选择合适的 Shell；
      * - 输出编码由 [CommandOutputCharsetDetector] 判定。
      */
+    @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(command: String, commandType: CommandType?): String {
         logger.info("Executing command: $command")
         val commandTypeToUse = getCommandTypeToUse(commandType)

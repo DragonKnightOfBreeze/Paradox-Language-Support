@@ -19,8 +19,8 @@ import kotlin.reflect.KProperty1
 object AccessorDelegateBuilder {
     /** 读取委托工厂。*/
     object Read {
-        @Suppress("UNCHECKED_CAST")
         /** 空读取委托（始终抛出 [UnsupportedAccessorException]）。*/
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any, V> empty(): ReadAccessorDelegate<T, V> = EmptyReadAccessorDelegate as ReadAccessorDelegate<T, V>
 
         /** 基于 Kotlin 成员属性创建读取委托。*/
@@ -38,15 +38,15 @@ object AccessorDelegateBuilder {
 
     /** 写入委托工厂。*/
     object Write {
-        @Suppress("UNCHECKED_CAST")
         /** 空写入委托（始终抛出 [UnsupportedAccessorException]）。*/
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any, V> empty(): WriteAccessorDelegate<T, V> = EmptyWriteAccessorDelegate as WriteAccessorDelegate<T, V>
 
         /** 基于 Kotlin 成员属性创建写入委托（只在属性可变时返回）。*/
-        fun <T : Any, V> fromProperty(property: KProperty1<T,*>) = if (property is KMutableProperty1) KotlinMemberPropertyWriteAccessorDelegate<T, V>(property) else null
+        fun <T : Any, V> fromProperty(property: KProperty1<T, *>) = if (property is KMutableProperty1) KotlinMemberPropertyWriteAccessorDelegate<T, V>(property) else null
 
         /** 基于 Kotlin 可变成员属性创建写入委托。*/
-        fun <T : Any, V> fromProperty(property: KMutableProperty1<T,*>) = KotlinMemberPropertyWriteAccessorDelegate<T, V>(property)
+        fun <T : Any, V> fromProperty(property: KMutableProperty1<T, *>) = KotlinMemberPropertyWriteAccessorDelegate<T, V>(property)
 
         /** 基于 Kotlin 顶层/静态属性创建写入委托（只在属性可变时返回）。*/
         fun <T : Any, V> fromProperty(property: KProperty0<*>) = if (property is KMutableProperty0) KotlinPropertyWriteAccessorDelegate<T, V>(property) else null
@@ -63,8 +63,8 @@ object AccessorDelegateBuilder {
 
     /** 调用委托工厂。*/
     object Invoke {
-        @Suppress("UNCHECKED_CAST")
         /** 空调用委托（始终抛出 [UnsupportedAccessorException]）。*/
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any> empty(): InvokeAccessorDelegate<T> = EmptyInvokeAccessorDelegate as InvokeAccessorDelegate<T>
 
         /** 基于 Kotlin 函数创建调用委托。*/
