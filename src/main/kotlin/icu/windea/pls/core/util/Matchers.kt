@@ -3,7 +3,15 @@ package icu.windea.pls.core.util
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.trimFast
 
+/**
+ * 字符串/路径匹配工具集。
+ *
+ * 提供多种匹配策略：`Glob`、`Ant`、`Regex` 以及子路径级别的 `PathMatcher`。
+ */
 object Matchers {
+    /**
+     * GLOB 模式匹配：`?` 匹配单个字符，`*` 匹配任意个字符（可为 0）。
+     */
     object GlobMatcher {
         /**
          * 判断当前输入是否匹配指定的GLOB表达式。使用 "?" 匹配单个字符，"*" 匹配任意个字符。
@@ -38,6 +46,11 @@ object Matchers {
         }
     }
 
+    /**
+     * ANT 路径模式匹配：`?` 匹配单个子路径中的单个字符，`*` 匹配单个子路径中的任意个字符，`**` 匹配任意个子路径。
+     *
+     * 采用非正则算法实现，通常较基于正则的实现更快。
+     */
     object AntMatcher {
         /**
          * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
@@ -98,6 +111,9 @@ object Matchers {
         }
     }
 
+    /**
+     * 基于正则的 ANT 匹配实现（已废弃，建议改用 [AntMatcher]）。
+     */
     @Deprecated(message = "", replaceWith = ReplaceWith("AntMatcher"))
     object AntFromRegexMatcher {
         /**
@@ -146,6 +162,9 @@ object Matchers {
         }
     }
 
+    /**
+     * 正则匹配：对输入直接应用正则表达式（内部带简单缓存）。
+     */
     object RegexMatcher {
         /**
          * 判断当前输入是否匹配指定的正则表达式。
@@ -164,6 +183,11 @@ object Matchers {
             .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
     }
 
+    /**
+     * 子路径级别的匹配工具。
+     *
+     * 支持精确匹配、`"any"` 通配以及在子路径级别使用 GLOB 模式。
+     */
     object PathMatcher {
         /**
          * 判断输入的子路径是否匹配指定的子路径。

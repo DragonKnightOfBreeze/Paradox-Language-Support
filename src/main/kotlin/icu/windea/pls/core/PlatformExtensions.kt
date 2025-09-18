@@ -123,6 +123,11 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
     }
 }
 
+/**
+ * 执行 [block]，在捕获 [ProcessCanceledException] 时原样抛出，其余异常若根因是 PCE 也原样抛出。
+ *
+ * 用于将“可取消”的异常语义透传到调用方，而不被统一异常处理吞掉。
+ */
 inline fun <T> cancelable(block: () -> T): T {
     try {
         return block()
@@ -135,10 +140,16 @@ inline fun <T> cancelable(block: () -> T): T {
     }
 }
 
+/**
+ * 类似 [runCatching]，但在捕获到 [ProcessCanceledException] 时直接抛出，不包装为失败结果。
+ */
 inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
+/**
+ * 类似扩展接收者版本的 [runCatching]，但对 [ProcessCanceledException] 直接抛出。
+ */
 inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
@@ -151,6 +162,11 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
     return TextRange.create(startOffset, endOffset)
 }
 
+/**
+ * 将 [original] 中 [this] 范围替换为 [replacement]，必要时自动加引号。
+ *
+ * 当替换段长度与整体长度关系满足条件时，避免重复包裹引号并保留必要的转义。
+ */
 fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
     if (this.length >= original.length - 1) {
         return replacement.quoteIfNecessary(quote, extraChars, blank)
@@ -182,6 +198,9 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     return result
 }
 
+/**
+ * 在文本中查找关键字列表 [keywords] 的出现位置，返回 (范围, 关键字) 列表（按起始位置排序）。
+ */
 fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<TextRange, String>> {
     val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
     val result = mutableListOf<Tuple2<TextRange, String>>()
@@ -198,6 +217,11 @@ fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provide
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
+/**
+ * 为缓存结果添加依赖项列表 [dependencyItems]。
+ *
+ * 当依赖为空时使用 [ModificationTracker.NEVER_CHANGED]，否则使用可变参数依赖。
+ */
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
@@ -207,6 +231,7 @@ fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
     return this.forEach(consumer)
 }
 
+/** 允许并行地遍历查询结果并交给 [consumer] 处理。*/
 fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
@@ -219,6 +244,9 @@ fun getDefaultProject(): Project {
     return ProjectManager.getInstance().defaultProject
 }
 
+/**
+ * 获取当前聚焦窗口所属的项目，若无则返回第一个已初始化且未释放的打开项目。
+ */
 fun getCurrentProject(): Project? {
     val recentFocusedWindow = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
     if (recentFocusedWindow is IdeFrame) return recentFocusedWindow.project
@@ -229,14 +257,22 @@ fun getCurrentProject(): Project? {
 
 //region Code Insight Extensions
 
+/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。*/
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
+/** 构建行内模板。*/
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
+/**
+ * 获取包含当前位置前后文本的关键字。
+ */
 fun PsiElement.getKeyword(offsetInParent: Int): String {
     return text.substring(0, offsetInParent).unquote()
 }
 
+/**
+ * 获取包含当前位置前后文本的完整关键字（常用于补全/高亮）。
+ */
 fun PsiElement.getFullKeyword(offsetInParent: Int): String {
     return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
 }
@@ -746,6 +782,7 @@ private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Pro
     return doFindTopHostElementOrThis(host, project)
 }
 
+/** 获取语言注入的切片列表（shreds）。*/
 fun PsiFile.getShreds(): Place? {
     //why it's deprecated and internal???
     //@Suppress("UnstableApiUsage", "DEPRECATION")
@@ -758,12 +795,14 @@ fun PsiFile.getShreds(): Place? {
 
 //region Inspection Extensions
 
+/** 根据检查项短名获取对应的 [ScopeToolState]。*/
 fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
     val currentProfile = InspectionProfileManager.getInstance(project).currentProfile
     val tools = currentProfile.getToolsOrNull(shortName, project) ?: return null
     return tools.getState(element)
 }
 
+/** 若检查项启用则返回实际的 [InspectionProfileEntry]，否则返回 null。*/
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
 
 //endregion
@@ -772,8 +811,10 @@ val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) t
 
 //以下的委托方法用于读写需要保存为密码的配置项
 
+/** 委托读取：从 PasswordSafe 读取当前凭据。*/
 inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? = PasswordSafe.instance.getPassword(this)
 
+/** 委托写入：将凭据写入 PasswordSafe。*/
 inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) = PasswordSafe.instance.setPassword(this, value)
 
 //endregion

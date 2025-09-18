@@ -2,15 +2,24 @@
 
 package icu.windea.pls.core
 
+/**
+ * 可能的比较器链。
+ *
+ * - 如果两个比较器都为 `null`，返回 `null`；
+ * - 如果其中一个比较器为 `null`，返回另一个比较器；
+ * - 否则，返回两个比较器的链式比较器。
+ */
 infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {
     if (this == null || comparator == null) return this ?: comparator
     return this.then(comparator)
 }
 
 /**
- * 通过[selector]得到需要的结果之后（如果这里得到的结果是null，放到最后面），
- * 首先按照[comparableSelector]的结果进行正序排序（如果这里得到的结果是null，比较结果返回0），
- * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，比较结果返回0）。
+ * 复杂排序（正序）。
+ *
+ * - 先用 [selector] 提取比较对象，`null` 放到最后；
+ * - 再用 [comparableSelector] 比较（若为 `null` 返回 0，不改变当前顺序）；
+ * - 最后按 [pinPredicate] 置顶（多个命中时返回 0，不改变相对顺序）；
  */
 inline fun <T, R, C : Comparable<C>> complexCompareBy(
     crossinline selector: (T) -> R?,
@@ -36,9 +45,9 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
 }
 
 /**
- * 通过[selector]得到需要的结果之后（如果这里得到的结果是null，放到最后面），
- * 首先按照[comparableSelector]的结果进行降序排序（如果这里得到的结果是null，比较结果返回0），
- * 然后按照[pinPredicate]的结果置顶匹配的元素（如果存在多个匹配的元素，比较结果返回0）。
+ * 复杂排序（降序）。
+ *
+ * 规则与 [complexCompareBy] 一致，但比较结果取反（降序）。
  */
 inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
     crossinline selector: (T) -> R?,

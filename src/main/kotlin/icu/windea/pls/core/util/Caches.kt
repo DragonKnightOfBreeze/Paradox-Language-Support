@@ -23,22 +23,22 @@ fun CacheBuilder(spec: String? = null): Caffeine<Any, Any> {
     return Caffeine.from(spec)
 }
 
-/** 转换为可取消的缓存（[CancelableCache]）。 */
+/** 将缓存包装为可取消的缓存（[CancelableCache]）。 */
 inline fun <K : Any, V : Any> Cache<K, V>.cancelable(): CancelableCache<K, V> {
     return CancelableCache(this)
 }
 
-/** 转换为可取消的载入缓存（[CancelableLoadingCache]）。 */
+/** 将载入缓存包装为可取消的缓存（[CancelableLoadingCache]）。 */
 inline fun <K : Any, V : Any> LoadingCache<K, V>.cancelable(): CancelableLoadingCache<K, V> {
     return CancelableLoadingCache(this)
 }
 
-/** 转换为追踪缓存（[TrackingCache]）。 */
+/** 将缓存包装为追踪缓存（[TrackingCache]），基于 [ModificationTracker] 自动失效。 */
 inline fun <K : Any, V : Any, C : Cache<K, V>> C.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingCache<K, V, C> {
     return TrackingCache(this, modificationTrackerProvider)
 }
 
-/** 创建嵌套缓存（[NestedCache]）。 */
+/** 创建嵌套缓存（[NestedCache]），用于为每个“外层键”懒创建一个内部缓存。 */
 inline fun <RK : Any, K : Any, V : Any, C : Cache<K, V>> createNestedCache(noinline cacheProvider: () -> C): NestedCache<RK, K, V, C> {
     return NestedCache(cacheProvider)
 }

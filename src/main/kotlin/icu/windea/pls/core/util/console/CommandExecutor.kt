@@ -8,6 +8,14 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.text.Charsets
 
+/**
+ * 外部命令执行器。
+ *
+ * - 支持设定环境变量 [environment]、工作目录 [directory]、超时 [timeout]；
+ * - Windows 下默认使用 [CommandType.POWER_SHELL] 并强制 UTF-8 输出编码；
+ * - 非 Windows 下设置 `LANG/LC_ALL=en_US.UTF-8` 以稳定输出编码；
+ * - 执行失败时抛出 [CommandExecutionException]，错误信息来自标准错误输出。
+ */
 class CommandExecutor(
     val environment: Map<String, String> = emptyMap(),
     val directory: File? = null,
@@ -18,12 +26,19 @@ class CommandExecutor(
     }
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
+    /** 直接执行完整的命令数组 [commands] 并以 UTF-8 解析输出。*/
     fun execute(commands: List<String>): String {
         logger.info("Executing commands: $commands")
         return doExecute(commands, Charsets.UTF_8)
     }
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
+    /**
+     * 以命令行字符串 [command] 执行。
+     *
+     * - [commandType] 未指定时按当前 OS 选择合适的 Shell；
+     * - 输出编码由 [CommandOutputCharsetDetector] 判定。
+     */
     fun execute(command: String, commandType: CommandType?): String {
         logger.info("Executing command: $command")
         val commandTypeToUse = getCommandTypeToUse(commandType)
@@ -32,6 +47,7 @@ class CommandExecutor(
         return doExecute(commands, outputCharset)
     }
 
+    /** 实际执行 [commands] 并按 [outputCharset] 读取输出，处理超时与错误流。*/
     private fun doExecute(commands: List<String>, outputCharset: Charset): String {
         val processBuilder = ProcessBuilder(commands)
         val env = processBuilder.environment()
@@ -59,6 +75,7 @@ class CommandExecutor(
         throw CommandExecutionException(errorResult)
     }
 
+    /** 根据 OS 与入参确定实际使用的命令类型。Windows 下仅允许 CMD/PowerShell。*/
     private fun getCommandTypeToUse(commandType: CommandType?): CommandType {
         if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
             if (OS.value != OS.Windows) throw UnsupportedOperationException()
@@ -70,6 +87,7 @@ class CommandExecutor(
         }
     }
 
+    /** 将命令行字符串转换为实际的可执行命令数组。*/
     private fun getCommands(command: String, commandType: CommandType): List<String> {
         return when (commandType) {
             CommandType.SHELL -> listOf("/bin/sh", "-c", command)

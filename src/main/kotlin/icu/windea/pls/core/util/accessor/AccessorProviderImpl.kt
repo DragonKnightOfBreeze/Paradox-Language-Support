@@ -12,6 +12,15 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.full.staticProperties
 
+/**
+ * [AccessorProvider] 的默认实现。
+ *
+ * - 预扫描 Kotlin/Java 成员/静态属性与函数（含 Java 字段与方法），并按需缓存；
+ * - 读取/写入优先走 Kotlin 反射（属性/Getter/Setter），回退到 Java 反射（字段）；
+ * - 调用优先走 Kotlin 函数，回退到 Java 方法；
+ * - 通过本地缓存（按 key：静态以 `#` 前缀区分）减少委托创建与可访问性提升的开销；
+ * - 发生不匹配或未找到可用访问路径时抛出 [UnsupportedAccessorException]。
+ */
 class AccessorProviderImpl<T : Any>(
     override val targetClass: KClass<T>
 ) : AccessorProvider<T> {

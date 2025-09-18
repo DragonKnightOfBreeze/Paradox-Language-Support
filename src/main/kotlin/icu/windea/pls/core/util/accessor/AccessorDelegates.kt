@@ -11,14 +11,17 @@ import kotlin.reflect.jvm.isAccessible
 
 //region Interfaces
 
+/** 读取委托：从目标实例或静态上下文读取值。*/
 interface ReadAccessorDelegate<T : Any, V> : AccessorDelegate {
     fun get(target: T?): V
 }
 
+/** 写入委托：向目标实例或静态上下文写入值。*/
 interface WriteAccessorDelegate<T : Any, V> : AccessorDelegate {
     fun set(target: T?, value: V)
 }
 
+/** 调用委托：以反射方式调用函数/方法。*/
 interface InvokeAccessorDelegate<T : Any> : AccessorDelegate {
     fun invoke(target: T?, vararg args: Any?): Any?
 }
@@ -27,12 +30,14 @@ interface InvokeAccessorDelegate<T : Any> : AccessorDelegate {
 
 //region Read Accessor Delegates
 
+/** 空读取委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyReadAccessorDelegate : ReadAccessorDelegate<Any, Any?> {
     override fun setAccessible() = true
 
     override fun get(target: Any?) = throw UnsupportedAccessorException()
 }
 
+/** 基于 Kotlin 成员属性的读取委托。*/
 class KotlinMemberPropertyReadAccessorDelegate<T : Any, V>(
     val property: KProperty1<T, *>
 ) : ReadAccessorDelegate<T, V> {
@@ -50,6 +55,7 @@ class KotlinMemberPropertyReadAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Kotlin 顶层/静态属性的读取委托。*/
 class KotlinPropertyReadAccessorDelegate<T : Any, V>(
     val property: KProperty0<*>
 ) : ReadAccessorDelegate<T, V> {
@@ -67,6 +73,7 @@ class KotlinPropertyReadAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Kotlin getter 函数的读取委托。*/
 class KotlinGetterReadAccessorDelegate<T : Any, V>(
     val getter: KFunction<*>
 ) : ReadAccessorDelegate<T, V> {
@@ -83,6 +90,7 @@ class KotlinGetterReadAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Java 字段的读取委托。*/
 class JavaFieldReadAccessorDelegate<T : Any, V>(
     val field: Field
 ) : ReadAccessorDelegate<T, V> {
@@ -102,12 +110,14 @@ class JavaFieldReadAccessorDelegate<T : Any, V>(
 
 //region Write Accessor Delegates
 
+/** 空写入委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyWriteAccessorDelegate : WriteAccessorDelegate<Any, Any?> {
     override fun setAccessible() = true
 
     override fun set(target: Any?, value: Any?) = throw UnsupportedAccessorException()
 }
 
+/** 基于 Kotlin 可变成员属性的写入委托。*/
 class KotlinMemberPropertyWriteAccessorDelegate<T : Any, V>(
     val property: KMutableProperty1<T, *>
 ) : WriteAccessorDelegate<T, V> {
@@ -126,6 +136,7 @@ class KotlinMemberPropertyWriteAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Kotlin 可变顶层/静态属性的写入委托。*/
 class KotlinPropertyWriteAccessorDelegate<T : Any, V>(
     val property: KMutableProperty0<*>
 ) : WriteAccessorDelegate<T, V> {
@@ -144,6 +155,7 @@ class KotlinPropertyWriteAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Kotlin setter 函数的写入委托。*/
 class KotlinSetterWriteAccessorDelegate<T : Any, V>(
     val getter: KFunction<*>
 ) : WriteAccessorDelegate<T, V> {
@@ -159,6 +171,7 @@ class KotlinSetterWriteAccessorDelegate<T : Any, V>(
     }
 }
 
+/** 基于 Java 字段的写入委托。*/
 class JavaFieldWriteAccessorDelegate<T : Any, V>(
     val field: Field
 ) : WriteAccessorDelegate<T, V> {
@@ -177,12 +190,14 @@ class JavaFieldWriteAccessorDelegate<T : Any, V>(
 
 //region Invoke Accessor Delegates
 
+/** 空调用委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyInvokeAccessorDelegate : InvokeAccessorDelegate<Any> {
     override fun setAccessible() = true
 
     override fun invoke(target: Any?, vararg args: Any?) = throw UnsupportedAccessorException()
 }
 
+/** 基于 Kotlin 函数的调用委托。*/
 class KotlinFunctionInvokeAccessorDelegate<T : Any>(
     val function: KFunction<*>
 ) : InvokeAccessorDelegate<T> {
@@ -198,6 +213,7 @@ class KotlinFunctionInvokeAccessorDelegate<T : Any>(
     }
 }
 
+/** 基于 Java 方法的调用委托。*/
 class JavaMethodInvokeAccessorDelegate<T : Any>(
     val method: Method
 ) : InvokeAccessorDelegate<T> {

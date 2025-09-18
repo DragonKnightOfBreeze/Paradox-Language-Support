@@ -5,7 +5,11 @@ package icu.windea.pls.core
 import com.intellij.openapi.util.StackOverflowPreventedException
 
 /**
- * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。
+ * 执行一段代码，并通过 [SmartRecursionGuard] 尝试避免递归导致的堆栈溢出。
+ *
+ * - 为当前线程维护一个命名的递归守卫实例（见 [SmartRecursionGuard.cache]）；
+ * - 捕获 [StackOverflowError] 与 [StackOverflowPreventedException] 并返回 `null`；
+ * - 调用方可在 [action] 内使用 [SmartRecursionGuard.withRecursionCheck] 做细粒度的重入检测。
  */
 fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
     val name = action::class.java.name
@@ -29,7 +33,9 @@ class SmartRecursionGuard(val name: Any) {
     val stackTrace = ArrayDeque<Any>()
 
     /**
-     * 如果指定的[key]未存在于[SmartRecursionGuard.stackTrace]中，则入栈并执行指定的一段代码[action]，否则直接返回null。
+     * 若 [key] 不在当前调用栈中，则入栈并执行 [action]，结束后出栈；否则直接返回 `null`。
+     *
+     * 用于在更小粒度（如某个元素/路径级别）避免递归重入。
      */
     inline fun <T> withRecursionCheck(key: Any, action: () -> T): T? {
         if (stackTrace.contains(key)) {
@@ -49,14 +55,14 @@ class SmartRecursionGuard(val name: Any) {
 }
 
 /**
- * 得到当前堆栈。
+ * 得到当前线程的堆栈快照。
  */
 inline fun getCurrentStackTrace(): Array<StackTraceElement> {
     return Exception().stackTrace
 }
 
 /**
- * 判断当前堆栈对应的方法是否出现在之前的堆栈中。
+ * 判断当前方法是否已在调用栈中出现（用于简易递归检测）。
  */
 fun checkMethodRecursion(): Boolean {
     val currentStackTrace = getCurrentStackTrace()

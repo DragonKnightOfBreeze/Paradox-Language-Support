@@ -9,7 +9,8 @@ import kotlin.reflect.KProperty
 /**
  * 可观察属性。
  *
- * 监听另一个属性的更改，如果发生，此属性的值也会同步进行更改。
+ * 监听另一个可变属性 [target] 的变化，读取时使用 [transform] 将其值投影为类型 [V]。
+ * 简单的“脏值”判断通过比较引用相等（`===`）完成；非线程安全，必要时在外层加锁。
  */
 open class ObservableProperty<T, V>(
     protected val target: KMutableProperty0<T>,
@@ -21,6 +22,7 @@ open class ObservableProperty<T, V>(
     protected var value: Any? = EMPTY_OBJECT
 
     @Suppress("UNCHECKED_CAST")
+    /** 读取当前投影值，若源值发生变化则重新计算。*/
     override fun getValue(thisRef: Any?, property: KProperty<*>): V {
         val newTargetValue = target.get()
         if (value === EMPTY_OBJECT) {
