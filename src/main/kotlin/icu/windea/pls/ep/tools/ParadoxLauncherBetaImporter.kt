@@ -8,9 +8,9 @@ import java.nio.file.Path
 /**
  * 从Paradox启动器（Beta版）的Sqlite数据库中导入模组配置。
  *
- * See: [ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
+ * 参见：[ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
  */
-class ParadoxLauncherBetaImporter : ParadoxFromLauncherImporter() {
+class ParadoxLauncherBetaImporter : ParadoxLauncherImporter() {
     companion object {
         private const val dbPath = "launcher-v2_openbeta.sqlite"
     }
