@@ -27,8 +27,8 @@ import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
  * - **作用域链接（scope link）** - 如 `owner`。
  * - **系统作用域（system scope）** - 如 `root`。
  * - **本地化命令字段（localisation command field）** - 如 `GetName`。
- * - **事件对象引用（event target reference）** - 如 `event_target:xxx`。
- * - **动态数据引用（dynamic data reference）** - 如 `modifier:xxx` `value:xxx`。
+ * - **事件对象引用（event target reference）** - 如 `event_target:x`。
+ * - **动态数据引用（dynamic data reference）** - 如 `modifier:x` `value:x`。
  *
  * 在语义与格式上，它们类似编程语言中的函数、属性或字段。
  *
@@ -55,7 +55,7 @@ import icu.windea.pls.lang.expression.ParadoxVariableFieldExpression
  * @property fromData 为动态链接时，是否从数据中读取动态数据。对应的节点格式形如 `prefix:data`。
  * @property fromArgument （PLS 扩展）为动态链接时，是否从传入参数中读取动态数据。对应的节点格式形如 `func(arg)`。
  * @property prefix 为动态链接时，携带的前缀。如果为 null，则将整个文本作为动态数据。
- * @property dataSource 数据源（数据表达式）。如果不为 null，则被视为动态链接。
+ * @property dataSource 数据源（数据表达式）。如果为 null，则将链接视为静态的。
  * @property inputScopes 输入作用域（类型）的集合。
  * @property outputScope 输出作用域（类型）。
  * @property forDefinitionType 仅用于指定的定义类型。
