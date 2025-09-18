@@ -82,7 +82,7 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.reflect.KProperty
 
-//region Common Extensions
+// region Common Extensions
 
 /** 忽略大小写的字符串比较。*/
 fun String.compareToIgnoreCase(other: String): Int {
@@ -102,13 +102,13 @@ object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
 
 /** 创建忽略大小写的字符串集合。*/
 fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
-    //com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
+    // com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
     return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
 }
 
 /** 创建键为忽略大小写字符串的映射。*/
 fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
-    //com.intellij.util.containers.createCaseInsensitiveStringMap()
+    // com.intellij.util.containers.createCaseInsensitiveStringMap()
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
@@ -257,9 +257,9 @@ fun getCurrentProject(): Project? {
     return ProjectManager.getInstance().openProjects.firstOrNull { o -> o.isInitialized && !o.isDisposed }
 }
 
-//endregion
+// endregion
 
-//region Code Insight Extensions
+// region Code Insight Extensions
 
 /** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。*/
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
@@ -289,9 +289,9 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
     extend(CompletionType.SMART, place, provider)
 }
 
-//endregion
+// endregion
 
-//region Editor & Document Extensions
+// region Editor & Document Extensions
 
 // fun Document.isAtLineStart(offset: Int, skipWhitespaces: Boolean = false): Boolean {
 //     if (!skipWhitespaces) return DocumentUtil.isAtLineStart(offset, this)
@@ -321,29 +321,29 @@ fun Document.isAtLineEnd(offset: Int, skipWhitespaces: Boolean = false): Boolean
     return true
 }
 
-//endregion
+// endregion
 
-//region VFS Extensions
+// region VFS Extensions
 
-///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
-//fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
+// /**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
+// fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
-//}
+// }
 
-///**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
-//inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
+// /**查找当前项目中指定语言文件类型和作用域的PsiFile。*/
+// inline fun <reified T : PsiFile> findFiles(project: Project, type: LanguageFileType): List<T> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project)).mapNotNull {
 //		PsiManager.getInstance(project).findFile(it)
 //	}.filterIsInstance<T>()
-//}
+// }
 
-///**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
-//fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
+// /**递归得到当前VirtualFile的所有作为子节点的VirtualFile。*/
+// fun VirtualFile.getAllChildFiles(destination: MutableList<VirtualFile> = mutableListOf()): List<VirtualFile> {
 //	for(child in this.children) {
 //		if(child.isDirectory) child.getAllChildFiles(destination) else destination.add(child)
 //	}
 //	return destination
-//}
+// }
 
 /** 将文件路径转换为 VirtualFile（可选刷新 VFS）。*/
 fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
@@ -406,9 +406,9 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
     }
 }
 
-//endregion
+// endregion
 
-//region AST Extensions
+// region AST Extensions
 
 /** 遍历当前节点的直接子节点。*/
 inline fun ASTNode.forEachChild(forward: Boolean = true, action: (ASTNode) -> Unit) {
@@ -437,13 +437,13 @@ fun ASTNode.children(forward: Boolean = true): Sequence<ASTNode> {
     return child.siblings(forward, withSelf = true)
 }
 
-//fun ASTNode.isStartOfLine(): Boolean {
+// fun ASTNode.isStartOfLine(): Boolean {
 //    return treePrev?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
-//}
+// }
 //
-//fun ASTNode.isEndOfLine(): Boolean {
+// fun ASTNode.isEndOfLine(): Boolean {
 //    return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
-//}
+// }
 
 /** 在轻量 AST 中查找首个指定类型的子节点。*/
 fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
@@ -491,9 +491,9 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     return tree.charTable.intern(this.text).toString()
 }
 
-//endregion
+// endregion
 
-//region PSI Extensions
+// region PSI Extensions
 
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
@@ -656,7 +656,7 @@ inline fun PsiElement.findChildren(forward: Boolean = true, noinline predicate: 
 
 /** 遍历当前 PSI 的直接子元素。*/
 inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
-    //不会忽略某些特定类型的子元素
+    // 不会忽略某些特定类型的子元素
     var child: PsiElement? = if (forward) this.firstChild else this.lastChild
     while (child != null) {
         action(child)
@@ -666,7 +666,7 @@ inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement)
 
 /** 处理当前 PSI 的直接子元素；处理器返回 false 时提前终止。*/
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
-    //不会忽略某些特定类型的子元素
+    // 不会忽略某些特定类型的子元素
     var child: PsiElement? = if (forward) this.firstChild else this.lastChild
     while (child != null) {
         val result = processor(child)
@@ -725,7 +725,7 @@ fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiE
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
     } catch (e: IllegalArgumentException) {
-        //Element from alien project - use empty pointer
+        // Element from alien project - use empty pointer
         emptyPointer()
     }
 }
@@ -735,7 +735,7 @@ fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = file?.pr
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
     } catch (e: IllegalArgumentException) {
-        //Element from alien project - use empty pointer
+        // Element from alien project - use empty pointer
         emptyPointer()
     }
 }
@@ -764,9 +764,9 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
     return token to offset
 }
 
-//endregion
+// endregion
 
-//region Symbol Extensions
+// region Symbol Extensions
 
 /** 将 PSI 元素包装为 [Symbol]。*/
 fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this)
@@ -777,9 +777,9 @@ fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getI
 /** 从 [Symbol] 中提取底层 PSI 元素。*/
 fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
 
-//endregion
+// endregion
 
-//region Presentation Extensions
+// region Presentation Extensions
 
 /** 在展示信息中附带文件名与图标。*/
 fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationBuilder {
@@ -788,9 +788,9 @@ fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationB
     return locationText(virtualFile.name, fileType.icon)
 }
 
-//endregion
+// endregion
 
-//region Language Injection Extensions
+// region Language Injection Extensions
 
 /**
  * 向上找到最顶层的作为语言注入宿主的虚拟文件，或者返回自身。
@@ -819,16 +819,16 @@ private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Pro
 
 /** 获取语言注入的切片列表（shreds）。*/
 fun PsiFile.getShreds(): Place? {
-    //why it's deprecated and internal???
-    //@Suppress("UnstableApiUsage", "DEPRECATION")
-    //return InjectedLanguageUtilBase.getShreds(this)
+    // why it's deprecated and internal???
+    // @Suppress("UnstableApiUsage", "DEPRECATION")
+    // return InjectedLanguageUtilBase.getShreds(this)
 
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
 
-//endregion
+// endregion
 
-//region Inspection Extensions
+// region Inspection Extensions
 
 /** 根据检查项短名获取对应的 [ScopeToolState]。*/
 fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
@@ -840,11 +840,11 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 /** 若检查项启用则返回实际的 [InspectionProfileEntry]，否则返回 null。*/
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
 
-//endregion
+// endregion
 
-//region Settings Extensions
+// region Settings Extensions
 
-//以下的委托方法用于读写需要保存为密码的配置项
+// 以下的委托方法用于读写需要保存为密码的配置项
 
 /** 委托读取：从 PasswordSafe 读取当前凭据。*/
 inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? = PasswordSafe.instance.getPassword(this)
@@ -852,4 +852,4 @@ inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProp
 /** 委托写入：将凭据写入 PasswordSafe。*/
 inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) = PasswordSafe.instance.setPassword(this, value)
 
-//endregion
+// endregion

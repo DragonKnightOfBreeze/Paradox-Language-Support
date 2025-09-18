@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList
  * 复杂度 O(n)。
  */
 fun String.trimFast(c: Char): String {
-    //Should be very fast
+    // Should be very fast
 
     var startIndex = 0
     var endIndex = length - 1
@@ -38,7 +38,7 @@ fun String.trimFast(c: Char): String {
  * - [limit] 语义与标准库一致（>0 时最多返回 `limit` 段，最后一段包含余下所有内容）。
  */
 fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
-    //Should be very fast
+    // Should be very fast
 
     require(limit >= 0) { "Limit must be non-negative, but was $limit" }
 

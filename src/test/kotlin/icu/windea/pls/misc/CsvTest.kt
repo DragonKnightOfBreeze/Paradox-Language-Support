@@ -5,14 +5,14 @@ import org.junit.Test
 class CsvTest {
     @Test
     fun test() {
-        //val file = File("cwt/cwtools-stellaris-config/config/on_actions.csv")
-        //val schemaFor = CsvSchema.builder()
+        // val file = File("cwt/cwtools-stellaris-config/config/on_actions.csv")
+        // val schemaFor = CsvSchema.builder()
         //	.addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
         //	.withHeader()
-        //csvMapper
-        //val readValues = csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(schemaFor)
+        // csvMapper
+        // val readValues = csvMapper.readerFor(ParadoxOnActionInfo::class.java).with(schemaFor)
         //	.readValues<ParadoxOnActionInfo>(file)
-        //val r = readValues.readAll()
-        //r
+        // val r = readValues.readAll()
+        // r
     }
 }

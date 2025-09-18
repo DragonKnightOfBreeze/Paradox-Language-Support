@@ -13,9 +13,9 @@ fun <T> MutableSet(comparator: Comparator<T>? = null): MutableSet<T> {
     return if (comparator == null) mutableSetOf() else TreeSet(comparator)
 }
 
-//inline fun <reified T : Enum<T>> enumSetOf(vararg values: T): EnumSet<T> {
+// inline fun <reified T : Enum<T>> enumSetOf(vararg values: T): EnumSet<T> {
 //    return EnumSet.noneOf(T::class.java).apply { values.forEach { add(it) } }
-//}
+// }
 
 /**
  * 将多个集合合并到 [destination]，忽略 `null` 或空集合，返回 [destination] 本身。

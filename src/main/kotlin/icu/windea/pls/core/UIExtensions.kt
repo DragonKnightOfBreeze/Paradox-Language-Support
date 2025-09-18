@@ -39,7 +39,7 @@ import kotlin.reflect.KProperty
  * 注意：应传入反射路径（如 `"/icons/xxx.svg"` 或 `Icons.Test`）或 URL（而非文件系统路径）。
  */
 fun String.toIconOrNull(locationClass: Class<*> = PlsFacade::class.java): Icon? {
-    //注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
+    // 注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
     return IconLoader.findIcon(this, locationClass)
 }
 

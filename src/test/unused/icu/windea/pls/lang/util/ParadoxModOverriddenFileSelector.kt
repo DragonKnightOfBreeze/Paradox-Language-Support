@@ -33,12 +33,12 @@ object ParadoxModOverriddenFileSelector {
             val modScriptFiles = modDir.walk().filter { it.isFile && it.extension == "txt" }.map { it.relativeTo(modDir) }
             for (modScriptFile in modScriptFiles) {
                 val shortName = modScriptFile.nameWithoutExtension
-                //如果找到了有冲突的文件，则添加到缓存中
-                //排除readme和changelog和credits
+                // 如果找到了有冲突的文件，则添加到缓存中
+                // 排除readme和changelog和credits
                 if (shortName.uppercase() !in ignoredFileShortNames) {
                     val key = modScriptFile.path
                     val gameScriptFile = gameScriptFileMap[key]
-                    //排除不存在的情况
+                    // 排除不存在的情况
                     if (gameScriptFile != null) {
                         println("Add overridden file '${modScriptFile.name}'.")
                         savedScriptFileMap.getOrPut(gameScriptFile) { CopyOnWriteArrayList() }.add(modDir to modScriptFile)
@@ -63,7 +63,7 @@ object ParadoxModOverriddenFileSelector {
         println("Save overridden files of $size groups in target directory '$targetPath'")
     }
 
-    //找到当前模组目录的模组名字
+    // 找到当前模组目录的模组名字
     private fun File.getModName(): String? {
         return try {
             this.resolve("descriptor.mod").useLines {
@@ -75,7 +75,7 @@ object ParadoxModOverriddenFileSelector {
         }
     }
 
-    //处理原始的文件路径
+    // 处理原始的文件路径
     private fun String.handlePath(marker: Any): String {
         val separatorIndex = this.lastIndexOf('.')
         return when {

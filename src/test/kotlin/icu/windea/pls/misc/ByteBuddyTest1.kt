@@ -12,7 +12,7 @@ import org.junit.Test
 
 @Ignore
 class ByteBuddyTest1 {
-    //目标类型未加载 + rebase + 方法调用 - 测试通过
+    // 目标类型未加载 + rebase + 方法调用 - 测试通过
 
     @Test
     fun test() {
@@ -20,8 +20,8 @@ class ByteBuddyTest1 {
 
         TestBean().customize(1)
 
-        //hello 1
-        //hello 1 !!!
+        // hello 1
+        // hello 1 !!!
     }
 
     private fun inject() {

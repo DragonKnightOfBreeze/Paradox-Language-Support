@@ -26,7 +26,7 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
         return gameDataPath.resolve(dbPath)
     }
 
-    //TODO DO NOT implement this feature since sqlite jar is too large (12M+)
+    // TODO DO NOT implement this feature since sqlite jar is too large (12M+)
 
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
@@ -43,21 +43,21 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
             return
         }
 
-        //IronyModManager.IO.Mods.Importers.ParadoxLauncherImporter.DatabaseImportAsync
+        // IronyModManager.IO.Mods.Importers.ParadoxLauncherImporter.DatabaseImportAsync
 
-        //Sqlite
-        //connect jdbc:sqlite:~/Documents/Paradox Interactive/Stellaris/launcher-v2.sqlite
+        // Sqlite
+        // connect jdbc:sqlite:~/Documents/Paradox Interactive/Stellaris/launcher-v2.sqlite
 
-        //try {
+        // try {
         //    val collectionName = ""
         //    val count = 0
         //    val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
         //    finishImport(newSettingsList, table, table.model)
         //    notify(settings, project, PlsBundle.message("mod.importer.info", collectionName, count))
-        //} catch(e: Exception) {
+        // } catch(e: Exception) {
         //    if(e is ProcessCanceledException) throw e
         //    thisLogger().info(e)
         //    notifyWarning(settings, project, PlsBundle.message("mod.importer.error"))
-        //}
+        // }
     }
 }

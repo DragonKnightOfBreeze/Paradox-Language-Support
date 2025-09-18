@@ -10,7 +10,7 @@ import org.junit.Test
 
 @Ignore
 class ByteBuddyTest2 {
-    //目标类型已加载 + subtype + 方法调用 - 测试失败
+    // 目标类型已加载 + subtype + 方法调用 - 测试失败
 
     @Test(expected = Exception::class)
     fun test() {
@@ -18,8 +18,8 @@ class ByteBuddyTest2 {
 
         TestBean().customize(1)
 
-        //hello 1
-        //hello 1 !!!
+        // hello 1
+        // hello 1 !!!
     }
 
     private fun inject() {
@@ -42,10 +42,10 @@ class ByteBuddyTest2 {
 
     @Suppress("unused", "UnusedReceiverParameter")
     fun Any.callSelf(vararg args: Any?): Any? {
-        //val declaredMethods = this.javaClass.declaredMethods
-        //val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!
-        //method.trySetAccessible()
-        //return method.invoke(this, *args)
+        // val declaredMethods = this.javaClass.declaredMethods
+        // val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!
+        // method.trySetAccessible()
+        // return method.invoke(this, *args)
         return null
     }
 

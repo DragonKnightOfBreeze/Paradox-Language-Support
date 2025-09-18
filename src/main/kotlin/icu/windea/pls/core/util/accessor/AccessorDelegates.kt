@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.isAccessible
 
-//region Interfaces
+// region Interfaces
 
 /** 读取委托：从目标实例或静态上下文读取值。*/
 interface ReadAccessorDelegate<T : Any, V> : AccessorDelegate {
@@ -26,9 +26,9 @@ interface InvokeAccessorDelegate<T : Any> : AccessorDelegate {
     fun invoke(target: T?, vararg args: Any?): Any?
 }
 
-//endregion
+// endregion
 
-//region Read Accessor Delegates
+// region Read Accessor Delegates
 
 /** 空读取委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyReadAccessorDelegate : ReadAccessorDelegate<Any, Any?> {
@@ -106,9 +106,9 @@ class JavaFieldReadAccessorDelegate<T : Any, V>(
     }
 }
 
-//endregion
+// endregion
 
-//region Write Accessor Delegates
+// region Write Accessor Delegates
 
 /** 空写入委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyWriteAccessorDelegate : WriteAccessorDelegate<Any, Any?> {
@@ -186,9 +186,9 @@ class JavaFieldWriteAccessorDelegate<T : Any, V>(
     }
 }
 
-//endregion
+// endregion
 
-//region Invoke Accessor Delegates
+// region Invoke Accessor Delegates
 
 /** 空调用委托：调用将抛出 [UnsupportedAccessorException]。*/
 object EmptyInvokeAccessorDelegate : InvokeAccessorDelegate<Any> {
@@ -228,4 +228,4 @@ class JavaMethodInvokeAccessorDelegate<T : Any>(
     }
 }
 
-//endregion
+// endregion

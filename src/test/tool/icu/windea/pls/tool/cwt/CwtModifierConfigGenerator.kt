@@ -82,7 +82,7 @@ class CwtModifierConfigGenerator(
             }
         }
 
-        //TODO update modifier_categories.cwt
+        // TODO update modifier_categories.cwt
     }
 
     private fun setUserDir() {

@@ -24,7 +24,7 @@ class VirtualFileProvider(
     }
 
     private fun doGet(): VirtualFile {
-        //NOTE: Do not perform a synchronous refresh under read lock (causes deadlocks if there are events to fire)
+        // NOTE: Do not perform a synchronous refresh under read lock (causes deadlocks if there are events to fire)
         val refresh = ApplicationManagerEx.getApplicationEx().isDispatchThread || !ApplicationManagerEx.getApplicationEx().holdsReadLock()
 
         var file = file
@@ -45,19 +45,19 @@ class VirtualFileProvider(
             Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
             timeStamp = file.timeStamp
         } else if (timeStamp == -1L) {
-            //check whether is same file only if timestamp is not set
+            // check whether is same file only if timestamp is not set
             if (!isSameFile()) {
                 Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
             }
             timeStamp = file.timeStamp
         } else {
-            //do nothing
+            // do nothing
         }
         return file
     }
 
     private fun isSameFile(): Boolean {
-        //currently, check by file size, rather than file hash or file content
+        // currently, check by file size, rather than file hash or file content
         return calculateFileSize(file!!) == sourceFileSize
     }
 

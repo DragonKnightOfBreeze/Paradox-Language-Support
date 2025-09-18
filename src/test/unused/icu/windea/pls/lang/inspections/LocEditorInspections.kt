@@ -11,8 +11,8 @@ import com.intellij.codeInspection.LocalInspectionTool
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 annotation class LocEditorInspection(
-    //e.g.,
-    //[LocEditor:OrphanedKeys] Keys that do not exist in English
+    // e.g.,
+    // [LocEditor:OrphanedKeys] Keys that do not exist in English
     val value: String
 )
 

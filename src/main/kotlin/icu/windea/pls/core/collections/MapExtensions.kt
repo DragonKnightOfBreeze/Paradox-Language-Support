@@ -26,7 +26,7 @@ inline fun <K, K1, V1, M : MutableMap<K, MutableMap<K1, V1>>> M.getOrInit(key: K
 
 /** 将条目映射为数组；在可迭代器场景下避免中间 [List] 分配。*/
 inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
-    //这里不先将Set转为List
+    // 这里不先将Set转为List
     val size = this.size
     val entries = this.entries
     try {

@@ -19,6 +19,6 @@ class SortedSetTest {
         v = "c"
         s += v
 
-        //no "a" output in result
+        // no "a" output in result
     }
 }

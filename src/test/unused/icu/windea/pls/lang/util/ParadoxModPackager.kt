@@ -30,7 +30,7 @@ object ParadoxModPackager {
 
     private fun doPackageMods(modDirs: Array<File>, packageName: String, parallelism: Int) {
         try {
-            //并发打包mod
+            // 并发打包mod
             val executor = Executors.newWorkStealingPool(parallelism)
             val total = modDirs.size
             val done = AtomicInteger(0)
@@ -53,7 +53,7 @@ object ParadoxModPackager {
                         println("Package mod '${modDir.path}' finished. (total: $total, done: $done, cost: $time)")
                     }
                 }
-                //等待所有的mod打包完毕（可能需要很长时间）
+                // 等待所有的mod打包完毕（可能需要很长时间）
                 countDownLatch.await()
             }.let { formatTime(it) }
             println("Package mods finished. (total: $total, cost: $time)")
@@ -79,7 +79,7 @@ object ParadoxModPackager {
     private fun doPackage(modDir: File, packageName: String) {
         if (modDir.isDirectory) {
             val children = modDir.listFiles() ?: return
-            //删除已存在的压缩包，跳过本身已打包的mod目录
+            // 删除已存在的压缩包，跳过本身已打包的mod目录
             for (child in children) {
                 if (child.name == packageName) {
                     child.delete()
@@ -87,7 +87,7 @@ object ParadoxModPackager {
                     return
                 }
             }
-            //打包mod目录中的所有文件和目录，除了zip文件，到mod目录中的mod.zip压缩包
+            // 打包mod目录中的所有文件和目录，除了zip文件，到mod目录中的mod.zip压缩包
             val zip = modDir.resolve(packageName)
             val fos = FileOutputStream(zip)
             val zos = ZipOutputStream(fos)

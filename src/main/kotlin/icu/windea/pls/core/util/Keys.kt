@@ -48,7 +48,7 @@ abstract class KeyRegistry {
 abstract class SyncedKeyRegistry : KeyRegistry() {
     val keysToSync: MutableSet<Key<*>> = mutableSetOf()
 
-    //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
+    // use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
     fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
         keysToSync.forEach { key ->
             @Suppress("UNCHECKED_CAST")
