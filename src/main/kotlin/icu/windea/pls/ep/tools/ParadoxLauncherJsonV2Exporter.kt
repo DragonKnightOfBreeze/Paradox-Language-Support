@@ -24,7 +24,7 @@ class ParadoxLauncherJsonV2Exporter : ParadoxModExporter {
                 ParadoxLauncherJsonV2.Mod(
                     displayName = m.name.orEmpty(),
                     enabled = m.enabled,
-                    position = (i + 1 + 4096).toString(10).padStart(10, '0'),
+                    position = (i + 1 + 4096).toString(16).padStart(10, '0'),
                     steamId = m.remoteId?.takeIf { m.source == ParadoxModSource.Steam },
                     pdxId = m.remoteId?.takeIf { m.source == ParadoxModSource.Paradox },
                 )

@@ -12,7 +12,7 @@ data class ParadoxLauncherJsonV2(
         val displayName: String,
         val enabled: Boolean,
         val pdxId: String? = null,
-        val position: String, // (i + 1 + 4096).toString(10).padStart(10, '0')
+        val position: String, // (i + 1 + 4096).toString(16).padStart(10, '0')
         val steamId: String? = null,
     )
 }
