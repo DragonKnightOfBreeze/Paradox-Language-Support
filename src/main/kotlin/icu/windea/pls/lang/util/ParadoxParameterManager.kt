@@ -23,7 +23,6 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.extendedParameters
 import icu.windea.pls.config.findFromPattern
@@ -71,6 +70,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
@@ -361,7 +361,7 @@ object ParadoxParameterManager {
         if (contextConfigs.isEmpty()) return null
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
-        if (configs.any { it !is CwtValueConfig || it.isBlock }) return PlsBundle.message("complex")
+        if (configs.any { it !is CwtValueConfig || it.valueType == CwtType.Block }) return PlsBundle.message("complex")
         return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
     }
 
@@ -438,7 +438,7 @@ object ParadoxParameterManager {
         val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
         val configs = contextConfigs.singleOrNull()?.configs
-            ?.filterNot { it !is CwtValueConfig || it.isBlock }
+            ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
     }

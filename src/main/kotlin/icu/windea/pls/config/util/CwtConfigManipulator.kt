@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -190,7 +189,7 @@ object CwtConfigManipulator {
             val c1 = configs.single()
             val c2 = otherConfigs.single()
             if (c1 is CwtValueConfig && c2 is CwtValueConfig) {
-                if (c1.isBlock && c2.isBlock) {
+                if (c1.valueType == CwtType.Block && c2.valueType == CwtType.Block) {
                     val mergedConfigs = mergeConfigs(c1.configs.orEmpty(), c2.configs.orEmpty())
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }

@@ -9,7 +9,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.aliasGroups
@@ -17,6 +16,7 @@ import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.findProperty
@@ -51,7 +51,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (resultTriggerConfig.config.isBlock) continue //not simple trigger, skip
+            if (resultTriggerConfig.config.valueType == CwtType.Block) continue //not simple trigger, skip
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigManipulator.InlineMode.VALUE_TO_KEY) ?: continue
             resultConfigs.add(inlined)
         }
@@ -88,7 +88,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (!resultTriggerConfig.config.isBlock) continue //not complex trigger, skip
+            if (resultTriggerConfig.config.valueType != CwtType.Block) continue //not complex trigger, skip
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigManipulator.InlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }

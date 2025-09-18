@@ -15,9 +15,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider.Settings
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import javax.swing.JComponent
@@ -51,7 +51,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
             val definitionInfo = element.definitionInfo
             if (definitionInfo != null) {
                 //忽略类似event_namespace这样定义的值不是子句的定义
-                if (definitionInfo.declarationConfig?.config?.isBlock == false) return true
+                if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return true
 
                 val presentation = doCollect(definitionInfo, settings)
                 val finalPresentation = presentation.toFinalPresentation(this, file.project)

@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.intRange
@@ -29,6 +28,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -191,7 +191,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         val triggerName = element.stringValue() ?: return
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
-        if (resultTriggerConfigs.none { !it.config.isBlock }) {
+        if (resultTriggerConfigs.none { it.config.valueType != CwtType.Block }) {
             holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression))
         }
     }
@@ -220,7 +220,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         val hasParameters = element.findParentProperty()?.findParentProperty()?.findProperty("parameters") != null
         if (hasParameters) {
-            if (resultTriggerConfigs.none { it.config.isBlock }) {
+            if (resultTriggerConfigs.none { it.config.valueType == CwtType.Block }) {
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))
             }
         } else {

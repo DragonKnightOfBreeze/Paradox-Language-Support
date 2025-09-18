@@ -20,7 +20,6 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.floatValue
 import icu.windea.pls.config.config.intValue
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
@@ -48,6 +47,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -231,7 +231,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun doMatchValue(valueElement: ParadoxScriptValue, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
-        if (config.isBlock) {
+        if (config.valueType == CwtType.Block) {
             val blockElement = valueElement.castOrNull<ParadoxScriptBlockElement>() ?: return false
             if (!doMatchBlock(blockElement, config, complexEnumConfig)) return false
             return true

@@ -26,14 +26,13 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.isBlock
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
@@ -59,6 +58,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -236,7 +236,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     val isKey = context.isKey
     val isKeyOnly = contextElement is ParadoxScriptPropertyKey && isKey != false
     val isValueOnly = contextElement is ParadoxScriptString && isKey != true
-    val isBlock = targetConfig?.isBlock ?: false
+    val isBlock = targetConfig?.let { it.valueType == CwtType.Block } ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null

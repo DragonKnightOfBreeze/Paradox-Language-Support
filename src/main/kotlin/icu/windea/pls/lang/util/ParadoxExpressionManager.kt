@@ -29,7 +29,6 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.isBlock
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.config.toOccurrence
@@ -97,6 +96,7 @@ import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.paths.ParadoxExpressionPath
@@ -653,7 +653,7 @@ object ParadoxExpressionManager {
             val group: Collection<List<CwtPropertyConfig>> = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
             group.forEach f1@{ configs ->
                 if (configs.size <= 1) return@f1
-                val configs1 = configs.filter { it.isBlock }
+                val configs1 = configs.filter { it.valueType == CwtType.Block }
                 if (configs1.size <= 1) return@r1
                 configs.forEach f2@{ config ->
                     val valueConfig = config.valueConfig ?: return@f2
