@@ -44,8 +44,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.ep.priority.ParadoxPriorityProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.ParadoxModImporter" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.ParadoxModExporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.importer.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -257,14 +257,14 @@
 
     <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
 
-    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxDlcLoadImporter"/>
+    <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxDlcLoadImporter"/>
     <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Importer"/>
-    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Importer"/>
-    <!--<modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherImporter"/>-->
-    <!--<modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherBetaImporter"/>-->
+    <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherJsonV3Importer"/>
+    <!--<modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherImporter"/>-->
+    <!--<modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherBetaImporter"/>-->
 
-    <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Exporter"/>
-    <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Exporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV3Exporter"/>
     <!--<modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherSqliteExporter"/>-->
   </extensions>
 </idea-plugin>

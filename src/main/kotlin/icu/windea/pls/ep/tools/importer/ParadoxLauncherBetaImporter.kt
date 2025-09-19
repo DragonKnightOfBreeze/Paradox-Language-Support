@@ -1,6 +1,4 @@
-@file:Suppress("unused")
-
-package icu.windea.pls.ep.tools
+package icu.windea.pls.ep.tools.importer
 
 import icu.windea.pls.PlsBundle
 import java.nio.file.Path
@@ -8,7 +6,7 @@ import java.nio.file.Path
 /**
  * 从Paradox启动器（Beta版）的Sqlite数据库中导入模组配置。
  *
- * 参见：[ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
+ * See: [ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
  */
 class ParadoxLauncherBetaImporter : ParadoxLauncherImporter() {
     companion object {
