@@ -44,7 +44,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
                 if (map == null) {
                     map = info.scopeContextMap
                 } else {
-                    map = ParadoxScopeManager.mergeScopeContextMap(map!!, info.scopeContextMap)
+                    map = ParadoxScopeManager.mergeScopeContextMap(map, info.scopeContextMap)
                 }
             }
             val resultMap = map ?: return null

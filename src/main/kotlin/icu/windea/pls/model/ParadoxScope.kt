@@ -43,7 +43,7 @@ sealed interface ParadoxScope {
      *
      * 表示任何未在规则文件中定义，或无法在上下文中进一步推断的作用域。
      * 如果作用域在经过切换后无法被解析，则会被视为未知作用域（[Unknown]），而非任意作用域（[Any]）。
-     * 最常见的情况是通过 `from` 型的系统作用域切换到未被定义或无法推断的作用域。
+     * 最常见的情况是通过 `from` 型系统作用域切换到未被定义或无法推断的作用域。
      */
     object Unknown : ParadoxScope {
         override val id: String = "?"

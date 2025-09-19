@@ -43,7 +43,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.properties
 
 /**
- * 推断scripted_trigger、scripted_effect等的作用域上下文（仅限this和root）。
+ * 推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。
+ * 仅推断 `this` 与 `root` 系统作用域。
  */
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Constants {
@@ -103,7 +104,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
-        val gameType = configGroup.gameType ?: return true
+        val gameType = configGroup.gameType
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
@@ -153,8 +154,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 }
 
 /**
- * 如果某个event在某个on_action中被调用，
- * 则将此on_action的from, fromfrom...作用域推断为此event的from, fromfrom...作用域。
+ * 如果 `event` E 在 `on_action` A 的声明中被调用，
+ * 则将 E 的 `from` 型系统作用域推断成 E 的对应的系统作用域。
  */
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
@@ -209,7 +210,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
-        val gameType = configGroup.gameType ?: return true
+        val gameType = configGroup.gameType
         return withRecursionGuard {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
@@ -257,12 +258,13 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 }
 
 /**
- * 如果某个event在一个event声明中被调用，
- * 则将此另一个event的root作用域推断为此event的from作用域，
- * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
- * 依此类推直到fromfromfromfrom作用域。
- * 如果有声明scopes = { from = ... }，则将此event的from作用域推断为这个声明中from对应的作用域，
- * 依此类推直到fromfromfromfrom作用域。
+ * 如果 `event` E 在 `event` E1 的声明中被调用，
+ * 则将 E 的 `from` 系统作用域推断成 E1 的 `root` 系统作用域。
+ * 如果 E1 又被 `event` E2 调用，则额外将 E 的 `fromfrom` 系统作用域推断成 E2 的 `root` 系统作用域，
+ * 依次类推直到 `fromfromfromfrom` 系统作用域。
+ *
+ * 如果在调用时有写明 `scopes = { from = s }`，则改为推断成 s，
+ * 依次类推直到 `fromfromfromfrom` 系统作用域。
  */
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
@@ -316,7 +318,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
-        val gameType = configGroup.gameType ?: return true
+        val gameType = configGroup.gameType
         return withRecursionGuard {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
@@ -404,12 +406,13 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 }
 
 /**
- * 如果某个on_action在一个event声明中被调用，
- * 则将此另一个event的root作用域推断为此event的from作用域，
- * 将调用此另一个event的event的root作用域推断为此event的fromfrom作用域，
- * 依此类推直到fromfromfromfrom作用域。
- * 如果有声明scopes = { from = ... }，则将此on_action的from作用域推断为这个声明中from对应的作用域，
- * 依此类推直到fromfromfromfrom作用域。
+ * 如果 `on_action` A 在 `event` E1 的声明中被调用，
+ * 则将 A 的 `from` 系统作用域推断成 E1 的 `root` 系统作用域。
+ * 如果 E1 又被 `event` E2 调用，则额外将 A 的 `fromfrom` 系统作用域推断成 E2 的 `root` 系统作用域，
+ * 依次类推直到 `fromfromfromfrom` 系统作用域。
+ *
+ * 如果在调用时有写明 `scopes = { from = s }`，则改为推断成 s，
+ * 依次类推直到 `fromfromfromfrom` 系统作用域。
  */
 class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
@@ -466,7 +469,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     ): Boolean {
         ProgressManager.checkCanceled()
         val project = configGroup.project
-        val gameType = configGroup.gameType ?: return true
+        val gameType = configGroup.gameType
         return withRecursionGuard {
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
