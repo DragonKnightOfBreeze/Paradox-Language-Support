@@ -7,13 +7,18 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLauncherSettingsInfo
 import icu.windea.pls.model.ParadoxModDescriptorInfo
 import icu.windea.pls.model.ParadoxModMetadataInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.stringValue
+import java.nio.file.Path
+import kotlin.io.path.exists
 
 object ParadoxMetadataManager {
     val metadataFileNames = setOf(
@@ -103,5 +108,34 @@ object ParadoxMetadataManager {
 
     private fun doGetModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo {
         return ObjectMappers.jsonMapper.readValue(file.inputStream)
+    }
+
+    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
+        // TODO 2.0.5+ 提取 ModDescriptorType，避免硬编码
+        return gameType != ParadoxGameType.Vic3
+    }
+
+    fun getModDirectoryFromSteamId(steamId: String?, workshopDirPath: Path): String? {
+        if (steamId.isNullOrEmpty()) return null
+        val path = workshopDirPath.resolve(steamId)
+        if (!path.exists()) return null
+        val modDir = path.toVirtualFile(true) ?: return null
+        val rootInfo = modDir.rootInfo
+        if (rootInfo == null) return null // 必须是合法的模组根目录
+        return modDir.path
+    }
+
+    fun getModDirectoryFromModDescriptorPathInGameData(path: String?, gameDataDirPath: Path): String? {
+        if (path.isNullOrEmpty()) return null
+        if (!path.endsWith(".mod", true)) return null // 检查后缀名
+        val descriptorPath = gameDataDirPath.resolve(path)
+        if (!descriptorPath.exists()) return null
+        val descriptorFile = descriptorPath.toVirtualFile(true) ?: return null
+        val descriptorInfo = getModDescriptorInfo(descriptorFile) ?: return null
+        val modPath = descriptorInfo.path ?: return null
+        val modDir = modPath.toVirtualFile() ?: return null
+        val rootInfo = modDir.rootInfo
+        if (rootInfo == null) return null // 必须是合法的模组根目录
+        return modDir.path
     }
 }

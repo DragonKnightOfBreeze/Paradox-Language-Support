@@ -1,5 +1,6 @@
 package icu.windea.pls.model.paths
 
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.model.paths.impl.ParadoxExpressionPathResolverImpl
 
 /**
@@ -41,4 +42,11 @@ interface ParadoxExpressionPath : Iterable<String> {
     }
 
     companion object: Resolver by ParadoxExpressionPathResolverImpl()
+}
+
+fun ParadoxExpressionPath.relativeTo(other: ParadoxExpressionPath): ParadoxExpressionPath? {
+    if (this == other) return ParadoxExpressionPath.resolveEmpty()
+    if (this.isEmpty()) return other
+    val path = other.path.removePrefixOrNull(this.path + "/") ?: return null
+    return ParadoxExpressionPath.resolve(path)
 }

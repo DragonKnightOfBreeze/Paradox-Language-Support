@@ -51,7 +51,7 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
 }
 
 /**
- * See: [Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)
+ * 参见：[Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)
  */
 class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {

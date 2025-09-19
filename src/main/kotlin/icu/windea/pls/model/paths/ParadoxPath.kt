@@ -40,3 +40,6 @@ interface ParadoxPath : Iterable<String> {
     companion object : Resolver by ParadoxPathResolverImpl()
 }
 
+fun ParadoxPath.matches(matcher: ParadoxPathMatcher): Boolean {
+    return matcher.matches(this)
+}
