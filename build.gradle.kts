@@ -89,25 +89,19 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    // 持久化（等待重构）
+    // 持久化
 
-    // // sqlite - https://github.com/xerial/sqlite-jdbc
-    // implementation("org.xerial:sqlite-jdbc:3.50.3.0")
-    // // ktorm - https://www.ktorm.org/
-    // implementation("org.ktorm:ktorm-core:3.6.0")
-    // implementation("org.ktorm:ktorm-support-sqlite:3.6.0")
+    // sqlite - https://github.com/xerial/sqlite-jdbc
+    implementation("org.xerial:sqlite-jdbc:3.50.3.0")
+    // ktorm - https://www.ktorm.org/
+    implementation("org.ktorm:ktorm-core:4.1.1")
+    implementation("org.ktorm:ktorm-support-sqlite:4.1.1")
 
     compileOnly("com.google.errorprone:error_prone_annotations:2.41.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
 
     // 目前仅用作参考
-
-    // sqlite - https://github.com/xerial/sqlite-jdbc
-    testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")
-    // ktorm - https://www.ktorm.org/
-    testImplementation("org.ktorm:ktorm-core:4.1.1")
-    testImplementation("org.ktorm:ktorm-support-sqlite:4.1.1")
 
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.17.7")

@@ -42,31 +42,49 @@ class ParadoxModDependenciesImportPopup(
     override fun isSpeedSearchEnabled(): Boolean = true
 
     override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean) = doFinalStep {
+        if (!selectedValue.isAvailable()) {
+            PlsCoreManager.createNotification(NotificationType.WARNING, table.model.settings.qualifiedName, PlsBundle.message("mod.importer.error")).notify(project)
+            return@doFinalStep
+        }
         val settings = table.model.settings
         val qualifiedName = settings.qualifiedName
         val gameType = settings.finalGameType
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
 
-        // 选择或定位 JSON 文件
-        val jsonPath: Path? = if (selectedValue is ParadoxDlcLoadImporter) {
-            val p = gameDataPath?.resolve(dlcLoadJsonName)
-            if (p == null || !p.exists()) {
-                PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.file", p?.toString().orEmpty())).notify(project)
-                return@doFinalStep
+        // 选择或定位数据源（JSON/SQLite）
+        var importData: icu.windea.pls.ep.tools.model.ParadoxModImportData? = null
+        when (selectedValue) {
+            is ParadoxModImporter.JsonBased -> {
+                val jsonPath: Path? = if (selectedValue is ParadoxDlcLoadImporter) {
+                    val p = gameDataPath?.resolve(dlcLoadJsonName)
+                    if (p == null || !p.exists()) {
+                        PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.file", p?.toString().orEmpty())).notify(project)
+                        return@doFinalStep
+                    }
+                    p
+                } else {
+                    val defaultSelectedDir = gameDataPath?.resolve(playlistsName)
+                    val defaultSelected = defaultSelectedDir?.toVirtualFile(false)
+                    val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
+                        .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
+                        .apply { putUserData(PlsDataKeys.gameType, gameType) }
+                    val file = FileChooser.chooseFile(descriptor, table, project, defaultSelected) ?: return@doFinalStep
+                    Paths.get(file.path)
+                }
+                importData = selectedValue.importFromJson(jsonPath!!)
             }
-            p
-        } else {
-            val defaultSelectedDir = gameDataPath?.resolve(playlistsName)
-            val defaultSelected = defaultSelectedDir?.toVirtualFile(false)
-            val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
-                .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
-                .apply { putUserData(PlsDataKeys.gameType, gameType) }
-            val file = FileChooser.chooseFile(descriptor, table, project, defaultSelected) ?: return@doFinalStep
-            Paths.get(file.path)
+            is ParadoxModImporter.SqliteBased -> {
+                val p = gameDataPath?.let { selectedValue.defaultDbPath(it) }
+                if (p == null || !p.exists()) {
+                    PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.file", p?.toString().orEmpty())).notify(project)
+                    return@doFinalStep
+                }
+                importData = selectedValue.importFromDatabase(p)
+            }
         }
 
         try {
-            val result = selectedValue.importFromJson(jsonPath!!)
+            val result = importData!!
             // 若包含游戏ID，与当前不一致则提示
             if (result.gameId != null && result.gameId != gameType.id) {
                 PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.gameType")).notify(project)

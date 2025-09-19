@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools
 
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.ObjectMappers
-import icu.windea.pls.ep.tools.model.ParadoxLauncherJsonV3
+import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.ParadoxModInfo
 import icu.windea.pls.model.ParadoxModSource
 
@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxModSource
  *
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
-class ParadoxLauncherJsonV3Exporter : ParadoxModExporter {
+class ParadoxLauncherJsonV3Exporter : ParadoxModExporter.JsonBased {
     override val text: String = PlsBundle.message("mod.exporter.launcherJson.v3")
 
 
@@ -19,10 +19,10 @@ class ParadoxLauncherJsonV3Exporter : ParadoxModExporter {
 
     override fun toJson(gameId: String, collectionName: String, mods: List<ParadoxModInfo>): String {
         val valid = mods.filter { it.source != ParadoxModSource.Local }
-        val json = ParadoxLauncherJsonV3(
+        val json = LauncherJsonV3(
             game = gameId,
             mods = valid.mapIndexed { i, m ->
-                ParadoxLauncherJsonV3.Mod(
+                LauncherJsonV3.Mod(
                     displayName = m.name.orEmpty(),
                     enabled = m.enabled,
                     position = i,
@@ -35,3 +35,4 @@ class ParadoxLauncherJsonV3Exporter : ParadoxModExporter {
         return ObjectMappers.jsonMapper.writeValueAsString(json)
     }
 }
+

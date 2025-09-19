@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools
 
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.ObjectMappers
-import icu.windea.pls.ep.tools.model.ParadoxLauncherJsonV2
+import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.ParadoxModInfo
 import icu.windea.pls.model.ParadoxModSource
 
@@ -11,17 +11,17 @@ import icu.windea.pls.model.ParadoxModSource
  *
  * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
-class ParadoxLauncherJsonV2Exporter : ParadoxModExporter {
+class ParadoxLauncherJsonV2Exporter : ParadoxModExporter.JsonBased {
     override val text: String = PlsBundle.message("mod.exporter.launcherJson.v2")
 
     override fun isAvailable() = true
 
     override fun toJson(gameId: String, collectionName: String, mods: List<ParadoxModInfo>): String {
         val valid = mods.filter { it.source != ParadoxModSource.Local }
-        val json = ParadoxLauncherJsonV2(
+        val json = LauncherJsonV2(
             game = gameId,
             mods = valid.mapIndexed { i, m ->
-                ParadoxLauncherJsonV2.Mod(
+                LauncherJsonV2.Mod(
                     displayName = m.name.orEmpty(),
                     enabled = m.enabled,
                     position = (i + 1 + 4096).toString(16).padStart(10, '0'),

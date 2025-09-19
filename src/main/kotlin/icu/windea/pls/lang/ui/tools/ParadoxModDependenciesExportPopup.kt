@@ -36,16 +36,14 @@ class ParadoxModDependenciesExportPopup(
     override fun isSpeedSearchEnabled(): Boolean = true
 
     override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep {
+        if (!selectedValue.isAvailable()) {
+            PlsCoreManager.createNotification(NotificationType.WARNING, table.model.settings.qualifiedName, PlsBundle.message("mod.exporter.error")).notify(project)
+            return@doFinalStep
+        }
         val settings = table.model.settings
         val qualifiedName = settings.qualifiedName
         val gameType = settings.finalGameType
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
-        val defaultSavedDir = gameDataPath?.resolve(playlistsName)
-        val defaultSavedFileName = playlistJsonName
-        val descriptor = FileSaverDescriptor(selectedValue.text, "", "json")
-            .apply { putUserData(PlsDataKeys.gameType, gameType) }
-        val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(defaultSavedDir, defaultSavedFileName)
-        val savedFile = saved?.getVirtualFile(true) ?: return@doFinalStep
 
         try {
             // 从表模型构造平台无关的模组信息列表
@@ -60,14 +58,33 @@ class ParadoxModDependenciesExportPopup(
                     supportedVersion = s.supportedVersion,
                 )
             }
-            // 执行导出
-            val path = Paths.get(savedFile.path)
-            selectedValue.exportTo(path, gameType.id, mods)
-
-            val count = mods.count { it.source != ParadoxModSource.Local }
-            PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count)).notify(project)
+            when (selectedValue) {
+                is ParadoxModExporter.JsonBased -> {
+                    val defaultSavedDir = gameDataPath?.resolve(playlistsName)
+                    val defaultSavedFileName = playlistJsonName
+                    val descriptor = FileSaverDescriptor(selectedValue.text, "", "json")
+                        .apply { putUserData(PlsDataKeys.gameType, gameType) }
+                    val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(defaultSavedDir, defaultSavedFileName)
+                    val savedFile = saved?.getVirtualFile(true) ?: return@doFinalStep
+                    val path = Paths.get(savedFile.path)
+                    selectedValue.exportTo(path, gameType.id, mods)
+                    val count = mods.count { it.source != ParadoxModSource.Local }
+                    PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count)).notify(project)
+                }
+                is ParadoxModExporter.SqliteBased -> {
+                    val dbPath = gameDataPath?.let { selectedValue.defaultDbPath(it) }
+                    if (dbPath == null) {
+                        PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.exporter.error")).notify(project)
+                        return@doFinalStep
+                    }
+                    selectedValue.exportToDatabase(dbPath, gameType.id, "IronyModManager", mods)
+                    val count = mods.size
+                    PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.exporter.info", dbPath.fileName.toString(), count)).notify(project)
+                }
+            }
         } catch (_: Exception) {
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.exporter.error")).notify(project)
         }
     }
 }
+

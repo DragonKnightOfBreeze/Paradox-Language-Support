@@ -258,11 +258,13 @@
     <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.ParadoxDlcLoadImporter"/>
+    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Importer"/>
     <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Importer"/>
     <!--<modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherImporter"/>-->
     <!--<modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherBetaImporter"/>-->
 
     <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Exporter"/>
     <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Exporter"/>
+    <!--<modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherSqliteExporter"/>-->
   </extensions>
 </idea-plugin>
