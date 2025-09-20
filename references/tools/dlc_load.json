@@ -1,9 +1,7 @@
 {
   "disabled_dlcs": [],
   "enabled_mods": [
-    "mod/ugc_1995601384.mod",
     "mod/ugc_727000451.mod",
-    "mod/ugc_1998204784.mod",
     "mod/ugc_2025131190.mod",
     "mod/ugc_1641807098.mod",
     "mod/ugc_2476102240.mod",
@@ -11,26 +9,23 @@
     "mod/ugc_2284514368.mod",
     "mod/ugc_1740165239.mod",
     "mod/ugc_3241119393.mod",
+    "mod/ugc_1878473679.mod",
+    "mod/ugc_1881017456.mod",
     "mod/ugc_1880071041.mod",
-    "mod/ugc_937289339.mod",
-    "mod/ugc_1887282318.mod",
+    "mod/ugc_937289339 .mod",
     "mod/ugc_2645707091.mod",
     "mod/ugc_1623423360.mod",
     "mod/ugc_1780481482.mod",
     "mod/ugc_1649442597.mod",
     "mod/ugc_1623423504.mod",
-    "mod/ugc_3491116708.mod",
-    "mod/ugc_2976454692.mod",
     "mod/ugc_1688887083.mod",
     "mod/ugc_1595876588.mod",
     "mod/ugc_3256288200.mod",
+    "mod/ugc_734129025.mod",
     "mod/ugc_2131014154.mod",
     "mod/ugc_2812925242.mod",
-    "mod/ugc_3108330591.mod",
     "mod/ugc_2743333016.mod",
-    "mod/ugc_3086143878.mod",
     "mod/ugc_701739734.mod",
-    "mod/ugc_1747995732.mod",
-    "mod/Utopian-Universe.mod"
+    "mod/ugc_1747995732.mod"
   ]
 }

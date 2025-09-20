@@ -1,24 +1,12 @@
 {
   "game": "stellaris",
-  "name": "Real universe",
+  "name": "Real Universe",
   "mods": [
-    {
-      "displayName": "~~Ariphaos Unofficial Patch (4.0)",
-      "enabled": true,
-      "position": 0,
-      "steamId": "1995601384"
-    },
     {
       "displayName": "More Events Mod",
       "enabled": true,
       "position": 1,
       "steamId": "727000451"
-    },
-    {
-      "displayName": "Even More Origins",
-      "enabled": true,
-      "position": 2,
-      "steamId": "1998204784"
     },
     {
       "displayName": "More Origins Mod",
@@ -63,12 +51,6 @@
       "steamId": "3241119393"
     },
     {
-      "displayName": "Planetary Diversity - City Sets",
-      "enabled": false,
-      "position": 10,
-      "steamId": "3142294658"
-    },
-    {
       "displayName": "Amazing Space Battles",
       "enabled": true,
       "position": 11,
@@ -91,18 +73,6 @@
       "enabled": true,
       "position": 14,
       "steamId": "937289339"
-    },
-    {
-      "displayName": "Real Space - System Scale",
-      "enabled": true,
-      "position": 15,
-      "steamId": "1887282318"
-    },
-    {
-      "displayName": "Real Space - Ships in Scaling",
-      "enabled": false,
-      "position": 16,
-      "steamId": "1915620447"
     },
     {
       "displayName": "Real Galaxy",
@@ -133,24 +103,6 @@
       "enabled": true,
       "position": 21,
       "steamId": "1623423504"
-    },
-    {
-      "displayName": "UI Overhaul Dynamic - Planet View Performance Mode",
-      "enabled": true,
-      "position": 22,
-      "steamId": "3491116708"
-    },
-    {
-      "displayName": "Unlimited Fallen Empire Buildings",
-      "enabled": true,
-      "position": 23,
-      "steamId": "3488943898"
-    },
-    {
-      "displayName": "Gray  with animated portrait",
-      "enabled": true,
-      "position": 24,
-      "steamId": "2976454692"
     },
     {
       "displayName": "!!Universal Modifier Patch (4.0.*)",
@@ -189,22 +141,10 @@
       "steamId": "2812925242"
     },
     {
-      "displayName": "MC驻群星汉化",
-      "enabled": true,
-      "position": 31,
-      "steamId": "3108330591"
-    },
-    {
       "displayName": "更好的中文随机名（better Chinese random name）",
       "enabled": true,
       "position": 32,
       "steamId": "2743333016"
-    },
-    {
-      "displayName": "Tradition UI 3.12~3.14",
-      "enabled": true,
-      "position": 33,
-      "steamId": "3086143878"
     },
     {
       "displayName": "Color coded pop status icons",
