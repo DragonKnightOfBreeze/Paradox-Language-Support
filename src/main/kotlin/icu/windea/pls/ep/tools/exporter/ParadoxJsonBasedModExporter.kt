@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.application.edtWriteAction
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.model.ParadoxGameType
@@ -19,9 +18,8 @@ abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
 
     protected suspend fun writeData(filePath: Path, data: Any) {
         withContext(Dispatchers.IO) {
-            edtWriteAction {
-                doWriteData(filePath, data)
-            }
+            // 这里不需要使用 edtWriteAction
+            doWriteData(filePath, data)
         }
     }
 

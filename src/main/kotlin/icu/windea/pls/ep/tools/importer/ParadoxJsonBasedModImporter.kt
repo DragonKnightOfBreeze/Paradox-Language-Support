@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.tools.importer
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.application.readAction
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.model.ParadoxGameType
@@ -19,9 +18,8 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     protected suspend fun <T> readData(filePath: Path, type: Class<T>): T {
         return withContext(Dispatchers.IO) {
-            readAction {
-                doReadData(filePath, type)
-            }
+            // 这里不需要使用 readAction
+            doReadData(filePath, type)
         }
     }
 

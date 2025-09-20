@@ -110,7 +110,7 @@ class DataModelsLocalValidationTest {
         val db = Database.connect("jdbc:sqlite:${sqlite!!.toAbsolutePath()}", driver = "org.sqlite.JDBC")
 
         // 版本探测：是否包含 V4 迁移（position 改为 INTEGER）
-        val isV4Plus = db.sequenceOf(KnexMigrations).firstOrNull { KnexMigrations.name eq Constants.sqlV4Id } != null
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
         println("sqlite -> v4Plus=${isV4Plus}")
 
         val playsets = db.sequenceOf(Playsets).toList()

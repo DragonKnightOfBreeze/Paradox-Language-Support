@@ -61,7 +61,7 @@ data class LauncherJsonV2(
         @JsonProperty("pdxId")
         val pdxId: String? = null,
         @JsonProperty("position")
-        val position: String, // (i + 1 + 4096).toString(16).padStart(10, '0')
+        val position: String, // (i + 1 + 4096).toString(10).padStart(10, '0')
         @JsonProperty("steamId")
         val steamId: String? = null,
     )

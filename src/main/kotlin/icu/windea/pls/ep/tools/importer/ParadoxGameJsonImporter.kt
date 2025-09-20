@@ -4,6 +4,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
@@ -38,13 +39,13 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
         }
 
         val newModInfos = mutableListOf<ParadoxModInfo>()
-        val existingModDirectories = modSetInfo.mods.mapTo(mutableSetOf()) { it.modDirectory }
+        val existingModDirectories = modSetInfo.mods.mapNotNullTo(mutableSetOf()) { it.modDirectory?.orNull() }
 
         when {
             ParadoxMetadataManager.useDescriptorMod(gameType) -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath)
+                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?:  continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     newModInfos.add(ParadoxModInfo(modDirectory))
                 }
@@ -54,7 +55,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
             else -> {
                 val data = readData(filePath, ContentLoadJson::class.java)
                 for (item in data.enabledMods) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath)
+                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     newModInfos.add(ParadoxModInfo(modDirectory))
                 }

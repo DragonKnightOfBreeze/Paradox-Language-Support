@@ -42,8 +42,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
         // 确定 position 字段语义：
         // - V2：TEXT，通常使用 (index + 4096 + 1) 的十进制字符串，长度 10，前导 0 填充
         // - V4+：INTEGER，从 0 开始的整数
-        val isV4Plus = db.sequenceOf(KnexMigrations)
-            .firstOrNull { KnexMigrations.name eq Constants.sqlV4Id } != null
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
 
         val playsetName = modSetInfo.name.ifBlank { Constants.defaultModSetName }
 

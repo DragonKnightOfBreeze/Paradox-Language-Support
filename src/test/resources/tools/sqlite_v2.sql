@@ -1,17 +1,17 @@
--- Minimal V4+ schema for launcher database used in tests
+-- Minimal V2 schema for launcher database used in tests (position stored as TEXT)
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
--- knex_migrations records include the V4 migration name to mark INTEGER position
+-- knex_migrations without V4 marker
 CREATE TABLE IF NOT EXISTS knex_migrations (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   batch INTEGER,
   migration_time TEXT
 );
-INSERT INTO knex_migrations(name, batch, migration_time) VALUES ('modifyPositionToInteger', 1, '2024-01-01 00:00:00');
+INSERT INTO knex_migrations(name, batch, migration_time) VALUES ('initial', 1, '2020-01-01 00:00:00');
 
--- playsets table (strings as IDs in newer schemas)
+-- playsets table
 CREATE TABLE IF NOT EXISTS playsets (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -34,7 +34,7 @@ INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_uiod', '16234233
 INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_pd',   '819148835',  'Planetary Diversity', 'steam');
 INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_rs4',  '937289339', 'Real Space 4.0', 'steam');
 
--- playsets_mods table (position INTEGER in real V4, but we store as text and keep numeric string for test)
+-- playsets_mods table (position TEXT with left-padded decimals)
 CREATE TABLE IF NOT EXISTS playsets_mods (
   playsetId TEXT NOT NULL,
   modId TEXT NOT NULL,
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS playsets_mods (
   position TEXT,
   PRIMARY KEY (playsetId, modId)
 );
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_uiod', 1, '0');
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_pd',   1, '1');
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_rs4',  1, '2');
+INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_uiod', 1, '0000004097');
+INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_pd',   1, '0000004098');
+INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_rs4',  1, '0000004099');
 
 COMMIT;

@@ -1,10 +1,12 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.lang.util.ParadoxMetadataManager
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.filter
+import org.ktorm.entity.find
 import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
@@ -31,8 +33,11 @@ class DataModelsValidationTest {
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
-        // V2: position 为字符串，且非空
-        assert(model.mods.all { it.position.isNotEmpty() })
+        // V2: position 为左侧补零的十进制字符串，长度通常为 10
+        assert(model.mods.all { it.position.length == 10 && it.position.all { ch -> ch.isDigit() } })
+        // 解析为数值后应为连续 4097, 4098, 4099
+        val positions = model.mods.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
+        assert(positions == listOf(4097, 4098, 4099))
     }
 
     @Test
@@ -75,7 +80,7 @@ class DataModelsValidationTest {
         }
 
         // V4+ 判定
-        val isV4Plus = db.sequenceOf(KnexMigrations).firstOrNull { KnexMigrations.name eq Constants.sqlV4Id } != null
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
         assert(isV4Plus)
 
         // 读取一个激活的播放集
@@ -95,6 +100,51 @@ class DataModelsValidationTest {
             assert(mod != null)
             val p = m.position?.trim()
             assert(!p.isNullOrEmpty() && p.all { it.isDigit() })
+        }
+    }
+
+    @Test
+    fun sqliteV2_fromResources() {
+        // 将 SQL 脚本加载并在临时 DB 中执行
+        val sqlIns = javaClass.getResourceAsStream("/tools/sqlite_v2.sql")
+        requireNotNull(sqlIns) { "Missing resource: /tools/sqlite_v2.sql" }
+        val sql = sqlIns.reader(StandardCharsets.UTF_8).readText()
+
+        val tmpDir = Path.of("build", "tmp", "test-db").also { if (!it.exists()) it.createDirectories() }
+        val dbFile = tmpDir.resolve("launcher_v2_test_${UUID.randomUUID()}.sqlite")
+
+        val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
+        val stmts = sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }
+        db.useConnection { conn ->
+            conn.autoCommit = false
+            conn.createStatement().use { s ->
+                for (stmt in stmts) {
+                    val upper = stmt.uppercase(Locale.ROOT)
+                    if (upper == "BEGIN TRANSACTION" || upper == "BEGIN") continue
+                    if (upper == "COMMIT") continue
+                    s.execute(stmt)
+                }
+            }
+            conn.commit()
+            conn.autoCommit = true
+        }
+
+        // V4+ 判定应为 false
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
+        assert(!isV4Plus)
+
+        val playset = db.sequenceOf(Playsets).firstOrNull { Playsets.isActive eq true }
+        assert(playset != null)
+
+        val mappings = db.sequenceOf(PlaysetsMods).filter { PlaysetsMods.playsetId eq playset!!.id }.toList()
+        assert(mappings.size == 3)
+
+        // position 为左侧补零的十进制字符串，通常长度为 10
+        val parsed = mappings.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
+        assert(parsed == listOf(4097, 4098, 4099))
+        mappings.forEach { m ->
+            val p = m.position ?: ""
+            assert(p.length == 10 && p.all { it.isDigit() })
         }
     }
 }
