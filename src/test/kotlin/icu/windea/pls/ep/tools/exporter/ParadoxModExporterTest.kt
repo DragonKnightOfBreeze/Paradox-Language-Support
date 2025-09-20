@@ -10,6 +10,7 @@ import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.PlsDataProvider
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.AssumePredicates
@@ -59,9 +60,9 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     private fun buildModSetInfoFromWorkshop(): ParadoxModSetInfo {
         val workshop = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
             ?: throw AssertionError("Steam workshop path not found for ${gameType.title}")
-        val mods = remoteIds.mapNotNull { id ->
-            val dir = ParadoxMetadataManager.getModDirectoryFromSteamId(id, workshop)
-            if (dir == null) null else ParadoxModInfo(modDirectory = dir, enabled = true, remoteId = id)
+        val mods = remoteIds.mapNotNull f@{ id ->
+            val dir = ParadoxMetadataManager.getModDirectoryFromSteamId(id, workshop) ?: return@f null
+            ParadoxModInfo(modDirectory = dir, enabled = true, remoteId = id, source = ParadoxModSource.Steam)
         }
         assertTrue("None of the 3 sample mods are installed in workshop.", mods.isNotEmpty())
         return ParadoxModSetInfo(gameType, "ExporterTest", mods)
@@ -114,9 +115,9 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        val playset = db.sequenceOf(Playsets).firstOrNull { Playsets.isActive eq true }
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
         assertNotNull(playset)
-        val mappings = db.sequenceOf(PlaysetsMods).filter { PlaysetsMods.playsetId eq playset!!.id }.toList()
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
         assertTrue(mappings.isNotEmpty())
         // 新建 DB 没有 V4 迁移标记，应按 V2 写出，position 为 10 位数字字符串
         assertTrue(mappings.all { it.position != null && it.position!!.length == 10 && it.position!!.all(Char::isDigit) })

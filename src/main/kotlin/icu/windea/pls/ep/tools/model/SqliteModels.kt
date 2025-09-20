@@ -3,13 +3,15 @@ package icu.windea.pls.ep.tools.model
 import org.ktorm.entity.Entity
 
 /**
- * 官方启动器数据库表：schema_migrations。
+ * `knex_migrations` 表的实体类。
  *
  * 用于标识数据库 schema 版本，例如是否包含 V4（position 字段由 TEXT 变为 INTEGER）。
  * 参见：IronyModManager 的相关导入/导出实现（Schema migrations 检测）。
+ *
+ * @see KnexMigrations
  */
-interface SchemaMigrationEntity : Entity<SchemaMigrationEntity> {
-    companion object : Entity.Factory<SchemaMigrationEntity>()
+interface KnexMigrationEntity : Entity<KnexMigrationEntity> {
+    companion object : Entity.Factory<KnexMigrationEntity>()
 
     var id: Int
     var name: String
@@ -18,12 +20,9 @@ interface SchemaMigrationEntity : Entity<SchemaMigrationEntity> {
 }
 
 /**
- * 官方启动器数据库表：playsets（播放集）。
+ * `playsets` 表的实体类。播放集信息。
  *
- * 关键字段：
- * - id：主键
- * - name：播放集名称
- * - isActive：是否为当前激活的播放集
+ * @see Playsets
  */
 interface PlaysetEntity : Entity<PlaysetEntity> {
     companion object : Entity.Factory<PlaysetEntity>()
@@ -36,12 +35,9 @@ interface PlaysetEntity : Entity<PlaysetEntity> {
 }
 
 /**
- * 官方启动器数据库表：mods（模组）。
+ * `mods` 表的实体类。模组信息。
  *
- * 关键字段：
- * - id：主键
- * - displayName：显示名称
- * - steamId / pdxId：远端 ID（优先使用 steamId）
+ * @see Mods
  */
 interface ModEntity : Entity<ModEntity> {
     companion object : Entity.Factory<ModEntity>()
@@ -57,7 +53,7 @@ interface ModEntity : Entity<ModEntity> {
 }
 
 /**
- * 官方启动器数据库表：playset_mods（播放集-模组 映射）。
+ * `playset_mods` 表的实体类。播放集与模组信息的映射。
  *
  * 关键字段：
  * - playsetId：播放集 ID
@@ -65,6 +61,8 @@ interface ModEntity : Entity<ModEntity> {
  * - position：在播放集中的顺序
  *   - V2：TEXT（十进制字符串，常见为左侧补零）
  *   - V4+：INTEGER（0 起步）
+ *
+ * @see PlaysetsMods
  */
 interface PlaysetsModEntity : Entity<PlaysetsModEntity> {
     companion object : Entity.Factory<PlaysetsModEntity>()
@@ -74,4 +72,3 @@ interface PlaysetsModEntity : Entity<PlaysetsModEntity> {
     val enabled: Boolean
     var position: String?
 }
-

@@ -45,7 +45,7 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
             ParadoxMetadataManager.useDescriptorMod(gameType) -> {
                 val data = readData(filePath, DlcLoadJson::class.java)
                 for (item in data.enabledMods) {
-                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?:  continue
+                    val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath) ?: continue
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
                     newModInfos.add(ParadoxModInfo(modDirectory))
                 }

@@ -8,6 +8,8 @@ import icu.windea.pls.ep.tools.model.Constants
  *
  * 数据文件默认为游戏数据目录下的 `launcher-v2_openbeta.sqlite`。
  *
+ * 导出时会排除本地源的模组。
+ *
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxLauncherBetaDbExporter : ParadoxLauncherDbExporter() {

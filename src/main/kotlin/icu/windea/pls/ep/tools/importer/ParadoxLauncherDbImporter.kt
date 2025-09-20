@@ -51,7 +51,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
         // 读取激活的播放集（playsets.isActive=1）。若不存在，则退回任意一个。
         val playsets = db.sequenceOf(Playsets)
-        val activePlayset: PlaysetEntity? = playsets.filter { Playsets.isActive eq true }.firstOrNull()
+        val activePlayset: PlaysetEntity? = playsets.filter { it.isActive eq true }.firstOrNull()
             ?: playsets.firstOrNull()
 
         if (activePlayset == null) {
@@ -62,7 +62,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
         // 读取播放集中的模组及其顺序。注意：不同版本 position 可能为 TEXT（V2）或 INTEGER（V4+），这里以字符串形式读取并解析为数值排序。
         val mappings = db.sequenceOf(PlaysetsMods)
-            .filter { PlaysetsMods.playsetId eq activePlayset.id }
+            .filter { it.playsetId eq activePlayset.id }
             .toList()
             // 统一按数值顺序：V2 字符串左零 -> 去零转 Int；V4+ INTEGER -> 转字符串再转 Int
             .sortedBy { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
@@ -72,7 +72,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
         val modsSeq = db.sequenceOf(Mods)
         for (pm in mappings) {
-            val mod: ModEntity = modsSeq.find { Mods.id eq pm.modId } ?: continue
+            val mod: ModEntity = modsSeq.find { it.id eq pm.modId } ?: continue
             // 仅支持通过 Steam workshop 路径解析（与 Irony 行为一致）；
             // pdxId 对应 Paradox Mods（目录结构不同），此处暂不处理。
             val remoteId = mod.steamId

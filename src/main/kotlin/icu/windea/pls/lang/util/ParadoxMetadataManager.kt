@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
@@ -16,6 +17,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLauncherSettingsInfo
 import icu.windea.pls.model.ParadoxModDescriptorInfo
 import icu.windea.pls.model.ParadoxModMetadataInfo
+import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.stringValue
 import java.nio.file.Files
@@ -112,7 +114,7 @@ object ParadoxMetadataManager {
         return ObjectMappers.jsonMapper.readValue(file.inputStream)
     }
 
-    // Descriptors
+    // Get From Metadata
 
     fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
         // TODO 2.0.5+ 提取 ModDescriptorType，避免硬编码
@@ -144,29 +146,12 @@ object ParadoxMetadataManager {
     }
 
     /**
-     * 从模组目录解析 steam 的 `remote_file_id`（descriptor.mod 中的 `remote_file_id`）。
-     *
-     * 失败时返回 null。
+     * 从模组目录获取模组信息，从而统一获取各种需要进一步获取的信息。
      */
-    fun getRemoteFileIdFromModDir(modDir: String?): String? {
-        if (modDir.isNullOrEmpty()) return null
-        val vfile = modDir.toVirtualFile() ?: return null
-        val descriptor = getModDescriptorFile(vfile) ?: return null
-        val info = getModDescriptorInfo(descriptor) ?: return null
-        return info.remoteFileId
-    }
-
-    /**
-     * 尝试基于模组目录下的 descriptor.mod 解析显示名称（displayName）。
-     *
-     * 若目录或文件不存在，或解析失败，返回 null。
-     */
-    fun getModDisplayNameFromDescriptor(modDir: String?): String? {
-        if (modDir.isNullOrEmpty()) return null
-        val vfile = modDir.toVirtualFile() ?: return null
-        val descriptor = getModDescriptorFile(vfile) ?: return null
-        val info = getModDescriptorInfo(descriptor) ?: return null
-        return info.name
+    fun getModInfoFromModDirectory(modDirectory: String?): ParadoxRootInfo.Mod? {
+        if (modDirectory.isNullOrEmpty()) return null
+        val file = modDirectory.toVirtualFile() ?: return null
+        return file.rootInfo?.castOrNull()
     }
 
     // Models
@@ -193,30 +178,43 @@ object ParadoxMetadataManager {
      * 自动探测官方启动器播放列表（playlist.json）的 position 字段类型（Path 版本）。
      */
     fun detectLauncherPlaylistPositionIsInt(path: Path): Boolean? {
-        val vfile = path.toVirtualFile(true) ?: return null
-        return detectLauncherPlaylistPositionIsInt(vfile)
+        val file = path.toVirtualFile(true) ?: return null
+        return detectLauncherPlaylistPositionIsInt(file)
     }
 
     /**
      * 将 V2/V4+ 的 position 统一解析为可比较的数值。
      *
-     * - V2：字符串（通常左侧补零），会先 `trimStart('0')` 再 `toIntOrNull()`；
+     * - V2：字符串（通常左侧补零，部分版本使用十六进制 10 位小写，如 0x1001 => "0000001001"）。
+     *   同时兼容十进制与十六进制：若包含 a-f/A-F，则按 16 进制解析，否则按 10 进制解析。
      * - V4+：数据库字段为 INTEGER，JDBC 读取为字符串时同样可以正确解析；
      * - 失败时返回 `Int.MAX_VALUE`，用于排序时落在末尾。
      */
     fun parseLauncherV2PositionToInt(pos: String?): Int {
-        if (pos.isNullOrEmpty()) return Int.MAX_VALUE
-        return pos.trim().trimStart('0').toIntOrNull() ?: Int.MAX_VALUE
+        if (pos.isNullOrBlank()) return Int.MAX_VALUE
+        val body = pos.trim().trimStart('0').ifEmpty { "0" }
+        val dec = body.toIntOrNull(10)
+        val hex = body.toIntOrNull(16)
+        // V2 期望的序列从 4097 开始（index + 4096 + 1）
+        val min = 4097
+        val decOk = dec != null && dec >= min
+        val hexOk = hex != null && hex >= min
+        return when {
+            decOk && hexOk -> dec // 两者都可行，优先认为来源是十进制（如 0000004097）
+            decOk -> dec
+            hexOk -> hex // 十进制不合理（如 0000001001 -> 1001），则采用十六进制（0x1001 -> 4097）
+            else -> dec ?: hex ?: Int.MAX_VALUE
+        }
     }
 
     /**
      * 根据版本生成 position 值。
      *
-     * - V2：生成十位、左侧补零的十进制字符串 `(index + 4097)`；
+     * - V2：生成十位、左侧补零的十六进制字符串 `(index + 4097)`，小写：`toString(16).padStart(10, '0')`；
      * - V4+：使用从 0 开始的整数，转为字符串。
      */
     fun formatLauncherPosition(index: Int, isV4Plus: Boolean): String {
-        return if (isV4Plus) index.toString() else (index + 1 + 4096).toString(10).padStart(10, '0')
+        return if (isV4Plus) index.toString() else (index + 1 + 4096).toString(16).padStart(10, '0')
     }
 
     /**

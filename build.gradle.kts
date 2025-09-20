@@ -92,7 +92,7 @@ dependencies {
     // 持久化
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    implementation("org.xerial:sqlite-jdbc:3.50.3.0")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.50.3.0")
     // ktorm - https://www.ktorm.org/
     implementation("org.ktorm:ktorm-core:4.1.1")
     implementation("org.ktorm:ktorm-support-sqlite:4.1.1")

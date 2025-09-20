@@ -9,9 +9,9 @@ import org.ktorm.schema.text
 import org.ktorm.schema.varchar
 
 /**
- * `knex_migrations` 表。
+ * 官方启动器的数据库文件中的 `knex_migrations` 表。
  */
-object KnexMigrations : Table<SchemaMigrationEntity>(tableName = "knex_migrations") {
+object KnexMigrations : Table<KnexMigrationEntity>(tableName = "knex_migrations") {
     val id = int("id").primaryKey().bindTo { it.id }
     val name = varchar("name").bindTo { it.name }
     // val batch = int("batch").bindTo { it.batch }
@@ -19,7 +19,7 @@ object KnexMigrations : Table<SchemaMigrationEntity>(tableName = "knex_migration
 }
 
 /**
- * `playsets` 表。
+ * 官方启动器的数据库文件中的 `playsets` 表。
  */
 object Playsets : Table<PlaysetEntity>(tableName = "playsets") {
     val id = varchar("id").primaryKey().bindTo { it.id }
@@ -30,7 +30,7 @@ object Playsets : Table<PlaysetEntity>(tableName = "playsets") {
 }
 
 /**
- * `mods` 表。
+ * 官方启动器的数据库文件中的 `mods` 表。
  */
 object Mods : Table<ModEntity>(tableName = "mods") {
     val id = varchar("id").primaryKey().bindTo { it.id }
@@ -44,9 +44,9 @@ object Mods : Table<ModEntity>(tableName = "mods") {
 }
 
 /**
- * `playsets_mods` 表。
+ * 官方启动器的数据库文件中的 `playsets_mods` 表。
  *
- * 注意：position 在 V2 是 TEXT（字符串），在 V4+ 是 INTEGER。这里统一映射为字符串，
+ * 注意：position 在 V2 是 TEXT（字符串，左侧补零），在 V4+ 是 INTEGER（从 0 开始）。这里统一映射为字符串，
  * 由业务层负责选择写入格式（左侧补零的字符串或整数值的字符串）。
  */
 object PlaysetsMods : Table<PlaysetsModEntity>(tableName = "playsets_mods") {

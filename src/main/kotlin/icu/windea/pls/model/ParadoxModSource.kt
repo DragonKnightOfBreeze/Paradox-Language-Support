@@ -1,15 +1,17 @@
 package icu.windea.pls.model
 
-enum class ParadoxModSource {
-    Local,
-    Steam,
-    Paradox,
+enum class ParadoxModSource(val id: String) {
+    Local("local"),
+    Steam("steam"),
+    Paradox("pdx"),
     ;
+
+    override fun toString(): String = id
 
     companion object {
         @JvmStatic
-        fun resolve(text: String): ParadoxModSource {
-            return entries.firstOrNull { it.name.equals(text, true) } ?: Local
+        fun resolve(id: String): ParadoxModSource {
+            return entries.firstOrNull { it.id == id } ?: Local
         }
     }
 }

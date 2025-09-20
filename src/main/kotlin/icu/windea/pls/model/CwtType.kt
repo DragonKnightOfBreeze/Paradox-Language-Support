@@ -1,8 +1,6 @@
 package icu.windea.pls.model
 
-enum class CwtType(
-    val id: String
-) {
+enum class CwtType(val id: String) {
     Unknown("(unknown)"),
     Boolean("boolean"),
     Int("int"),
@@ -11,7 +9,5 @@ enum class CwtType(
     Block("block"),
     ;
 
-    override fun toString(): String {
-        return id
-    }
+    override fun toString() = id
 }

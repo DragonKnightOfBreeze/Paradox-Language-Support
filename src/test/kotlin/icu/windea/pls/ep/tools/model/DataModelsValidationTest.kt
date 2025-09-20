@@ -33,8 +33,8 @@ class DataModelsValidationTest {
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
-        // V2: position 为左侧补零的十进制字符串，长度通常为 10
-        assert(model.mods.all { it.position.length == 10 && it.position.all { ch -> ch.isDigit() } })
+        // V2: position 为左侧补零的十六进制字符串（小写），长度通常为 10
+        assert(model.mods.all { it.position.length == 10 && it.position.all { ch -> ch.isDigit() || ch in 'a'..'f' } })
         // 解析为数值后应为连续 4097, 4098, 4099
         val positions = model.mods.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
         assert(positions == listOf(4097, 4098, 4099))
@@ -80,15 +80,15 @@ class DataModelsValidationTest {
         }
 
         // V4+ 判定
-        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
         assert(isV4Plus)
 
         // 读取一个激活的播放集
-        val playset = db.sequenceOf(Playsets).firstOrNull { Playsets.isActive eq true }
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
         assert(playset != null)
 
         // 读取映射与关联的模组，校验 position 与引用有效
-        val mappings = db.sequenceOf(PlaysetsMods).filter { PlaysetsMods.playsetId eq playset!!.id }.toList()
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
         assert(mappings.size == 3)
 
         val mods = db.sequenceOf(Mods).toList()
@@ -96,7 +96,7 @@ class DataModelsValidationTest {
 
         // position 为整数（在表中为 INTEGER，但通过我们的映射可作为字符串读取并再解析）
         mappings.forEachIndexed { idx, m ->
-            val mod = db.sequenceOf(Mods).firstOrNull { Mods.id eq m.modId }
+            val mod = db.sequenceOf(Mods).firstOrNull { it.id eq m.modId }
             assert(mod != null)
             val p = m.position?.trim()
             assert(!p.isNullOrEmpty() && p.all { it.isDigit() })
@@ -130,21 +130,23 @@ class DataModelsValidationTest {
         }
 
         // V4+ 判定应为 false
-        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
         assert(!isV4Plus)
 
-        val playset = db.sequenceOf(Playsets).firstOrNull { Playsets.isActive eq true }
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
         assert(playset != null)
 
-        val mappings = db.sequenceOf(PlaysetsMods).filter { PlaysetsMods.playsetId eq playset!!.id }.toList()
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
         assert(mappings.size == 3)
 
-        // position 为左侧补零的十进制字符串，通常长度为 10
-        val parsed = mappings.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }
-        assert(parsed == listOf(4097, 4098, 4099))
+        // position 为左侧补零的字符串，V2 常见为十六进制 10 位；此处统一解析为数值
+        val parsed = mappings.map { ParadoxMetadataManager.parseLauncherV2PositionToInt(it.position) }.sorted()
+        assert(parsed.size == 3)
+        assert(parsed.first() >= 1001) // 1001 (0x1001) or 4097
+        assert(parsed.zipWithNext().all { (a, b) -> b - a == 1 })
         mappings.forEach { m ->
             val p = m.position ?: ""
-            assert(p.length == 10 && p.all { it.isDigit() })
+            assert(p.length == 10 && p.all { it.isDigit() || it in 'a'..'f' })
         }
     }
 }

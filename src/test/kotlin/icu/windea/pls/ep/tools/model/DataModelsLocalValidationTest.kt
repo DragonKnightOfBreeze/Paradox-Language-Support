@@ -110,21 +110,21 @@ class DataModelsLocalValidationTest {
         val db = Database.connect("jdbc:sqlite:${sqlite!!.toAbsolutePath()}", driver = "org.sqlite.JDBC")
 
         // 版本探测：是否包含 V4 迁移（position 改为 INTEGER）
-        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { KnexMigrations.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
         println("sqlite -> v4Plus=${isV4Plus}")
 
         val playsets = db.sequenceOf(Playsets).toList()
         println("sqlite -> playsets.size=${playsets.size}")
 
         // 读取激活的播放集，若无则取任意一个
-        val activeCount = db.sequenceOf(Playsets).filter { Playsets.isActive eq true }.toList().size
+        val activeCount = db.sequenceOf(Playsets).filter { it.isActive eq true }.toList().size
         assert(activeCount <= 1) // 合理情况下仅有一个激活的播放集
-        val active = db.sequenceOf(Playsets).filter { Playsets.isActive eq true }.firstOrNull()
+        val active = db.sequenceOf(Playsets).filter { it.isActive eq true }.firstOrNull()
             ?: playsets.firstOrNull()
         Assume.assumeTrue("Skip: no playset in sqlite", active != null)
 
         // 读取映射并简单验证关联与 position 格式
-        val mappings = db.sequenceOf(PlaysetsMods).filter { PlaysetsMods.playsetId eq active!!.id }.toList()
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq active!!.id }.toList()
         println("sqlite -> mappings.size=${mappings.size}")
 
         // 校验 enabled 标记（V4 架构下通常存在该列，并默认 true）
@@ -134,7 +134,7 @@ class DataModelsLocalValidationTest {
         val sample = mappings.take(10)
         val modsSeq = db.sequenceOf(Mods)
         sample.forEach { m ->
-            val mod = modsSeq.find { Mods.id eq m.modId }
+            val mod = modsSeq.find { it.id eq m.modId }
             assert(mod != null)
             if (isV4Plus) {
                 // V4+：position 应为整数字符串（JDBC 可将 INTEGER 取为字符串）
