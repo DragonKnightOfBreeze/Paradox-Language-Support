@@ -6,6 +6,8 @@ import dev.langchain4j.model.chat.StreamingChatModel
 /**
  * AI 服务提供者（目前不作为 EP）。
  *
+ * 注意：IDE 自身的代理设置会被自动应用，因此插件不用专门配置。
+ *
  * @see ChatModelProviderType
  * @see ChatModelProvider.Options
  */
