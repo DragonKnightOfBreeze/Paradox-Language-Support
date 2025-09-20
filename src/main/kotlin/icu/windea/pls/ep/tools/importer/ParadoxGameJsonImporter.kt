@@ -46,20 +46,20 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item, gameDataDirPath)
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
-                    newModInfos.add(ParadoxModInfo(modDirectory = modDirectory))
+                    newModInfos.add(ParadoxModInfo(modDirectory))
                 }
                 val newModSetInfo = ParadoxModSetInfo(gameType, Constants.defaultModSetName, newModInfos)
-                return ParadoxModImporter.Result(data.enabledMods.size, newModInfos.size, newModSetInfo)
+                return ParadoxModImporter.Result(total = data.enabledMods.size, actualTotal = newModInfos.size, newModSetInfo = newModSetInfo)
             }
             else -> {
                 val data = readData(filePath, ContentLoadJson::class.java)
                 for (item in data.enabledMods) {
                     val modDirectory = ParadoxMetadataManager.getModDirectoryFromModDescriptorPathInGameData(item.path, gameDataDirPath)
                     if (!existingModDirectories.add(modDirectory)) continue // 忽略已有的
-                    newModInfos.add(ParadoxModInfo(modDirectory = modDirectory))
+                    newModInfos.add(ParadoxModInfo(modDirectory))
                 }
                 val newModSetInfo = ParadoxModSetInfo(gameType, Constants.defaultModSetName, newModInfos)
-                return ParadoxModImporter.Result(data.enabledMods.size, newModInfos.size, newModSetInfo)
+                return ParadoxModImporter.Result(total = data.enabledMods.size, actualTotal = newModInfos.size, newModSetInfo = newModSetInfo)
             }
         }
     }

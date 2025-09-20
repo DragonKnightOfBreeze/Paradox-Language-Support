@@ -2,9 +2,14 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.ep.tools.model.Constants
+import icu.windea.pls.ep.tools.model.LauncherJsonV3
+import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 /**
  * 导出模组信息到官方启动器（>= 2021.10）的 JSON 配置文件。
@@ -14,11 +19,6 @@ import java.nio.file.Path
  * 参见：[ParadoxLauncherExporter202110.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter202110.cs)
  */
 class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
-    companion object {
-        private const val playlistsName = "playlists"
-        private const val playlistJsonName = "playlist.json"
-    }
-
     override val text: String = PlsBundle.message("mod.exporter.launcherJson.v3")
 
     // override fun execute(project: Project, table: ParadoxModDependenciesTable) {
@@ -65,18 +65,45 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
     // }
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
-        TODO("Not yet implemented")
+        val gameType = modSetInfo.gameType
+        val mods = modSetInfo.mods.filter { it.enabled }
+
+        val valid = mods.mapNotNull { m ->
+            val remoteId = m.remoteId ?: ParadoxMetadataManager.getRemoteFileIdFromModDir(m.modDirectory) ?: return@mapNotNull null
+            val displayName = m.name ?: ParadoxMetadataManager.getModDisplayNameFromDescriptor(m.modDirectory).orEmpty()
+            remoteId to displayName
+        }
+
+        val playlistName = filePath.fileName.toString().substringBeforeLast('.')
+        val json = LauncherJsonV3(
+            game = gameType.gameId,
+            name = playlistName,
+            mods = valid.mapIndexed { index, (remoteId, displayName) ->
+                LauncherJsonV3.Mod(
+                    displayName = displayName,
+                    enabled = true,
+                    position = index,
+                    steamId = remoteId,
+                    pdxId = null,
+                )
+            }
+        )
+
+        writeData(filePath, json)
+        return ParadoxModExporter.Result(total = mods.size, actualTotal = valid.size)
     }
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {
-        TODO("Not yet implemented")
+        return FileSaverDescriptor(PlsBundle.message("mod.exporter.launcherJson.v3.title"), "", "json")
     }
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
-        TODO("Not yet implemented")
+        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val playlistsDir = gameDataPath.resolve(Constants.playlistsName)
+        return playlistsDir.takeIf { it.exists() } ?: gameDataPath
     }
 
-    override fun getSavedFileName(gameType: ParadoxGameType): String? {
-        TODO("Not yet implemented")
+    override fun getSavedFileName(gameType: ParadoxGameType): String {
+        return Constants.playlistJsonName
     }
 }

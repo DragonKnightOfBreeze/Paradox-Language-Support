@@ -9,7 +9,7 @@ import kotlin.time.measureTime
 
 class RunTigerTest {
     @Before
-    fun before() = AssumePredicates.includeTool()
+    fun before() = AssumePredicates.includeLocalEnv()
 
     @Test
     fun runTiger() {

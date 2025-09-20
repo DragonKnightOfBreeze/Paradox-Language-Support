@@ -17,6 +17,7 @@ object PlsPathConstants {
     private val _userHome = System.getProperty("user.home").toPath()
     private val _data = _userHome.resolve(".pls")
 
+    val userHome = _userHome
     val data by initializer.awaitDirectory(_data)
     val images by initializer.await(_data.resolve("images"))
     val imagesTemp by initializer.await(_data.resolve("images").resolve("_tmp"))

@@ -1,0 +1,9 @@
+{
+  "game": "stellaris",
+  "name": "Test Playlist V2",
+  "mods": [
+    {"displayName": "UI Overhaul Dynamic", "enabled": true, "pdxId": null, "position": "0000004097", "steamId": "1623423360"},
+    {"displayName": "Planetary Diversity", "enabled": true, "pdxId": null, "position": "0000004098", "steamId": "819148835"},
+    {"displayName": "Real Space 4.0", "enabled": true, "pdxId": null, "position": "0000004099", "steamId": "1260739267"}
+  ]
+}

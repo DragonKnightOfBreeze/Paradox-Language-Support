@@ -3,7 +3,10 @@ package icu.windea.pls.ep.tools.exporter
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.normalizePath
 import icu.windea.pls.ep.tools.model.Constants
+import icu.windea.pls.ep.tools.model.ContentLoadJson
+import icu.windea.pls.ep.tools.model.DlcLoadJson
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
@@ -24,8 +27,42 @@ class ParadoxGameJsonExporter : ParadoxJsonBasedModExporter() {
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         val gameType = modSetInfo.gameType
+        val gameDataDirPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
+            ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.gameDataDir0"))
 
-        TODO()
+        val enabledMods = modSetInfo.mods.filter { it.enabled }
+
+        // 构建 "modDirectory -> gameData 相对描述符路径" 的映射，用于尽可能输出准确的描述符路径
+        val descriptorMapping = ParadoxMetadataManager.buildDescriptorMapping(gameDataDirPath)
+
+        // 依据游戏类型选择不同的 JSON 结构
+        return if (ParadoxMetadataManager.useDescriptorMod(gameType)) {
+            // dlc_load.json: enabled_mods 是字符串列表
+            val enabledModPaths = enabledMods.mapNotNull { modInfo ->
+                val modDir = modInfo.modDirectory ?: return@mapNotNull null
+                descriptorMapping[modDir.normalizePath()] ?: modInfo.remoteId?.let { "mod/ugc_${it}.mod" }
+            }
+            val data = DlcLoadJson(
+                disabledDlcs = emptyList(),
+                enabledMods = enabledModPaths,
+            )
+            writeData(filePath, data)
+            ParadoxModExporter.Result(total = enabledMods.size, actualTotal = enabledModPaths.size)
+        } else {
+            // content_load.json: enabledMods 是对象列表，字段为 path
+            val enabledModEntries = enabledMods.mapNotNull { modInfo ->
+                val modDir = modInfo.modDirectory ?: return@mapNotNull null
+                val path = descriptorMapping[modDir.normalizePath()] ?: modInfo.remoteId?.let { "mod/ugc_${it}.mod" }
+                path?.let { ContentLoadJson.EnabledMod(path = it) }
+            }
+            val data = ContentLoadJson(
+                disabledDlcs = emptyList(),
+                enabledMods = enabledModEntries,
+                enabledUgc = emptyList(),
+            )
+            writeData(filePath, data)
+            ParadoxModExporter.Result(total = enabledMods.size, actualTotal = enabledModEntries.size)
+        }
     }
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {

@@ -24,7 +24,6 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.inMainEntry
 import icu.windea.pls.script.ParadoxScriptFileType
 import java.nio.file.Files
 import java.nio.file.Path

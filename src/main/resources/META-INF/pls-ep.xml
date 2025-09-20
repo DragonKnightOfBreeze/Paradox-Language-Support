@@ -258,13 +258,14 @@
     <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxGameJsonImporter"/>
-    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Importer"/>
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherJsonImporter"/>
-    <!--<modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherDbImporter"/>-->
-    <!--<modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherBetaDbImporter"/>-->
+    <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherDbImporter"/>
+    <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherBetaDbImporter"/>
 
+    <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxGameJsonExporter"/>
     <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV2Exporter"/>
     <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV3Exporter"/>
-    <!--<modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherSqliteExporter"/>-->
+    <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherDbExporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherBetaDbExporter"/>
   </extensions>
 </idea-plugin>

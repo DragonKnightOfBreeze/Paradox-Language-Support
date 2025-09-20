@@ -9,6 +9,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
 import icu.windea.pls.core.util.console.CommandType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.PlsPathConstants
 import kotlinx.coroutines.launch
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
@@ -62,7 +63,7 @@ class PlsDataProvider {
             }
             OS.Linux -> {
                 //默认路径（不准确，但是已经足够）
-                Path("~", ".local", "share", "Steam").formatted()
+                PlsPathConstants.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
             }
         }
     }
@@ -84,13 +85,13 @@ class PlsDataProvider {
                 if (fromCommandResult != null) return fromCommandResult
 
                 //默认路径（不准确，可以放在不同库目录下）
-                val steamPath = getSteamPath()?.toString() ?: return null
-                Path(steamPath, "steamapps", "common", gameName).formatted()
+                val steamPath = getSteamPath() ?: return null
+                steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
             }
             OS.Linux -> {
                 //默认路径（不准确，可以放在不同库目录下）
-                val steamPath = getSteamPath()?.toString() ?: return null
-                Path(steamPath, "steamapps", "common", gameName).formatted()
+                val steamPath = getSteamPath() ?: return null
+                steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
             }
         }
     }
@@ -104,8 +105,8 @@ class PlsDataProvider {
 
     private fun doGetSteamWorkshopPath(steamId: String): Path? {
         //不准确，可以放在不同库目录下
-        val steamPath = getSteamPath()?.toString() ?: return null
-        return Path(steamPath, "steamapps", "workshop", "content", steamId).formatted()
+        val steamPath = getSteamPath() ?: return null
+        return steamPath.resolve(Path("steamapps", "workshop", "content", steamId)).formatted()
     }
 
     /**
@@ -118,8 +119,8 @@ class PlsDataProvider {
     private fun doGetGameDataPath(gameName: String): Path? {
         //实际上应当基于launcher-settings.json中的gameDataPath
         return when (OS.value) {
-            OS.Windows -> Path("~", "Documents", "Paradox Interactive", gameName).formatted()
-            OS.Linux -> Path("~", ".local", "share", "Paradox Interactive", gameName).formatted()
+            OS.Windows -> PlsPathConstants.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
+            OS.Linux -> PlsPathConstants.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
     }
 

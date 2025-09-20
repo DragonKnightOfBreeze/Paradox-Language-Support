@@ -1,12 +1,17 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.model
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.util.ObjectMappers
-import icu.windea.pls.model.ParadoxLauncherSettingsInfo
+import icu.windea.pls.lang.PlsDataProvider
+import org.junit.Assume
 import org.junit.Test
+import kotlin.io.path.exists
+import kotlin.io.path.isRegularFile
 
-class ParadoxMetadataTest {
-    val launcherSettingsJson = """
+class ParadoxLauncherSettingsInfoTest {
+    @Test
+    fun readLauncherSettings_fromString() {
+        val launcherSettingsJson = """
 {
   "gameId": "stellaris",
   "version": "Phoenix v4.0.16 (05ae)",
@@ -50,9 +55,28 @@ class ParadoxMetadataTest {
 }
     """.trimIndent()
 
+        val model = ObjectMappers.jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
+        doAssert(model)
+    }
+
     @Test
-    fun parseLauncherSettingsJsonTest() {
-        val result = ObjectMappers.jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
-        println(result)
+    fun readLauncherSettings_fromLocal_ifExists() {
+        val gameDataDir = PlsDataProvider().getGameDataPath(ParadoxGameType.Stellaris.title)
+        Assume.assumeTrue("Skip: gameDataDir not found", gameDataDir != null)
+        gameDataDir!!
+
+        val file1 = gameDataDir.resolve("launcher-settings.json")
+        val file2 = gameDataDir.resolve("launcher/launcher-settings.json")
+        val file = listOf(file1, file2).firstOrNull { it.exists() && it.isRegularFile() }
+        Assume.assumeTrue("Skip: launcher-settings.json not found", file != null)
+
+        val model = ObjectMappers.jsonMapper.readValue(file!!.toFile(), ParadoxLauncherSettingsInfo::class.java)
+        doAssert(model)
+    }
+
+    private fun doAssert(model: ParadoxLauncherSettingsInfo) {
+        // 基本断言：gameId 和路径存在（不必验证有效性）
+        assert(model.gameId.isNotEmpty())
+        println("launcher-settings.json -> gameId=${model.gameId}, version=${model.version}, dataPath=${model.gameDataPath}")
     }
 }
