@@ -2,10 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ContentLoadJson
 import icu.windea.pls.ep.tools.model.DlcLoadJson
@@ -18,10 +16,10 @@ import kotlin.io.path.exists
 import kotlin.io.path.notExists
 
 /**
- * 从游戏数据目录下的 `dlc_load.json` 或 `content_load.json` 导入模组信息。
+ * 从游戏的 JSON 配置文件导入模组信息。
  *
- * 按照游戏使用的模组描述符文件，选用不同的数据文件：
- * - `.metadata/metadata.json`（VIC3）：content_load`.json`
+ * 数据文件默认位于游戏数据目录下，且按照游戏使用的模组描述符文件，选用不同的文件：
+ * - `.metadata/metadata.json`（VIC3）：`content_load.json`
  * - `descriptor.mod`（其他游戏）：`dlc_load.json`
  *
  * 参见：[ParadoxImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxImporter.cs)
@@ -72,13 +70,13 @@ class ParadoxGameJsonImporter : ParadoxJsonBasedModImporter() {
             .withTitle(PlsBundle.message("mod.importer.game.title", jsonFileName))
     }
 
-    override fun getSelectedFile(gameType: ParadoxGameType): VirtualFile? {
+    override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 对应的 JSON 文件，或者游戏数据目录
         val jsonFileName = getJsonFileName(gameType)
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
         val gameJsonPath = gameDataPath.resolve(jsonFileName).takeIf { it.exists() }
-        if (gameJsonPath != null) return gameJsonPath.toVirtualFile()
-        return gameDataPath.toVirtualFile()
+        if (gameJsonPath != null) return gameJsonPath
+        return gameDataPath
     }
 
     private fun getJsonFileName(gameType: ParadoxGameType): String {

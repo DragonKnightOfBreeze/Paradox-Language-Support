@@ -2,7 +2,6 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
@@ -23,6 +22,11 @@ interface ParadoxModImporter {
     val text: String
 
     /**
+     * 检查是否可用。
+     */
+    fun isAvailable(gameType: ParadoxGameType): Boolean
+
+    /**
      * 执行导入操作，从指定路径（[filePath]）的数据文件导入数据到模组集信息（[modSetInfo]）。
      */
     suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): Result
@@ -31,7 +35,7 @@ interface ParadoxModImporter {
     fun createFileChooserDescriptor(gameType: ParadoxGameType): FileChooserDescriptor
 
     /** 得到默认选择的文件。*/
-    fun getSelectedFile(gameType: ParadoxGameType): VirtualFile?
+    fun getSelectedFile(gameType: ParadoxGameType): Path?
 
     /**
      * 导入结果。
@@ -50,5 +54,9 @@ interface ParadoxModImporter {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModImporter>("icu.windea.pls.modImporter")
+
+        fun getAll(gameType: ParadoxGameType): List<ParadoxModImporter> {
+            return EP_NAME.extensionList.filter { it.isAvailable(gameType) }
+        }
     }
 }

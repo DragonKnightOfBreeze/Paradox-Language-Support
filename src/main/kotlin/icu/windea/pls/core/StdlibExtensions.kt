@@ -637,12 +637,6 @@ fun String.toFileUrl() = File(this).toURI().toURL()
 /** 基于类加载器从 classpath 获取资源 URL。*/
 fun String.toClasspathUrl(locationClass: Class<*> = PlsFacade::class.java) = locationClass.getResource(this)!!
 
-/** 反射获取 [Class]。*/
-fun String.toClass() = Class.forName(this)
-
-/** 反射获取 [kotlin.reflect.KClass]。*/
-fun String.toKClass() = Class.forName(this).kotlin
-
 /** 将 URL 转换为 [File]。*/
 fun URL.toFile() = File(this.toURI())
 

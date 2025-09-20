@@ -2,10 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
@@ -18,7 +16,9 @@ import kotlin.io.path.exists
 import kotlin.io.path.notExists
 
 /**
- * 从官方启动器的 JSON 配置文件（如 `playlist.json`）导入模组信息。
+ * 从官方启动器的 JSON 配置文件导入模组信息。
+ *
+ * 数据文件默认位于游戏数据目录的 `playlists` 子目录下，如 `playlist.json`。
  *
  * 首先尝试解析为 V2 版本，如果失败则再解析为 V3 版本。
  *
@@ -76,14 +76,14 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
             .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
     }
 
-    override fun getSelectedFile(gameType: ParadoxGameType): VirtualFile? {
+    override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 游戏数据目录中的 playlists/playlist.json，或者 playlists 目录
         val jsonFileName = getJsonFileName()
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
         val playlistPath = gameDataPath.resolve(Constants.playlistsName).takeIf { it.exists() } ?: return null
         val playlistJsonPath = playlistPath.resolve(jsonFileName).takeIf { it.exists() }
-        if (playlistJsonPath != null) return playlistJsonPath.toVirtualFile()
-        return playlistPath.toVirtualFile()
+        if (playlistJsonPath != null) return playlistJsonPath
+        return playlistPath
     }
 
     private fun getJsonFileName(): String {

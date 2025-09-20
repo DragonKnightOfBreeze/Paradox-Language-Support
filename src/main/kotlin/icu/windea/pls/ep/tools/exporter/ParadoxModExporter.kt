@@ -10,7 +10,7 @@ import javax.swing.Icon
 /**
  * 模组导出器。
  *
- * （目前）用于在游戏或模组设置的对话框中，从模组依赖列表导出模组信息各种数据文件。
+ * （目前）用于在游戏或模组设置的对话框中，从模组依赖列表导出模组信息到各种数据文件。
  *
  * @property icon 用于 UI 展示的图标。
  * @property text 用于 UI 展示的文本。
@@ -22,6 +22,11 @@ interface ParadoxModExporter {
     val text: String
 
     /**
+     * 检查是否可用。
+     */
+    fun isAvailable(gameType: ParadoxGameType): Boolean
+
+    /**
      * 执行导出操作，将模组集信息（[modSetInfo]）导出到指定路径（[filePath]）的数据文件。
      */
     suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): Result
@@ -31,10 +36,10 @@ interface ParadoxModExporter {
      */
     fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor
 
-    /** 得到要保存到的目录。*/
+    /** 得到默认要保存到的目录。*/
     fun getSavedBaseDir(gameType: ParadoxGameType): Path?
 
-    /** 得到要保存到的文件名。*/
+    /** 得到默认要保存到的文件名。*/
     fun getSavedFileName(gameType: ParadoxGameType): String?
 
     /**
@@ -52,5 +57,9 @@ interface ParadoxModExporter {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxModExporter>("icu.windea.pls.modExporter")
+
+        fun getAll(gameType: ParadoxGameType): List<ParadoxModExporter> {
+            return EP_NAME.extensionList.filter { it.isAvailable(gameType) }
+        }
     }
 }

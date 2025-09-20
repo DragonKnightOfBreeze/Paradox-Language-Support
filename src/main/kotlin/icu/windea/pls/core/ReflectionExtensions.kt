@@ -1,10 +1,22 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.core
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+
+/**
+ * 判断当前类名是否存在于类路径中。
+ */
+fun String.isClassPresent(): Boolean = runCatching { Class.forName(this) }.getOrNull() != null
+
+/** 通过当前类名获取 [Class]。*/
+fun String.toClass(): Class<*> = Class.forName(this)
+
+/** 通过当前类名获取 [KClass]。*/
+fun String.toKClass(): KClass<out Any> = Class.forName(this).kotlin
 
 /**
  * 判断函数是否为属性 Getter。

@@ -7,9 +7,11 @@ import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 
 /**
- * 导出模组配置到启动器JSON配置文件。（< 2021.10）
+ * 导出模组信息到官方启动器（< 2021.10） JSON 配置文件。
  *
- *  See: [ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
+ * 数据文件默认位于游戏数据目录的 `playlists` 子目录下，如 `playlist.json`。
+ *
+ * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
 class ParadoxLauncherJsonV2Exporter : ParadoxJsonBasedModExporter() {
     companion object {

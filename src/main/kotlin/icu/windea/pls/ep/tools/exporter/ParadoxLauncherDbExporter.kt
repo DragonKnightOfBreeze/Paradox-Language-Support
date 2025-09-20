@@ -8,16 +8,14 @@ import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 
 /**
- * 导出模组信息到官方启动器的数据库文件（即游戏数据目录下的 `launcher-v2.sqlite`）。
+ * 导出模组信息到官方启动器的数据库文件。
+ *
+ * 数据文件默认为游戏数据目录下的 `launcher-v2.sqlite`。
  *
  * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
 open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
     override val text: String = PlsBundle.message("mod.exporter.launcher")
-
-    override fun getJsonFileName(gameType: ParadoxGameType): String {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModExporter.Result {
         TODO("Not yet implemented")

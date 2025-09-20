@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.application.readAction
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
@@ -13,6 +14,8 @@ import java.nio.file.Path
  */
 abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
     override val icon = AllIcons.FileTypes.Json
+
+    override fun isAvailable(gameType: ParadoxGameType) = true
 
     protected suspend fun <T> readData(filePath: Path, type: Class<T>): T {
         return withContext(Dispatchers.IO) {

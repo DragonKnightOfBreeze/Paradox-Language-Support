@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.tools.importer
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.model.ParadoxGameType
@@ -9,14 +8,14 @@ import icu.windea.pls.model.tools.ParadoxModSetInfo
 import java.nio.file.Path
 
 /**
- * 从官方启动器的数据库文件（即游戏数据目录下的 `launcher-v2.sqlite`）导入模组信息。
+ * 从官方启动器的数据库文件导入模组信息。
+ *
+ * 数据文件默认为游戏数据目录下的 `launcher-v2.sqlite`。
  *
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
     override val text: String = PlsBundle.message("mod.importer.launcher")
-
-    // TODO DO NOT implement this feature since sqlite jar is too large (12M+)
 
     // override fun execute(project: Project, table: ParadoxModDependenciesTable) {
     //     val settings = table.model.settings
@@ -59,7 +58,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
         TODO("Not yet implemented")
     }
 
-    override fun getSelectedFile(gameType: ParadoxGameType): VirtualFile? {
+    override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         TODO("Not yet implemented")
     }
 

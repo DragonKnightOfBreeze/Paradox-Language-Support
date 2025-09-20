@@ -20,12 +20,11 @@ import kotlinx.coroutines.launch
 
 class ParadoxModDependenciesExportPopup(
     private val project: Project,
-    private val table: ParadoxModDependenciesTable
-) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *getValues()) {
+    private val table: ParadoxModDependenciesTable,
+    modExporters: List<ParadoxModExporter> = ParadoxModExporter.getAll(table.model.settings.finalGameType),
+) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *modExporters.toTypedArray()) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
-
-        private fun getValues() = ParadoxModExporter.EP_NAME.extensions
 
         private val logger = logger<ParadoxModDependenciesExportPopup>()
     }

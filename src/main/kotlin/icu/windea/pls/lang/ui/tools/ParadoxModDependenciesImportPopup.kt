@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
@@ -21,12 +22,11 @@ import kotlinx.coroutines.launch
 
 class ParadoxModDependenciesImportPopup(
     private val project: Project,
-    private val table: ParadoxModDependenciesTable
-) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *getValues()) {
+    private val table: ParadoxModDependenciesTable,
+    modImporters: List<ParadoxModImporter> = ParadoxModImporter.getAll(table.model.settings.finalGameType),
+) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *modImporters.toTypedArray()) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
-
-        private fun getValues() = ParadoxModImporter.EP_NAME.extensions
 
         private val logger = logger<ParadoxModDependenciesImportPopup>()
     }
@@ -42,7 +42,7 @@ class ParadoxModDependenciesImportPopup(
     private fun execute(modImporter: ParadoxModImporter) {
         val settings = table.model.settings
         val gameType = settings.finalGameType
-        val selected = modImporter.getSelectedFile(gameType)
+        val selected = modImporter.getSelectedFile(gameType)?.toVirtualFile()
         val descriptor = modImporter.createFileChooserDescriptor(gameType)
             .apply { putUserData(PlsDataKeys.gameType, gameType) }
         FileChooser.chooseFile(descriptor, project, table, selected) { file ->
