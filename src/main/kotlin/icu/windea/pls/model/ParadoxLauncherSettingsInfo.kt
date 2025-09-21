@@ -1,5 +1,8 @@
 package icu.windea.pls.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ParadoxLauncherSettingsInfo(
     val gameId: String,
     val version: String? = null,

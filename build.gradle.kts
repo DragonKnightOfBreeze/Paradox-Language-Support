@@ -52,6 +52,10 @@ dependencies {
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
+    // Jackson (JSON) - https://github.com/FasterXML/jackson
+    // implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
+    // implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
+
     // Caffeine - https://github.com/ben-manes/caffeine
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.2") {
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
@@ -94,8 +98,12 @@ dependencies {
     // sqlite - https://github.com/xerial/sqlite-jdbc
     runtimeOnly("org.xerial:sqlite-jdbc:3.50.3.0")
     // ktorm - https://www.ktorm.org/
-    implementation("org.ktorm:ktorm-core:4.1.1")
-    implementation("org.ktorm:ktorm-support-sqlite:4.1.1")
+    implementation("org.ktorm:ktorm-core:4.1.1") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
+    implementation("org.ktorm:ktorm-support-sqlite:4.1.1") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
 
     compileOnly("com.google.errorprone:error_prone_annotations:2.41.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
