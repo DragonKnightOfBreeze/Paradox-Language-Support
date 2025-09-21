@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.markers.script
 
+import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
@@ -9,6 +10,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -57,10 +59,10 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
-        // NavigateAction.setNavigateAction(
-        // 	lineMarkerInfo,
-        // 	PlsBundle.message("script.gutterIcon.relatedLocalisations.action"),
-        // 	PlsActions.GotoRelatedLocalisations
-        // )
+        NavigateAction.setNavigateAction(
+        	lineMarkerInfo,
+        	PlsBundle.message("script.gutterIcon.relatedLocalisations.action"),
+        	PlsActions.GotoRelatedLocalisations
+        )
     }
 }

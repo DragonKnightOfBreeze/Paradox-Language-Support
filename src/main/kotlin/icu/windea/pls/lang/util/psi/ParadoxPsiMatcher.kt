@@ -2,14 +2,15 @@ package icu.windea.pls.lang.util.psi
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -26,7 +27,7 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxScriptScriptedVariable)
         }
-        return element is ParadoxScriptScriptedVariable
+        return element is ParadoxScriptScriptedVariable && element.name?.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
@@ -34,7 +35,7 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxScriptDefinitionElement)
         }
-        return element is ParadoxScriptDefinitionElement
+        return element is ParadoxScriptDefinitionElement // 定义名可以为空（即匿名）
     }
 
     @OptIn(ExperimentalContracts::class)
@@ -42,7 +43,7 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxLocalisationProperty)
         }
-        return element is ParadoxLocalisationProperty
+        return element is ParadoxLocalisationProperty && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
@@ -50,7 +51,7 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxComplexEnumValueElement)
         }
-        return element is ParadoxComplexEnumValueElement
+        return element is ParadoxComplexEnumValueElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
@@ -58,7 +59,7 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxDynamicValueElement)
         }
-        return element is ParadoxDynamicValueElement
+        return element is ParadoxDynamicValueElement && element.name.orNull() != null
     }
 
     @OptIn(ExperimentalContracts::class)
@@ -66,7 +67,15 @@ object ParadoxPsiMatcher {
         contract {
             returns(true) implies (element is ParadoxParameterElement)
         }
-        return element is ParadoxScriptParameter
+        return element is ParadoxParameterElement && element.name.orNull() != null
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isLocalisationParameterElement(element: PsiElement): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxLocalisationParameterElement)
+        }
+        return element is ParadoxLocalisationParameterElement && element.name.orNull() != null
     }
 
     // endregion

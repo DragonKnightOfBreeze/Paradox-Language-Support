@@ -45,9 +45,9 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
         val element = findElement(file, offset)
         val isEnabled = when {
             element == null -> false
+            element !is ParadoxScriptStringExpressionElement -> false
             element.isDefinitionRootKeyOrName() -> true
-            element is ParadoxScriptStringExpressionElement -> ParadoxModifierManager.resolveModifier(element) != null
-            else -> false
+            else -> ParadoxModifierManager.resolveModifier(element) != null
         }
         presentation.isEnabled = isEnabled
     }
