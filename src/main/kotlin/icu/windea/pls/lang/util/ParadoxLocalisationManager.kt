@@ -6,7 +6,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.relatedLocalisationPatterns
-import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
@@ -16,8 +15,10 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -25,6 +26,7 @@ import icu.windea.pls.localisation.psi.greenStub
 import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 用于处理本地化信息。
@@ -72,6 +74,18 @@ object ParadoxLocalisationManager {
         val fileName = file.name
         if (fileName.startsWith("name_system_")) return true // e.g., name_system_l_english.yml
         return false
+    }
+
+    fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
+        val name = element.name.orNull() ?: return emptyList()
+        val project = element.project
+        val gameType = selectGameType(element)
+        if (gameType == null) return emptyList()
+        val selector = selector(project, element).scriptedVariable().contextSensitive()
+        ProgressManager.checkCanceled()
+        // search for all scripted variable with same name
+        val result = ParadoxScriptedVariableSearch.search(name, selector).findAll().toList()
+        return result
     }
 
     fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {

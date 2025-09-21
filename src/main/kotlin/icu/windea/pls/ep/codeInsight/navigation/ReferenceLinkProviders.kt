@@ -29,7 +29,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -187,7 +187,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
         val project = contextElement.project
         val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
             .withGameType(gameType)
-        return ParadoxGlobalScriptedVariableSearch.search(name, selector).find() //global scripted variable only
+        return ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() //global scripted variable only
     }
 
     override fun getUnresolvedMessage(link: String): String {

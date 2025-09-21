@@ -17,8 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
-import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.scriptedVariable
@@ -40,8 +39,8 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
 
         //同时需要同时查找当前文件中的和全局的
         val selector = selector(project, element).scriptedVariable().contextSensitive().distinctByName()
-        ParadoxLocalScriptedVariableSearch.search(selector).processQueryAsync { processScriptedVariable(context, result, it) }
-        ParadoxGlobalScriptedVariableSearch.search(selector).processQueryAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
 
         ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }

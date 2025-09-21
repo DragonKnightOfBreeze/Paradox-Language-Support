@@ -8,6 +8,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
@@ -34,7 +35,7 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
         // 何时显示装订线图标：element 是 scriptedVariable，且存在同名本地化
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
-        val name = element.name ?: return
+        val name = element.name?.orNull() ?: return
         // 查找同名本地化（优先首选语言）
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
         val localisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, locale) ?: return
@@ -42,10 +43,10 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
         val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltip = "$prefix $name"
         // 目标：单个本地化属性
-        val icon = PlsIcons.Gutter.RelatedLocalisations
         val targets = mutableSetOf<ParadoxLocalisationProperty>()
         targets.add(localisation)
         ProgressManager.checkCanceled()
+        val icon = PlsIcons.Gutter.RelatedLocalisations
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))

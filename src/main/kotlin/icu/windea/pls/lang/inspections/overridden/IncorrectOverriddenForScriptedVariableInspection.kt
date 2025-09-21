@@ -18,7 +18,7 @@ import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.quickfix.NavigateToFix
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectRootFile
@@ -66,7 +66,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 val name = element.name
                 if (name.isNullOrEmpty()) return //anonymous -> skipped
                 if (name.isParameterized()) return //parameterized -> ignored
-                val results = ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll()
+                val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
                 if (results.size < 2) return //no override -> skip
                 val firstResult = results.first()
                 val firstRootInfo = firstResult.fileInfo?.rootInfo

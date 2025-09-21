@@ -1,13 +1,13 @@
 package icu.windea.pls
 
 import com.intellij.icons.AllIcons
-import com.intellij.ui.ColorUtil
 import com.intellij.ui.IconManager
 import javax.swing.Icon
 
+@Suppress("unused")
 object PlsIcons {
-    private val colorWhite = ColorUtil.fromHex("#9AA7B0")
-    private val colorBlue = ColorUtil.fromHex("#5D8DC3")
+    // private val colorWhite = ColorUtil.fromHex("#9AA7B0")
+    // private val colorBlue = ColorUtil.fromHex("#5D8DC3")
 
     private fun IconManager.getIcon(path: String): Icon = getIcon(path, PlsIcons.javaClass.classLoader)
 
@@ -185,6 +185,8 @@ object PlsIcons {
         val Definition = IconManager.getInstance().getIcon("/icons/gutter/definition.svg")
         @JvmField
         val Localisation = IconManager.getInstance().getIcon("/icons/gutter/localisation.svg")
+        @JvmField
+        val RelatedScriptedVariables = IconManager.getInstance().getIcon("/icons/gutter/relatedScriptedVariables.svg")
         @JvmField
         val RelatedDefinitions = IconManager.getInstance().getIcon("/icons/gutter/relatedDefinitions.svg")
         @JvmField

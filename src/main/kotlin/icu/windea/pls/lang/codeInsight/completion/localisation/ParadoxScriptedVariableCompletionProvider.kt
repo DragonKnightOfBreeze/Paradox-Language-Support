@@ -11,7 +11,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processQueryAsync
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.scriptedVariable
@@ -37,7 +37,7 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val element = parameters.position
         val project = parameters.originalFile.project
         val selector = selector(project, element).scriptedVariable().contextSensitive().distinctByName()
-        ParadoxGlobalScriptedVariableSearch.search(selector = selector).processQueryAsync { processScriptedVariable(it, result) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(it, result) }
     }
 
     @Suppress("SameReturnValue")

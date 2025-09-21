@@ -11,7 +11,6 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
@@ -21,45 +20,63 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 本地封装变量的查询器。
+ * 封装变量的查询器。
  *
- * 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况（除非内联脚本表达式带有参数，或者需要传递内联脚本的传入参数）。
+ * - 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况（除非内联脚本表达式带有参数，或者需要传递内联脚本的传入参数）。
+ * - 全局封装变量：位于特定位置（`common/scripted_variables/**/*.txt`）的脚本文件中的封装变量。
  */
-class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
+class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
+        // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if (PlsCoreManager.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         if (queryParameters.project.isDefault) return
-        val scope = queryParameters.selector.scope
-        if (SearchScope.isEmptyScope(scope)) return
-        val project = queryParameters.project
-        val name = queryParameters.name
-        val selector = queryParameters.selector
-        val file = selector.file ?: return
-        val fileInfo = file.fileInfo //NOTE fileInfo can be null here (e.g., injected files)
-        if (fileInfo != null && "common/scripted_variables".matchesPath(fileInfo.path.path)) return //skip global scripted variables
+        when (queryParameters.type) {
+            ParadoxScriptedVariableType.Local -> {
+                val scope = queryParameters.selector.scope
+                if (SearchScope.isEmptyScope(scope)) return
+                val file = queryParameters.selector.file ?: return
+                val fileInfo = file.fileInfo // NOTE fileInfo can be null here (e.g., injected files)
+                if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
+                val startOffset = queryParameters.selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
+                val fileScope = GlobalSearchScope.fileScope(queryParameters.project, file)
+                doProcessAllElements(queryParameters.name, queryParameters.project, fileScope) p@{ element ->
+                    if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current position
+                    consumer.process(element)
+                }.let { if (!it) return }
 
-        val startOffset = selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
-        val fileScope = GlobalSearchScope.fileScope(project, file)
-        doProcessAllElements(name, project, fileScope) p@{ element ->
-            if (startOffset >= 0 && element.startOffset >= startOffset) return@p true //skip scripted variables after current position
-            consumer.process(element)
-        }.let { if (!it) return }
-
-        val processedFiles = mutableSetOf(file)
-        processQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
+                val processedFiles = mutableSetOf(file)
+                doProcessQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
+            }
+            ParadoxScriptedVariableType.Global -> {
+                val scope = queryParameters.selector.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
+                if (SearchScope.isEmptyScope(scope)) return
+                doProcessAllElements(queryParameters.name, queryParameters.project, scope) { element -> consumer.process(element) }
+            }
+            null -> {
+                val scope = queryParameters.selector.scope
+                if (SearchScope.isEmptyScope(scope)) return
+                doProcessAllElements(queryParameters.name, queryParameters.project, scope) { element -> consumer.process(element) }
+            }
+        }
     }
 
-    private fun processQueryForInlineScripts(
-        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+    private fun doProcessQueryForInlineScripts(
+        queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         processedFiles: MutableSet<VirtualFile>,
         consumer: Processor<in ParadoxScriptScriptedVariable>
@@ -92,7 +109,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
     }
 
     private fun doProcessQueryForInlineScriptFiles(
-        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+        queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         inlineScriptExpression: String,
         processedFiles: MutableSet<VirtualFile>,
@@ -117,7 +134,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
     }
 
     private fun doProcessQueryForInlineScriptUsageFiles(
-        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+        queryParameters: ParadoxScriptedVariableSearch.SearchParameters,
         file: VirtualFile,
         inlineScriptExpression: String,
         processedFiles: MutableSet<VirtualFile>,
@@ -146,15 +163,21 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
                 consumer.process(element)
             }.let { if (!it) return@p false }
 
-            processQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) //inline script invocation can be recursive
+            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) //inline script invocation can be recursive
         }
     }
 
-    private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptScriptedVariable>): Boolean {
-        if (name == null) {
-            return ParadoxIndexKeys.ScriptedVariableName.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+    private fun doProcessAllElements(
+        name: String?,
+        project: Project,
+        scope: GlobalSearchScope,
+        processor: Processor<ParadoxScriptScriptedVariable>
+    ): Boolean {
+        val indexKey = ParadoxIndexKeys.ScriptedVariableName
+        return if (name == null) {
+            indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxIndexKeys.ScriptedVariableName.processAllElements(name, project, scope) { element -> processor.process(element) }
+            indexKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

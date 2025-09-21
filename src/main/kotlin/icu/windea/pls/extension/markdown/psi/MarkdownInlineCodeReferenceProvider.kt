@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.extension.markdown.PlsMarkdownManager
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -71,7 +71,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                 prefix == "@" -> {
                     if (!PlsPatternConstants.scriptedVariableName.matches(name)) return emptySet()
                     val selector = selector(element.project, element).scriptedVariable().contextSensitive()
-                    val result = ParadoxGlobalScriptedVariableSearch.search(name, selector).find() ?: return emptySet()
+                    val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptySet()
                     return result.asSymbol().singleton.set()
                 }
                 prefix.isEmpty() -> {

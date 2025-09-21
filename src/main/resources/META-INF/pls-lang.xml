@@ -1,8 +1,7 @@
 <idea-plugin>
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.search.configSymbolSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.search.globalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.scriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.syncedLocalisationSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -109,6 +108,7 @@
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedLocalisationsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationRelatedDefinitionsLineMarkerProvider"/>
 
     <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.parameterInfo.ParadoxParameterInfoHandler"/>
@@ -242,8 +242,7 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.search">
     <configSymbolSearch implementation="icu.windea.pls.lang.search.CwtConfigSymbolSearcher"/>
-    <localScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearcher"/>
-    <globalScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearcher"/>
+    <scriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxScriptedVariableSearcher"/>
     <definitionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionSearcher"/>
     <localisationSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationSearcher"/>
     <syncedLocalisationSearch implementation="icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearcher"/>

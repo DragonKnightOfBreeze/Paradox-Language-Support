@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  */
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
-        //#141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()

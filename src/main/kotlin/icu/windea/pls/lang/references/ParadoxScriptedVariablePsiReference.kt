@@ -8,8 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
-import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
@@ -48,8 +47,8 @@ class ParadoxScriptedVariablePsiReference(
         val element = element
         val name = element.name ?: return null
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-        ParadoxLocalScriptedVariableSearch.search(name, selector).find()?.let { return it }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).find()?.let { return it }
+        ParadoxScriptedVariableSearch.searchLocal(name, selector).find()?.let { return it }
+        ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it }
         return null
     }
 
@@ -59,8 +58,8 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
         val result = mutableListOf<ParadoxScriptScriptedVariable>()
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-        ParadoxLocalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
+        ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { result += it }
+        ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { result += it }
         return result.mapToArray { PsiElementResolveResult(it) }
     }
 }

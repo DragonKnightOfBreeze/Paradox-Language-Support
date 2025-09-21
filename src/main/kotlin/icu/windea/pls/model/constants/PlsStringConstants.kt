@@ -36,6 +36,7 @@ object PlsStringConstants {
     const val scriptedVariablePrefix = "(scripted variable)"
     const val parameterPrefix = "(parameter)"
     const val definitionPrefix = "(definition)"
+    const val relatedScriptedVariablePrefix = "(related scripted variable)"
     const val relatedDefinitionPrefix = "(related definition)"
     const val relatedLocalisationPrefix = "(related localisation)"
     const val relatedImagePrefix = "(related image)"

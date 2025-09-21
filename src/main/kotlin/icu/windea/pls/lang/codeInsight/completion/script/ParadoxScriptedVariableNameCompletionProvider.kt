@@ -17,7 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withScriptedVariableLocalizedNamesIfNecessary
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.notSamePosition
@@ -42,7 +42,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
 
         //这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
         val selector = selector(project, element).scriptedVariable().contextSensitive().notSamePosition(element).distinctByName()
-        ParadoxGlobalScriptedVariableSearch.search(selector).processQueryAsync { processScriptedVariable(context, result, it) }
+        ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
 
         ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
     }

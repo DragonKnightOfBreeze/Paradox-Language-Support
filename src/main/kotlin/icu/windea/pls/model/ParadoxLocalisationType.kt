@@ -9,16 +9,12 @@ import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
-enum class ParadoxLocalisationType(
-    val id: String
-) {
+enum class ParadoxLocalisationType(val id: String) {
     Normal("localisation"),
     Synced("localisation_synced"),
     ;
 
-    override fun toString(): String {
-        return id
-    }
+    override fun toString() = id
 
     companion object {
         @JvmStatic
@@ -53,6 +49,6 @@ enum class ParadoxLocalisationType(
             val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }
-
     }
 }
+

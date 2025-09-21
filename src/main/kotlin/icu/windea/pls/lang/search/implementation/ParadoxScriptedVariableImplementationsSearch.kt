@@ -7,8 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch
-import icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearch
+import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
@@ -29,8 +28,8 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
             //这里不进行排序
             //使用全部作用域
             val selector = selector(project, sourceElement).scriptedVariable().withSearchScope(GlobalSearchScope.allScope(project))
-            ParadoxLocalScriptedVariableSearch.search(name, selector).forEach(consumer)
-            ParadoxGlobalScriptedVariableSearch.search(name, selector).forEach(consumer)
+            ParadoxScriptedVariableSearch.searchLocal(name, selector).forEach(consumer)
+            ParadoxScriptedVariableSearch.searchGlobal(name, selector).forEach(consumer)
         }.inSmartMode(project).executeSynchronously()
         return true
     }
