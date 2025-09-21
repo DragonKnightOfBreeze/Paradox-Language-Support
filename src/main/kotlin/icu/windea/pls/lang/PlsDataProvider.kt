@@ -4,6 +4,7 @@ import com.intellij.openapi.components.Service
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.formatted
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
@@ -59,11 +60,13 @@ class PlsDataProvider {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
-                commandResult?.toPathOrNull()?.formatted()
+                val steamPath = commandResult?.orNull()?.toPathOrNull()?.formatted()
+                steamPath
             }
             OS.Linux -> {
                 //默认路径（不准确，但是已经足够）
-                PlsPathConstants.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
+                val steamPath = PlsPathConstants.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
+                steamPath
             }
         }
     }
@@ -81,17 +84,19 @@ class PlsDataProvider {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
-                val fromCommandResult = commandResult?.toPathOrNull()?.formatted()
+                val fromCommandResult = commandResult?.orNull()?.toPathOrNull()?.formatted()
                 if (fromCommandResult != null) return fromCommandResult
 
                 //默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath() ?: return null
-                steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
+                val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
+                steamGamePath
             }
             OS.Linux -> {
                 //默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath() ?: return null
-                steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
+                val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
+                steamGamePath
             }
         }
     }

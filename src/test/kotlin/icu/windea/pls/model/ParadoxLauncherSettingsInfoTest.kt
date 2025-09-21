@@ -61,8 +61,9 @@ class ParadoxLauncherSettingsInfoTest {
 
     @Test
     fun readLauncherSettings_fromLocal_ifExists() {
-        val gameDataDir = PlsDataProvider().getGameDataPath(ParadoxGameType.Stellaris.title)
-        Assume.assumeTrue("Skip: gameDataDir not found", gameDataDir != null)
+        val gameType = ParadoxGameType.Stellaris
+        val gameDataDir = PlsDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+        Assume.assumeTrue("Skip: gameDir not found", gameDataDir != null)
         gameDataDir!!
 
         val file1 = gameDataDir.resolve("launcher-settings.json")
