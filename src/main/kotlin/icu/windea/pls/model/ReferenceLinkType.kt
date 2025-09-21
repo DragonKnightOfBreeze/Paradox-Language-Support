@@ -65,7 +65,7 @@ abstract class ReferenceLinkType(
      */
     data object Definition : ReferenceLinkType("pdx.d:") {
         fun createLink(name: String, typeExpression: String? = null, gameType: ParadoxGameType? = null): String {
-            val expression = if (typeExpression == null) name else "$name/$typeExpression"
+            val expression = if (typeExpression == null) name else "$typeExpression/$name"
             if (gameType == null) return "$prefix$expression"
             return "$prefix${gameType.id}:$expression"
         }
