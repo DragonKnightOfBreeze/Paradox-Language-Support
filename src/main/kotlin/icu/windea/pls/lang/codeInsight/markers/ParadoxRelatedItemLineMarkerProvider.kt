@@ -1,20 +1,14 @@
 package icu.windea.pls.lang.codeInsight.markers
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
-import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.navigation.GotoRelatedItem
+import com.intellij.openapi.util.NlsContexts.Separator
 import com.intellij.psi.PsiElement
-import com.intellij.util.NotNullFunction
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
-import javax.swing.Icon
+import icu.windea.pls.lang.codeInsight.navigation.ParadoxGotoRelatedItem
 
 abstract class ParadoxRelatedItemLineMarkerProvider : RelatedItemLineMarkerProvider() {
-    companion object {
-        private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiElement>> { it.singleton.setOrEmpty() }
-    }
+    abstract fun getGroup(): @Separator String
 
-    protected fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
-        return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
+    protected fun createGotoRelatedItem(elements: Collection<PsiElement>): List<ParadoxGotoRelatedItem> {
+        return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, getGroup()) }
     }
 }

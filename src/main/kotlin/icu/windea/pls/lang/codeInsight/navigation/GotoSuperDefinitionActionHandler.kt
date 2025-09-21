@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 /**
  * 从光标位置对应的定义跳转到其父定义。
  */
-class ParadoxGotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
+class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxScriptDefinitionElement? {
         val offset = editor.caretModel.offset
         val allOptions = ParadoxPsiManager.FindDefinitionOptions

@@ -49,7 +49,7 @@
     <targetElementEvaluator language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTargetElementEvaluator"/>
     <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
 
-    <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.navigation.ParadoxGotoSuperDefinitionActionHandler"/>
+    <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler"/>
 
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>

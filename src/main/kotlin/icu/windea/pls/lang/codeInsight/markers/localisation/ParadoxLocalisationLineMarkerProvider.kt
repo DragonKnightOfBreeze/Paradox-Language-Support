@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.codeInsight.markers.localisation
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
-import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
+import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
-import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -29,8 +28,10 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
 
     override fun getIcon() = PlsIcons.Gutter.Localisation
 
+    override fun getGroup() = PlsBundle.message("localisation.gutterIcon.localisation.group")
+
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        //何时显示装订线图标：element是localisation/localisation_synced
+        // 何时显示装订线图标：element是localisation/localisation_synced
         if (element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull()
         if (name == null) return
@@ -47,22 +48,19 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
             }
         }
         val locationElement = element.propertyKey.idElement
-        val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
+        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("localisation.gutterIcon.localisation.title"))
-            .setTargets(NotNullLazyValue.lazy { targets })
+            .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("localisation.gutterIcon.localisation") }
             .createLineMarkerInfo(locationElement)
-        //NavigateAction.setNavigateAction(
+        result.add(lineMarkerInfo)
+
+        // NavigateAction.setNavigateAction(
         //	lineMarkerInfo,
         //	PlsBundle.message("localisation.gutterIcon.localisation.action"),
         //	PlsActions.GutterGotoLocalisation
-        //)
-        result.add(lineMarkerInfo)
-    }
-
-    private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
-        return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
+        // )
     }
 }

@@ -1,7 +1,7 @@
-package icu.windea.pls.lang.navigation
+package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.navigation.GotoRelatedItem
-import com.intellij.openapi.util.NlsContexts.Separator
+import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.util.anonymous
@@ -11,7 +11,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
-class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : GotoRelatedItem(element, group) {
+class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: String) : GotoRelatedItem(element, group) {
     override fun getCustomName(): String? {
         val element = element
         if (element is ParadoxScriptProperty) {
@@ -33,7 +33,7 @@ class ParadoxGotoRelatedItem(element: PsiElement, @Separator group: String) : Go
     }
 
     companion object {
-        fun createItems(elements: Collection<PsiElement>, @Separator group: String): List<ParadoxGotoRelatedItem> {
+        fun createItems(elements: Collection<PsiElement>, @NlsContexts.Separator group: String): List<ParadoxGotoRelatedItem> {
             return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, group) }
         }
     }

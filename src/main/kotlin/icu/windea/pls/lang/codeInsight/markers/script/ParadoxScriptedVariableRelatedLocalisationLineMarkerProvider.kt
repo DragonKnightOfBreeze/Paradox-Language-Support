@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.codeInsight.markers.script
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
-import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
+import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
-import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -26,6 +25,8 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations
+
+    override fun getGroup() = PlsBundle.message("script.gutterIcon.relatedLocalisations.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         // 何时显示装订线图标：element 是 scriptedVariable，且存在同名本地化
@@ -46,17 +47,13 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
         val targets = mutableSetOf<ParadoxLocalisationProperty>()
         targets.add(localisation)
         ProgressManager.checkCanceled()
-        val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
+        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))
-            .setTargets(NotNullLazyValue.lazy { targets })
-            .setAlignment(GutterIconRenderer.Alignment.LEFT)
+            .setTargets { targets }
+            .setAlignment(GutterIconRenderer.Alignment.CENTER)
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
-    }
-
-    private fun createGotoRelatedItem(targets: Set<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
-        return ParadoxGotoRelatedItem.createItems(targets, PlsBundle.message("script.gutterIcon.relatedLocalisations.group"))
     }
 }
