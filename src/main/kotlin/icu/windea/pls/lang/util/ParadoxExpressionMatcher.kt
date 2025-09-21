@@ -15,7 +15,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runCatchingCancelable

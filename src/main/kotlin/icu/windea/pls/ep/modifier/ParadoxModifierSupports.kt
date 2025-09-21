@@ -20,7 +20,7 @@ import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.generatedModifiers
 import icu.windea.pls.config.configGroup.predefinedModifiers
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.grayed

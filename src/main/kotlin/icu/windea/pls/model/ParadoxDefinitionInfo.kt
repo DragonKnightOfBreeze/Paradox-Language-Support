@@ -10,7 +10,7 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.declarations
 import icu.windea.pls.config.configGroup.type2ModifiersMap
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.castOrNull

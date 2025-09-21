@@ -12,7 +12,7 @@ import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation

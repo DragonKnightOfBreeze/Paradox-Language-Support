@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
@@ -12,7 +12,6 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 object CwtTemplateExpressionManager {
     fun extract(templateExpression: CwtTemplateExpression, referenceName: String): String {
@@ -92,8 +91,8 @@ object CwtTemplateExpressionManager {
             if (snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
-                val expression = ParadoxScriptExpression.resolve(referenceName, false)
-                val matched = ParadoxScriptExpressionMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val expression = ParadoxScriptExpression.Companion.resolve(referenceName, false)
+                val matched = ParadoxScriptExpressionMatcher.INSTANCE.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if (!matched) return false
             }
         }

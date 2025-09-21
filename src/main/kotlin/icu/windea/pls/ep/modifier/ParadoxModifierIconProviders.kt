@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.expression.nodes.ParadoxTemplateSnippetNode

@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtTemplateExpressionManager
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.expression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.expression.ParadoxTemplateExpression
 import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode

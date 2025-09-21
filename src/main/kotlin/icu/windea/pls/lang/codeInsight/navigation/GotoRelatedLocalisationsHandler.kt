@@ -10,7 +10,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml

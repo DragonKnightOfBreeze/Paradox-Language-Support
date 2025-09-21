@@ -6,7 +6,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.relatedLocalisationPatterns
-import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
