@@ -17,7 +17,7 @@ import icu.windea.pls.model.paths.matches
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
-    override val stubVersion: Int = 72 // VERSION for 2.0.2
+    override val stubVersion: Int = 74 // VERSION for 2.0.5
     override val builder = ParadoxLocalisationStubBuilder()
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {

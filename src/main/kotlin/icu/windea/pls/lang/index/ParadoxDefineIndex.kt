@@ -29,7 +29,7 @@ import java.io.DataOutput
 class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo>>() {
     override fun getName() = ParadoxIndexKeys.Define
 
-    override fun getVersion() = 72 // VERSION for 2.0.2
+    override fun getVersion() = 74 // VERSION for 2.0.5
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
         val gameType = selectGameType(file) ?: return

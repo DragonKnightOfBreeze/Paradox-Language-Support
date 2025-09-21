@@ -27,7 +27,7 @@ import java.io.DataOutput
 class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageIndexInfo.Compact>() {
     override fun getName() = ParadoxIndexKeys.InlineScriptUsage
 
-    override fun getVersion() = 72 // VERSION for 2.0.2
+    override fun getVersion() = 74 // VERSION for 2.0.5
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, ParadoxInlineScriptUsageIndexInfo.Compact>) {
         file.acceptChildren(object: PsiRecursiveElementWalkingVisitor() {

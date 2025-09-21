@@ -19,7 +19,7 @@ import java.util.*
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     override fun getName() = ParadoxIndexKeys.FileLocale
 
-    override fun getVersion() = 72 // VERSION for 2.0.2
+    override fun getVersion() = 74 // VERSION for 2.0.5
 
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return DataIndexer { inputData ->

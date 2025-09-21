@@ -9,5 +9,5 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
     override fun getKey() = ParadoxIndexKeys.DefinitionType
 
-    override fun getVersion() = 72 // VERSION for 2.0.2
+    override fun getVersion() = 74 // VERSION for 2.0.5
 }
