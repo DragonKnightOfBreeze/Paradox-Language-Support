@@ -10,7 +10,7 @@ object ParadoxScriptedModifierManager {
     /**
      * 输入[definition]的定义类型应当保证是`scripted_modifier`。
      */
-    fun resolveModifierCategory(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
+    fun resolveModifierCategory(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig> {
         val configGroup = definitionInfo.configGroup
         val value = definition.findProperty("category", inline = true)?.propertyValue?.stringValue()
         return ParadoxModifierManager.resolveModifierCategory(value, configGroup)

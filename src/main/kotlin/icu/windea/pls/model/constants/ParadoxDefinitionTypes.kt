@@ -13,6 +13,7 @@ object ParadoxDefinitionTypes {
     const val Resource = "resource"
 
     const val Event = "event"
+    const val EventNamespace = "event_namespace"
 
     const val TextColor = "text_color"
     const val TextFormat = "text_format"

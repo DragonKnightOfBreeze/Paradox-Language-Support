@@ -31,7 +31,7 @@ class IntroduceLocalScriptedVariableAction : BasePlatformRefactoringAction() {
         return file is ParadoxScriptFile
     }
 
-    override fun getRefactoringHandler(provider: RefactoringSupportProvider): RefactoringActionHandler? {
+    override fun getRefactoringHandler(provider: RefactoringSupportProvider): RefactoringActionHandler {
         return handler
     }
 }

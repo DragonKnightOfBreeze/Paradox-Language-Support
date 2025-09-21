@@ -23,7 +23,7 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
             return true
         }
 
-        override fun createHighlighter(): SyntaxHighlighter? {
+        override fun createHighlighter(): SyntaxHighlighter {
             return CwtSyntaxHighlighter(null)
         }
     }
@@ -38,7 +38,7 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
             return startElement != null
         }
 
-        override fun createHighlighter(): SyntaxHighlighter? {
+        override fun createHighlighter(): SyntaxHighlighter {
             return CwtSyntaxHighlighter(null)
         }
     }

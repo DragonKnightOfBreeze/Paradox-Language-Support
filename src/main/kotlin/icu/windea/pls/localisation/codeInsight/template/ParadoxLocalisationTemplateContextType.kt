@@ -26,7 +26,7 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
             return true
         }
 
-        override fun createHighlighter(): SyntaxHighlighter? {
+        override fun createHighlighter(): SyntaxHighlighter {
             return ParadoxLocalisationSyntaxHighlighter(null, null)
         }
     }
@@ -41,7 +41,7 @@ abstract class ParadoxLocalisationTemplateContextType(presentableName: String) :
             return startElement != null
         }
 
-        override fun createHighlighter(): SyntaxHighlighter? {
+        override fun createHighlighter(): SyntaxHighlighter {
             return ParadoxLocalisationTextSyntaxHighlighter(null, null)
         }
     }

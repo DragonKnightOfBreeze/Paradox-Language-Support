@@ -14,7 +14,7 @@ class ParadoxCsvRowTreeElement(
         return columns.map { ParadoxCsvColumnTreeElement(it) }
     }
 
-    override fun getPresentableText(): String? {
+    override fun getPresentableText(): String {
         //val element = element ?: return null
         return PlsStringConstants.rowMarker
     }

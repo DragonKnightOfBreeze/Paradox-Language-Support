@@ -24,6 +24,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameterArgument
 import icu.windea.pls.model.ParadoxTextColorInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.intValue
@@ -57,7 +58,7 @@ object ParadoxTextColorManager {
         }
     }
 
-    private fun doGetIdOffset(element: PsiElement): Tuple2<PsiElement, Int>? {
+    private fun doGetIdOffset(element: PsiElement): Tuple2<PsiElement, Int> {
         return element to element.text.indexOfFirst { isIdInArgument(it) }
     }
 
@@ -74,7 +75,7 @@ object ParadoxTextColorManager {
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, "text_color", selector).find()
+        val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TextColor, selector).find()
         if (definition == null) return null
         return doGetInfoFromCache(definition)
     }
@@ -100,7 +101,7 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        val definitions = ParadoxDefinitionSearch.search(null, "text_color", selector).findAll()
+        val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.TextColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
     }

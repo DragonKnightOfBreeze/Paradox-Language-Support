@@ -13,6 +13,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxEventManager
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 
@@ -36,7 +37,7 @@ class ParadoxEventNamespacePsiReference(
 
         val name = element.value.substringBefore('.')
         val selector = selector(project, event).definition().contextSensitive()
-        val eventNamespace = ParadoxDefinitionSearch.search(name, "event_namespace", selector).find()
+        val eventNamespace = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.EventNamespace, selector).find()
         return eventNamespace
     }
 
@@ -50,7 +51,7 @@ class ParadoxEventNamespacePsiReference(
 
         val name = element.value.substringBefore('.')
         val selector = selector(project, event).definition().contextSensitive()
-        val eventNamespaces = ParadoxDefinitionSearch.search(name, "event_namespace", selector).findAll()
+        val eventNamespaces = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.EventNamespace, selector).findAll()
         result.addAll(eventNamespaces)
         return result.mapToArray { PsiElementResolveResult(it) }
     }
