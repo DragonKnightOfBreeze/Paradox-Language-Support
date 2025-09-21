@@ -4,7 +4,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.expression.nodes.ParadoxTemplateSnippetNode
@@ -12,6 +11,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.model.elementInfo.ParadoxModifierInfo

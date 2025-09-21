@@ -7,7 +7,6 @@ import com.intellij.lang.annotation.HighlightSeverity.INFORMATION
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.startOffset
-import com.intellij.psi.util.PsiTreeUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted

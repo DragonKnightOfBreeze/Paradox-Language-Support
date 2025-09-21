@@ -16,7 +16,6 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
 import icu.windea.pls.core.pass
-import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager

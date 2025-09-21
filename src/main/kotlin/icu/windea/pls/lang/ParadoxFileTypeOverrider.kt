@@ -5,7 +5,6 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import com.intellij.util.application
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.ParadoxCoreManager

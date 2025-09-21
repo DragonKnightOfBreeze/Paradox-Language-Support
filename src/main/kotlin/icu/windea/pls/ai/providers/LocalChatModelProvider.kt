@@ -8,9 +8,9 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.ai.PlsAiConstants
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.providers.ChatModelProvider.StatusResult
-import icu.windea.pls.ai.PlsAiConstants
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope

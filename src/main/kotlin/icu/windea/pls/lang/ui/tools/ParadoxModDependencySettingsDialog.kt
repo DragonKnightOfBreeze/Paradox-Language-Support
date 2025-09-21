@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
+import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState

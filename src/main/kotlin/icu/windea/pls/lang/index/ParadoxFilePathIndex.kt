@@ -9,7 +9,6 @@ import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
 import icu.windea.pls.core.readUTFFast
-import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
