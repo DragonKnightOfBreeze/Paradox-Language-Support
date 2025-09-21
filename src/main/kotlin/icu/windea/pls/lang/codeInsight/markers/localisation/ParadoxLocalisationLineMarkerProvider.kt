@@ -21,7 +21,15 @@ import icu.windea.pls.model.ParadoxLocalisationType.Normal
 import icu.windea.pls.model.ParadoxLocalisationType.Synced
 
 /**
- * 提供本地化（localisation/localisation_synced）的装订线图标。
+ * 提供本地化（localisation / localisation_synced）的装订线图标。
+ *
+ * 显示时机：当前 PSI 为 [ParadoxLocalisationProperty] 时显示。根据其类型：
+ * - `Normal`：通过 [ParadoxLocalisationSearch] 搜索同名本地化；
+ * - `Synced`：通过 [ParadoxSyncedLocalisationSearch] 搜索同名本地化。
+ * 搜索时使用选择器 `selector(...).localisation().contextSensitive().preferLocale(...)`，
+ * 其中 `preferLocale(locale)` 会优先选用指定语言环境，并兼容必要的回退策略。
+ *
+ * 导航目标：同名本地化属性集合（可能跨文件、跨模组）。图标落点为 `propertyKey.idElement`。
  */
 class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("localisation.gutterIcon.localisation")

@@ -16,6 +16,14 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供定义的相关图片（relatedImages，对应定义或者图片）的装订线图标。
+ *
+ * 显示时机：当前 PSI 为 [ParadoxScriptProperty]，且其 `definitionInfo.images` 非空时。
+ *
+ * 解析逻辑：遍历 `definitionInfo.images` 中的 `(key, locationExpression)`，调用
+ * [CwtLocationExpressionManager.resolve] 获取解析结果：
+ * - 若返回元素非空，则加入导航目标集合；
+ * - 若存在消息，提示行使用 `relatedImagePrefix key = message`；
+ * - 否则在首次出现该键名时，提示行使用 `relatedImagePrefix key = nameOrFilePath`。
  */
 class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedImages")

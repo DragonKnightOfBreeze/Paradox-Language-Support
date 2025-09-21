@@ -21,6 +21,12 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供定义（definition）的装订线图标。
+ *
+ * 显示时机：当前 PSI 为 [ParadoxScriptProperty]，且存在 `definitionInfo`。
+ *
+ * 目标收集：使用 `selector(project, element).definition().contextSensitive()`，
+ * 通过 [ParadoxDefinitionSearch] 以 `definitionInfo.name` 与 `definitionInfo.type` 搜索同名定义集合。
+ * 图标落点为 `propertyKey.idElement`。
  */
 class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.definition")

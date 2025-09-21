@@ -21,6 +21,12 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 提供封装变量（scripted_variable）的装订线图标。
+ *
+ * 显示时机：当前 PSI 为 [ParadoxScriptScriptedVariable]。
+ *
+ * 目标收集：使用 `selector(project, element).scriptedVariable().contextSensitive()`，
+ * 通过 [ParadoxLocalScriptedVariableSearch] 与 [ParadoxGlobalScriptedVariableSearch] 搜索同名脚本变量；
+ * 通常只会包含当前元素自身。图标落点为 `scriptedVariableName.idElement`。
  */
 class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariable")

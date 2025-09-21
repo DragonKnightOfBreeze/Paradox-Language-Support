@@ -18,6 +18,11 @@ import icu.windea.pls.model.constants.PlsStringConstants
 
 /**
  * 提供本地化（localisation）的相关定义的装订线图标。
+ *
+ * 显示时机：当前 PSI 为 [ParadoxLocalisationProperty] 且类型为 [ParadoxLocalisationType.Normal] 时。
+ *
+ * 目标收集：调用 [ParadoxLocalisationManager.getRelatedDefinitions] 获取与该本地化键相关的定义集合。
+ * 提示文本按目标定义信息构造：`relatedDefinitionPrefix name: typesText`；图标落点为 `propertyKey.idElement`。
  */
 class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("localisation.gutterIcon.relatedDefinitions")
