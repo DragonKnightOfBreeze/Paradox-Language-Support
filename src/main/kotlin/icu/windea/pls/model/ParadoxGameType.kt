@@ -35,7 +35,7 @@ enum class ParadoxGameType(
     /** [Hearts of Iron IV](https://store.steampowered.com/app/394360) */
     Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360", "", EntryNames.other),
     /** [Imperator: Rome](https://store.steampowered.com/app/859580) */
-    Ir("ir", "Imperator: Rome", "imperator_rome", "859580", "game", EntryNames.other),
+    Ir("ir", "Imperator Rome", "imperator_rome", "859580", "game", EntryNames.other),
     /** [Victoria 2](https://store.steampowered.com/app/42960) */
     Vic2("vic2", "Victoria 2", "victoria2", "42960", "game", EntryNames.other),
     /** [Victoria 3](https://store.steampowered.com/app/529340) */
