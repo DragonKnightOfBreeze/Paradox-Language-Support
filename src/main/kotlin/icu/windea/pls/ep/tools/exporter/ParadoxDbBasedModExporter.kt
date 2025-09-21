@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.icons.AllIcons
-import icu.windea.pls.lang.util.PlsSqliteManager
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -10,5 +10,5 @@ import icu.windea.pls.model.ParadoxGameType
 abstract class ParadoxDbBasedModExporter : ParadoxModExporter {
     override val icon = AllIcons.Providers.Sqlite
 
-    override fun isAvailable(gameType: ParadoxGameType) = PlsSqliteManager.isAvailable()
+    override fun isAvailable(gameType: ParadoxGameType) = PlsFacade.Capacities.includeSqlite()
 }

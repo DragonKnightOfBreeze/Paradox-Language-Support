@@ -23,6 +23,10 @@ repositories {
     }
 }
 
+// Lite 版本 - 不包含可选的依赖包 & zip 和 plugin.xml 中的版本号加上 `-lite` 后缀
+val lite = properties("pls.is.lite").getOrElse("false").toBoolean()
+val includeSqlite = properties("pls.capabilities.includeSqlite").getOrElse("true").toBoolean()
+
 dependencies {
     // Configure Gradle IntelliJ Plugin
     // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
@@ -51,10 +55,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
-
-    // Jackson (JSON) - https://github.com/FasterXML/jackson
-    // implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
-    // implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
 
     // Caffeine - https://github.com/ben-manes/caffeine
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.2") {
@@ -231,7 +231,12 @@ grammarKit {
 }
 
 val excludesInJar = emptyList<String>()
-val excludesInZip = emptyList<String>()
+val excludesInZip = buildList {
+    if (lite || !includeSqlite) {
+        add("lib/sqlite-jdbc-*.jar")
+    }
+}
+
 val cwtConfigDirs = listOf(
     "core" to "core",
     "cwtools-ck2-config" to "ck2",
@@ -275,7 +280,11 @@ tasks {
         // 排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
+    patchPluginXml {
+        if(lite) pluginVersion = properties("pluginVersion").get() + "-lite"
+    }
     buildPlugin {
+        if(lite) archiveVersion = properties("pluginVersion").get() + "-lite"
         // 排除特定文件
         excludesInZip.forEach { exclude(it) }
         // 重命名插件包

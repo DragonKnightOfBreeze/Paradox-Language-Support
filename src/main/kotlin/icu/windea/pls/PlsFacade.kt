@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.isClassPresent
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.PlsDataProvider
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
@@ -24,7 +25,7 @@ import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * 用于获取协程作用域、各种服务以及各种插件设置。
+ * 通用门面，用于获取协程作用域、各种服务以及各种插件设置。
  */
 object PlsFacade {
     //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
@@ -90,24 +91,26 @@ object PlsFacade {
 
     fun getInternalSettings() = service<PlsInternalSettings>()
 
-    /**
-     * 是否正在进行单元测试。
-     */
+    /** 是否正在进行单元测试。*/
     fun isUnitTestMode(): Boolean {
         return ApplicationManager.getApplication().let { it == null || it.isUnitTestMode }
     }
 
-    /**
-     * 是否正在调试。
-     */
+    /** 是否正在调试。*/
     fun isDebug(): Boolean {
         return System.getProperty("pls.is.debug").toBoolean()
     }
 
-    /**
-     * 是否是开发中版本。
-     */
+    /** 是否是开发中版本。*/
     fun isDevVersion(): Boolean {
         return PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
+    }
+
+    /**
+     * 用于检查插件的各种可选择的能力。
+     */
+    object Capacities {
+        /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。*/
+        fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
     }
 }
