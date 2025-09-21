@@ -17,7 +17,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtPsiUtil
 import icu.windea.pls.lang.settings.PlsSettingsState
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {

@@ -7,8 +7,8 @@ import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.util.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -34,8 +34,6 @@ abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptScriptedVariable? {
-        val allOptions = ParadoxPsiManager.FindScriptedVariableOptions
-        val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
-        return ParadoxPsiManager.findScriptVariable(context.file, context.offset, options)
+        return ParadoxPsiFinder.findScriptedVariable(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

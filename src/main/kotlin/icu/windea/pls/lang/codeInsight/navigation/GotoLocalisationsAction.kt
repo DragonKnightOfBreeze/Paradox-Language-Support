@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -37,6 +37,6 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiManager.findLocalisation(file, offset)
+        return ParadoxPsiFinder.findLocalisation(file, offset)
     }
 }

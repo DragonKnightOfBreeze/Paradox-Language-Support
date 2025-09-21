@@ -9,14 +9,19 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
 
 /**
- * 导航到当前定义/修正的相关本地化的动作。
+ * 导航到当前目标的相关本地化的动作。
+ *
+ * 支持的目标：
+ * - 封装变量（来自名字）
+ * - 定义（来自顶级键或名字）
+ * - 修正（来自对应的脚本表达式）
  */
 class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedLocalisationsHandler()
@@ -49,7 +54,7 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
 }
 

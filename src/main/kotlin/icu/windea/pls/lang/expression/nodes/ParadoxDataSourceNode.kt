@@ -18,7 +18,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 
 class ParadoxDataSourceNode(
     override val text: String,

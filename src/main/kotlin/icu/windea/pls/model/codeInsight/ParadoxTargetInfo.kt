@@ -1,4 +1,4 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.codeInsight
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.collections.orNull
@@ -9,47 +9,51 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-sealed class ParadoxDeclarationInfo {
+/**
+ * 目标信息。用于代码洞察。
+ */
+sealed class ParadoxTargetInfo {
     abstract val name: String
 
     class ScriptedVariable(
         override val name: String
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class Definition(
         override val name: String,
         val type: String,
         val subtypes: List<String>
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class Localisation(
         override val name: String,
         val type: ParadoxLocalisationType
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class ComplexEnumValue(
         override val name: String,
         val enumName: String
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class DynamicValue(
         override val name: String,
         val types: Set<String>
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class Parameter(
         override val name: String
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     class LocalisationParameter(
         override val name: String
-    ) : ParadoxDeclarationInfo()
+    ) : ParadoxTargetInfo()
 
     companion object {
-        fun from(element: PsiElement): ParadoxDeclarationInfo? {
+        fun from(element: PsiElement): ParadoxTargetInfo? {
             return when (element) {
                 is ParadoxScriptScriptedVariable -> {
                     val name = element.name?.orNull() ?: return null

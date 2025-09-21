@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.util.psi
 
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiComment

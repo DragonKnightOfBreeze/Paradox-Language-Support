@@ -14,7 +14,7 @@ import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 class ParadoxLocalisationExpressionPsiReference(

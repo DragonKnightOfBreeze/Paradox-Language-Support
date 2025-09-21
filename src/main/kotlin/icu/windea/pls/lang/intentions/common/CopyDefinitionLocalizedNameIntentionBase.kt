@@ -7,7 +7,7 @@ import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -33,9 +33,7 @@ abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, Dumb
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptDefinitionElement? {
-        val allOptions = ParadoxPsiManager.FindDefinitionOptions
-        val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
-        return ParadoxPsiManager.findDefinition(context.file, context.offset, options)
+        return ParadoxPsiFinder.findDefinition(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }
 

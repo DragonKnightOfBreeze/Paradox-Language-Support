@@ -56,5 +56,11 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
+
+        // NavigateAction.setNavigateAction(
+        // 	lineMarkerInfo,
+        // 	PlsBundle.message("script.gutterIcon.relatedLocalisations.action"),
+        // 	PlsActions.GotoRelatedLocalisations
+        // )
     }
 }

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.localisationInfo
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -39,24 +39,9 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
             if (file == null || file.language !is ParadoxBaseLanguage) return@run
             val offset = editor.caretModel.offset
 
-            run r@{
-                val allOptions = ParadoxPsiManager.FindScriptedVariableOptions
-                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
-                val result = ParadoxPsiManager.findScriptVariable(file, offset, findOptions) ?: return@r
-                return result
-            }
-            run r@{
-                val allOptions = ParadoxPsiManager.FindDefinitionOptions
-                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
-                val result = ParadoxPsiManager.findDefinition(file, offset, findOptions) ?: return@r
-                return result
-            }
-            run r@{
-                val allOptions = ParadoxPsiManager.FindLocalisationOptions
-                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
-                val result = ParadoxPsiManager.findLocalisation(file, offset, findOptions) ?: return@r
-                return result
-            }
+            ParadoxPsiFinder.findScriptedVariable(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
+            ParadoxPsiFinder.findDefinition(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
+            ParadoxPsiFinder.findLocalisation(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
         }
         return null
     }

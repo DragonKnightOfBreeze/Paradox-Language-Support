@@ -13,7 +13,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class IntroduceGlobalVariableFix(

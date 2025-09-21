@@ -2,7 +2,7 @@ package icu.windea.pls.script.codeInsight
 
 import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hint.ImplementationTextSelectioner
 import com.intellij.psi.PsiElement
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtPsiUtil
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 
 /**
  * 用于为CWT语言指定快速定义显示的文本范围。

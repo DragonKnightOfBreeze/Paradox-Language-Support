@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 
 class CwtStructureViewModel(
     editor: Editor?,

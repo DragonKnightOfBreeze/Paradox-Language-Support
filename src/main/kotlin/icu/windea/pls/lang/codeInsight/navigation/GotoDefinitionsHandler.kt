@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
@@ -53,7 +53,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {

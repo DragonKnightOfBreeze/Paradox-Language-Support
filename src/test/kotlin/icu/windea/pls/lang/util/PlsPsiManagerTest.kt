@@ -4,6 +4,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import org.junit.Assert

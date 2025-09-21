@@ -54,7 +54,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.cwt.psi.isPropertyValue
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxPath

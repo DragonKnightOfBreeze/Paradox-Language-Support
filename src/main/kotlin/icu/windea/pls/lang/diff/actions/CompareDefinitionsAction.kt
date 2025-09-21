@@ -46,8 +46,8 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxExpressionPath
@@ -79,7 +79,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
-        return ParadoxPsiManager.findDefinition(file, offset)
+        return ParadoxPsiFinder.findDefinition(file, offset)
     }
 
     private fun findElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {

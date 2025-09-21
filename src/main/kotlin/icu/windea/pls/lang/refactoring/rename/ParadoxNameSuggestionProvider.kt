@@ -5,7 +5,7 @@ import com.intellij.psi.codeStyle.SuggestedNameInfo
 import com.intellij.refactoring.rename.NameSuggestionProvider
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.model.ParadoxDeclarationInfo
+import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.findParentDefinition
 
@@ -14,14 +14,14 @@ import icu.windea.pls.script.psi.findParentDefinition
 class ParadoxNameSuggestionProvider : NameSuggestionProvider {
     override fun getSuggestedNames(element: PsiElement, nameSuggestionContext: PsiElement?, result: MutableSet<String>): SuggestedNameInfo? {
         if (element.language !is ParadoxBaseLanguage) return null
-        val declarationInfo = ParadoxDeclarationInfo.from(element) ?: return null
+        val declarationInfo = ParadoxTargetInfo.from(element) ?: return null
         if (!isSupported(declarationInfo)) return null
         return collectSuggestedNames(declarationInfo, nameSuggestionContext, result)
     }
 
-    private fun isSupported(declarationInfo: ParadoxDeclarationInfo): Boolean {
+    private fun isSupported(declarationInfo: ParadoxTargetInfo): Boolean {
         return when (declarationInfo) {
-            is ParadoxDeclarationInfo.Definition -> {
+            is ParadoxTargetInfo.Definition -> {
                 when (declarationInfo.type) {
                     ParadoxDefinitionTypes.Event -> false //排除事件
                     else -> true
@@ -31,7 +31,7 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         }
     }
 
-    private fun collectSuggestedNames(declarationInfo: ParadoxDeclarationInfo, nameSuggestionContext: PsiElement?, result: MutableSet<String>): SuggestedNameInfo? {
+    private fun collectSuggestedNames(declarationInfo: ParadoxTargetInfo, nameSuggestionContext: PsiElement?, result: MutableSet<String>): SuggestedNameInfo? {
         val name = declarationInfo.name
         val suggestedNames = mutableSetOf<String>()
 
@@ -51,9 +51,9 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
 
         //parentDefinitionName作为前缀
         run {
-            if (declarationInfo is ParadoxDeclarationInfo.Definition) return@run //排除本身是定义的情况
+            if (declarationInfo is ParadoxTargetInfo.Definition) return@run //排除本身是定义的情况
             val parentDefinition = nameSuggestionContext?.findParentDefinition() ?: return@run
-            val parentDeclarationInfo = ParadoxDeclarationInfo.from(parentDefinition) ?: return@run
+            val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinition) ?: return@run
             if (!isSupported(parentDeclarationInfo)) return@run
             val parentDefinitionInfo = parentDefinition.definitionInfo ?: return@run
             val parentDefinitionName = parentDefinitionInfo.name

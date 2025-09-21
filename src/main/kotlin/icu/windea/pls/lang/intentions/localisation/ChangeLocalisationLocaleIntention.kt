@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import kotlinx.coroutines.launch
 
@@ -43,7 +43,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
-        return ParadoxPsiManager.findLocalisationLocale(file, offset, true)
+        return ParadoxPsiFinder.findLocalisationLocale(file, offset, true)
     }
 
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

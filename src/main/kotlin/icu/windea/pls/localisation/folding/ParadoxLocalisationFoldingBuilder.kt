@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.lang.settings.PlsSettingsState
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMAND
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_COMMAND

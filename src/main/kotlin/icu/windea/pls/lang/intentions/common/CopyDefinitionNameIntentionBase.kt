@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -33,8 +33,6 @@ abstract class CopyDefinitionNameIntentionBase : ModCommandAction, DumbAware {
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptDefinitionElement? {
-        val allOptions = ParadoxPsiManager.FindDefinitionOptions
-        val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
-        return ParadoxPsiManager.findDefinition(context.file, context.offset, options)
+        return ParadoxPsiFinder.findDefinition(context.file, context.offset) { DEFAULT or BY_REFERENCE }
     }
 }

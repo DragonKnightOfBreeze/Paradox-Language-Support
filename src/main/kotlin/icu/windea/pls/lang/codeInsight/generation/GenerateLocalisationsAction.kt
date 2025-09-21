@@ -12,7 +12,7 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
@@ -77,11 +77,11 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
 
     private fun findElement(file: ParadoxScriptFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset)
+        return ParadoxPsiFinder.findScriptExpression(file, offset)
     }
 
     private fun findElement(file: ParadoxLocalisationFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiManager.findLocalisation(file, offset)
+        return ParadoxPsiFinder.findLocalisation(file, offset)
     }
 
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {

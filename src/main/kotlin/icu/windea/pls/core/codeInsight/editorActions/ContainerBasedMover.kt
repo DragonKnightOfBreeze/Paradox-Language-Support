@@ -17,7 +17,7 @@ import fleet.util.takeWhileInclusive
 import icu.windea.pls.core.children
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 
 /**
  * 基于“容器-成员”语义的行移动器。

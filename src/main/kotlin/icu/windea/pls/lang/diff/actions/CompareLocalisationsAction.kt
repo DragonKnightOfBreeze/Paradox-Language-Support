@@ -46,8 +46,8 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxRootInfo
@@ -77,7 +77,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiManager.findLocalisation(file, offset)?.takeIf { it.type != null }
+        return ParadoxPsiFinder.findLocalisation(file, offset)?.takeIf { it.type != null }
     }
 
     private fun findElement(e: AnActionEvent): ParadoxLocalisationProperty? {

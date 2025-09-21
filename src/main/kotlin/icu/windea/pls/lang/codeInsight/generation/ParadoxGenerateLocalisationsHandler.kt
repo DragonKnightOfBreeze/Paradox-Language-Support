@@ -11,7 +11,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -54,6 +54,6 @@ class ParadoxGenerateLocalisationsHandler(
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
 }

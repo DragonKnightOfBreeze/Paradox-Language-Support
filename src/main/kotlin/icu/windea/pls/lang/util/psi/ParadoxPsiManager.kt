@@ -1,19 +1,14 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.util.psi
 
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.parents
 import com.intellij.psi.util.siblings
-import com.intellij.util.BitUtil
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
@@ -22,8 +17,6 @@ import icu.windea.pls.core.containsLineBreak
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
-import icu.windea.pls.core.findElementAt
-import icu.windea.pls.core.findReferenceAt
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
@@ -32,8 +25,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.definitionInfo
@@ -41,17 +32,14 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
-import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
-import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -69,175 +57,12 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
-import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.isDefinitionName
-import icu.windea.pls.script.psi.isDefinitionRootKey
-import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.resolved
 import java.util.LinkedList
 import kotlin.collections.ArrayDeque
 
-@Suppress("UNUSED_PARAMETER")
 object ParadoxPsiManager {
-    //region Find Methods
-
-    object FindScriptedVariableOptions {
-        const val DEFAULT = 0x01
-        const val BY_NAME = 0x02
-        const val BY_REFERENCE = 0x04
-    }
-
-    fun findScriptVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
-        if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
-            }
-            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
-            if (resolved != null) return resolved
-        }
-        if (file.language !is ParadoxScriptLanguage) return null
-        if (BitUtil.isSet(options, FindScriptedVariableOptions.DEFAULT)) {
-            val result = file.findElementAt(offset) t@{
-                it.parents(false).find p@{ p -> p is ParadoxScriptScriptedVariable }
-            }?.castOrNull<ParadoxScriptScriptedVariable>()
-            if (result != null) return result
-        } else {
-            if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_NAME)) {
-                val result = file.findElementAt(offset) p@{
-                    if (it.elementType != ParadoxScriptElementTypes.SCRIPTED_VARIABLE_NAME_TOKEN) return@p null
-                    it.parents(false).find p@{ p -> p is ParadoxScriptScriptedVariable }
-                }?.castOrNull<ParadoxScriptScriptedVariable>()
-                if (result != null) return result
-            }
-        }
-        return null
-    }
-
-    object FindDefinitionOptions {
-        const val DEFAULT = 0x01
-        const val BY_ROOT_KEY = 0x02
-        const val BY_NAME = 0x04
-        const val BY_REFERENCE = 0x08
-    }
-
-    /**
-     * @param options 从哪些位置查找对应的定义。如果传1，则表示直接向上查找即可。
-     */
-    fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptDefinitionElement? {
-        val expressionElement by lazy {
-            file.findElementAt(offset) {
-                it.parentOfType<ParadoxScriptExpressionElement>(false)
-            }?.takeIf { it.isExpression() }
-        }
-        val expressionReference by lazy {
-            file.findReferenceAt(offset) {
-                it.element is ParadoxScriptExpressionElement && ParadoxResolveConstraint.Definition.canResolve(it)
-            }
-        }
-
-        if (BitUtil.isSet(options, FindDefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = expressionReference
-            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()?.takeIf { it.definitionInfo != null }
-            if (resolved != null) return resolved
-        }
-        if (file.language !is ParadoxScriptLanguage) return null
-        if (BitUtil.isSet(options, FindDefinitionOptions.DEFAULT)) {
-            val result = file.findElementAt(offset) t@{
-                it.parents(false).find p@{ p -> p is ParadoxScriptDefinitionElement && p.definitionInfo != null }
-            }?.castOrNull<ParadoxScriptDefinitionElement>()
-            if (result != null) return result
-        } else {
-            if (BitUtil.isSet(options, FindDefinitionOptions.BY_ROOT_KEY)) {
-                val element = expressionElement
-                if (element is ParadoxScriptPropertyKey && element.isDefinitionRootKey()) {
-                    return element.findParentDefinition()
-                }
-            }
-            if (BitUtil.isSet(options, FindDefinitionOptions.BY_NAME)) {
-                val element = expressionElement
-                if (element is ParadoxScriptValue && element.isDefinitionName()) {
-                    return element.findParentDefinition()
-                }
-            }
-        }
-        return null
-    }
-
-    object FindLocalisationOptions {
-        const val DEFAULT = 0x01
-        const val BY_NAME = 0x02
-        const val BY_REFERENCE = 0x04
-    }
-
-    /**
-     * @param options 从哪些位置查找对应的定义。如果传1，则表示直接向上查找即可。
-     */
-    fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
-        if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.Localisation.canResolve(it)
-            }
-            val resolved = reference?.resolve()?.castOrNull<ParadoxLocalisationProperty>()
-            if (resolved != null) return resolved
-        }
-        if (file.language !is ParadoxLocalisationLanguage) return null
-        if (BitUtil.isSet(options, FindLocalisationOptions.DEFAULT)) {
-            val result = file.findElementAt(offset) t@{
-                it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty }
-            }?.castOrNull<ParadoxLocalisationProperty>()
-            if (result != null) return result
-        } else {
-            if (BitUtil.isSet(options, FindLocalisationOptions.BY_NAME)) {
-                val result = file.findElementAt(offset) p@{
-                    if (it.elementType != ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN) return@p null
-                    it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty }
-                }?.castOrNull<ParadoxLocalisationProperty>()
-                if (result != null) return result
-            }
-        }
-        return null
-    }
-
-    fun findScriptExpression(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        if (file.language !is ParadoxScriptLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxScriptExpressionElement>(false)
-        }?.takeIf { it.isExpression() }
-    }
-
-    fun findLocalisationExpression(file: PsiFile, offset: Int): ParadoxLocalisationExpressionElement? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxLocalisationExpressionElement>(false)
-        }?.takeIf { it.isComplexExpression() }
-    }
-
-    fun findCsvExpression(file: PsiFile, offset: Int): ParadoxCsvExpressionElement? {
-        if (file.language !is ParadoxCsvLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxCsvExpressionElement>(false)
-        }
-    }
-
-    fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
-        return file.findElementAt(offset) t@{
-            if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.COLOR_TOKEN) return@t null
-            it.parentOfType<ParadoxLocalisationColorfulText>(false)
-        }
-    }
-
-    fun findLocalisationLocale(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationLocale? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
-        return file.findElementAt(offset) p@{
-            if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@p null
-            it.parentOfType<ParadoxLocalisationLocale>(false)
-        }
-    }
-
-    //endregion
-
     //region Inline Methods
 
     fun inlineScriptedVariable(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptScriptedVariable, project: Project) {
@@ -357,6 +182,7 @@ object ParadoxPsiManager {
         element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
+    @Suppress("unused")
     fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
         if (element !is ParadoxScriptValue) return
 
@@ -382,6 +208,7 @@ object ParadoxPsiManager {
         contextReferenceElement.delete()
     }
 
+    @Suppress("unused")
     fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
         if (element !is ParadoxLocalisationParameter) return
 

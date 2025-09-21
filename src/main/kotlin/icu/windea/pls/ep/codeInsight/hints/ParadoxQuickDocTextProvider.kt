@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.supportsByAnnotation
-import icu.windea.pls.lang.util.ParadoxPsiMatcher
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -19,9 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxScriptDefinitionElement? {
         val offset = editor.caretModel.offset
-        val allOptions = ParadoxPsiManager.FindDefinitionOptions
-        val options = allOptions.BY_ROOT_KEY or allOptions.BY_NAME or allOptions.BY_REFERENCE
-        val definition = ParadoxPsiManager.findDefinition(file, offset, options) ?: return null
+        val definition = ParadoxPsiFinder.findDefinition(file, offset) { BY_ROOT_KEY or BY_NAME or BY_REFERENCE } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return null
         return superDefinition

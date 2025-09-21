@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.codeInsight.markers.script
 
+import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
@@ -10,6 +11,7 @@ import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
+import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -59,10 +61,11 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
-        // NavigateAction.setNavigateAction(
-        //	lineMarkerInfo,
-        //	PlsBundle.message("script.gutterIcon.definition.action"),
-        //	PlsActions.GutterGotoDefinition
-        // )
+        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
+        NavigateAction.setNavigateAction(
+        	lineMarkerInfo,
+        	PlsBundle.message("script.gutterIcon.definition.action"),
+        	PlsActions.GotoDefinitions
+        )
     }
 }

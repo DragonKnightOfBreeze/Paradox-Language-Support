@@ -26,7 +26,7 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -104,7 +104,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
     }
 
     override fun shouldSortTargets(): Boolean {

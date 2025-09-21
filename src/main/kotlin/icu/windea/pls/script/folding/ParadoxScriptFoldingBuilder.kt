@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.lang.settings.PlsSettingsState
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
