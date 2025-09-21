@@ -41,7 +41,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
     override fun getGroup() = PlsBundle.message("script.gutterIcon.relatedLocalisations.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element是definition，且definitionInfo.localisation不为空，且计算得到的keys不为空
+        // 何时显示装订线图标：element 是 definition，且 definitionInfo.localisation 不为空，且计算得到的 keys 不为空
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
@@ -52,7 +52,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()
         val keys = mutableSetOf<String>()
-        val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
+        val targets = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
@@ -73,7 +73,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))
             .setTargets { targets }
-            .setAlignment(GutterIconRenderer.Alignment.CENTER)
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)

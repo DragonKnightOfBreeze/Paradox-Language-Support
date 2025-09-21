@@ -36,7 +36,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
     override fun getGroup() = PlsBundle.message("script.gutterIcon.scriptedVariable.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element是scriptedVariable
+        // 何时显示装订线图标：element 是 scriptedVariable
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
         val prefix = PlsStringConstants.scriptedVariablePrefix

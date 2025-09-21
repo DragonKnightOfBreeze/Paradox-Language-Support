@@ -39,7 +39,7 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
     override fun getGroup() = PlsBundle.message("localisation.gutterIcon.localisation.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element是localisation/localisation_synced
+        // 何时显示装订线图标：element 是 localisation/localisation_synced
         if (element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull()
         if (name == null) return

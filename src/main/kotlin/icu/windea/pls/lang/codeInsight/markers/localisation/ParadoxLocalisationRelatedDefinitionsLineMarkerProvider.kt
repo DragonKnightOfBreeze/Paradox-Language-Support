@@ -32,6 +32,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
     override fun getGroup() = PlsBundle.message("localisation.gutterIcon.relatedDefinitions.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
+        // 何时显示装订线图标：element 是 localisation，且存在相关的定义
         if (element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull()
         if (name == null) return
@@ -50,7 +51,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("localisation.gutterIcon.relatedDefinitions.title"))
             .setTargets { targets }
-            .setAlignment(GutterIconRenderer.Alignment.CENTER)
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("localisation.gutterIcon.relatedDefinitions") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
