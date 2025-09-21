@@ -62,12 +62,12 @@ class ParadoxModDependenciesExportPopup(
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("mod.exporter.error", 0, e.message.orEmpty())
+            val content = PlsBundle.message("mod.exporter.error", e.message.orEmpty())
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
         if (result.warning != null) {
-            val content = PlsBundle.message("mod.exporter.error", result.actualTotal, result.warning)
+            val content = PlsBundle.message("mod.exporter.warning", result.actualTotal, modSetInfo.name, result.warning)
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }

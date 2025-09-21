@@ -62,12 +62,12 @@ class ParadoxModDependenciesImportPopup(
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("mod.importer.error", 0, e.message.orEmpty())
+            val content = PlsBundle.message("mod.importer.error", e.message.orEmpty())
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
         if (result.warning != null) {
-            val content = PlsBundle.message("mod.importer.error", result.actualTotal, result.warning)
+            val content = PlsBundle.message("mod.importer.warning", result.actualTotal, result.newModSetInfo.name, result.warning)
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
@@ -80,7 +80,7 @@ class ParadoxModDependenciesImportPopup(
         // 选中刚刚添加的所有模组依赖
         table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-        val content = PlsBundle.message("mod.importer.info", result.actualTotal, modSetInfo.name)
+        val content = PlsBundle.message("mod.importer.info", result.actualTotal, result.newModSetInfo.name)
         PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
     }
 }
