@@ -119,7 +119,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
-        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Resource, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Resource, selector).findAll()
             .mapTo(mutableSetOf()) { it.name }  //it.name is ok
     }
 

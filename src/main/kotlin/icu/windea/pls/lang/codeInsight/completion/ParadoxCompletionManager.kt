@@ -622,7 +622,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(null, typeExpression, selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             if (definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions

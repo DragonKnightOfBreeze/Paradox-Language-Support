@@ -78,7 +78,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 .withSearchScopeType(finalSearchScopeType)
                 .contextSensitive()
                 .distinctByName()
-            return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
+            return ParadoxDefinitionSearch.search(null, typeExpression, selector).findAll()
         }
 
         protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean

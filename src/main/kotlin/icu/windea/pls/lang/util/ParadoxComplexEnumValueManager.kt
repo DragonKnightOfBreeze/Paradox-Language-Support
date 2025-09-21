@@ -285,4 +285,9 @@ object ParadoxComplexEnumValueManager {
         val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
     }
+
+    // fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): Set<ParadoxLocalisationProperty> {
+    //     val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
+    //     return ParadoxLocalisationSearch.search(name, selector).findAll()
+    // }
 }

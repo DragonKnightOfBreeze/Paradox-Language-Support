@@ -22,14 +22,19 @@ object ParadoxScriptedVariableManager {
         return "common/scripted_variables".matchesPath(path.path)
     }
 
+    fun getLocalizedName(element: ParadoxScriptScriptedVariable): String? {
+        val name = element.name?.orNull() ?: return null
+        val nameLocalisation = getNameLocalisation(name, element, ParadoxLocaleManager.getPreferredLocaleConfig()) ?: return null
+        return ParadoxLocalisationTextRenderer().render(nameLocalisation).orNull()
+    }
+
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
         val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
     }
 
-    fun getLocalizedName(element: ParadoxScriptScriptedVariable): String? {
-        val name = element.name?.orNull() ?: return null
-        val nameLocalisation = getNameLocalisation(name, element, ParadoxLocaleManager.getPreferredLocaleConfig()) ?: return null
-        return ParadoxLocalisationTextRenderer().render(nameLocalisation).orNull()
+    fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): Set<ParadoxLocalisationProperty> {
+        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
+        return ParadoxLocalisationSearch.search(name, selector).findAll()
     }
 }

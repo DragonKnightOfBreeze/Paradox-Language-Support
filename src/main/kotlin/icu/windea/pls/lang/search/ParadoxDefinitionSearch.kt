@@ -12,12 +12,15 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 定义的名字。
-     * @property typeExpression 定义的类型表达式。如果为空字符串，则仅查询通过属性声明的定义。
+     * @property typeExpression 定义的类型表达式。
+     * @property selector 查询选择器。
+     * @property forFile 是否查询作为文件的定义。默认为 `true`。
      */
     class SearchParameters(
         val name: String?,
         val typeExpression: String?,
-        override val selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
+        override val selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>,
+        val forFile: Boolean = true,
     ) : ParadoxSearchParameters<ParadoxScriptDefinitionElement>
 
     companion object {
@@ -26,28 +29,15 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         @JvmField
         val INSTANCE = ParadoxDefinitionSearch()
 
-        /**
-         *  @see ParadoxDefinitionSearch.SearchParameters
-         */
+        /** @see ParadoxDefinitionSearch.SearchParameters*/
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             typeExpression: String?,
-            selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
+            selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>,
+            forFile: Boolean = true,
         ): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector))
-        }
-
-        /**
-         *  @see ParadoxDefinitionSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            typeExpression: String?,
-            selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
-        ): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, typeExpression, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector, forFile))
         }
     }
 }
-

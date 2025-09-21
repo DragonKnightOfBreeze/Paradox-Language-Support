@@ -27,7 +27,7 @@ object ParadoxGameConceptManager {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
             .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
-        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
     }
 
     /**

@@ -112,7 +112,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+                    ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 
                     ParadoxCompletionManager.completeExtendedDefinition(context, result)
                 }
@@ -136,7 +136,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.rootKey, true) }
                         .notSamePosition(definition)
                         .distinctByName()
-                    ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+                    ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 
                     ParadoxCompletionManager.completeExtendedDefinition(context, result)
                 }

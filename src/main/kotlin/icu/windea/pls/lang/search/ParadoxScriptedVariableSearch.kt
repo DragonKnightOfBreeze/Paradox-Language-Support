@@ -12,8 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.SearchParameters>(EP_NAME) {
     /**
-     * @property name 名字（不以 `@` 开始）。
-     * @property type 类型（所有/本地/全局）。
+     * @property name 封装变量的名字（不以 `@` 开始）。
+     * @property type 封装变量的类型（所有/本地/全局）。
      */
     class SearchParameters(
         val name: String?,

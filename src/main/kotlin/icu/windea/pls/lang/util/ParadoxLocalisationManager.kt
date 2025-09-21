@@ -103,8 +103,8 @@ object ParadoxLocalisationManager {
         val result = mutableListOf<ParadoxScriptDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
             ProgressManager.checkCanceled()
-            // op: only search definitions declared by a property, to optimize performance
-            ParadoxDefinitionSearch.search(nameToSearch, "", selector).findAll().forEach f2@{ definition ->
+            // op: only search definitions declared by a property, rather than by a file, to optimize performance
+            ParadoxDefinitionSearch.search(null, nameToSearch, selector, forFile = false).findAll().forEach f2@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2

@@ -13,6 +13,9 @@ import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
+/**
+ * 链式的查询选择器。
+ */
 class ChainedParadoxSelector<T>(
     val project: Project,
     val context: Any? = null

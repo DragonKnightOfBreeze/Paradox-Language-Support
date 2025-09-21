@@ -100,7 +100,7 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        val definitions = ParadoxDefinitionSearch.search("text_color", selector).findAll()
+        val definitions = ParadoxDefinitionSearch.search(null, "text_color", selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
     }

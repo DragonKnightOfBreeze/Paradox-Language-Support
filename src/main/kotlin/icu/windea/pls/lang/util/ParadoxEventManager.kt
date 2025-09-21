@@ -76,7 +76,7 @@ object ParadoxEventManager {
     }
 
     fun getEvents(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Event, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Event, selector).findAll()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
@@ -249,7 +249,7 @@ object ParadoxEventManager {
         if (invocations.isEmpty()) return emptyList()
         selector.withGameType(ParadoxGameType.Stellaris)
         return buildList b@{
-            ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Event, selector).processQuery p@{ rDefinition ->
+            ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Event, selector).processQuery p@{ rDefinition ->
                 ProgressManager.checkCanceled()
                 val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                 if (rDefinitionInfo.name.isEmpty()) return@p true

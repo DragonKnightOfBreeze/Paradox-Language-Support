@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  *
  * 显示时机：当 [PsiElement] 为 [ParadoxScriptScriptedVariable]，且存在同名本地化时。
  *
- * 查找逻辑：通过 [ParadoxScriptedVariableManager.getNameLocalisation] 使用首选语言环境查找同名本地化。
+ * 查找逻辑：通过 [ParadoxScriptedVariableManager.getNameLocalisations] 使用首选语言环境查找同名本地化。
  * 其中所用选择器会应用 `preferLocale(preferredLocale)` 策略：即优先使用该语言环境，并在必要时进行回退。
  */
 class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
@@ -38,13 +38,14 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
         val name = element.name?.orNull() ?: return
         // 查找同名本地化（优先首选语言）
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val localisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, locale) ?: return
+        val localisations = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale)
+        if (localisations.isEmpty()) return
         // 提示文本：relatedLocalisation: <key>
         val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltip = "$prefix $name"
         // 目标：单个本地化属性
         val targets = mutableSetOf<ParadoxLocalisationProperty>()
-        targets.add(localisation)
+        targets.addAll(localisations)
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.RelatedLocalisations
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

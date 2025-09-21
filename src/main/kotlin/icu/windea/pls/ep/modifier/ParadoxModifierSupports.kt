@@ -20,7 +20,6 @@ import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.generatedModifiers
 import icu.windea.pls.config.configGroup.predefinedModifiers
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.grayed
@@ -58,6 +57,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -99,7 +99,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
         modifierInfo.modifierConfig = modifierConfig
@@ -161,7 +161,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         var modifierConfig: CwtModifierConfig? = null
         val templateExpression = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
@@ -351,7 +351,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -365,10 +365,10 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -392,7 +392,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         if (element !is ParadoxScriptStringExpressionElement) return
 
         val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).processQueryAsync p@{ economicCategory ->
+        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.EconomicCategory, selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true

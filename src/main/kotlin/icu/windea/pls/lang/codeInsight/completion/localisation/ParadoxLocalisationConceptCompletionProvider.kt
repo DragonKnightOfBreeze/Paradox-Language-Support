@@ -41,7 +41,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         //提示concept的name或alias
         val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.GameConcept, conceptSelector).processQueryAsync p@{ concept ->
+        ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.GameConcept, conceptSelector).processQueryAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
             val icon = PlsIcons.Nodes.LocalisationConcept

@@ -131,7 +131,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         }
         if (contextConfig == null || contextReferenceElement == null) return null
         val configGroup = contextConfig.configGroup
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val definitionName = contextReferenceElement.name.orNull() ?: return null
         if (definitionName.isParameterized()) return null //skip if context name is parameterized
@@ -203,7 +203,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
-        val gameType = config.configGroup.gameType ?: return null
+        val gameType = config.configGroup.gameType
         val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)
@@ -338,7 +338,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         }
         if (expressionElementConfig.configExpression.type !in CwtDataTypeGroups.ValueField) return null
         val configGroup = expressionElementConfig.configGroup
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val range = TextRange.create(0, expressionString.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, range, configGroup) ?: return null
@@ -393,7 +393,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.definitionName = definitionName
@@ -471,7 +471,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         }
         if (inlineConfig == null || contextReferenceElement == null) return null
         val configGroup = inlineConfig.configGroup
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if (expression.isParameterized()) return null //skip if context name is parameterized
@@ -538,7 +538,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val gameType = config.configGroup.gameType ?: return null
+        val gameType = config.configGroup.gameType
         val project = config.configGroup.project
         val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)

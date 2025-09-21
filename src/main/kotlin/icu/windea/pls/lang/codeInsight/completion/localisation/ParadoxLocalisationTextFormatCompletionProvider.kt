@@ -36,7 +36,7 @@ class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<Compl
         val originalFile = parameters.originalFile
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search(definitionType, definitionSelector).processQueryAsync p@{ definition ->
+        ParadoxDefinitionSearch.search(null, definitionType, definitionSelector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
             val name = definitionInfo.name

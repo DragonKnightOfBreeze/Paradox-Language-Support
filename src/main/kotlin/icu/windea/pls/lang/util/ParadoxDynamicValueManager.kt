@@ -19,10 +19,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 object ParadoxDynamicValueManager {
-    const val EVENT_TARGET_PREFIX = "event_target:"
-
-    val EVENT_TARGETS = setOf("event_target", "global_event_target")
-
     fun getName(expression: String): String? {
         return expression.substringBefore('@').orNull()
     }
@@ -38,7 +34,7 @@ object ParadoxDynamicValueManager {
 
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
         if (!name.isIdentifier()) return null //skip invalid names
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueType = configExpression.value ?: return null
         return ParadoxDynamicValueElement(element, name, dynamicValueType, readWriteAccess, gameType, configGroup.project)
@@ -46,7 +42,7 @@ object ParadoxDynamicValueManager {
 
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
         if (!name.isIdentifier()) return null //skip invalid names
-        val gameType = configGroup.gameType ?: return null
+        val gameType = configGroup.gameType
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
@@ -57,4 +53,9 @@ object ParadoxDynamicValueManager {
         val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
     }
+
+    // fun getNameLocalisations(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): Set<ParadoxLocalisationProperty> {
+    //     val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
+    //     return ParadoxLocalisationSearch.search(name, selector).findAll()
+    // }
 }

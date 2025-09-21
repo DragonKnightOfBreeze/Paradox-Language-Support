@@ -52,7 +52,7 @@ object ParadoxTechnologyManager {
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Technology, selector).findAll()
+        return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Technology, selector).findAll()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
@@ -73,7 +73,7 @@ object ParadoxTechnologyManager {
 
         fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
-            return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()
+            return ParadoxDefinitionSearch.search(null, "technology_tier", selector).findAll()
         }
 
         fun getAllResearchAreas(): Set<String> {
@@ -86,7 +86,7 @@ object ParadoxTechnologyManager {
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
-            return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.TechnologyCategory, selector).findAll()
+            return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.TechnologyCategory, selector).findAll()
         }
 
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
@@ -152,7 +152,7 @@ object ParadoxTechnologyManager {
             if (prerequisites.isEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{
-                ParadoxDefinitionSearch.search(type, selector).processQuery p@{ rDefinition ->
+                ParadoxDefinitionSearch.search(null, type, selector).processQuery p@{ rDefinition ->
                     ProgressManager.checkCanceled()
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if (rDefinitionInfo.name.isEmpty()) return@p true
