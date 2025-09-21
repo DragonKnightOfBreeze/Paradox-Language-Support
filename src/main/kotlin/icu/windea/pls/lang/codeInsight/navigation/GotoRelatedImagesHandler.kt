@@ -39,7 +39,6 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
-        // need read actions here if necessary
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
@@ -52,6 +51,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 if (imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>().synced()
                 val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                    // need read actions here if necessary
                     for ((_, locationExpression) in imageInfos) {
                         ProgressManager.checkCanceled()
                         runReadAction {
@@ -69,6 +69,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = mutableListOf<PsiElement>().synced()
                 val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                    // need read actions here if necessary
                     runReadAction {
                         val paths = ParadoxModifierManager.getModifierIconPaths(modifierElement.name, modifierElement)
                         val iconFiles = paths.firstNotNullOfOrNull { path ->

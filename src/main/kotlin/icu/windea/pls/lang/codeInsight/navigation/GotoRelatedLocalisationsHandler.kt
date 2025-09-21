@@ -45,7 +45,6 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
-        // need read actions here if necessary
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
@@ -56,6 +55,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val name = scriptedVariable.name?.orNull() ?: return null
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
                 val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                    // need read actions here if necessary
                     runReadAction {
                         val result = ParadoxScriptedVariableManager.getNameLocalisations(name, element, preferredLocale)
                         targets.addAll(result)
@@ -72,6 +72,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
                 val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                    // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
                         runReadAction {
@@ -89,6 +90,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
                 val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                    // need read actions here if necessary
                     runReadAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->

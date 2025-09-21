@@ -4,6 +4,7 @@ object PlsActions {
     const val DefinitionHierarchyPopupMenu = "Pls.DefinitionHierarchyPopupMenu"
     const val CallHierarchyPopupMenu = "Pls.CallHierarchyPopupMenu"
 
+    const val GotoScriptedVariables = "Pls.GoToScriptedVariables"
     const val GotoDefinitions = "Pls.GoToDefinitions"
     const val GotoLocalisations = "Pls.GoToLocalisations"
     const val GotoRelatedDefinitions = "Pls.GoToRelatedDefinitions"

@@ -40,7 +40,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val definitionInfo = definition.definitionInfo ?: return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            //need read action here
+            // need read actions here if necessary
             runReadAction {
                 val selector = selector(project, definition).definition().contextSensitive()
                 val resolved = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()

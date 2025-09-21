@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -33,10 +34,10 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
         presentation.isVisible = true
         val offset = editor.caretModel.offset
         val localisation = findElement(file, offset)
-        presentation.isEnabled = localisation != null && localisation.type != null
+        presentation.isEnabled = ParadoxPsiMatcher.isLocalisation(localisation)
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisation(file, offset)
+        return ParadoxPsiFinder.findLocalisation(file, offset) { BY_NAME }
     }
 }

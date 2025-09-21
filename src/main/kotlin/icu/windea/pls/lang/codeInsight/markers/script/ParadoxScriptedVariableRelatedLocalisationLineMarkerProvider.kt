@@ -59,6 +59,7 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
+        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
         	lineMarkerInfo,
         	PlsBundle.message("script.gutterIcon.relatedLocalisations.action"),

@@ -323,6 +323,11 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
+      <action id="Pls.GoToScriptedVariables" class="icu.windea.pls.lang.codeInsight.navigation.GotoScriptedVariablesAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
       <action id="Pls.GoToDefinitions" class="icu.windea.pls.lang.codeInsight.navigation.GotoDefinitionsAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt o"/>
         <override-text place="MainMenu"/>

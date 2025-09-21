@@ -14,8 +14,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 import java.util.*
 
 class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
@@ -27,19 +27,18 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        val localisation = element
-        if (localisation.type != ParadoxLocalisationType.Normal) return null
+        if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            //need read action here
+            // need read actions here if necessary
             runReadAction {
-                val resolved = ParadoxLocalisationManager.getRelatedDefinitions(localisation)
+                val resolved = ParadoxLocalisationManager.getRelatedDefinitions(element)
                 targets.addAll(resolved)
             }
-        }, PlsBundle.message("script.goto.relatedDefinitions.search", localisation.name), true, project)
+        }, PlsBundle.message("script.goto.relatedDefinitions.search", element.name), true, project)
         if (!runResult) return null
-        if (targets.isNotEmpty()) targets.removeIf { it == localisation }
-        return GotoData(localisation, targets.distinct().toTypedArray(), emptyList())
+        if (targets.isNotEmpty()) targets.removeIf { it == element }
+        return GotoData(element, targets.distinct().toTypedArray(), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
