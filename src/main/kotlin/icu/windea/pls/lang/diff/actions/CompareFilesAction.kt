@@ -18,10 +18,10 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -29,6 +29,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -85,13 +86,13 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val file = findFile(e) ?: return null
         val path = file.fileInfo?.path?.path ?: return null
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
-        ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            runReadAction {
+        runWithModalProgressBlocking<Unit>(project, PlsBundle.message("diff.compare.files.collect.title")) {
+            readAction {
                 val selector = selector(project, file).file()
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 virtualFiles.addAll(result)
             }
-        }, PlsBundle.message("diff.compare.files.collect.title"), true, project)
+        }
         if (virtualFiles.size <= 1) {
             //unexpected, should not be empty here
             PlsCoreManager.createNotification(

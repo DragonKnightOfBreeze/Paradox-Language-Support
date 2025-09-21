@@ -2,10 +2,11 @@ package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.codeInsight.navigation.activateFileWithPsiElement
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -54,14 +55,13 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val scriptedVariable = element
                 val name = scriptedVariable.name?.orNull() ?: return null
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-                val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                runWithModalProgressBlocking<Unit>(project, PlsBundle.message("script.goto.relatedLocalisations.search.3", name)) {
                     // need read actions here if necessary
-                    runReadAction {
+                    readAction {
                         val result = ParadoxScriptedVariableManager.getNameLocalisations(name, element, preferredLocale)
                         targets.addAll(result)
                     }
-                }, PlsBundle.message("script.goto.relatedLocalisations.search.3", name), true, project)
-                if (!runResult) return null
+                }
                 return GotoData(element, targets.distinct().toTypedArray(), emptyList())
             }
             element !is ParadoxScriptStringExpressionElement -> return null
@@ -71,27 +71,26 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 val localisationInfos = definitionInfo.localisations
                 if (localisationInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-                val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in localisationInfos) {
                         ProgressManager.checkCanceled()
-                        runReadAction {
+                        readAction {
                             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
                             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                                 targets.addAll(resolveResult.elements)
                             }
                         }
                     }
-                }, PlsBundle.message("script.goto.relatedLocalisations.search.1", definitionInfo.name), true, project)
-                if (!runResult) return null
+                }
                 return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
             }
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-                val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name)) {
                     // need read actions here if necessary
-                    runReadAction {
+                    readAction {
                         val keys = ParadoxModifierManager.getModifierNameKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
@@ -101,7 +100,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         }
                         if (result != null) targets.addAll(result)
                     }
-                    runReadAction {
+                    readAction {
                         val keys = ParadoxModifierManager.getModifierDescKeys(modifierElement.name, modifierElement)
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
@@ -111,8 +110,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         }
                         if (result != null) targets.addAll(result)
                     }
-                }, PlsBundle.message("script.goto.relatedLocalisations.search.2", modifierElement.name), true, project)
-                if (!runResult) return null
+                }
                 return GotoData(element, targets.distinct().toTypedArray(), emptyList())
             }
         }

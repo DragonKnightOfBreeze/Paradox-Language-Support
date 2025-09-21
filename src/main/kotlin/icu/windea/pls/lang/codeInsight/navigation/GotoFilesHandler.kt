@@ -2,10 +2,10 @@ package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.codeInsight.navigation.activateFileWithPsiElement
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -30,15 +30,14 @@ class GotoFilesHandler : GotoTargetHandler() {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path.path
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-        val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.files.search", file.name)) {
             // need read actions here if necessary
-            runReadAction {
+            readAction {
                 val selector = selector(project, file).file().contextSensitive()
                 val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 resolved.forEach { targets.add(it.toPsiFile(project)) }
             }
-        }, PlsBundle.message("script.goto.files.search", file.name), true, project)
-        if (!runResult) return null
+        }
         if (targets.isNotEmpty()) targets.removeIf { it == file } //remove current file from targets
         return GotoData(file, targets.distinct().toTypedArray(), emptyList())
     }

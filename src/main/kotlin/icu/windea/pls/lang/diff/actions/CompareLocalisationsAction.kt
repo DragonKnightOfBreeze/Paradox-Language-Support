@@ -17,10 +17,10 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.EditorFactory
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -28,6 +28,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import icu.windea.pls.PlsBundle
@@ -126,13 +127,13 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val project = psiFile.project
         val localisationName = localisation.name
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
-        ProgressManager.getInstance().runProcessWithProgressSynchronously({
-            runReadAction {
+        runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.localisations.collect.title")) {
+            readAction {
                 val selector = selector(project, file).localisation()
                 val result = ParadoxLocalisationSearch.search(localisationName, selector).findAll()
                 localisations.addAll(result)
             }
-        }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
+        }
         if (localisations.size <= 1) {
             //unexpected, should not be empty here
             PlsCoreManager.createNotification(

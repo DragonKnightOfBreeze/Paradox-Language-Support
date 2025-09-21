@@ -37,4 +37,3 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         return true
     }
 }
-

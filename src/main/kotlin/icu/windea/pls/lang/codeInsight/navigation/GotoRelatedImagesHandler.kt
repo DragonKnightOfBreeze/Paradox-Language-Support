@@ -2,10 +2,11 @@ package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.codeInsight.navigation.activateFileWithPsiElement
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -50,27 +51,26 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                 val imageInfos = definitionInfo.images
                 if (imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>().synced()
-                val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedImages.search.1", definitionInfo.name)) {
                     // need read actions here if necessary
                     for ((_, locationExpression) in imageInfos) {
                         ProgressManager.checkCanceled()
-                        runReadAction {
+                        readAction {
                             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo)
                             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                                 targets.addAll(resolveResult.elements)
                             }
                         }
                     }
-                }, PlsBundle.message("script.goto.relatedImages.search.1", definitionInfo.name), true, project)
-                if (!runResult) return null
+                }
                 return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
             }
             else -> {
                 val modifierElement = ParadoxModifierManager.resolveModifier(element) ?: return null
                 val targets = mutableListOf<PsiElement>().synced()
-                val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name)) {
                     // need read actions here if necessary
-                    runReadAction {
+                    readAction {
                         val paths = ParadoxModifierManager.getModifierIconPaths(modifierElement.name, modifierElement)
                         val iconFiles = paths.firstNotNullOfOrNull { path ->
                             val iconSelector = selector(project, element).file().contextSensitive()
@@ -78,8 +78,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                         }
                         if (iconFiles != null) targets.addAll(targets)
                     }
-                }, PlsBundle.message("script.goto.relatedImages.search.2", modifierElement.name), true, project)
-                if (!runResult) return null
+                }
                 return GotoData(element, targets.distinct().toTypedArray(), emptyList())
             }
         }
