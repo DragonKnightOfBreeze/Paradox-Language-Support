@@ -8,6 +8,7 @@ import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
@@ -16,6 +17,7 @@ import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
@@ -143,6 +145,21 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
                     }.enabledIf(cbTiger.selected)
                 }
+
+                // Tiger highlight mapping - open dialog
+                group(PlsBundle.message("settings.integrations.lint.tigerHighlight")) {
+                    row {
+                        comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    }
+                    row {
+                        link(PlsBundle.message("settings.integrations.lint.tigerHighlight.openDialog")) {
+                            val dialog = PlsTigerHighlightDialog(settings.lint.tigerHighlight)
+                            if (dialog.showAndGet()) {
+                                PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
+                            }
+                        }
+                    }
+                }.enabledIf(cbTiger.selected)
             }
         }
     }

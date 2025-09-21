@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.model.constants.PlsConstants
@@ -60,5 +61,38 @@ class PlsIntegrationsSettingsState : BaseState() {
         var irTigerConfPath by string() // absolute or relative to mod path
         var vic3TigerPath by string() // e.g., /path/to/vic3-tiger
         var vic3TigerConfPath by string() // absolute or relative to mod path
+
+        @get:Property(surroundWithTag = false)
+        var tigerHighlight by property(TigerHighlightState())
+
+        /**
+         * Tiger 高亮级别（IDE 严重度）的映射矩阵（Severity x Confidence）。
+         * 取值为 [HighlightSeverity] 的名称，如：INFORMATION、WEAK_WARNING、WARNING、ERROR。
+         *
+         * 这些默认值遵循当前实现的直觉映射，并在强置信度时适度提升严重度。
+         */
+        @Tag("tigerHighlight")
+        class TigerHighlightState: BaseState() {
+            // tips
+            var tipsWeak by string(HighlightSeverity.INFORMATION.name)
+            var tipsReasonable by string(HighlightSeverity.INFORMATION.name)
+            var tipsStrong by string(HighlightSeverity.WEAK_WARNING.name)
+            // untidy
+            var untidyWeak by string(HighlightSeverity.WEAK_WARNING.name)
+            var untidyReasonable by string(HighlightSeverity.WEAK_WARNING.name)
+            var untidyStrong by string(HighlightSeverity.WARNING.name)
+            // warning
+            var warningWeak by string(HighlightSeverity.WARNING.name)
+            var warningReasonable by string(HighlightSeverity.WARNING.name)
+            var warningStrong by string(HighlightSeverity.ERROR.name)
+            // error
+            var errorWeak by string(HighlightSeverity.ERROR.name)
+            var errorReasonable by string(HighlightSeverity.ERROR.name)
+            var errorStrong by string(HighlightSeverity.ERROR.name)
+            // fatal
+            var fatalWeak by string(HighlightSeverity.ERROR.name)
+            var fatalReasonable by string(HighlightSeverity.ERROR.name)
+            var fatalStrong by string(HighlightSeverity.ERROR.name)
+        }
     }
 }
