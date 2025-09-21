@@ -67,7 +67,7 @@ abstract class ReferenceLinkType(
         fun createLink(name: String, typeExpression: String? = null, gameType: ParadoxGameType? = null): String {
             val expression = if (typeExpression == null) name else "$name/$typeExpression"
             if (gameType == null) return "$prefix$expression"
-            return "$prefix${gameType.id}:$typeExpression"
+            return "$prefix${gameType.id}:$expression"
         }
     }
 

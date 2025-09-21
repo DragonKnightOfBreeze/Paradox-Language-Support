@@ -47,7 +47,7 @@ fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
 }
 
 fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuilder {
-    append(label.escapeXml()) //直接显示对应的标签文本
+    append(label) //直接显示对应的标签文本
     return this
 }
 

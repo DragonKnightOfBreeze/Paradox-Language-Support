@@ -12,7 +12,6 @@ import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
@@ -54,6 +53,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -382,7 +382,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsFacade.getSettings().documentation.renderNameDescForModifiers
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = run {
@@ -436,7 +436,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsFacade.getSettings().documentation.renderIconForModifiers
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
