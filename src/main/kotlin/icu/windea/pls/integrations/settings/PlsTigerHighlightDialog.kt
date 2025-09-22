@@ -2,7 +2,9 @@ package icu.windea.pls.integrations.settings
 
 import com.intellij.openapi.observable.properties.GraphProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import icu.windea.pls.PlsBundle
@@ -11,6 +13,7 @@ import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.Confidence
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.Severity
 import javax.swing.JComponent
+import javax.swing.SwingUtilities
 
 /**
  * Tiger 高亮映射配置对话框（严重度 x 置信度）。
@@ -58,11 +61,13 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
     // private fun Panel.createMapping() {
     //     var appendSeparator = false
     //     mergedProperties.forEach { (severity, mergedOption) ->
+    //         lateinit var mergedCb: ComboBox<PlsLintHighlightSeverity>
+    //
     //         if (appendSeparator) separator() else appendSeparator = true
     //         row {
     //             label(PlsBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
     //             label(PlsTigerLintManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")
-    //             highlightSeverityComboBox(withMerged = true).bindItem(mergedOption)
+    //             highlightSeverityComboBox(mergedOption).applyToComponent { mergedCb = this }
     //             button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
     //         }
     //         var i = 0
@@ -71,7 +76,8 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
     //             propertyGroup.getValue(severity).forEach { (confidence, option) ->
     //                 i++
     //                 label(PlsTigerLintManager.getConfidenceDisplayName(confidence)).widthGroup("tiger.label.$i")
-    //                 highlightSeverityComboBox().bindItem(option)
+    //                 highlightSeverityComboBox(option)
+    //                 forceRefreshMergedOption(option, mergedCb)
     //             }
     //         }
     //     }
@@ -89,13 +95,16 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
         }
         Severity.entries.forEach { severity ->
             row {
+                lateinit var mergedCb: ComboBox<PlsLintHighlightSeverity>
+
                 label(severityPrefix + PlsTigerLintManager.getSeverityDisplayName(severity)).widthGroup("tiger.c0")
                 val mergedOption = mergedProperties.getValue(severity)
-                highlightSeverityComboBox(withMerged = true).bindItem(mergedOption).widthGroup("tiger.c1")
+                highlightSeverityComboBox(mergedOption).widthGroup("tiger.c1").applyToComponent { mergedCb = this }
                 var i = 0
                 propertyGroup.getValue(severity).forEach { (_, option) ->
                     i++
-                    highlightSeverityComboBox().bindItem(option).widthGroup("tiger.c${i + 1}")
+                    highlightSeverityComboBox(option).widthGroup("tiger.c${i + 1}")
+                    forceRefreshMergedOption(option, mergedCb)
                 }
                 button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
             }
@@ -117,12 +126,27 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
     }
 
     @Suppress("UnstableApiUsage")
-    private fun highlightSeverityRender() = listCellRenderer<PlsLintHighlightSeverity?> {
-        value?.icon?.let { icon(it) }
-        value?.displayName?.let { text(it) }
+    private fun Row.highlightSeverityComboBox(property: GraphProperty<PlsLintHighlightSeverity>): Cell<ComboBox<PlsLintHighlightSeverity>> {
+        // 模型中不包含 Merged，但在选中区域根据属性值为 Merged 时显示“混合”
+        val renderer = listCellRenderer<PlsLintHighlightSeverity?> {
+            // index == -1 表示渲染选中值；此时如果属性值为 Merged，则强制显示“混合”
+            val toShow = if (index == -1 && property.get() == PlsLintHighlightSeverity.Merged) PlsLintHighlightSeverity.Merged else value
+            toShow?.icon?.let { icon(it) }
+            toShow?.displayName?.let { text(it) }
+        }
+        return comboBox(PlsLintHighlightSeverity.getAll(), renderer).bindItem(property)
     }
 
-    private fun Row.highlightSeverityComboBox(withMerged: Boolean = false) = comboBox(PlsLintHighlightSeverity.getAll(withMerged), highlightSeverityRender())
+    private fun forceRefreshMergedOption(property: GraphProperty<PlsLintHighlightSeverity>, mergedCb: ComboBox<PlsLintHighlightSeverity>) {
+        // 注意：需要在 mergedOption 变化时主动触发重绘，否则 UI 仅在重新聚焦时才会刷新选中区渲染
+        property.afterChange {
+            SwingUtilities.invokeLater {
+                (mergedCb.model as? CollectionComboBoxModel<PlsLintHighlightSeverity>)?.update()
+                mergedCb.revalidate()
+                mergedCb.repaint()
+            }
+        }
+    }
 
     private fun resetOptionsToDefaults(severity: Severity) {
         propertyGroup.getValue(severity).forEach { (confidence, option) ->
