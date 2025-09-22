@@ -246,10 +246,11 @@ class PlsSettingsState : BaseState() {
      * @property seForDefinitions 是否可在随处搜索中搜索定义（作为符号）。
      * @property seForLocalisations 是否可在随处搜索中搜索本地化（作为符号）。
      * @property seForSyncedLocalisations 是否可在随处搜索中搜索同步本地化（作为符号）。
-     * @property seForCwtTypeConfigs 是否可在随处搜索中搜索CWT类型规则（作为符号）。
-     * @property seForCwtComplexEnumConfigs 是否可在随处搜索中搜索CWT复杂枚举规则（作为符号）。
-     * @property seForCwtTriggerConfigs 是否可在随处搜索中搜索CWT触发器规则（作为符号）。
-     * @property seForCwtEffectConfigs 是否可在随处搜索中搜索CWT效果规则（作为符号）。
+     * @property seForCwtTypeConfigs 是否可在随处搜索中搜索 CWT 类型规则（作为符号）。
+     * @property seForCwtComplexEnumConfigs 是否可在随处搜索中搜索 CWT 复杂枚举规则（作为符号）。
+     * @property seForCwtTriggerConfigs 是否可在随处搜索中搜索 CWT 触发器规则（作为符号）。
+     * @property seForCwtEffectConfigs 是否可在随处搜索中搜索 CWT 效果规则（作为符号）。
+     * @property seForTextBasedTarget 是否可在随处搜索中基于本地化片段搜索各种目标（作为符号）。
      */
     class NavigationState : BaseState() {
         var seForScriptedVariables by property(true)
@@ -261,6 +262,8 @@ class PlsSettingsState : BaseState() {
         var seForCwtComplexEnumConfigs by property(false)
         var seForCwtTriggerConfigs by property(true)
         var seForCwtEffectConfigs by property(true)
+
+        var seForTextBasedTarget by property(true)
     }
 
     /**

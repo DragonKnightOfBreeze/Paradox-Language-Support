@@ -523,6 +523,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             .bindSelected(navigationSettings::seForCwtEffectConfigs)
                     }
                 }
+                indent {
+                    row {
+                        checkBox(PlsBundle.message("settings.navigation.seForTextBasedTarget"))
+                            .bindSelected(navigationSettings::seForTextBasedTarget)
+                        contextHelp(PlsBundle.message("settings.navigation.seForTextBasedTarget.tip"))
+                    }
+                }
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
