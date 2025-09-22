@@ -9,6 +9,9 @@ import icu.windea.pls.core.util.ObjectMappers
 import java.io.File
 
 /**
+ * Tiger 检查工具的检查结果。
+ *
+ * @property name 检测工具的名字，如 `vic3-tiger`。
  * @property itemGroup 键是相对于游戏或模组目录的路径，值是对应的一组检查结果项。
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
@@ -113,7 +116,7 @@ data class PlsTigerLintResult(
     )
 
     enum class Severity {
-        Tips, Untidy, Warning, Error, Fatal,
+        TIPS, UNTIDY, WARNING, ERROR, FATAL,
         ;
 
         @JsonValue
@@ -127,7 +130,7 @@ data class PlsTigerLintResult(
     }
 
     enum class Confidence {
-        Weak, Reasonable, Strong,
+        WEAK, REASONABLE, STRONG,
         ;
 
         @JsonValue

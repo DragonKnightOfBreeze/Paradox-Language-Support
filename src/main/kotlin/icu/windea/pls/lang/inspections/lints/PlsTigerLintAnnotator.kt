@@ -6,7 +6,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
@@ -72,60 +71,8 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
     }
 
     private fun getHighlightSeverity(item: PlsTigerLintResult.Item): HighlightSeverity {
-        // 优先使用用户在设置中配置的 Tiger 高亮映射（Severity x Confidence），否则回退到默认映射
-        return runCatching { getConfiguredHighlightSeverity(item) }.getOrElse { getDefaultHighlightSeverity(item) }
-    }
-
-    private fun getConfiguredHighlightSeverity(item: PlsTigerLintResult.Item): HighlightSeverity {
-        val mapping = PlsFacade.getIntegrationsSettings().lint.tigerHighlight
-        val name = when (item.severity) {
-            PlsTigerLintResult.Severity.Tips -> when (item.confidence) {
-                PlsTigerLintResult.Confidence.Weak -> mapping.tipsWeak
-                PlsTigerLintResult.Confidence.Reasonable -> mapping.tipsReasonable
-                PlsTigerLintResult.Confidence.Strong -> mapping.tipsStrong
-            }
-            PlsTigerLintResult.Severity.Untidy -> when (item.confidence) {
-                PlsTigerLintResult.Confidence.Weak -> mapping.untidyWeak
-                PlsTigerLintResult.Confidence.Reasonable -> mapping.untidyReasonable
-                PlsTigerLintResult.Confidence.Strong -> mapping.untidyStrong
-            }
-            PlsTigerLintResult.Severity.Warning -> when (item.confidence) {
-                PlsTigerLintResult.Confidence.Weak -> mapping.warningWeak
-                PlsTigerLintResult.Confidence.Reasonable -> mapping.warningReasonable
-                PlsTigerLintResult.Confidence.Strong -> mapping.warningStrong
-            }
-            PlsTigerLintResult.Severity.Error -> when (item.confidence) {
-                PlsTigerLintResult.Confidence.Weak -> mapping.errorWeak
-                PlsTigerLintResult.Confidence.Reasonable -> mapping.errorReasonable
-                PlsTigerLintResult.Confidence.Strong -> mapping.errorStrong
-            }
-            PlsTigerLintResult.Severity.Fatal -> when (item.confidence) {
-                PlsTigerLintResult.Confidence.Weak -> mapping.fatalWeak
-                PlsTigerLintResult.Confidence.Reasonable -> mapping.fatalReasonable
-                PlsTigerLintResult.Confidence.Strong -> mapping.fatalStrong
-            }
-        }
-        return severityByName(name) ?: getDefaultHighlightSeverity(item)
-    }
-
-    private fun getDefaultHighlightSeverity(item: PlsTigerLintResult.Item): HighlightSeverity {
-        return when (item.severity) {
-            PlsTigerLintResult.Severity.Tips -> HighlightSeverity.INFORMATION
-            PlsTigerLintResult.Severity.Untidy -> HighlightSeverity.WEAK_WARNING
-            PlsTigerLintResult.Severity.Warning -> HighlightSeverity.WARNING
-            PlsTigerLintResult.Severity.Error -> HighlightSeverity.ERROR
-            PlsTigerLintResult.Severity.Fatal -> HighlightSeverity.ERROR
-        }
-    }
-
-    private fun severityByName(name: String?): HighlightSeverity? {
-        return when (name?.uppercase()) {
-            HighlightSeverity.INFORMATION.name -> HighlightSeverity.INFORMATION
-            HighlightSeverity.WEAK_WARNING.name -> HighlightSeverity.WEAK_WARNING
-            HighlightSeverity.WARNING.name -> HighlightSeverity.WARNING
-            HighlightSeverity.ERROR.name -> HighlightSeverity.ERROR
-            else -> null
-        }
+        val tigerHighlightSeverity = PlsTigerLintManager.getHighlightSeverity(item.confidence, item.severity)
+        return tigerHighlightSeverity.value ?: HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING
     }
 
     private fun getMessage(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {

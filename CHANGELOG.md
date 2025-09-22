@@ -17,7 +17,7 @@
 
 - [X] 更新规则文件以匹配 Stellaris 的最新游戏版本
 - [X] #186
-- [ ] #187 可以按 *置信度 x 严重度* 详细配置 Tiger 代码检查的报错级别
+- [X] #187 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别
 - [X] 优化：可在设置页面中通过 OpenAI API、Anthropic API 或本地模型提供 AI 服务 / OP: AI Service can be provided via OpenAI API, Anthropic API or local LLM in settings page
 - [X] 优化：优化模组依赖的导入导出功能 / OP: Optimize the import & export feature for mod dependencies
 - [X] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports

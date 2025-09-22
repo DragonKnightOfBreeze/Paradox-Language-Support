@@ -46,7 +46,7 @@ class CodeInjectorService {
                 codeInjector.inject()
             } catch (e: Exception) {
                 //NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
-                logger.warn("Error when applying injector: ${codeInjector.id}")
+                logger.warn("ERROR when applying injector: ${codeInjector.id}")
                 logger.warn(e.message, e)
             }
             codeInjectors.put(codeInjector.id, codeInjector)

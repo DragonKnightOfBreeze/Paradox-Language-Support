@@ -190,8 +190,8 @@ public class _ParadoxCsvLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "Error: could not match input",
-    "Error: pushback value was too large"
+    "ERROR: could not match input",
+    "ERROR: pushback value was too large"
   };
 
   /**
@@ -338,7 +338,7 @@ public class _ParadoxCsvLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   java.io.IOException  if any I/O-ERROR occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -440,10 +440,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-Error occurs.
+   * the end of input is encountered or an I/O-ERROR occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   java.io.IOException  if any I/O-ERROR occurs
    */
   public IElementType advance() throws java.io.IOException
   {

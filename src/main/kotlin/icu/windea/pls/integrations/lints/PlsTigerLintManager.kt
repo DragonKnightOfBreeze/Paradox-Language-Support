@@ -16,6 +16,8 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.integrations.lints.PlsTigerLintResult.Confidence
+import icu.windea.pls.integrations.lints.PlsTigerLintResult.Severity
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 import icu.windea.pls.lang.ParadoxBaseLanguage
@@ -26,6 +28,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import kotlin.reflect.KMutableProperty0
 
 object PlsTigerLintManager {
     object Keys : KeyRegistry() {
@@ -122,5 +125,98 @@ object PlsTigerLintManager {
         val content = e.message?.let { message -> PlsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: PlsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
         PlsCoreManager.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
+    }
+
+    /**
+     * 按严重度（[severity]）和置信度（[confidence]）得到代码检查使用的高亮级别。
+     *
+     * 优先使用用户在设置中配置的 Tiger 高亮映射（Severity x Confidence），否则回退到默认映射。
+     *
+     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsState.TigerHighlightState
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
+     */
+    fun getHighlightSeverity(confidence: Confidence, severity: Severity): PlsLintHighlightSeverity {
+        return runCatching { getConfiguredHighlightSeverity(confidence, severity).get() }
+            .getOrElse { getDefaultHighlightSeverity(confidence, severity) }
+    }
+
+    /**
+     * 按严重度（[severity]）和置信度（[confidence]），得到代码检查使用的已配置的高亮级别对应的配置项的 Kotlin 属性。
+     *
+     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsState.TigerHighlightState
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
+     */
+    fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<PlsLintHighlightSeverity> {
+        val mapping = PlsFacade.getIntegrationsSettings().lint.tigerHighlight
+        return when (severity) {
+            Severity.TIPS -> when (confidence) {
+                Confidence.WEAK -> mapping::tipsWeak
+                Confidence.REASONABLE -> mapping::tipsReasonable
+                Confidence.STRONG -> mapping::tipsStrong
+            }
+            Severity.UNTIDY -> when (confidence) {
+                Confidence.WEAK -> mapping::untidyWeak
+                Confidence.REASONABLE -> mapping::untidyReasonable
+                Confidence.STRONG -> mapping::untidyStrong
+            }
+            Severity.WARNING -> when (confidence) {
+                Confidence.WEAK -> mapping::warningWeak
+                Confidence.REASONABLE -> mapping::warningReasonable
+                Confidence.STRONG -> mapping::warningStrong
+            }
+            Severity.ERROR -> when (confidence) {
+                Confidence.WEAK -> mapping::errorWeak
+                Confidence.REASONABLE -> mapping::errorReasonable
+                Confidence.STRONG -> mapping::errorStrong
+            }
+            Severity.FATAL -> when (confidence) {
+                Confidence.WEAK -> mapping::fatalWeak
+                Confidence.REASONABLE -> mapping::fatalReasonable
+                Confidence.STRONG -> mapping::fatalStrong
+            }
+        }
+    }
+
+    /**
+     * 按严重度（[severity]）和置信度（[confidence]），得到代码检查使用的默认高亮级别。
+     *
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
+     * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
+     */
+    @Suppress("unused")
+    fun getDefaultHighlightSeverity(confidence: Confidence, severity: Severity): PlsLintHighlightSeverity {
+        return when (severity) {
+            Severity.FATAL -> PlsLintHighlightSeverity.ERROR
+            Severity.ERROR -> PlsLintHighlightSeverity.ERROR
+            Severity.WARNING -> PlsLintHighlightSeverity.WARNING
+            Severity.UNTIDY -> when (confidence) {
+                Confidence.STRONG -> PlsLintHighlightSeverity.WARNING
+                else -> PlsLintHighlightSeverity.WEAK_WARNING
+            }
+            Severity.TIPS -> when (confidence) {
+                Confidence.STRONG -> PlsLintHighlightSeverity.WEAK_WARNING
+                else -> PlsLintHighlightSeverity.INFORMATION
+            }
+        }
+    }
+
+    fun getConfidenceDisplayName(confidence: Confidence): String {
+        return when (confidence) {
+            Confidence.WEAK -> PlsBundle.message("lint.tiger.confidence.weak")
+            Confidence.REASONABLE -> PlsBundle.message("lint.tiger.confidence.reasonable")
+            Confidence.STRONG -> PlsBundle.message("lint.tiger.confidence.strong")
+        }
+    }
+
+    fun getSeverityDisplayName(severity: Severity): String {
+        return when (severity) {
+            Severity.TIPS -> PlsBundle.message("lint.tiger.severity.tips")
+            Severity.UNTIDY -> PlsBundle.message("lint.tiger.severity.untidy")
+            Severity.WARNING -> PlsBundle.message("lint.tiger.severity.warning")
+            Severity.ERROR -> PlsBundle.message("lint.tiger.severity.error")
+            Severity.FATAL -> PlsBundle.message("lint.tiger.severity.fatal")
+        }
     }
 }

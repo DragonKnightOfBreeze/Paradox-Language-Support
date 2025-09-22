@@ -8,6 +8,7 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.images.tools.PlsImageToolProvider
 import icu.windea.pls.integrations.images.tools.PlsMagickToolProvider
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
@@ -17,12 +18,22 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 
 object PlsIntegrationsSettingsManager {
+    // Image Tools
+
     fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
         val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+    }
+
+    // Lint Tools
+
+    fun getTigerSettingsMap(settings: PlsIntegrationsSettingsState) = buildMap {
+        put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
+        put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
+        put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
     }
 
     fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {

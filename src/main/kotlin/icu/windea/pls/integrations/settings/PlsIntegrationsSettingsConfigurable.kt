@@ -8,17 +8,13 @@ import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
-import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.PlsIntegrationConstants
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
-import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -36,6 +32,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         return panel {
             //image tools
             group(PlsBundle.message("settings.integrations.image")) {
+                val imageSettings = settings.image
                 lateinit var cbMagick: JBCheckBox
 
                 row {
@@ -45,13 +42,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     comment(PlsBundle.message("settings.integrations.image.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv")).bindSelected(settings.image::enableTexconv)
+                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv")).bindSelected(imageSettings::enableTexconv)
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }
                 //enableMagick
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
+                    checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(imageSettings::enableMagick)
                         .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .applyToComponent { cbMagick = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
@@ -62,7 +59,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     val descriptor = FileChooserDescriptorFactory.singleFile()
                         .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
                     textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.image::magickPath.toNonNullableProperty(""))
+                        .bindText(imageSettings::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsIntegrationConstants.Magick.pathTip()) }
                         .align(Align.FILL)
                         .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
@@ -97,6 +94,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
             }
             //linting tools
             group(PlsBundle.message("settings.integrations.lint")) {
+                val lintSettings = settings.lint
                 lateinit var cbTiger: JBCheckBox
 
                 row {
@@ -107,17 +105,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
                 //enableTiger
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(settings.lint::enableTiger)
+                    checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                         .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
-                val map = buildMap {
-                    put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
-                    put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
-                    put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
-                }
 
+                val map = PlsIntegrationsSettingsManager.getTigerSettingsMap(settings)
                 map.forEach { (gameType, tuple) ->
                     val (name, pathProp, confPathProp) = tuple
 
@@ -146,18 +140,15 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     }.enabledIf(cbTiger.selected)
                 }
 
-                // Tiger highlight mapping - open dialog
-                group(PlsBundle.message("settings.integrations.lint.tigerHighlight")) {
-                    row {
-                        comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    }
-                    row {
-                        link(PlsBundle.message("settings.integrations.lint.tigerHighlight.openDialog")) {
-                            val dialog = PlsTigerHighlightDialog(settings.lint.tigerHighlight)
-                            if (dialog.showAndGet()) {
-                                PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
-                            }
-                        }
+                // tigerHighlighting
+                row {
+                    label(PlsBundle.message("settings.integrations.lint.tigerHighlight"))
+                    contextHelp(PlsBundle.message("settings.integrations.lint.tigerHighlight.tip"))
+
+                    link(PlsBundle.message("configure")) {
+                        // Tiger highlight mapping - open dialog - save settings and refresh files after dialog closed with ok
+                        val dialog = PlsTigerHighlightDialog()
+                        if (dialog.showAndGet()) PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock)
                     }
                 }.enabledIf(cbTiger.selected)
             }

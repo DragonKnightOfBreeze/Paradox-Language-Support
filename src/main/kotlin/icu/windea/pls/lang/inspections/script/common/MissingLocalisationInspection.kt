@@ -153,7 +153,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale)
                     .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
-                cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale.configure")) {
+                cell(ActionLink(PlsBundle.message("configure")) {
                     //ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
@@ -165,7 +165,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
                 val cb = textField().bindText(::locales).bindTextWhenChanged(::locales).visible(false).component
-                cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales.configure")) {
+                cell(ActionLink(PlsBundle.message("configure")) {
                     val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
                     val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)

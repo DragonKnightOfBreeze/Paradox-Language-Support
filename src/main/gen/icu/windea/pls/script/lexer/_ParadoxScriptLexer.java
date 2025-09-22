@@ -49,8 +49,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15,
     16, 16, 17, 17, 18, 18
   };
 
@@ -383,8 +383,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "Error: could not match input",
-    "Error: pushback value was too large"
+    "ERROR: could not match input",
+    "ERROR: pushback value was too large"
   };
 
   /**
@@ -582,7 +582,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   java.io.IOException  if any I/O-ERROR occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -684,10 +684,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-Error occurs.
+   * the end of input is encountered or an I/O-ERROR occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   java.io.IOException  if any I/O-ERROR occurs
    */
   public IElementType advance() throws java.io.IOException
   {

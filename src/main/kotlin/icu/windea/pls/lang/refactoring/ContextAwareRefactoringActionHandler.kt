@@ -22,7 +22,7 @@ abstract class ContextAwareRefactoringActionHandler : RefactoringActionHandler, 
     final override fun invoke(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext) {
         val result = invokeAction(project, editor, file, dataContext)
         if (!result) {
-            CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.message("refactoring.introduce.context.error"), "Error", null)
+            CommonRefactoringUtil.showErrorHint(project, editor, RefactoringBundle.message("refactoring.introduce.context.error"), "ERROR", null)
         }
     }
 

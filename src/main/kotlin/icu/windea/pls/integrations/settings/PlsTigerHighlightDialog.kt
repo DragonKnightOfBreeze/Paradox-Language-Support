@@ -1,51 +1,42 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.codeHighlighting.HighlightDisplayLevel
-import com.intellij.icons.AllIcons
-import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.observable.properties.GraphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.listCellRenderer
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.integrations.lints.PlsTigerLintResult
-import java.awt.event.ItemEvent
-import javax.swing.Icon
+import icu.windea.pls.integrations.lints.PlsLintHighlightSeverity
+import icu.windea.pls.integrations.lints.PlsTigerLintManager
+import icu.windea.pls.integrations.lints.PlsTigerLintResult.Confidence
+import icu.windea.pls.integrations.lints.PlsTigerLintResult.Severity
 import javax.swing.JComponent
-import javax.swing.JList
 
 /**
- * Tiger 高亮映射配置对话框（置信度 × 严重度）。
+ * Tiger 高亮映射配置对话框（严重度 x 置信度）。
  *
- * - 父级下拉（Weak/Reasonable/Strong）批量设置对应5个严重度（Tips/Untidy/Warning/Error/Fatal）。
- * - 当 5 个子项不一致时，父级显示为 Mixed。
+ * - 总计 3 + 3 * 5 = 18 个 comboBox。
+ * - 当 5 个子项不一致时，父级显示为混合级别。
  * - 选项显示 IDE 高亮级别对应的图标与名称。
+ * - 点击确定按钮后再保存设置并刷新文件。
  */
-class PlsTigerHighlightDialog(
-    private val state: PlsIntegrationsSettingsState.LintState.TigerHighlightState
-) : DialogWrapper(null, true) {
+class PlsTigerHighlightDialog : DialogWrapper(null, true) {
+    // com.intellij.profile.codeInspection.ui.ScopesPanel
 
-    private data class ParentEntry(val severity: HighlightSeverity?, val label: String, val icon: Icon?)
+    // 使用 com.intellij.openapi.observable.properties.GraphProperty 来处理属性绑定关系
+    // 对这些属性的更改不会立刻同步到插件设置，点击确定按钮后才会
 
-    private val childCombos = mutableMapOf<Pair<PlsTigerLintResult.Confidence, PlsTigerLintResult.Severity>, ComboBox<HighlightSeverity>>()
-    // key: confidence, value: parent combo
-    private val parentCombos = mutableMapOf<PlsTigerLintResult.Confidence, ComboBox<ParentEntry>>()
-
-    private val severityOptions = listOf(
-        HighlightSeverity.INFORMATION,
-        HighlightSeverity.WEAK_WARNING,
-        HighlightSeverity.WARNING,
-        HighlightSeverity.ERROR,
-    )
-
-    private val parentOptions: List<ParentEntry> = buildList {
-        add(ParentEntry(null, PlsBundle.message("settings.integrations.lint.tigerHighlight.mixed"), AllIcons.Nodes.Folder))
-        severityOptions.forEach { sev ->
-            val level = HighlightDisplayLevel.Companion.find(sev) ?: HighlightDisplayLevel.Companion.WARNING
-            add(ParentEntry(sev, level.name, level.icon))
+    private val propertyGraph = PropertyGraph()
+    // severity -> confidence -> highlight severity option
+    private val propertyGroup = Severity.entries.associateWith { severity ->
+        Confidence.entries.associateWith { confidence ->
+            val p = PlsTigerLintManager.getConfiguredHighlightSeverity(confidence, severity)
+            propertyGraph.property(p.get())
         }
+    }
+    // severity -> merged highlight severity option (null means mixed)
+    private val mergedProperties = propertyGroup.mapValues { (_, map) ->
+        map.values.merged()
     }
 
     init {
@@ -57,220 +48,96 @@ class PlsTigerHighlightDialog(
         row {
             comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment"))
         }
-        addConfidenceSection(this, PlsTigerLintResult.Confidence.Weak)
-        addConfidenceSection(this, PlsTigerLintResult.Confidence.Reasonable)
-        addConfidenceSection(this, PlsTigerLintResult.Confidence.Strong)
+        row {
+            comment(PlsBundle.message("settings.integrations.lint.tigerHighlight.dialog.comment1"))
+        }
+        createMapping()
     }
 
-    private fun addConfidenceSection(panel: Panel, confidence: PlsTigerLintResult.Confidence) {
-        panel.group(confLabel(confidence)) {
-            // parent combo
-            lateinit var parent: ComboBox<ParentEntry>
-            row(confLabel(confidence)) {
-                val parentRenderer = object : SimpleListCellRenderer<ParentEntry>() {
-                    override fun customize(list: JList<out ParentEntry>, value: ParentEntry?, index: Int, selected: Boolean, hasFocus: Boolean) {
-                        if (value == null) {
-                            icon = null
-                            text = ""
-                        } else {
-                            icon = value.icon
-                            text = value.label
-                        }
-                    }
+    // 方案1：通过分割线分成5组，每组两行，第一行包括严重度的总cb、重置按钮，第二行包括各个置信度的cb
+    // private fun Panel.createMapping() {
+    //     var appendSeparator = false
+    //     mergedProperties.forEach { (severity, mergedOption) ->
+    //         if (appendSeparator) separator() else appendSeparator = true
+    //         row {
+    //             label(PlsBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
+    //             label(PlsTigerLintManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")
+    //             highlightSeverityComboBox(withMerged = true).bindItem(mergedOption)
+    //             button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
+    //         }
+    //         var i = 0
+    //         row {
+    //             label(PlsBundle.message("lint.tiger.confidence")).widthGroup("tiger.label.0")
+    //             propertyGroup.getValue(severity).forEach { (confidence, option) ->
+    //                 i++
+    //                 label(PlsTigerLintManager.getConfidenceDisplayName(confidence)).widthGroup("tiger.label.$i")
+    //                 highlightSeverityComboBox().bindItem(option)
+    //             }
+    //         }
+    //     }
+    // }
+
+    // 方案2：采用表格形式，行是严重度，列是置信度，重置按钮在每一行的所有cb之后
+    private fun Panel.createMapping() {
+        val severityPrefix = PlsBundle.message("lint.tiger.severity")
+        val confidencePrefix = PlsBundle.message("lint.tiger.confidence")
+
+        row {
+            label("").widthGroup("tiger.c0")
+            label(confidencePrefix + PlsBundle.message("lint.tiger.confidence.all")).widthGroup("tiger.c1")
+            Confidence.entries.forEachIndexed { i, e -> label(confidencePrefix + PlsTigerLintManager.getConfidenceDisplayName(e)).widthGroup("tiger.c${i + 2}") }
+        }
+        Severity.entries.forEach { severity ->
+            row {
+                label(severityPrefix + PlsTigerLintManager.getSeverityDisplayName(severity)).widthGroup("tiger.c0")
+                val mergedOption = mergedProperties.getValue(severity)
+                highlightSeverityComboBox(withMerged = true).bindItem(mergedOption).widthGroup("tiger.c1")
+                var i = 0
+                propertyGroup.getValue(severity).forEach { (_, option) ->
+                    i++
+                    highlightSeverityComboBox().bindItem(option).widthGroup("tiger.c${i + 1}")
                 }
-                comboBox(parentOptions, parentRenderer)
-                    .applyToComponent {
-                        parent = this
-                        addItemListener { e ->
-                            if (e.stateChange == ItemEvent.SELECTED) {
-                                (selectedItem as? ParentEntry)?.severity?.let { sev ->
-                                    // batch set children
-                                    updateAllChildrenFor(confidence, sev)
-                                    // also refresh parent selection (now uniform)
-                                    setParentSelection(confidence)
-                                }
-                            }
-                        }
-                    }
-                button(PlsBundle.message("settings.integrations.lint.tigerHighlight.resetParent")) {
-                    resetChildrenToDefaults(confidence)
-                    setParentSelection(confidence)
-                }
+                button(PlsBundle.message("settings.integrations.lint.tigerHighlight.reset")) { resetOptionsToDefaults(severity) }
             }
-            parentCombos[confidence] = parent
-
-            // children rows (Tips/Untidy/Warning/Error/Fatal)
-            PlsTigerLintResult.Severity.entries.forEach { sev ->
-                addChildRow(this, confidence, sev)
-            }
-
-            // init selections
-            setChildrenSelections(confidence)
-            setParentSelection(confidence)
         }
     }
 
-    private fun addChildRow(panel: Panel, confidence: PlsTigerLintResult.Confidence, tigerSeverity: PlsTigerLintResult.Severity) {
-        lateinit var child: ComboBox<HighlightSeverity>
-        panel.row(sevLabel(tigerSeverity)) {
-            val childRenderer = object : SimpleListCellRenderer<HighlightSeverity>() {
-                override fun customize(list: JList<out HighlightSeverity>, value: HighlightSeverity?, index: Int, selected: Boolean, hasFocus: Boolean) {
-                    if (value == null) {
-                        icon = null
-                        text = ""
-                    } else {
-                        val level = HighlightDisplayLevel.Companion.find(value) ?: HighlightDisplayLevel.Companion.WARNING
-                        icon = level.icon
-                        text = level.name
-                    }
-                }
-            }
-            comboBox(severityOptions, childRenderer).applyToComponent {
-                child = this
-                addItemListener { e ->
-                    if (e.stateChange == ItemEvent.SELECTED) {
-                        // child changed -> reflect to parent (maybe mixed)
-                        setParentSelection(confidence)
-                    }
-                }
-            }.align(Align.Companion.FILL)
+    private fun Collection<GraphProperty<PlsLintHighlightSeverity>>.merged(): GraphProperty<PlsLintHighlightSeverity> {
+        val mp = propertyGraph.property(mergedValue())
+        forEach { p ->
+            // 传入 deleteWhenModified = false 后，循环更新会被 PropertyGraph 自动处理且继续保留
+            mp.dependsOn(p, false) { mergedValue() }
+            p.dependsOn(mp, false) { mp.get().takeIf { it != PlsLintHighlightSeverity.Merged } ?: p.get() }
         }
-        childCombos[confidence to tigerSeverity] = child
+        return mp
     }
 
-    private fun setChildrenSelections(confidence: PlsTigerLintResult.Confidence) {
-        PlsTigerLintResult.Severity.entries.forEach { sev ->
-            childCombos[confidence to sev]?.selectedItem = byName(getStateValue(confidence, sev))
-        }
+    private fun Collection<GraphProperty<PlsLintHighlightSeverity>>.mergedValue(): PlsLintHighlightSeverity {
+        return this.mapTo(mutableSetOf()) { it.get() }.singleOrNull() ?: PlsLintHighlightSeverity.Merged
     }
 
-    private fun setParentSelection(confidence: PlsTigerLintResult.Confidence) {
-        val children = PlsTigerLintResult.Severity.entries
-            .mapNotNull { childCombos[confidence to it]?.selectedItem as? HighlightSeverity }
-        val allSame = children.isNotEmpty() && children.distinct().size == 1
-        val parent = parentCombos[confidence] ?: return
-        if (allSame) {
-            val sev = children.first()
-            parent.selectedItem = parentOptions.firstOrNull { it.severity == sev }
-        } else {
-            parent.selectedItem = parentOptions.firstOrNull { it.severity == null }
-        }
+    @Suppress("UnstableApiUsage")
+    private fun highlightSeverityRender() = listCellRenderer<PlsLintHighlightSeverity?> {
+        value?.icon?.let { icon(it) }
+        value?.displayName?.let { text(it) }
     }
 
-    private fun updateAllChildrenFor(confidence: PlsTigerLintResult.Confidence, sev: HighlightSeverity) {
-        PlsTigerLintResult.Severity.entries.forEach { s ->
-            childCombos[confidence to s]?.selectedItem = sev
-        }
-    }
+    private fun Row.highlightSeverityComboBox(withMerged: Boolean = false) = comboBox(PlsLintHighlightSeverity.getAll(withMerged), highlightSeverityRender())
 
-    private fun resetChildrenToDefaults(confidence: PlsTigerLintResult.Confidence) {
-        PlsTigerLintResult.Severity.entries.forEach { s ->
-            childCombos[confidence to s]?.selectedItem = defaultSeverity(confidence, s)
-        }
-    }
-
-    private fun defaultSeverity(confidence: PlsTigerLintResult.Confidence, tigerSeverity: PlsTigerLintResult.Severity): HighlightSeverity {
-        return when (tigerSeverity) {
-            PlsTigerLintResult.Severity.Tips -> when (confidence) {
-                PlsTigerLintResult.Confidence.Weak -> HighlightSeverity.INFORMATION
-                PlsTigerLintResult.Confidence.Reasonable -> HighlightSeverity.INFORMATION
-                PlsTigerLintResult.Confidence.Strong -> HighlightSeverity.WEAK_WARNING
-            }
-            PlsTigerLintResult.Severity.Untidy -> when (confidence) {
-                PlsTigerLintResult.Confidence.Weak -> HighlightSeverity.WEAK_WARNING
-                PlsTigerLintResult.Confidence.Reasonable -> HighlightSeverity.WEAK_WARNING
-                PlsTigerLintResult.Confidence.Strong -> HighlightSeverity.WARNING
-            }
-            PlsTigerLintResult.Severity.Warning -> when (confidence) {
-                PlsTigerLintResult.Confidence.Weak -> HighlightSeverity.WARNING
-                PlsTigerLintResult.Confidence.Reasonable -> HighlightSeverity.WARNING
-                PlsTigerLintResult.Confidence.Strong -> HighlightSeverity.ERROR
-            }
-            PlsTigerLintResult.Severity.Error -> HighlightSeverity.ERROR
-            PlsTigerLintResult.Severity.Fatal -> HighlightSeverity.ERROR
+    private fun resetOptionsToDefaults(severity: Severity) {
+        propertyGroup.getValue(severity).forEach { (confidence, option) ->
+            val dv = PlsTigerLintManager.getDefaultHighlightSeverity(confidence, severity)
+            option.set(dv) // 这会导致 mp.fireChangeEvent() 被调用多次，但是问题不大
         }
     }
 
     override fun doOKAction() {
-        // write back to state
-        PlsTigerLintResult.Confidence.entries.forEach { conf ->
-            PlsTigerLintResult.Severity.entries.forEach { sev ->
-                val hs = childCombos[conf to sev]?.selectedItem as HighlightSeverity
-                setStateValue(conf, sev, hs.name)
+        // 同步属性更改到插件设置
+        propertyGroup.forEach { (severity, options) ->
+            options.forEach { (confidence, option) ->
+                PlsTigerLintManager.getConfiguredHighlightSeverity(confidence, severity).set(option.get())
             }
         }
         super.doOKAction()
-    }
-
-    private fun confLabel(conf: PlsTigerLintResult.Confidence): String = when (conf) {
-        PlsTigerLintResult.Confidence.Weak -> PlsBundle.message("settings.integrations.lint.tigerHighlight.weak")
-        PlsTigerLintResult.Confidence.Reasonable -> PlsBundle.message("settings.integrations.lint.tigerHighlight.reasonable")
-        PlsTigerLintResult.Confidence.Strong -> PlsBundle.message("settings.integrations.lint.tigerHighlight.strong")
-    }
-
-    private fun sevLabel(sev: PlsTigerLintResult.Severity): String = when (sev) {
-        PlsTigerLintResult.Severity.Tips -> PlsBundle.message("settings.integrations.lint.tigerHighlight.tips")
-        PlsTigerLintResult.Severity.Untidy -> PlsBundle.message("settings.integrations.lint.tigerHighlight.untidy")
-        PlsTigerLintResult.Severity.Warning -> PlsBundle.message("settings.integrations.lint.tigerHighlight.warning")
-        PlsTigerLintResult.Severity.Error -> PlsBundle.message("settings.integrations.lint.tigerHighlight.error")
-        PlsTigerLintResult.Severity.Fatal -> PlsBundle.message("settings.integrations.lint.tigerHighlight.fatal")
-    }
-
-    private fun byName(name: String?): HighlightSeverity = when (name?.uppercase()) {
-        HighlightSeverity.INFORMATION.name -> HighlightSeverity.INFORMATION
-        HighlightSeverity.WEAK_WARNING.name -> HighlightSeverity.WEAK_WARNING
-        HighlightSeverity.WARNING.name -> HighlightSeverity.WARNING
-        HighlightSeverity.ERROR.name -> HighlightSeverity.ERROR
-        else -> HighlightSeverity.WARNING
-    }
-
-    private fun getStateValue(conf: PlsTigerLintResult.Confidence, sev: PlsTigerLintResult.Severity): String? = when (conf) {
-        PlsTigerLintResult.Confidence.Weak -> when (sev) {
-            PlsTigerLintResult.Severity.Tips -> state.tipsWeak
-            PlsTigerLintResult.Severity.Untidy -> state.untidyWeak
-            PlsTigerLintResult.Severity.Warning -> state.warningWeak
-            PlsTigerLintResult.Severity.Error -> state.errorWeak
-            PlsTigerLintResult.Severity.Fatal -> state.fatalWeak
-        }
-        PlsTigerLintResult.Confidence.Reasonable -> when (sev) {
-            PlsTigerLintResult.Severity.Tips -> state.tipsReasonable
-            PlsTigerLintResult.Severity.Untidy -> state.untidyReasonable
-            PlsTigerLintResult.Severity.Warning -> state.warningReasonable
-            PlsTigerLintResult.Severity.Error -> state.errorReasonable
-            PlsTigerLintResult.Severity.Fatal -> state.fatalReasonable
-        }
-        PlsTigerLintResult.Confidence.Strong -> when (sev) {
-            PlsTigerLintResult.Severity.Tips -> state.tipsStrong
-            PlsTigerLintResult.Severity.Untidy -> state.untidyStrong
-            PlsTigerLintResult.Severity.Warning -> state.warningStrong
-            PlsTigerLintResult.Severity.Error -> state.errorStrong
-            PlsTigerLintResult.Severity.Fatal -> state.fatalStrong
-        }
-    }
-
-    private fun setStateValue(conf: PlsTigerLintResult.Confidence, sev: PlsTigerLintResult.Severity, value: String) {
-        when (conf) {
-            PlsTigerLintResult.Confidence.Weak -> when (sev) {
-                PlsTigerLintResult.Severity.Tips -> state.tipsWeak = value
-                PlsTigerLintResult.Severity.Untidy -> state.untidyWeak = value
-                PlsTigerLintResult.Severity.Warning -> state.warningWeak = value
-                PlsTigerLintResult.Severity.Error -> state.errorWeak = value
-                PlsTigerLintResult.Severity.Fatal -> state.fatalWeak = value
-            }
-            PlsTigerLintResult.Confidence.Reasonable -> when (sev) {
-                PlsTigerLintResult.Severity.Tips -> state.tipsReasonable = value
-                PlsTigerLintResult.Severity.Untidy -> state.untidyReasonable = value
-                PlsTigerLintResult.Severity.Warning -> state.warningReasonable = value
-                PlsTigerLintResult.Severity.Error -> state.errorReasonable = value
-                PlsTigerLintResult.Severity.Fatal -> state.fatalReasonable = value
-            }
-            PlsTigerLintResult.Confidence.Strong -> when (sev) {
-                PlsTigerLintResult.Severity.Tips -> state.tipsStrong = value
-                PlsTigerLintResult.Severity.Untidy -> state.untidyStrong = value
-                PlsTigerLintResult.Severity.Warning -> state.warningStrong = value
-                PlsTigerLintResult.Severity.Error -> state.errorStrong = value
-                PlsTigerLintResult.Severity.Fatal -> state.fatalStrong = value
-            }
-        }
     }
 }

@@ -16,7 +16,7 @@ import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 
 /**
- * 用于监听Tiger检查工具的`.conf`配置文件的更改，以便在必要时刷新检查结果缓存。
+ * 用于监听 Tiger 检查工具的 `.conf` 配置文件的更改，以便在必要时刷新检查结果缓存。
  */
 class PlsTigerConfFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {

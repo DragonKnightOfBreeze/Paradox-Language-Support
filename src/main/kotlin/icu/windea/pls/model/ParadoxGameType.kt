@@ -59,7 +59,7 @@ enum class ParadoxGameType(
 
     companion object {
         private val values = entries.toList()
-        private val valuesWithoutCore = values - Core
+        private val valuesNoCore = values - Core
         private val valueMap = entries.associateBy { it.id }
 
         /**
@@ -75,7 +75,7 @@ enum class ParadoxGameType(
          */
         @JvmStatic
         fun getAll(withCore: Boolean = false): List<ParadoxGameType> {
-            return if (withCore) values else valuesWithoutCore
+            return if (withCore) values else valuesNoCore
         }
     }
 }

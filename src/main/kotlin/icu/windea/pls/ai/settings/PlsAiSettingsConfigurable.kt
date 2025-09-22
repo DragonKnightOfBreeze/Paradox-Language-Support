@@ -47,8 +47,8 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
             //features
             collapsibleGroup(PlsBundle.message("settings.ai.features")) {
-                val group = "pls.ai.features"
                 val featuresSettings = settings.features
+                val group = "pls.ai.features"
 
                 //localisationBatchSize
                 row {
@@ -66,9 +66,9 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
             //openAI
             collapsibleGroup(PlsBundle.message("settings.ai.openAI")) {
-                val group = "pls.ai.openAI"
-                val openAiProperties = OpenAiChatModelProvider.Options.AtomicProperties()
                 val openAiSettings = settings.openAI
+                val openAiProperties = OpenAiChatModelProvider.Options.AtomicProperties()
+                val group = "pls.ai.openAI"
 
                 //modelName
                 row {

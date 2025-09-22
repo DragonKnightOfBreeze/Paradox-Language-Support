@@ -77,7 +77,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     val dialog = ConfigRepositoryUrlsDialog(list)
                     if (dialog.showAndGet()) list = dialog.resultList
                 }
-                link(PlsBundle.message("settings.config.configRepositoryUrls.link"), action)
+                link(PlsBundle.message("configure"), action)
                     .onApply {
                         val oldConfigRepositoryUrls = configRepositoryUrls.toMutableMap()
                         val newConfigRepositoryUrls = list.toMutableMap()
