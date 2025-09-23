@@ -13,10 +13,10 @@ object CwtDataTypes {
 
     val PercentageField = CwtDataType("PercentageField")
     val DateField = CwtDataType("DateField")
+    val Definition = CwtDataType("Definition", isReference = true)
     val Localisation = CwtDataType("Localisation", isReference = true)
     val SyncedLocalisation = CwtDataType("SyncedLocalisation", isReference = true)
     val InlineLocalisation = CwtDataType("InlineLocalisation", isReference = true)
-    val Definition = CwtDataType("Definition", isReference = true)
     val AbsoluteFilePath = CwtDataType("AbsoluteFilePath", isReference = true)
     val Icon = CwtDataType("Icon", isReference = true)
     val FilePath = CwtDataType("FilePath", isReference = true)
@@ -59,13 +59,29 @@ object CwtDataTypes {
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType("TechnologyWithLevel", isReference = true)
 
-    val Constant = CwtDataType("Constant")
+    // Pattern Aware Data Types
+
+    val Constant = CwtDataType("Constant", isPatternAware = true)
     // e.g., a_<b>_enum[c]_value[d]
-    val TemplateExpression = CwtDataType("TemplateExpression", isReference = true)
+    val TemplateExpression = CwtDataType("TemplateExpression", isPatternAware = true)
     // e.g., /foo/bar?/*
     /** @since 1.3.6 */
-    val AntExpression = CwtDataType("AntExpression")
+    val AntExpression = CwtDataType("AntExpression", isPatternAware = true)
     // e.g., foo.*bar
     /** @since 1.3.6 */
-    val Regex = CwtDataType("Regex")
+    val Regex = CwtDataType("Regex", isPatternAware = true)
+
+    // Suffix Aware Data Types
+
+    // NOTE SUFFIX_AWARE 目前不兼容/不支持：代码补全、使用查询
+
+    // #162, #193
+    /** @since 2.0.5 */
+    val SuffixAwareDefinition = CwtDataType("SuffixAwareDefinition", isSuffixAware = true)
+    // #162, #193
+    /** @since 2.0.5 */
+    val SuffixAwareLocalisation = CwtDataType("SuffixAwareLocalisation", isSuffixAware = true)
+    // #162, #193
+    /** @since 2.0.5 */
+    val SuffixAwareSyncedLocalisation = CwtDataType("SuffixAwareLocalisationSynced", isSuffixAware = true)
 }

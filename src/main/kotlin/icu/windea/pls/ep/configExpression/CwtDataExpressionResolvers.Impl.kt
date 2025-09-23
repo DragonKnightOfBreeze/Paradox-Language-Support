@@ -6,9 +6,11 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
+import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
@@ -136,5 +138,29 @@ class RegexCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Regex).apply { value = v.orNull() }.apply { ignoreCase = true }
         }
         return null
+    }
+}
+
+class SuffixAwareDefinitionCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+    override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
+        val t = text.removeSurroundingOrNull("<", ">") ?: return null
+        if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition).apply { value = t.orNull() }
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareDefinition).apply { value = t.orNull() }.apply { this.suffixes = suffixes }
+    }
+}
+
+class SuffixAwareLocalisationCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+    override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
+        if (text != "localisation") return null
+        if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareLocalisation).apply { this.suffixes = suffixes }
+    }
+}
+
+class SuffixAwareSyncedLocalisationCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+    override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
+        if (text != "localisation_synced") return null
+        if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SuffixAwareSyncedLocalisation).apply { this.suffixes = suffixes }
     }
 }

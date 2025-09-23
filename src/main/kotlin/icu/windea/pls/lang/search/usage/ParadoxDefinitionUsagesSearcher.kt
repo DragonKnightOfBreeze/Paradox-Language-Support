@@ -28,10 +28,12 @@ import kotlin.experimental.or
 /**
  * 定义的使用的查询。
  *
- * * 定义对应的PsiElement的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
+ * * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
+        // NOTE SUFFIX_AWARE 不兼容需要带上后缀的情况，目前不支持
+
         val target = queryParameters.elementToSearch
         if (target !is ParadoxScriptDefinitionElement) return
         val definitionInfo = runReadAction { target.definitionInfo }
@@ -40,7 +42,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val words = getWords(target, definitionInfo)
         val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.supports(definitionInfo.type) }
 
-        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)

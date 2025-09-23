@@ -65,26 +65,32 @@ object CwtDataTypeGroups {
     val ImageLocationResolved = arrayOf(
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
-        CwtDataTypes.Definition
+        CwtDataTypes.Definition,
     )
     val LocalisationLocationResolved = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation
+        CwtDataTypes.InlineLocalisation,
     )
 
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
-        CwtDataTypes.TechnologyWithLevel
+        CwtDataTypes.TechnologyWithLevel,
     )
     val LocalisationAware = arrayOf(
         CwtDataTypes.Localisation,
-        CwtDataTypes.InlineLocalisation
+        CwtDataTypes.InlineLocalisation,
     )
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
         CwtDataTypes.AntExpression,
-        CwtDataTypes.Regex
+        CwtDataTypes.Regex,
+    )
+    @Suppress("unused")
+    val SuffixAware = arrayOf(
+        CwtDataTypes.SuffixAwareDefinition,
+        CwtDataTypes.SuffixAwareLocalisation,
+        CwtDataTypes.SuffixAwareSyncedLocalisation,
     )
 }

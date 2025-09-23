@@ -66,7 +66,7 @@ class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
                 val valueType = ParadoxTypeResolver.resolve(value)
                 if (valueType != ParadoxType.String && valueType != ParadoxType.Int && valueType != ParadoxType.Float) return Result.NotMatch
                 if (!value.isIdentifier('.', '-')) return Result.NotMatch
-                ParadoxExpressionMatcher.getDefinitionMatchResult(element, value, configExpression, project)
+                ParadoxExpressionMatcher.getDefinitionMatchResult(element, project, value, configExpression)
             }
             dataType == CwtDataTypes.EnumValue -> {
                 val value = expressionText.unquote()
@@ -82,7 +82,7 @@ class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
                     val complexEnumConfig = configGroup.complexEnums[enumName] ?: return@run
                     //complexEnumValue的值必须合法
                     if (ParadoxComplexEnumValueManager.getName(value) == null) return Result.NotMatch
-                    return ParadoxExpressionMatcher.getComplexEnumValueMatchResult(element, value, enumName, complexEnumConfig, project)
+                    return ParadoxExpressionMatcher.getComplexEnumValueMatchResult(element, project, value, enumName, complexEnumConfig)
                 }
                 Result.NotMatch
             }

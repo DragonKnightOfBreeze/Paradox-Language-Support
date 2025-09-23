@@ -3,6 +3,7 @@ package icu.windea.pls.ep.configExpression
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.toCommaDelimitedStringSet
 
 abstract class RuleBasedCwtDataExpressionResolver : CwtDataExpressionResolver {
     sealed interface Rule {
@@ -62,3 +63,15 @@ abstract class RuleBasedCwtDataExpressionResolver : CwtDataExpressionResolver {
 }
 
 abstract class PatternAwareCwtDataExpressionResolver : CwtDataExpressionResolver
+
+abstract class SuffixAwareCwtDataExpressionResolver : CwtDataExpressionResolver {
+    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+        val separatorIndex = expressionString.indexOf('|')
+        if (separatorIndex == -1) return null
+        val text = expressionString.substring(0, separatorIndex)
+        val suffixes = expressionString.substring(separatorIndex + 1).toCommaDelimitedStringSet()
+        return doResolve(expressionString, text, suffixes, isKey)
+    }
+
+    protected abstract fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression?
+}

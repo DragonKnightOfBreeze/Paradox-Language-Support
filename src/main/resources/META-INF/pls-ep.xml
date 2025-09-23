@@ -119,8 +119,11 @@
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.ConstantCwtDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.configExpression.AntExpressionCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="re" implementation="icu.windea.pls.ep.configExpression.RegexCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.AntExpressionCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.RegexCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareDefinitionCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareLocalisationCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareSyncedLocalisationCwtDataExpressionResolver"/>
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.configExpression.DefaultCwtDataExpressionMerger"/>
 
@@ -131,16 +134,16 @@
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.expression.CoreParadoxScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.expression.ConstantParadoxScriptExpressionMatcher" order="first"/>
     <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.expression.TemplateExpressionParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="ant" implementation="icu.windea.pls.ep.expression.AntExpressionParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="re" implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.AntExpressionParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
+
     <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>
 
     <csvExpressionMatcher implementation="icu.windea.pls.ep.expression.BaseParadoxCsvExpressionMatcher"/>
     <csvExpressionMatcher implementation="icu.windea.pls.ep.expression.CoreParadoxCsvExpressionMatcher"/>
 
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>
-
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>

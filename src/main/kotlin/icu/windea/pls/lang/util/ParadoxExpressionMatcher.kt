@@ -13,6 +13,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.createCachedValue
@@ -165,32 +166,44 @@ object ParadoxExpressionMatcher {
         return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
 
-    fun getLocalisationMatchResult(element: PsiElement, name: String, project: Project): Result {
-        val cacheKey = "l#$name"
+    fun getDefinitionMatchResult(element: PsiElement, project: Project, name: String, configExpression: CwtDataExpression): Result {
+        val typeExpression = configExpression.value ?: return Result.NotMatch // invalid cwt config
+        val suffixes = configExpression.suffixes.orEmpty()
+        val cacheKey = "d#${typeExpression}#${name}".let { if (suffixes.isEmpty()) it else "s#${suffixes.joinToString(",")}$it" }
         return getCachedMatchResult(element, cacheKey) {
-            val selector = selector(project, element).localisation()
-            ParadoxLocalisationSearch.search(name, selector).findFirst() != null
+            val fullNames = if (suffixes.isEmpty()) listOf(name) else suffixes.map { name + it }
+            fullNames.any { fullName ->
+                val selector = selector(project, element).definition()
+                ParadoxDefinitionSearch.search(fullName, typeExpression, selector).findFirst() != null
+            }
         }
     }
 
-    fun getSyncedLocalisationMatchResult(element: PsiElement, name: String, project: Project): Result {
-        val cacheKey = "ls#$name"
+    fun getLocalisationMatchResult(element: PsiElement, project: Project, name: String, configExpression: CwtDataExpression): Result {
+        val suffixes = configExpression.suffixes.orEmpty()
+        val cacheKey = "l#$name".let { if (suffixes.isEmpty()) it else "s#${suffixes.joinToString(",")}$it" }
         return getCachedMatchResult(element, cacheKey) {
-            val selector = selector(project, element).localisation()
-            ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
+            val fullNames = if (suffixes.isEmpty()) listOf(name) else suffixes.map { name + it }
+            fullNames.any { fullName ->
+                val selector = selector(project, element).localisation()
+                ParadoxLocalisationSearch.search(fullName, selector).findFirst() != null
+            }
         }
     }
 
-    fun getDefinitionMatchResult(element: PsiElement, name: String, configExpression: CwtDataExpression, project: Project): Result {
-        val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
-        val cacheKey = "d#${typeExpression}#${name}"
+    fun getSyncedLocalisationMatchResult(element: PsiElement, project: Project, name: String, configExpression: CwtDataExpression): Result {
+        val suffixes = configExpression.suffixes.orEmpty()
+        val cacheKey = "ls#$name".let { if (suffixes.isEmpty()) it else "s#${suffixes.joinToString(",")}$it" }
         return getCachedMatchResult(element, cacheKey) {
-            val selector = selector(project, element).definition()
-            ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
+            val fullNames = if (suffixes.isEmpty()) listOf(name) else suffixes.map { name + it }
+            fullNames.any { fullName ->
+                val selector = selector(project, element).localisation()
+                ParadoxSyncedLocalisationSearch.search(fullName, selector).findFirst() != null
+            }
         }
     }
 
-    fun getPathReferenceMatchResult(element: PsiElement, expression: String, configExpression: CwtDataExpression, project: Project): Result {
+    fun getPathReferenceMatchResult(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): Result {
         val pathReference = expression.normalizePath()
         val cacheKey = "p#${pathReference}#${configExpression}"
         return getCachedMatchResult(element, cacheKey) {
@@ -199,7 +212,7 @@ object ParadoxExpressionMatcher {
         }
     }
 
-    fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project): Result {
+    fun getComplexEnumValueMatchResult(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): Result {
         val searchScope = complexEnumConfig.searchScopeType
         if (searchScope == null) {
             val cacheKey = "ce#${enumName}#${name}"

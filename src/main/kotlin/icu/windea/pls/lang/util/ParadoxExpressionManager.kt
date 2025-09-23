@@ -2,8 +2,10 @@
 
 package icu.windea.pls.lang.util
 
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -35,6 +37,7 @@ import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isDefinition
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
@@ -849,6 +852,10 @@ object ParadoxExpressionManager {
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
 
+    fun annotateExpressionAsHighlightedReference(range: TextRange, holder: AnnotationHolder) {
+        holder.newSilentAnnotation(HighlightInfoType.HIGHLIGHTED_REFERENCE_SEVERITY).range(range).textAttributes(DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE).create()
+    }
+
     //endregion
 
     //region Reference Methods
@@ -1167,6 +1174,12 @@ object ParadoxExpressionManager {
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
         if (config.optionData { cardinality }?.isRequired() == false) return false
         return true
+    }
+
+    fun getFullNamesFromSuffixAware(name: String, config: CwtConfig<*>): List<String> {
+        val suffixes = config.configExpression?.suffixes
+        if (suffixes.isNullOrEmpty()) return listOf(name)
+        return suffixes.map { name + it }
     }
 
     //endregion
