@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.target
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager

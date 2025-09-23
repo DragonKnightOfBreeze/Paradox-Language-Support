@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.target
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project

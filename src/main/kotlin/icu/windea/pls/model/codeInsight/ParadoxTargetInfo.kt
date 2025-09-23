@@ -2,7 +2,9 @@ package icu.windea.pls.model.codeInsight
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -88,6 +90,39 @@ sealed class ParadoxTargetInfo {
                 }
                 else -> null
             }
+        }
+
+        fun getAnchor(targetInfo: ParadoxTargetInfo): String? {
+            return when (targetInfo) {
+                is ScriptedVariable -> "#sv@${targetInfo.name}"
+                is Definition -> "#d@${targetInfo.name}.${targetInfo.type}"
+                is Localisation -> when (targetInfo.type) {
+                    ParadoxLocalisationType.Normal -> "#l@${targetInfo.name}"
+                    ParadoxLocalisationType.Synced -> "#ls@${targetInfo.name}"
+                }
+                else -> null // TODO not necessary now
+            }
+        }
+
+        fun fromAnchor(anchor: String): ParadoxTargetInfo? {
+            if (anchor.containsBlank()) return null
+            anchor.removePrefixOrNull("#sv@")?.let { s ->
+                val name = s.orNull() ?: return null
+                return ScriptedVariable(name)
+            }
+            anchor.removePrefixOrNull("#d@")?.let { s ->
+                val (name, type) = s.split('.', limit = 2).mapNotNull { it.orNull() }.takeIf { it.size == 2 } ?: return null
+                return Definition(name, type, emptyList())
+            }
+            anchor.removePrefixOrNull("#l@")?.let { s ->
+                val name = s.orNull() ?: return null
+                return Localisation(name, ParadoxLocalisationType.Normal)
+            }
+            anchor.removePrefixOrNull("#ls@")?.let { s ->
+                val name = s.orNull() ?: return null
+                return Localisation(name, ParadoxLocalisationType.Synced)
+            }
+            return null
         }
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.target
 
 /**
  * 要查询的目标的类型。

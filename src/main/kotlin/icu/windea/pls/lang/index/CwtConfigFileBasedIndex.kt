@@ -46,7 +46,8 @@ abstract class CwtConfigFileBasedIndex<T> : FileBasedIndexExtension<String, T>()
 
     private fun checkFile(file: VirtualFile): Boolean {
         if (file.fileType !is CwtFileType) return false
-        // if (CwtConfigManager.getContainingConfigGroup(file, getDefaultProject()) == null) return false // 不用在这里判断，改为在查询器中判断
+        // 不用在这里判断，改为在查询器中判断，参见：icu.windea.pls.lang.search.CwtConfigSymbolSearcher
+        // if (CwtConfigManager.getContainingConfigGroup(file, getDefaultProject()) == null) return false
         return true
     }
 

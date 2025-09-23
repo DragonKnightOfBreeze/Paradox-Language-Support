@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.target
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.TextOccurenceProcessor
@@ -12,7 +12,8 @@ import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
  */
 class ParadoxSubstringTextBasedTargetSearcher : ParadoxTextBasedTargetSearcher() {
     override fun process(context: Context, consumer: Processor<in ParadoxTargetInfo>) {
-        val text = context.queryParameters.text
+        val text = context.queryParameters.text.trim()
+        if (text.isEmpty()) return // 预先过滤
         val snippets = getSnippets(text)
         if (snippets.isEmpty()) return
         for (snippet in snippets) {
@@ -28,7 +29,8 @@ class ParadoxSubstringTextBasedTargetSearcher : ParadoxTextBasedTargetSearcher()
     }
 
     private fun acceptSnippet(snippet: String): Boolean {
-        return true
+        // 片段长度 >= 2
+        return snippet.length >= 2
     }
 
     override fun processText(text: String, context: Context, consumer: Processor<in ParadoxTargetInfo>): Boolean {
