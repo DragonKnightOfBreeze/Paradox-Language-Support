@@ -72,8 +72,11 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertEquals(CwtDataTypes.Int, e.type)
             val r = e.intRange
             assertNotNull(r)
-            assertEquals(1, r!!.first)
-            assertEquals(10, r.second)
+            r!!
+            assertEquals(1, r.start)
+            assertEquals(10, r.end)
+            assertFalse(r.openStart)
+            assertFalse(r.openEnd)
         }
 
         // float and float range
@@ -83,12 +86,15 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             assertNull(e.floatRange)
         }
         run {
-            val e = CwtDataExpression.resolve("float[1.5..2.0]", false)
+            val e = CwtDataExpression.resolve("float(1.5..2.0]", false)
             assertEquals(CwtDataTypes.Float, e.type)
             val r = e.floatRange
             assertNotNull(r)
-            assertEquals(1.5f, r!!.first!!, 0.0001f)
-            assertEquals(2.0f, r.second!!, 0.0001f)
+            r!!
+            assertEquals(1.5f, r.start!!, 0.0001f)
+            assertEquals(2.0f, r.end!!, 0.0001f)
+            assertTrue(r.openStart)
+            assertFalse(r.openEnd)
         }
 
         // scalar

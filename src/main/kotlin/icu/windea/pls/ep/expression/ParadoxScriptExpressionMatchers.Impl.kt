@@ -79,26 +79,28 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.Int -> {
-                //quoted number (e.g., "1") -> ok according to vanilla game files
-                if (expression.type.isIntType() || ParadoxTypeResolver.resolve(expression.value).isIntType()) {
-                    val (min, max) = configExpression.intRange ?: return Result.ExactMatch
-                    return Result.LazySimpleMatch p@{
-                        val value = expression.value.toIntOrNull() ?: return@p true
-                        (min == null || min <= value) && (max == null || max >= value)
-                    }
+                // quoted number (e.g., "1") -> ok according to vanilla game files
+                val value = expression.value
+                val r = expression.type.isIntType() || ParadoxTypeResolver.resolve(value).isIntType()
+                if (!r) return Result.NotMatch
+                run {
+                    val intRange = configExpression.intRange ?: return@run
+                    val intValue = value.toIntOrNull() ?: return@run
+                    return Result.LazySimpleMatch { intRange.contains(intValue) }
                 }
-                Result.NotMatch
+                Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.Float -> {
-                //quoted number (e.g., "1") -> ok according to vanilla game files
-                if (expression.type.isFloatType() || ParadoxTypeResolver.resolve(expression.value).isFloatType()) {
-                    val (min, max) = configExpression.floatRange ?: return Result.ExactMatch
-                    return Result.LazySimpleMatch p@{
-                        val value = expression.value.toFloatOrNull() ?: return@p true
-                        (min == null || min <= value) && (max == null || max >= value)
-                    }
+                // quoted number (e.g., "1.0") -> ok according to vanilla game files
+                val value = expression.value
+                val r = expression.type.isFloatType() || ParadoxTypeResolver.resolve(value).isFloatType()
+                if (!r) return Result.NotMatch
+                run {
+                    val floatRange = configExpression.floatRange ?: return@run
+                    val floatValue = value.toFloatOrNull() ?: return@run
+                    return Result.LazySimpleMatch { floatRange.contains(floatValue) }
                 }
-                Result.NotMatch
+                Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.Scalar -> {
                 val r = when {

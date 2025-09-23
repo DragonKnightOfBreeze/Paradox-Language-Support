@@ -48,21 +48,15 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type != CwtDataTypes.Int) return //for int only
-        val expression = element.expression
-        val (min0, max0) = configExpression.intRange ?: return
-        val value = when {
+        if (configExpression.type != CwtDataTypes.Int) return // for int only
+        val intRange = configExpression.intRange ?: return
+        val intValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.intValue()
             else -> element.value.toIntOrNull()
-        }
-        if (value == null) return
-        val min = min0 ?: Int.MIN_VALUE
-        val max = max0 ?: Int.MAX_VALUE
-        if (value !in min..max) {
-            val min1 = min0?.toString() ?: "-inf"
-            val max1 = max0?.toString() ?: "inf"
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value))
-        }
+        } ?: return
+        if (intValue in intRange) return
+        val message = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, intRange.expression, intValue)
+        holder.registerProblem(element, message)
     }
 }
 
@@ -72,20 +66,14 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
 
         val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
-        val expression = element.expression
-        val (min0, max0) = configExpression.floatRange ?: return
-        val value = when {
+        val floatRange = configExpression.floatRange ?: return
+        val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()
             else -> element.value.toFloatOrNull()
-        }
-        if (value == null) return
-        val min = min0 ?: Float.MIN_VALUE
-        val max = max0 ?: Float.MAX_VALUE
-        if (value !in min..max) {
-            val min1 = min0?.toString() ?: "-inf"
-            val max1 = max0?.toString() ?: "inf"
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value))
-        }
+        } ?: return
+        if (floatValue in floatRange) return
+        val message = PlsBundle.message("incorrectExpressionChecker.expect.range", element.expression, floatRange.expression, floatValue)
+        holder.registerProblem(element, message)
     }
 }
 

@@ -9,17 +9,18 @@ import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.FloatRangeInfo
+import icu.windea.pls.core.util.IntRangeInfo
 
 class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(
         rule(CwtDataTypes.Bool, "bool"),
 
         rule(CwtDataTypes.Int, "int"),
-        rule(CwtDataTypes.Int, "int[", "]") { intRange = it.split("..", limit = 2).let { v -> tupleOf(v.getOrNull(0)?.toIntOrNull(), v.getOrNull(1)?.toIntOrNull()) } },
+        rule(CwtDataTypes.Int, "int", "") { intRange = IntRangeInfo.from(it) },
 
         rule(CwtDataTypes.Float, "float"),
-        rule(CwtDataTypes.Float, "float[", "]") { floatRange = it.split("..", limit = 2).let { v -> tupleOf(v.getOrNull(0)?.toFloatOrNull(), v.getOrNull(1)?.toFloatOrNull()) } },
+        rule(CwtDataTypes.Float, "float", "") { floatRange = FloatRangeInfo.from(it) },
 
         rule(CwtDataTypes.Scalar, "scalar"),
 
