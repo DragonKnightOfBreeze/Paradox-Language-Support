@@ -13,18 +13,17 @@ import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 
 /**
  * 基于本地化文本片段的目标（封装变量/定义/本地化）查询器的基类。
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
  */
-abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, ParadoxTextBasedTargetSearch.SearchParameters>() {
+abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<ParadoxTargetInfo, ParadoxTextBasedTargetSearch.SearchParameters>() {
     override fun processQuery(
         queryParameters: ParadoxTextBasedTargetSearch.SearchParameters,
-        consumer: Processor<in PsiElement>
+        consumer: Processor<in ParadoxTargetInfo>
     ) {
         // 检查是否启用
         if (!PlsFacade.getSettings().navigation.seForTextBasedTarget) return
@@ -41,29 +40,30 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
         process(context, consumer)
     }
 
-    protected abstract fun process(context: Context, consumer: Processor<in PsiElement>)
+    protected abstract fun process(context: Context, consumer: Processor<in ParadoxTargetInfo>)
 
-    protected abstract fun processText(text: String, context: Context, consumer: Processor<in PsiElement>): Boolean
+    protected abstract fun processText(text: String, context: Context, consumer: Processor<in ParadoxTargetInfo>): Boolean
 
-    protected fun processLeafElement(element: PsiElement, context: Context, consumer: Processor<in PsiElement>): Boolean {
+    protected fun processLeafElement(element: PsiElement, context: Context, consumer: Processor<in ParadoxTargetInfo>): Boolean {
         if (element.elementType != ParadoxLocalisationElementTypes.STRING_TOKEN) return true
         val localisation = element.parentOfType<ParadoxLocalisationProperty>() ?: return true
         return processLocalisation(localisation, context, consumer)
     }
 
-    protected fun processLocalisation(element: ParadoxLocalisationProperty, context: Context, consumer: Processor<in PsiElement>): Boolean {
+    protected fun processLocalisation(element: ParadoxLocalisationProperty, context: Context, consumer: Processor<in ParadoxTargetInfo>): Boolean {
         val localisation = element
         // 按照以下顺序收集查询结果：封装变量、定义、本地化
-        if (context.processedLocalisations.add(localisation)) { // 即使目标类型中不包括本地化，也要先去重
+        val localisationInfo = ParadoxTargetInfo.from(localisation)
+        if (localisationInfo == null) return true
+        if (context.processed.add(localisationInfo)) { // 即使目标类型中不包括本地化，也要先去重
             if (context.includeScriptedVariables) {
                 ProgressManager.checkCanceled()
                 val scriptedVariables = ParadoxLocalisationManager.getRelatedScriptedVariables(localisation)
                 for (scriptedVariable in scriptedVariables) {
                     ProgressManager.checkCanceled()
-                    if (context.processedScriptedVariables.add(scriptedVariable)) {
-                        // 收集封装变量
-                        if (!consumer.process(scriptedVariable)) return false
-                    }
+                    val info = ParadoxTargetInfo.from(scriptedVariable) ?: continue
+                    if (!context.processed.add(info)) continue
+                    if (!consumer.process(info)) return false
                 }
             }
             if (context.includeDefinitions) {
@@ -71,17 +71,15 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
                 val definitions = ParadoxLocalisationManager.getRelatedDefinitions(localisation)
                 for (definition in definitions) {
                     ProgressManager.checkCanceled()
-                    if (context.processedDefinitions.add(definition)) {
-                        // 收集定义
-                        if (!consumer.process(definition)) return false
-                    }
+                    val info = ParadoxTargetInfo.from(definition) ?: continue
+                    if (!context.processed.add(info)) continue
+                    if (!consumer.process(info)) return false
                 }
             }
 
             if (context.includeLocalisations) {
                 ProgressManager.checkCanceled()
-                // 收集本地化
-                if (!consumer.process(localisation)) return false
+                if (!consumer.process(localisationInfo)) return false
             }
         }
         return true
@@ -90,9 +88,7 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
     class Context(
         val queryParameters: ParadoxTextBasedTargetSearch.SearchParameters,
     ) {
-        val processedScriptedVariables: MutableSet<ParadoxScriptScriptedVariable> = mutableSetOf()
-        val processedDefinitions: MutableSet<ParadoxScriptDefinitionElement> = mutableSetOf()
-        val processedLocalisations: MutableSet<ParadoxLocalisationProperty> = mutableSetOf()
+        val processed = mutableSetOf<ParadoxTargetInfo>()
 
         val types = queryParameters.types
         val settings = PlsFacade.getSettings().navigation

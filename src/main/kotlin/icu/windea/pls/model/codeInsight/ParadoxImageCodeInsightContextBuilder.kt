@@ -26,6 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxImageCodeInsightContextBuilder {
+    @Suppress("unused")
     fun fromFile(
         file: PsiFile,
         fromInspection: Boolean = false,

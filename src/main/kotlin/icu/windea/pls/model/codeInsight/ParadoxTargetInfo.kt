@@ -19,36 +19,36 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 sealed class ParadoxTargetInfo {
     abstract val name: String
 
-    class ScriptedVariable(
+    data class ScriptedVariable(
         override val name: String
     ) : ParadoxTargetInfo()
 
-    class Definition(
+    data class Definition(
         override val name: String,
         val type: String,
         val subtypes: List<String>
     ) : ParadoxTargetInfo()
 
-    class Localisation(
+    data class Localisation(
         override val name: String,
         val type: ParadoxLocalisationType
     ) : ParadoxTargetInfo()
 
-    class ComplexEnumValue(
+    data class ComplexEnumValue(
         override val name: String,
         val enumName: String
     ) : ParadoxTargetInfo()
 
-    class DynamicValue(
+    data class DynamicValue(
         override val name: String,
         val types: Set<String>
     ) : ParadoxTargetInfo()
 
-    class Parameter(
+    data class Parameter(
         override val name: String
     ) : ParadoxTargetInfo()
 
-    class LocalisationParameter(
+    data class LocalisationParameter(
         override val name: String
     ) : ParadoxTargetInfo()
 

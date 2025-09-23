@@ -7,6 +7,7 @@ import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.lang.search.ParadoxTextBasedTargetSearch
+import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 
 /**
  * 用于在 *随处搜索（Search Everywhere）* 中基于本地化文本片段查找各种目标（封装变量/定义/本地化）。
@@ -26,4 +27,15 @@ class ParadoxTextBasedTargetChooseByNameContributor : ChooseByNameContributorEx 
             if (it is NavigationItem) processor.process(it)
         }
     }
+
+    private fun getAnchor(targetInfo: ParadoxTargetInfo): String? {
+        return when (targetInfo) {
+            is ParadoxTargetInfo.ScriptedVariable -> "sv@${targetInfo.name}"
+            is ParadoxTargetInfo.Definition -> "d@${targetInfo.name}.${targetInfo.type}"
+            is ParadoxTargetInfo.Localisation -> "l@${targetInfo.name}"
+            else -> null
+        }
+    }
 }
+
+
