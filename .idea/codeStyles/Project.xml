@@ -62,7 +62,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="JAVA">
-      <option name="RIGHT_MARGIN" value="120" />
+      <option name="RIGHT_MARGIN" value="240" />
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
@@ -110,7 +110,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
-      <option name="RIGHT_MARGIN" value="120" />
+      <option name="RIGHT_MARGIN" value="240" />
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />

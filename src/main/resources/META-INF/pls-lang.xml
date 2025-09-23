@@ -255,7 +255,7 @@
     <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
-    <text2TargetSearch implementation="icu.windea.pls.lang.search.ParadoxTextBasedTargetSearcher"/>
+    <text2TargetSearch implementation="icu.windea.pls.lang.search.ParadoxSubstringTextBasedTargetSearcher"/>
   </extensions>
 
   <applicationListeners>
