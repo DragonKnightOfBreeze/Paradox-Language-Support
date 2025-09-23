@@ -92,6 +92,7 @@ sealed class ParadoxTargetInfo {
             }
         }
 
+        @Suppress("unused")
         fun getAnchor(targetInfo: ParadoxTargetInfo): String? {
             return when (targetInfo) {
                 is ScriptedVariable -> "#sv@${targetInfo.name}"
@@ -104,6 +105,7 @@ sealed class ParadoxTargetInfo {
             }
         }
 
+        @Suppress("unused")
         fun fromAnchor(anchor: String): ParadoxTargetInfo? {
             if (anchor.containsBlank()) return null
             anchor.removePrefixOrNull("#sv@")?.let { s ->

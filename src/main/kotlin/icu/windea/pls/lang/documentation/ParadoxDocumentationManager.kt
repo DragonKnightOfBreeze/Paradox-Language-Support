@@ -37,7 +37,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDefinitionNavigationElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
@@ -62,9 +61,9 @@ import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -102,7 +101,6 @@ object ParadoxDocumentationManager {
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, hint)
             is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, hint)
             is ParadoxScriptPropertyKey -> computeLocalDocumentation(element.parent, originalElement, hint)
-            is ParadoxDefinitionNavigationElement -> computeLocalDocumentation(element.parent, originalElement, hint)
             is ParadoxLocalisationLocale -> getLocalisationLocaleDoc(element, originalElement, hint)
             is ParadoxLocalisationProperty -> getLocalisationPropertyDoc(element, originalElement, hint)
             is ParadoxLocalisationIcon -> getLocalisationIconDoc(element, originalElement, hint)
@@ -470,7 +468,7 @@ object ParadoxDocumentationManager {
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val modifierCategories = ParadoxModifierSupport.getModifierCategories(element) ?: return
         val contextElement = element
         val categoryNames = modifierCategories.keys
@@ -490,7 +488,7 @@ object ParadoxDocumentationManager {
         if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)

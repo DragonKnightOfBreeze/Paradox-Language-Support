@@ -8,9 +8,7 @@ import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.psi.mock.ParadoxDefinitionNavigationElement
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -35,9 +33,6 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
         val idFilter = parameters.idFilter
         val requiredClass = ParadoxScriptDefinitionElement::class.java
         // for non-file definitions only
-        StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass) p@{
-            val definitionInfo = it.definitionInfo ?: return@p true
-            processor.process(ParadoxDefinitionNavigationElement(it, definitionInfo))
-        }
+        StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass, processor)
     }
 }

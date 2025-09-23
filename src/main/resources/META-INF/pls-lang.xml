@@ -139,7 +139,8 @@
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxLocalisationChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxSyncedLocalisationChooseByNameContributor"/>
-    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxTextBasedTargetChooseByNameContributor"/>
+
+    <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTextBasedTargetSearchContributor$Factory"/>
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>

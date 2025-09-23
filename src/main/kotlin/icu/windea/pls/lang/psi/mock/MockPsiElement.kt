@@ -9,7 +9,10 @@ import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.impl.RenameableFakePsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.icon
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
+import javax.swing.Icon
 
 /**
  * 模拟的 PSI 元素。
@@ -18,6 +21,14 @@ import icu.windea.pls.lang.search.scope.ParadoxSearchScope
  */
 @Suppress("UnstableApiUsage")
 abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+    override fun getIcon(): Icon? {
+        return parent.icon
+    }
+
+    override fun getName(): String? {
+        return parent?.castOrNull<NavigatablePsiElement>()?.name
+    }
+
     override fun getNameIdentifier(): PsiElement? {
         return this
     }
