@@ -11,14 +11,12 @@ import com.intellij.util.indexing.ID
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
-import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.property
 import icu.windea.pls.cwt.CwtFileType
 import java.io.DataInput
 import java.io.DataOutput
 
-abstract class CwtConfigFileBasedIndex<T>: FileBasedIndexExtension<String, T>() {
+abstract class CwtConfigFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     override fun getIndexer(): DataIndexer<String, T, FileContent> {
         return DataIndexer { inputData ->
             val psiFile = inputData.psiFile
@@ -43,7 +41,13 @@ abstract class CwtConfigFileBasedIndex<T>: FileBasedIndexExtension<String, T>() 
     }
 
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { file -> file.fileType is CwtFileType && CwtConfigManager.getContainingConfigGroup(file, getDefaultProject()) != null }
+        return FileBasedIndex.InputFilter { file -> checkFile(file) }
+    }
+
+    private fun checkFile(file: VirtualFile): Boolean {
+        if (file.fileType !is CwtFileType) return false
+        // if (CwtConfigManager.getContainingConfigGroup(file, getDefaultProject()) == null) return false // 不用在这里判断，改为在查询器中判断
+        return true
     }
 
     override fun dependsOnFileContent(): Boolean {
