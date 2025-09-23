@@ -112,7 +112,7 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={},\s\"]*
+SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={}\s\"]*
 PROPERTY_SEPARTOR_CHECK=[=<>!?]
 PROPERTY_KEY_CHECK=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{PROPERTY_SEPARTOR_CHECK}
 
@@ -121,11 +121,12 @@ PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 
 // leading number is not permitted for scripted variable names
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+
-SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={},\s\"]*(\s*=)?
+SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
 
-WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{},\[\s\"][^#=<>?{},\s\"]*\"?
+
+WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
-PROPERTY_KEY_TOKEN=[^@#$=<>?{},\[\]\s\"][^#$=<>?{},\[\]\s\"]*\"?
+PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without arounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
@@ -136,9 +137,9 @@ FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
 STRING_CHECK={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
-WILDCARD_STRING_TOKEN=[^@#=<>?{},\s\"][^#=<>?{},\s\"]*\"?
+WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
-STRING_TOKEN=[^@#$=<>?{},\[\]\s\"][^#$=<>?{},\[\]\s\"]*\"?
+STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without arounding quotes
 
 // compatible with leading '@'

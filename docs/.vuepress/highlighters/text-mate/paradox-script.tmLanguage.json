@@ -56,8 +56,8 @@
             { "include": "#parameters" },
             {
               "name": "keyword.other.scripted-variable.paradox.script",
-              "begin": "(?<=^|[\\s\\[\\]{},<>=])(?=[A-Za-z_$\\[])",
-              "end": "$|(?=[@#={},\\s\"])",
+              "begin": "(?<=^|[\\s\\[\\]{}<>=])(?=[A-Za-z_$\\[])",
+              "end": "$|(?=[@#={}\\s\"])",
               "patterns": [
                 { "include": "#parameters" }
               ]
@@ -78,8 +78,8 @@
       "patterns": [
         {
           "name": "keyword.other.scripted-variable.paradox.script",
-          "begin": "(?<=^|[\\s\\[\\]{},<>=])@(?=[A-Za-z_$\\[])",
-          "end": "$|(?=[@#={},\\s\"])",
+          "begin": "(?<=^|[\\s\\[\\]{}<>=])@(?=[A-Za-z_$\\[])",
+          "end": "$|(?=[@#={}\\s\"])",
           "patterns": [
             { "include": "#parameters" }
           ]
@@ -99,8 +99,8 @@
         },
         {
           "name": "variable.key.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>?{},\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
-          "end": "$|(?=[@#=<>?{},\\s])",
+          "begin": "(?=[^@#=<>?{}\\[\\]\\s]+\"?\\s*(?:=|!=|<|>|<=|>=|\\?=))",
+          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
             { "include": "#escapes" }
@@ -121,8 +121,8 @@
         },
         {
           "name": "string.unquoted.paradox.script",
-          "begin": "(?=[^@#=<>?{}\\[\\],\\s])",
-          "end": "$|(?=[@#=<>?{}\\[\\],\\s])",
+          "begin": "(?=[^@#=<>?{}\\[\\]\\s])",
+          "end": "$|(?=[@#=<>?{}\\[\\]\\s])",
           "patterns": [
             { "include": "#parameters" },
             { "include": "#escapes" }

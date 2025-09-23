@@ -55,8 +55,8 @@
         },
         {
           "name": "variable.key.unquoted.cwt",
-          "begin": "(?=[^#={},\\s\"]+\"?\\s*(?:==|=|!=|<>))",
-          "end": "$|(?=[#={},\\s])",
+          "begin": "(?=[^#={}\\s\"]+\"?\\s*(?:==|=|!=|<>))",
+          "end": "$|(?=[#={}\\s])",
           "patterns": [
             { "include": "#escapes" }
           ]
@@ -75,8 +75,8 @@
         },
         {
           "name": "string.unquoted.cwt",
-          "begin": "(?=[^#={},\\s])",
-          "end": "$|(?=[#={},\\s])",
+          "begin": "(?=[^#={}\\s])",
+          "end": "$|(?=[#={}\\s])",
           "patterns": [
             { "include": "#escapes" }
           ]

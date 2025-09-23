@@ -48,17 +48,17 @@ COMMENT=#[^\r\n]*
 SEPARATOR_CHECK=(=)|(\!=)|(<>)
 OPTION_KEY_CHECK=({OPTION_KEY_TOKEN})?\s*{SEPARATOR_CHECK}
 
-OPTION_KEY_TOKEN=([^#={},\s\"]+\"?)|({QUOTED_KEY_TOKEN})
+OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
-UNQUOTED_STRING_TOKEN=[^#={},\s\"]+\"?
+UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 TOP_STRING_TOKEN=({TOP_UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
-TOP_UNQUOTED_STRING_TOKEN=[^#=<>{},\"\s]([^#=<>{},\"\r\n]*[^#=<>{},\s])? // middle whitespaces are permitted
+TOP_UNQUOTED_STRING_TOKEN=[^#=<>{}\"\s]([^#=<>{}\"\r\n]*[^#=<>{}\s])? // middle whitespaces are permitted
 
 %%
 
