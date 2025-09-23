@@ -42,7 +42,7 @@ interface ParadoxLocalisationPropertyStub : ParadoxLocaleAwareStub<ParadoxLocali
         override val name: String get() = ""
 
         override fun toString(): String {
-            return "ParadoxLocalisationPropertyStub.Dummy"
+            return "ParadoxLocalisationPropertyStub.Dummy(gameType=$gameType)"
         }
     }
 }

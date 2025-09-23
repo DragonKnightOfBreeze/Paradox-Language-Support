@@ -14,6 +14,12 @@ interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedV
     abstract class Base(
         parent: StubElement<*>?
     ) : StubBase<ParadoxScriptScriptedVariable>(parent, SCRIPTED_VARIABLE), ParadoxScriptScriptedVariableStub {
+        override val gameType: ParadoxGameType get() = parentStub?.gameType ?: ParadoxGameType.Core
+
+        override fun getParentStub(): ParadoxStub<*>? {
+            return super.getParentStub() as? ParadoxStub<*>
+        }
+
         override fun toString(): String {
             return "ParadoxScriptScriptedVariableStub(name=$name, gameType=$gameType)"
         }
@@ -22,17 +28,15 @@ interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedV
     class Impl(
         parent: StubElement<*>?,
         override val name: String,
-        override val gameType: ParadoxGameType,
     ) : Base(parent)
 
     class Dummy(
-        parent: StubElement<*>?,
+        parent: StubElement<*>?
     ) : Base(parent) {
         override val name: String get() = ""
-        override val gameType: ParadoxGameType get() = ParadoxGameType.Core
 
         override fun toString(): String {
-            return "ParadoxScriptScriptedVariableStub.Dummy"
+            return "ParadoxScriptScriptedVariableStub.Dummy(gameType=$gameType)"
         }
     }
 }

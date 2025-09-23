@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
     override fun getKey() = ParadoxIndexKeys.DefinitionName
 
-    override fun getVersion() = 74 // VERSION for 2.0.5
+    override fun getVersion() = 75 // VERSION for 2.0.5
 
     override fun getCacheSize() = 12 * 1024 // CACHE SIZE - 38000+ in stellaris@3.6
 
@@ -18,6 +18,6 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
      */
     class TextFormatIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
         override fun getKey() = ParadoxIndexKeys.DefinitionNameForTextFormat
-        override fun getVersion() = 74 // VERSION for 2.0.5
+        override fun getVersion() = 75 // VERSION for 2.0.5
     }
 }

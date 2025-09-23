@@ -31,6 +31,6 @@ interface ParadoxLocalisationPropertyListStub : ParadoxLocaleAwareStub<ParadoxLo
 
     class Impl(
         parent: StubElement<*>?,
-        override val locale: String?
+        override val locale: String?,
     ) : Base(parent)
 }

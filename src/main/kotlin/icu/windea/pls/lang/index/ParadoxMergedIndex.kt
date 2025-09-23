@@ -45,7 +45,7 @@ import java.io.DataOutput
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun getName() = ParadoxIndexKeys.Merged
 
-    override fun getVersion() = 74 // VERSION for 2.0.5
+    override fun getVersion() = 75 // VERSION for 2.0.5
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsCoreManager.processMergedIndex) {

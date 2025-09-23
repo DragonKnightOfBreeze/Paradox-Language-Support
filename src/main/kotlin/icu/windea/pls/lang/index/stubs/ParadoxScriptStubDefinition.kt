@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @Suppress("UnstableApiUsage")
 class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
-    override val stubVersion: Int = 74 // VERSION for 2.0.5
+    override val stubVersion: Int = 75 // VERSION for 2.0.5
     override val builder = ParadoxScriptStubBuilder()
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {

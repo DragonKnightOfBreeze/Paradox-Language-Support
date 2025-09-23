@@ -15,8 +15,12 @@ interface ParadoxLocalisationFileStub : PsiFileStub<ParadoxLocalisationFile>, Pa
     class Impl(
         file: ParadoxLocalisationFile?,
         override val localisationType: ParadoxLocalisationType,
-        override val gameType: ParadoxGameType
+        override val gameType: ParadoxGameType,
     ) : PsiFileStubImpl<ParadoxLocalisationFile>(file), ParadoxLocalisationFileStub {
+        override fun getParentStub(): ParadoxStub<*>? {
+            return null
+        }
+
         override fun getFileElementType(): IElementType {
             return ParadoxLocalisationFile.ELEMENT_TYPE
         }

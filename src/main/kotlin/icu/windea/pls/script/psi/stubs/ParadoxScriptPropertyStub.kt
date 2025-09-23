@@ -21,6 +21,12 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
     abstract class Base(
         parent: StubElement<*>?
     ) : StubBase<ParadoxScriptProperty>(parent, PROPERTY), ParadoxScriptPropertyStub {
+        override val gameType: ParadoxGameType get() = parentStub?.gameType ?: ParadoxGameType.Core
+
+        override fun getParentStub(): ParadoxStub<*>? {
+            return super.getParentStub() as? ParadoxStub<*>
+        }
+
         override fun toString(): String {
             return "ParadoxScriptPropertyStub(definitionName=$definitionName, definitionType=$definitionType, gameType=$gameType)"
         }
@@ -33,21 +39,19 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionSubtypes: List<String>?,
         override val rootKey: String,
         override val elementPath: ParadoxExpressionPath,
-        override val gameType: ParadoxGameType,
     ) : Base(parent)
 
     class Dummy(
-        parent: StubElement<*>?,
+        parent: StubElement<*>?
     ) : Base(parent) {
         override val definitionName: String get() = ""
         override val definitionType: String get() = ""
         override val definitionSubtypes: List<String>? get() = null
         override val rootKey: String get() = ""
         override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.resolveEmpty()
-        override val gameType: ParadoxGameType get() = ParadoxGameType.Core
 
         override fun toString(): String {
-            return "ParadoxScriptPropertyStub.Dummy"
+            return "ParadoxScriptPropertyStub.Dummy(gameType=$gameType)"
         }
     }
 }

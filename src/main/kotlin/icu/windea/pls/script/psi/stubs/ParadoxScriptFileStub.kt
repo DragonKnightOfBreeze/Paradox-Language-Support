@@ -11,8 +11,12 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 interface ParadoxScriptFileStub : PsiFileStub<ParadoxScriptFile>, ParadoxStub<ParadoxScriptFile> {
     class Impl(
         file: ParadoxScriptFile?,
-        override val gameType: ParadoxGameType
+        override val gameType: ParadoxGameType,
     ) : PsiFileStubImpl<ParadoxScriptFile>(file), ParadoxScriptFileStub {
+        override fun getParentStub(): ParadoxStub<*>? {
+            return null
+        }
+
         override fun getFileElementType(): IElementType {
             return ParadoxScriptFile.ELEMENT_TYPE
         }

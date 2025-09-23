@@ -15,16 +15,17 @@
 
 ## 2.0.5
 
-- [X] 更新规则文件以匹配 Stellaris 的最新游戏版本
+- [ ] 更新规则文件以匹配 Stellaris 的最新游戏版本（4.1） / Update config files to match the newest game version of Stellaris (4.1)
 - [X] #186
-- [X] #187 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别
+- [X] #187 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别 / Can configure detailed highlight severity levels by *Severity x Confidence*
 - [X] 优化：可在设置页面中通过 OpenAI API、Anthropic API 或本地模型提供 AI 服务 / OP: AI Service can be provided via OpenAI API, Anthropic API or local LLM in settings page
 - [X] 优化：优化模组依赖的导入导出功能 / OP: Optimize the import & export feature for mod dependencies
 - [X] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports
-- [X] 优化：规则的数据类型 `Int` 和 `Float` 支持开区间写法（如 `float(0..inf]`） / OP: config data type `Int` and `Float` can accept open range format (e.g., `float(0..inf]`) 
+- [X] 优化：规则的数据类型 `Int` 和 `Float` 支持开区间写法（如 `float(0..inf]`） / OP: config data type `Int` and `Float` can accept open range format (e.g., `float(0..inf]`)
 - [X] 优化：支持需要在匹配时先加上一组后缀的数据类型（如`"<sprite>|locked,unlocked"` `"localisation|_enemy"`） #162 #193
 - [X] 修复：一些地方（如调用 Tiger 时）应使用最终的游戏类型与游戏目录 / FIX: Some locations (like when calling Tiger) should use the final game type and game directory.
-- [ ] 新功能：提供基于本地化文本片段的随处搜索
+- [X] 修复：修复一些地方可能无法正确获取游戏类型，导致无法正确匹配与解析的问题 / FIX: Fixed an issue where some places may not be able to correctly obtain the game type, resulting in the inability to match and parse correctly
+- [X] 新功能：提供基于本地化文本片段的随处搜索 / NEW: Provide localisation text snippet based Search Everywhere
 - [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.4

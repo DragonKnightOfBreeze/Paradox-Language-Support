@@ -14,6 +14,7 @@ import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.children
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ParadoxIndexKeys
@@ -117,7 +118,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
-            val name = getNameFromNode(node, tree)?.takeIf { it.isNotEmpty() } ?: return createDefaultStub(parentStub)
+            val name = getNameFromNode(node, tree)?.orNull() ?: return createDefaultStub(parentStub)
             return ParadoxLocalisationPropertyStub.Impl(parentStub, name)
         }
 

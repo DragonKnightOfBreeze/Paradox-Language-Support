@@ -9,7 +9,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     override fun getKey() = ParadoxIndexKeys.LocalisationName
 
-    override fun getVersion() = 74 // VERSION for 2.0.5
+    override fun getVersion() = 75 // VERSION for 2.0.5
 
     override fun getCacheSize() = 32 * 1024 // CACHE SIZE - 98000+ in stellaris@3.6
 
@@ -18,7 +18,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      */
     class ModifierIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
         override fun getKey() = ParadoxIndexKeys.LocalisationNameForModifier
-        override fun getVersion() = 74 // VERSION for 2.0.5
+        override fun getVersion() = 75 // VERSION for 2.0.5
     }
 
     /**
@@ -26,7 +26,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      */
     class EventIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
         override fun getKey() = ParadoxIndexKeys.LocalisationNameForEvent
-        override fun getVersion() = 74 // VERSION for 2.0.5
+        override fun getVersion() = 75 // VERSION for 2.0.5
     }
 
     /**
@@ -34,6 +34,6 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      */
     class TechIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
         override fun getKey() = ParadoxIndexKeys.LocalisationNameForTech
-        override fun getVersion() = 74 // VERSION for 2.0.5
+        override fun getVersion() = 75 // VERSION for 2.0.5
     }
 }

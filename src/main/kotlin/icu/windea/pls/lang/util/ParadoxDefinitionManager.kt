@@ -553,7 +553,6 @@ object ParadoxDefinitionManager {
         propertyConfig: CwtPropertyConfig,
         matchOptions: Int
     ): Boolean {
-
         // aliasName和aliasSubName需要匹配
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
@@ -594,8 +593,7 @@ object ParadoxDefinitionManager {
         if (type.isEmpty()) return null
         val subtypes = runCatchingCancelable { definitionInfo.subtypes }.getOrNull() // 如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
-        val gameType = definitionInfo.gameType
-        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath)
     }
 
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>): ParadoxScriptPropertyStub? {
@@ -620,7 +618,7 @@ object ParadoxDefinitionManager {
         val type = typeConfig.name
         if (type.isEmpty()) return null
         val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) // 如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath)
     }
 
     private fun getNameWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {

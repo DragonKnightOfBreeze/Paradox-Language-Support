@@ -9,5 +9,5 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     override fun getKey() = ParadoxIndexKeys.SyncedLocalisationName
 
-    override fun getVersion() = 74 // VERSION for 2.0.5
+    override fun getVersion() = 75 // VERSION for 2.0.5
 }

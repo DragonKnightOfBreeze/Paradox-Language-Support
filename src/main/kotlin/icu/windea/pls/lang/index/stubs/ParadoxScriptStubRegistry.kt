@@ -15,9 +15,9 @@ import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.children
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
@@ -68,15 +68,13 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
     class ScriptedVariableFactory : LightStubElementFactory<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable> {
         override fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<out PsiElement>?): ParadoxScriptScriptedVariableStub {
-            val name = psi.name?.takeIf { it.isNotEmpty() } ?: return createDefaultStub(parentStub)
-            val gameType = selectGameType(parentStub) ?: return createDefaultStub(parentStub)
-            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
+            val name = psi.name?.orNull() ?: return createDefaultStub(parentStub)
+            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub {
-            val name = getNameFromNode(node, tree)?.takeIf { it.isNotEmpty() } ?: return createDefaultStub(parentStub)
-            val gameType = selectGameType(parentStub) ?: return createDefaultStub(parentStub)
-            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
+            val name = getNameFromNode(node, tree)?.orNull() ?: return createDefaultStub(parentStub)
+            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name)
         }
 
         private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
@@ -107,14 +105,12 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         override fun serialize(stub: ParadoxScriptScriptedVariableStub, dataStream: StubOutputStream) {
             dataStream.writeName(stub.name)
             if (stub.name.isEmpty()) return
-            dataStream.writeByte(stub.gameType.optimizeValue())
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<out PsiElement>?): ParadoxScriptScriptedVariableStub {
             val name = dataStream.readNameString().orEmpty()
             if (name.isEmpty()) return ParadoxScriptScriptedVariableStub.Dummy(parentStub)
-            val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
-            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
+            return ParadoxScriptScriptedVariableStub.Impl(parentStub, name)
         }
 
         override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
@@ -159,7 +155,6 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             }
             dataStream.writeName(stub.rootKey)
             dataStream.writeName(stub.elementPath.path)
-            dataStream.writeByte(stub.gameType.optimizeValue())
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<out PsiElement>?): ParadoxScriptPropertyStub {
@@ -170,8 +165,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             val definitionSubtypes = if (definitionSubtypesSize == -1) null else MutableList(definitionSubtypesSize) { dataStream.readNameString().orEmpty() }
             val rootKey = dataStream.readNameString().orEmpty()
             val elementPath = dataStream.readNameString().orEmpty().let { ParadoxExpressionPath.resolve(it) }
-            val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
-            return ParadoxScriptPropertyStub.Impl(parentStub, definitionName, definitionType, definitionSubtypes, rootKey, elementPath, gameType)
+            return ParadoxScriptPropertyStub.Impl(parentStub, definitionName, definitionType, definitionSubtypes, rootKey, elementPath)
         }
 
         override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
