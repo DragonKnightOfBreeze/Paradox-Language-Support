@@ -73,7 +73,7 @@ object CwtDataTypes {
 
     // Suffix Aware Data Types
 
-    // NOTE SUFFIX_AWARE 目前不兼容/不支持：代码补全、使用查询
+    // TODO SUFFIX_AWARE 目前不兼容/不支持：代码补全、使用查询
 
     // #162, #193
     /** @since 2.0.5 */
