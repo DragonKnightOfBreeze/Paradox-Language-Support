@@ -19,10 +19,12 @@ class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.Bool, "bool"),
 
         rule(CwtDataTypes.Int, "int"),
-        rule(CwtDataTypes.Int, "int", "") { intRange = IntRangeInfo.from(it) },
+        rule(CwtDataTypes.Int, "int[", "") { intRange = IntRangeInfo.from("[$it") },
+        rule(CwtDataTypes.Int, "int(", "") { intRange = IntRangeInfo.from("($it") },
 
         rule(CwtDataTypes.Float, "float"),
-        rule(CwtDataTypes.Float, "float", "") { floatRange = FloatRangeInfo.from(it) },
+        rule(CwtDataTypes.Float, "float[", "") { floatRange = FloatRangeInfo.from("[$it") },
+        rule(CwtDataTypes.Float, "float(", "") { floatRange = FloatRangeInfo.from("($it") },
 
         rule(CwtDataTypes.Scalar, "scalar"),
 
