@@ -62,8 +62,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
         // 在项目启动时，异步地预加载规则数据
         initConfigGroupsAsync(project)
-        // 在项目启动时，异步地刷新外部库的根目录
-        refreshRootsForLibrariesAsync(project)
     }
 
     private fun initCachesAsync() {
@@ -94,16 +92,20 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         }
     }
 
-    private fun refreshRootsForLibrariesAsync(project: Project) {
-        if (PlsFacade.isUnitTestMode()) return
-        if (project.isDisposed) return
-        project.paradoxLibrary.refreshRootsAsync()
-        project.configGroupLibrary.refreshRootsAsync()
-    }
-
     private fun initConfigGroupsAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return
         if (project.isDisposed) return
-        PlsFacade.getConfigGroupService().initAsync(project)
+        PlsFacade.getConfigGroupService().initAsync(project) {
+            // 规则数据加载完毕后，异步地刷新外部库的根目录
+            refreshRootsForLibrariesAsync(project)
+        }
+    }
+
+    private fun refreshRootsForLibrariesAsync(project: Project) {
+        if (PlsFacade.isUnitTestMode()) return
+        if (project.isDefault) return
+        if (project.isDisposed) return
+        project.configGroupLibrary.refreshRootsAsync()
+        project.paradoxLibrary.refreshRootsAsync()
     }
 }

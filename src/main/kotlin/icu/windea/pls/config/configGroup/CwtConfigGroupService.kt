@@ -30,7 +30,7 @@ private val logger = logger<CwtConfigGroupService>()
 @Service
 @Suppress("UnstableApiUsage")
 class CwtConfigGroupService {
-    fun initAsync(project: Project) {
+    fun initAsync(project: Project, callback: () -> Unit = {}) {
         val configGroups = getConfigGroups(project).values
 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
@@ -50,6 +50,7 @@ class CwtConfigGroupService {
                 val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
                 PlsCoreManager.reparseFiles(openedFiles)
             }
+            callback()
         }
     }
 
