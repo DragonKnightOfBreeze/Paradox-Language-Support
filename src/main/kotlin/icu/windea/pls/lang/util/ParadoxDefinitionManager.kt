@@ -151,8 +151,9 @@ object ParadoxDefinitionManager {
 
     fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
         if (element !is ParadoxScriptProperty) return null
-        val stub = runReadAction { element.greenStub } ?: return null
-        if (!(stub.isValidDefinition)) return null
+        val stub0 = runReadAction { element.greenStub } ?: return null
+        val stub = stub0 as? ParadoxScriptPropertyStub.Definition ?: return null
+        if (!stub.isValidDefinition) return null
         val name = stub.definitionName
         val type = stub.definitionType
         val gameType = stub.gameType
@@ -568,12 +569,16 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.definitionName }
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }
+            ?.let { it as? ParadoxScriptPropertyStub.Definition }
+            ?.let { return it.definitionName }
         return element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.definitionType }
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }
+            ?.let { it as? ParadoxScriptPropertyStub.Definition }
+            ?.let { return it.definitionType }
         return element.definitionInfo?.type
     }
 

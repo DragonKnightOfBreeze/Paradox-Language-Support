@@ -25,6 +25,7 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import java.awt.*
 import javax.swing.*
 
@@ -135,8 +136,10 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
-        //注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
-        runReadAction { element.stub }?.rootKey?.let { return it }
+        //注意：这里需要得到 element 的根键（Definition.rootKey），而非定义名
+        runReadAction { element.stub }?.let { s ->
+            (s as? ParadoxScriptPropertyStub.Definition)?.rootKey?.let { return it }
+        }
         return element.propertyKey.name
     }
 

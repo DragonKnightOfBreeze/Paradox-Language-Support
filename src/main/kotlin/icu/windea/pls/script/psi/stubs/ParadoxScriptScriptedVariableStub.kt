@@ -8,6 +8,12 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 @Suppress("UnstableApiUsage")
+/**
+ * 脚本内（或全局）脚本变量的存根。
+ *
+ * - `name` 为变量名（不含 `@` 前缀）。
+ * - `gameType` 从父存根（文件存根）继承。
+ */
 interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedVariable> {
     val name: String
 
@@ -25,11 +31,13 @@ interface ParadoxScriptScriptedVariableStub : ParadoxStub<ParadoxScriptScriptedV
         }
     }
 
+    /** 具体实现。 */
     class Impl(
         parent: StubElement<*>?,
         override val name: String,
     ) : Base(parent)
 
+    /** 空实现（占位）。 */
     class Dummy(
         parent: StubElement<*>?
     ) : Base(parent) {

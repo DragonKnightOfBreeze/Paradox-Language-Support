@@ -8,7 +8,17 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 @Suppress("UnstableApiUsage")
+/**
+ * 脚本文件存根。
+ *
+ * - 持有 `gameType`，供其子存根复用。
+ */
 interface ParadoxScriptFileStub : PsiFileStub<ParadoxScriptFile>, ParadoxStub<ParadoxScriptFile> {
+    /**
+     * 实现。
+     *
+     * - `gameType` 直接存储于文件存根。
+     */
     class Impl(
         file: ParadoxScriptFile?,
         override val gameType: ParadoxGameType,

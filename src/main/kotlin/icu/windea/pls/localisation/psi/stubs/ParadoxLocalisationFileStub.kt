@@ -9,9 +9,19 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
+/**
+ * 本地化文件存根。
+ *
+ * - 持有 `localisationType` 与 `gameType`，供其子存根复用。
+ */
 interface ParadoxLocalisationFileStub : PsiFileStub<ParadoxLocalisationFile>, ParadoxStub<ParadoxLocalisationFile> {
     val localisationType: ParadoxLocalisationType
 
+    /**
+     * 实现。
+     *
+     * - `localisationType` 和 `gameType` 直接存储于文件存根。
+     */
     class Impl(
         file: ParadoxLocalisationFile?,
         override val localisationType: ParadoxLocalisationType,

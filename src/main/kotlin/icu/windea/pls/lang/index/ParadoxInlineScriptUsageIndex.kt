@@ -22,6 +22,9 @@ import java.io.DataOutput
 
 /**
  * 用于索引内联脚本的使用信息。
+ *
+ * TODO INLINE_DEFINITION: 该基于文件的索引已被基于存根的索引替代（`ParadoxInlineScriptUsageByExpressionIndex`）。
+ * 后续将删除本实现与对应的注册项。
  */
 class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageIndexInfo.Compact>() {
     override fun getName() = ParadoxIndexKeys.InlineScriptUsage

@@ -9,6 +9,12 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 
 @Suppress("UnstableApiUsage")
+/**
+ * 本地化属性列表存根。
+ *
+ * - 继承自 [ParadoxLocaleAwareStub]，因此可以获取 `locale`。
+ * - `localisationType` 与 `gameType` 从父存根（文件存根）继承。
+ */
 interface ParadoxLocalisationPropertyListStub : ParadoxLocaleAwareStub<ParadoxLocalisationPropertyList> {
     val localisationType: ParadoxLocalisationType
 
