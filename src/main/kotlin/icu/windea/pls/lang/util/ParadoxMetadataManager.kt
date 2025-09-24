@@ -12,6 +12,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLauncherSettingsInfo
@@ -147,11 +148,14 @@ object ParadoxMetadataManager {
 
     /**
      * 从模组目录获取模组信息，从而统一获取各种需要进一步获取的信息。
+     *
+     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[ParadoxModDescriptorSettingsState]）被创建。
      */
     fun getModInfoFromModDirectory(modDirectory: String?): ParadoxRootInfo.Mod? {
         if (modDirectory.isNullOrEmpty()) return null
         val file = modDirectory.toVirtualFile() ?: return null
-        return file.rootInfo?.castOrNull()
+        val rootInfo = file.rootInfo ?: return null
+        return rootInfo.castOrNull()
     }
 
     // Models

@@ -13,9 +13,12 @@
 - [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
 - [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 
+## 2.0.6
+
+- [ ] 更新规则文件以匹配 Stellaris 的最新游戏版本（4.1）
+
 ## 2.0.5
 
-- [ ] 更新规则文件以匹配 Stellaris 的最新游戏版本（4.1） / Update config files to match the newest game version of Stellaris (4.1)
 - [X] #186
 - [X] #187 可以按 *严重度 x 置信度* 详细配置 Tiger 代码检查的报错级别 / Can configure detailed highlight severity levels by *Severity x Confidence*
 - [X] 优化：可在设置页面中通过 OpenAI API、Anthropic API 或本地模型提供 AI 服务 / OP: AI Service can be provided via OpenAI API, Anthropic API or local LLM in settings page

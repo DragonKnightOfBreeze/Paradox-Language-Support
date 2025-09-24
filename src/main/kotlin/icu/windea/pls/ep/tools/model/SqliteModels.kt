@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.tools.model
 
 import org.ktorm.entity.Entity
+import java.time.LocalDateTime
 
 /**
  * `knex_migrations` 表的实体类。
@@ -31,6 +32,10 @@ interface PlaysetEntity : Entity<PlaysetEntity> {
     var name: String
     var isActive: Boolean
     var loadOrder: String?
+    var createdOn: LocalDateTime
+    var updatedOn: LocalDateTime?
+    var syncedOn: LocalDateTime?
+
     // ignore other columns
 }
 

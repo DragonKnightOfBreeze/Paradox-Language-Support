@@ -4,6 +4,7 @@ package icu.windea.pls.ep.tools.model
 
 import org.ktorm.schema.Table
 import org.ktorm.schema.boolean
+import org.ktorm.schema.datetime
 import org.ktorm.schema.int
 import org.ktorm.schema.text
 import org.ktorm.schema.varchar
@@ -26,6 +27,9 @@ object Playsets : Table<PlaysetEntity>(tableName = "playsets") {
     val name = varchar("name").bindTo { it.name }
     val isActive = boolean("isActive").bindTo { it.isActive }
     val loadOrder = varchar("loadOrder").bindTo { it.loadOrder }
+    val createdOn = datetime("createdOn").bindTo { it.createdOn }
+    val updatedOn = datetime("updatedOn").bindTo { it.updatedOn }
+    val syncedOn = datetime("syncedOn").bindTo { it.syncedOn }
     // ignore other columns
 }
 

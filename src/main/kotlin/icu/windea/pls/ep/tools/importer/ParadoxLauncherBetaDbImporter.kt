@@ -8,6 +8,8 @@ import icu.windea.pls.ep.tools.model.Constants
  *
  * 数据文件默认为游戏数据目录下的 `launcher-v2_openbeta.sqlite`。
  *
+ * 来自已激活的播放集，或者任意一个播放集。
+ *
  * 参见：[ParadoxLauncherImporterBeta.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporterBeta.cs)
  */
 class ParadoxLauncherBetaDbImporter : ParadoxLauncherDbImporter() {

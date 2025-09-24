@@ -82,7 +82,7 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
                 val keyName = PlsBundle.message("settings.configure.definitionTypeBindings.dialog.key")
                 val valueName = PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
                 cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
-            }.resizableRow()
+            }.resizableRow() // 占据额外的垂直空间
             row {
                 comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
             }

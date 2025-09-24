@@ -15,6 +15,4 @@ object PlsConstants {
 
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-
-
 }

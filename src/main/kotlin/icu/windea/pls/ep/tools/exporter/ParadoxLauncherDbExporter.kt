@@ -17,14 +17,13 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import org.ktorm.database.Database
-import org.ktorm.dsl.delete
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.or
-import org.ktorm.dsl.update
 import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
 import java.nio.file.Path
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.io.path.exists
 
@@ -33,7 +32,7 @@ import kotlin.io.path.exists
  *
  * 数据文件默认为游戏数据目录下的 `launcher-v2.sqlite`。
  *
- * 导出时会排除本地源的模组。
+ * 导出到已激活的播放集，或者同名的播放集（如果不存在则创建，默认未激活）。另外，导出时会排除本地源的模组。
  *
  * 参见：[ParadoxLauncherExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/ParadoxLauncherExporter.cs)
  */
@@ -55,31 +54,23 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
         // - V4+：INTEGER，从 0 开始的整数
         val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
 
-        val playsetName = modSetInfo.name.ifBlank { Constants.defaultModSetName }
+        val playsetName = modSetInfo.name.ifBlank { ParadoxModSetInfo.defaultName }
 
-        // 将所有 playset 标记为非激活
-        db.update(Playsets) { set(it.isActive, false) }
-
-        // 获取或创建目标播放集，并标记为激活
+        // 导入到当前已激活的播放集，或者同名的播放集（没有则创建，默认不激活）
         val playsets = db.sequenceOf(Playsets)
-        var playset: PlaysetEntity? = playsets.find { it.name eq playsetName }
+        var playset = playsets.find { it.isActive or (it.name eq playsetName) }
         if (playset == null) {
             playset = PlaysetEntity {
                 this.id = UUID.randomUUID().toString().lowercase()
                 this.name = playsetName
-                this.isActive = true
+                this.isActive = false
+                this.createdOn = LocalDateTime.now()
+                this.updatedOn = LocalDateTime.now()
             }
             playsets.add(playset)
-        } else {
-            db.update(Playsets) {
-                set(it.isActive, true)
-                where { it.id eq playset.id }
-            }
         }
 
-        // 清空原有的映射关系
-        db.delete(PlaysetsMods) { it.playsetId eq playset.id }
-
+        // 向目标播放集插入不重复的模组信息
         val modsSeq = db.sequenceOf(Mods)
         val mappings = db.sequenceOf(PlaysetsMods)
         var inserted = 0
@@ -96,7 +87,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
             if (steamId == null && pdxId == null) return@f
 
             // 查找或创建 mod 记录
-            var mod: ModEntity? = modsSeq.find { (it.steamId eq remoteId) or (it.pdxId eq remoteId) }
+            var mod = modsSeq.find { (it.steamId eq remoteId) or (it.pdxId eq remoteId) }
             if (mod == null) {
                 mod = ModEntity {
                     this.id = UUID.randomUUID().toString().lowercase()
@@ -117,6 +108,9 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
             })
             inserted++
         }
+
+        playset.updatedOn = LocalDateTime.now()
+        playset.flushChanges()
 
         return ParadoxModExporter.Result(total = mods.size, actualTotal = inserted)
     }

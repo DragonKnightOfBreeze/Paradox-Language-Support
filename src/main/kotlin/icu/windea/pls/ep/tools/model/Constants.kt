@@ -16,7 +16,6 @@ object Constants {
     const val sqlV4Id = "modifyPositionToInteger"
     const val sqlV5Id = "addModShortDescription"
 
-    const val defaultModSetName = "Paradox"
     const val playlistsName = "playlists"
     const val playlistJsonName = "playlist.json"
 }

@@ -16,6 +16,7 @@ import com.intellij.ui.AnActionButton
 import com.intellij.ui.AnActionButtonRunnable
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.errorDetails
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.qualifiedName
@@ -46,27 +47,24 @@ interface ParadoxModDependenciesToolbarActions {
                         count++
                         if (!table.model.modDependencyDirectories.add(modPath)) continue //忽略已有的
                         val newSettings = ParadoxModDependencySettingsState()
-                        newSettings.enabled = true
                         newSettings.modDirectory = modPath
+                        newSettings.enabled = true
                         newSettingsList.add(newSettings)
                     }
 
-                    //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
-                    val isCurrentAtLast = table.model.isCurrentAtLast()
-                    val position = if (isCurrentAtLast) table.model.rowCount - 1 else table.model.rowCount
-                    table.model.insertRows(position, newSettingsList)
-                    //选中刚刚添加的所有模组依赖
-                    table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
+                    table.addModDependencies(newSettingsList)
 
-                    PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.dependencies.add.info", count)).notify(project)
+                    val content = PlsBundle.message("mod.dependencies.add.info", count)
+                    PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
-
-                    PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.dependencies.add.error")).notify(project)
+                    val content = PlsBundle.message("mod.dependencies.add.error") + e.message.errorDetails
+                    PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
                 }
             }
         }
+
     }
 
     class EditAction(

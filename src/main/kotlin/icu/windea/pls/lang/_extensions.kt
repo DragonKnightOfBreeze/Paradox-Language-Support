@@ -8,8 +8,10 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.data.ParadoxDefinitionData
@@ -130,3 +132,5 @@ inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
 inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
     return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
 }
+
+val String?.errorDetails get() = this?.orNull()?.let { PlsBundle.message("error.details", it) }.orEmpty()

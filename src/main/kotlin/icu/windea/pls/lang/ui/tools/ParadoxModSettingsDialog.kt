@@ -142,11 +142,11 @@ class ParadoxModSettingsDialog(
             collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
-                }
+                }.resizableRow() // 占据额外的垂直空间
                 row {
                     comment(PlsBundle.message("mod.dependencies.comment.1"))
                 }
-            }
+            }.resizableRow() // 占据额外的垂直空间
         }
     }
 

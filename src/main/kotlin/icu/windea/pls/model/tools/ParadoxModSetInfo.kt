@@ -12,11 +12,15 @@ import icu.windea.pls.model.ParadoxGameType
  */
 data class ParadoxModSetInfo(
     val gameType: ParadoxGameType,
-    val name: String,
+    val name: String = defaultName,
     val mods: List<ParadoxModInfo> = emptyList(),
-)
+) {
+    companion object {
+        const val defaultName = "Paradox"
+    }
+}
 
-fun List<ParadoxModDependencySettingsState>.toModSetInfo(gameType: ParadoxGameType, name: String): ParadoxModSetInfo {
+fun List<ParadoxModDependencySettingsState>.toModSetInfo(gameType: ParadoxGameType, name: String = ParadoxModSetInfo.defaultName): ParadoxModSetInfo {
     return ParadoxModSetInfo(gameType, name, this.mapNotNullTo(mutableListOf()) { it.toModInfo() })
 }
 

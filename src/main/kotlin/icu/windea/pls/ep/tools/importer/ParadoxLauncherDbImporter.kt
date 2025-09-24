@@ -31,6 +31,8 @@ import kotlin.io.path.notExists
  *
  * 数据文件默认为游戏数据目录下的 `launcher-v2.sqlite`。
  *
+ * 来自已激活的播放集，或者任意一个播放集。
+ *
  * 参见：[ParadoxLauncherImporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Importers/ParadoxLauncherImporter.cs)
  */
 open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
@@ -51,12 +53,11 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
         // 读取激活的播放集（playsets.isActive=1）。若不存在，则退回任意一个。
         val playsets = db.sequenceOf(Playsets)
-        val activePlayset: PlaysetEntity? = playsets.filter { it.isActive eq true }.firstOrNull()
-            ?: playsets.firstOrNull()
+        val activePlayset: PlaysetEntity? = playsets.find { it.isActive } ?: playsets.firstOrNull()
 
         if (activePlayset == null) {
             // 数据库存在但没有任何播放集，返回空结果
-            val empty = ParadoxModSetInfo(gameType, Constants.defaultModSetName, emptyList())
+            val empty = ParadoxModSetInfo(gameType, ParadoxModSetInfo.defaultName, emptyList())
             return ParadoxModImporter.Result(total = 0, actualTotal = 0, newModSetInfo = empty)
         }
 

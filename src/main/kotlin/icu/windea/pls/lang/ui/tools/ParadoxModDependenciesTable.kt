@@ -16,17 +16,46 @@ import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerClickListener
 import icu.windea.pls.core.registerCopyProvider
 import icu.windea.pls.lang.actions.PlsActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(
     val model: ParadoxModDependenciesTableModel
 ) : JBTable(model) {
+    /**
+     * 判断模组依赖表格中的最后一个是否是当前模组自身。
+     */
+    fun isCurrentAtLast(): Boolean {
+        if (rowCount == 0) return false
+        val currentModDirectory = model.settings.castOrNull<ParadoxModSettingsState>()?.modDirectory
+        if (currentModDirectory == null) return false
+        val lastRow = model.getItem(rowCount - 1)
+        val lastModDirectory = lastRow.modDirectory
+        return currentModDirectory == lastModDirectory
+    }
+
+    /**
+     * 添加模组依赖到表格中合适的位置。
+     */
+    fun addModDependencies(newModDependencies: List<ParadoxModDependencySettingsState>) {
+        // 如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
+        val isCurrentAtLast = isCurrentAtLast()
+        val position = if (isCurrentAtLast) model.rowCount - 1 else model.rowCount
+        if (newModDependencies.isNotEmpty()) {
+            // 插入到表格
+            model.insertRows(position, newModDependencies)
+            // 选中刚刚添加的所有模组依赖
+            setRowSelectionInterval(position, position + newModDependencies.size - 1)
+        }
+    }
+
     companion object {
         //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
 

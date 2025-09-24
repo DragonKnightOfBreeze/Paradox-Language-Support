@@ -3,6 +3,7 @@ package icu.windea.pls.model.tools
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
+import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxModSource
 
 /**
@@ -44,6 +45,8 @@ fun ParadoxModDependencySettingsState.toModInfo(): ParadoxModInfo? {
 
 fun ParadoxModInfo.toModDependency(): ParadoxModDependencySettingsState? {
     val modDirectory = modDirectory?.orNull() ?: return null
+    val modInfo = ParadoxMetadataManager.getModInfoFromModDirectory(modDirectory) // 确保模组信息被解析
+    if (modInfo == null) return null
     return ParadoxModDependencySettingsState().also {
         it.modDirectory = modDirectory
         it.enabled = enabled

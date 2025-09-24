@@ -7,18 +7,18 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.tools.importer.ParadoxModImporter
 import icu.windea.pls.lang.PlsDataKeys
+import icu.windea.pls.lang.errorDetails
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.tools.toModDependencies
 import icu.windea.pls.model.tools.toModSetInfo
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
 
 class ParadoxModDependenciesImportPopup(
     private val project: Project,
@@ -46,41 +46,42 @@ class ParadoxModDependenciesImportPopup(
         val descriptor = modImporter.createFileChooserDescriptor(gameType)
             .apply { putUserData(PlsDataKeys.gameType, gameType) }
         FileChooser.chooseFile(descriptor, project, table, selected) { file ->
-            val coroutineScope = PlsFacade.getCoroutineScope()
-            coroutineScope.launch {
-                doExecute(settings, modImporter, file)
-            }
+            doExecute(settings, modImporter, file)
         }
     }
 
-    private suspend fun doExecute(settings: ParadoxGameOrModSettingsState, modImporter: ParadoxModImporter, file: VirtualFile) {
+    private fun doExecute(settings: ParadoxGameOrModSettingsState, modImporter: ParadoxModImporter, file: VirtualFile) {
+        // EDT
         val gameType = settings.finalGameType
         val qualifiedName = settings.qualifiedName
-        val modSetInfo = settings.modDependencies.toModSetInfo(gameType, "")
+        val modSetInfo = table.model.modDependencies.toModSetInfo(gameType) // 需要从 tableModel 中获取，而非直接从 settings 中获取
         val result = try {
-            modImporter.execute(file.toNioPath(), modSetInfo)
+            runWithModalProgressBlocking(project, PlsBundle.message("mod.dependencies.import.progress.title")) {
+                modImporter.execute(file.toNioPath(), modSetInfo)
+            }
         } catch (e: Exception) {
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
-            val content = PlsBundle.message("mod.importer.error", e.message.orEmpty())
+            val content = PlsBundle.message("mod.dependencies.import.error") + e.message.errorDetails
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
+        val from = result.newModSetInfo.name
+        if (result.actualTotal == 0) {
+            val content = PlsBundle.message("mod.dependencies.import.empty", from)
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            return
+        }
+
+        // 添加到模组依赖表格中
+        table.addModDependencies(result.newModSetInfo.toModDependencies())
+
         if (result.warning != null) {
-            val content = PlsBundle.message("mod.importer.warning", result.actualTotal, result.newModSetInfo.name, result.warning)
+            val content = PlsBundle.message("mod.dependencies.import.info", from, result.actualTotal) + result.warning.errorDetails
             PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
-
-        // 如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
-        val isCurrentAtLast = table.model.isCurrentAtLast()
-        val position = if (isCurrentAtLast) table.model.rowCount - 1 else table.model.rowCount
-        val newSettingsList = modSetInfo.toModDependencies()
-        table.model.insertRows(position, newSettingsList)
-        // 选中刚刚添加的所有模组依赖
-        table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
-
-        val content = PlsBundle.message("mod.importer.info", result.actualTotal, result.newModSetInfo.name)
+        val content = PlsBundle.message("mod.dependencies.import.info", from, result.actualTotal)
         PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
     }
 }
