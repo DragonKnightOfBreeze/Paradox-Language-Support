@@ -170,7 +170,8 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         if (elementPathFromRoot.isNotEmpty()) {
-            configContext.inlineScriptRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
+            // 这里不再强制依赖基于文件的 rootConfigContext，由 usages/扩展规则合并得到
+            configContext.inlineScriptRootConfigContext = ParadoxExpressionManager.getConfigContext(file)
         }
         configContext.inlineScriptExpression = inlineScriptExpression
         configContext.elementPathFromRoot = elementPathFromRoot
@@ -192,16 +193,15 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val contextElement = context.element
+        val configGroup = context.configGroup
 
-        if (elementPathFromRoot.isNotEmpty()) {
-            val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
-            val rootConfigs = rootConfigContext.getConfigs(matchOptions)
-            val configGroup = context.configGroup
-            return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        }
-
+        // 统一使用“基于 usages 合并得到的 rootConfigs”，再据此下钻
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        return ParadoxInlineScriptManager.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
+        // 如果既没有扩展规则也没有任何使用处，则不推断上下文（视为普通脚本文件，无 CWT 规则）
+        if (rootConfigs.isEmpty()) return null
+        if (elementPathFromRoot.isEmpty()) return rootConfigs
+        return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level

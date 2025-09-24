@@ -1,0 +1,17 @@
+# interface/example_sprites.test.gfx
+
+spriteTypes = {
+	spriteType = {
+		name = "cursor"
+		texturefile = "gfx/interface/textcursor.dds"
+		noOfFrames = 1
+
+	    inline_script = "sprites/depth_2.test.txt"
+	}
+
+	inline_script = "sprites/depth_1.test.txt"
+}
+
+inline_script = {
+    script = "sprites/depth_0.test.txt"
+}

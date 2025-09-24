@@ -1,0 +1,5 @@
+spriteType = {
+	name = "cursor"
+	texturefile = "gfx/interface/textcursor.dds"
+	noOfFrames = 1
+}

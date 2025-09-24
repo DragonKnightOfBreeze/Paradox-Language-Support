@@ -144,8 +144,7 @@ object ParadoxDefinitionManager {
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
         val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
-        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix)
-        if (typeConfig == null) return null
+        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, rootKey, elementPath, gameType, configGroup)
     }
 
@@ -194,6 +193,8 @@ object ParadoxDefinitionManager {
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesType(node, tree, config, null, elementPath, rootKey, rootKeyPrefix) }
     }
+
+    
 
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
@@ -611,8 +612,7 @@ object ParadoxDefinitionManager {
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
         if (elementPath == null) return null
         val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
-        val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix)
-        if (typeConfig == null) return null
+        val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix) ?: return null
         // NOTE 这里不处理需要内联的情况
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
