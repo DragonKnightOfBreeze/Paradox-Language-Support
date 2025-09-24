@@ -52,4 +52,6 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }
         super.doOKAction()
     }
+
+    override fun getDimensionServiceKey() = "Pls.ConfigRepositoryUrlsDialog"
 }

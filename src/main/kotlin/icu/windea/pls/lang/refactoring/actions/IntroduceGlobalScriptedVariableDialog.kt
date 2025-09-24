@@ -29,8 +29,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private val project: Project,
     private val scriptedVariablesFile: VirtualFile,
     variableName: String,
-    variableValue: String? = null,
-    private val suggestedVariableNames: List<String>? = null
+    variableValue: String? = null
 ) : DialogWrapper(project, true) {
     companion object {
         private const val MAX_PATH_LENGTH = 70

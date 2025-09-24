@@ -164,4 +164,6 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
         }
         super.doOKAction()
     }
+
+    override fun getDimensionServiceKey() = "Pls.PlsTigerHighlightDialog"
 }

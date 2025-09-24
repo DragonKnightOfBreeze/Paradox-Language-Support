@@ -93,14 +93,11 @@ class ParadoxGameSettingsDialog(
 
     override fun doOKAction() {
         super.doOKAction()
-        doOk()
-    }
 
-    private fun doOk() {
         settings.modDependencies = modDependencies
         PlsFacade.getProfilesSettings().updateSettings()
-
         application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 
+    override fun getDimensionServiceKey() = "Pls.ParadoxGameSettingsDialog"
 }

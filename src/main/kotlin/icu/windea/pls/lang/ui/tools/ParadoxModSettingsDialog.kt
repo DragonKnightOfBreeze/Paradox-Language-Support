@@ -161,19 +161,17 @@ class ParadoxModSettingsDialog(
 
     override fun doOKAction() {
         super.doOKAction()
-        doOk()
-    }
 
-    private fun doOk() {
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
         PlsFacade.getProfilesSettings().updateSettings()
-
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
         if (oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
     }
+
+    override fun getDimensionServiceKey() = "Pls.ParadoxModSettingsDialog"
 }
