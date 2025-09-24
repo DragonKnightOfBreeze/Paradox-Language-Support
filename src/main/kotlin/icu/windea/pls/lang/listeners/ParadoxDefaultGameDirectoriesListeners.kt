@@ -39,8 +39,8 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
             library.refreshRootsAsync()
         }
 
-        //重新解析已打开的文件
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsCoreManager.reparseFiles(openedFiles)
+        // 重新解析已打开的文件（IDE之后会自动请求重新索引）
+        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.reparseFiles(files)
     }
 }

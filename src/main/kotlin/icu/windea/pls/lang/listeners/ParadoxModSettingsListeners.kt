@@ -3,6 +3,7 @@ package icu.windea.pls.lang.listeners
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.ui.EditorNotifications
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toVirtualFile
@@ -28,7 +29,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         doUpdate(modSettings.modDirectory)
     }
 
-    //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
+    // org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
 
     private fun doUpdate(directory: String?) {
         val root = directory?.orNull()?.toVirtualFile(false) ?: return
@@ -40,8 +41,8 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
             paradoxLibrary.refreshRootsAsync()
         }
 
-        //重新解析已打开的文件
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        // 重新解析根目录下已打开的文件（IDE之后会自动请求重新索引）
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true).filter { VfsUtil.isAncestor(root, it, true) }
         PlsCoreManager.reparseFiles(openedFiles)
     }
 }
