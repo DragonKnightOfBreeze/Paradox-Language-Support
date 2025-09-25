@@ -11,6 +11,8 @@ class ParadoxModSearchScope(
     contextFile: VirtualFile?,
     val modDirectory: VirtualFile?,
 ) : ParadoxSearchScope(project, contextFile) {
+    override fun ensureMatchGameType() = true
+
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.name.mod")
     }

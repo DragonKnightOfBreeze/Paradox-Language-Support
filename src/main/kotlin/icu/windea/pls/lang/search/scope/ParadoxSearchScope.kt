@@ -21,6 +21,8 @@ open class ParadoxSearchScope(
     project: Project?,
     val contextFile: VirtualFile?,
 ) : GlobalSearchScope(project) {
+    open fun ensureMatchGameType() = false
+
     override fun isSearchInModuleContent(aModule: Module): Boolean {
         return true
     }
