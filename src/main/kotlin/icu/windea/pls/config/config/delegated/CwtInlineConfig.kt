@@ -18,7 +18,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 示例：
  * ```cwt
- * ## inline_script_expression = ""
  * inline[inline_script] = filepath[common/inline_scripts/,.txt]
  * ```
  *
