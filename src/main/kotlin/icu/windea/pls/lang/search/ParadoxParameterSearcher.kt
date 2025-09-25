@@ -35,7 +35,7 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         val selector = queryParameters.selector
         val gameType = selector.gameType
 
-        // 优化：对于内联脚本的传入参数，改为通过存根索引查询
+        // 2.0.6 优化：对于内联脚本的传入参数，可以改为通过存根索引查询
         run {
             val inlineScriptExpression = contextKey.removePrefixOrNull("inline_script@") ?: return@run
             processQueryForInlineScriptArguments(name, inlineScriptExpression, project, scope) p@{ p ->
@@ -50,8 +50,8 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
 
         processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
-            if (gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
+            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+            if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
 
             val infos = ParadoxIndexInfoType.Parameter.findInfos(file, project)
             if (infos.isEmpty()) return@p true

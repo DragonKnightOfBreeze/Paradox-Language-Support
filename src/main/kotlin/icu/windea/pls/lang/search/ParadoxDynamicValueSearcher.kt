@@ -32,8 +32,8 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
 
         processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
-            if (selectGameType(file) != gameType) return@p true //check game type at file level
+            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+            if (selectGameType(file) != gameType) return@p true // check game type at file level
 
             val infos = ParadoxIndexInfoType.DynamicValue.findInfos(file, project)
             if (infos.isEmpty()) return@p true

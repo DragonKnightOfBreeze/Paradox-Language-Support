@@ -33,8 +33,8 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
 
         processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
-            if (selectGameType(file) != gameType) return@p true //check game type at file level
+            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+            if (selectGameType(file) != gameType) return@p true // check game type at file level
 
             val fileData = findFileBasedIndex<ParadoxDefineIndex>().getFileData(file, project)
             if (fileData.isEmpty()) return@p true
