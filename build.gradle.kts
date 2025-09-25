@@ -105,7 +105,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
     }
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.41.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.42.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
 
