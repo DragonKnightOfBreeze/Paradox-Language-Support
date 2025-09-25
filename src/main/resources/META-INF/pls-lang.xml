@@ -183,7 +183,7 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentByNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>

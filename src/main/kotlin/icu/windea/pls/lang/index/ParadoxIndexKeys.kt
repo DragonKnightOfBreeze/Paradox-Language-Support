@@ -24,7 +24,7 @@ object ParadoxIndexKeys {
 
     // for inline script usages, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptUsage = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptUsage.index")
-    // for inline script arguments, argumentName -> ParadoxScriptProperty
+    // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
 
     val FilePath = ID.create<String, ParadoxFilePathIndex.Info>("paradox.file.path.index")

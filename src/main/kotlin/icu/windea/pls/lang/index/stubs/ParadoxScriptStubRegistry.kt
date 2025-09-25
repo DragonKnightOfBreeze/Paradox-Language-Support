@@ -202,7 +202,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     sink.occurrence(ParadoxIndexKeys.InlineScriptUsage, stub.inlineScriptExpression)
                 }
                 is ParadoxScriptPropertyStub.InlineScriptArgument -> {
-                    sink.occurrence(ParadoxIndexKeys.InlineScriptArgument, stub.argumentName)
+                    sink.occurrence(ParadoxIndexKeys.InlineScriptArgument, stub.inlineScriptExpression)
                 }
             }
         }

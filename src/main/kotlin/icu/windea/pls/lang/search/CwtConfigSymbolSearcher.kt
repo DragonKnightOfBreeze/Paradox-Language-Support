@@ -25,7 +25,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         val gameType = queryParameters.gameType
         val project = queryParameters.project
 
-        doProcessFiles(scope) p@{ file ->
+        processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
             //check game type at file level
             if (gameType != null) {
@@ -50,7 +50,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         }
     }
 
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
+    private fun processFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
         return FileTypeIndex.processFiles(CwtFileType, processor, scope)
     }
 }

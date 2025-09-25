@@ -32,12 +32,17 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         }
     }
 
-    private fun processQueryForInlineScriptUsages(inlineScriptExpression: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptProperty>): Boolean {
+    private fun processQueryForInlineScriptUsages(
+        inlineScriptExpression: String?,
+        project: Project,
+        scope: GlobalSearchScope,
+        processor: Processor<ParadoxScriptProperty>
+    ): Boolean {
         val indexKey = ParadoxIndexKeys.InlineScriptUsage
         if (inlineScriptExpression == null) {
             return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            if (inlineScriptExpression.isParameterized()) return true // kip if expression is parameterized
+            if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return true // 排除为空或者带参数的情况
             return indexKey.processAllElements(inlineScriptExpression, project, scope) { element -> processor.process(element) }
         }
     }

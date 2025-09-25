@@ -30,7 +30,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         val selector = queryParameters.selector
         val gameType = selector.gameType ?: return
 
-        doProcessFiles(scope) p@{ file ->
+        processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
@@ -49,7 +49,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         }
     }
 
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
+    private fun processFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
         FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if (!it) return false }
         FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if (!it) return false }
         return true
