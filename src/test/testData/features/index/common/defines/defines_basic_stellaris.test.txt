@@ -1,0 +1,5 @@
+# basic defines file for Stellaris
+NGameplay = {
+    MARINE = 1
+    FLEET_POWER = 2
+}

@@ -1,0 +1,2 @@
+# inline_script usage - direct form
+inline_script = "test_inline"

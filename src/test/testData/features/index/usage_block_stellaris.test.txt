@@ -1,0 +1,6 @@
+# inline_script usage - block form
+inline_script = {
+    script = "test_inline"
+    EVENT_ID = some.event.1
+    SOME_FLAG = yes
+}

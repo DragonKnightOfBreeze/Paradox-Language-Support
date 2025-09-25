@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.application.QueryExecutorBase
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -10,7 +9,6 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
@@ -20,8 +18,6 @@ import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxParameterSearch.SearchParameters, consumer: Processor<in ParadoxParameterIndexInfo>) {
@@ -39,8 +35,9 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         run {
             val inlineScriptExpression = contextKey.removePrefixOrNull("inline_script@") ?: return@run
             processQueryForInlineScriptArguments(name, inlineScriptExpression, project, scope) p@{ p ->
-                val stub = runReadAction { p.greenStub?.castOrNull<ParadoxScriptPropertyStub.InlineScriptArgument>() } ?: return@p true
-                val info = ParadoxParameterIndexInfo(stub.argumentName, contextKey, ReadWriteAccessDetector.Access.Write, p.textOffset, stub.gameType)
+                val name = p.name
+                val gameType = selectGameType(p) ?: return@p true
+                val info = ParadoxParameterIndexInfo(name, contextKey, ReadWriteAccessDetector.Access.Write, p.textOffset, gameType)
                 val file = p.containingFile.virtualFile ?: return@p true
                 info.virtualFile = file
                 consumer.process(info)

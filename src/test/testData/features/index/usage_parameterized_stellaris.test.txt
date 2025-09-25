@@ -1,0 +1,2 @@
+# inline_script usage - parameterized form (should be skipped by indices)
+inline_script = "test_$PARAM$"
