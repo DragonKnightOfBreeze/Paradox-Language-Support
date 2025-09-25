@@ -55,7 +55,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
         ReferencesSearch.search(element, myRefactoringScope, true).processQuery p@{ reference ->
             ProgressManager.checkCanceled()
-            if (ParadoxInlineScriptManager.getContextReferenceElement(reference.element) == null) return@p true
+            if (ParadoxInlineScriptManager.getUsageElement(reference.element) == null) return@p true
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()

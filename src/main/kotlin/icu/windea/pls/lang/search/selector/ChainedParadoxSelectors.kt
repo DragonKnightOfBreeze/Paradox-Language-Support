@@ -6,10 +6,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ChainedParadoxSelectorHolder(
@@ -25,6 +25,8 @@ fun ChainedParadoxSelectorHolder.definition() = ChainedParadoxSelector<ParadoxSc
 
 fun ChainedParadoxSelectorHolder.localisation() = ChainedParadoxSelector<ParadoxLocalisationProperty>(project, context)
 
+fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxScriptProperty>(project, context)
+
 fun ChainedParadoxSelectorHolder.file() = ChainedParadoxSelector<VirtualFile>(project, context)
 
 fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
@@ -32,8 +34,6 @@ fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<Par
 fun ChainedParadoxSelectorHolder.dynamicValue() = ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>(project, context)
 
 fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineIndexInfo>(project, context)
-
-fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>(project, context)
 
 fun ChainedParadoxSelectorHolder.parameter() = ChainedParadoxSelector<ParadoxParameterIndexInfo>(project, context)
 

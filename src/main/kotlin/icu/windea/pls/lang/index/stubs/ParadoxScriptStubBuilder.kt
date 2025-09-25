@@ -20,7 +20,7 @@ class ParadoxScriptStubBuilder : LightStubBuilder() {
     override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {
         if (file !is ParadoxScriptFile) return super.createStubForFile(file, tree)
         val gameType = selectGameType(file) ?: ParadoxGameType.Core
-        return ParadoxScriptFileStub.Impl(file, gameType)
+        return ParadoxScriptFileStub.create(file, gameType)
     }
 
     override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {

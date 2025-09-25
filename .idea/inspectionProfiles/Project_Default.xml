@@ -84,6 +84,7 @@
       <option name="ADDITIONAL_TAGS" value="date" />
     </inspection_tool>
     <inspection_tool class="Jscs" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="LiftReturnOrAssignment" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />
     <inspection_tool class="LinkTextDoesNotMatchHeading" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="LocalVariableName" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="LoggingSimilarMessage" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
@@ -147,6 +148,7 @@
     <inspection_tool class="ReplacePutWithAssignment" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithDropLast" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ReplaceSubstringWithSubstringBefore" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SameReturnValue" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />
     <inspection_tool class="SuspiciousEqualsCombination" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="TestCaseInProductCode" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestCaseWithNoTestMethods" enabled="true" level="WARNING" enabled_by_default="true" />

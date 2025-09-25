@@ -31,7 +31,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             dynamicValueType: String,
             selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
         ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
@@ -43,33 +43,11 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             dynamicValueTypes: Set<String>,
             selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
         ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, dynamicValueTypes, selector))
-        }
-
-        /**
-         * @see ParadoxDynamicValueSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            dynamicValueType: String,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
-        ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, setOf(dynamicValueType), selector))
-        }
-
-        /**
-         * @see ParadoxDynamicValueSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            dynamicValueTypes: Set<String>,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>
-        ): ParadoxQuery<ParadoxDynamicValueIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, dynamicValueTypes, selector))
         }
     }
 }

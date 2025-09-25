@@ -37,7 +37,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isInlineUsage
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -99,8 +99,9 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueIndexInfo? {
-        if (element.text.isParameterized()) return null //排除可能带参数的情况
-        if (element.text.isInlineUsage()) return null //排除是内联调用的情况
+        val value = element.value
+        if (value.isParameterized()) return null // 排除可能带参数的情况
+        if (value.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
@@ -108,7 +109,7 @@ object ParadoxComplexEnumValueManager {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val complexEnumConfig = getMatchedComplexEnumConfig(element, configGroup, path)
         if (complexEnumConfig == null) return null
-        val name = getName(element.value) ?: return null
+        val name = getName(value) ?: return null
         val enumName = complexEnumConfig.name
         val readWriteAccess = Access.Write //write (declaration)
         val elementOffset = element.startOffset

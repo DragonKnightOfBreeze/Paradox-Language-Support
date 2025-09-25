@@ -24,22 +24,11 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterIndexInfo,
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             contextKey: String,
             selector: ChainedParadoxSelector<ParadoxParameterIndexInfo>
         ): ParadoxQuery<ParadoxParameterIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, contextKey, selector))
-        }
-
-        /**
-         * @see ParadoxParameterSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            contextKey: String,
-            selector: ChainedParadoxSelector<ParadoxParameterIndexInfo>
-        ): ParadoxQuery<ParadoxParameterIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, contextKey, selector))
         }
     }
 }

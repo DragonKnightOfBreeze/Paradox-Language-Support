@@ -31,22 +31,11 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             enumName: String,
             selector: ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>
         ): ParadoxQuery<ParadoxComplexEnumValueIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, enumName, selector))
-        }
-
-        /**
-         * @see ParadoxComplexEnumValueSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            enumName: String,
-            selector: ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>
-        ): ParadoxQuery<ParadoxComplexEnumValueIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, enumName, selector))
         }
     }
 }

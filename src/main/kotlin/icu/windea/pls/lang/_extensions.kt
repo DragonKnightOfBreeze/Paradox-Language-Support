@@ -67,7 +67,7 @@ fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
 }
 
-fun String.isInlineUsage(): Boolean {
+fun String.isInlineScriptUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 

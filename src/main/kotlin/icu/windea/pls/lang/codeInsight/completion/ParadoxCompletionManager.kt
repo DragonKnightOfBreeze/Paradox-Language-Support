@@ -668,13 +668,13 @@ object ParadoxCompletionManager {
             val selector = selector(project, contextElement).file().contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
-            ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
+            ParadoxFilePathSearch.search(null, configExpression, selector).processQueryAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val icon = when {
-                    ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript
+                    config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression -> PlsIcons.Nodes.InlineScript
                     else -> PlsIcons.Nodes.PathReference
                 }
                 val lookupElement = LookupElementBuilder.create(file, name)
@@ -686,7 +686,7 @@ object ParadoxCompletionManager {
                 true
             }
 
-            if (ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config)) {
+            if (config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
                 completeExtendedInlineScript(context, result)
             }
         }
@@ -729,7 +729,7 @@ object ParadoxCompletionManager {
                 .withSearchScopeType(searchScope)
                 .contextSensitive()
                 .distinctByName()
-            ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync { info ->
+            ParadoxComplexEnumValueSearch.search(null, enumName, selector).processQueryAsync { info ->
                 ProgressManager.checkCanceled()
                 val (name, _, readWriteAccess, _, gameType) = info
                 val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
@@ -1941,7 +1941,7 @@ object ParadoxCompletionManager {
                 ProgressManager.checkCanceled()
                 val tailText = " by $configExpression"
                 val selector = selector(project, contextElement).dynamicValue().distinctByName()
-                ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
+                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     if (info.name == keyword) return@p true //排除和当前输入的同名的
                     val (name, _, readWriteAccess, _, gameType) = info

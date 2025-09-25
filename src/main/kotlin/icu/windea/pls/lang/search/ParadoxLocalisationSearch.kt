@@ -33,20 +33,10 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
-        }
-
-        /**
-         *  @see ParadoxLocalisationSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
-        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, selector))
         }
 
         /**

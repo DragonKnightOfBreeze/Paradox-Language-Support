@@ -165,7 +165,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeLocalisation(context, result)
     }
@@ -209,7 +209,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.config?.configExpression?.suffixes.isNotNullOrEmpty()) return // TODO SUFFIX_AWARE 排除需要带上后缀的情况，目前不支持
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeSyncedLocalisation(context, result)
     }
@@ -244,7 +244,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
         if (context.quoted) return
 
         ParadoxCompletionManager.completeLocalisation(context, result)
@@ -292,7 +292,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completePathReference(context, result)
     }
@@ -342,7 +342,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeEnumValue(context, result)
     }
@@ -366,7 +366,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeModifier(context, result)
     }
@@ -407,7 +407,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         val config = context.config ?: return
         val aliasName = config.configExpression?.value ?: return
@@ -464,7 +464,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
+        if (context.keyword.isParameterized()) return // 排除可能带参数的情况
 
         ParadoxCompletionManager.completeConstant(context, result)
     }

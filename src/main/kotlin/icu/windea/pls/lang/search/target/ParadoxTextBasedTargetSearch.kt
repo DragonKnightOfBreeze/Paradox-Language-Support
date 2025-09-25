@@ -35,13 +35,17 @@ class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<PsiElement, ParadoxT
         @JvmField
         val INSTANCE = ParadoxTextBasedTargetSearch()
 
-        /** @see ParadoxTextBasedTargetSearch.SearchParameters */
+        /**
+         * @see ParadoxTextBasedTargetSearch.SearchParameters
+         */
         @JvmStatic
         fun search(text: String, project: Project, scope: GlobalSearchScope): Query<PsiElement> {
             return INSTANCE.createQuery(SearchParameters(text, null, project, scope))
         }
 
-        /** @see ParadoxTextBasedTargetSearch.SearchParameters */
+        /**
+         * @see ParadoxTextBasedTargetSearch.SearchParameters
+         */
         @JvmStatic
         fun search(text: String, project: Project, types: Set<ParadoxSearchTargetType>?, scope: GlobalSearchScope): Query<PsiElement> {
             return INSTANCE.createQuery(SearchParameters(text, types, project, scope))

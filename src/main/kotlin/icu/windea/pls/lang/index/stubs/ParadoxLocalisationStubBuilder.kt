@@ -20,7 +20,7 @@ class ParadoxLocalisationStubBuilder : LightStubBuilder() {
         if (file !is ParadoxLocalisationFile) return super.createStubForFile(file, tree)
         val type = ParadoxLocalisationType.resolve(file) ?: ParadoxLocalisationType.Normal
         val gameType = selectGameType(file) ?: ParadoxGameType.Core
-        return ParadoxLocalisationFileStub.Impl(file, type, gameType)
+        return ParadoxLocalisationFileStub.create(file, type, gameType)
     }
 
     override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {

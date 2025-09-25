@@ -18,6 +18,7 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -110,7 +111,7 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
         val vFile = selectFile(file) ?: return null
 
         //要求当前位置相对于文件的表达式路径中包含子路径"inline_script"
-        val rootIndex = elementPath.indexOfFirst { it.equals(ParadoxInlineScriptManager.inlineScriptKey, true) }
+        val rootIndex = elementPath.indexOfFirst { it.isInlineScriptUsage() }
         if (rootIndex == -1) return null
 
         val gameType = selectGameType(file) ?: return null
@@ -197,7 +198,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
 
         // 统一使用“基于 usages 合并得到的 rootConfigs”，再据此下钻
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
-        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
+        val rootConfigs = ParadoxInlineScriptManager.getInferredContextConfigs(inlineScriptExpression, contextElement, context, matchOptions)
         // 如果既没有扩展规则也没有任何使用处，则不推断上下文（视为普通脚本文件，无 CWT 规则）
         if (rootConfigs.isEmpty()) return null
         if (elementPathFromRoot.isEmpty()) return rootConfigs

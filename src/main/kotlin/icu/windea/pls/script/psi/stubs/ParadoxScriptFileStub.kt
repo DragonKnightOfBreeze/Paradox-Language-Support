@@ -2,37 +2,31 @@ package icu.windea.pls.script.psi.stubs
 
 import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.stubs.PsiFileStubImpl
-import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
-@Suppress("UnstableApiUsage")
 /**
- * 脚本文件存根。
- *
- * - 持有 `gameType`，供其子存根复用。
+ * 脚本文件的存根。
  */
+@Suppress("UnstableApiUsage")
 interface ParadoxScriptFileStub : PsiFileStub<ParadoxScriptFile>, ParadoxStub<ParadoxScriptFile> {
-    /**
-     * 实现。
-     *
-     * - `gameType` 直接存储于文件存根。
-     */
-    class Impl(
+    private class Impl(
         file: ParadoxScriptFile?,
         override val gameType: ParadoxGameType,
     ) : PsiFileStubImpl<ParadoxScriptFile>(file), ParadoxScriptFileStub {
-        override fun getParentStub(): ParadoxStub<*>? {
-            return null
-        }
+        override fun getParentStub() = null
 
-        override fun getFileElementType(): IElementType {
-            return ParadoxScriptFile.ELEMENT_TYPE
-        }
+        override fun getFileElementType() = ParadoxScriptFile.ELEMENT_TYPE
 
         override fun toString(): String {
             return "ParadoxScriptFileStub(gameType=$gameType)"
+        }
+    }
+
+    companion object {
+        fun create(file: ParadoxScriptFile?, gameType: ParadoxGameType): ParadoxScriptFileStub {
+            return Impl(file, gameType)
         }
     }
 }

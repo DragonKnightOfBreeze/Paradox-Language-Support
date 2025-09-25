@@ -182,7 +182,7 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageByExpressionIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentByNameIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
@@ -190,10 +190,8 @@
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefineIndex"/>
-    <!-- TODO INLINE_DEFINITION: 移除基于文件的内联脚本使用索引（迁移到 StubIndex 后删除） -->
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
 
-    <searchScopesProvider implementation="icu.windea.pls.lang.search.ParadoxSearchScopeProvider"/>
+    <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxLocalisationImplementationsSearch"/>

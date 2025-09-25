@@ -187,8 +187,8 @@ object ParadoxPsiManager {
         if (element !is ParadoxScriptValue) return
 
         var newText = declaration.text.trim()
-        val contextReferenceElement = ParadoxInlineScriptManager.getContextReferenceElement(element) ?: return
-        val valueElement = contextReferenceElement.propertyValue?.resolved() ?: return
+        val usageElement = ParadoxInlineScriptManager.getUsageElement(element) ?: return
+        val valueElement = usageElement.propertyValue?.resolved() ?: return
         when (valueElement) {
             is ParadoxScriptString -> pass()
             is ParadoxScriptBlock -> {
@@ -203,9 +203,9 @@ object ParadoxPsiManager {
         val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
         val (start, end) = findMemberElementsToInline(newRef)
         if (start != null && end != null) {
-            contextReferenceElement.parent.addRangeAfter(start, end, contextReferenceElement)
+            usageElement.parent.addRangeAfter(start, end, usageElement)
         }
-        contextReferenceElement.delete()
+        usageElement.delete()
     }
 
     @Suppress("unused")

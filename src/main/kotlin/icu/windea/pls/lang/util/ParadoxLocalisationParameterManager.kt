@@ -55,7 +55,7 @@ object ParadoxLocalisationParameterManager {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
         val selector = selector(element.project, element).localisationParameter()
-        ParadoxLocalisationParameterSearch.search(targetLocalisationName, selector).processQueryAsync p@{ info ->
+        ParadoxLocalisationParameterSearch.search(null, targetLocalisationName, selector).processQueryAsync p@{ info ->
             result.add(info.name)
             true
         }

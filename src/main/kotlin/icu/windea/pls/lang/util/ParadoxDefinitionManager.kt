@@ -5,9 +5,7 @@ import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
@@ -32,16 +30,12 @@ import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.childrenOfType
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
-import icu.windea.pls.core.internNode
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Matchers
@@ -57,11 +51,9 @@ import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isInlineUsage
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -74,16 +66,18 @@ import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.booleanValue
+import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.greenStub
 import icu.windea.pls.script.psi.properties
+import icu.windea.pls.script.psi.propertyValue
+import icu.windea.pls.script.psi.stringValue
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.values
 
@@ -129,7 +123,7 @@ object ParadoxDefinitionManager {
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
         val rootKey = element.name.let { if (element is ParadoxScriptFile) it.substringBeforeLast('.') else it } // 如果是文件名，不要包含扩展名
         if (element is ParadoxScriptProperty) {
-            if (rootKey.isInlineUsage()) return null // 排除是内联调用的情况
+            if (rootKey.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
             if (rootKey.isParameterized()) return null // 排除可能带参数的情况
         }
         val project = file.project
@@ -150,10 +144,8 @@ object ParadoxDefinitionManager {
 
 
     fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        if (element !is ParadoxScriptProperty) return null
-        val stub0 = runReadAction { element.greenStub } ?: return null
-        val stub = stub0 as? ParadoxScriptPropertyStub.Definition ?: return null
-        if (!stub.isValidDefinition) return null
+        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
+        if (stub == null) return null
         val name = stub.definitionName
         val type = stub.definitionType
         val gameType = stub.gameType
@@ -164,6 +156,23 @@ object ParadoxDefinitionManager {
         val rootKey = stub.rootKey
         val elementPath = stub.elementPath
         return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, rootKey, elementPath, gameType, configGroup)
+    }
+
+    fun getName(element: ParadoxScriptDefinitionElement): String? {
+        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
+        stub?.let { return it.definitionName }
+        return element.definitionInfo?.name
+    }
+
+    fun getType(element: ParadoxScriptDefinitionElement): String? {
+        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
+        stub?.let { return it.definitionType }
+        return element.definitionInfo?.type
+    }
+
+    fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
+        // 定义的subtype可能需要通过访问索引获取，不能在索引时就获取
+        return element.definitionInfo?.subtypes
     }
 
     fun getMatchedTypeConfig(
@@ -194,8 +203,6 @@ object ParadoxDefinitionManager {
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesType(node, tree, config, null, elementPath, rootKey, rootKeyPrefix) }
     }
-
-    
 
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
@@ -286,7 +293,7 @@ object ParadoxDefinitionManager {
         return true
     }
 
-    private fun matchesTypeFast(
+    fun matchesTypeFast(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
@@ -345,7 +352,7 @@ object ParadoxDefinitionManager {
             } else {
                 if (elementPath.isEmpty()) return false
                 val input = elementPath.subPaths.dropLast(1)
-                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, true, true, true) }
+                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
                 if (!result) return false
             }
         }
@@ -370,7 +377,7 @@ object ParadoxDefinitionManager {
         return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
     }
 
-    private fun matchesSubtypeFast(
+    fun matchesSubtypeFast(
         rootKey: String,
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>
@@ -568,98 +575,35 @@ object ParadoxDefinitionManager {
         }
     }
 
-    fun getName(element: ParadoxScriptDefinitionElement): String? {
-        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }
-            ?.let { it as? ParadoxScriptPropertyStub.Definition }
-            ?.let { return it.definitionName }
-        return element.definitionInfo?.name
-    }
-
-    fun getType(element: ParadoxScriptDefinitionElement): String? {
-        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }
-            ?.let { it as? ParadoxScriptPropertyStub.Definition }
-            ?.let { return it.definitionType }
-        return element.definitionInfo?.type
-    }
-
-    fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
-        // 定义的subtype可能需要通过访问索引获取，不能在索引时就获取
-        return element.definitionInfo?.subtypes
-    }
-
-    // stub methods
-
-    fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?): ParadoxScriptPropertyStub? {
-        val rootKey = psi.name
-        if (rootKey.isInlineUsage()) return null // 排除是内联调用的情况
-        if (rootKey.isParameterized()) return null // 排除可能带参数的情况
-        val definitionInfo = psi.definitionInfo ?: return null
-        val name = definitionInfo.name
-        val type = definitionInfo.type
-        if (type.isEmpty()) return null
-        val subtypes = runCatchingCancelable { definitionInfo.subtypes }.getOrNull() // 如果无法在索引时获取，之后再懒加载
-        val elementPath = definitionInfo.elementPath
-        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath)
-    }
-
-    fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>): ParadoxScriptPropertyStub? {
-        val rootKey = getNameFromNode(node, tree) ?: return null
-        if (rootKey.isInlineUsage()) return null // 排除是内联调用的情况
-        if (rootKey.isParameterized()) return null // 排除可能带参数的情况
-        val psi = parentStub.psi
-        val file = psi.containingFile
-        val project = file.project
-        val vFile = selectFile(file) ?: return null
-        val fileInfo = vFile.fileInfo ?: return null
-        val gameType = selectGameType(vFile) ?: return null
-        val path = fileInfo.path
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
-        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
-        if (elementPath == null) return null
-        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
-        val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix) ?: return null
-        // NOTE 这里不处理需要内联的情况
-        val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
-        val type = typeConfig.name
-        if (type.isEmpty()) return null
-        val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) // 如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath)
-    }
-
-    private fun getNameWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
+    fun resolveNameFromTypeConfig(element: ParadoxScriptDefinitionElement, rootKey: String, typeConfig: CwtTypeConfig): String {
         return when {
-            typeConfig.nameFromFile -> rootKey
-            typeConfig.nameField == null -> rootKey
+            // use root key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameFromFile -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use root key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameField == null -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // force empty (aka anonymous)
             typeConfig.nameField == "" -> ""
-            typeConfig.nameField == "-" -> getValueFromNode(node, tree).orEmpty()
-            else -> node.firstChild(tree, ParadoxScriptTokenSets.BLOCK_OR_ROOT_BLOCK)
-                ?.firstChild(tree) { it.tokenType == PROPERTY && getNameFromNode(it, tree)?.equals(typeConfig.nameField, true) == true }
-                ?.let { getValueFromNode(it, tree) }
-                .orEmpty()
+            // from property value (which should be a string)
+            typeConfig.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
+            // from specific property value in definition declaration (while the property name is declared by config property "name_field")
+            else -> element.findProperty(typeConfig.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
         }
     }
 
-    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String): List<String>? {
-        val subtypesConfig = typeConfig.subtypes
-        val result = mutableListOf<CwtSubtypeConfig>()
-        for (subtypeConfig in subtypesConfig.values) {
-            if (matchesSubtypeFast(rootKey, subtypeConfig, result) ?: return null) {
-                result.add(subtypeConfig)
-            }
+    fun resolveNameFromTypeConfig(node: LighterASTNode, tree: LighterAST, rootKey: String, typeConfig: CwtTypeConfig): String? {
+        return when {
+            // use root key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameFromFile -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use root key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameField == null -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // force empty (aka anonymous)
+            typeConfig.nameField == "" -> ""
+            // from property value (which should be a string)
+            typeConfig.nameField == "-" -> ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
+            // from specific property value in definition declaration (while the property name is declared by config property "name_field")
+            else -> ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, typeConfig.nameField!!)
+                ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
         }
-        return result.map { it.name }
-    }
-
-    private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.firstChild(tree, PROPERTY_KEY)
-            ?.childrenOfType(tree, PROPERTY_KEY_TOKEN)?.singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
-    }
-
-    private fun getValueFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.firstChild(tree, STRING)
-            ?.childrenOfType(tree, STRING_TOKEN)?.singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
     }
 
     // related localisations & images methods

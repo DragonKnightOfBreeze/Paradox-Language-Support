@@ -30,6 +30,8 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         @JvmField
         val INSTANCE = ParadoxFilePathSearch()
 
+        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
+
         /**
          *  @see ParadoxFilePathSearch.SearchParameters
          */
@@ -42,20 +44,6 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, selector, ignoreLocale))
         }
-
-        /**
-         *  @see ParadoxFilePathSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            configExpression: CwtDataExpression? = null,
-            selector: ChainedParadoxSelector<VirtualFile>,
-            ignoreLocale: Boolean = false
-        ): ParadoxQuery<VirtualFile, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, selector, ignoreLocale))
-        }
-
-        private val iconExpression = CwtDataExpression.resolve("icon[]", false)
 
         /**
          *  @see ParadoxFilePathSearch.SearchParameters

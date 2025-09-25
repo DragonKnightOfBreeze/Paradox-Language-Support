@@ -4,23 +4,23 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
-import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 内联脚本使用的查询。
  */
-class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScriptUsageIndexInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
+class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**
-     * @property expression 内联脚本的路径表达式。
+     * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
      */
     class SearchParameters(
-        val expression: String,
-        override val selector: ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>
-    ) : ParadoxSearchParameters<ParadoxInlineScriptUsageIndexInfo.Compact>
+        val inlineScriptExpression: String,
+        override val selector: ChainedParadoxSelector<ParadoxScriptProperty>
+    ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxInlineScriptUsageIndexInfo.Compact, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptProperty, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
         @JvmField
         val INSTANCE = ParadoxInlineScriptUsageSearch()
 
@@ -29,10 +29,10 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScrip
          */
         @JvmStatic
         fun search(
-            expression: String,
-            selector: ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>
-        ): ParadoxQuery<ParadoxInlineScriptUsageIndexInfo.Compact, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(expression, selector))
+            inlineScriptExpression: String,
+            selector: ChainedParadoxSelector<ParadoxScriptProperty>
+        ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(inlineScriptExpression, selector))
         }
     }
 }

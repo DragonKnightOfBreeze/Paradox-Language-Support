@@ -21,11 +21,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.model.paths.ParadoxExpressionPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findProperty
-import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.stringValue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -44,9 +39,10 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
-    //NOTE 部分属性需要使用懒加载
+    // NOTE 部分属性需要使用懒加载
 
-    val name: String by lazy { name0 ?: doGetName() }
+    // NOTE 这里不处理需要内联的情况
+    val name: String by lazy { name0 ?: ParadoxDefinitionManager.resolveNameFromTypeConfig(element, rootKey, typeConfig) }
 
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
 
@@ -80,23 +76,6 @@ class ParadoxDefinitionInfo(
 
     fun getSubtypeConfigs(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): List<CwtSubtypeConfig> {
         return doGetSubtypeConfigsFromCache(matchOptions)
-    }
-
-    private fun doGetName(): String {
-        //NOTE 这里不处理需要内联的情况
-
-        return when {
-            //use root key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameFromFile -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
-            //use root key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameField == null -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
-            //force empty (aka anonymous)
-            typeConfig.nameField == "" -> ""
-            //from property value (which should be a string)
-            typeConfig.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
-            //from specific property value in definition declaration (while the property name is declared by config property "name_field")
-            else -> element.findProperty(typeConfig.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
-        }
     }
 
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()

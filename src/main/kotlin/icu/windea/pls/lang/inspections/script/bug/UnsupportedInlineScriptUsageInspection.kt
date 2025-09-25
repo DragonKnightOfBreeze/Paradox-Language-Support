@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -25,7 +25,7 @@ class UnsupportedInlineScriptUsageInspection : LocalInspectionTool() {
             return object : PsiElementVisitor() {
                 override fun visitElement(element: PsiElement) {
                     if (element is ParadoxScriptProperty) {
-                        if (ParadoxInlineScriptManager.getUsageInfo(element) != null) {
+                        if (element.name.isInlineScriptUsage()) {
                             holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1"))
                         }
                     }

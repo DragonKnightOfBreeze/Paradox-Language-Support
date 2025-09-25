@@ -466,7 +466,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 内联脚本表达式的路径字段的位置。
      *
      * 用于内联规则，说明在其声明中，哪个属性的值用来存放内联脚本表达式。如果选项的值为空，则使用直接规则的值。
-     * 内联脚本表达式用来定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
+     * 内联脚本表达式用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
      *
      * 适用对象：内联脚本（inline_script）对应的的内联规则（[CwtInlineConfig]）。
      *

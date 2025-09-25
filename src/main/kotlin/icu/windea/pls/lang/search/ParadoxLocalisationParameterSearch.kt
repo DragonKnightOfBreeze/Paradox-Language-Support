@@ -24,22 +24,11 @@ class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalis
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             localisationName: String,
             selector: ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>
         ): ParadoxQuery<ParadoxLocalisationParameterIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, localisationName, selector))
-        }
-
-        /**
-         * @see ParadoxLocalisationParameterSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            localisationName: String,
-            selector: ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>
-        ): ParadoxQuery<ParadoxLocalisationParameterIndexInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, localisationName, selector))
         }
     }
 }

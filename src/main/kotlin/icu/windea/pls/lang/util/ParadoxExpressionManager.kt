@@ -87,6 +87,7 @@ import icu.windea.pls.lang.expression.ParadoxComplexExpression
 import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.expression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -1170,7 +1171,7 @@ object ParadoxExpressionManager {
     }
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        if (config.key == ParadoxInlineScriptManager.inlineScriptKey) return false
+        if (config.key.isInlineScriptUsage()) return false // 排除是内联脚本调用的情况
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
         if (config.optionData { cardinality }?.isRequired() == false) return false
         return true

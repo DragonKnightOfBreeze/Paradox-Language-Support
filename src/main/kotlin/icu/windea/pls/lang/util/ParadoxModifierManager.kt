@@ -159,7 +159,7 @@ object ParadoxModifierManager {
                         .withSearchScopeType(searchScope)
                         .contextSensitive()
                         .distinctByName()
-                    ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync p@{ info ->
+                    ParadoxComplexEnumValueSearch.search(null, enumName, selector).processQueryAsync p@{ info ->
                         ProgressManager.checkCanceled()
                         val name = info.name
                         doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
@@ -179,7 +179,7 @@ object ParadoxModifierManager {
                 }
                 ProgressManager.checkCanceled()
                 val selector = selector(project, contextElement).dynamicValue().distinctByName()
-                ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
+                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     //去除后面的作用域信息
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
