@@ -52,6 +52,8 @@ import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.resolved
 
 object ParadoxInlineScriptManager {
+    // NOTE 目前，尽管仅为 Stellaris 提供了内联脚本对应的内联规则，一些地方的对内联脚本的支持并未仅限于 Stellaris（设计如此，保持现状）
+
     const val inlineScriptKey = "inline_script"
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
 
