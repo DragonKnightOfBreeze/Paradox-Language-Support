@@ -28,8 +28,7 @@ class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
         if (PlsVfsManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
-        val path = fileInfo.path
-        if (!path.matches(ParadoxPathMatcher.InLocalisationPath)) return true
+        if (!fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)) return false
         return true
     }
 

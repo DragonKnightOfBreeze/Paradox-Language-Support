@@ -22,13 +22,13 @@ class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         // 不索引内存中的文件
-        // 不索引在游戏或模组目录下的文件
+        // 不索引不在游戏或模组目录下的文件
+        // 不索引在本地化目录下的文件
 
         if (PlsVfsManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
-        val path = fileInfo.path
-        if (path.matches(ParadoxPathMatcher.InLocalisationPath)) return true
+        if (fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)) return false
         return true
     }
 
