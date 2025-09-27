@@ -35,7 +35,6 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Matchers
@@ -55,7 +54,6 @@ import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.dataFlow.options
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.PlsConstants
@@ -93,7 +91,6 @@ object ParadoxDefinitionManager {
         val cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(Keys)
         val cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
         val cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
-        val cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>>(Keys)
         val cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(Keys)
     }
 
@@ -606,7 +603,10 @@ object ParadoxDefinitionManager {
         }
     }
 
-    // related localisations & images methods
+    fun getLocalizedNames(element: ParadoxScriptDefinitionElement): Set<String> {
+        val primaryLocalisations = getPrimaryLocalisations(element)
+        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet()
+    }
 
     fun getPrimaryLocalisationKey(element: ParadoxScriptDefinitionElement): String? {
         return doGetPrimaryLocalisationKeyFromCache(element)
@@ -692,7 +692,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptFileTracker)
         }
     }
 
@@ -708,29 +708,5 @@ object ParadoxDefinitionManager {
             return file
         }
         return null
-    }
-
-    fun getLocalizedNames(element: ParadoxScriptDefinitionElement): Set<String> {
-        return doGetLocalizedNamesFromCache(element)
-    }
-
-    private fun doGetLocalizedNamesFromCache(element: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionLocalizedNames) {
-            ProgressManager.checkCanceled()
-            val value = doGetLocalizedNames(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
-        }
-    }
-
-    private fun doGetLocalizedNames(element: ParadoxScriptDefinitionElement): Set<String> {
-        // 这里返回的是基于偏好语言环境的所有本地化名称（即使最终会被覆盖掉）
-        val localizedNames = mutableSetOf<String>()
-        val primaryLocalisations = getPrimaryLocalisations(element)
-        primaryLocalisations.forEach { localisation ->
-            ProgressManager.checkCanceled()
-            val r = ParadoxLocalisationTextRenderer().render(localisation).orNull()
-            if (r != null) localizedNames.add(r)
-        }
-        return localizedNames
     }
 }

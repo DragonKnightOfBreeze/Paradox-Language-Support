@@ -16,10 +16,10 @@ class ParadoxScriptParameterConditionTreeElement(
         //允许混合value和property
         val result: MutableList<StructureViewTreeElement> = mutableListOf()
         parent.forEachChild {
-            when {
-                it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
-                it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
-                it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+            when (it) {
+                is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+                is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
+                is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
             }
         }
         postHandleMemberChildren(result)

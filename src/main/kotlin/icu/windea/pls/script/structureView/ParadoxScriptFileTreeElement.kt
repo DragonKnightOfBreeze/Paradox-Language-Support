@@ -21,14 +21,14 @@ class ParadoxScriptFileTreeElement(
 ) : ParadoxScriptTreeElement<ParadoxScriptFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val rootBlock = element.block ?: return emptyList()
+        val block = element.block ?: return emptyList()
         val result = mutableListOf<StructureViewTreeElement>()
-        rootBlock.forEachChild {
-            when {
-                it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
-                it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
-                it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
-                it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
+        block.forEachChild {
+            when (it) {
+                is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+                is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+                is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
+                is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
             }
         }
         postHandleMemberChildren(result)

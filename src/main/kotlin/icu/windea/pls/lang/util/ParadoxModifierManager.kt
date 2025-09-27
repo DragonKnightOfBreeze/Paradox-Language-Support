@@ -20,7 +20,6 @@ import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.modifierCategories
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.CacheBuilder
@@ -55,7 +54,6 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
 import icu.windea.pls.model.elementInfo.toInfo
@@ -260,14 +258,8 @@ object ParadoxModifierManager {
             val selector = selector(project, element).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-            val localizedNames = mutableSetOf<String>()
-            ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->
-                ProgressManager.checkCanceled()
-                val r = ParadoxLocalisationTextRenderer().render(localisation).orNull()
-                if (r != null) localizedNames.add(r)
-                true
-            }
-            localizedNames.orNull()
+            val nameLocalisations = ParadoxLocalisationSearch.search(key, selector).findAll()
+            nameLocalisations.mapNotNull { ParadoxLocalisationManager.getLocalizedText(it) }.toSet().orNull()
         }.orEmpty()
     }
 

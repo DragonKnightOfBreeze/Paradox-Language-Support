@@ -9,7 +9,6 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -25,7 +24,7 @@ object ParadoxScriptedVariableManager {
     fun getLocalizedName(element: ParadoxScriptScriptedVariable): String? {
         val name = element.name?.orNull() ?: return null
         val nameLocalisation = getNameLocalisation(name, element, ParadoxLocaleManager.getPreferredLocaleConfig()) ?: return null
-        return ParadoxLocalisationTextRenderer().render(nameLocalisation).orNull()
+        return ParadoxLocalisationManager.getLocalizedText(nameLocalisation)
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {

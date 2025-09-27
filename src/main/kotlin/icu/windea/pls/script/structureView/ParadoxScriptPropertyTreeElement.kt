@@ -1,10 +1,12 @@
 package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -13,32 +15,43 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.propertyValue
+import javax.swing.Icon
 
 class ParadoxScriptPropertyTreeElement(
     element: ParadoxScriptProperty
 ) : ParadoxScriptTreeElement<ParadoxScriptProperty>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+        // 允许混合value和property
         val element = element ?: return emptyList()
-        val parent = element.propertyValue<ParadoxScriptBlock>() ?: return emptyList()
-        //允许混合value和property
-        val result: MutableList<StructureViewTreeElement> = mutableListOf()
-        parent.forEachChild {
-            when {
-                it is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
-                it is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
-                it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
-                it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
+        val block = element.propertyValue<ParadoxScriptBlock>() ?: return emptyList()
+        val result = mutableListOf<StructureViewTreeElement>()
+        block.forEachChild {
+            when (it) {
+                is ParadoxScriptScriptedVariable -> result.add(ParadoxScriptVariableTreeElement(it))
+                is ParadoxScriptValue -> result.add(ParadoxScriptValueTreeElement(it))
+                is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
+                is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
             }
         }
         postHandleMemberChildren(result)
         return result
     }
 
+    override fun getIcon(open: Boolean): Icon? {
+        val element = element ?: return null
+        val definitionInfo = element.definitionInfo
+        if (definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
+        if (element.name.isInlineScriptUsage()) return PlsIcons.Nodes.InlineScript
+        return PlsIcons.Nodes.Property
+    }
+
     override fun getPresentableText(): String? {
         val element = element ?: return null
         //如果是定义，则优先显示定义的名字
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) return definitionInfo.name.or.anonymous()
+        run {
+            val definitionInfo = element.definitionInfo ?: return@run
+            return definitionInfo.name.or.anonymous()
+        }
         return element.name
     }
 
