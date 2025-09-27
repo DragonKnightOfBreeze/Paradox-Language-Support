@@ -9,11 +9,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.DefinitionsFilter
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.PropertiesFilter
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.ValuesFilter
@@ -24,13 +21,6 @@ class ParadoxScriptStructureViewModel(
     psiFile: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val _suitableClasses = arrayOf(
-            ParadoxScriptFile::class.java,
-            ParadoxScriptScriptedVariable::class.java,
-            ParadoxScriptProperty::class.java,
-            ParadoxScriptValue::class.java,
-            ParadoxScriptParameterCondition::class.java
-        )
         private val _groupers = emptyArray<Grouper>()
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
         private val _filters = arrayOf(VariablesFilter, DefinitionsFilter, PropertiesFilter, ValuesFilter)
@@ -42,7 +32,9 @@ class ParadoxScriptStructureViewModel(
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    override fun getSuitableClasses() = _suitableClasses
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return ParadoxScriptNavigationManager.accept(element)
+    }
 
     override fun getGroupers() = _groupers
 

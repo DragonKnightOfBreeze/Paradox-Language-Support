@@ -9,9 +9,4 @@ class ParadoxLocalisationPropertyTreeElement(
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         return emptyList()
     }
-
-    override fun getPresentableText(): String? {
-        val element = element ?: return null
-        return element.name
-    }
 }

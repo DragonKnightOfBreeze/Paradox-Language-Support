@@ -7,9 +7,8 @@ import com.intellij.ide.util.treeView.smartTree.Sorter
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.navigation.ParadoxCsvNavigationManager
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.util.psi.PlsPsiManager
 
 class ParadoxCsvStructureViewModel(
@@ -17,7 +16,6 @@ class ParadoxCsvStructureViewModel(
     file: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, file), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val _suitableClasses = arrayOf(ParadoxCsvFile::class.java, ParadoxCsvRow::class.java, ParadoxCsvColumn::class.java)
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
@@ -27,7 +25,9 @@ class ParadoxCsvStructureViewModel(
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    override fun getSuitableClasses() = _suitableClasses
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return ParadoxCsvNavigationManager.accept(element)
+    }
 
     override fun getSorters() = _sorters
 

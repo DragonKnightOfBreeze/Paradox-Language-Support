@@ -7,9 +7,8 @@ import com.intellij.ide.util.treeView.smartTree.Sorter
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.cwt.navigation.CwtNavigationManager
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.util.psi.PlsPsiManager
 
 class CwtStructureViewModel(
@@ -17,7 +16,6 @@ class CwtStructureViewModel(
     psiFile: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val _suitableClasses = arrayOf(CwtFile::class.java, CwtProperty::class.java, CwtValue::class.java)
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
@@ -27,7 +25,9 @@ class CwtStructureViewModel(
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    override fun getSuitableClasses() = _suitableClasses
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return CwtNavigationManager.accept(element)
+    }
 
     override fun getSorters() = _sorters
 

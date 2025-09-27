@@ -33,8 +33,8 @@ import javax.swing.JComponent
  */
 class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
+        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimitForInlay,
+        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxCsvComplexEnumValueHintTextHintsSettingsKey")

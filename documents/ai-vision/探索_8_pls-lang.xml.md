@@ -86,13 +86,13 @@
 
 - `pls.settings.locFontSize = 18`
 - `pls.settings.locTextIconSizeLimit = 36`
-- `pls.settings.textLengthLimit = 36`
-- `pls.settings.iconHeightLimit = 36`
+- `pls.settings.textLengthLimit.for.inlay = 36`
+- `pls.settings.iconHeightLimit.for.inlay = 36`
 - `pls.settings.defaultScriptedVariableName = "var"`
 - `pls.settings.maxDefinitionDepth = 5`
-- `pls.settings.presentableTextLengthLimit = 36`
+- `pls.settings.textLengthLimit.for.presentation = 36`
 - `pls.settings.itemLimit = 5`
-- `pls.settings.maxImageSizeInDocumentation = 300`
+- `pls.settings.maxImageSize.for.documentation = 300`
 
 > 作用：控制文档/提示/展示等行为与性能边界。
 

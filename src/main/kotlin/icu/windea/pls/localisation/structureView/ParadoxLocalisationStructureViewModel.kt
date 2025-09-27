@@ -8,20 +8,14 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 class ParadoxLocalisationStructureViewModel(
     editor: Editor?,
     file: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, file), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val _suitableClasses = arrayOf(
-            ParadoxLocalisationFile::class.java,
-            ParadoxLocalisationPropertyList::class.java,
-            ParadoxLocalisationProperty::class.java
-        )
         private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
@@ -31,7 +25,9 @@ class ParadoxLocalisationStructureViewModel(
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    override fun getSuitableClasses() = _suitableClasses
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return ParadoxLocalisationNavigationManager.accept(element)
+    }
 
     override fun getSorters() = _sorters
 

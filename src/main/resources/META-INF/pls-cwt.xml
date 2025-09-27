@@ -14,7 +14,6 @@
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
     <annotator language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBasicAnnotator"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
-    <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
     <statementUpDownMover implementation="icu.windea.pls.cwt.codeInsight.editorActions.CwtMover"/>
@@ -26,10 +25,11 @@
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
-    <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
-    <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
     <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
+    <navbar implementation="icu.windea.pls.cwt.navigation.CwtNavBar"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.navigation.CwtBreadCrumbsProvider"/>
+    <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
                              implementationClass="icu.windea.pls.cwt.psi.CwtOptionKeyManipulator"/>

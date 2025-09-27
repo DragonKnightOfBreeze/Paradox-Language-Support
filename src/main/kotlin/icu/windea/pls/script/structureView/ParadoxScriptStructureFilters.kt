@@ -15,7 +15,7 @@ interface ParadoxScriptStructureFilters {
         override fun isReverted() = true
 
         override fun isVisible(treeNode: TreeElement): Boolean {
-            return treeNode !is ParadoxScriptVariableTreeElement
+            return treeNode !is ParadoxScriptScriptedVariableTreeElement
         }
 
         override fun getPresentation(): ActionPresentation {

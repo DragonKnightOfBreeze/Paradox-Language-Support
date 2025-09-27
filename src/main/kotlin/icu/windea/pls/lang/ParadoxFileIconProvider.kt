@@ -31,7 +31,7 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
         } else {
             val fileType = fileInfo.fileType
             if (fileType != ParadoxFileType.ModDescriptor) return null
-            val icon = PlsIcons.FileTypes.ModeDescriptor
+            val icon = PlsIcons.FileTypes.ModDescriptor
             return icon
         }
     }

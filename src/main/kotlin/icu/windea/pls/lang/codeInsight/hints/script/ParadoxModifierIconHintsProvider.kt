@@ -38,7 +38,7 @@ import javax.swing.JComponent
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit
+        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")

@@ -572,7 +572,7 @@ fun String.normalizePath(): String {
 }
 
 /** 返回规范化后的绝对路径（absolute + normalize）。*/
-inline fun Path.formatted() = absolute().normalize()
+inline fun Path.formatted(): Path = absolute().normalize()
 
 /** 若路径为目录则确保存在；若为文件则确保父目录存在并创建空文件（忽略已存在）。*/
 fun Path.create(): Path {
@@ -596,7 +596,7 @@ fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
 fun Byte.toBoolean() = if (this == 0.toByte()) false else true
 
 /** 可空 `Boolean` 转 `Byte`：`null->2`。*/
-fun Boolean?.toByte() = if (this == null) 2.toByte() else toByte()
+fun Boolean?.toByte() = this?.toByte() ?: 2.toByte()
 
 /** `Byte` 转可空 `Boolean`：`2->null`，其余同上。*/
 fun Byte.toBooleanOrNull() = if (this == 2.toByte()) null else toBoolean()
@@ -614,7 +614,7 @@ fun String?.toBooleanYesNo() = this.equals("yes", true)
 fun String?.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
 
 /** 生成基于内容的稳定 UUID。*/
-fun String.toUUID() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
+fun String.toUUID(): UUID = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 
 /** 生成基于内容的稳定 UUID 字符串。*/
 fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
@@ -626,13 +626,13 @@ fun String.toFile() = File(this)
 fun String.toFileOrNull() = runCatchingCancelable { File(this) }.getOrNull()
 
 /** 转换为 [Path]。*/
-fun String.toPath() = Path.of(this)
+fun String.toPath(): Path = Path.of(this)
 
 /** 安全转换为 [Path]，失败返回 `null`。*/
 fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
 /** 转换为文件 URL（file://）。*/
-fun String.toFileUrl() = File(this).toURI().toURL()
+fun String.toFileUrl(): URL = File(this).toURI().toURL()
 
 /** 基于类加载器从 classpath 获取资源 URL。*/
 fun String.toClasspathUrl(locationClass: Class<*> = PlsFacade::class.java) = locationClass.getResource(this)!!
@@ -641,7 +641,7 @@ fun String.toClasspathUrl(locationClass: Class<*> = PlsFacade::class.java) = loc
 fun URL.toFile() = File(this.toURI())
 
 /** 将 URL 转换为 [Path]。*/
-fun URL.toPath() = Paths.get(this.toURI())
+fun URL.toPath(): Path = Paths.get(this.toURI())
 
 typealias FloatRange = ClosedRange<Float>
 

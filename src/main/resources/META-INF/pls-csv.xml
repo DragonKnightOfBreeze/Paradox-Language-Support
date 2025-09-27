@@ -7,7 +7,6 @@
     <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.csv.editor.ParadoxCsvColorSettingsPage"/>
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>
-    <breadcrumbsInfoProvider implementation="icu.windea.pls.csv.editor.ParadoxCsvBreadCrumbsProvider"/>
     <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvQuoteHandler"/>
     <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.csv.editor.ParadoxCsvFindUsagesProvider"/>
@@ -19,6 +18,7 @@
     <codeStyleSettingsProvider implementation="icu.windea.pls.csv.codeStyle.ParadoxCsvCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.csv.codeStyle.ParadoxCsvLanguageCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.csv.navigation.ParadoxCsvNavBar"/>
+    <breadcrumbsInfoProvider implementation="icu.windea.pls.csv.navigation.ParadoxCsvBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.structureView.ParadoxCsvStructureViewFactory"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"

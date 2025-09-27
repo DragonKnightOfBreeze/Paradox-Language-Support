@@ -26,7 +26,7 @@ class ParadoxFilePathIconProvider : FilePathIconProvider {
             ParadoxFileType.Script -> PlsIcons.FileTypes.ParadoxScript
             ParadoxFileType.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
             ParadoxFileType.Csv -> PlsIcons.FileTypes.ParadoxCsv
-            ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModeDescriptor
+            ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModDescriptor
             else -> null
         }
     }
