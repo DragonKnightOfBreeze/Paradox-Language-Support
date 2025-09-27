@@ -15,11 +15,11 @@
 
 ## 2.0.6
 
-- [ ] 更新规则文件以匹配 Stellaris 的最新游戏版本（4.1）
+- [ ] 更新 Stellaris 的规则文件以匹配最新游戏版本 4.1
 
 ## 2.0.6-dev
 
-- [X] 完善 Stellaris 4.1 的规则文件 / Optimize config files for Stellaris 4.1
+- [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [X] 同步其他游戏的规则文件 / Synchronize config files of other games 
 - [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复
 
