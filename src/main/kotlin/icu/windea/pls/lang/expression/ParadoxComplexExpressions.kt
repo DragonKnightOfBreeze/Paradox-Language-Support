@@ -52,8 +52,10 @@ interface ParadoxTemplateExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `some_variable`
- * - `some_variable@root`
+ * ```
+ * some_variable
+ * some_variable@root
+ * ```
  *
  * @see CwtDataTypeGroups.DynamicValue
  */
@@ -87,9 +89,11 @@ interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `root`
- * - `root.owner`
- * - `event_target:some_target`
+ * ```
+ * root
+ * root.owner
+ * event_target:some_target
+ * ```
  *
  * @see CwtDataTypeGroups.ScopeField
  */
@@ -126,9 +130,11 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `trigger:some_trigger`
- * - `value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|`
- * - `root.owner.some_variable`
+ * ```
+ * trigger:some_trigger
+ * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
+ * root.owner.some_variable
+ * ```
  *
  * @see CwtDataTypeGroups.ValueField
  */
@@ -150,7 +156,9 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
  * 作为 [ParadoxValueFieldExpression] 的子集。相较之下，仅支持调用变量。
  *
  * 示例：
- * - `root.owner.some_variable`
+ * ```
+ * root.owner.some_variable
+ * ```
  *
  * @see CwtDataTypeGroups.ValueField
  * @see ParadoxValueFieldExpression
@@ -180,8 +188,10 @@ interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `some_sv`
- * - `some_sv|PARAM|VALUE|`
+ * ```
+ * some_sv
+ * some_sv|PARAM|VALUE|
+ * ```
  *
  * @see ParadoxValueFieldExpression
  */
@@ -211,9 +221,11 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * -`civic:some_civic`
- * -`civic:some_civic:some_swapped_civic`
- * -`job:job_soldier`
+ * ```
+ * civic:some_civic
+ * civic:some_civic:some_swapped_civic
+ * job:job_soldier
+ * ```
  *
  * @see CwtDataTypes.DatabaseObject
  * @see icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
@@ -240,7 +252,9 @@ interface ParadoxDatabaseObjectExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `define:NPortrait|GRACEFUL_AGING_START`
+ * ```
+ * define:NPortrait|GRACEFUL_AGING_START
+ * ```
  *
  * @see CwtDataTypes.DefineReference
  */
@@ -277,8 +291,10 @@ interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
  * ```
  *
  * 示例：
- * - `Root.GetName`
- * - `Root.Owner.event_target:some_event_target.var`
+ * ```
+ * Root.GetName
+ * Root.Owner.event_target:some_event_target.var
+ * ```
  *
  * @see icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  */

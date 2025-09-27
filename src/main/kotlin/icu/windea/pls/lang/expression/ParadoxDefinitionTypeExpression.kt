@@ -7,9 +7,11 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
  * 定义类型表达式。
  *
  * 示例：
- * - `event`
- * - `event.hidden`
- * - `event.hidden.country_event`
+ * ```
+ * event
+ * event.hidden
+ * event.hidden.country_event
+ * ```
  *
  * 用途：
  * - 查询定义时指定定义类型表达式，以进行过滤。
