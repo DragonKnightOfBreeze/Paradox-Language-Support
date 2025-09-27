@@ -3,6 +3,7 @@ package icu.windea.pls.lang.index
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
@@ -35,7 +36,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
         val vFile = myFixture.file.virtualFile
         val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Localisation, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedGameType, gameType)
+        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

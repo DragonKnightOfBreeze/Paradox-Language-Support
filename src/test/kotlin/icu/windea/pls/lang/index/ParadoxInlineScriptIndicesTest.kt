@@ -145,6 +145,20 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(listOf("EVENT_ID"), results)
     }
 
+    fun testParameterSearcher_ByName_NotFound() {
+        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
+        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        val project = project
+        val selector = selector(project, myFixture.file).parameter()
+        val contextKey = "inline_script@test_inline"
+        val results = mutableListOf<String>()
+        ParadoxParameterSearch.search("NOT_EXISTS", contextKey, selector).processQuery(false) { info ->
+            results += info.name
+            true
+        }
+        Assert.assertTrue(results.isEmpty())
+    }
+
     private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
         val vFile = myFixture.file.virtualFile
         val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Script, ParadoxRootInfo.Injected(gameType))

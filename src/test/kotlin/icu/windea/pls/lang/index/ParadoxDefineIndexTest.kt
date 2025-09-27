@@ -4,11 +4,11 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
@@ -24,8 +24,9 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     fun testDefineIndex_Basic() {
         // arrange
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        val relPath = "common/defines/defines_basic_stellaris.test.txt"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
+        injectFileInfo("common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act
         val scope = GlobalSearchScope.projectScope(project)
@@ -51,11 +52,12 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     fun testDefineSearcher_ByNamespaceAndVariable() {
         // arrange
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        val relPath = "common/defines/defines_basic_stellaris.test.txt"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
+        injectFileInfo("common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act
-        val selector = selector(project, myFixture.file).define().withGameType(ParadoxGameType.Stellaris)
+        val selector = selector(project, myFixture.file).define()
         val results = mutableListOf<ParadoxDefineIndexInfo>()
         ParadoxDefineSearch.search("NGameplay", "MARINE", selector).processQuery(false) { info ->
             results += info
@@ -73,7 +75,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
         val vFile = myFixture.file.virtualFile
         val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Script, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedGameType, gameType)
+        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

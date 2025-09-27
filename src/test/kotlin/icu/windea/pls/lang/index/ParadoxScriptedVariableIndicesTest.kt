@@ -4,6 +4,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.scriptedVariable
@@ -77,6 +78,21 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
         Assert.assertTrue(results.contains("var"))
     }
 
+    fun testScriptedVariableSearcher_Local_SkipAfterCaret() {
+        myFixture.configureByFile("features/index/script/local_vars_positions.test.txt")
+        injectFileInfo("common/test/local_vars_positions.test.txt", ParadoxGameType.Stellaris)
+        val project = project
+        val context = myFixture.file.findElementAt(myFixture.caretOffset)!!
+        val selector = selector(project, context).scriptedVariable()
+        val results = mutableListOf<String>()
+        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQuery(false) { v ->
+            results += v.name ?: ""
+            true
+        }
+        Assert.assertTrue("Expected to contain variable defined before caret", results.contains("a"))
+        Assert.assertFalse("Should skip variable defined after caret", results.contains("b"))
+    }
+
     private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
         val vFile = myFixture.file.virtualFile
         val fileType = when {
@@ -84,7 +100,7 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
             else -> ParadoxFileType.Script
         }
         val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", fileType, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedGameType, gameType)
+        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

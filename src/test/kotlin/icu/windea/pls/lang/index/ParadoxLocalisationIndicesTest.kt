@@ -4,6 +4,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.processQuery
@@ -79,10 +80,36 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(listOf("SYNC_TITLE"), results)
     }
 
+    fun testLocalisationSearch_NotFound() {
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
+        injectFileInfo("localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        val project = project
+        val selector = selector(project, myFixture.file).localisation()
+        val results = mutableListOf<String>()
+        ParadoxLocalisationSearch.search("NOT_EXISTS", selector).processQuery(false) { p ->
+            results += p.name
+            true
+        }
+        Assert.assertTrue(results.isEmpty())
+    }
+
+    fun testSyncedLocalisationSearch_NotFound() {
+        myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
+        injectFileInfo("localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        val project = project
+        val selector = selector(project, myFixture.file).localisation()
+        val results = mutableListOf<String>()
+        ParadoxSyncedLocalisationSearch.search("NOT_EXISTS", selector).processQuery(false) { p ->
+            results += p.name
+            true
+        }
+        Assert.assertTrue(results.isEmpty())
+    }
+
     private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
         val vFile = myFixture.file.virtualFile
         val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Localisation, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(icu.windea.pls.lang.PlsKeys.injectedGameType, gameType)
+        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }
