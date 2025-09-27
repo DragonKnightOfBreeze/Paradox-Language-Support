@@ -39,8 +39,7 @@ interface CwtConfigContextProvider {
             val gameType = selectGameType(file)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getContext(element, elementPath, file)
-                    ?.also { it.provider = ep }
+                ep.getContext(element, elementPath, file)?.also { it.provider = ep }
             }
         }
     }

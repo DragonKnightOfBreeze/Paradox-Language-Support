@@ -19,7 +19,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     override fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptFile? {
         // 排除为空或者带参数的情况
         if (element !is ParadoxScriptProperty) return null
-        val inlineScriptExpression = ParadoxInlineScriptManager.resolveInlineScriptExpression(element).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return withRecursionGuard a1@{
             withRecursionCheck(inlineScriptExpression) a2@{

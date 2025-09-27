@@ -21,14 +21,11 @@ import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
 /**
- * CWT规则上下文。
+ * 规则上下文。
  *
- * 用于后续获取对应的所有可能的CWT规则以及匹配的CWT规则，从而提供高级语言功能。例如代码高亮、引用解析、代码补全。
+ * 用于后续获取对应的上下文规则（即所有可能的规则）以及匹配的规则，从而提供各种高级语言功能。例如代码高亮、引用解析、代码补全。
  *
- * 可以获取CWT规则上下文不意味着可以获取对应的所有可能的CWT规则。
- *
- * @property fileInfo 所在文件的文件信息。
- * @property definitionInfo 所在定义的定义信息。
+ * 可以获取规则上下文不意味着可以获取对应的上下文规则。
  *
  * @see CwtConfigContextProvider
  */

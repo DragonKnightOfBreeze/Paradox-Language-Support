@@ -104,7 +104,7 @@ class ParadoxDefinitionInfo(
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
-        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, gameType, configGroup)
+        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

@@ -66,11 +66,11 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -297,7 +297,7 @@ object ParadoxParameterManager {
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
         //整合查找到的所有参数上下文
-        ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{ parameterContext ->
+        ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true

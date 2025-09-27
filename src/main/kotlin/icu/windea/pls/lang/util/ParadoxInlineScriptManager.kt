@@ -39,6 +39,7 @@ import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -88,7 +89,7 @@ object ParadoxInlineScriptManager {
     /**
      * 得到指定的内联脚本表达式对应的内联脚本文件。
      *
-     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/ 的内联脚本文件。
      */
     fun getInlineScriptFile(expression: String, project: Project, context: Any?): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
@@ -99,7 +100,7 @@ object ParadoxInlineScriptManager {
     /**
      * 遍历指定的内联脚本表达式对应的内联脚本文件。
      *
-     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
@@ -149,22 +150,20 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本使用对应的 PSI，解析得到内联脚本表达式。
+     * 从内联脚本使用对应的 PSI，得到对应的内联脚本表达式。
      *
-     * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否先尝试解析。
+     * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否尝试解析。
      */
-    fun resolveInlineScriptExpression(usageElement: ParadoxScriptProperty, resolve: Boolean = false): String? {
+    fun getInlineScriptExpressionFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): String? {
         val expressionElement = getExpressionElement(usageElement)?.let { if (resolve) it.resolved() else it }
         if (expressionElement !is ParadoxScriptString) return null
         return expressionElement.stringValue.orNull()
     }
 
     /**
-     * 从内联脚本使用对应的 Lighter AST，解析得到内联脚本表达式。
-     *
-     * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否先尝试解析。
+     * 从内联脚本使用对应的 Lighter AST，得到对应的内联脚本表达式。
      */
-    fun resolveInlineScriptExpression(tree: LighterAST, node: LighterASTNode): String? {
+    fun getInlineScriptExpressionFromUsageElement(tree: LighterAST, node: LighterASTNode): String? {
         val v1 = ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
         if (v1 != null) return v1
         val v2 = ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, "script")
@@ -174,9 +173,19 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 得到指定的内联脚本表达式对应的内联脚本的规则上下文。
+     * 从内联脚本使用对应的 PSI，得到对应的传入参数的键值映射。
      *
-     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
+     * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
+     */
+    fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
+        val v = usageElement.block ?: return emptyMap()
+        return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
+    }
+
+    /**
+     * 得到指定的内联脚本表达式对应的内联脚本的推断的规则上下文。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if (!PlsFacade.getSettings().inference.configContextForInlineScripts) return emptyList()

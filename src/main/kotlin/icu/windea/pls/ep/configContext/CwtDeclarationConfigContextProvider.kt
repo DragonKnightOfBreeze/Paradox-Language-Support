@@ -9,16 +9,16 @@ import icu.windea.pls.config.configContext.provider
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.supportsByAnnotation
-import icu.windea.pls.model.ParadoxGameType
 
 /**
- * 用于提供CWT声明规则上下文。
+ * 用于提供声明规则的上下文。
  *
+ * @see CwtDeclarationConfig
  * @see CwtDeclarationConfigContext
  */
 @WithGameTypeEP
 interface CwtDeclarationConfigContextProvider {
-    fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
+    fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
 
     fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String
 
@@ -27,11 +27,11 @@ interface CwtDeclarationConfigContextProvider {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
 
-        fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+        fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+            val gameType = configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
-                ep.getContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
-                    ?.also { it.provider = ep }
+                ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
             }
         }
     }

@@ -101,7 +101,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     //需要考虑不指定子类型的情况
-                    val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, gameType, configGroup)
+                    val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, configGroup)
                     val config = declarationConfigContext?.getConfig(declarationConfig) ?: continue
 
                     context.config = config

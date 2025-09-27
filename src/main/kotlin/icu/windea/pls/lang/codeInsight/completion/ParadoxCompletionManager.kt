@@ -472,7 +472,7 @@ object ParadoxCompletionManager {
                 if (typeToUse == null) return@run null
                 if (typeConfigToUse.typeKeyPrefix != null) return@run typeConfigToUse.typeKeyPrefixConfig
                 val declarationConfig = configGroup.declarations.get(typeToUse) ?: return@run null
-                val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
+                val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
                 declarationConfigContext?.getConfig(declarationConfig)
             }
             val element = config?.pointer?.element

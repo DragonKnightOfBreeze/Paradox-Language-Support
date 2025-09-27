@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**
-     * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
+     * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     class SearchParameters(
         val inlineScriptExpression: String,

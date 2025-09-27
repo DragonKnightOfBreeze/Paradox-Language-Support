@@ -90,7 +90,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
 
     @Suppress("unused")
     private fun acceptInjectionForArgumentValue(host: ParadoxScriptString, argumentName: String, argumentValue: String): Boolean {
-        if (!PlsPatternConstants.parameterName.matches(argumentName)) return false // 参数名必须合法
+        if (!PlsPatternConstants.argumentName.matches(argumentName)) return false // 参数名必须合法
         val trimmed = argumentValue.unquote().trim()
         if (ParadoxSeparatorType.entries.any { it.id == trimmed }) return false // 为一些狡猾人行方便
         return true

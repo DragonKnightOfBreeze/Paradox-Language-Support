@@ -133,14 +133,14 @@ object ParadoxScriptStubManager {
 
     private fun createInlineScriptUsageStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub.InlineScriptUsage? {
         // 排除为空或者带参数的情况
-        val inlineScriptExpression = ParadoxInlineScriptManager.resolveInlineScriptExpression(psi).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(psi).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return ParadoxScriptPropertyStub.createInlineScriptUsage(parentStub, name, inlineScriptExpression)
     }
 
     private fun createInlineScriptUsageStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub.InlineScriptUsage? {
         // 排除为空或者带参数的情况
-        val inlineScriptExpression = ParadoxInlineScriptManager.resolveInlineScriptExpression(tree, node).orEmpty()
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(tree, node).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return ParadoxScriptPropertyStub.createInlineScriptUsage(parentStub, name, inlineScriptExpression)
     }

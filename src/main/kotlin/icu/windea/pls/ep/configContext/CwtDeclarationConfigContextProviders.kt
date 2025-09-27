@@ -17,23 +17,25 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-//region Extensions
+// region Extensions
 
 var CwtDeclarationConfigContext.gameRuleConfig: CwtExtendedGameRuleConfig? by createKey(CwtDeclarationConfigContext.Keys)
 var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by createKey(CwtDeclarationConfigContext.Keys)
 
-//endregion
+// endregion
 
+/**
+ * 提供基础的声明规则上下文。
+ */
 class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext {
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext {
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.gameType.id
+        val gameTypeId = context.configGroup.gameType.id
         val definitionSubtypes = context.definitionSubtypes
         val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
         val subtypes = definitionSubtypes?.filter { it in subtypesToDistinct }.orEmpty()
@@ -53,26 +55,28 @@ class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     }
 }
 
+/**
+ * 提供 game rule 的重载后的声明规则上下文。
+ *
+ * 如果通过 [CwtExtendedGameRuleConfig] 重载了 game rule 的声明规则，则需使用重载后的声明规则上下文。
+ */
 class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    //某些game_rule的声明规则需要重载
-
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.GameRule) return null
         if (definitionName.isNullOrEmpty()) return null
         val gameRuleConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup) ?: return null
         if (gameRuleConfig.config.configs.isNullOrEmpty()) return null
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
             .apply { this.gameRuleConfig = gameRuleConfig }
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.gameType.id
+        val gameTypeId = context.configGroup.gameType.id
         val definitionName = context.definitionName
         return "gr@$gameTypeId#$definitionName"
     }
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        //如果存在，使用重载的声明规则
         val rootConfig = context.gameRuleConfig?.configForDeclaration ?: declarationConfig.configForDeclaration
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs, null)
@@ -84,19 +88,23 @@ class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     }
 }
 
+/**
+ * 提供 on action 的修改后的声明规则上下文。
+ *
+ * 如果通过 [CwtExtendedOnActionConfig] 可以确定 on action 的事件类型，则需使用修改后的声明规则上下文。
+ * 将其中的数据表达式 `<event>`，替换为此事件类型对应的数据表达式。
+ */
 class OnActionCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
-    //如果预定义的on_action可以确定事件类型，其声明规则需要经过修改（将其中匹配"<event>"的规则，替换为此事件类型对应的规则）
-
-    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
+    override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.OnAction) return null
         if (definitionName.isNullOrEmpty()) return null
         val onActionConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup) ?: return null
-        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, gameType, configGroup)
+        return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
             .apply { this.onActionConfig = onActionConfig }
     }
 
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
-        val gameTypeId = context.gameType.id
+        val gameTypeId = context.configGroup.gameType.id
         val definitionName = context.definitionName
         return "oa@$gameTypeId#$definitionName"
     }

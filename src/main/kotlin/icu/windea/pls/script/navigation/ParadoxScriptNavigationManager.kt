@@ -116,7 +116,7 @@ object ParadoxScriptNavigationManager {
                 run {
                     // 内联脚本表达式
                     if (!element.name.isInlineScriptUsage()) return@run
-                    return ParadoxInlineScriptManager.resolveInlineScriptExpression(element, resolve = true)
+                    return ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {
                     // 定义的类型信息和本地化后的名字

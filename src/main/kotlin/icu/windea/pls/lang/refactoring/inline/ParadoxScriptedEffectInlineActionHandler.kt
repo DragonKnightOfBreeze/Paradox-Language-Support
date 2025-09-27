@@ -12,8 +12,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -32,7 +32,7 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if (reference != null && !ParadoxPsiManager.isInvocationReference(element, reference.element)) return false
+        if (reference != null && !ParadoxPsiMatcher.isInvocationReference(element, reference.element)) return false
         return super.canInlineElementInEditor(element, editor)
     }
 
@@ -42,14 +42,14 @@ class ParadoxScriptedEffectInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptProperty, reference: PsiReference?) {
-        if (reference != null && !ParadoxPsiManager.isInvocationReference(element, reference.element)) {
+        if (reference != null && !ParadoxPsiMatcher.isInvocationReference(element, reference.element)) {
             val message = PlsBundle.message("refactoring.scriptedEffect.invocation", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return
         }
 
 
-        val isRecursive = ParadoxRecursionManager.isRecursiveDefinition(element) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+        val isRecursive = ParadoxRecursionManager.isRecursiveDefinition(element) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
         if (isRecursive) {
             val message = PlsBundle.message("refactoring.scriptedEffect.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

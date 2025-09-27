@@ -10,8 +10,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.quickfix.NavigateToFix
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -58,7 +58,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
                 if (recursions.isEmpty()) return
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.1")

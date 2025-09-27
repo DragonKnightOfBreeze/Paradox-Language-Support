@@ -10,6 +10,7 @@ import javax.swing.Icon
 /**
  * @param contextNameRange 表示作用域名字的那段文本在整个文件中的文本范围。
  */
+@Suppress("unused")
 class ParadoxParameterContextReferenceInfo(
     private val elementPointer: SmartPsiElementPointer<out PsiElement>,
     val contextName: String,

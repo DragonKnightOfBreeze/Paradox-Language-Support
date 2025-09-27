@@ -58,7 +58,7 @@ interface ParadoxParameterSupport {
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
      * @return 此扩展点是否适用。
      */
-    fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
+    fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
 
     fun getModificationTracker(parameterInfo: ParadoxParameterInfo): ModificationTracker? = null
 
@@ -123,9 +123,9 @@ interface ParadoxParameterSupport {
             }
         }
 
-        fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
+        fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
             return EP_NAME.extensionList.any { ep ->
-                ep.processContext(element, contextReferenceInfo, onlyMostRelevant, processor)
+                ep.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
             }
         }
 
