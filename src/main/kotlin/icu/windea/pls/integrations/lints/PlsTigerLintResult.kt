@@ -33,11 +33,11 @@ data class PlsTigerLintResult(
          * Severity is the potential impact of a problem.
          * The severity levels may still change, but right now they are these, in order of increasing severity:
          *
-         * * "tips" for things that aren't wrong but could be improved.
-         * * "untidy" for things that won't affect the player but will cause maintenance headaches for the modders.
-         * * "warning" for things that the player will notice but that won't affect gameplay. Missing localizations for example.
-         * * "error" for bugs that are likely to affect gameplay.
-         * * "fatal" for things that can cause crashes.
+         * - "tips" for things that aren't wrong but could be improved.
+         * - "untidy" for things that won't affect the player but will cause maintenance headaches for the modders.
+         * - "warning" for things that the player will notice but that won't affect gameplay. Missing localizations for example.
+         * - "error" for bugs that are likely to affect gameplay.
+         * - "fatal" for things that can cause crashes.
          */
         @JsonProperty("severity")
         val severity: Severity,
@@ -45,9 +45,9 @@ data class PlsTigerLintResult(
          * Confidence is how sure the validator is of this problem.
          * The confidence levels may still change, but right now they are these, in order of increasing confidence:
          *
-         * * "weak" for likely false positives.
-         * * "reasonable" for most messages.
-         * * "strong" for confidence that the problem is real.
+         * - "weak" for likely false positives.
+         * - "reasonable" for most messages.
+         * - "strong" for confidence that the problem is real.
          */
         val confidence: Confidence,
         /**

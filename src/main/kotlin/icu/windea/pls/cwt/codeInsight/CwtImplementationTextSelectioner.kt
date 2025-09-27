@@ -9,8 +9,8 @@ import icu.windea.pls.lang.util.psi.PlsPsiManager
 /**
  * 用于为CWT语言指定快速定义显示的文本范围。
  *
- * * 属性、单独的值：从目标元素向前直到没有空行为止的最后一个注释开始，到目标元素结束
- * * 其他：从目标元素开始，到目标元素结束
+ * - 属性、单独的值：从目标元素向前直到没有空行为止的最后一个注释开始，到目标元素结束
+ * - 其他：从目标元素开始，到目标元素结束
  */
 class CwtImplementationTextSelectioner : ImplementationTextSelectioner {
     override fun getTextStartOffset(element: PsiElement): Int {

@@ -17,9 +17,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * （对于脚本文件）检查是否存在不支持的递归。
- * * 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
- * * 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
- * * 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
+ * - 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
+ * - 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
+ * - 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标

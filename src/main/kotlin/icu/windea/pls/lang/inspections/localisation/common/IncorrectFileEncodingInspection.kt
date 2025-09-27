@@ -21,7 +21,7 @@ import icu.windea.pls.model.paths.matches
  * 不正确的的文件编码的检查。
  *
  * 提供快速修复：
- * * 改为正确的文件编码
+ * - 改为正确的文件编码
  *
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */

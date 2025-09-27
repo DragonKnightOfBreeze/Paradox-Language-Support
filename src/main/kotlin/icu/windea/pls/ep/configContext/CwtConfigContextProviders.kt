@@ -99,7 +99,7 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
 /**
  * 提供内联脚本调用中的规则上下文。
  *
- * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * - 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  */
 class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本调用可以在定义声明之外
@@ -143,9 +143,9 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
 /**
  * 提供内联脚本文件中的规则上下文。
  *
- * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
- * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
- * * 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
+ * - 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
+ * - 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
 class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
@@ -209,12 +209,12 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
 /**
  * 提供内联脚本参数的传入值和默认值中的规则上下文。
  *
- * * 基于语言注入功能实现。
- * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
- * * 对于由引号括起（且允许由引号括起）的传入值，允许使用整行或多行脚本片段，而非单个值。
- * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
- * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
- * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
+ * - 基于语言注入功能实现。
+ * - 正常提供代码高亮、引用解析、代码补全等高级语言功能。
+ * - 对于由引号括起（且允许由引号括起）的传入值，允许使用整行或多行脚本片段，而非单个值。
+ * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
+ * - 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
+ * - 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
  *
  * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */

@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 /**
  * 提供定义的类型层级视图。（定义类型/定义子类型 > 定义）
  *
- * * 忽略直接位于游戏或模组入口目录下的文件。
+ * - 忽略直接位于游戏或模组入口目录下的文件。
  */
 class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
     override fun getTarget(dataContext: DataContext): PsiElement? {

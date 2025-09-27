@@ -32,8 +32,8 @@ import icu.windea.pls.model.paths.matches
  * 不正确的文件名的检查。
  *
  * 提供快速修复：
- * * 改为正确的文件名
- * * 改为正确的语言环境名
+ * - 改为正确的文件名
+ * - 改为正确的语言环境名
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

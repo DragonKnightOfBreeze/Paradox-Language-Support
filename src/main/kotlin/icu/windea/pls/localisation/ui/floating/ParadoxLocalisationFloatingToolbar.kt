@@ -22,10 +22,10 @@ import kotlinx.coroutines.CoroutineScope
  * 当用户鼠标选中本地化文本（的其中一部分）时,将会显示的悬浮工具栏栏。
  *
  * 提供动作：
- * * 快速插入引用 - 不会检查插入后语法是否合法
- * * 快速插入图标 - 不会检查插入后语法是否合法
- * * 快速插入命令 - 不会检查插入后语法是否合法
- * * 更改文本颜色（将会列出所有可选的颜色代码）
+ * - 快速插入引用 - 不会检查插入后语法是否合法
+ * - 快速插入图标 - 不会检查插入后语法是否合法
+ * - 快速插入命令 - 不会检查插入后语法是否合法
+ * - 更改文本颜色（将会列出所有可选的颜色代码）
  *
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateReferenceAction
  * @see icu.windea.pls.localisation.ui.actions.styling.CreateIconAction

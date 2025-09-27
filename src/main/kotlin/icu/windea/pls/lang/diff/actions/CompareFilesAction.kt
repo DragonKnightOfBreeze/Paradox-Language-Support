@@ -50,8 +50,8 @@ import javax.swing.Icon
 /**
  * 将当前文件与包括当前文件的只读副本在内的相同路径的文件进行DIFF。如果是本地化文件的话也忽略路径中的语言环境。
  *
- * * 可以用于比较二进制文件。（如DDS图片）
- * * TODO 按照覆盖顺序进行排序。
+ * - 可以用于比较二进制文件。（如DDS图片）
+ * - TODO 按照覆盖顺序进行排序。
  */
 class CompareFilesAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {

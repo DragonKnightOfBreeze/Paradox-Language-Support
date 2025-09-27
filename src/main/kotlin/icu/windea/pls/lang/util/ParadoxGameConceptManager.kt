@@ -31,8 +31,8 @@ object ParadoxGameConceptManager {
     }
 
     /**
-     * * locationElement: [ParadoxScriptDefinitionElement]
-     * * textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
+     * - locationElement: [ParadoxScriptDefinitionElement]
+     * - textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
      */
     fun getReferenceElementAndTextElement(element: ParadoxLocalisationConceptCommand): Tuple2<PsiElement?, PsiElement?> {
         val conceptText = element.conceptText

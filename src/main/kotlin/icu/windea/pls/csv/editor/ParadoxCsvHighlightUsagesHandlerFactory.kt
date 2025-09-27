@@ -22,9 +22,9 @@ import icu.windea.pls.csv.psi.getHeaderColumn
 /**
  * 用于基于上下文进行高亮。
  *
- * * 当光标位置是列时，高亮对应的头列。
- * * 当光标位置是分隔符时，高亮同一行的所有分隔符。
- * * 当光标位置是列时，如果其中的表达式可以解析引用，高亮当前列。
+ * - 当光标位置是列时，高亮对应的头列。
+ * - 当光标位置是分隔符时，高亮同一行的所有分隔符。
+ * - 当光标位置是列时，如果其中的表达式可以解析引用，高亮当前列。
  */
 class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
     override fun createHighlightUsagesHandler(editor: Editor, file: PsiFile): HighlightUsagesHandlerBase<*>? {
