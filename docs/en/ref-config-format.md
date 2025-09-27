@@ -18,14 +18,7 @@ To be completed.
 
 > This section explains the purpose, syntax, default and edge-case behaviors of "config expressions" used in CWT config files (.cwt) and extension capabilities, helping mod authors write configs correctly.
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtConfigExpression -->
-<!-- AI: impl-notes
-Schema: allow empty names for Type/Constraint; prefer Template when both ends are '$'; enum inside larger string -> Template; escaped dollars are not replaced; odd count of dollars -> Constant; only escaped dollars -> Constant; Template.pattern replaces each unescaped '$...$' with '*'.
-Template (data-driven): whitespace is not allowed; a single snippet (pure constant or pure dynamic) is not treated as a template; choose the leftmost earliest dynamic config (has both prefix and suffix); a special split avoids combining symbol + config-name into one constant.
-Cardinality: '~' marks relaxed bounds; negative min is clamped to 0; 'inf' (case-insensitive) is unlimited; if invalid or min>max -> treated as empty constraint.
-Location: '$' indicates a placeholder in 'location'; ImageLocation: '|' args, '$' args -> namePaths, others -> framePaths; LocalisationLocation: '$' args -> namePaths, 'u' -> force upper case; if multiple placeholders exist, all placeholders are replaced.
-Schema edge tests exist covering the cases above.
--->
+<!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
 
 ### Basic concepts and scope
 
@@ -41,7 +34,7 @@ Schema edge tests exist covering the cases above.
 
 ### Schema expressions
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtSchemaExpression (subtypes: Constant, Template, Type, Enum, Constraint) -->
+<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
 Describe the allowed value shapes at the right-hand side (often used by data types or placeholders in .cwt).
 
@@ -80,7 +73,7 @@ Pitfalls:
 
 ### Data expressions
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtDataExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
 Describe the shapes for keys/values in configs. It can be a constant or a dynamic fragment driven by configs (e.g. `value[...]`, `enum[...]`, `scope[...]`, `icon[...]`, `<definition>`).
 
@@ -107,7 +100,7 @@ Note: this document does not enumerate all base types and forms; follow the conv
 
 ### Template expressions (data-driven)
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtTemplateExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 Constructed by concatenating ordered "snippets": constant snippets + dynamic snippets (defined by dynamic configs of data expressions such as `value[...]`/`enum[...]`/`scope[...]`/`icon[...]`/`<...>`).
 
@@ -134,7 +127,7 @@ Pitfalls:
 
 ### Cardinality expressions
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
 Declare the allowed occurrence count range, supporting relaxed checks and an infinite upper bound.
 
@@ -165,7 +158,7 @@ Examples (from comment conventions):
 
 ### Location expressions (resource lookup)
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
 Locate target resources (images / localisations). If `$` appears in `location`, it denotes a placeholder and is typically substituted later (e.g., with definition names or attribute values).
 
@@ -175,7 +168,7 @@ Defaults and edge cases:
 
 #### Image location expressions
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
 Syntax and conventions:
 
@@ -198,7 +191,7 @@ Note: `icon` can resolve to a file path, a sprite name, or a definition; for a d
 
 #### Localisation location expressions
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
 Syntax and conventions:
 

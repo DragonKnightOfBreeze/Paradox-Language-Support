@@ -18,14 +18,7 @@
 
 > 本节解释在 CWT 规则（.cwt，CWT config file）与扩展能力中使用到的“规则表达式”的用途、格式与默认/边界行为，帮助模组作者正确书写规则。
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtConfigExpression -->
-<!-- AI: impl-notes
-Schema: allow empty names for Type/Constraint; prefer Template when both ends are '$'; enum inside larger string -> Template; escaped dollars not replaced; odd dollars -> Constant; only escaped dollars -> Constant; Template.pattern replaces each unescaped '$...$' with '*', also records TextRanges.
-Template (data-driven): forbid blanks; a single snippet (pure const or pure dynamic) is not a template; choose leftmost earliest dynamic rule with prefix/suffix; special split to avoid combining symbol + rule-name as a single constant.
-Cardinality: '~' relax flags; negative min clamped to 0; 'inf' (case-insensitive) is unlimited; if invalid or min>max -> treat as empty constraint.
-Location: '$' indicates placeholder in 'location'; ImageLocation: '|' args, '$' args -> namePaths, others -> framePaths; LocalisationLocation: '$' args -> namePaths, 'u' -> force upper case; if multiple placeholders exist, all placeholders are replaced.
-Schema tests cover edge cases mentioned above.
--->
+<!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
 
 ### 基础概念与适用范围
 
@@ -41,7 +34,7 @@ Schema tests cover edge cases mentioned above.
 
 ### 架构（schema）表达式
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtSchemaExpression (subtypes: Constant, Template, Type, Enum, Constraint) -->
+<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 
 用于描述规则右侧允许的取值形态（常见于 `.cwt` 的数据类型或占位模板中）。
 
@@ -80,7 +73,7 @@ a \$x\$ b        # 含转义美元，不是模板，视为常量
 
 ### 数据表达式
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtDataExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
 用于描述规则中“键/值”的取值形态，既可表示常量，也可表示由规则驱动的动态片段（如 `value[...]`、`enum[...]`、`scope[...]`、`icon[...]`、`<definition>` 等）。
 
@@ -107,7 +100,7 @@ pre_<opinion_modifier>_suf
 
 ### 模板表达式（数据驱动）
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtTemplateExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
 由若干“片段”顺序拼接而成：常量片段 + 动态片段（由数据表达式的动态规则定义，如 `value[...]`/`enum[...]`/`scope[...]`/`icon[...]`/`<...>`）。
 
@@ -134,7 +127,7 @@ a_enum[weight_or_base]_b
 
 ### 基数（cardinality）表达式
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
 用于声明某规则可出现的次数范围，支持“宽松”校验与无限上界。
 
@@ -165,7 +158,7 @@ min..~max          # 大于最大值仅警告（宽松）
 
 ### 位置表达式（资源定位）
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
 用于定位目标资源（图片 / 本地化）。若 `location` 中包含 `$`，表示存在占位符，通常在后续步骤以“定义名或属性值”等替换。
 
@@ -175,7 +168,7 @@ min..~max          # 大于最大值仅警告（宽松）
 
 #### 图片位置表达式
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
 语法与约定：
 
@@ -198,7 +191,7 @@ icon|p1,p2
 
 #### 本地化位置表达式
 
-<!-- AI: maps to icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
+<!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
 语法与约定：
 
