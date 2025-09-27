@@ -12,7 +12,7 @@ class ParadoxCsvFileTreeElement(
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         val result = mutableListOf<StructureViewTreeElement>()
-        element.forEachChild { it ->
+        element.forEachChild {
             when (it) {
                 is ParadoxCsvHeader -> result.add(ParadoxCsvHeaderTreeElement(it))
                 is ParadoxCsvRow -> result.add(ParadoxCsvRowTreeElement(it))
