@@ -411,6 +411,7 @@ object ParadoxExpressionManager {
             result = nextResult
 
             run r1@{
+                if (subPath == "-") return@r1 // #196
                 if (!matchesKey) return@r1
                 ProgressManager.checkCanceled()
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
