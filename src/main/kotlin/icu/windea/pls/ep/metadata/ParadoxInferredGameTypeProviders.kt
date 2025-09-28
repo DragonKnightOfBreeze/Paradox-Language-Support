@@ -4,9 +4,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.model.ParadoxGameType
 
+/**
+ * 如果模组目录直接位于游戏数据目录下的 mod 子目录下，直接推断为对应的游戏类型。
+ */
 class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     override fun getGameType(rootFile: VirtualFile): ParadoxGameType? {
-        //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
+        //
         val parentDir = rootFile.parent
         val modDir = parentDir.takeIf { it.name == "mod" } ?: return null
         val gameDataDir = modDir.parent ?: return null
@@ -17,9 +20,11 @@ class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameT
     }
 }
 
+/**
+ * 如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型。
+ */
 class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     override fun getGameType(rootFile: VirtualFile): ParadoxGameType? {
-        //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
         val parentDir = rootFile.parent
         val steamWorkshopDir = parentDir ?: return null
         val steamId = steamWorkshopDir.name

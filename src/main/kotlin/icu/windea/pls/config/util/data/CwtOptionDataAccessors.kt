@@ -83,7 +83,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 示例：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
      */
-    val cardinalityMinDefine: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val cardinalityMinDefine: CwtOptionDataAccessor<String?> by create {
         findOption("cardinality_min_define")?.stringValue
     }
 
@@ -96,7 +96,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 示例：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
      */
-    val cardinalityMaxDefine: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val cardinalityMaxDefine: CwtOptionDataAccessor<String?> by create {
         findOption("cardinality_max_define")?.stringValue
     }
 

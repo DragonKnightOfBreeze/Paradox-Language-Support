@@ -21,7 +21,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
@@ -43,6 +42,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.ep.priority.ParadoxPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.exporter.ParadoxModExporter" dynamic="true"/>
@@ -178,9 +178,6 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFileNameReferenceExpressionSupport"/>
 
-    <localisationIconSupport implementation="icu.windea.pls.ep.icon.ParadoxBaseLocalisationIconSupport" order="last"/>
-    <localisationIconSupport implementation="icu.windea.pls.ep.icon.ParadoxBaseLocalisationIconSupport$Stellaris"/>
-
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexInfoSupport"/>
@@ -257,6 +254,9 @@
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.StellarisEventInheritSupport"/>
 
     <inlineSupport implementation="icu.windea.pls.ep.resolve.ParadoxInlineScriptInlineSupport"/>
+
+    <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport" order="last"/>
+    <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport$Stellaris"/>
 
     <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
 

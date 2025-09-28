@@ -20,4 +20,3 @@ object ParadoxDefinitionDataProviderDelegates {
         return FromDefinitionType(T::class.java, definitionType)
     }
 }
-
