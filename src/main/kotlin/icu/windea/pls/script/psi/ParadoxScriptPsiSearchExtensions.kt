@@ -169,10 +169,10 @@ fun PsiElement.findParentProperty(
     fromParentBlock: Boolean = false
 ): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    var current: PsiElement = when {
-        fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
-        this is ParadoxScriptMemberElement -> this.parent
-        else -> this
+    var current = this
+    when {
+        fromParentBlock -> current = current.parentOfType<ParadoxScriptBlockElement>() ?: return null
+        current is ParadoxScriptMemberElement -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
         ProgressManager.checkCanceled()
@@ -195,10 +195,10 @@ fun PsiElement.findParentProperty(
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    var current: PsiElement = when {
-        fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
-        this is ParadoxScriptMemberElement -> this.parent
-        else -> this
+    var current = this
+    when {
+        fromParentBlock -> current = current.parentOfType<ParadoxScriptBlockElement>() ?: return null
+        current is ParadoxScriptMemberElement -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
         ProgressManager.checkCanceled()
@@ -225,7 +225,7 @@ fun ParadoxScriptMemberElement.findParentByPath(
     definitionType: String? = null
 ): PsiElement? {
     if (language !is ParadoxScriptLanguage) return null
-    var current: ParadoxScriptMemberElement = this
+    var current = this
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
         for (subPath in elementPath.subPaths.reversed()) {
