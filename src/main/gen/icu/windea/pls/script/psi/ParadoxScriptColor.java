@@ -21,10 +21,10 @@ public interface ParadoxScriptColor extends ParadoxScriptValue, ParadoxScriptLit
 
   void setColor(@NotNull Color color);
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

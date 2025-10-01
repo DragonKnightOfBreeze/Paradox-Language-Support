@@ -19,6 +19,7 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -498,11 +499,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxLocalisationItemPresentation(element)
-    }
-
-    @JvmStatic
     fun getResolveScope(element: PsiElement): GlobalSearchScope {
         return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
     }
@@ -510,5 +506,15 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getUseScope(element: PsiElement): SearchScope {
         return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
+    }
+
+    @JvmStatic
+    fun getPresentation(element: PsiElement): ItemPresentation {
+        return ParadoxLocalisationItemPresentation(element)
+    }
+
+    @JvmStatic
+    fun toString(element: PsiElement): String {
+        return PlsPsiManager.toPresentableString(element)
     }
 }

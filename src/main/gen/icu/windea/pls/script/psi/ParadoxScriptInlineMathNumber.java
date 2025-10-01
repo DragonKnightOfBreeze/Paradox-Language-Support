@@ -12,10 +12,10 @@ public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFa
 
   @NotNull String getValue();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

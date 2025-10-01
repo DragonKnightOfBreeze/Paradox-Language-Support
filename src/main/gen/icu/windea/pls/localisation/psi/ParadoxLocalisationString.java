@@ -12,10 +12,10 @@ public interface ParadoxLocalisationString extends ParadoxLocalisationRichText {
 
   @NotNull PsiElement getIdElement();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

@@ -15,7 +15,7 @@
     AT="@"
     PIPE="|"
   ]
-  methods(".*")=[getPresentation getResolveScope getUseScope]
+  methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
 // 分隔符可以是比较运算符

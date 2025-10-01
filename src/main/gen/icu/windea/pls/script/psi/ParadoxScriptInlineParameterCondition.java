@@ -27,10 +27,10 @@ public interface ParadoxScriptInlineParameterCondition extends PsiElement {
 
   @Nullable String getPresentationText();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

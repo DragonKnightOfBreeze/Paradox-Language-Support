@@ -20,10 +20,10 @@ public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, Para
 
   @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

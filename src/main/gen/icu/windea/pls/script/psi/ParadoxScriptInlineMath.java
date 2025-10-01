@@ -14,10 +14,10 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
 
   @Nullable PsiElement getTokenElement();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

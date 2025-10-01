@@ -64,11 +64,6 @@ public class ParadoxLocalisationTextIconImpl extends ParadoxLocalisationRichText
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
-  }
-
-  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
@@ -76,6 +71,16 @@ public class ParadoxLocalisationTextIconImpl extends ParadoxLocalisationRichText
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
+  }
+
+  @Override
+  public @NotNull ItemPresentation getPresentation() {
+    return ParadoxLocalisationPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return ParadoxLocalisationPsiImplUtil.toString(this);
   }
 
 }

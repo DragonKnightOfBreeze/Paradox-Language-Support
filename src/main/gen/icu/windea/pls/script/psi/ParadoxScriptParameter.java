@@ -32,10 +32,10 @@ public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxScriptA
 
   @Nullable ParadoxParameterPsiReference getReference();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

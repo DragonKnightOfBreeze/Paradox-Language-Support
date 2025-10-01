@@ -13,10 +13,10 @@ public interface ParadoxScriptParameterConditionExpression extends PsiElement {
   @NotNull
   ParadoxScriptParameterConditionParameter getParameterConditionParameter();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

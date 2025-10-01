@@ -42,10 +42,10 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

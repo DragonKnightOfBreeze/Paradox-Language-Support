@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.util.psi
 
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -13,6 +15,19 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 
 object PlsPsiManager {
+    fun toPresentableString(element: PsiElement): String {
+        return buildString {
+            val type = element.javaClass.simpleName.removeSuffix("Impl")
+            append(type)
+            val name = when (element) {
+                is PsiNamedElement -> element.name
+                is NavigatablePsiElement -> element.name
+                else -> null
+            }
+            if (name != null) append(": ").append(name)
+        }
+    }
+
     // fun containsLineBreak(element: PsiWhiteSpace): Boolean {
     //     return StringUtil.containsLineBreak(element.text)
     // }

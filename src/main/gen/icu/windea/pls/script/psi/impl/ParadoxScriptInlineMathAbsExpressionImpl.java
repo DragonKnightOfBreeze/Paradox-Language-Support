@@ -43,11 +43,6 @@ public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlin
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxScriptPsiImplUtil.getPresentation(this);
-  }
-
-  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
@@ -55,6 +50,16 @@ public class ParadoxScriptInlineMathAbsExpressionImpl extends ParadoxScriptInlin
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
+  }
+
+  @Override
+  public @NotNull ItemPresentation getPresentation() {
+    return ParadoxScriptPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
   }
 
 }

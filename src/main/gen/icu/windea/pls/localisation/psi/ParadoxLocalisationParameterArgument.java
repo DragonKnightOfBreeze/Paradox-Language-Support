@@ -17,10 +17,10 @@ public interface ParadoxLocalisationParameterArgument extends ParadoxLocalisatio
 
   @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

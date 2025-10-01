@@ -25,10 +25,10 @@ public interface ParadoxScriptInlineMathParExpression extends ParadoxScriptInlin
   @Nullable
   ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

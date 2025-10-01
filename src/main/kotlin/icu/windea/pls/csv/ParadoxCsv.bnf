@@ -15,7 +15,7 @@
     SEPARATOR=";"
     EOL="<eol>"
   ]
-  methods(".*")=[getPresentation getResolveScope getUseScope]
+  methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
 root ::= COMMENT * header ? (row | COMMENT) *

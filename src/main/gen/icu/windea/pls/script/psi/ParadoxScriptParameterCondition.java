@@ -35,10 +35,10 @@ public interface ParadoxScriptParameterCondition extends ParadoxScriptMemberCont
 
   @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

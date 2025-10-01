@@ -28,10 +28,10 @@ public interface ParadoxLocalisationPropertyList extends PsiListLikeElement, Stu
 
   @NotNull IElementType getIElementType();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

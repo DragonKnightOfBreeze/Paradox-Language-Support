@@ -12,10 +12,10 @@ public interface ParadoxScriptParameterArgument extends ParadoxScriptArgument {
 
   @Nullable PsiElement getIdElement();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

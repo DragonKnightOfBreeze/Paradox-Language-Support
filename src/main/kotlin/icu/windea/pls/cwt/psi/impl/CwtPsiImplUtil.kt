@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.psi.impl
 import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
 import com.intellij.psi.tree.*
@@ -15,7 +16,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import javax.swing.*
@@ -294,12 +295,22 @@ object CwtPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentation(element: PsiElement): ItemPresentation {
-        return CwtItemPresentation(element)
+    fun getResolveScope(element: PsiElement): GlobalSearchScope {
+        return ResolveScopeManager.getElementResolveScope(element)
     }
 
     @JvmStatic
     fun getUseScope(element: PsiElement): SearchScope {
         return GlobalSearchScope.allScope(element.project)
+    }
+
+    @JvmStatic
+    fun getPresentation(element: PsiElement): ItemPresentation {
+        return CwtItemPresentation(element)
+    }
+
+    @JvmStatic
+    fun toString(element: PsiElement): String {
+        return PlsPsiManager.toPresentableString(element)
     }
 }

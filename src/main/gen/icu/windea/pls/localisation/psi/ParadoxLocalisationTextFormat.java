@@ -29,10 +29,10 @@ public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichTe
 
   @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

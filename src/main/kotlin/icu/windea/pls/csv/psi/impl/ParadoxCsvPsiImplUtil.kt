@@ -19,6 +19,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
@@ -79,11 +80,6 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentation(element: PsiElement): ItemPresentation {
-        return ParadoxCsvItemPresentation(element)
-    }
-
-    @JvmStatic
     fun getResolveScope(element: PsiElement): GlobalSearchScope {
         return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementResolveScope(element)
     }
@@ -91,5 +87,15 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun getUseScope(element: PsiElement): SearchScope {
         return ParadoxSearchScope.fromElement(element) ?: ResolveScopeManager.getElementUseScope(element)
+    }
+
+    @JvmStatic
+    fun getPresentation(element: PsiElement): ItemPresentation {
+        return ParadoxCsvItemPresentation(element)
+    }
+
+    @JvmStatic
+    fun toString(element: PsiElement): String {
+        return PlsPsiManager.toPresentableString(element)
     }
 }

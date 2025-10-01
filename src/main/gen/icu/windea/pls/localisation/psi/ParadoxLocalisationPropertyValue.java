@@ -14,10 +14,10 @@ public interface ParadoxLocalisationPropertyValue extends PsiElement {
 
   @NotNull List<@NotNull ParadoxLocalisationRichText> getRichTextList();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

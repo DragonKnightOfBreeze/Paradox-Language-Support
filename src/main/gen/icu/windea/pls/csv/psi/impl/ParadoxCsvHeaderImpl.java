@@ -44,11 +44,6 @@ public class ParadoxCsvHeaderImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
-    return ParadoxCsvPsiImplUtil.getPresentation(this);
-  }
-
-  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxCsvPsiImplUtil.getResolveScope(this);
   }
@@ -56,6 +51,16 @@ public class ParadoxCsvHeaderImpl extends ASTWrapperPsiElement implements Parado
   @Override
   public @NotNull SearchScope getUseScope() {
     return ParadoxCsvPsiImplUtil.getUseScope(this);
+  }
+
+  @Override
+  public @NotNull ItemPresentation getPresentation() {
+    return ParadoxCsvPsiImplUtil.getPresentation(this);
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return ParadoxCsvPsiImplUtil.toString(this);
   }
 
 }

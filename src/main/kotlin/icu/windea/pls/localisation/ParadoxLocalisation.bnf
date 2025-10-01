@@ -10,7 +10,7 @@
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
   parserUtilClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil"
-  methods(".*")=[getPresentation getResolveScope getUseScope]
+  methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
 // core rules

@@ -28,10 +28,10 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement {
 
   @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }

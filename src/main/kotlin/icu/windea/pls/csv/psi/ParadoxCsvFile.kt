@@ -9,6 +9,7 @@ import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.model.*
 
 class ParadoxCsvFile(
@@ -27,6 +28,8 @@ class ParadoxCsvFile(
     override fun getFileType() = ParadoxCsvFileType
 
     override fun getPresentation() = ParadoxCsvItemPresentation(this)
+
+    override fun toString() = PlsPsiManager.toPresentableString(this)
 
     override fun isEquivalentTo(another: PsiElement?): Boolean {
         return super.isEquivalentTo(another) || another is ParadoxCsvFile && ParadoxFileManager.isEquivalentFile(this, another)

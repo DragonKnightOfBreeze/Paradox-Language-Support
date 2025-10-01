@@ -25,10 +25,10 @@ public interface ParadoxScriptInlineMathRoot extends PsiElement {
   @Nullable
   ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression();
 
-  @NotNull ItemPresentation getPresentation();
-
   @NotNull GlobalSearchScope getResolveScope();
 
   @NotNull SearchScope getUseScope();
+
+  @NotNull ItemPresentation getPresentation();
 
 }
