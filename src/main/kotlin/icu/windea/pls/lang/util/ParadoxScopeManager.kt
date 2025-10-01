@@ -28,8 +28,8 @@ import icu.windea.pls.config.configGroup.localisationPromotions
 import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.scopeGroups
 import icu.windea.pls.config.configGroup.scopes
-import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.config.matchFromPattern
+import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.matching.matchFromPattern
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull

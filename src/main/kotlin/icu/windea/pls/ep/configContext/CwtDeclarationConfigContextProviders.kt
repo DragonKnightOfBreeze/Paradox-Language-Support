@@ -11,7 +11,7 @@ import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.lang.matching.findFromPattern
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue

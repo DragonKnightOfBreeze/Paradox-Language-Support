@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.config
+package icu.windea.pls.lang.matching
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -13,10 +13,12 @@ import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 /**
- * 用当前键作为通配符来匹配指定的[key]。
+ * 用当前键作为通配符来匹配指定的 [key]。
+ *
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternAware
+ *
+ * @see icu.windea.pls.config.CwtDataTypeGroups.PatternAware
  */
 fun String.matchFromPattern(
     key: String,
@@ -46,10 +48,12 @@ fun String.matchFromPattern(
 }
 
 /**
- * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
+ * 用当前映射的键作为通配符来匹配指定的 [key]，得到匹配的首个结果。
+ *
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternAware
+ *
+ * @see icu.windea.pls.config.CwtDataTypeGroups.PatternAware
  */
 fun <V> Map<String, V>.findFromPattern(
     key: String,
@@ -64,10 +68,12 @@ fun <V> Map<String, V>.findFromPattern(
 }
 
 /**
- * 用当前映射的键作为通配符来匹配指定的[key]，得到匹配的首个结果。
+ * 用当前映射的键作为通配符来匹配指定的 [key]，得到匹配的首个结果。
+ *
  * @param key 要与通配符进行匹配的键。
  * @param fromIndex 从该索引开始匹配，之前的字符串需要相同才会进行进一步的匹配。
- * @see CwtDataTypeGroups.PatternAware
+ *
+ * @see icu.windea.pls.config.CwtDataTypeGroups.PatternAware
  */
 fun <V> Map<String, V>.filterByPattern(
     key: String,

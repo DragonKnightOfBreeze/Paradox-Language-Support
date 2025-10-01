@@ -25,8 +25,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.extendedParameters
-import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.config.matchFromPattern
+import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.matching.matchFromPattern
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
