@@ -1,7 +1,9 @@
-*.java~
-lib/
-tmp/
 cwt/cwtools-*-config
+
+.clinerules
+.windsurf
+lib
+tmp
 local.properties
 
 .idea/dataSources
