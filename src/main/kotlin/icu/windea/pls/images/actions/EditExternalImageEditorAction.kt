@@ -18,14 +18,10 @@ import javax.swing.JComponent
 class EditExternalImageEditorAction : DumbAwareAction() {
     companion object {
         const val EXT_PATH_KEY = "Images.ExternalEditorPath"
-
-        fun showDialog(project: Project?) {
-            EditExternalImageEditorDialog(project).show()
-        }
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        showDialog(e.project)
+        EditExternalImageEditorDialog(e.project).show()
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread {

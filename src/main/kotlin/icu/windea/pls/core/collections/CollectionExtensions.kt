@@ -29,10 +29,10 @@ inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronize
 inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
 
 /** 若当前已是 [List] 则直接返回，否则拷贝为新的 [List]。*/
-inline fun <T> Collection<T>.toListOrThis(): List<T> = if (this is List) this else this.toList()
+inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
 
 /** 若当前已是 [Set] 则直接返回，否则拷贝为新的 [Set]。*/
-inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if (this is Set) this else this.toSet()
+inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
 /** 过滤为 [R] 类型并附加谓词 [predicate]。*/
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {

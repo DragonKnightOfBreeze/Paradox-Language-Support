@@ -229,10 +229,9 @@ fun ParadoxScriptMemberElement.findParentByPath(
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
         for (subPath in elementPath.subPaths.reversed()) {
-            if (subPath == "-") {
-                current = current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
-            } else {
-                current = current.findParentProperty(subPath, ignoreCase) ?: return null
+            current = when (subPath) {
+                "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
+                else -> current.findParentProperty(subPath, ignoreCase) ?: return null
             }
         }
     }

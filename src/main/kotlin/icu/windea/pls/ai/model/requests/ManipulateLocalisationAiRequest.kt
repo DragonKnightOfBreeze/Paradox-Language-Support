@@ -21,8 +21,8 @@ abstract class ManipulateLocalisationAiRequest(
     var index: Int = 0
 
     override fun toPromptVariables(variables: MutableMap<String, Any?>): Map<String, Any?> {
-        variables.put("index", index)
-        variables.put("total", localisationContexts.size)
+        variables["index"] = index
+        variables["total"] = localisationContexts.size
 
         val gameType = selectGameType(file) ?: PlsFacade.getSettings().defaultGameType
         val fileInfo: ParadoxFileInfo? by lazy { selectFile(file)?.fileInfo }

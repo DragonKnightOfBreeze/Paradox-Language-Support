@@ -1,4 +1,4 @@
-@file:Suppress("OPT_IN_USAGE", "AssignedValueIsNeverRead")
+@file:Suppress("OPT_IN_USAGE")
 
 package icu.windea.pls.ai.services
 

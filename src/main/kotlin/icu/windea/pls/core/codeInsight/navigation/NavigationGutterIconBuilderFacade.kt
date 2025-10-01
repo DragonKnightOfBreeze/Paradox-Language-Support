@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.core.codeInsight.navigation
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder

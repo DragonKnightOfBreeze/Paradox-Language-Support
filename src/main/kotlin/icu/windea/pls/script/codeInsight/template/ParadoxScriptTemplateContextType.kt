@@ -30,7 +30,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
         }
 
         override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxScriptSyntaxHighlighter(null, null)
+            return ParadoxScriptSyntaxHighlighter(null)
         }
     }
 
@@ -49,7 +49,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
         }
 
         override fun createHighlighter(): SyntaxHighlighter {
-            return ParadoxScriptSyntaxHighlighter(null, null)
+            return ParadoxScriptSyntaxHighlighter(null)
         }
     }
 

@@ -5,8 +5,8 @@ import com.intellij.lexer.StringLiteralLexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
-import icu.windea.pls.model.ParadoxGameType
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxCsvLexerFactory {
     @JvmStatic
     fun createLexer(project: Project? = null): ParadoxCsvLexer {
@@ -14,7 +14,7 @@ object ParadoxCsvLexerFactory {
     }
 
     @JvmStatic
-    fun createHighlightingLexer(project: Project? = null, gameType: ParadoxGameType? = null): LayeredLexer {
+    fun createHighlightingLexer(project: Project? = null): LayeredLexer {
         val lexer = LayeredLexer(createLexer(project))
         lexer.registerSelfStoppingLayer(createStringLiteralLexer(COLUMN_TOKEN), arrayOf(COLUMN_TOKEN), IElementType.EMPTY_ARRAY)
         return lexer

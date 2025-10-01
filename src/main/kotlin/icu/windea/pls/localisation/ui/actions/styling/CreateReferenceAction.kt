@@ -101,20 +101,18 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
         }
     }
 
-    companion object {
-        private fun isSelectedElement(file: PsiFile, editor: Editor): Boolean? {
-            //返回null表示此操作不可用
-            //仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
-            val start = editor.selectionModel.selectionStart
-            val end = editor.selectionModel.selectionEnd
-            if (start == 0) return null
-            val startElement = file.findElementAt(start - 1) ?: return null
-            val endElement = file.findElementAt(end) ?: return null
-            val startParent = startElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
-            val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
-            if (startParent !== endParent) return null
-            if (start == end) return false
-            return startElement.elementType == PARAMETER_START && endElement.elementType == PARAMETER_END
-        }
+    private fun isSelectedElement(file: PsiFile, editor: Editor): Boolean? {
+        //返回null表示此操作不可用
+        //仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
+        val start = editor.selectionModel.selectionStart
+        val end = editor.selectionModel.selectionEnd
+        if (start == 0) return null
+        val startElement = file.findElementAt(start - 1) ?: return null
+        val endElement = file.findElementAt(end) ?: return null
+        val startParent = startElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
+        val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
+        if (startParent !== endParent) return null
+        if (start == end) return false
+        return startElement.elementType == PARAMETER_START && endElement.elementType == PARAMETER_END
     }
 }

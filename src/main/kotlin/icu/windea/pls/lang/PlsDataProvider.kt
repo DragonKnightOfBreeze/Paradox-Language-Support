@@ -22,7 +22,7 @@ import kotlin.io.path.Path
 @Service
 class PlsDataProvider {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
-    private val EMPTY_PATH = Path.of("")
+    private val emptyPath = Path.of("")
 
     fun initAsync() {
         //preload cached values
@@ -51,7 +51,7 @@ class PlsDataProvider {
      * 得到Steam目录的路径。
      */
     fun getSteamPath(): Path? {
-        return steamPathCache.getOrPut("") { doGetSteamPath() ?: EMPTY_PATH }.takeIf { it !== EMPTY_PATH }
+        return steamPathCache.getOrPut("") { doGetSteamPath() ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
     private fun doGetSteamPath(): Path? {
@@ -75,7 +75,7 @@ class PlsDataProvider {
      * 得到指定ID对应的Steam游戏目录的路径。
      */
     fun getSteamGamePath(steamId: String, gameName: String): Path? {
-        return steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId, gameName) ?: EMPTY_PATH }.takeIf { it !== EMPTY_PATH }
+        return steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId, gameName) ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
     private fun doGetSteamGamePath(steamId: String, gameName: String): Path? {

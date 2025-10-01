@@ -185,7 +185,6 @@ object PlsTigerLintManager {
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
-    @Suppress("unused")
     fun getDefaultHighlightSeverity(confidence: Confidence, severity: Severity): PlsLintHighlightSeverity {
         return when (severity) {
             Severity.FATAL -> PlsLintHighlightSeverity.ERROR

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.integrations.settings
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
@@ -17,6 +15,7 @@ import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 
+@Suppress("unused")
 object PlsIntegrationsSettingsManager {
     // Image Tools
 

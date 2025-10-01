@@ -57,7 +57,7 @@ object CwtConfigFileResolver {
         // 2. use CwtPropertyPointer to optimize performance and memory
         val pointer = when {
             configGroup.project.isDefault -> emptyPointer()
-            else -> propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
+            else -> CwtPropertyPointer(propertyElement.createPointer(file))
         }
         val key = propertyElement.name
         val value: String = valueElement.value

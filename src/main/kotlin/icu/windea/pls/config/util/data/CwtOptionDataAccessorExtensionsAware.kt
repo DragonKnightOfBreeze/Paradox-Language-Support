@@ -27,6 +27,7 @@ import icu.windea.pls.core.util.singleton
  * @see CwtOptionDataAccessor
  * @see CwtOptionDataAccessors
  */
+@Suppress("unused")
 interface CwtOptionDataAccessorExtensionsAware {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
         return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }

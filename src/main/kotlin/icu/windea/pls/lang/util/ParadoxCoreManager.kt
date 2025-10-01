@@ -54,8 +54,8 @@ object ParadoxCoreManager {
         if (cachedRootInfo != null) return cachedRootInfo.castOrNull()
 
         synchronized(rootFile) {
-            val _cachedRootInfo = rootFile.getUserData(PlsKeys.rootInfo)
-            if (_cachedRootInfo != null) return _cachedRootInfo.castOrNull()
+            val cachedRootInfo1 = rootFile.getUserData(PlsKeys.rootInfo)
+            if (cachedRootInfo1 != null) return cachedRootInfo1.castOrNull()
 
             //resolve rootInfo
             try {
@@ -96,8 +96,8 @@ object ParadoxCoreManager {
         if (cachedFileInfo != null) return cachedFileInfo.castOrNull()
 
         synchronized(file) {
-            val _cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
-            if (_cachedFileInfo != null) return _cachedFileInfo.castOrNull()
+            val cachedFileInfo1 = file.getUserData(PlsKeys.fileInfo)
+            if (cachedFileInfo1 != null) return cachedFileInfo1.castOrNull()
 
             //resolve fileInfo by file path
             try {
@@ -211,8 +211,8 @@ object ParadoxCoreManager {
         if (cachedLocaleConfig != null) return cachedLocaleConfig.castOrNull()
 
         synchronized(file) {
-            val _cachedLocaleConfig = file.getUserData(PlsKeys.localeConfig)
-            if (_cachedLocaleConfig != null) return _cachedLocaleConfig.castOrNull()
+            val cachedLocaleConfig1 = file.getUserData(PlsKeys.localeConfig)
+            if (cachedLocaleConfig1 != null) return cachedLocaleConfig1.castOrNull()
 
             val indexId = ParadoxIndexKeys.FileLocale
             val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null

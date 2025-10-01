@@ -191,7 +191,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val contextConfigs = parentConfigContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
                         contextConfig.configs?.forEach f1@{ c1 ->
-                            val c = if (c1 is CwtPropertyConfig) c1 else return@f1
+                            val c = c1 as? CwtPropertyConfig ?: return@f1
                             //优先使用重载后的规则
                             val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                             if (overriddenConfigs.isNotNullOrEmpty()) {
@@ -208,7 +208,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 return buildList {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
-                        val c = if (contextConfig is CwtValueConfig) contextConfig else return@f
+                        val c = contextConfig as? CwtValueConfig ?: return@f
                         val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                         if (overriddenConfigs.isNotNullOrEmpty()) {
                             addAll(overriddenConfigs)

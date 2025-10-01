@@ -91,8 +91,8 @@ object CwtTemplateExpressionManager {
             if (snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
-                val expression = ParadoxScriptExpression.Companion.resolve(referenceName, false)
-                val matched = ParadoxScriptExpressionMatcher.INSTANCE.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val expression = ParadoxScriptExpression.resolve(referenceName, false)
+                val matched = ParadoxScriptExpressionMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if (!matched) return false
             }
         }

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.model.paths
 
 import icu.windea.pls.model.paths.impl.ParadoxPathResolverImpl

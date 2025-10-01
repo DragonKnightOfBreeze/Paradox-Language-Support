@@ -20,7 +20,6 @@ class ParadoxDefinitionUsageGroupingRule(
     //com.intellij.usages.impl.rules.MethodGroupingRule
     //org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
 
-    @Suppress("UNUSED_PARAMETER")
     private fun getDefinition(usage: Usage, targets: Array<out UsageTarget>): ParadoxScriptDefinitionElement? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
         if (element.language !is ParadoxScriptLanguage) return null

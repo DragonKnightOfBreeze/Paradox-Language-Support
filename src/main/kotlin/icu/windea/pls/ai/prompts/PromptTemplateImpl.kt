@@ -203,11 +203,10 @@ class PromptTemplateImpl(
                                 }
 
                                 // 选择分支
-                                var selected: ConditionBranch?
-                                if (evalCondition(condition, variables)) {
-                                    selected = branches.firstOrNull { it.type == ConditionBranchType.THEN }
+                                val selected = if (evalCondition(condition, variables)) {
+                                    branches.firstOrNull { it.type == ConditionBranchType.THEN }
                                 } else {
-                                    selected = branches.firstOrNull { it.type == ConditionBranchType.ELSE_IF && it.cond?.let { c -> evalCondition(c, variables) } == true }
+                                    branches.firstOrNull { it.type == ConditionBranchType.ELSE_IF && it.cond?.let { c -> evalCondition(c, variables) } == true }
                                         ?: branches.firstOrNull { it.type == ConditionBranchType.ELSE }
                                 }
 
@@ -352,10 +351,9 @@ class PromptTemplateImpl(
     private fun replacePlaceholders(rendered: String, variables: Map<String, Any?>): String {
         return placeholderRegex.replace(rendered) { m ->
             val name = m.groupValues[1]
-            val value = variables[name]
-            when (value) {
+            when (val v = variables[name]) {
                 null -> m.value // 未提供则保留原样，便于调用方发现遗漏
-                else -> value.toString()
+                else -> v.toString()
             }
         }
     }
@@ -433,8 +431,7 @@ class PromptTemplateImpl(
     )
 
     private fun evalCondition(cond: Condition, variables: Map<String, Any?>): Boolean {
-        val v = variables[cond.variableName]
-        val truthy = when (v) {
+        val truthy = when (val v = variables[cond.variableName]) {
             null -> false
             is Boolean -> v
             is Number -> v.toDouble() != 0.0

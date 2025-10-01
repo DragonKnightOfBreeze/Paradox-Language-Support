@@ -57,10 +57,10 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         }
     }
 
-    private val CONTINUE_INVOCATION by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
+    private val continueInvocationException by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
 
     /**
      * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
      */
-    protected fun continueInvocation(): Nothing = throw CONTINUE_INVOCATION
+    protected fun continueInvocation(): Nothing = throw continueInvocationException
 }

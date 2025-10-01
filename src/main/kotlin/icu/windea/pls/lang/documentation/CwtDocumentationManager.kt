@@ -225,7 +225,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsFacade.getSettings().documentation.renderNameDescForModifiers
         val contextElement = referenceElement
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = run {
@@ -280,7 +280,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
         val render = PlsFacade.getSettings().documentation.renderIconForModifiers
         val contextElement = referenceElement
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val project = configGroup.project
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
@@ -318,7 +318,7 @@ object CwtDocumentationManager {
         //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
         //仅为脚本文件和本地化文件中的引用提供
         val sections = getSections(SECTIONS_INFO)
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val contextElement = element
         when (configType) {
             CwtConfigTypes.Link -> {
@@ -404,7 +404,7 @@ object CwtDocumentationManager {
         if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
         val sections = getSections(0) ?: return
-        val gameType = configGroup.gameType ?: return
+        val gameType = configGroup.gameType
         val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)

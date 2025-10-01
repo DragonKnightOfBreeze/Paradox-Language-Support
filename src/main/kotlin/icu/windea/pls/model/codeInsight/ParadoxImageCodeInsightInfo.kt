@@ -11,11 +11,6 @@ data class ParadoxImageCodeInsightInfo(
     val missing: Boolean,
     val dynamic: Boolean
 ) {
-    enum class ContextType {
-        Definition,
-        Modifier
-    }
-
     enum class Type {
         Required, Primary, Optional,
         GeneratedModifierIcon,

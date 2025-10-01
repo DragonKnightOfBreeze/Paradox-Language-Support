@@ -1,6 +1,5 @@
 package icu.windea.pls.model
 
-@Suppress("unused")
 abstract class ReferenceLinkType(
     val prefix: String
 ) {

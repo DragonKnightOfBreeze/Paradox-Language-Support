@@ -132,7 +132,6 @@ class CodeInjectorService {
         //exception thrown when should continue invocation
 
         @JvmStatic
-        @Suppress("unused")
         private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
     }
 }

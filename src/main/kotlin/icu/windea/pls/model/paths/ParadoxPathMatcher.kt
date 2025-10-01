@@ -5,7 +5,7 @@ import icu.windea.pls.model.constants.PlsConstants
 /**
  * 用于匹配文件路径，提供各种常见的匹配逻辑。
  */
-@Suppress("unused", "SameParameterValue")
+@Suppress("SameParameterValue")
 enum class ParadoxPathMatcher {
     InLocalisationPath {
         private val roots = arrayOf("localisation", "localization", "localisation_synced", "localization_synced")

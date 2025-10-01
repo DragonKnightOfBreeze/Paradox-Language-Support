@@ -35,7 +35,7 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                     val superMethod = targetClass.methods.find { it.name == methodName && it.parameterTypes.isEmpty() }
                     if (superMethod != null) {
                         val m = CtMethod(superMethod, targetClass, null)
-                        m.setBody("{ return super.${superMethod.name}(\$\$); }")
+                        m.setBody("{ return super.${superMethod.name}($$); }")
                         targetClass.addMethod(m)
                         method = m
                     }
@@ -71,7 +71,7 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                     val superCleanUpMethod = targetClass.methods.find { it.name == cleanupMethodName }
                     if (superCleanUpMethod != null) {
                         val m = CtMethod(superCleanUpMethod, targetClass, null)
-                        m.setBody("{ return super.${superCleanUpMethod.name}(\$\$); }")
+                        m.setBody("{ return super.${superCleanUpMethod.name}($$); }")
                         targetClass.addMethod(m)
                         cleanupMethod = m
                     } else {

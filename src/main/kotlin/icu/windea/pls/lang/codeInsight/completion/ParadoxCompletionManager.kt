@@ -388,7 +388,6 @@ object ParadoxCompletionManager {
         //* type_key_prefix
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
-        val gameType = context.gameType ?: return
         val configGroup = context.configGroup ?: return
         val path = fileInfo.path
 
@@ -419,7 +418,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
-                    val relative = Matchers.PathMatcher.relative(elementPath.subPaths, skipConfig, true, true, true) ?: continue
+                    val relative = Matchers.PathMatcher.relative(elementPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

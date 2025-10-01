@@ -80,7 +80,7 @@ class FileDocumentFragmentContent(
 
     override fun getNavigatable(position: LineCol): Navigatable? {
         if (!rangeMarker.isValid) return null
-        val offset = position.toOffset(getDocument())
+        val offset = position.toOffset(document)
         val originalOffset: Int = offset + rangeMarker.startOffset
         val originalPosition = LineCol.fromOffset(original.document, originalOffset)
         return original.getNavigatable(originalPosition)

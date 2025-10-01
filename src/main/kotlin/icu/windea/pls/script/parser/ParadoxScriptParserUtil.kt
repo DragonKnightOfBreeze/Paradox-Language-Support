@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER")
-
 package icu.windea.pls.script.parser
 
 import com.intellij.lang.PsiBuilder

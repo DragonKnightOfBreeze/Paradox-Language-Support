@@ -6,6 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class ParadoxScriptSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
     override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): ParadoxScriptSyntaxHighlighter {
-        return ParadoxScriptSyntaxHighlighter(project, virtualFile)
+        return ParadoxScriptSyntaxHighlighter(project)
     }
 }
