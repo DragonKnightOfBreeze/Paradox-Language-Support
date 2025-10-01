@@ -8,9 +8,9 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 
 /**
- * 对CWT文件提供结构视图的支持。
+ * 为 CWT 文件提供结构视图支持。
  *
- * * 显示属性的名字，值的截断后文本。
+ * - 显示属性的名字，值的截断后文本。
  */
 class CwtStructureViewFactory : PsiStructureViewFactory {
     override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder {

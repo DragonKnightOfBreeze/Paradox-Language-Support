@@ -1,52 +1,35 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.runReadAction
+import com.intellij.lang.LighterAST
+import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
-import icu.windea.pls.config.config.inlineConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.extendedInlineScripts
-import icu.windea.pls.config.configGroup.inlineConfigGroup
 import icu.windea.pls.config.findFromPattern
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.configContext.inlineScriptHasConflict
 import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.processQueryAsync
@@ -55,69 +38,70 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMemberElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findByPath
-import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.script.psi.resolved
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxInlineScriptManager {
-    object Keys : KeyRegistry() {
-        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageIndexInfo>>(Keys)
-    }
+    // NOTE 目前，尽管仅为 Stellaris 提供了内联脚本对应的内联规则，一些地方的对内联脚本的支持并未仅限于 Stellaris（设计如此，保持现状）
 
     const val inlineScriptKey = "inline_script"
-    const val inlineScriptPathExpressionString = "filepath[common/inline_scripts/,.txt]"
+    val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
 
-    val inlineScriptPathExpression = CwtDataExpression.resolve(inlineScriptPathExpressionString, false)
-
-    fun getUsageInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageIndexInfo? {
-        val name = element.name.lowercase()
-        if (name != inlineScriptKey) return null
-        return doGetUsageInfoFromCache(element)
+    /**
+     * 按照 [inlineScriptPathExpression]，尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
+     */
+    fun getInlineScriptFilePath(pathReference: String): String? {
+        val configExpression = inlineScriptPathExpression
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
     }
 
-    private fun doGetUsageInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageIndexInfo? {
-        //invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, Keys.cachedInlineScriptUsageInfo) {
-            ProgressManager.checkCanceled()
-            val file = element.containingFile
-            val value = runReadAction { doGetUsageInfo(element, file) }
-            value.withDependencyItems(file)
-        }
-    }
-
-    private fun doGetUsageInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageIndexInfo? {
-        //这里不能调用ParadoxExpressionHandler.getConfigs，因为是需要处理内联的情况，可能会导致StackOverflow
-
+    /**
+     * 得到指定的 [file] 对应的内联脚本表达式。如果不是内联脚本文件则返回 `null`。
+     */
+    fun getInlineScriptExpression(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        val gameType = fileInfo.rootInfo.gameType
-        val project = file.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptKey] ?: return null
-        val propertyValue = element.propertyValue ?: return null
-        val matchOptions = Options.SkipIndex or Options.SkipScope
-        val inlineConfig = inlineConfigs.find {
-            val expression = ParadoxScriptExpression.resolve(propertyValue, matchOptions)
-            ParadoxScriptExpressionMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
-        }
-        if (inlineConfig == null) return null
-        val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null
-        if (expression.isParameterized()) return null
-        val elementOffset = element.startOffset
-        return ParadoxInlineScriptUsageIndexInfo(expression, elementOffset, gameType)
+        val filePath = fileInfo.path.path
+        val configExpression = inlineScriptPathExpression
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
     }
 
-    fun getInlineScriptFile(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
+    /**
+     * 得到指定的 [file] 对应的内联脚本表达式。如果不是内联脚本文件则返回 `null`。
+     */
+    fun getInlineScriptExpression(file: PsiFile): String? {
+        if (file !is ParadoxScriptFile) return null
+        val vFile = selectFile(file) ?: return null
+        return getInlineScriptExpression(vFile)
+    }
+
+    /**
+     * 得到指定的内联脚本表达式对应的内联脚本文件。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/ 的内联脚本文件。
+     */
+    fun getInlineScriptFile(expression: String, project: Project, context: Any?): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
-        val selector = selector(project, contextElement).file().contextSensitive()
+        val selector = selector(project, context).file().contextSensitive()
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)?.castOrNull()
     }
 
+    /**
+     * 遍历指定的内联脚本表达式对应的内联脚本文件。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
         val selector = selector(project, context).file().contextSensitive()
@@ -129,70 +113,87 @@ object ParadoxInlineScriptManager {
         }
     }
 
-    fun isInlineScriptExpressionConfig(config: CwtConfig<*>): Boolean {
-        return config.configExpression == inlineScriptPathExpression
+    /**
+     * 从内联脚本使用对应的 PSI，得到内联脚本表达式对应的 PSI。
+     *
+     * - `inline_script = "some/expression"` -> `"some/expression"`
+     * - `inline_script = { script = "some/expression" }` -> `"some/expression"`
+     */
+    fun getExpressionElement(usageElement: ParadoxScriptProperty): ParadoxScriptValue? {
+        // hardcoded
+        if (!usageElement.name.isInlineScriptUsage()) return null
+        val v = usageElement.propertyValue ?: return null
+        val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
+        if (v1 != null) return v1
+        val v2 = v.findProperty("script")?.propertyValue?.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
+        if (v2 != null) return v2
+        return null
     }
 
-    fun getInlineScriptFilePath(pathReference: String): String? {
-        val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
-    }
-
-    fun getInlineScriptExpression(file: VirtualFile): String? {
-        val fileInfo = file.fileInfo ?: return null
-        val filePath = fileInfo.path.path
-        val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull()
-    }
-
-    fun getInlineScriptExpression(file: PsiFile): String? {
-        if (file !is ParadoxScriptFile) return null
-        val vFile = selectFile(file) ?: return null
-        return getInlineScriptExpression(vFile)
-    }
-
-    fun getInlineScriptExpressionFromInlineConfig(element: ParadoxScriptProperty, inlineConfig: CwtInlineConfig): String? {
-        if (element.name.lowercase() != inlineScriptKey) return null
-        if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
-        val expressionElement = element.findByPath(expressionLocation, ParadoxScriptValue::class.java)
-        val expression = expressionElement?.stringValue() ?: return null
-        return expression
-    }
-
-    fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty): ParadoxScriptValue? {
-        if (contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
-        val inlineConfig = config.inlineConfig ?: return null
-        if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
-        val expressionElement = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
-        return expressionElement
-    }
-
-    fun getContextReferenceElement(expressionElement: PsiElement): ParadoxScriptProperty? {
-        if (expressionElement !is ParadoxScriptValue) return null
-        var contextReferenceElement = expressionElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
-        if (contextReferenceElement.name.lowercase() != inlineScriptKey) {
-            contextReferenceElement = contextReferenceElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
+    /**
+     * 从内联脚本表达式对应的 PSI，得到内联脚本使用对应的 PSI。
+     *
+     * - `"some/expression"` -> `inline_script = "some/expression"`
+     * - `"some/expression"` -> `inline_script = { script = "some/expression" }`
+     */
+    fun getUsageElement(expressionElement: PsiElement): ParadoxScriptProperty? {
+        // hardcoded
+        if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
+        val p1 = expressionElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
+        if (p1.name.isInlineScriptUsage()) return p1
+        if (p1.name.equals("script", true)) {
+            val p2 = p1.parent?.castOrNull<ParadoxScriptBlock>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
+            if (p2.name.isInlineScriptUsage()) return p2
+            return null
         }
-        if (contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
-        val inlineConfig = config.inlineConfig ?: return null
-        if (inlineConfig.name != inlineScriptKey) return null
-        val expressionLocation = inlineConfig.config.optionData { inlineScriptExpression } ?: return null
-        val expressionElement0 = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
-        if (expressionElement0 != expressionElement) return null
-        return contextReferenceElement
+        return null
     }
 
-    fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+    /**
+     * 从内联脚本使用对应的 PSI，得到对应的内联脚本表达式。
+     *
+     * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否尝试解析。
+     */
+    fun getInlineScriptExpressionFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): String? {
+        val expressionElement = getExpressionElement(usageElement)?.let { if (resolve) it.resolved() else it }
+        if (expressionElement !is ParadoxScriptString) return null
+        return expressionElement.stringValue.orNull()
+    }
+
+    /**
+     * 从内联脚本使用对应的 Lighter AST，得到对应的内联脚本表达式。
+     */
+    fun getInlineScriptExpressionFromUsageElement(tree: LighterAST, node: LighterASTNode): String? {
+        val v1 = ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
+        if (v1 != null) return v1
+        val v2 = ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, "script")
+            ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
+        if (v2 != null) return v2
+        return null
+    }
+
+    /**
+     * 从内联脚本使用对应的 PSI，得到对应的传入参数的键值映射。
+     *
+     * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
+     */
+    fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
+        val v = usageElement.block ?: return emptyMap()
+        return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
+    }
+
+    /**
+     * 得到指定的内联脚本表达式对应的内联脚本的推断的规则上下文。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     */
+    fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if (!PlsFacade.getSettings().inference.configContextForInlineScripts) return emptyList()
         return withRecursionGuard {
-            withRecursionCheck(inlineScriptExpression) {
+            withRecursionCheck(expression) {
                 context.inlineScriptHasConflict = false
                 context.inlineScriptHasRecursion = false
-                doGetInferredContextConfigs(contextElement, context, inlineScriptExpression, matchOptions)
+                doGetInferredContextConfigs(expression, contextElement, context, matchOptions)
             }
         } ?: run {
             context.inlineScriptHasRecursion = true
@@ -200,46 +201,40 @@ object ParadoxInlineScriptManager {
         }
     }
 
-    private fun doGetInferredContextConfigs(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
-        val fromConfig = doGetInferredContextConfigsFromConfig(contextElement, context, inlineScriptExpression, matchOptions)
+    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+        val fromConfig = doGetInferredContextConfigsFromConfig(expression, contextElement, context, matchOptions)
         if (fromConfig.isNotEmpty()) return fromConfig
 
-        return doGetInferredContextConfigsFromUsages(contextElement, context, inlineScriptExpression, matchOptions)
+        return doGetInferredContextConfigsFromUsages(expression, contextElement, context, matchOptions)
     }
 
-    private fun doGetInferredContextConfigsFromConfig(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         val configGroup = context.configGroup
-        val config = configGroup.extendedInlineScripts.findFromPattern(inlineScriptExpression, contextElement, configGroup, matchOptions) ?: return emptyList()
+        val config = configGroup.extendedInlineScripts.findFromPattern(expression, contextElement, configGroup, matchOptions) ?: return emptyList()
         return config.getContextConfigs()
     }
 
-    private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
         val fastInference = PlsFacade.getSettings().inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()
-        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
+        ParadoxInlineScriptUsageSearch.search(expression, selector).processQueryAsync p@{ p ->
             ProgressManager.checkCanceled()
-            val file = info.virtualFile?.toPsiFile(project) ?: return@p true
-            val elementOffsets = info.elementOffsets.orNull() ?: return@p true
-            elementOffsets.process p1@{ elementOffset ->
-                val e = file.findElementAt(elementOffset) ?: return@p1 true
-                val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p1 true
-                if (!p.name.equals(inlineScriptKey, true)) return@p1 true
-                val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p1 true
-                val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p1 true
-                val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-                if (fastInference && usageConfigs.isNotNullOrEmpty()) {
-                    result.set(usageConfigs)
-                    return@p1 false
-                }
-                // merge
-                result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                    if (it) return@also
-                    context.inlineScriptHasConflict = true
-                    result.set(null)
-                }
+            if (!p.name.isInlineScriptUsage()) return@p true // 再次确认
+            val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
+            val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true
+            val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
+            if (fastInference && usageConfigs.isNotNullOrEmpty()) {
+                result.set(usageConfigs)
+                return@p false
+            }
+            // merge
+            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+                if (it) return@also
+                context.inlineScriptHasConflict = true
+                result.set(null)
             }
         }
         return result.get().orEmpty()

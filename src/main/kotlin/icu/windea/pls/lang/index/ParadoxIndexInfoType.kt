@@ -51,7 +51,7 @@ abstract class ParadoxIndexInfoType<T : ParadoxIndexInfo>(val id: Byte) {
         val index = findFileBasedIndex<ParadoxMergedIndex>()
         return FileTypeIndex.processFiles(fileType, p@{ file ->
             ProgressManager.checkCanceled()
-            if (selectGameType(file) != gameType) return@p true //check game type at file level
+            if (selectGameType(file) != gameType) return@p true // check game type at file level
 
             val fileData = index.getFileData(file, project)
             val infos = getInfos(fileData)

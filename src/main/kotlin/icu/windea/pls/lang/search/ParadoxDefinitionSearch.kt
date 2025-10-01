@@ -29,7 +29,9 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         @JvmField
         val INSTANCE = ParadoxDefinitionSearch()
 
-        /** @see ParadoxDefinitionSearch.SearchParameters*/
+        /**
+         * @see ParadoxDefinitionSearch.SearchParameters
+         */
         @JvmStatic
         fun search(
             name: String?,

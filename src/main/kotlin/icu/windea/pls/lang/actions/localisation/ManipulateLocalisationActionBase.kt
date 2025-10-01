@@ -28,8 +28,8 @@ import kotlinx.coroutines.launch
 /**
  * 用于处理本地化的一类动作。
  *
- * * 应当支持在多个级别批量处理。
- * * 应当在开始处理之前弹出对话框，以确认是否真的要处理。
+ * - 应当支持在多个级别批量处理。
+ * - 应当在开始处理之前弹出对话框，以确认是否真的要处理。
  */
 abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

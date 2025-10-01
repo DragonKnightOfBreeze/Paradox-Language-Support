@@ -8,46 +8,38 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 class ParadoxLocalisationStructureViewModel(
     editor: Editor?,
     file: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, file), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val defaultSorters = arrayOf(Sorter.ALPHA_SORTER)
+        private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
     }
 
-    //指定根节点，一般为psiFile
     override fun getRoot() = ParadoxLocalisationFileTreeElement(psiFile as ParadoxLocalisationFile)
-
-    //指定在结构视图中的元素
-    override fun isSuitable(element: PsiElement?): Boolean {
-        return element is ParadoxLocalisationFile || element is ParadoxLocalisationPropertyList || element is ParadoxLocalisationProperty
-    }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    //指定可用的排序器，可自定义
-    override fun getSorters() = defaultSorters
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return ParadoxLocalisationNavigationManager.accept(element)
+    }
 
-    override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
+    override fun getSorters() = _sorters
+
+    override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = isAutoExpandElement(element)
+
+    override fun isAlwaysLeaf(element: StructureViewTreeElement) = false
+
+    override fun isAutoExpand(element: StructureViewTreeElement) = isAutoExpandElement(element)
+
+    override fun isSmartExpand() = false
+
+    private fun isAutoExpandElement(element: StructureViewTreeElement): Boolean {
         return element is ParadoxLocalisationFileTreeElement || element is ParadoxLocalisationPropertyListTreeElement
-    }
-
-    override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
-        return false
-    }
-
-    override fun isAutoExpand(element: StructureViewTreeElement): Boolean {
-        return element is ParadoxLocalisationFileTreeElement || element is ParadoxLocalisationPropertyListTreeElement
-    }
-
-    override fun isSmartExpand(): Boolean {
-        return false
     }
 }

@@ -24,6 +24,7 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptedTriggerInlineProcessor(
@@ -52,7 +53,7 @@ class ParadoxScriptedTriggerInlineProcessor(
         }
         ReferencesSearch.search(element, myRefactoringScope, true).processQuery p@{ reference ->
             ProgressManager.checkCanceled()
-            if (!ParadoxPsiManager.isInvocationReference(element, reference.element)) return@p true
+            if (!ParadoxPsiMatcher.isInvocationReference(element, reference.element)) return@p true
             usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()

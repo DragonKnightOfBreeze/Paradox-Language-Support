@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 用于基于名字索引本地化声明。
+ * 基于名字索引本地化声明。
  */
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     override fun getKey() = ParadoxIndexKeys.LocalisationName

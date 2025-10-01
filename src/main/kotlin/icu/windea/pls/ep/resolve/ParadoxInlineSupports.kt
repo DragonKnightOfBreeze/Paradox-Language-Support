@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.resolve
 
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -16,14 +17,15 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     //这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
 
     override fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptFile? {
+        // 排除为空或者带参数的情况
         if (element !is ParadoxScriptProperty) return null
-        val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return null
-        val expression = info.expression
+        val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element).orEmpty()
+        if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
         return withRecursionGuard a1@{
-            withRecursionCheck(expression) a2@{
+            withRecursionCheck(inlineScriptExpression) a2@{
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return@a2 null
                 val project = configContext.configGroup.project
-                ParadoxInlineScriptManager.getInlineScriptFile(expression, element, project)
+                ParadoxInlineScriptManager.getInlineScriptFile(inlineScriptExpression, project, element)
             }
         }
     }

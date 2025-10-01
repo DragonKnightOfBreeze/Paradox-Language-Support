@@ -237,11 +237,9 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for (config in configs) {
                 val configExpression = config.configExpression
-                when {
-                    configExpression.expressionString == ParadoxInlineScriptManager.inlineScriptPathExpressionString -> {
-                        val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
-                        result += extendedConfig
-                    }
+                if (configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
+                    val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
+                    result += extendedConfig
                 }
             }
         }

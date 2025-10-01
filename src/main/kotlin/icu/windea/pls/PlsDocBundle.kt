@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import com.intellij.DynamicBundle
 import com.intellij.openapi.project.Project
-import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -13,7 +12,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import org.jetbrains.annotations.Nls
@@ -80,8 +79,8 @@ object PlsDocBundle {
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.search(name.uppercase(), selector).find() ?: return@run
-            val text = ParadoxLocalisationTextRenderer().render(localisation).orNull()
-            if (text != null) return text
+            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            return text
         }
 
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.area.$name")
@@ -96,11 +95,9 @@ object PlsDocBundle {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
             val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
-            val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
-            if (localizedName != null) {
-                val text = ParadoxLocalisationTextRenderer().render(localizedName).orNull()
-                if (text != null) return text
-            }
+            val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
+            val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
+            return text
         }
 
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.category.$name")

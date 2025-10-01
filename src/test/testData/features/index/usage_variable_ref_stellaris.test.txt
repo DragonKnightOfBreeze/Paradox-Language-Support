@@ -1,0 +1,3 @@
+# inline_script usage - scripted variable reference (should be skipped by indices)
+@sv = "test_inline"
+inline_script = @sv

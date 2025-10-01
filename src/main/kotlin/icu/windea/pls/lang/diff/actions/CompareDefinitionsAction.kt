@@ -62,8 +62,8 @@ import javax.swing.Icon
 /**
  * 将当前定义与包括当前本地化的只读副本在内的相同名称且相同主要类型的定义进行DIFF。
  *
- * * 忽略直接位于游戏或模组入口目录下的文件。
- * * TODO 按照覆盖顺序进行排序。
+ * - 忽略直接位于游戏或模组入口目录下的文件。
+ * - TODO 按照覆盖顺序进行排序。
  */
 class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {

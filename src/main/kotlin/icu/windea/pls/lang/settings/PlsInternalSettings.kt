@@ -27,24 +27,24 @@ class PlsInternalSettings {
     /**
      * 内嵌提示中的本地化文本的默认文本长度限制。
      */
-    val textLengthLimit get() = Registry.intValue("pls.settings.textLengthLimit", 36)
+    val textLengthLimitForInlay get() = Registry.intValue("pls.settings.textLengthLimit.for.inlay", 36)
 
     /**
      * 内嵌提示中的本地化文本的默认图标高度限制。
      */
-    val iconHeightLimit get() = Registry.intValue("pls.settings.iconHeightLimit", 36)
+    val iconHeightLimitForInlay get() = Registry.intValue("pls.settings.iconHeightLimit.for.inlay", 36)
+
+    /**
+     * 面包屑导航、导航栏、结构视图中的字符串字面量的文本长度限制。
+     */
+    val textLengthLimitForPresentation get() = Registry.intValue("pls.settings.textLengthLimit.for.presentation", 36)
 
     /**
      * 在快速文档中渲染的图片（DDS/TGA）的最大尺寸。如果超出，则会基于此尺寸进行缩放。
      *
      * @see org.intellij.images.fileTypes.ImageDocumentationProvider.MAX_IMAGE_SIZE
      */
-    val maxImageSizeInDocumentation get() = Registry.intValue("pls.settings.maxImageSizeInDocumentation", 300)
-
-    /**
-     * 面包屑导航、导航栏、结构视图中的字符串字面量的文本长度限制。
-     */
-    val presentableTextLengthLimit get() = Registry.intValue("pls.settings.presentableTextLengthLimit", 36)
+    val maxImageSizeForDocumentation get() = Registry.intValue("pls.settings.maxImageSize.for.documentation", 300)
 
     /**
      * 在提示信息中显示的条目的数量限制（某些提示文本会用到）。

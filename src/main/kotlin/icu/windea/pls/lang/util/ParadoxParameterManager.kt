@@ -66,11 +66,11 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -108,9 +108,9 @@ object ParadoxParameterManager {
      *
      * 如果[direct]为true，则直接将占位符`$P$`替换成传入参数`P`的值。此时：
      *
-     * * 值可以是多行字符串。
-     * * 如果值是用双引号括起，替换时会被忽略。
-     * * 允许重复的传入参数，按顺序进行替换。
+     * - 值可以是多行字符串。
+     * - 如果值是用双引号括起，替换时会被忽略。
+     * - 允许重复的传入参数，按顺序进行替换。
      *
      * @param element 用于得到原始文本的PSI。
      * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
@@ -297,7 +297,7 @@ object ParadoxParameterManager {
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
         //整合查找到的所有参数上下文
-        ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{ parameterContext ->
+        ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true

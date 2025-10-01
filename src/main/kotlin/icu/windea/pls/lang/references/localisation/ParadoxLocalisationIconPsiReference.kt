@@ -7,7 +7,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**

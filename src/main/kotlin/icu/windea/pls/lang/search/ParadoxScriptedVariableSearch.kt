@@ -27,19 +27,25 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
         @JvmField
         val INSTANCE = ParadoxScriptedVariableSearch()
 
-        /** @see ParadoxScriptedVariableSearch.SearchParameters */
+        /**
+         * @see ParadoxScriptedVariableSearch.SearchParameters
+         */
         @JvmStatic
         fun search(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, null, selector))
         }
 
-        /** @see ParadoxScriptedVariableSearch.SearchParameters */
+        /**
+         * @see ParadoxScriptedVariableSearch.SearchParameters
+         */
         @JvmStatic
         fun searchLocal(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, ParadoxScriptedVariableType.Local, selector))
         }
 
-        /** @see ParadoxScriptedVariableSearch.SearchParameters */
+        /**
+         * @see ParadoxScriptedVariableSearch.SearchParameters
+         */
         @JvmStatic
         fun searchGlobal(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, ParadoxScriptedVariableType.Global, selector))

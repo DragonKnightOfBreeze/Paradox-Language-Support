@@ -179,11 +179,11 @@ object ParadoxTypeManager {
 
     /**
      * 依次尝试导航到：
-     * * 定义的CWT类型规则
-     * * 定义名对应的定义的CWT类型规则
-     * * 对应的CWT枚举规则
-     * * 对应的CWT复杂枚举规则
-     * * 对应的预定义的CWT动态值规则
+     * - 定义的CWT类型规则
+     * - 定义名对应的定义的CWT类型规则
+     * - 对应的CWT枚举规则
+     * - 对应的CWT复杂枚举规则
+     * - 对应的预定义的CWT动态值规则
      */
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
         //注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明

@@ -39,11 +39,11 @@ class CwtConfigGroupService {
                 // 显示不可取消的模态进度条
                 val title = PlsBundle.message("configGroup.init.progressTitle")
                 withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
-                    doInit(configGroups, project)
+                    init(configGroups, project)
                 }
             } else {
                 // 静默执行
-                doInit(configGroups, project)
+                init(configGroups, project)
             }
             if (!project.isDefault) {
                 // 重新解析已打开的文件
@@ -54,7 +54,7 @@ class CwtConfigGroupService {
         }
     }
 
-    private suspend fun doInit(configGroups: Collection<CwtConfigGroup>, project: Project) {
+    suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Initializing config groups for $targetName...")
         val start = System.currentTimeMillis()
@@ -64,6 +64,18 @@ class CwtConfigGroupService {
         }
         val end = System.currentTimeMillis()
         logger.info("Initialized config groups for $targetName in ${end - start} ms.")
+    }
+
+    suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Refreshing config groups for $targetName...")
+        val start = System.currentTimeMillis()
+        configGroups.forEachConcurrent { configGroup ->
+            configGroup.init()
+            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
+        }
+        val end = System.currentTimeMillis()
+        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
     }
 
     /**
@@ -104,7 +116,7 @@ class CwtConfigGroupService {
             // 显示可以取消的模态进度条
             val title = PlsBundle.message("configGroup.refresh.progressTitle")
             withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.cancellable()) {
-                doRefresh(configGroups, project)
+                refresh(configGroups, project)
             }
             // 重新解析已打开的文件
             val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
@@ -118,13 +130,8 @@ class CwtConfigGroupService {
                 ).notify(project)
             } else if (e == null) {
                 updateRefreshFloatingToolbar(project)
-
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
-                    // 重新解析并刷新（IDE之后会自动请求重新索引）
-                    // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
-                    val rootFilePaths = getRootFilePaths(configGroups)
-                    val files = PlsCoreManager.findFilesByRootFilePaths(rootFilePaths)
-                    PlsCoreManager.reparseFiles(files)
+                    reparseFilesInRootFilePaths(configGroups)
                 }
                 PlsCoreManager.createNotification(
                     NotificationType.INFORMATION,
@@ -135,31 +142,24 @@ class CwtConfigGroupService {
         }
     }
 
-    private suspend fun doRefresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Refreshing config groups for $targetName...")
-        val start = System.currentTimeMillis()
-        configGroups.forEachConcurrent { configGroup ->
-            configGroup.init()
-            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
-        }
-        val end = System.currentTimeMillis()
-        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
+    private fun reparseFilesInRootFilePaths(configGroups: Collection<CwtConfigGroup>) {
+        // 重新解析并刷新（IDE之后会自动请求重新索引）
+        // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
+        reparseFilesInRootFilePaths(configGroups)
+        val rootFilePaths = getRootFilePaths(configGroups)
+        val files = PlsCoreManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsCoreManager.reparseFiles(files)
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
-        PlsFacade.getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
-            val gameType = settings.finalGameType
-            if (gameType !in gameTypes) return@f
-            settings.gameDirectory?.let { gameDirectory -> rootFilePaths.add(gameDirectory) }
-        }
-        PlsFacade.getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
-            val gameType = settings.finalGameType
-            if (gameType !in gameTypes) return@f
-            settings.modDirectory?.let { modDirectory -> rootFilePaths.add(modDirectory) }
-        }
+        PlsFacade.getProfilesSettings().gameDescriptorSettings.values
+            .filter { it.finalGameType in gameTypes }
+            .mapNotNullTo(rootFilePaths) { it.gameDirectory }
+        PlsFacade.getProfilesSettings().modDescriptorSettings.values
+            .filter { it.finalGameType in gameTypes }
+            .mapNotNullTo(rootFilePaths) { it.modDirectory }
         return rootFilePaths
     }
 

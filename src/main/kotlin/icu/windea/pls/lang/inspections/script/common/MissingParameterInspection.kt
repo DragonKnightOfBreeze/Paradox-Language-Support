@@ -42,7 +42,7 @@ class MissingParameterInspection : LocalInspectionTool() {
                 if (contextReferenceInfo.contextName.isParameterized()) return //skip if context name is parameterized
                 val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
                 val requiredParameterNames = mutableSetOf<String>()
-                ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{
+                ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{
                     ProgressManager.checkCanceled()
                     val parameterContextInfo = ParadoxParameterSupport.getContextInfo(it) ?: return@p true
                     if (parameterContextInfo.parameters.isEmpty()) return@p true

@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.icon
+package icu.windea.pls.ep.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.extensions.ExtensionPointName

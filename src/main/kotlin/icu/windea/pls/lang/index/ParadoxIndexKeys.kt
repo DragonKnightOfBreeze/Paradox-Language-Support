@@ -5,8 +5,8 @@ import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
 import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxIndexKeys {
@@ -22,9 +22,13 @@ object ParadoxIndexKeys {
     val LocalisationNameForEvent = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.event")
     val LocalisationNameForTech = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.tech")
 
+    // for inline script usages, inlineScriptExpression -> ParadoxScriptProperty
+    val InlineScriptUsage = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptUsage.index")
+    // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
+    val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
+
     val FilePath = ID.create<String, ParadoxFilePathIndex.Info>("paradox.file.path.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val Define = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
-    val InlineScriptUsage = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
     val Merged = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 }

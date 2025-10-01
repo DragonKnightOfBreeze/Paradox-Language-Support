@@ -15,11 +15,11 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * * 基本类型 - 基于PSI的类型
- * * 表达式 - 如果PSI表示一个表达式则可用
- * * 规则表达式 - 如果存在对应的CWT规则表达式则可用
- * * 定义类型 - 如果PSI是[ParadoxScriptPropertyKey]则可用
- * * 作用域上下文信息 - 如果存在则可用
+ * - 基本类型 - 基于PSI的类型
+ * - 表达式 - 如果PSI表示一个表达式则可用
+ * - 规则表达式 - 如果存在对应的CWT规则表达式则可用
+ * - 定义类型 - 如果PSI是[ParadoxScriptPropertyKey]则可用
+ * - 作用域上下文信息 - 如果存在则可用
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {

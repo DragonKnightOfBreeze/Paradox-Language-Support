@@ -25,7 +25,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
             //加入用于渲染的图片的标签
             run {
                 val maxSize = maxOf(metadata.width, metadata.height)
-                val maxImageSize = PlsFacade.getInternalSettings().maxImageSizeInDocumentation
+                val maxImageSize = PlsFacade.getInternalSettings().maxImageSizeForDocumentation
                 val scaleFactor = if (maxSize > maxImageSize) maxImageSize.toDouble() / maxSize.toDouble() else 1.0
                 val imageWidth = (metadata.width * scaleFactor).toInt()
                 val imageHeight = (metadata.height * scaleFactor).toInt()

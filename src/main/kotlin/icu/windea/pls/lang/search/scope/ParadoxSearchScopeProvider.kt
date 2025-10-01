@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.scope
 
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
@@ -11,12 +11,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findTopHostFileOrThis
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.search.scope.ParadoxGameSearchScope
-import icu.windea.pls.lang.search.scope.ParadoxGameWithDependenciesSearchScope
-import icu.windea.pls.lang.search.scope.ParadoxModAndGameSearchScope
-import icu.windea.pls.lang.search.scope.ParadoxModSearchScope
-import icu.windea.pls.lang.search.scope.ParadoxModWithDependenciesSearchScope
-import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxRootInfo
 

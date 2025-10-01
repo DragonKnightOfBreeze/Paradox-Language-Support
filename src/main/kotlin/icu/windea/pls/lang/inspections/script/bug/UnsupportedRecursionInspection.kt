@@ -10,16 +10,16 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.quickfix.NavigateToFix
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * （对于脚本文件）检查是否存在不支持的递归。
- * * 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
- * * 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
- * * 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
+ * - 对于每个scripted_variable，检测其值中是否存在递归的scripted_variable引用。
+ * - 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
+ * - 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
@@ -58,7 +58,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
-                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
+                ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiMatcher.isInvocationReference(element, re) }
                 if (recursions.isEmpty()) return
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.1")

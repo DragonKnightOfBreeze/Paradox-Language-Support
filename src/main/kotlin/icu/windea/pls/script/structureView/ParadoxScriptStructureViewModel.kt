@@ -9,12 +9,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.DefinitionsFilter
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.PropertiesFilter
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.ValuesFilter
@@ -25,51 +21,36 @@ class ParadoxScriptStructureViewModel(
     psiFile: PsiFile
 ) : TextEditorBasedStructureViewModel(editor, psiFile), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
     companion object {
-        private val defaultGroupers = emptyArray<Grouper>()
-        private val defaultSorters = arrayOf(Sorter.ALPHA_SORTER)
-        private val defaultFilters = arrayOf(VariablesFilter, DefinitionsFilter, PropertiesFilter, ValuesFilter)
+        private val _groupers = emptyArray<Grouper>()
+        private val _sorters = arrayOf(Sorter.ALPHA_SORTER)
+        private val _filters = arrayOf(VariablesFilter, DefinitionsFilter, PropertiesFilter, ValuesFilter)
     }
 
-    //指定根节点，一般为psiFile
     override fun getRoot() = ParadoxScriptFileTreeElement(psiFile as ParadoxScriptFile)
-
-    //指定在结构视图中的元素
-    override fun isSuitable(element: PsiElement?): Boolean {
-        return element is ParadoxScriptFile || element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty
-            || (element is ParadoxScriptValue && element.isBlockMember()) || element is ParadoxScriptParameterCondition
-    }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
         return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComments = true) { isSuitable(it) }
     }
 
-    //指定可用的分组器，可自定义
-    override fun getGroupers() = defaultGroupers
-
-    //指定可用的排序器，可自定义
-    override fun getSorters() = defaultSorters
-
-    //指定可用的过滤器，可自定义
-    override fun getFilters() = defaultFilters
-
-    override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
-        return element is ParadoxScriptFileTreeElement
+    override fun isSuitable(element: PsiElement?): Boolean {
+        return ParadoxScriptNavigationManager.accept(element)
     }
 
-    override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
-        return false
-    }
+    override fun getGroupers() = _groupers
 
-    override fun isAutoExpand(element: StructureViewTreeElement): Boolean {
-        return element is ParadoxScriptFileTreeElement
-    }
+    override fun getSorters() = _sorters
 
-    override fun isSmartExpand(): Boolean {
-        return false
-    }
+    override fun getFilters() = _filters
 
+    override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = element is ParadoxScriptFileTreeElement
+
+    override fun isAlwaysLeaf(element: StructureViewTreeElement) = false
+
+    override fun isAutoExpand(element: StructureViewTreeElement) = element is ParadoxScriptFileTreeElement
+
+    override fun isSmartExpand() = false
+
+    // do not expand definitions at top level by default
     @Suppress("UnstableApiUsage")
-    override fun getMinimumAutoExpandDepth(): Int {
-        return 1 //do not expand definitions at top level by default
-    }
+    override fun getMinimumAutoExpandDepth() = 1
 }

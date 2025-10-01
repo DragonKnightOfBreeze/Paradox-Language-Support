@@ -11,9 +11,9 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.wordRequests
 import icu.windea.pls.ep.data.StellarisGameConceptData
-import icu.windea.pls.ep.icon.CompositeParadoxLocalisationIconSupport
-import icu.windea.pls.ep.icon.DefinitionBasedParadoxLocalisationIconSupport
-import icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.CompositeParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.DefinitionBasedParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.getData
@@ -28,7 +28,7 @@ import kotlin.experimental.or
 /**
  * 定义的使用的查询。
  *
- * * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
+ * - 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

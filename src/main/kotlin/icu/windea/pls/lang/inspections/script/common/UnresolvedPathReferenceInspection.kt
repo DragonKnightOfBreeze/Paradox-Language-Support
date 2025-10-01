@@ -102,7 +102,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if (!ignoredByConfigs) return false
                 val value = element.value
                 val configExpression = memberConfig.configExpression
-                if (configExpression.expressionString != ParadoxInlineScriptManager.inlineScriptPathExpressionString) {
+                if (configExpression != ParadoxInlineScriptManager.inlineScriptPathExpression) {
                     val config = configGroup.extendedInlineScripts.findFromPattern(value, element, configGroup)
                     if (config != null) return true
                 }

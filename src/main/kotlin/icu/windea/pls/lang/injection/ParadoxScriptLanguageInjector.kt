@@ -30,8 +30,8 @@ import icu.windea.pls.script.psi.propertyKey
 /**
  * 脚本语言的语言注入器。
  *
- * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
- * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
+ * - 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
+ * - 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  *
  * @see ParadoxParameterValueInjectionInfo
  * @see ParameterValueCwtConfigContextProvider
@@ -90,7 +90,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
 
     @Suppress("unused")
     private fun acceptInjectionForArgumentValue(host: ParadoxScriptString, argumentName: String, argumentValue: String): Boolean {
-        if (!PlsPatternConstants.parameterName.matches(argumentName)) return false // 参数名必须合法
+        if (!PlsPatternConstants.argumentName.matches(argumentName)) return false // 参数名必须合法
         val trimmed = argumentValue.unquote().trim()
         if (ParadoxSeparatorType.entries.any { it.id == trimmed }) return false // 为一些狡猾人行方便
         return true

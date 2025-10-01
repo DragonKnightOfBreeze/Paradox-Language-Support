@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
-import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
@@ -84,7 +83,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 示例：`## cardinality_min_define = "NGameplay/ETHOS_MIN_POINTS"`
      */
-    val cardinalityMinDefine: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val cardinalityMinDefine: CwtOptionDataAccessor<String?> by create {
         findOption("cardinality_min_define")?.stringValue
     }
 
@@ -97,7 +96,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      *
      * 示例：`## cardinality_max_define = "NGameplay/ETHOS_MAX_POINTS"`
      */
-    val cardinalityMaxDefine: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val cardinalityMaxDefine: CwtOptionDataAccessor<String?> by create {
         findOption("cardinality_max_define")?.stringValue
     }
 
@@ -460,23 +459,5 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      */
     val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
         findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }
-    }
-
-    /**
-     * 内联脚本表达式的路径字段的位置。
-     *
-     * 用于内联规则，说明在其声明中，哪个属性的值用来存放内联脚本表达式。如果选项的值为空，则使用直接规则的值。
-     * 内联脚本表达式用来定位内联脚本文件，例如，`test` 对应路径为 `inline_scripts/test.txt` 的内联脚本文件。
-     *
-     * 适用对象：内联脚本（inline_script）对应的的内联规则（[CwtInlineConfig]）。
-     *
-     * CWTools 兼容性：PLS 扩展。用于推导与反向定位。
-     *
-     * 示例：`## inline_script_expression = "some/path"`
-     *
-     * @see icu.windea.pls.lang.util.ParadoxInlineScriptManager
-     */
-    val inlineScriptExpression: CwtOptionDataAccessor<String?> by create(cached = true) {
-        findOption("inline_script_expression")?.stringValue
     }
 }

@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 同一文件中重复的封装变量声明的检查。
  *
  * 提供快速修复：
- * * 导航到重复项
+ * - 导航到重复项
  */
 class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

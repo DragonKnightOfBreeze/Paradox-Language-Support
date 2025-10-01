@@ -2,60 +2,48 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.search.FileTypeIndex
+import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.findFileBasedIndex
-import icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex
+import icu.windea.pls.core.processAllElements
+import icu.windea.pls.core.processAllElementsByKeys
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCoreManager
-import icu.windea.pls.model.indexInfo.ParadoxInlineScriptUsageIndexInfo
-import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 内联脚本使用的查询器。
  */
-class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageIndexInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageIndexInfo.Compact>) {
+class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxScriptProperty>) {
+        // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if (PlsCoreManager.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         if (queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
-        val expression = queryParameters.expression
+        val inlineScriptExpression = queryParameters.inlineScriptExpression
         val project = queryParameters.project
-        val selector = queryParameters.selector
-        val gameType = selector.gameType
-
-        if (expression.isNotEmpty() && expression.isParameterized()) return // skip if expression is parameterized
-
-        doProcessFiles(scope) p@{ file ->
-            ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
-            if (selectGameType(file) != gameType) return@p true //check game type at file level
-
-            val fileData = findFileBasedIndex<ParadoxInlineScriptUsageIndex>().getFileData(file, project)
-            if (fileData.isEmpty()) return@p true
-            if (expression.isNotEmpty()) {
-                val info = fileData[expression] ?: return@p true
-                info.virtualFile = file
-                val r = consumer.process(info)
-                if (!r) return@p false
-            } else {
-                fileData.values.forEach { info ->
-                    info.virtualFile = file
-                    val r = consumer.process(info)
-                    if (!r) return@p false
-                }
-            }
-
-            true
+        processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element ->
+            consumer.process(element)
         }
     }
 
-    private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+    private fun processQueryForInlineScriptUsages(
+        inlineScriptExpression: String?,
+        project: Project,
+        scope: GlobalSearchScope,
+        processor: Processor<ParadoxScriptProperty>
+    ): Boolean {
+        val indexKey = ParadoxIndexKeys.InlineScriptUsage
+        if (inlineScriptExpression == null) {
+            return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+        } else {
+            if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return true // 排除为空或者带参数的情况
+            return indexKey.processAllElements(inlineScriptExpression, project, scope) { element -> processor.process(element) }
+        }
     }
 }

@@ -48,8 +48,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariable): String? {
-        //不包含作为前缀的"@"
-        runReadAction { element.stub }?.name?.let { return it }
+        runReadAction { element.stub }?.name?.orNull()?.let { return it }
         return element.scriptedVariableName.name
     }
 
@@ -128,15 +127,14 @@ object ParadoxScriptPsiImplUtil {
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
-        val isInlineScriptInvocation = element.name == ParadoxInlineScriptManager.inlineScriptKey
-        if (isInlineScriptInvocation) return PlsIcons.Nodes.InlineScript
+        if (element.name.isInlineScriptUsage()) return PlsIcons.Nodes.InlineScript
         return PlsIcons.Nodes.Property
     }
 
     @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
-        //注意：这里需要得到element.stub.rootKey，而非element.stub.name，因为这里需要的是PSI元素的名字而非定义的名字
-        runReadAction { element.stub }?.rootKey?.let { return it }
+        // 注意：如果 element 对应一个定义，这里得到的不一定是定义的名字
+        runReadAction { element.stub }?.name?.orNull()?.let { return it }
         return element.propertyKey.name
     }
 

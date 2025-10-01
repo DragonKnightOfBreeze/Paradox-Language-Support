@@ -85,6 +85,8 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
  * 遍历所有键，并对命中的键（满足 [keyPredicate]）下的元素调用 [processor]。
  *
  * 提供按键粒度的过滤与处理能力。
+ *
+ * Dumb 模式下直接返回 `true`。
  */
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElementsByKeys(
     project: Project,
@@ -110,6 +112,8 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
  * 遍历所有键，找到第一个满足 [predicate] 的元素，并调用 [processor]；若未找到，则使用 [getDefaultValue] 的返回值（可为 null）。
  *
  * 可在遍历每个键前调用 [resetDefaultValue] 重置外部缓存。
+ *
+ * Dumb 模式下直接返回 `true`。
  */
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElementByKeys(
     project: Project,

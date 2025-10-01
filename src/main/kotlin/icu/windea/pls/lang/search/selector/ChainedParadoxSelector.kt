@@ -122,9 +122,9 @@ class ChainedParadoxSelector<T>(
 
     fun matchesGameType(result: T): Boolean {
         //某些情况下，可以直接认为游戏类型是匹配的
-        if (scope is ParadoxSearchScope) return true
+        val scope = scope
+        if (scope is ParadoxSearchScope && scope.ensureMatchGameType()) return true
 
         return gameType == null || gameType == selectGameType(result)
     }
 }
-

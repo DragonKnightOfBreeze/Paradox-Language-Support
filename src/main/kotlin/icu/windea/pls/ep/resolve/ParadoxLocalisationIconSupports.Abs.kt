@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.icon
+package icu.windea.pls.ep.resolve
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -131,7 +131,7 @@ class ImageFileBasedParadoxLocalisationIconSupport(
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
         val fileSelector = selector(project, originalFile).file().contextSensitive().distinctByFilePath()
-        ParadoxFilePathSearch.search(pathExpression, fileSelector).processQueryAsync p@{ file ->
+        ParadoxFilePathSearch.search(null, pathExpression, fileSelector).processQueryAsync p@{ file ->
             ProgressManager.checkCanceled()
             val name = file.nameWithoutExtension
             val psiFile = file.toPsiFile(project) ?: return@p true

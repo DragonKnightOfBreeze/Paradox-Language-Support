@@ -51,7 +51,7 @@ class ParadoxGameElementNode(
         val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
-        ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
+        ParadoxFilePathSearch.search(null, null, selector).processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.length != 1) return@p true
             if (file.isDirectory) {

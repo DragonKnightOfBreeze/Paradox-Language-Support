@@ -93,6 +93,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             if (oldPreferredLocale == newPreferredLocale) return@onApply
                             preferredLocale = newPreferredLocale
                             refreshForOpenedFiles()
+                            onPreferredLocaleChanged(oldPreferredLocale, newPreferredLocale)
                         }
                 }
                 //ignoredFileNames
@@ -635,6 +636,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
+    }
+
+    private fun onPreferredLocaleChanged(oldPreferredLocale: String?, newPreferredLocale: String?) {
+        if (!callbackLock.check("onPreferredLocaleChanged")) return
+
+        ParadoxModificationTrackers.LocaleTracker.incModificationCount()
     }
 
     //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大

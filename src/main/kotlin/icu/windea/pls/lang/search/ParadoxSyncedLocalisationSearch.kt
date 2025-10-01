@@ -29,24 +29,14 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
         val INSTANCE = ParadoxSyncedLocalisationSearch()
 
         /**
-         *  @see ParadoxSyncedLocalisationSearch.SearchParameters
+         * @see ParadoxSyncedLocalisationSearch.SearchParameters
          */
         @JvmStatic
         fun search(
-            name: String,
+            name: String?,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
-        }
-
-        /**
-         *  @see ParadoxSyncedLocalisationSearch.SearchParameters
-         */
-        @JvmStatic
-        fun search(
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
-        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(null, selector))
         }
 
         /**

@@ -21,6 +21,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.greenStub
 import icu.windea.pls.model.ParadoxLocalisationInfo
@@ -28,17 +29,14 @@ import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-/**
- * 用于处理本地化信息。
- */
 object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
         val cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(Keys)
+        val cachedLocalizedName by createKey<CachedValue<String>>(Keys)
     }
 
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        // 从缓存中获取
-        return doGetInfoFromCache(element)
+        return doGetInfoFromCache(element) // 从缓存中获取
     }
 
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
@@ -60,7 +58,7 @@ object ParadoxLocalisationManager {
         return ParadoxLocalisationInfo(name, type, gameType)
     }
 
-    fun doGetInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+    private fun doGetInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         val stub = runReadAction { element.greenStub } ?: return null
         val name = stub.name
         val type = stub.type
@@ -68,15 +66,27 @@ object ParadoxLocalisationManager {
         return ParadoxLocalisationInfo(name, type, gameType)
     }
 
-    fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
-        // 存在一些特殊的本地化，不能直接用来渲染文本
-        val file = element.containingFile ?: return false
-        val fileName = file.name
-        if (fileName.startsWith("name_system_")) return true // e.g., name_system_l_english.yml
-        return false
+    fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
+        return doGetLocalizedTextFromCache(element) // 从缓存中获取
+    }
+
+    private fun doGetLocalizedTextFromCache(element: ParadoxLocalisationProperty): String? {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedLocalizedName) {
+            ProgressManager.checkCanceled()
+            val value = doGetLocalizedText(element)
+            value.withDependencyItems(element)
+        }
+    }
+
+    private fun doGetLocalizedText(element: ParadoxLocalisationProperty): String? {
+        return ParadoxLocalisationTextRenderer().render(element).orNull()
     }
 
     fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
+        return doGetRelatedScriptedVariables(element) // 直接获取
+    }
+
+    private fun doGetRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element)
@@ -89,6 +99,10 @@ object ParadoxLocalisationManager {
     }
 
     fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
+        return doGetRelatedDefinitions(element) // 直接获取
+    }
+
+    private fun doGetRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element) ?: return emptyList()
@@ -117,5 +131,13 @@ object ParadoxLocalisationManager {
             }
         }
         return result
+    }
+
+    fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
+        // 存在一些特殊的本地化，不能直接用来渲染文本
+        val file = element.containingFile ?: return false
+        val fileName = file.name
+        if (fileName.startsWith("name_system_")) return true // e.g., name_system_l_english.yml
+        return false
     }
 }

@@ -182,15 +182,16 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxDefineIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
 
-    <searchScopesProvider implementation="icu.windea.pls.lang.search.ParadoxSearchScopeProvider"/>
+    <searchScopesProvider implementation="icu.windea.pls.lang.search.scope.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxDefinitionImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxLocalisationImplementationsSearch"/>
@@ -234,10 +235,10 @@
     <registryKey key="pls.settings.showModalOnInitConfigGroups" defaultValue="false" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.localisationFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.localisationTextIconSizeLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.textLengthLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.iconHeightLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.maxImageSizeInDocumentation" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.presentableTextLengthLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.textLengthLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.iconHeightLimit.for.inlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.maxImageSize.for.documentation" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="pls.settings.textLengthLimit.for.presentation" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.itemLimit" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.maxDefinitionDepth" defaultValue="5" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.psi
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
@@ -13,6 +14,8 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -113,13 +116,13 @@ object ParadoxPsiMatcher {
         return isLocalisation(element) && element.type == ParadoxLocalisationType.Synced
     }
 
-    // fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
-    //     if (element !is ParadoxScriptProperty) return false
-    //     if (referenceElement !is ParadoxScriptPropertyKey) return false
-    //     val name = element.definitionInfo?.name?.orNull() ?: return false
-    //     if (name != referenceElement.text.unquote()) return false
-    //     return true
-    // }
+    fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
+        if (element !is ParadoxScriptProperty) return false
+        if (referenceElement !is ParadoxScriptPropertyKey) return false
+        val name = element.definitionInfo?.name?.orNull() ?: return false
+        if (name != referenceElement.text.unquote()) return false
+        return true
+    }
 
     // endregion
 }

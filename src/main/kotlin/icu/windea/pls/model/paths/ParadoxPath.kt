@@ -8,8 +8,8 @@ import icu.windea.pls.model.paths.impl.ParadoxPathResolverImpl
  * 文件路径。相对于游戏或模组入口目录（不一定是根目录）。保留大小写。
  *
  * 示例：
- * * `common/buildings/00_capital_buildings.txt`
- * * `localisation/simp_chinese/l_simp_chinese.yml`
+ * - `common/buildings/00_capital_buildings.txt`
+ * - `localisation/simp_chinese/l_simp_chinese.yml`
  *
  * @property path 使用"/"分割的路径。
  */

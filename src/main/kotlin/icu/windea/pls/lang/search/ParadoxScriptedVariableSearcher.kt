@@ -140,17 +140,17 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         processedFiles: MutableSet<VirtualFile>,
         consumer: Processor<in ParadoxScriptScriptedVariable>
     ): Boolean {
-        if (inlineScriptExpression.isParameterized()) return true // skip if is inlineScriptExpression parameterized
+        if (inlineScriptExpression.isParameterized()) return true // skip if inlineScriptExpression is parameterized
         val name = queryParameters.name
         val project = queryParameters.project
         val selector = selector(project, file).inlineScriptUsage()
         val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
         ProgressManager.checkCanceled()
-        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQuery p@{ info ->
+        ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQuery p@{ p ->
             ProgressManager.checkCanceled()
-            val uFile = info.virtualFile ?: return@p true
+            val uFile = p.containingFile?.virtualFile ?: return@p true
             if (!processedFiles.add(uFile)) return@p true
-            val startOffset = info.elementOffsets.lastOrNull() ?: return@p true
+            val startOffset = p.startOffset
             uFile2StartOffsetMap.merge(uFile, startOffset) { a, b -> maxOf(a, b) }
             true
         }
@@ -159,11 +159,11 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, uFile)
             doProcessAllElements(name, project, fileScope) p@{ element ->
-                if (startOffset >= 0 && element.startOffset >= startOffset) return@p true //skip scripted variables after current inline script invocation
+                if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current inline script invocation
                 consumer.process(element)
             }.let { if (!it) return@p false }
 
-            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) //inline script invocation can be recursive
+            doProcessQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) // inline script invocation can be recursive
         }
     }
 

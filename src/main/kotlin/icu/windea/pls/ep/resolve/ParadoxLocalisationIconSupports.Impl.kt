@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.icon
+package icu.windea.pls.ep.resolve
 
 import icu.windea.pls.core.addPrefix
 import icu.windea.pls.core.annotations.WithGameType

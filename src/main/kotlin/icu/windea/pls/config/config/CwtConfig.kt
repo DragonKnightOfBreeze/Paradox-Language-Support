@@ -9,9 +9,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 /**
  * 规则的统一抽象。
  *
- * 表示一段来自 CWT 规则文件的规则条目，与对应的 PSI 元素建议智能指针绑定，便于跨线程/缓存安全使用。
- * 所有具体形态（如 [CwtPropertyConfig]、[CwtValueConfig]、[CwtOptionConfig] 等）都实现自该接口。
- * 另外还实现了 [UserDataHolder]，以便保存额外的用户数据。
+ * 表示一段来自 CWT 规则文件的规则条目，与对应的 PSI 元素建立智能指针绑定，便于跨线程/缓存安全使用。
+ * 所有具体形态（如 [CwtPropertyConfig]、[CwtValueConfig]、[CwtOptionConfig] 等）都继承自该接口。
+ * 另外还继承了 [UserDataHolder]，以便保存额外的用户数据。
  *
  * 参考：
  * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
