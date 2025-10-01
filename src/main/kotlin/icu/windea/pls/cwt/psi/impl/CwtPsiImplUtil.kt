@@ -29,27 +29,6 @@ object CwtPsiImplUtil {
         return PlsStringConstants.blockFolder
     }
 
-    @JvmStatic
-    fun isEmpty(element: CwtRootBlock): Boolean {
-        element.forEachChild {
-            if (it is CwtProperty || it is CwtValue) return false
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isNotEmpty(element: CwtRootBlock): Boolean {
-        element.forEachChild {
-            if (it is CwtProperty || it is CwtValue) return true
-        }
-        return false
-    }
-
-    @JvmStatic
-    fun getComponents(element: CwtRootBlock): List<PsiElement> {
-        return element.children().filter { it is CwtProperty || it is CwtValue }.toList()
-    }
-
     //endregion
 
     //region CwtOption
@@ -255,27 +234,6 @@ object CwtPsiImplUtil {
         return PlsStringConstants.blockFolder
     }
 
-    @JvmStatic
-    fun isEmpty(element: CwtBlock): Boolean {
-        element.forEachChild {
-            if (it is CwtOption || it is CwtProperty || it is CwtValue) return false
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isNotEmpty(element: CwtBlock): Boolean {
-        element.forEachChild {
-            if (it is CwtOption || it is CwtProperty || it is CwtValue) return true
-        }
-        return false
-    }
-
-    @JvmStatic
-    fun getComponents(element: CwtBlock): List<PsiElement> {
-        return element.children().filter { it is CwtProperty || it is CwtValue }.toList()
-    }
-
     //endregion
 
     //region CwtDocComment
@@ -310,6 +268,20 @@ object CwtPsiImplUtil {
     }
 
     //endregion
+
+    @JvmStatic
+    fun getMemberList(element: PsiElement): List<CwtMember> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { isComponent(it) }
+    }
+
+    private fun isComponent(element: PsiElement): Boolean {
+        return element is CwtMember
+    }
 
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

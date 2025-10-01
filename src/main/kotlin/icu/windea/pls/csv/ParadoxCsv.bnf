@@ -24,14 +24,14 @@ header ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
-  methods=[getIcon toString]
+  methods=[getIcon]
 }
 // Note that there are special codes to detect eol
 row ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
-  methods=[getIcon toString]
+  methods=[getIcon]
 }
 private column_items ::= column column_item * {
   pin=1
@@ -43,5 +43,5 @@ column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
   ]
-  methods=[getIcon getName getValue setValue getReference getReferences toString]
+  methods=[getIcon getName getValue setValue getReference getReferences]
 }

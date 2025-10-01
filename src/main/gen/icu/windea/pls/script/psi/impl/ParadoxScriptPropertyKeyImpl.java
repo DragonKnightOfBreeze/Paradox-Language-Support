@@ -75,11 +75,6 @@ public class ParadoxScriptPropertyKeyImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  public @NotNull String toString() {
-    return ParadoxScriptPsiImplUtil.toString(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }

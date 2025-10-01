@@ -43,7 +43,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
     getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
-    getIElementType isEquivalentTo toString
+    getIElementType isEquivalentTo
   ]
 }
 // can be parameterized
@@ -72,7 +72,7 @@ property ::= property_key property_separator property_value {
   methods=[
     property_key="property_key" property_value="value"
     getIcon getName setName getNameIdentifier getValue getDepth getBlock
-    getIElementType isEquivalentTo toString
+    getIElementType isEquivalentTo
   ]
 }
 // can be parameterized
@@ -85,7 +85,7 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   methods=[
     getIdElement parameter=""
     getIcon getName getValue setValue
-    getReference getReferences toString
+    getReference getReferences
   ]
 }
 private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
@@ -100,7 +100,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptMember"
   ]
   methods=[
-    getIcon getName getValue setValue toString
+    getIcon getName getValue setValue
   ]
 }
 // can be parameterized
@@ -112,7 +112,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName setName getValue getReference getReferences toString
+    getIcon getName setName getValue getReference getReferences
   ]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
@@ -121,21 +121,20 @@ boolean ::= BOOLEAN_TOKEN {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[toString]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getReference getReferences toString]
+  methods=[getReference getReferences]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getReference getReferences toString]
+  methods=[getReference getReferences]
 }
 // can be parameterized
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
@@ -148,7 +147,7 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   methods=[
     getIdElement parameter=""
     getIcon getValue setValue
-    getReference getReferences toString
+    getReference getReferences
   ]
 }
 private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
@@ -157,7 +156,7 @@ color ::= COLOR_TOKEN {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getValue getColorType getColorArgs getColor setColor toString]
+  methods=[getValue getColorType getColorArgs getColor setColor]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -165,7 +164,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
   ]
-  methods=[getIcon getValue getReference getReferences getMemberList getComponents toString]
+  methods=[getIcon getValue getReference getReferences getMemberList getComponents]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {
   recoverWhile="#auto"

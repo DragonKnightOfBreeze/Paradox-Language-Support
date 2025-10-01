@@ -53,11 +53,6 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  public @NotNull String toString() {
-    return ParadoxScriptPsiImplUtil.toString(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }

@@ -64,11 +64,6 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   }
 
   @Override
-  public @NotNull String toString() {
-    return ParadoxCsvPsiImplUtil.toString(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxCsvPsiImplUtil.getPresentation(this);
   }

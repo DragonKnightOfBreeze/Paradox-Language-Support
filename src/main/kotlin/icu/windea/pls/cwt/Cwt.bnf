@@ -20,8 +20,10 @@ root ::= root_block ?
 
 root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
-  implements=["icu.windea.pls.cwt.psi.CwtBlockElement"]
-  methods=[getValue isEmpty isNotEmpty getComponents]
+  implements=[
+    "icu.windea.pls.cwt.psi.CwtBlockElement"
+  ]
+  methods=[getValue getMemberList getComponents]
 }
 private root_block_item ::= general_comment | property | value
 
@@ -100,7 +102,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtBlockElement"
   ]
-  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents]
+  methods=[getIcon getName setName getValue setValue getMemberList getComponents]
 }
 private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"

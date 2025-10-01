@@ -30,11 +30,6 @@ object ParadoxCsvPsiImplUtil {
         return PlsIcons.Nodes.Row
     }
 
-    @JvmStatic
-    fun toString(element: ParadoxCsvHeader): String {
-        return "ParadoxCsvRowHeaderImpl(ROW_HEADER)"
-    }
-
     //endregion
 
     //region ParadoxCsvRow
@@ -42,11 +37,6 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Row
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxCsvRow): String {
-        return "ParadoxCsvRowImpl(ROW)"
     }
 
     //endregion
@@ -74,11 +64,6 @@ object ParadoxCsvPsiImplUtil {
         val newValue = value.quoteIfNecessary(extraChars = extraChars, blank = false)
         val newElement = ParadoxCsvElementFactory.createColumn(element.project, newValue)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxCsvColumn): String {
-        return "ParadoxCsvColumnImpl(COLUMN)"
     }
 
     //endregion

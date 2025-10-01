@@ -44,11 +44,6 @@ object ParadoxLocalisationPsiImplUtil {
         return PROPERTY_LIST
     }
 
-    @JvmStatic
-    fun toString(element: ParadoxLocalisationPropertyList): String {
-        return "ParadoxLocalisationPropertyList: ${element.locale?.name}"
-    }
-
     //endregion
 
     //region ParadoxLocalisationLocale
@@ -142,11 +137,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
         //name & category (localisation / synced_localisation) & gameType
         return another is ParadoxLocalisationProperty && element.localisationInfo?.equals(another.localisationInfo) == true
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxLocalisationProperty): String {
-        return "ParadoxLocalisationProperty: ${element.name}"
     }
 
     //endregion

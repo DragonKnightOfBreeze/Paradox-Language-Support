@@ -57,11 +57,6 @@ public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull String toString() {
-    return ParadoxScriptPsiImplUtil.toString(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }

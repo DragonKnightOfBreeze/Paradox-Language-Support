@@ -106,11 +106,6 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public @NotNull String toString() {
-    return ParadoxLocalisationPsiImplUtil.toString(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

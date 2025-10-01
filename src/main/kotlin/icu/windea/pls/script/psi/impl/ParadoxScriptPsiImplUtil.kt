@@ -94,11 +94,6 @@ object ParadoxScriptPsiImplUtil {
             && selectGameType(element) == selectGameType(another)
     }
 
-    @JvmStatic
-    fun toString(element: ParadoxScriptScriptedVariable): String {
-        return "ParadoxScriptScriptedVariable: ${element.name}"
-    }
-
     //endregion
 
     //region ParadoxScriptScriptedVariableName
@@ -201,11 +196,6 @@ object ParadoxScriptPsiImplUtil {
         return another is ParadoxScriptProperty && element.definitionInfo?.equals(another.definitionInfo) == true
     }
 
-    @JvmStatic
-    fun toString(element: ParadoxScriptProperty): String {
-        return "ParadoxScriptProperty: ${element.name}"
-    }
-
     //endregion
 
     //region ParadoxScriptPropertyKey
@@ -234,11 +224,6 @@ object ParadoxScriptPsiImplUtil {
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
         val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxScriptPropertyKey): String {
-        return "ParadoxScriptPropertyKey: ${element.value}"
     }
 
     //endregion
@@ -364,11 +349,6 @@ object ParadoxScriptPsiImplUtil {
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
         val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxScriptValue): String {
-        return "${element.javaClass.simpleName}: ${element.value}"
     }
 
     //endregion
@@ -666,7 +646,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     private fun isComponent(element: PsiElement): Boolean {
-        //允许混合value和property
         return element is ParadoxScriptScriptedVariable || element is ParadoxScriptMember || element is ParadoxScriptParameterCondition
     }
 
