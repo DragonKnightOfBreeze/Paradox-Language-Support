@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -45,7 +45,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         val element = findElement(file, offset) ?: return null
         when {
             element !is ParadoxScriptStringExpressionElement -> return null
-            element.isDefinitionRootKeyOrName() -> {
+            element.isDefinitionTypeKeyOrName() -> {
                 val definition = element.findParentDefinition() ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 val imageInfos = definitionInfo.images
@@ -96,7 +96,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         run {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionRootKeyOrName() -> {
+                sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
@@ -117,7 +117,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
         run {
             when {
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionRootKeyOrName() -> {
+                sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())

@@ -24,8 +24,6 @@ import icu.windea.pls.config.configGroup.extendedInlineScripts
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.extendedParameters
 import icu.windea.pls.config.configGroup.extendedScriptedVariables
-import icu.windea.pls.lang.matching.findFromPattern
-import icu.windea.pls.lang.matching.matchFromPattern
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -33,6 +31,8 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.modifier.modifierConfig
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.matching.matchFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -153,7 +153,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
 class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        //适用于封装变量的名字与引用，定义的顶层键、名字与引用，参数用法，以及脚本文件中的表达式
+        //适用于封装变量的名字与引用，定义的类型键、名字与引用，参数用法，以及脚本文件中的表达式
         //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
 
         val result = mutableSetOf<CwtConfig<*>>()
@@ -169,7 +169,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         }
 
         run r0@{
-            val element = ParadoxPsiFinder.findDefinition(file, offset) { BY_NAME or BY_ROOT_KEY or BY_REFERENCE } ?: return@r0
+            val element = ParadoxPsiFinder.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@r0
             val definition = element
             val definitionInfo = definition.definitionInfo ?: return@r0
             val definitionName = definitionInfo.name

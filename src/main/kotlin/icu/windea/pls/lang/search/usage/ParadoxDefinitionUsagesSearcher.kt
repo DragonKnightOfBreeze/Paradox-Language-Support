@@ -28,7 +28,8 @@ import kotlin.experimental.or
 /**
  * 定义的使用的查询。
  *
- * - 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字（rootKey）不一定是定义的名字（definitionName），需要特殊处理。
+ * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字被称为定义的类型键（typeKey），它不一定是定义的名字（definitionName）。
+ * 因此，这里需要特殊处理。
  */
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

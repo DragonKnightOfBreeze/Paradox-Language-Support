@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler()
@@ -53,7 +53,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
                 val element = findElement(file, editor.caretModel.offset)
                 val contextElement = when {
                     element == null -> null
-                    element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
+                    element.isDefinitionTypeKeyOrName() -> element.findParentDefinition()
                     else -> element
                 }
                 if (contextElement == null) return null

@@ -35,7 +35,7 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import java.util.*
 
 //com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -65,7 +65,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                 return GotoData(element, targets.distinct().toTypedArray(), emptyList())
             }
             element !is ParadoxScriptStringExpressionElement -> return null
-            element.isDefinitionRootKeyOrName() -> {
+            element.isDefinitionTypeKeyOrName() -> {
                 val definition = element.findParentDefinition() ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
                 val localisationInfos = definitionInfo.localisations
@@ -133,7 +133,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.3", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionRootKeyOrName() -> {
+                sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.chooseTitle.1", definitionName.escapeXml())
@@ -158,7 +158,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.3", name.escapeXml())
                 }
                 sourceElement !is ParadoxScriptStringExpressionElement -> {}
-                sourceElement.isDefinitionRootKeyOrName() -> {
+                sourceElement.isDefinitionTypeKeyOrName() -> {
                     val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
                     val definitionName = definitionInfo.name.or.anonymous()
                     return PlsBundle.message("script.goto.relatedLocalisations.findUsagesTitle.1", definitionName.escapeXml())

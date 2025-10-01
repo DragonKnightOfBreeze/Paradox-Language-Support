@@ -13,13 +13,13 @@ import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前目标的相关图片的动作。
  *
  * 支持的目标：
- * - 定义（来自顶级键或名字）
+ * - 定义（来自类型键或名字）
  * - 修正（来自对应的脚本表达式）
  */
 class GotoRelatedImagesAction : BaseCodeInsightAction() {
@@ -46,7 +46,7 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
         val isEnabled = when {
             element == null -> false
             element !is ParadoxScriptStringExpressionElement -> false
-            element.isDefinitionRootKeyOrName() -> true
+            element.isDefinitionTypeKeyOrName() -> true
             else -> ParadoxModifierManager.resolveModifier(element) != null
         }
         presentation.isEnabled = isEnabled

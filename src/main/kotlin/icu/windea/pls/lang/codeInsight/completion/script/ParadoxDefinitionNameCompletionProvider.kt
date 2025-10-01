@@ -94,10 +94,10 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val path = fileInfo.path
                 val elementPath = ParadoxExpressionPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
                 if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
-                val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() }
+                val typeKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, rootKeyPrefix)) continue
+                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     //需要考虑不指定子类型的情况
@@ -133,7 +133,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     //这里需要基于rootKey过滤结果
                     //排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
-                        .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.rootKey, true) }
+                        .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
                         .distinctByName()
                     ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }

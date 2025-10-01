@@ -130,7 +130,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                         dataStream.writeInt(subtypes.size)
                         subtypes.forEach { subtype -> dataStream.writeName(subtype) }
                     }
-                    dataStream.writeName(stub.rootKey)
+                    dataStream.writeName(stub.typeKey)
                     dataStream.writeName(stub.elementPath.path)
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
@@ -158,9 +158,9 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     if (definitionType.isEmpty()) return ParadoxScriptPropertyStub.createDummy(parentStub)
                     val definitionSubtypesSize = dataStream.readInt()
                     val definitionSubtypes = if (definitionSubtypesSize == -1) null else MutableList(definitionSubtypesSize) { dataStream.readNameString().orEmpty() }
-                    val rootKey = dataStream.readNameString().orEmpty()
+                    val typeKey = dataStream.readNameString().orEmpty()
                     val elementPath = dataStream.readNameString().orEmpty().let { ParadoxExpressionPath.resolve(it) }
-                    ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, rootKey, elementPath)
+                    ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
                 }
                 Flags.inlineScriptUsage -> {
                     val name = dataStream.readNameString().orEmpty()

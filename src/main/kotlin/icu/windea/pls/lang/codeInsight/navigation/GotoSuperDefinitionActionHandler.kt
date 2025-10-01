@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
     private fun findSuperDefinition(editor: Editor, file: PsiFile): ParadoxScriptDefinitionElement? {
         val offset = editor.caretModel.offset
-        val definition = ParadoxPsiFinder.findDefinition(file, offset) { BY_ROOT_KEY or BY_NAME or BY_REFERENCE } ?: return null
+        val definition = ParadoxPsiFinder.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return null
         return superDefinition

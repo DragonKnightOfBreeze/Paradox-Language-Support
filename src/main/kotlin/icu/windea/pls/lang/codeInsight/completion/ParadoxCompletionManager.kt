@@ -47,7 +47,6 @@ import icu.windea.pls.config.configGroup.localisationCommands
 import icu.windea.pls.config.configGroup.localisationLinks
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.configGroup.types
-import icu.windea.pls.config.matchFromPattern
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
@@ -82,6 +81,7 @@ import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.matching.matchFromPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -203,20 +203,19 @@ object ParadoxCompletionManager {
         context.configGroup = configGroup
     }
 
-    fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
-        if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
-        val rootKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
-        context.isKey = true
-        completeRootKey(context, result, elementPath, rootKeyPrefix)
-    }
-
     fun addKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
 
-        //仅提示不在定义声明中的rootKey
-        if (!configContext.isDefinitionOrMember()) return addRootKeyCompletions(memberElement, context, result)
+        //仅提示不在定义声明中的key（顶级键和类型键）
+        if (!configContext.isDefinitionOrMember()) {
+            val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+            if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
+            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
+            context.isKey = true
+            completeKey(context, result, elementPath, typeKeyPrefix)
+            return
+        }
 
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
@@ -381,11 +380,12 @@ object ParadoxCompletionManager {
 
     //region Base Completion Methods
 
-    fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath, rootKeyPrefix: Lazy<String?>) {
-        //从以下来源收集需要提示的key（不仅仅是特定类型的定义的rootKey）
-        //* skip_root_key
-        //* type_key_filter
-        //* type_key_prefix
+    fun completeKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath, rootKeyPrefix: Lazy<String?>) {
+        // 从以下来源收集需要提示的key（顶级键和类型键）
+        // - skip_root_key
+        // - type_key_filter
+        // - type_key_prefix
+
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
         val configGroup = context.configGroup ?: return

@@ -147,7 +147,7 @@ private class CwtTypeConfigImpl(
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
-    override val possibleRootKeys: Set<String> by lazy {
+    override val possibleTypeKeys: Set<String> by lazy {
         caseInsensitiveStringSet().apply {
             typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
             subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }

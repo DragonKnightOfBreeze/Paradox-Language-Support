@@ -13,6 +13,9 @@ import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or
 
+/**
+ * 本地化参数的使用的查询。
+ */
 class ParadoxLocalisationParameterUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch

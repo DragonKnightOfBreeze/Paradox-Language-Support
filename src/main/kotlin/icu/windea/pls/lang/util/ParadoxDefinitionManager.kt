@@ -118,10 +118,10 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
-        val rootKey = element.name.let { if (element is ParadoxScriptFile) it.substringBeforeLast('.') else it } // 如果是文件名，不要包含扩展名
+        val typeKey = element.name.let { if (element is ParadoxScriptFile) it.substringBeforeLast('.') else it } // 如果是文件名，不要包含扩展名
         if (element is ParadoxScriptProperty) {
-            if (rootKey.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
-            if (rootKey.isParameterized()) return null // 排除可能带参数的情况
+            if (typeKey.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
+            if (typeKey.isParameterized()) return null // 排除可能带参数的情况
         }
         val project = file.project
 
@@ -134,9 +134,9 @@ object ParadoxDefinitionManager {
         val elementPath = ParadoxExpressionPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
-        val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
-        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, rootKey, elementPath, gameType, configGroup)
+        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
+        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath, gameType, configGroup)
     }
 
 
@@ -150,9 +150,9 @@ object ParadoxDefinitionManager {
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.definitionSubtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
-        val rootKey = stub.rootKey
+        val typeKey = stub.typeKey
         val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, rootKey, elementPath, gameType, configGroup)
+        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath, gameType, configGroup)
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
@@ -177,13 +177,13 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
         elementPath: ParadoxExpressionPath,
-        rootKey: String,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String,
+        typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
         // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(element, config, null, elementPath, rootKey, rootKeyPrefix) }
+        return configs.find { config -> matchesType(element, config, null, elementPath, typeKey, typeKeyPrefix) }
     }
 
     fun getMatchedTypeConfig(
@@ -192,13 +192,13 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
         elementPath: ParadoxExpressionPath,
-        rootKey: String,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String,
+        typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
         // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(node, tree, config, null, elementPath, rootKey, rootKeyPrefix) }
+        return configs.find { config -> matchesType(node, tree, config, null, elementPath, typeKey, typeKeyPrefix) }
     }
 
     fun matchesType(
@@ -206,8 +206,8 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
-        rootKey: String?,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String?,
+        typeKeyPrefix: Lazy<String?>?
     ): Boolean {
         // 判断definition是否需要是scriptFile还是scriptProperty
         run {
@@ -218,7 +218,7 @@ object ParadoxDefinitionManager {
             }
         }
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, rootKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
         // 判断definition的propertyValue是否需要是block
@@ -245,8 +245,8 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
-        rootKey: String?,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String?,
+        typeKeyPrefix: Lazy<String?>?
     ): Boolean {
         // 判断definition是否需要是scriptFile还是scriptProperty
         run {
@@ -258,7 +258,7 @@ object ParadoxDefinitionManager {
             }
         }
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, rootKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
         // 判断definition的propertyValue是否需要是block
@@ -278,13 +278,13 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
-        rootKey: String?,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String?,
+        typeKeyPrefix: Lazy<String?>?
     ): Boolean {
         // 判断element是否需要是scriptFile还是scriptProperty
         if (typeConfig.typePerFile) return false
 
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, rootKey, rootKeyPrefix)
+        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
         if (fastResult == false) return fastResult
 
         return true
@@ -294,48 +294,47 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
-        rootKey: String?,
-        rootKeyPrefix: Lazy<String?>?
+        typeKey: String?,
+        typeKeyPrefix: Lazy<String?>?
     ): Boolean? {
         // 判断path是否匹配
         if (path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(typeConfig, path)) return false
         }
 
-        if (rootKey != null) {
+        if (typeKey != null) {
             // 如果选项starts_with存在，则要求type_key匹配这个前缀
             val startsWithConfig = typeConfig.startsWith
             if (!startsWithConfig.isNullOrEmpty()) {
-                val result = rootKey.startsWith(startsWithConfig)
+                val result = typeKey.startsWith(startsWithConfig)
                 if (!result) return false
             }
 
             // 如果type_key_regex存在，则要求type_key匹配
             val typeKeyRegexConfig = typeConfig.typeKeyRegex
             if (typeKeyRegexConfig != null) {
-                val result = typeKeyRegexConfig.matches(rootKey)
+                val result = typeKeyRegexConfig.matches(typeKey)
                 if (!result) return false
             }
 
             // 如果选项type_key_filter存在，则需要通过type_key进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-                val result = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
+                val result = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
                 if (!result) return false
             }
 
-            // 如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
+            // 如果name_field存在，则要求type_key必须是由type_key_filter指定的所有可能的type_key之一，或者没有指定任何type_key
             val nameFieldConfig = typeConfig.nameField
             if (nameFieldConfig != null) {
-                val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
+                val result = typeConfig.possibleTypeKeys.isEmpty() || typeConfig.possibleTypeKeys.contains(typeKey)
                 if (!result) return false
             }
         }
 
-        // 如果属性type_key_prefix存在，且有必要校验，则要求其与rootKeyPrefix必须一致（忽略大小写）
-        if (rootKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
-            val typeKeyPrefix = typeConfig.typeKeyPrefix
-            val result = typeKeyPrefix.equals(rootKeyPrefix.value, ignoreCase = true)
+        // 如果属性type_key_prefix存在，且有必要校验，则要求其与typeKeyPrefix必须一致（忽略大小写）
+        if (typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
+            val result = typeConfig.typeKeyPrefix.equals(typeKeyPrefix.value, ignoreCase = true)
             if (!result) return false
         }
 
@@ -359,13 +358,13 @@ object ParadoxDefinitionManager {
 
     fun matchesSubtype(
         element: ParadoxScriptDefinitionElement,
-        rootKey: String,
+        typeKey: String,
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>,
         configGroup: CwtConfigGroup,
         matchOptions: Int = ParadoxExpressionMatcher.Options.Default
     ): Boolean {
-        val fastResult = matchesSubtypeFast(rootKey, subtypeConfig, subtypeConfigs)
+        val fastResult = matchesSubtypeFast(typeKey, subtypeConfig, subtypeConfigs)
         if (fastResult != null) return fastResult
 
         // 根据config对property进行内容匹配
@@ -375,7 +374,7 @@ object ParadoxDefinitionManager {
     }
 
     fun matchesSubtypeFast(
-        rootKey: String,
+        typeKey: String,
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>
     ): Boolean? {
@@ -389,21 +388,21 @@ object ParadoxDefinitionManager {
         // 如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
         val startsWithConfig = subtypeConfig.startsWith
         if (!startsWithConfig.isNullOrEmpty()) {
-            val result = rootKey.startsWith(startsWithConfig, false)
+            val result = typeKey.startsWith(startsWithConfig, false)
             if (!result) return false
         }
 
         // 如果type_key_regex存在，则要求type_key匹配
         val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
         if (typeKeyRegexConfig != null) {
-            val result = typeKeyRegexConfig.matches(rootKey)
+            val result = typeKeyRegexConfig.matches(typeKey)
             if (!result) return false
         }
 
         // 如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
         if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-            val filterResult = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
+            val filterResult = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
             if (!filterResult) return false
         }
 
@@ -572,12 +571,12 @@ object ParadoxDefinitionManager {
         }
     }
 
-    fun resolveNameFromTypeConfig(element: ParadoxScriptDefinitionElement, rootKey: String, typeConfig: CwtTypeConfig): String {
+    fun resolveNameFromTypeConfig(element: ParadoxScriptDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
         return when {
-            // use root key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameFromFile -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // use root key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameField == null -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use type key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
             // force empty (aka anonymous)
             typeConfig.nameField == "" -> ""
             // from property value (which should be a string)
@@ -587,12 +586,12 @@ object ParadoxDefinitionManager {
         }
     }
 
-    fun resolveNameFromTypeConfig(node: LighterASTNode, tree: LighterAST, rootKey: String, typeConfig: CwtTypeConfig): String? {
+    fun resolveNameFromTypeConfig(node: LighterASTNode, tree: LighterAST, typeKey: String, typeConfig: CwtTypeConfig): String? {
         return when {
-            // use root key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameFromFile -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // use root key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameField == null -> rootKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
+            // use type key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
+            typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
             // force empty (aka anonymous)
             typeConfig.nameField == "" -> ""
             // from property value (which should be a string)

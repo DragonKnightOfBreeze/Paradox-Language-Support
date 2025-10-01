@@ -24,7 +24,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * @property definitionName 定义的名字。可以为空，表示匿名。可以为 null，表示需延后解析。
      * @property definitionType 定义的类型。
      * @property definitionSubtypes 定义的子类型。可以为 null，表示需延后解析。
-     * @property rootKey 定义的顶级键名。等同于 [ParadoxScriptPropertyStub.name]。
+     * @property typeKey 定义的类型键。等同于 [ParadoxScriptPropertyStub.name]。
      * @property elementPath 定义的元素路径（不含参数）。
      *
      */
@@ -32,7 +32,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         val definitionName: String?
         val definitionType: String
         val definitionSubtypes: List<String>?
-        val rootKey: String
+        val typeKey: String
         val elementPath: ParadoxExpressionPath
     }
 
@@ -85,10 +85,10 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionName: String?,
         override val definitionType: String,
         override val definitionSubtypes: List<String>?,
-        override val rootKey: String,
+        override val typeKey: String,
         override val elementPath: ParadoxExpressionPath,
     ) : Base(parent), Definition {
-        override val name get() = rootKey
+        override val name get() = typeKey
 
         override fun toString(): String {
             return "ParadoxScriptPropertyStub.Definition(name=$definitionName, type=$definitionType, gameType=$gameType)"
@@ -133,10 +133,10 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             definitionName: String?,
             definitionType: String,
             definitionSubtypes: List<String>?,
-            rootKey: String,
+            typeKey: String,
             elementPath: ParadoxExpressionPath,
         ): Definition {
-            return DefinitionImpl(parent, definitionName, definitionType, definitionSubtypes, rootKey, elementPath)
+            return DefinitionImpl(parent, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
         }
 
         fun createInlineScriptUsage(

@@ -12,7 +12,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
  * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
@@ -42,7 +42,7 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
         val element = findElement(file, offset)
         val isEnabled = when {
             element == null -> false
-            element.isDefinitionRootKeyOrName() -> true
+            element.isDefinitionTypeKeyOrName() -> true
             else -> false
         }
         presentation.isEnabled = isEnabled

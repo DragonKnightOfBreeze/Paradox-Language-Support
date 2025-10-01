@@ -28,7 +28,7 @@ import icu.windea.pls.model.ParadoxScopeContext
  * ```
  *
  * @property name 名称（分组名）。
- * @property values 分组内的作用域 ID 集合（大小写不敏感）。
+ * @property values 分组内的作用域 ID 集合（忽略大小写）。
  * @property valueConfigMap 每个作用域 ID 到其原始值规则的映射。
  *
  * @see ParadoxScope

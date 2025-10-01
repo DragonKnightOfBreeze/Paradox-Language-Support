@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionName
-import icu.windea.pls.script.psi.isDefinitionRootKey
+import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
 
 /**
@@ -76,7 +76,7 @@ object ParadoxPsiFinder {
 
     object DefinitionOptions {
         const val DEFAULT = 0x01
-        const val BY_ROOT_KEY = 0x02
+        const val BY_TYPE_KEY = 0x02
         const val BY_NAME = 0x04
         const val BY_REFERENCE = 0x08
     }
@@ -105,9 +105,9 @@ object ParadoxPsiFinder {
             }
             if (result != null) return result
         } else {
-            if (BitUtil.isSet(options, DefinitionOptions.BY_ROOT_KEY)) {
+            if (BitUtil.isSet(options, DefinitionOptions.BY_TYPE_KEY)) {
                 val element = expressionElement
-                if (element is ParadoxScriptPropertyKey && element.isDefinitionRootKey()) {
+                if (element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) {
                     return element.findParentDefinition()
                 }
             }

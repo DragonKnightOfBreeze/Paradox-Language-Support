@@ -321,19 +321,18 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     }
 
     /**
-     * 类型键过滤器（type_key_filter）。
+     * 类型键的过滤器（包含/排除，忽略大小写）。
      *
-     * 用于 `type[...]` 与 `subtype[...]` 的候选过滤，值可为单个或列表。忽略大小写。
-     * 分隔符决定“正/反”含义：`=` 为包含、`!=`（或 `<>`）为排除。
+     * 要求类型键必须匹配可选值，可以取反，可以指定多个可选值。
      *
      * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
      *
-     * CWTools 兼容性：兼容。PLS 在实现层面进行了大小写与集合优化。
+     * CWTools 兼容性：兼容。
      *
      * 示例：
      * ```cwt
      * ## type_key_filter = country_event
-     * ## type_key_filter = { ship country }
+     * ## type_key_filter <> { ship country }
      * ```
      */
     val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<String>>?> by create {
@@ -346,7 +345,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     }
 
     /**
-     * 类型键正则过滤器（忽略大小写）。
+     * 类型键的正则过滤器（忽略大小写）。
      *
      * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
      *
@@ -359,9 +358,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     }
 
     /**
-     * 名称前缀要求（大小写敏感）。
+     * 类型键的前缀要求（忽略大小写）。
      *
-     * 限定类型/子类型键必须以指定前缀开头。PLS 不做大小写归一化，按字面匹配。
+     * 要求类型键必须以指定前缀开始。
      *
      * 适用对象：类型规则（[CwtTypeConfig]）与子类型规则（[CwtSubtypeConfig]）。
      *
@@ -370,7 +369,6 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
      * 示例：`## starts_with = ship_`
      */
     val startsWith: CwtOptionDataAccessor<String?> by create {
-        // 不忽略大小写
         findOption("starts_with")?.stringValue
     }
 

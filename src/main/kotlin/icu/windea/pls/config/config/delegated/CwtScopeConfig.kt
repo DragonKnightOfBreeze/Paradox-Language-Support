@@ -25,7 +25,7 @@ import icu.windea.pls.model.ParadoxScopeContext
  * ```
  *
  * @property name 规则名称。
- * @property aliases 该作用域的别名集合（大小写不敏感）。
+ * @property aliases 该作用域的别名集合（忽略大小写）。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext

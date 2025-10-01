@@ -65,8 +65,8 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
     private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation {
         val presentations: MutableList<InlayPresentation> = mutableListOf()
         val name = definitionInfo.name
-        //如果definitionName和rootKey相同，则省略definitionName
-        if (name.equals(definitionInfo.rootKey, true)) {
+        // 如果定义名等同于类型键，则省略定义名
+        if (name.equals(definitionInfo.typeKey, true)) {
             presentations.add(smallText(": "))
         } else {
             presentations.add(smallText("$name: "))

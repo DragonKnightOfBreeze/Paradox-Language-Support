@@ -23,7 +23,7 @@ import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.isDefinitionRootKeyOrName
+import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import java.util.*
 
 class GotoDefinitionsHandler : GotoTargetHandler() {
@@ -35,7 +35,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        if (!element.isDefinitionRootKeyOrName()) return null
+        if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = element.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())

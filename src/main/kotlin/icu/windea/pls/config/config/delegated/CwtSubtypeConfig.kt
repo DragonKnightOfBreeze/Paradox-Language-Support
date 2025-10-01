@@ -32,7 +32,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * ```
  *
  * @property name 子类型名。
- * @property typeKeyFilter 类型键过滤器（包含/排除，大小写不敏感）。
+ * @property typeKeyFilter 类型键过滤器（包含/排除，忽略大小写）。
  * @property typeKeyRegex 类型键正则过滤器（忽略大小写）。
  * @property startsWith 类型键前缀要求（大小写敏感与否取决于实现，这里按字面匹配）。
  * @property onlyIfNot 排除名单：名称不在集合内才匹配。

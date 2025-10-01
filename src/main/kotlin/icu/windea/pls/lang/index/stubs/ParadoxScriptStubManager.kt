@@ -84,19 +84,19 @@ object ParadoxScriptStubManager {
 
     private fun createDefinitionStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
         // 定义的名字可以为空
-        val rootKey = name
+        val typeKey = name
         val definitionInfo = psi.definitionInfo ?: return null
         val definitionName = definitionInfo.name // NOTE 这里不处理需要内联的情况
         val definitionType = definitionInfo.type
         if (definitionType.isEmpty()) return null
         val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(definitionInfo) // 如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, rootKey, elementPath)
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
     }
 
     private fun createDefinitionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
         // 定义的名字可以为空
-        val rootKey = name
+        val typeKey = name
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
@@ -107,24 +107,24 @@ object ParadoxScriptStubManager {
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
         if (elementPath == null) return null
-        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
-        val typeConfig = ParadoxDefinitionManager.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix) ?: return null
-        val definitionName = ParadoxDefinitionManager.resolveNameFromTypeConfig(node, tree, rootKey, typeConfig) // NOTE 这里不处理需要内联的情况
+        val typeKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
+        val typeConfig = ParadoxDefinitionManager.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        val definitionName = ParadoxDefinitionManager.resolveNameFromTypeConfig(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
-        val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) // 如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, rootKey, elementPath)
+        val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, typeKey) // 如果无法在索引时获取，之后再懒加载
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
     }
 
     private fun getSubtypesWhenCreateDefinitionStub(definitionInfo: ParadoxDefinitionInfo): List<String>? {
         return runCatchingCancelable { definitionInfo.subtypes }.getOrNull()
     }
 
-    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String): List<String>? {
+    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, typeKey: String): List<String>? {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxDefinitionManager.matchesSubtypeFast(rootKey, subtypeConfig, result) ?: return null) {
+            if (ParadoxDefinitionManager.matchesSubtypeFast(typeKey, subtypeConfig, result) ?: return null) {
                 result.add(subtypeConfig)
             }
         }

@@ -25,8 +25,8 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）
- * @property rootKey 定义的顶级键名。（注意：不一定是定义的名字）
+ * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。
+ * @property typeKey 定义的类型键（不一定是定义的名字）。
  * @property elementPath 相对于所属文件的定义成员路径。
  */
 class ParadoxDefinitionInfo(
@@ -34,7 +34,7 @@ class ParadoxDefinitionInfo(
     val typeConfig: CwtTypeConfig,
     name0: String?, // null -> lazy get
     subtypeConfigs0: List<CwtSubtypeConfig>?, //null -> lazy get
-    val rootKey: String,
+    val typeKey: String,
     val elementPath: ParadoxExpressionPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
@@ -42,7 +42,7 @@ class ParadoxDefinitionInfo(
     // NOTE 部分属性需要使用懒加载
 
     // NOTE 这里不处理需要内联的情况
-    val name: String by lazy { name0 ?: ParadoxDefinitionManager.resolveNameFromTypeConfig(element, rootKey, typeConfig) }
+    val name: String by lazy { name0 ?: ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig) }
 
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
 
@@ -88,7 +88,7 @@ class ParadoxDefinitionInfo(
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxDefinitionManager.matchesSubtype(element, rootKey, subtypeConfig, result, configGroup, matchOptions)) {
+            if (ParadoxDefinitionManager.matchesSubtype(element, typeKey, subtypeConfig, result, configGroup, matchOptions)) {
                 result.add(subtypeConfig)
             }
         }
