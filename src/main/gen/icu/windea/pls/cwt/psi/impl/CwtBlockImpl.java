@@ -87,13 +87,8 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
   }
 
   @Override
-  public boolean isEmpty() {
-    return CwtPsiImplUtil.isEmpty(this);
-  }
-
-  @Override
-  public boolean isNotEmpty() {
-    return CwtPsiImplUtil.isNotEmpty(this);
+  public @NotNull List<@NotNull CwtMember> getMemberList() {
+    return CwtPsiImplUtil.getMemberList(this);
   }
 
   @Override

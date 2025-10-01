@@ -36,9 +36,7 @@ public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
 
   @NotNull CwtValue setValue(@NotNull String value);
 
-  boolean isEmpty();
-
-  boolean isNotEmpty();
+  @NotNull List<@NotNull CwtMember> getMemberList();
 
   @NotNull List<@NotNull PsiElement> getComponents();
 
