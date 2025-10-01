@@ -16,7 +16,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %{
     private ParadoxGameType gameType;
 
-    // TODO 1.4.2+ 这里的状态栈处理可能有些问题，不过除非对于存在语法错误的场景，否则问题应当不大
+    // NOTE: 修复彩色文本状态栈：在遇到 '§' 时入栈当前状态，'§!' 时出栈，确保在嵌套场景中能正确恢复至之前状态
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
@@ -68,7 +68,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private boolean isColorfulText() {
         if (yylength() <= 1) return false;
-        return isExactWord(yycharat(1)); // exact letter after prefix
+        return isExactWord(yycharat(1)); // exact word after prefix
     }
 
     private IElementType checkColorfulText() {
@@ -86,7 +86,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private boolean isCommand() {
         if (yylength() <= 1) return false;
-        return yycharat(yylength() - 1) != '['; // not double quote
+        return yycharat(yylength() - 1) != '['; // not double brackets
     }
 
     private IElementType checkCommand() {
@@ -222,7 +222,7 @@ TEXT_ICON_TOKEN=\w+
 %%
 
 <YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
@@ -252,7 +252,7 @@ TEXT_ICON_TOKEN=\w+
     {COLORFUL_TEXT_CHECK} { return checkColorfulText(); }
 }
 <IN_COLOR_ID>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
 
     {COLOR_TOKEN} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
@@ -265,7 +265,7 @@ TEXT_ICON_TOKEN=\w+
     {PARAMETER_CHECK} { return checkParameter(); }
 }
 <IN_PARAMETER>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
@@ -275,7 +275,7 @@ TEXT_ICON_TOKEN=\w+
     {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
 }
 <IN_PARAMETER_ARGUMENT>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
@@ -298,16 +298,16 @@ TEXT_ICON_TOKEN=\w+
 }
 <IN_COMMAND>{
     . {
-                if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
-                    yybegin(IN_CONCEPT_NAME);
-                    return LEFT_SINGLE_QUOTE;
-                }
-                yypushback(1);
-                yybegin(IN_COMMAND_TEXT);
-            }
+        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
+            yybegin(IN_CONCEPT_NAME);
+            return LEFT_SINGLE_QUOTE;
+        }
+        yypushback(1);
+        yybegin(IN_COMMAND_TEXT);
+    }
 }
 <IN_COMMAND_TEXT>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
@@ -317,7 +317,7 @@ TEXT_ICON_TOKEN=\w+
     {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
 }
 <IN_COMMAND_ARGUMENT>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
@@ -331,7 +331,7 @@ TEXT_ICON_TOKEN=\w+
     {ICON_CHECK} { return checkIcon(); }
 }
 <IN_ICON>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
@@ -341,7 +341,7 @@ TEXT_ICON_TOKEN=\w+
     {ICON_TOKEN} { return ICON_TOKEN; }
 }
 <IN_ICON_ARGUMENT>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
@@ -353,7 +353,7 @@ TEXT_ICON_TOKEN=\w+
 // [stellaris] localisation concept command rules (as special command rules)
 
 <IN_CONCEPT_NAME> {
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
 
@@ -376,10 +376,10 @@ TEXT_ICON_TOKEN=\w+
     {TEXT_FORMAT_CHECK} { return checkTextFormat(); }
 }
 <IN_TEXT_FORMAT_ID> {
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
-    "[" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
+    "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
     "#!" { beginNextState(); return TEXT_FORMAT_END; }
@@ -396,7 +396,7 @@ TEXT_ICON_TOKEN=\w+
     {TEXT_ICON_CHECK} { return checkTextIcon(); }
 }
 <IN_TEXT_ICON>{
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
