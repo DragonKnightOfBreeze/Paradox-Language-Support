@@ -13,6 +13,7 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -22,7 +23,6 @@ import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeLinkNod
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxValueFieldNode
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter

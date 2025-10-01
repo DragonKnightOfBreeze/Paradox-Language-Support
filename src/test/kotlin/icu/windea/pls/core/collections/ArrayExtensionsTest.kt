@@ -1,8 +1,6 @@
 package icu.windea.pls.core.collections
 
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
+import org.junit.Assert.*
 import org.junit.Test
 
 class ArrayExtensionsTest {

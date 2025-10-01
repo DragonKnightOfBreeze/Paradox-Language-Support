@@ -51,6 +51,9 @@ import icu.windea.pls.ep.scope.ParadoxDynamicValueScopeContextProvider
 import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxCommandFieldNode
@@ -74,9 +77,6 @@ import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeLinkPre
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.ParadoxScope
 import icu.windea.pls.model.ParadoxScopeContext

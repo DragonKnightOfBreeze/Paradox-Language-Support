@@ -9,6 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxDynamicValueExpression
@@ -17,7 +18,6 @@ import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpressi
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

@@ -35,11 +35,11 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.documentation.appendBr
 import icu.windea.pls.lang.documentation.appendIndent
 import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.processQueryAsync
 import icu.windea.pls.lang.search.selector.contextSensitive

@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.optimized
@@ -23,6 +22,7 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType

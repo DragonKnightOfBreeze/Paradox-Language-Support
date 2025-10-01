@@ -3,8 +3,7 @@ package icu.windea.pls.core.coroutines
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
+import org.junit.Assert.*
 import org.junit.Test
 
 class FlowExtensionsTest {

@@ -6,12 +6,6 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDatabaseObjectDataSourceNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -25,6 +19,12 @@ import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDatabaseObjectDataSourceNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDynamicValueNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

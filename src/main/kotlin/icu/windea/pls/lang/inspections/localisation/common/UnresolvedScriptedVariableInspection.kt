@@ -22,8 +22,8 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
 import icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableDialog
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
 import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches

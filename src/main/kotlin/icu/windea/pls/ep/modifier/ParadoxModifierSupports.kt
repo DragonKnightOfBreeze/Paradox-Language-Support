@@ -49,9 +49,9 @@ import icu.windea.pls.lang.documentation.appendBr
 import icu.windea.pls.lang.documentation.appendIndent
 import icu.windea.pls.lang.documentation.appendPsiLink
 import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxTemplateSnippetNode
-import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition

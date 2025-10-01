@@ -18,14 +18,14 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
+import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxVariableFieldExpression
-import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager

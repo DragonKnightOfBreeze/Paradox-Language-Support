@@ -63,8 +63,8 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.model.ReferenceLinkType

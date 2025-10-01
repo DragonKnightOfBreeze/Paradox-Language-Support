@@ -14,8 +14,8 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement

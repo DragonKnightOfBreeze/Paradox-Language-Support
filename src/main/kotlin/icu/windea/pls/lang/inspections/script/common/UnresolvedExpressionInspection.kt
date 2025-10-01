@@ -30,11 +30,11 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
