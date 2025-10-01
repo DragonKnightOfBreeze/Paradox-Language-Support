@@ -10,12 +10,12 @@ import icu.windea.pls.extension.diagram.left
 import icu.windea.pls.extension.diagram.right
 import java.awt.Dimension
 
-//com.intellij.diagram.components.DiagramNodeContainer
-//com.intellij.diagram.components.DiagramNodeBodyComponent
-//com.intellij.diagram.components.DiagramNodeItemComponent
+// com.intellij.diagram.components.DiagramNodeContainer
+// com.intellij.diagram.components.DiagramNodeBodyComponent
+// com.intellij.diagram.components.DiagramNodeItemComponent
 
 class DiagramNodeItemComponentEx : DiagramNodeItemComponent() {
-    //使用自定义组件时myLeft和myRight的宽度应当为0
+    // 使用自定义组件时myLeft和myRight的宽度应当为0
 
     @Suppress("UNCHECKED_CAST")
     override fun setUp(owner: DiagramNodeBodyComponent, builder: DiagramBuilder, node: DiagramNode<Any>, element: Any?, selected: Boolean) {

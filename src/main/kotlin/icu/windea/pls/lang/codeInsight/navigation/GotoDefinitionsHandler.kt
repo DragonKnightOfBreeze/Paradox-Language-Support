@@ -47,7 +47,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
                 targets.addAll(resolved)
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == definition } //remove current definition from targets
+        if (targets.isNotEmpty()) targets.removeIf { it == definition } // remove current definition from targets
         return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
     }
 

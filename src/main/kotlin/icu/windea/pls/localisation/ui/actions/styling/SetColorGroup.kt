@@ -9,7 +9,7 @@ import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxTextColorInfo
 
-//这里actions是基于project动态获取的，需要特殊处理
+// 这里actions是基于project动态获取的，需要特殊处理
 
 class SetColorGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

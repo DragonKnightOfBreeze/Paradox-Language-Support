@@ -27,9 +27,9 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxScriptString) {
-                //忽略可能包含参数的表达式
+                // 忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
-                //得到完全匹配的CWT规则
+                // 得到完全匹配的CWT规则
                 val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
                 val configExpression = config.configExpression
                 val dataType = configExpression.type

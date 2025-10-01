@@ -21,7 +21,7 @@ import kotlin.reflect.jvm.isAccessible
  */
 @InjectTarget("com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl")
 class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
-    //用于修复从IDEA 2023.2开始，按住Ctrl并点击参数（以及其他类似目标）后，无法查找其使用的问题
+    // 用于修复从IDEA 2023.2开始，按住Ctrl并点击参数（以及其他类似目标）后，无法查找其使用的问题
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun getNavigationTargets(project: Project, symbol: Symbol, returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {

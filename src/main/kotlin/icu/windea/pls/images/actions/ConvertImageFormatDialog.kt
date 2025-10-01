@@ -26,7 +26,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
 
-//com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
+// com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 
 class ConvertImageFormatDialog(
     private val files: List<PsiFile>,
@@ -50,9 +50,9 @@ class ConvertImageFormatDialog(
         init()
     }
 
-    //（信息标签）
-    //（输入框）文件名
-    //（文件路径输入框）目标目录
+    // （信息标签）
+    // （输入框）文件名
+    // （文件路径输入框）目标目录
 
     override fun createCenterPanel() = panel {
         row {

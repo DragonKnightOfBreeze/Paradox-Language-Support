@@ -29,7 +29,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         return PlsBundle.message("create.directory.completion.description")
     }
 
-    //基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
+    // 基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
 
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
         if (DumbService.isDumb(directory.project)) return emptySet()

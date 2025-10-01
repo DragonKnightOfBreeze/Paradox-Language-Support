@@ -53,7 +53,7 @@ interface ParadoxScriptExpressionSupport {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
 
-        //这里需要尝试避免SOE
+        // 这里需要尝试避免SOE
 
         fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             val gameType = config.configGroup.gameType

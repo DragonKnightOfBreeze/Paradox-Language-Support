@@ -13,6 +13,6 @@ object PlsConstants {
 
     const val dummyIdentifier = "windea"
 
-    //val eraseMarker = TextAttributes()
-    //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+    // val eraseMarker = TextAttributes()
+    // val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
 }

@@ -103,7 +103,7 @@ import icu.windea.pls.model.paths.CwtConfigPath
 object CwtConfigCompletionManager {
     object Keys : KeyRegistry()
 
-    //region Accessors
+    // region Accessors
 
     var ProcessingContext.expressionElement: CwtExpressionElement? by createKey(Keys)
     var ProcessingContext.containerElement: PsiElement? by createKey(Keys)
@@ -122,9 +122,9 @@ object CwtConfigCompletionManager {
     var ProcessingContext.isKeyOnly: Boolean by createKey(Keys) { false }
     var ProcessingContext.isValueOnly: Boolean by createKey(Keys) { false }
 
-    //endregion
+    // endregion
 
-    //region Predefined Lookup Elements
+    // region Predefined Lookup Elements
 
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
         .withPriority(CwtConfigCompletionPriorities.keyword)
@@ -147,9 +147,9 @@ object CwtConfigCompletionManager {
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
 
-    //endregion
+    // endregion
 
-    //region Core Methods
+    // region Core Methods
 
     fun initializeContext(contextElement: PsiElement, parameters: CompletionParameters, context: ProcessingContext): Boolean {
         val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile) ?: return false
@@ -287,7 +287,7 @@ object CwtConfigCompletionManager {
             configs.find { it is CwtPropertyConfig && it.valueType == CwtType.Block }?.also { filteredConfigs += it }
             filteredConfigs.forEach f@{ config ->
                 if (context.inOption) {
-                    //这个过滤条件并不是十分准确，未来可以考虑进一步优化
+                    // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.optionContainerIdToMatch != id && !id.contains('$')) return@f
                     completeByOptionConfigs(config, schema, context, result)
                 } else {
@@ -304,7 +304,7 @@ object CwtConfigCompletionManager {
                     val schemaExpression = CwtSchemaExpression.resolve(config.key)
                     completeBySchemaExpression(schemaExpression, schema, config, context, result)
                 } else if (context.isPropertyValue) {
-                    //这个过滤条件并不是十分准确，未来可以考虑进一步优化
+                    // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
                     if (config.valueType != CwtType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
@@ -354,7 +354,7 @@ object CwtConfigCompletionManager {
                     val schemaExpression = CwtSchemaExpression.resolve(config.key)
                     completeBySchemaExpression(schemaExpression, schema, config, context, result)
                 } else if (context.isOptionValue) {
-                    //这个过滤条件并不是十分准确，未来可以考虑进一步优化
+                    // 这个过滤条件并不是十分准确，未来可以考虑进一步优化
                     if (context.keyToMatch != config.key && !config.key.contains('$')) return
                     if (config.valueType != CwtType.Block) {
                         val schemaExpression = CwtSchemaExpression.resolve(config.value)
@@ -450,7 +450,7 @@ object CwtConfigCompletionManager {
                 if (typeName == "any") {
                     processor.process(blockLookupElement)
                 }
-                //TODO 1.3.19+
+                // TODO 1.3.19+
                 true
             }
             is CwtSchemaExpression.Constraint -> true
@@ -501,7 +501,7 @@ object CwtConfigCompletionManager {
                     return processor.process(lookupElement)
                 }
 
-                //currently only calculate from configs
+                // currently only calculate from configs
                 when (templateExpression.name) {
                     "system_scope" -> {
                         val finalConfigs = configGroup.systemScopes
@@ -553,7 +553,7 @@ object CwtConfigCompletionManager {
                         finalConfigs.process { (n, c) -> processLookupElement(n, c) }
                     }
                     "scope" -> {
-                        true //no completion yet
+                        true // no completion yet
                     }
                     "localisation_link" -> {
                         val finalConfigs = configGroup.localisationLinks
@@ -672,7 +672,7 @@ object CwtConfigCompletionManager {
         }
         lookupElement = lookupElement.withTailText(tailText, true)
 
-        if (context.isKeyOnly || context.isValueOnly) { //key or value only
+        if (context.isKeyOnly || context.isValueOnly) { // key or value only
             lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context) }
         }
         if (isKeyConfig && context.isKey && !context.isKeyOnly) { // key with value
@@ -696,18 +696,18 @@ object CwtConfigCompletionManager {
     }
 
     private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext) {
-        //这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
-        //这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
+        // 这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
+        // 这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
         if (!context.quoted) return
         val editor = c.editor
         val caretOffset = editor.caretModel.offset
         val charsSequence = editor.document.charsSequence
         val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
         if (rightQuoted) {
-            //在必要时将光标移到右双引号之后
+            // 在必要时将光标移到右双引号之后
             editor.caretModel.moveToOffset(caretOffset + 1)
         } else {
-            //插入缺失的右双引号，且在必要时将光标移到右双引号之后
+            // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
             EditorModificationUtil.insertStringAtCaret(editor, "\"", false, true)
         }
     }
@@ -766,5 +766,5 @@ object CwtConfigCompletionManager {
         }
     }
 
-    //endregion
+    // endregion
 }

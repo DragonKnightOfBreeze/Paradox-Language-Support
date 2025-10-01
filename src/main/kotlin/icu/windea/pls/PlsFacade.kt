@@ -28,7 +28,7 @@ import kotlinx.coroutines.CoroutineScope
  * 通用门面，用于获取协程作用域、各种服务以及各种插件设置。
  */
 object PlsFacade {
-    //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
+    // from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
     @Service(Service.Level.PROJECT)
     private class ProjectService(val coroutineScope: CoroutineScope)

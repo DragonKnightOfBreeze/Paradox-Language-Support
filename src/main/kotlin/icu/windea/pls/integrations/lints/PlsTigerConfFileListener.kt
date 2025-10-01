@@ -20,7 +20,7 @@ import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
  */
 class PlsTigerConfFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {
-        //仅检查配置文件的文件名是否匹配
+        // 仅检查配置文件的文件名是否匹配
 
         val enabledTools = PlsLintToolProvider.EP_NAME.extensionList.filterIsInstance<PlsTigerLintToolProvider> { it.isEnabled() }
         if (enabledTools.isEmpty()) return null

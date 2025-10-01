@@ -61,7 +61,7 @@ data class ParadoxLocalisationContext(
                 }
 
                 private fun checkString(s: String): Boolean {
-                    //存在任意非空白、非数字的字符
+                    // 存在任意非空白、非数字的字符
                     return s.any { !it.isWhitespace() || !it.isExactDigit() }
                 }
             })

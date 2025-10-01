@@ -102,7 +102,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 if (messages.isEmpty()) return
                 val fixes = getFixes(element, context).toTypedArray()
                 for (message in messages) {
-                    //显示为WEAK_WARNING
+                    // 显示为WEAK_WARNING
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
                 }
             }
@@ -148,18 +148,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         lateinit var checkGeneratedModifiersForDefinitionsCb: Cell<JBCheckBox>
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
-            //checkForPreferredLocale
+            // checkForPreferredLocale
             row {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale)
                     .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
                 cell(ActionLink(PlsBundle.message("configure")) {
-                    //ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
+                    // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
                 })
             }
-            //checkForSpecificLocales
+            // checkForSpecificLocales
             row {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales)
@@ -172,11 +172,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet
-                        cb.text = locales //通知UI locales 已经被更改
+                        cb.text = locales // 通知UI locales 已经被更改
                     }
                 })
             }
-            //checkForDefinitions
+            // checkForDefinitions
             row {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions)
@@ -184,20 +184,20 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .also { checkForDefinitionsCb = it }
             }
             indent {
-                //checkRequiredForDefinitions
+                // checkRequiredForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
-                //checkPrimaryForDefinitions
+                // checkPrimaryForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions)
                         .actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
-                //checkOptionalForDefinitions
+                // checkOptionalForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkOptionalForDefinitions")).apply {
                         bindSelected(::checkOptionalForDefinitions)
@@ -205,7 +205,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             .enabledIf(checkForDefinitionsCb.selected)
                     }
                 }
-                //checkGeneratedModifiersForDefinitions
+                // checkGeneratedModifiersForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
                         .bindSelected(::checkGeneratedModifiersForDefinitions)
@@ -214,7 +214,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
                 indent {
-                    //checkGeneratedModifierNamesForDefinitions
+                    // checkGeneratedModifierNamesForDefinitions
                     row {
                         checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierNamesForDefinitions)
@@ -222,7 +222,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                                 .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
                         }
                     }
-                    //checkGeneratedModifierDescriptionsForDefinitions
+                    // checkGeneratedModifierDescriptionsForDefinitions
                     row {
                         checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
                             bindSelected(::checkGeneratedModifierDescriptionsForDefinitions)
@@ -232,7 +232,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     }
                 }
             }
-            //checkForModifiers
+            // checkForModifiers
             row {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers)
@@ -240,14 +240,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     .also { checkForModifiersCb = it }
             }
             indent {
-                //checkModifierNames
+                // checkModifierNames
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierNames"))
                         .bindSelected(::checkModifierNames)
                         .actionListener { _, component -> checkModifierNames = component.isSelected }
                         .enabledIf(checkForModifiersCb.selected)
                 }
-                //checkModifierDescriptions
+                // checkModifierDescriptions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkModifierDescriptions"))
                         .bindSelected(::checkModifierDescriptions)

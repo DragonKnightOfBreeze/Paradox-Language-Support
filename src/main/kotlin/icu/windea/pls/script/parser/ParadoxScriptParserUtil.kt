@@ -11,8 +11,8 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun postProcessFirstSnippet(b: PsiBuilder, l: Int): Boolean {
-        //compact format is allowed, e.g., k1 = "v1"k2 = v2
-        //a token should not be parsed to a value when with a trailing separator
+        // compact format is allowed, e.g., k1 = "v1"k2 = v2
+        // a token should not be parsed to a value when with a trailing separator
         var s = -1
         var end = false
         while (true) {
@@ -31,8 +31,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun processSnippet(b: PsiBuilder, l: Int): Boolean {
-        //interrupt parsing when contains whitespaces or comments
-        //also for continuous literals
+        // interrupt parsing when contains whitespaces or comments
+        // also for continuous literals
         val t = b.rawLookup(-1)
         when {
             t in TokenSets.BREAK_SNIPPET_TYPES -> return false
@@ -46,8 +46,8 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun processInlineParameterCondition(b: PsiBuilder, l: Int): Boolean {
-        //interrupt parsing when contains whitespaces or comments
-        //also must not be alone in whole template expression
+        // interrupt parsing when contains whitespaces or comments
+        // also must not be alone in whole template expression
         var i = 1
         var n = 1
         while (true) {
@@ -67,7 +67,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun processInlineParameterConditionItem(b: PsiBuilder, l: Int): Boolean {
-        //remapping token types to ARGUMENT_TOKEN for inline parameter condition items
+        // remapping token types to ARGUMENT_TOKEN for inline parameter condition items
         if (b !is Builder) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
             if (t in TokenSets.SNIPPET_TYPES) return@m ARGUMENT_TOKEN
@@ -78,7 +78,7 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun postProcessInlineParameterConditionItem(b: PsiBuilder, l: Int): Boolean {
-        //reset remapping
+        // reset remapping
         if (b !is Builder) return true
         b.setTokenTypeRemapper(null)
         return true

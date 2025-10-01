@@ -15,7 +15,7 @@ class ParadoxLocalisationLocaleGroup(
     localisationLocale: ParadoxLocalisationLocale,
     private val usageViewSettings: UsageViewSettings
 ) : UsageGroup {
-    //com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
+    // com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
 
     private val _name = localisationLocale.name
     private val _icon = localisationLocale.icon
@@ -53,7 +53,7 @@ class ParadoxLocalisationLocaleGroup(
 
     override fun compareTo(other: UsageGroup?): Int {
         if (other !is ParadoxLocalisationLocaleGroup) {
-            return -1 //不期望的结果
+            return -1 // 不期望的结果
         } else if (SmartPointerManager.getInstance(_project).pointToTheSameElement(_pointer, other._pointer)) {
             return 0
         } else if (!usageViewSettings.isSortAlphabetically) {

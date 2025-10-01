@@ -228,7 +228,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        if (element.text.isLeftQuoted()) return null //inline string
+        if (element.text.isLeftQuoted()) return null // inline string
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
@@ -236,7 +236,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        if (element.text.isLeftQuoted()) return emptySet() //specific expression
+        if (element.text.isLeftQuoted()) return emptySet() // specific expression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -270,7 +270,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expressionText.toVirtualFile(false)?.toPsiFile(project)
         } else {
-            //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            // if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
             val selector = selector(project, element).file().contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).find()?.toPsiFile(project)
@@ -284,7 +284,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
             return expressionText.toVirtualFile(false)?.toPsiFile(project).singleton.setOrEmpty()
         } else {
-            //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
+            // if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()
             val selector = selector(project, element).file().contextSensitive()
             return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
@@ -320,21 +320,21 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
         val enumName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        //尝试解析为简单枚举
+        // 尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if (enumConfig != null) {
             return ParadoxExpressionManager.resolvePredefinedEnumValue(expressionText, enumName, configGroup)
         }
-        //尝试解析为复杂枚举
+        // 尝试解析为复杂枚举
         val complexEnumConfig = configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
             val searchScope = complexEnumConfig.searchScopeType
             val selector = selector(project, element).complexEnumValue()
                 .withSearchScopeType(searchScope)
-            //.contextSensitive(exact) //unnecessary
+            // .contextSensitive(exact) // unnecessary
             val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
             if (info != null) {
-                val readWriteAccess = ReadWriteAccessDetector.Access.Read //usage
+                val readWriteAccess = ReadWriteAccessDetector.Access.Read // usage
                 return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
             }
         }
@@ -425,8 +425,8 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
         if (annotated) return
         val configExpression = config.configExpression ?: return
         if (rangeInElement == null) {
-            if (element is ParadoxScriptPropertyKey && configExpression.isKey) return //unnecessary
-            if (element is ParadoxScriptString && !configExpression.isKey) return //unnecessary
+            if (element is ParadoxScriptPropertyKey && configExpression.isKey) return // unnecessary
+            if (element is ParadoxScriptString && !configExpression.isKey) return // unnecessary
         }
         val attributesKey = when {
             configExpression.isKey -> ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY

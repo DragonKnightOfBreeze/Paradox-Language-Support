@@ -17,7 +17,7 @@ import icu.windea.pls.lang.util.ParadoxParameterManager
  */
 class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        //对于定义声明中的`$PARAM$`引用和`[[PARAM] ... ]`引用
+        // 对于定义声明中的`$PARAM$`引用和`[[PARAM] ... ]`引用
         val tokenElement = parameters.position
         val element = tokenElement.parent
         val offsetInParent = parameters.offset - tokenElement.startOffset

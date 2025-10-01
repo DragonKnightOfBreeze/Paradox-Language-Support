@@ -16,7 +16,7 @@ class ParadoxDefinitionDeclarationRangeHandler : DeclarationRangeHandler<Paradox
         val valueElement = container.propertyValue ?: return null
         val startOffset = container.propertyKey.startOffset
         val endOffset = when {
-            valueElement is ParadoxScriptBlock -> valueElement.startOffset + 1 //包括" = {"
+            valueElement is ParadoxScriptBlock -> valueElement.startOffset + 1 // 包括" = {"
             else -> valueElement.startOffset
         }
         return TextRange.create(startOffset, endOffset)

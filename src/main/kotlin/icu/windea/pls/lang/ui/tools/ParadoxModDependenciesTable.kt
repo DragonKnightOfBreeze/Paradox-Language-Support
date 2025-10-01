@@ -57,7 +57,7 @@ class ParadoxModDependenciesTable(
     }
 
     companion object {
-        //com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
+        // com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
 
         @JvmStatic
         fun createPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
@@ -65,7 +65,7 @@ class ParadoxModDependenciesTable(
             val table = ParadoxModDependenciesTable(tableModel)
             table.setShowGrid(false)
 
-            //配置每一列
+            // 配置每一列
 
             val fontMetrics = table.getFontMetrics(table.font)
             val headerGap = JBUIScale.scale(20)
@@ -99,7 +99,7 @@ class ParadoxModDependenciesTable(
                 column.minWidth = columnWidth
             }
 
-            //快速搜索
+            // 快速搜索
 
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
@@ -108,7 +108,7 @@ class ParadoxModDependenciesTable(
                 modDescriptorSettings.name.orEmpty()
             }
 
-            //允许复制选中的内容
+            // 允许复制选中的内容
 
             table.registerCopyProvider(object : CopyProvider {
                 override fun getActionUpdateThread() = ActionUpdateThread.EDT
@@ -126,7 +126,7 @@ class ParadoxModDependenciesTable(
                 override fun isCopyVisible(dataContext: DataContext) = table.selectedRowCount > 0
             })
 
-            //双击打开模组依赖信息对话框
+            // 双击打开模组依赖信息对话框
 
             table.registerClickListener(object : DoubleClickListener() {
                 override fun onDoubleClick(event: MouseEvent): Boolean {
@@ -138,7 +138,7 @@ class ParadoxModDependenciesTable(
                 }
             })
 
-            //创建工具栏
+            // 创建工具栏
 
             val addButtonRunnable = ParadoxModDependenciesToolbarActions.AddAction(project, table)
             val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, table)
@@ -147,13 +147,13 @@ class ParadoxModDependenciesTable(
             val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, table)
             val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, table)
 
-            //这里我们需要保证排序正确（基于表格中的顺序）
-            //始终将模组放到自身的模组依赖列表中，其排序可以调整
-            //add, remove, move up, move down, edit, import, export
+            // 这里我们需要保证排序正确（基于表格中的顺序）
+            // 始终将模组放到自身的模组依赖列表中，其排序可以调整
+            // add, remove, move up, move down, edit, import, export
             val panel = ToolbarDecorator.createDecorator(table)
                 .setAddAction(addButtonRunnable)
                 .setRemoveActionUpdater updater@{
-                    //不允许移除模组自身对应的模组依赖配置
+                    // 不允许移除模组自身对应的模组依赖配置
                     val selectedRow = table.selectedRows.singleOrNull() ?: return@updater true
                     tableModel.canRemoveRow(table.convertRowIndexToModel(selectedRow))
                 }
@@ -166,7 +166,7 @@ class ParadoxModDependenciesTable(
             val addButton = ToolbarDecorator.findAddButton(panel)!!
             val removeButton = ToolbarDecorator.findRemoveButton(panel)!!
 
-            //右键弹出菜单，提供一些操作项
+            // 右键弹出菜单，提供一些操作项
             val actionGroup = DefaultActionGroup()
             actionGroup.addAction(addButton)
             actionGroup.addAction(removeButton)

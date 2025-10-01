@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.steamId
 
 class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
-    //仅限游戏或模组的根目录
+    // 仅限游戏或模组的根目录
 
     override fun getPathToElement(project: Project, virtualFile: VirtualFile?, editor: Editor?): String? {
         val fileInfo = virtualFile?.fileInfo ?: return null

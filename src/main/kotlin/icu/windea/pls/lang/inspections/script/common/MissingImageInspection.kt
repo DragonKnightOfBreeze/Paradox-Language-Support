@@ -73,7 +73,7 @@ class MissingImageInspection : LocalInspectionTool() {
                 val messages = getMessages(context)
                 if (messages.isEmpty()) return
                 for (message in messages) {
-                    //显示为WEAK_WARNING
+                    // 显示为WEAK_WARNING
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }
@@ -111,7 +111,7 @@ class MissingImageInspection : LocalInspectionTool() {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
-            //checkForDefinitions
+            // checkForDefinitions
             row {
                 checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForDefinitions"))
                     .bindSelected(::checkForDefinitions)
@@ -119,27 +119,27 @@ class MissingImageInspection : LocalInspectionTool() {
                     .also { checkForDefinitionsCb = it }
             }
             indent {
-                //checkRequiredForDefinitions
+                // checkRequiredForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkRequiredForDefinitions"))
                         .selected(true)
                         .enabled(false)
                 }
-                //checkPrimaryForDefinitions
+                // checkPrimaryForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkPrimaryForDefinitions"))
                         .bindSelected(::checkPrimaryForDefinitions)
                         .actionListener { _, component -> checkPrimaryForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
-                //checkOptionalForDefinitions
+                // checkOptionalForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkOptionalForDefinitions"))
                         .bindSelected(::checkOptionalForDefinitions)
                         .actionListener { _, component -> checkOptionalForDefinitions = component.isSelected }
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
-                //checkGeneratedModifierIconsForDefinitions
+                // checkGeneratedModifierIconsForDefinitions
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkGeneratedModifierIconsForDefinitions"))
                         .bindSelected(::checkGeneratedModifierIconsForDefinitions)
@@ -147,7 +147,7 @@ class MissingImageInspection : LocalInspectionTool() {
                         .enabledIf(checkForDefinitionsCb.selected)
                 }
             }
-            //checkForModifiers
+            // checkForModifiers
             row {
                 checkBox(PlsBundle.message("inspection.script.missingImage.option.checkForModifiers"))
                     .bindSelected(::checkForModifiers)
@@ -155,7 +155,7 @@ class MissingImageInspection : LocalInspectionTool() {
                     .also { checkForModifiersCb = it }
             }
             indent {
-                //checkModifierIcons
+                // checkModifierIcons
                 row {
                     checkBox(PlsBundle.message("inspection.script.missingImage.option.checkModifierIcons"))
                         .bindSelected(::checkModifierIcons)

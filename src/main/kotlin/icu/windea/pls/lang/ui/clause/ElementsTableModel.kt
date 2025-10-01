@@ -12,7 +12,7 @@ import javax.swing.DefaultCellEditor
 import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 
-//com.intellij.refactoring.changeSignature.ParameterTableModelBase
+// com.intellij.refactoring.changeSignature.ParameterTableModelBase
 
 class ElementsTableModel(
     val context: ElementsContext

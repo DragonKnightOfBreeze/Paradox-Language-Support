@@ -10,9 +10,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.model.ParadoxTextColorInfo
 
-//org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
-//org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction
-//org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
+// org.intellij.plugins.markdown.ui.actions.styling.MarkdownHeaderAction
+// org.intellij.plugins.markdown.ui.actions.styling.BaseToggleStateAction
+// org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
 class SetColorAction(
     val colorConfig: ParadoxTextColorInfo

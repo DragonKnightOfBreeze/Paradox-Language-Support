@@ -40,7 +40,7 @@ class ChainedParadoxSelector<T>(
         ParadoxSearchScope.fromFile(project, file) ?: ParadoxSearchScope.allScope(project, file)
     }
     val scope: GlobalSearchScope by lazy {
-        //NOTE 这里需要保证适用 ParadoxFileManager.canReference()
+        // NOTE 这里需要保证适用 ParadoxFileManager.canReference()
         val selectorScopes = selectors.filterIsInstance<ParadoxSearchScopeAwareSelector<*>>().mapNotNull { it.getGlobalSearchScope() }
         val mergedScope = when {
             selectorScopes.isEmpty() -> defaultScope
@@ -101,7 +101,7 @@ class ChainedParadoxSelector<T>(
 
     override fun keySelector(): Function<T, Any?>? {
         if (selectors.isEmpty()) return null
-        //use merged key selector
+        // use merged key selector
         val selectors = selectors.mapNotNull { s -> s.keySelector() }
         return when (selectors.size) {
             0 -> null
@@ -112,7 +112,7 @@ class ChainedParadoxSelector<T>(
 
     override fun comparator(): Comparator<T>? {
         if (selectors.isEmpty()) return null
-        //use merged comparator
+        // use merged comparator
         var comparator: Comparator<T>? = null
         selectors.forEach { selector ->
             comparator = comparator thenPossible selector.comparator()
@@ -121,7 +121,7 @@ class ChainedParadoxSelector<T>(
     }
 
     fun matchesGameType(result: T): Boolean {
-        //某些情况下，可以直接认为游戏类型是匹配的
+        // 某些情况下，可以直接认为游戏类型是匹配的
         val scope = scope
         if (scope is ParadoxSearchScope && scope.ensureMatchGameType()) return true
 

@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.ObjectMappers
 
 object PlsAiManager {
     fun getOptimizedDescription(description: String?): String? {
-        return description?.orNull()?.substringBefore('\n')?.trim() //去除首尾空白，且截断换行符之后的文本
+        return description?.orNull()?.substringBefore('\n')?.trim() // 去除首尾空白，且截断换行符之后的文本
     }
 
     fun getOptimizedErrorMessage(e: Throwable?): String? {

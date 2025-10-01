@@ -24,12 +24,12 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
-        //skip if text is a number
+        // skip if text is a number
         if (isNumber(text)) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
-        //skip if text is a parameter with unary operator prefix
+        // skip if text is a parameter with unary operator prefix
         if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(text, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -43,7 +43,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = text.indexOf('.', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex != -1 && text.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && text.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && text.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
@@ -57,7 +57,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
                 tokenIndex = textLength
                 isLast = true
             }
-            //resolve node
+            // resolve node
             val nodeText = text.substring(startIndex, tokenIndex)
             val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
@@ -65,7 +65,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
                 isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksOfVariable)
                 else -> ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
             }
-            //handle mismatch situation
+            // handle mismatch situation
             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
             if (dotNode != null) nodes += dotNode

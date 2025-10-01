@@ -10,7 +10,7 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
-//如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
+// 如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 
 /**
  * 在查找使用中，区分CWT规则符号的读写使用。
@@ -32,7 +32,7 @@ class CwtConfigReadWriteAccessDetector : ReadWriteAccessDetector() {
     }
 
     override fun getExpressionAccess(expression: PsiElement): Access {
-        //find usages use this method finally
+        // find usages use this method finally
         if (expression.language !is CwtLanguage) return Access.ReadWrite
         val results = mutableSetOf<Access>()
         for (reference in expression.references) {

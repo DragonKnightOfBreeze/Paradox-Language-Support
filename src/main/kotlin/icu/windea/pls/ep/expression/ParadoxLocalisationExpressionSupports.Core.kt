@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressionSupport {
     override fun supports(element: ParadoxExpressionElement): Boolean {
         return when (element) {
-            is ParadoxScriptExpressionElement -> false //NOTE 1.4.0 - unnecessary to support yet
+            is ParadoxScriptExpressionElement -> false // NOTE 1.4.0 - unnecessary to support yet
             is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
             else -> false
         }
@@ -50,7 +50,7 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressio
 class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationExpressionSupport {
     override fun supports(element: ParadoxExpressionElement): Boolean {
         return when (element) {
-            is ParadoxScriptExpressionElement -> false //NOTE 1.4.0 - unnecessary to support yet
+            is ParadoxScriptExpressionElement -> false // NOTE 1.4.0 - unnecessary to support yet
             is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression()
             else -> false
         }

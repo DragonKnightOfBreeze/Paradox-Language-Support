@@ -16,12 +16,12 @@ abstract class ParadoxDiagramElementManager(
     open val provider: ParadoxDiagramProvider
 ) : DiagramElementManagerEx<PsiElement>() {
     override fun findInDataContext(context: DataContext): PsiElement? {
-        //rootFile
+        // rootFile
         val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         val project = context.getData(CommonDataKeys.PROJECT) ?: return null
         val rootInfo = file.fileInfo?.rootInfo ?: return null
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (rootInfo.gameType != provider.gameType) return null //获取当前上下文的游戏类型，以确定可以提供哪些图表
+        if (rootInfo.gameType != provider.gameType) return null // 获取当前上下文的游戏类型，以确定可以提供哪些图表
         return file.toPsiFileSystemItem(project)
     }
 

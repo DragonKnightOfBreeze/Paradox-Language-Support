@@ -47,12 +47,12 @@ class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<Compl
         if (element is ParadoxScriptString) {
             if (!element.isBlockMember()) return
         } else if (element is ParadoxScriptPropertyKey) {
-            //if element is property key, related property value should be a string or clause (after resolving)
+            // if element is property key, related property value should be a string or clause (after resolving)
             val propertyValue = element.propertyValue
             if (propertyValue != null && propertyValue.resolved().let { it != null && it !is ParadoxScriptString && it !is ParadoxScriptBlock }) return
         }
 
-        //inline script invocation cannot be nested directly
+        // inline script invocation cannot be nested directly
         val configContext = ParadoxExpressionManager.getConfigContext(element)
         if (configContext != null && configContext.provider is InlineScriptUsageCwtConfigContextProvider) return
 

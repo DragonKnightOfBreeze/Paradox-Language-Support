@@ -27,7 +27,7 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Int -> {
                 val value = expressionText
-                val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) //empty value is allowed
+                val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) // empty value is allowed
                 if (!r) return Result.NotMatch
                 run {
                     val intRange = configExpression.intRange ?: return@run
@@ -38,7 +38,7 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Float -> {
                 val value = expressionText
-                val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) //empty value is allowed
+                val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) // empty value is allowed
                 if (!r) return Result.NotMatch
                 run {
                     val floatRange = configExpression.floatRange ?: return@run
@@ -48,7 +48,7 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
                 Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.Scalar -> {
-                Result.FallbackMatch //always match (fallback)
+                Result.FallbackMatch // always match (fallback)
             }
             else -> null
         }
@@ -61,7 +61,7 @@ class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
         val dataType = configExpression.type
         return when {
             dataType == CwtDataTypes.Definition -> {
-                //can be an int or float here (e.g., for <technology_tier>)
+                // can be an int or float here (e.g., for <technology_tier>)
                 val value = expressionText.unquote()
                 val valueType = ParadoxTypeResolver.resolve(value)
                 if (valueType != ParadoxType.String && valueType != ParadoxType.Int && valueType != ParadoxType.Float) return Result.NotMatch
@@ -70,17 +70,17 @@ class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             dataType == CwtDataTypes.EnumValue -> {
                 val value = expressionText.unquote()
-                val enumName = configExpression.value ?: return Result.NotMatch //invalid cwt config
+                val enumName = configExpression.value ?: return Result.NotMatch // invalid cwt config
                 run {
-                    //match simple enums
+                    // match simple enums
                     val enumConfig = configGroup.enums[enumName] ?: return@run
                     val r = value in enumConfig.values
                     return Result.of(r)
                 }
                 run {
-                    //match complex enums
+                    // match complex enums
                     val complexEnumConfig = configGroup.complexEnums[enumName] ?: return@run
-                    //complexEnumValue的值必须合法
+                    // complexEnumValue的值必须合法
                     if (ParadoxComplexEnumValueManager.getName(value) == null) return Result.NotMatch
                     return ParadoxExpressionMatcher.getComplexEnumValueMatchResult(element, project, value, enumName, complexEnumConfig)
                 }

@@ -62,13 +62,13 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     }
 
     override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
-        //不加上文件信息
+        // 不加上文件信息
 
-        //加上名字
+        // 加上名字
         val name = element.name
         append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
 
-        //加上所属本地化信息
+        // 加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofLocalisation")).append(" ")

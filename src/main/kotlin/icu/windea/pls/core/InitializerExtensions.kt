@@ -39,7 +39,7 @@ class SmartInitializer(
                     runCatchingCancelable { action() }.onFailure { logger.warn(it) }
                 }
             }.awaitAll()
-            initializeActions.clear() //这里可以直接清空
+            initializeActions.clear() // 这里可以直接清空
             completableDeferred.complete(Unit)
         }
     }

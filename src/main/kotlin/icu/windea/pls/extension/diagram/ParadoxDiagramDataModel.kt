@@ -17,7 +17,7 @@ import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import java.util.concurrent.Callable
 
-//com.intellij.uml.java.JavaUmlDataModel
+// com.intellij.uml.java.JavaUmlDataModel
 
 abstract class ParadoxDiagramDataModel(
     project: Project,
@@ -26,7 +26,7 @@ abstract class ParadoxDiagramDataModel(
 ) : DiagramDataModel<PsiElement>(project, provider) {
     val gameType get() = provider.gameType
 
-    //rootFile - PsiFileSystemItem
+    // rootFile - PsiFileSystemItem
     val originalFile get() = file?.getUserData(DiagramDataKeys.ORIGINAL_ELEMENT) as? PsiFileSystemItem
 
     private val _nodes = mutableSetOf<ParadoxDiagramNode>()

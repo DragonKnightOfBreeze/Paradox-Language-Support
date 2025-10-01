@@ -32,7 +32,7 @@ class ParadoxModifierElement(
     }
 
     override fun setName(name: String): PsiElement? {
-        if (!canRename) throw IncorrectOperationException() //cannot rename
+        if (!canRename) throw IncorrectOperationException() // cannot rename
         return null
     }
 

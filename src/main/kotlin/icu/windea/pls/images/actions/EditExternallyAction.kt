@@ -22,10 +22,10 @@ import java.awt.Desktop
 import java.io.File
 import java.io.IOException
 
-//org.intellij.images.actions.EditExternallyAction
+// org.intellij.images.actions.EditExternallyAction
 
 class EditExternallyAction : DumbAwareAction() {
-    //这里不能复用IDEA自带的 EditExternallyAction，因为文件类型判断有区别
+    // 这里不能复用IDEA自带的 EditExternallyAction，因为文件类型判断有区别
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

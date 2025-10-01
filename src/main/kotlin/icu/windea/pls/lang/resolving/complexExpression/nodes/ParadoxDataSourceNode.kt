@@ -56,9 +56,9 @@ class ParadoxDataSourceNode(
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val configExpressions = linkConfigs.mapNotNullTo(mutableSetOf()) { it.configExpression }
-        //忽略不是引用或者是dynamicValue的情况
+        // 忽略不是引用或者是dynamicValue的情况
         if (configExpressions.any { !it.type.isReference || it.type in CwtDataTypeGroups.DynamicValue }) return null
-        //排除可解析的情况
+        // 排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
         return ParadoxComplexExpressionErrorBuilder.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
@@ -86,7 +86,7 @@ class ParadoxDataSourceNode(
             return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
         }
 
-        //缓存解析结果以优化性能
+        // 缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
@@ -145,7 +145,7 @@ class ParadoxDataSourceNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
-            //text may contain parameters
+            // text may contain parameters
             return ParadoxDataSourceNode(text, textRange, configGroup, linkConfigs)
         }
     }

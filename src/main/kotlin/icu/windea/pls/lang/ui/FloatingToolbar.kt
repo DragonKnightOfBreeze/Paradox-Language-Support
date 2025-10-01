@@ -49,8 +49,8 @@ import kotlin.coroutines.resume
 import kotlin.properties.Delegates
 import kotlin.time.Duration.Companion.milliseconds
 
-//com.intellij.openapi.actionSystem.impl.FloatingToolbar
-//forked as the original class is marked as @Internal
+// com.intellij.openapi.actionSystem.impl.FloatingToolbar
+// forked as the original class is marked as @Internal
 
 @Suppress("unused", "ObsoleteDispatchersEdt")
 @OptIn(FlowPreview::class)
@@ -89,7 +89,7 @@ abstract class FloatingToolbar(
                 }
             }
         }
-        //@Suppress("LeakingThis")
+        // @Suppress("LeakingThis")
         editor.apply {
             addEditorMouseListener(MouseListener(), this@FloatingToolbar)
             addEditorMouseMotionListener(MouseMotionListener(), this@FloatingToolbar)

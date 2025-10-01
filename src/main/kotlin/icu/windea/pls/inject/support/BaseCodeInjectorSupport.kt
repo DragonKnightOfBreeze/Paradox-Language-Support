@@ -108,7 +108,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         var argSize = method.parameterCount
         if (injectMethodInfo.hasReceiver) argSize--
         if (injectMethodInfo.hasReturnValue) argSize--
-        if (argSize < 0) return null //unexpected
+        if (argSize < 0) return null // unexpected
         var argIndexOffset = 0
         if (injectMethodInfo.hasReceiver) argIndexOffset++
         var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->

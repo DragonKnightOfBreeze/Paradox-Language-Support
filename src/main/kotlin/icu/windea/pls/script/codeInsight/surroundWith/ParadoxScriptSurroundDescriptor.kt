@@ -8,9 +8,9 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.findElementsBetween
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 
-//com.intellij.json.surroundWith.JsonSurroundDescriptor
-//com.intellij.json.surroundWith.JsonSurrounderBase
-//com.intellij.json.surroundWith.JsonWithObjectLiteralSurrounder
+// com.intellij.json.surroundWith.JsonSurroundDescriptor
+// com.intellij.json.surroundWith.JsonSurrounderBase
+// com.intellij.json.surroundWith.JsonWithObjectLiteralSurrounder
 
 class ParadoxScriptSurroundDescriptor : SurroundDescriptor {
     private val _surrounders = arrayOf(

@@ -68,13 +68,13 @@ object ParadoxLocalisationAiManipulator {
         }
     }
 
-    //ee.carlrobert.codegpt.ui.EditCodePopover
+    // ee.carlrobert.codegpt.ui.EditCodePopover
     fun createPopup(
         project: Project,
         callback: (String) -> Unit
     ): JBPopup {
         val submitted = AtomicBooleanProperty(false)
-        val textField = JBTextField().apply { addActionListener { submitted.set(true) } } //目前不使用 TextFieldWithStoredHistory
+        val textField = JBTextField().apply { addActionListener { submitted.set(true) } } // 目前不使用 TextFieldWithStoredHistory
 
         // 需要在 UI 发生变化时就更新设置
         val settings = PlsAiFacade.getSettings()

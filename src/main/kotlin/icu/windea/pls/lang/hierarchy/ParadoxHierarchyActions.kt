@@ -28,7 +28,7 @@ import javax.swing.JPanel
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
 interface ParadoxHierarchyActions {
-    //com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.ChangeScopeAction
+    // com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.ChangeScopeAction
 
     class ChangeScopeTypeAction(
         val browser: HierarchyBrowserBaseEx,

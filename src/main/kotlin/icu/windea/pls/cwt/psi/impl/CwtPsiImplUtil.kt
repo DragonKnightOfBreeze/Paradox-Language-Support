@@ -22,16 +22,16 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
-    //region CwtRootBlock
+    // region CwtRootBlock
 
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
         return PlsStringConstants.blockFolder
     }
 
-    //endregion
+    // endregion
 
-    //region CwtOption
+    // region CwtOption
 
     @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
@@ -45,7 +45,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setName(element: CwtOption, name: String): CwtOption {
-        throw IncorrectOperationException() //不允许重命名
+        throw IncorrectOperationException() // 不允许重命名
     }
 
     @JvmStatic
@@ -60,7 +60,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getSeparatorType(element: CwtOption): CwtSeparatorType {
-        //这里不能遍历element.children
+        // 这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
                 EQUAL_SIGN -> return CwtSeparatorType.EQUAL
@@ -70,9 +70,9 @@ object CwtPsiImplUtil {
         return CwtSeparatorType.EQUAL
     }
 
-    //endregion
+    // endregion
 
-    //region CwtOptionKey
+    // region CwtOptionKey
 
     @JvmStatic
     fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
@@ -89,9 +89,9 @@ object CwtPsiImplUtil {
         return element.findChild { it.elementType == OPTION_KEY_TOKEN }!!.text.unquote()
     }
 
-    //endregion
+    // endregion
 
-    //region CwtProperty
+    // region CwtProperty
 
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
@@ -105,7 +105,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setName(element: CwtProperty, name: String): CwtProperty {
-        throw IncorrectOperationException() //不允许重命名
+        throw IncorrectOperationException() // 不允许重命名
     }
 
     @JvmStatic
@@ -120,7 +120,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getSeparatorType(element: CwtProperty): CwtSeparatorType {
-        //这里不能遍历element.children
+        // 这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
                 EQUAL_SIGN -> return CwtSeparatorType.EQUAL
@@ -130,9 +130,9 @@ object CwtPsiImplUtil {
         return CwtSeparatorType.EQUAL
     }
 
-    //endregion
+    // endregion
 
-    //region CwtPropertyKey
+    // region CwtPropertyKey
 
     @JvmStatic
     fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
@@ -155,9 +155,9 @@ object CwtPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region CwtValue
+    // region CwtValue
 
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
@@ -180,9 +180,9 @@ object CwtPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region CwtString
+    // region CwtString
 
     @JvmStatic
     fun getName(element: CwtString): String {
@@ -191,7 +191,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setName(element: CwtString, name: String): CwtString {
-        throw IncorrectOperationException() //不允许重命名
+        throw IncorrectOperationException() // 不允许重命名
     }
 
     @JvmStatic
@@ -210,9 +210,9 @@ object CwtPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region CwtBlock
+    // region CwtBlock
 
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
@@ -226,7 +226,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setName(element: CwtBlock, name: String): CwtBlock {
-        throw IncorrectOperationException() //不允许重命名
+        throw IncorrectOperationException() // 不允许重命名
     }
 
     @JvmStatic
@@ -234,18 +234,18 @@ object CwtPsiImplUtil {
         return PlsStringConstants.blockFolder
     }
 
-    //endregion
+    // endregion
 
-    //region CwtDocComment
+    // region CwtDocComment
 
     @JvmStatic
     fun getTokenType(element: CwtDocComment): IElementType {
         return DOC_COMMENT
     }
 
-    //endregion
+    // endregion
 
-    //region CwtOptionComment
+    // region CwtOptionComment
 
     @JvmStatic
     fun getTokenType(element: CwtOptionComment): IElementType {
@@ -267,7 +267,7 @@ object CwtPsiImplUtil {
         return element.tokenElement?.findChild<_>()
     }
 
-    //endregion
+    // endregion
 
     @JvmStatic
     fun getMemberList(element: PsiElement): List<CwtMember> {

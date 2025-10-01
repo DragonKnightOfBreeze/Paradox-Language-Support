@@ -41,9 +41,9 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         val gameTypes = ParadoxGameType.getAll()
             .filter { it != ParadoxGameType.Eu5 } // TODO hidden in plugin settings page until eu5 is released
         return panel {
-            //general
+            // general
             group(PlsBundle.message("settings.general")) {
-                //defaultGameType
+                // defaultGameType
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
@@ -58,7 +58,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             onDefaultGameTypeChanged(oldDefaultGameType, newDefaultGameType)
                         }
                 }
-                //defaultGameDirectories
+                // defaultGameDirectories
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tip") }
@@ -81,7 +81,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
                 }
-                //preferredLocale
+                // preferredLocale
                 row {
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tip") }
@@ -96,7 +96,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             onPreferredLocaleChanged(oldPreferredLocale, newPreferredLocale)
                         }
                 }
-                //ignoredFileNames
+                // ignoredFileNames
                 row {
                     label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tip") }
@@ -114,130 +114,130 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val fileNames = mutableSetOf<String>()
                             fileNames += oldIgnoredFileNameSet
                             fileNames += newIgnoredFileNameSet
-                            //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
+                            // 设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
                             refreshForFilesByFileNames(fileNames)
                         }
                 }
             }
-            //documentation
+            // documentation
             collapsibleGroup(PlsBundle.message("settings.documentation")) {
                 val documentationSettings = settings.documentation
 
-                //renderLineComment
+                // renderLineComment
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderLineComment"))
                         .bindSelected(documentationSettings::renderLineComment)
                     contextHelp(PlsBundle.message("settings.documentation.renderLineComment.tip"))
                 }
-                //renderRelatedLocalisationsForScriptedVariables
+                // renderRelatedLocalisationsForScriptedVariables
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables"))
                         .bindSelected(documentationSettings::renderRelatedLocalisationsForScriptedVariables)
                     contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables.tip"))
                 }
-                //renderRelatedLocalisationsForDefinitions
+                // renderRelatedLocalisationsForDefinitions
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))
                         .bindSelected(documentationSettings::renderRelatedLocalisationsForDefinitions)
                     contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tip"))
                 }
-                //renderRelatedImagesForDefinitions
+                // renderRelatedImagesForDefinitions
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions"))
                         .bindSelected(documentationSettings::renderRelatedImagesForDefinitions)
                     contextHelp(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tip"))
                 }
-                //renderNameDescForModifiers
+                // renderNameDescForModifiers
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderNameDescForModifiers"))
                         .bindSelected(documentationSettings::renderNameDescForModifiers)
                     contextHelp(PlsBundle.message("settings.documentation.renderNameDescForModifiers.tip"))
                 }
-                //renderLocalisationForLocalisations
+                // renderLocalisationForLocalisations
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderIconForModifiers"))
                         .bindSelected(documentationSettings::renderIconForModifiers)
                     contextHelp(PlsBundle.message("settings.documentation.renderIconForModifiers.tip"))
                 }
-                //renderLocalisationForLocalisations
+                // renderLocalisationForLocalisations
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations"))
                         .bindSelected(documentationSettings::renderLocalisationForLocalisations)
                     contextHelp(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
                 }
-                //renderRelatedLocalisationsForComplexEnumValues
+                // renderRelatedLocalisationsForComplexEnumValues
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
                         .bindSelected(documentationSettings::renderRelatedLocalisationsForComplexEnumValues)
                     contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
                 }
-                //renderRelatedLocalisationsForDynamicValues
+                // renderRelatedLocalisationsForDynamicValues
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
                         .bindSelected(documentationSettings::renderRelatedLocalisationsForDynamicValues)
                     contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
                 }
-                //showScopes
+                // showScopes
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showScopes"))
                         .bindSelected(documentationSettings::showScopes)
                     contextHelp(PlsBundle.message("settings.documentation.showScopes.tip"))
                 }
-                //showScopeContext
+                // showScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
                         .bindSelected(documentationSettings::showScopeContext)
                     contextHelp(PlsBundle.message("settings.documentation.showScopeContext.tip"))
                 }
-                //showParameters
+                // showParameters
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showParameters"))
                         .bindSelected(documentationSettings::showParameters)
                     contextHelp(PlsBundle.message("settings.documentation.showParameters.tip"))
                 }
-                //showGeneratedModifiers
+                // showGeneratedModifiers
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showGeneratedModifiers"))
                         .bindSelected(documentationSettings::showGeneratedModifiers)
                     contextHelp(PlsBundle.message("settings.documentation.showGeneratedModifiers.tip"))
                 }
             }
-            //completion
+            // completion
             collapsibleGroup(PlsBundle.message("settings.completion")) {
                 val completionSettings = settings.completion
 
-                //completeScriptedVariableNames
+                // completeScriptedVariableNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeScriptedVariableNames"))
                         .bindSelected(completionSettings::completeScriptedVariableNames)
                 }
-                //completeDefinitionNames
+                // completeDefinitionNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeDefinitionNames"))
                         .bindSelected(completionSettings::completeDefinitionNames)
                 }
-                //completeLocalisationNames
+                // completeLocalisationNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                         .bindSelected(completionSettings::completeLocalisationNames)
                 }
-                //completeInlineScriptInvocations
+                // completeInlineScriptInvocations
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeInlineScriptInvocations"))
                         .bindSelected(completionSettings::completeInlineScriptInvocations)
                 }
-                //completeVariableNames
+                // completeVariableNames
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeVariableNames"))
                         .bindSelected(completionSettings::completeVariableNames)
                 }
-                //completeWithValue
+                // completeWithValue
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithValue"))
                         .bindSelected(completionSettings::completeWithValue)
                     contextHelp(PlsBundle.message("settings.completion.completeWithValue.tip"))
                 }
-                //completeWithClauseTemplate
+                // completeWithClauseTemplate
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
                         .bindSelected(completionSettings::completeWithClauseTemplate)
@@ -248,30 +248,30 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         dialog.show()
                     }
                 }
-                //completeOnlyScopeIsMatched
+                // completeOnlyScopeIsMatched
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
                         .bindSelected(completionSettings::completeOnlyScopeIsMatched)
                     contextHelp(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tip"))
                 }
-                //completeByLocalizedName
+                // completeByLocalizedName
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByLocalizedName"))
                         .bindSelected(completionSettings::completeByLocalizedName)
                     contextHelp(PlsBundle.message("settings.completion.completeByLocalizedName.tip"))
                 }
-                //completeByExtendedConfigs
+                // completeByExtendedConfigs
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
                         .bindSelected(completionSettings::completeByExtendedConfigs)
                     PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tip")
                 }
             }
-            //folding
+            // folding
             collapsibleGroup(PlsBundle.message("settings.folding")) {
                 val foldingSettings = settings.folding
 
-                //comment & commentByDefault
+                // comment & commentByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.comment"))
@@ -281,7 +281,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::commentByDefault)
                         .enabledIf(cb.selected)
                 }
-                //parameterConditionBlocks & parameterConditionBlocksByDefault
+                // parameterConditionBlocks & parameterConditionBlocksByDefault
                 row {
                     checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
                         .bindSelected(foldingSettings::parameterConditionBlocks)
@@ -289,7 +289,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
                         .bindSelected(foldingSettings::parameterConditionBlocksByDefault)
                 }
-                //inlineMathBlocks & inlineMathBlocksByDefault
+                // inlineMathBlocks & inlineMathBlocksByDefault
                 row {
                     checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
                         .bindSelected(foldingSettings::inlineMathBlocks)
@@ -297,7 +297,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
                         .bindSelected(foldingSettings::inlineMathBlocksByDefault)
                 }
-                //localisationReferencesFully & localisationReferencesFullyByDefault
+                // localisationReferencesFully & localisationReferencesFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationParametersFully"))
@@ -307,7 +307,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::localisationParametersFullyByDefault)
                         .enabledIf(cb.selected)
                 }
-                //localisationIconsFully & localisationIconsFullyByDefault
+                // localisationIconsFully & localisationIconsFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
@@ -317,7 +317,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::localisationIconsFullyByDefault)
                         .enabledIf(cb.selected)
                 }
-                //localisationCommands & localisationCommandsByDefault
+                // localisationCommands & localisationCommandsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationCommands"))
@@ -327,7 +327,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::localisationCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
-                //localisationConceptCommands & localisationConceptCommandsByDefault
+                // localisationConceptCommands & localisationConceptCommandsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationConceptCommands"))
@@ -337,7 +337,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::localisationConceptCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
-                //localisationConceptTexts & localisationConceptTextsByDefault
+                // localisationConceptTexts & localisationConceptTextsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
@@ -347,7 +347,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::localisationConceptTextsByDefault)
                         .enabledIf(cb.selected)
                 }
-                //scriptedVariableReferences & scriptedVariableReferencesByDefault
+                // scriptedVariableReferences & scriptedVariableReferencesByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
@@ -357,7 +357,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(foldingSettings::scriptedVariableReferencesByDefault)
                         .enabledIf(cb.selected)
                 }
-                //variableOperationExpressions & variableOperationExpressionsByDefault
+                // variableOperationExpressions & variableOperationExpressionsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
@@ -368,16 +368,16 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .enabledIf(cb.selected)
                 }
             }
-            //generation
+            // generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
                 val generationSettings = settings.generation
 
-                //fileNamePrefix
+                // fileNamePrefix
                 row {
                     label(PlsBundle.message("settings.generation.fileNamePrefix"))
                     textField().bindText(generationSettings::fileNamePrefix.toNonNullableProperty(""))
                 }.visible(false)
-                //localisationStrategy
+                // localisationStrategy
                 buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
                     row {
                         with(LocalisationGeneration.EmptyText) { radioButton(text, this) }
@@ -394,16 +394,16 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     }
                 }.bind(generationSettings::localisationStrategy)
             }
-            //hierarchy
+            // hierarchy
             collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
                 val hierarchySettings = settings.hierarchy
 
-                //showLocalizedName
+                // showLocalizedName
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showLocalizedName"))
                         .bindSelected(hierarchySettings::showLocalizedName)
                 }
-                //showLocationInfo
+                // showLocationInfo
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.hierarchy.showLocationInfo"))
@@ -417,12 +417,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .enabledIf(cb.selected)
                 }
 
-                //showScriptedVariablesInCallHierarchy
+                // showScriptedVariablesInCallHierarchy
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
                         .bindSelected(hierarchySettings::showScriptedVariablesInCallHierarchy)
                 }
-                //showDefinitionsInCallHierarchy
+                // showDefinitionsInCallHierarchy
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                         .bindSelected(hierarchySettings::showDefinitionsInCallHierarchy)
@@ -439,13 +439,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .onReset { list = defaultList }
                         .onIsModified { list != defaultList }
                 }
-                //showLocalisationsInCallHierarchy
+                // showLocalisationsInCallHierarchy
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
                         .bindSelected(hierarchySettings::showLocalisationsInCallHierarchy)
                 }
 
-                //showEventInfo
+                // showEventInfo
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.hierarchy.showEventInfo"))
@@ -458,7 +458,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(hierarchySettings::showEventInfoByAttributes)
                         .enabledIf(cb.selected)
                 }
-                //showTechInfo
+                // showTechInfo
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.hierarchy.showTechInfo"))
@@ -478,24 +478,24 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .enabledIf(cb.selected)
                 }
 
-                //eventTreeGrouping
+                // eventTreeGrouping
                 row {
                     label(PlsBundle.message("settings.hierarchy.eventTreeGrouping"))
                     comboBox(EventTreeGrouping.entries, textListCellRenderer { it?.text })
                         .bindItem(hierarchySettings::eventTreeGrouping.toNullableProperty())
                 }
-                //techTreeGrouping
+                // techTreeGrouping
                 row {
                     label(PlsBundle.message("settings.hierarchy.techTreeGrouping"))
                     comboBox(TechTreeGrouping.entries, textListCellRenderer { it?.text })
                         .bindItem(hierarchySettings::techTreeGrouping.toNullableProperty())
                 }
             }
-            //navigation
+            // navigation
             collapsibleGroup(PlsBundle.message("settings.navigation")) {
                 val navigationSettings = settings.navigation
 
-                //seForSymbols
+                // seForSymbols
                 row {
                     label(PlsBundle.message("settings.navigation.seForSymbols"))
                     contextHelp(PlsBundle.message("settings.navigation.seForSymbols.tip"))
@@ -532,11 +532,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     }
                 }
             }
-            //inference
+            // inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
                 val inferenceSettings = settings.inference
 
-                //configContextForParameters & configContextForParametersFast
+                // configContextForParameters & configContextForParametersFast
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
@@ -551,7 +551,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .enabledIf(cb.selected)
                     contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
-                //configContextForInlineScripts & configContextForInlineScriptsFast
+                // configContextForInlineScripts & configContextForInlineScriptsFast
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
@@ -566,21 +566,21 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .enabledIf(cb.selected)
                     contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
-                //scopeContext
+                // scopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(inferenceSettings::scopeContext)
                         .onApply { refreshForScopeContextInference() }
                     contextHelp(PlsBundle.message("settings.inference.scopeContext.tip"))
                 }
-                //scopeContextForEvents
+                // scopeContextForEvents
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
                         .bindSelected(inferenceSettings::scopeContextForEvents)
                         .onApply { refreshForScopeContextInference() }
                     contextHelp(PlsBundle.message("settings.inference.scopeContextForEvents.tip"))
                 }
-                //scopeContextForOnActions
+                // scopeContextForOnActions
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
                         .bindSelected(inferenceSettings::scopeContextForOnActions)
@@ -588,33 +588,33 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     contextHelp(PlsBundle.message("settings.inference.scopeContextForOnActions.tip"))
                 }
             }
-            //others
+            // others
             collapsibleGroup(PlsBundle.message("settings.others")) {
                 val otherSettings = settings.others
 
-                //showEditorContextToolbar
+                // showEditorContextToolbar
                 row {
                     checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
                         .bindSelected(otherSettings::showEditorContextToolbar)
                 }
-                //showLocalisationFloatingToolbar
+                // showLocalisationFloatingToolbar
                 row {
                     checkBox(PlsBundle.message("settings.others.showLocalisationFloatingToolbar"))
                         .bindSelected(otherSettings::showLocalisationFloatingToolbar)
                 }
-                //highlightLocalisationColorId
+                // highlightLocalisationColorId
                 row {
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(otherSettings::highlightLocalisationColorId)
                         .onApply { refreshForOpenedFiles() }
                 }
-                //renderLocalisationColorfulText
+                // renderLocalisationColorfulText
                 row {
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(otherSettings::renderLocalisationColorfulText)
                         .onApply { refreshForOpenedFiles() }
                 }
-                //defaultDiffGroup
+                // defaultDiffGroup
                 row {
                     label(PlsBundle.message("settings.others.defaultDiffGroup"))
                     comboBox(DiffGroup.entries, textListCellRenderer { it?.text })
@@ -644,7 +644,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         ParadoxModificationTrackers.LocaleTracker.incModificationCount()
     }
 
-    //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
+    // NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
 
     private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return

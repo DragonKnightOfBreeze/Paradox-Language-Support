@@ -14,7 +14,7 @@ import icu.windea.pls.core.writeUTFFast
 import java.io.DataInput
 import java.io.DataOutput
 
-//org.intellij.images.index.ImageInfoIndex
+// org.intellij.images.index.ImageInfoIndex
 
 @Service
 class DdsMetadataIndex {

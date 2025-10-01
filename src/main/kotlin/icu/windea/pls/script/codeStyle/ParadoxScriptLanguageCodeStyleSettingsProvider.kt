@@ -22,7 +22,7 @@ class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettings
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 
-    //需要重载这个方法以显示indentOptions设置页面
+    // 需要重载这个方法以显示indentOptions设置页面
     override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {

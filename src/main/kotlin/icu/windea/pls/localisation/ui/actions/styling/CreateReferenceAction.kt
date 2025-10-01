@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PARAMETER
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
-//org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
+// org.intellij.plugins.markdown.ui.actions.styling.MarkdownCreateLinkAction
 
 class CreateReferenceAction : ToggleAction(), DumbAware {
     private val wrapActionName: String
@@ -42,13 +42,13 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
             return false
         }
         return if (!isSelectedElement) {
-            //wrap
+            // wrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = wrapActionName
             event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.description")
             false
         } else {
-            //unwrap
+            // unwrap
             event.presentation.isEnabled = !editor.isViewer
             event.presentation.text = unwrapActionName
             event.presentation.description = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateReference.unwrap.description")
@@ -70,7 +70,7 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
             return
         }
         if (state) {
-            //wrap
+            // wrap
             val command = Runnable {
                 editor.document.insertString(end, "$")
                 editor.document.insertString(start, "$")
@@ -80,7 +80,7 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
             }
             WriteCommandAction.runWriteCommandAction(project, wrapActionName, null, command, file)
         } else {
-            //unwrap
+            // unwrap
             val command = Runnable {
                 editor.document.deleteString(end, end + 1)
                 editor.document.deleteString(start - 1, start)
@@ -102,8 +102,8 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
     }
 
     private fun isSelectedElement(file: PsiFile, editor: Editor): Boolean? {
-        //返回null表示此操作不可用
-        //仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
+        // 返回null表示此操作不可用
+        // 仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
         val start = editor.selectionModel.selectionStart
         val end = editor.selectionModel.selectionEnd
         if (start == 0) return null

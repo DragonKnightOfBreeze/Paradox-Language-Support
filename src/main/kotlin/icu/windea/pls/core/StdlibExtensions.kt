@@ -542,7 +542,7 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
     if ((other as java.lang.String).startsWith(path, 0)) {
         if (length == otherLength) return acceptSelf
         if (other[length] != '/') return false
-        if (strict && (other as java.lang.String).indexOf(47, length + 1) != -1) return false //47 -> '/'
+        if (strict && (other as java.lang.String).indexOf(47, length + 1) != -1) return false // 47 -> '/'
         return true
     }
     return false

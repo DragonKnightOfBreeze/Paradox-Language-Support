@@ -50,7 +50,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                             is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                             is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
-                        if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
+                        if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                         super.visitElement(element)
                     }
                 })
@@ -59,14 +59,14 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 file.accept(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if (element is ParadoxLocalisationProperty) fromLocalisation(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
-                        if (!ParadoxLocalisationPsiUtil.isLocalisationContextElement(element)) return //optimize
+                        if (!ParadoxLocalisationPsiUtil.isLocalisationContextElement(element)) return // optimize
                         super.visitElement(element)
                     }
                 })
             }
         }
         if (children.isEmpty()) return null
-        //exclude duplicates and sort contexts
+        // exclude duplicates and sort contexts
         val finalChildren = children
             .distinctBy { it.type.name + "@" + it.name }
             .sortedWith(compareBy({ it.type }, { if (isLocalisationType(it.type)) it.name else 0 }))

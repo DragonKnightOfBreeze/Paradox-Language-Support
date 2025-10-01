@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-//com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
+// com.intellij.ide.hierarchy.call.JavaCallHierarchyProvider
 
 /**
  * 提供调用层级视图。（封装变量/定义/本地化）

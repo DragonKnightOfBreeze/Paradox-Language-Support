@@ -38,7 +38,7 @@ class ParadoxScriptValueNode(
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
-        if (element !is ParadoxScriptStringExpressionElement) return null //unexpected
+        if (element !is ParadoxScriptStringExpressionElement) return null // unexpected
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
@@ -48,7 +48,7 @@ class ParadoxScriptValueNode(
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
-        if (element !is ParadoxScriptStringExpressionElement) return null //unexpected
+        if (element !is ParadoxScriptStringExpressionElement) return null // unexpected
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
@@ -68,7 +68,7 @@ class ParadoxScriptValueNode(
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
 
-        //缓存解析结果以优化性能
+        // 缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()

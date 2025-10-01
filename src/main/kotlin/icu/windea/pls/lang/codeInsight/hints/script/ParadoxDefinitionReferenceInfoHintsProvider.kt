@@ -67,7 +67,7 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<S
 
     private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation {
         val presentations: MutableList<InlayPresentation> = mutableListOf()
-        //省略definitionName
+        // 省略definitionName
         presentations.add(smallText(": "))
         val typeConfig = definitionInfo.typeConfig
         presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })

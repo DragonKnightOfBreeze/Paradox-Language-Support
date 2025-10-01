@@ -71,7 +71,7 @@ import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-//region Extensions
+// region Extensions
 
 val ParadoxModifierSupport.Keys.templateExpression by createKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).synced()
@@ -85,7 +85,7 @@ var ParadoxModifierElement.templateExpression by ParadoxModifierSupport.Keys.tem
 var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
-//endregion
+// endregion
 
 /**
  * 提供对预定义的修正的支持。
@@ -115,10 +115,10 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return
 
         for (modifierConfig in modifiers.values) {
-            //排除重复的
+            // 排除重复的
             if (!modifierNames.add(modifierConfig.name)) continue
 
-            //排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
@@ -188,7 +188,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
 
-            //排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
@@ -196,9 +196,9 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val template = modifierConfig.template
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
-            //生成的modifier
+            // 生成的modifier
             ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
-                //排除重复的
+                // 排除重复的
                 if (!modifierNames.add(name)) return@p true
 
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
@@ -216,7 +216,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     }
 
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
-        //TODO 可以进一步缩小范围
+        // TODO 可以进一步缩小范围
         return ParadoxModificationTrackers.ScriptFileTracker("**/*.txt")
     }
 
@@ -228,11 +228,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val modifierConfig = modifierElement.modifierConfig ?: return false
         val templateExpression = modifierElement.templateExpression ?: return false
 
-        //加上名字
+        // 加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
         append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-        //加上模版信息
+        // 加上模版信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType
@@ -244,7 +244,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
-            //加上生成源信息
+            // 加上生成源信息
             val snippetNodes = templateExpression.nodes.filterIsInstance<ParadoxTemplateSnippetNode>()
             if (snippetNodes.isNotEmpty()) {
                 for (snippetNode in snippetNodes) {
@@ -288,7 +288,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                                 val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.complexEnums, enumName, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = modifierElement)
                             } else {
-                                //unexpected
+                                // unexpected
                                 append(enumValueName.escapeXml())
                                 append(": ")
                                 append(enumName.escapeXml())
@@ -396,7 +396,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
-            //排除不匹配modifier的supported_scopes的情况
+            // 排除不匹配modifier的supported_scopes的情况
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
@@ -407,7 +407,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val typeIcon = PlsIcons.Nodes.Definition(ParadoxDefinitionTypes.EconomicCategory)
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
-                //排除重复的
+                // 排除重复的
                 if (!modifierNames.add(name)) continue
 
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
@@ -429,7 +429,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
-        val modifierCategory = economicCategoryInfo.modifierCategory //may be null
+        val modifierCategory = economicCategoryInfo.modifierCategory // may be null
         val configGroup = PlsFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
@@ -439,10 +439,10 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierInfo = modifierElement.economicCategoryModifierInfo ?: return false
         val gameType = modifierElement.gameType
 
-        //加上名字
+        // 加上名字
         val name = modifierElement.name
         append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-        //加上经济类型信息
+        // 加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")

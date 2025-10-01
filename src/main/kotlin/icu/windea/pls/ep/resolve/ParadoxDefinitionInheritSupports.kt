@@ -42,21 +42,21 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         val tEvent = ParadoxDefinitionTypes.Event
 
-        //子事件应当有子类型"inherited"，并且父事件应当和子事件有相同的事件类型
+        // 子事件应当有子类型"inherited"，并且父事件应当和子事件有相同的事件类型
         if (definitionInfo.type != tEvent || !definitionInfo.subtypes.contains("inherited")) return null
         val data = definition.getData<StellarisEventData>() ?: return null
         val parentDefinitionName = data.base ?: return null
         val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val parentDefinition = ParadoxDefinitionSearch.search(parentDefinitionName, tEvent, selector).find() ?: return null
         val parentDefinitionInfo = parentDefinition.definitionInfo ?: return null
-        //事件类型不匹配 - 不处理
+        // 事件类型不匹配 - 不处理
         if (ParadoxEventManager.getType(definitionInfo) != ParadoxEventManager.getType(parentDefinitionInfo)) return null
         return parentDefinition
     }
 
-    //（按条件）使用父事件的标题、描述和图片
-    //1.2.0 TODO
+    // （按条件）使用父事件的标题、描述和图片
+    // 1.2.0 TODO
 
-    //（按父事件中已声明的属性）禁用代码检查 ParadoxScriptMissingExpression
-    //参见 icu.windea.pls.core.inspections.PlsInspectionsExtensionsKt.isSuppressedForDefinition
+    // （按父事件中已声明的属性）禁用代码检查 ParadoxScriptMissingExpression
+    // 参见 icu.windea.pls.core.inspections.PlsInspectionsExtensionsKt.isSuppressedForDefinition
 }

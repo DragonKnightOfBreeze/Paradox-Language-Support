@@ -24,7 +24,7 @@ class ParadoxScriptedVariablePsiReference(
         return element.setName(newElementName)
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxScriptedVariablePsiReference, ParadoxScriptScriptedVariable> {
         override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean) = ref.doResolve()
@@ -43,7 +43,7 @@ class ParadoxScriptedVariablePsiReference(
     }
 
     private fun doResolve(): ParadoxScriptScriptedVariable? {
-        //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
+        // 首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return null
         val selector = selector(project, element).scriptedVariable().contextSensitive()
@@ -53,7 +53,7 @@ class ParadoxScriptedVariablePsiReference(
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
-        //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
+        // 首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
         val result = mutableListOf<ParadoxScriptScriptedVariable>()

@@ -30,10 +30,10 @@ import java.util.concurrent.ConcurrentHashMap
  * @property elementPath 相对于所属文件的定义成员路径。
  */
 class ParadoxDefinitionInfo(
-    val element: ParadoxScriptDefinitionElement, //use element directly here
+    val element: ParadoxScriptDefinitionElement, // use element directly here
     val typeConfig: CwtTypeConfig,
     name0: String?, // null -> lazy get
-    subtypeConfigs0: List<CwtSubtypeConfig>?, //null -> lazy get
+    subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
     val elementPath: ParadoxExpressionPath,
     val gameType: ParadoxGameType,
@@ -111,7 +111,7 @@ class ParadoxDefinitionInfo(
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
         val mergedConfig = typeConfig.localisation?.getConfigs(subtypes) ?: return emptyList()
         val result = mutableListOf<RelatedLocalisationInfo>()
-        //从已有的cwt规则
+        // 从已有的cwt规则
         for (config in mergedConfig) {
             val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
             val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
@@ -123,7 +123,7 @@ class ParadoxDefinitionInfo(
     private fun doGetImages(): List<RelatedImageInfo> {
         val mergedConfig = typeConfig.images?.getConfigs(subtypes) ?: return emptyList()
         val result = mutableListOf<RelatedImageInfo>()
-        //从已有的cwt规则
+        // 从已有的cwt规则
         for (config in mergedConfig) {
             val locationExpression = CwtImageLocationExpression.resolve(config.value)
             val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)

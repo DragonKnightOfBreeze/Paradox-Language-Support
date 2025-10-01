@@ -72,7 +72,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                                     val range = TextRange.create(startOffset, endOffset)
                                     val description = PlsBundle.message("inspection.localisation.incorrectScope.desc.1", node.text, supportedScopes.joinToString(), outputScopeContext.scope)
                                     holder.registerProblem(element, range, description)
-                                    break //only reports first problem per complex expression
+                                    break // only reports first problem per complex expression
                                 }
                             }
                         }

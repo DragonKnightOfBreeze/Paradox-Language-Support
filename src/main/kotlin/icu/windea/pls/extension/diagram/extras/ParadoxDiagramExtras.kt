@@ -34,7 +34,7 @@ open class ParadoxDiagramExtras(
         return object : DiagramToolbarActionsProvider by super.getToolbarActionsProvider() {
             override fun createToolbarActions(builder: DiagramBuilder): DefaultActionGroup {
                 val actionGroup = super.createToolbarActions(builder)
-                //before first separator
+                // before first separator
                 val children = actionGroup.children
                 val separatorIndex = children.indexOfFirst { it is SeparatorAction }
                 val index = if (separatorIndex == -1) children.size else separatorIndex

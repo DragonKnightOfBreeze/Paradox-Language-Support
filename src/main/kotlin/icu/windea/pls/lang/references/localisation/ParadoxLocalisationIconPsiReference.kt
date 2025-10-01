@@ -25,7 +25,7 @@ class ParadoxLocalisationIconPsiReference(
         return element.setName(newElementName)
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationIconPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxLocalisationIconPsiReference, incompleteCode: Boolean) = ref.doResolve()

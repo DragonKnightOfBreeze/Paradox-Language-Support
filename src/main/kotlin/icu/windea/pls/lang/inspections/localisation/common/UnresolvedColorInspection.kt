@@ -48,7 +48,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

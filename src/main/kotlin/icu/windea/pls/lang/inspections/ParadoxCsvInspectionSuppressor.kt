@@ -12,8 +12,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.PlsStringConstants
 
-//com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
-//org.intellij.grammar.inspection.BnfInspectionSuppressor
+// com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
+// org.intellij.grammar.inspection.BnfInspectionSuppressor
 
 /**
  * 基于特定条件，禁用适用于CSV文件的代码检查。

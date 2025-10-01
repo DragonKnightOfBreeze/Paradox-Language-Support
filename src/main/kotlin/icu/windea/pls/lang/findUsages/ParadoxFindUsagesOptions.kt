@@ -5,7 +5,7 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
 import icu.windea.pls.PlsBundle
 
-//com.intellij.find.findUsages.JavaFindUsagesOptions
+// com.intellij.find.findUsages.JavaFindUsagesOptions
 
 open class ParadoxFindUsagesOptions(project: Project) : PersistentFindUsagesOptions(project) {
     init {

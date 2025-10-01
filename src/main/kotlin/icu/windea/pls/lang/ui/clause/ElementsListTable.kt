@@ -18,7 +18,7 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTable
 
-//com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase.ParametersListTable
+// com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase.ParametersListTable
 
 class ElementsListTable(
     val elementsTable: TableView<ElementDescriptor>,

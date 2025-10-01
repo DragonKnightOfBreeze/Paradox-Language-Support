@@ -19,7 +19,7 @@ import icu.windea.pls.model.paths.matches
  * - 对于每个本地化，检查其本地化文本中是否存在递归的本地化引用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
-    //目前仅做检查即可，不需要显示递归的装订线图标
+    // 目前仅做检查即可，不需要显示递归的装订线图标
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false

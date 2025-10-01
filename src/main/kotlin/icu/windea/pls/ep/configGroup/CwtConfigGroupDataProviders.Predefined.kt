@@ -19,7 +19,7 @@ class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         run {
             currentCoroutineContext.ensureActive()
             with(configGroup.aliasNamesSupportScope) {
-                this += "modifier" //也支持，但不能切换作用域
+                this += "modifier" // 也支持，但不能切换作用域
                 this += "trigger"
                 this += "effect"
             }
@@ -29,8 +29,8 @@ class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 this += "game_rule"
             }
             with(configGroup.definitionTypesIndirectSupportScope) {
-                this += "on_action" //也支持，其中调用的事件的类型要匹配
-                this += "event" //事件
+                this += "on_action" // 也支持，其中调用的事件的类型要匹配
+                this += "event" // 事件
             }
             with(configGroup.definitionTypesSkipCheckSystemScope) {
                 this += "event"
@@ -41,7 +41,7 @@ class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
             with(configGroup.definitionTypesSupportParameters) {
                 this += "script_value"
-                //this += "inline_script" //内联脚本也支持参数（但它不是定义）
+                // this += "inline_script" // 内联脚本也支持参数（但它不是定义）
             }
         }
 

@@ -90,7 +90,7 @@ object ParadoxTextColorManager {
 
     private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
-        //要求输入的name必须是单个字母或数字
+        // 要求输入的name必须是单个字母或数字
         val name = definition.name
         if (name.singleOrNull()?.let { isId(it) } != true) return null
         val gameType = selectGameType(definition) ?: return null
@@ -103,7 +103,7 @@ object ParadoxTextColorManager {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
         val definitions = ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.TextColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
+        return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } // it.name == it.definitionInfo.name
     }
 
     fun isId(c: Char): Boolean {

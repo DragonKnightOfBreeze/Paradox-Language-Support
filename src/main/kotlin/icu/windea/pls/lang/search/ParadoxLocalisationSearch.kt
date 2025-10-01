@@ -50,7 +50,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         ): Boolean {
             val project = selector.project
             val scope = selector.scope
-            //保证返回结果的名字的唯一性
+            // 保证返回结果的名字的唯一性
             return ParadoxIndexKeys.LocalisationName.processFirstElementByKeys(
                 project, scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },

@@ -58,8 +58,8 @@ object ParadoxExpressionMatcher {
         /** 对于[Result.LazyScopeAwareMatch]，匹配结果直接返回true。 */
         const val SkipScope = 0x04
 
-        ///** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
-        //const val Fast = 0x08
+        // /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
+        // const val Fast = 0x08
         /** 允许匹配定义自身。（当要匹配表达式的是一个键时） */
         const val AcceptDefinition = 0x10
     }
@@ -88,7 +88,7 @@ object ParadoxExpressionMatcher {
         }
 
         sealed class LazyMatch(predicate: () -> Boolean) : Result() {
-            //use manual lazy implementation instead of kotlin Lazy to optimize memory
+            // use manual lazy implementation instead of kotlin Lazy to optimize memory
             @Volatile
             private var value: Any = predicate
 
@@ -111,11 +111,11 @@ object ParadoxExpressionMatcher {
             }
 
             private fun doGetCatching(): Boolean {
-                //it should be necessary to suppress outputting error logs and throwing exceptions here
+                // it should be necessary to suppress outputting error logs and throwing exceptions here
 
-                //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
-                //java.lang.AssertionError: Reentrant indexing
-                //com.intellij.openapi.project.IndexNotReadyException
+                // java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+                // java.lang.AssertionError: Reentrant indexing
+                // com.intellij.openapi.project.IndexNotReadyException
 
                 return runCatchingCancelable {
                     @Suppress("UNCHECKED_CAST")
@@ -141,8 +141,8 @@ object ParadoxExpressionMatcher {
 
     data class ResultValue<out T>(val value: T, val result: Result)
 
-    //rootFile -> cacheKey -> configMatchResult
-    //depends on config group and indices
+    // rootFile -> cacheKey -> configMatchResult
+    // depends on config group and indices
     private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.Keys) {
         createCachedValue(project) {
             createNestedCache<VirtualFile, String, Result, com.github.benmanes.caffeine.cache.Cache<String, Result>> {
@@ -151,7 +151,7 @@ object ParadoxExpressionMatcher {
         }
     }
 
-    //兼容scriptedVariableReference inlineMath parameter
+    // 兼容scriptedVariableReference inlineMath parameter
 
     fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
         // indexing -> should not visit indices -> treat as exact match

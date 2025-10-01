@@ -24,7 +24,7 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
         val targetLang = Lang[targetLocale]
         val translateService = TranslateService.getInstance()
 
-        //NOTE 使用 TranslateService 之前，必须先转到 EDT
+        // NOTE 使用 TranslateService 之前，必须先转到 EDT
         withContext(Dispatchers.UI) {
             translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {
@@ -45,7 +45,7 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
         val sourceLang = toLang(sourceLocale, supportedSourceLanguages)
         val targetLang = toLang(targetLocale, supportedTargetLanguages)
 
-        //NOTE 使用 TranslateService 之前，必须先转到 EDT
+        // NOTE 使用 TranslateService 之前，必须先转到 EDT
         withContext(Dispatchers.UI) {
             translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {

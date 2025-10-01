@@ -49,7 +49,7 @@ class ChangeFileEncodingFix(
             if (changeCharset) {
                 ChangeFileEncodingAction.changeTo(project, document, editor, virtualFile, charset, EncodingUtil.Magic8.ABSOLUTELY, EncodingUtil.Magic8.ABSOLUTELY)
             }
-            fileDocumentManager.saveDocument(document) //保存文件
+            fileDocumentManager.saveDocument(document) // 保存文件
         }
     }
 

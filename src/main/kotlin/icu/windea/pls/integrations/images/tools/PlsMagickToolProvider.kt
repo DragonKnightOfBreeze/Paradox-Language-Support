@@ -45,7 +45,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val exe = fullExePath.name
 
         val command = "./$exe -version"
-        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        val result = executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
         return result.contains("ImageMagick") || result.contains("Version")
     }
 
@@ -86,7 +86,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val output = outputPath.toString().quote('\'')
 
         val command = "./$exe $input $output"
-        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        val result = executeCommand(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
 
         if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")

@@ -38,7 +38,7 @@ class ParadoxGenerateLocalisationsChooser(
     )
 
     override fun createSouthPanel(): JComponent {
-        //let left side actions actually at left side of chooser dialog
+        // let left side actions actually at left side of chooser dialog
         val superPanel = super.createSouthPanel()
         val finalPanel = superPanel.components.lastOrNull()?.castOrNull<JPanel>()
         return finalPanel ?: superPanel

@@ -65,8 +65,8 @@ class MissingExpressionInspection : LocalInspectionTool() {
             private fun visitBlock(element: ParadoxScriptBlock) {
                 if (!element.isExpression()) return // skip check if element is not an expression
 
-                //skip checking property if its property key may contain parameters
-                //position: (in property) property key / (standalone) left curly brace
+                // skip checking property if its property key may contain parameters
+                // position: (in property) property key / (standalone) left curly brace
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
@@ -92,7 +92,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
             }
 
             private fun skipCheck(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
-                //子句不为空且可以精确匹配多个子句规则时，不适用此检查
+                // 子句不为空且可以精确匹配多个子句规则时，不适用此检查
                 return when {
                     configs.isEmpty() -> true
                     configs.size == 1 -> false
@@ -137,7 +137,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                         else -> PlsBundle.message("inspection.script.missingExpression.desc.detail.2", min, actual, minDefine)
                     }
                     val highlightType = when {
-                        relaxMin -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning
+                        relaxMin -> ProblemHighlightType.WEAK_WARNING // weak warning (wave lines), not warning
                         else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                     }
                     val fileLevel = element is PsiFile
@@ -152,13 +152,13 @@ class MissingExpressionInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //firstOnly
+            // firstOnly
             row {
                 checkBox(PlsBundle.message("inspection.script.missingExpression.option.firstOnly"))
                     .bindSelected(::firstOnly)
                     .actionListener { _, component -> firstOnly = component.isSelected }
             }
-            //firstOnlyOnFile
+            // firstOnlyOnFile
             row {
                 checkBox(PlsBundle.message("inspection.script.missingExpression.option.firstOnlyOnFile"))
                     .bindSelected(::firstOnlyOnFile)

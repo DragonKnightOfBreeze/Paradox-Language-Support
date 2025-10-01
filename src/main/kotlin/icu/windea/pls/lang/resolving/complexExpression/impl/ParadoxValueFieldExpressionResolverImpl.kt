@@ -28,12 +28,12 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && expressionString.isEmpty()) return null
 
-        //skip if text is a number
+        // skip if text is a number
         if (isNumber(expressionString)) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
 
-        //skip if text is a parameter with unary operator prefix
+        // skip if text is a parameter with unary operator prefix
         if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -46,7 +46,7 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = expressionString.indexOf('.', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && expressionString.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
@@ -60,7 +60,7 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
                 tokenIndex = textLength
                 isLast = true
             }
-            //resolve node
+            // resolve node
             val nodeText = expressionString.substring(startIndex, tokenIndex)
             val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
@@ -68,7 +68,7 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
                 isLast -> ParadoxValueFieldNode.resolve(nodeText, nodeTextRange, configGroup)
                 else -> ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
             }
-            //handle mismatch situation
+            // handle mismatch situation
             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
             if (dotNode != null) nodes += dotNode

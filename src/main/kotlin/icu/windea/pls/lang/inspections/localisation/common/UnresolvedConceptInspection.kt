@@ -68,13 +68,13 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredByConfigs
+            // ignoredByConfigs
             row {
                 checkBox(PlsBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
                     .actionListener { _, component -> ignoredByConfigs = component.isSelected }
             }
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

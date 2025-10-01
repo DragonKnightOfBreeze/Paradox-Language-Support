@@ -9,7 +9,7 @@ import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.findParentDefinition
 
-//org.jetbrains.kotlin.idea.base.codeInsight.KotlinNameSuggestionProvider
+// org.jetbrains.kotlin.idea.base.codeInsight.KotlinNameSuggestionProvider
 
 class ParadoxNameSuggestionProvider : NameSuggestionProvider {
     override fun getSuggestedNames(element: PsiElement, nameSuggestionContext: PsiElement?, result: MutableSet<String>): SuggestedNameInfo? {
@@ -23,7 +23,7 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         return when (declarationInfo) {
             is ParadoxTargetInfo.Definition -> {
                 when (declarationInfo.type) {
-                    ParadoxDefinitionTypes.Event -> false //排除事件
+                    ParadoxDefinitionTypes.Event -> false // 排除事件
                     else -> true
                 }
             }
@@ -49,9 +49,9 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         }
         suggestedNames.addAll(fromName)
 
-        //parentDefinitionName作为前缀
+        // parentDefinitionName作为前缀
         run {
-            if (declarationInfo is ParadoxTargetInfo.Definition) return@run //排除本身是定义的情况
+            if (declarationInfo is ParadoxTargetInfo.Definition) return@run // 排除本身是定义的情况
             val parentDefinition = nameSuggestionContext?.findParentDefinition() ?: return@run
             val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinition) ?: return@run
             if (!isSupported(parentDeclarationInfo)) return@run
@@ -64,6 +64,6 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
 
         if (suggestedNames.isEmpty()) return null
         result.addAll(suggestedNames)
-        return SuggestedNameInfo.NULL_INFO //do not use statistics yet
+        return SuggestedNameInfo.NULL_INFO // do not use statistics yet
     }
 }

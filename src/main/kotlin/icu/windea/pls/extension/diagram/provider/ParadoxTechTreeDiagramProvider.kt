@@ -193,7 +193,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
     abstract class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile
+        file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         private val definitionType = ParadoxDefinitionTypes.Technology
@@ -201,7 +201,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         private val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
 
         override fun updateDataModel() {
-            //群星原版科技有400+
+            // 群星原版科技有400+
 
             val title = PlsDiagramBundle.message("techTree.update.title")
             runWithModalProgressBlocking(project, title) action@{
@@ -273,7 +273,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         private fun createEdges(technology: ParadoxScriptDefinitionElement) {
             ProgressManager.checkCanceled()
             val data = technology.getData<StellarisTechnologyData>() ?: return
-            //循环科技 ..> 循环科技
+            // 循环科技 ..> 循环科技
             val levels = data.levels
             if (levels != null) {
                 val label = if (levels <= 0) "max level: inf" else "max level: $levels"
@@ -281,7 +281,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 val edge = Edge(node, node, Relations.Repeat(label))
                 edges.add(edge)
             }
-            //前置 --> 科技
+            // 前置 --> 科技
             val prerequisites = data.prerequisites
             prerequisites.forEach { prerequisite ->
                 ProgressManager.checkCanceled()

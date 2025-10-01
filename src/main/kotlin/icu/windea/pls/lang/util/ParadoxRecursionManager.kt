@@ -16,8 +16,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxRecursionManager {
-    //由于需要处理引用传递的情况，考虑性能问题，目前仅检测第一个递归引用
-    //这里需要避免StackOverflowError
+    // 由于需要处理引用传递的情况，考虑性能问题，目前仅检测第一个递归引用
+    // 这里需要避免StackOverflowError
 
     fun isRecursiveScriptedVariable(
         element: ParadoxScriptScriptedVariable,
@@ -120,8 +120,8 @@ object ParadoxRecursionManager {
     ): Boolean {
         var result = recursions.isNotNullOrEmpty()
         if (result) return true
-        val definitionInfo = element.definitionInfo ?: return false //skip non-definition
-        val name = definitionInfo.name.orNull() ?: return false //skip anonymous definition
+        val definitionInfo = element.definitionInfo ?: return false // skip non-definition
+        val name = definitionInfo.name.orNull() ?: return false // skip anonymous definition
         val type = definitionInfo.type
         val entryElement = when {
             element is ParadoxScriptFile -> element.block

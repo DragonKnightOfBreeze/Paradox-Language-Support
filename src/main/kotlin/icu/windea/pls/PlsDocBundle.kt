@@ -38,7 +38,7 @@ object PlsDocBundle {
         return INSTANCE.getLazyMessage(key, *params)
     }
 
-    //methods to get specific messages
+    // methods to get specific messages
 
     @JvmStatic
     @Nls

@@ -5,7 +5,7 @@ import icu.windea.pls.inject.annotations.InjectFieldBasedCache
 import icu.windea.pls.inject.annotations.InjectTarget
 
 interface CwtPsiCodeInjectors {
-    //用于优化性能
+    // 用于优化性能
 
     /** @see icu.windea.pls.cwt.psi.CwtProperty */
     @InjectTarget("icu.windea.pls.cwt.psi.impl.CwtPropertyImpl", pluginId = "icu.windea.pls")

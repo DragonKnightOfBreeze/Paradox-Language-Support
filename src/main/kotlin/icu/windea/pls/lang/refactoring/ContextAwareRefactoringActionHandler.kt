@@ -27,6 +27,6 @@ abstract class ContextAwareRefactoringActionHandler : RefactoringActionHandler, 
     }
 
     final override fun invoke(project: Project, elements: Array<out PsiElement>, dataContext: DataContext?) {
-        //not support
+        // not support
     }
 }

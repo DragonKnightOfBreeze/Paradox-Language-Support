@@ -127,7 +127,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveUrlByDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
-        //兼容definition不是sprite的情况
+        // 兼容definition不是sprite的情况
         val resolved = runReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 CwtLocationExpressionManager.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
@@ -147,7 +147,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveUrlWithFrameInfo(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo?): String? {
-        //accept various image file types (normal file types such as png, or extended file aka dds and tga)
+        // accept various image file types (normal file types such as png, or extended file aka dds and tga)
         if (!ImageManager.isImageFileType(file.fileType)) return null
 
         val filePath = file.toNioPath()
@@ -165,16 +165,16 @@ object ParadoxImageManager {
         val imagesPath = PlsPathConstants.images
         imagesPath.createDirectories()
         if (imageRelPath != null) {
-            //路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
-            //UUID：基于游戏或模组目录的绝对路径
+            // 路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // UUID：基于游戏或模组目录的绝对路径
             val relPathWithoutExtension = imageRelPath.substringBeforeLast('.')
             val uuid = imageAbsPath.removeSuffix(imageRelPath).trim('/').toUUID().toString()
             val frameText = "@${frameInfo.frame}_${frameInfo.frames}"
             val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
             return imagesPath.resolve(finalPath).toAbsolutePath()
         } else {
-            //路径：~/.pls/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
-            //UUID：基于DDS文件所在目录
+            // 路径：~/.pls/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // UUID：基于DDS文件所在目录
             val index = imageAbsPath.lastIndexOf('/')
             val parent = if (index == -1) "" else imageAbsPath.substring(0, index)
             val fileName = if (index == -1) imageAbsPath else imageAbsPath.substring(index + 1)
@@ -191,7 +191,7 @@ object ParadoxImageManager {
             val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
             val slicedInfos = file.getOrPutUserData(Keys.sliceInfos) { mutableSetOf() }
             if (!slicedInfos.add(sliceInfo)) return true
-            imagePath.deleteIfExists() //IDE newly opened or outdated, delete it
+            imagePath.deleteIfExists() // IDE newly opened or outdated, delete it
         }
 
         imagePath.create()

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
-    //based on rootFile
+    // based on rootFile
 
     override fun getQualifiedName(element: PsiElement?): String? {
         if (element == null) return null

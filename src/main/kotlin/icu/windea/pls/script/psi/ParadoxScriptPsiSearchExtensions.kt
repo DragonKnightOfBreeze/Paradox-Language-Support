@@ -124,7 +124,7 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
         val elementPath = ParadoxExpressionPath.resolve(path)
         for (subPath in elementPath.subPaths) {
             if (subPath == "-") {
-                return null //TODO 暂不支持
+                return null // TODO 暂不支持
             } else {
                 current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
             }

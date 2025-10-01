@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 import java.awt.Color
 
-//region PSI Accessors
+// region PSI Accessors
 
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
     get() = siblings(forward = true, withSelf = false).findIsInstance()
@@ -48,9 +48,9 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(
     return findChildren<T>()
 }
 
-//endregion
+// endregion
 
-//region Predicates
+// region Predicates
 
 fun ParadoxScriptMember.isBlockMember(): Boolean {
     return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
@@ -98,22 +98,22 @@ fun ParadoxScriptPropertyKey.isDefinitionTypeKey(): Boolean {
 }
 
 fun ParadoxScriptValue.isDefinitionName(): Boolean {
-    //#131
+    // #131
     if (!this.isResolvableExpression()) return false
 
     val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
-    //def = def_name
+    // def = def_name
     if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
     val block = nameProperty.parent?.castOrNull<ParadoxScriptBlock>() ?: return false
     val definition = block.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
-    //def = { name_prop = def_name }
+    // def = { name_prop = def_name }
     if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false
 }
 
-//endregion
+// endregion
 
-//region Value Manipulations
+// region Value Manipulations
 
 val ParadoxScriptBoolean.booleanValue: Boolean
     get() = this.value.toBooleanYesNo()
@@ -199,8 +199,8 @@ fun ParadoxScriptValue.resolveValue(valid: Boolean = false): Any? {
         is ParadoxScriptString -> this.stringValue
         is ParadoxScriptColor -> this.color
         is ParadoxScriptScriptedVariableReference -> this.resolved()?.scriptedVariableValue?.resolveValue()
-        is ParadoxScriptBlock -> null //unsupported
-        else -> null //unsupported
+        is ParadoxScriptBlock -> null // unsupported
+        else -> null // unsupported
     }
 }
 
@@ -211,7 +211,7 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
     }
 }
 
-//fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
+// fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
 //    if (valid && !this.isValidExpression()) return null
 //    val resolved = this.resolved() ?: return null
 //    return when (resolved) {
@@ -221,7 +221,7 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
 //        is ParadoxScriptFloat -> resolved.value
 //        else -> null
 //    }
-//}
+// }
 
 fun ParadoxScriptValue.tagType(): CwtTagType? {
     if (this !is ParadoxScriptString) return null
@@ -240,4 +240,4 @@ fun ParadoxScriptValue.tagType(): CwtTagType? {
     return null
 }
 
-//endregion
+// endregion

@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.properties
  */
 class MissingEventNamespaceInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        //仅检查事件脚本文件
+        // 仅检查事件脚本文件
         if (file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path

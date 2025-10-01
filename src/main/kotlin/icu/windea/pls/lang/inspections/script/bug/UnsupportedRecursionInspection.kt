@@ -22,8 +22,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * - 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
-    //目前仅做检查即可，不需要显示递归的装订线图标
-    //在封装变量声明/定义声明级别进行此项检查
+    // 目前仅做检查即可，不需要显示递归的装订线图标
+    // 在封装变量声明/定义声明级别进行此项检查
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
@@ -54,7 +54,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             @Suppress("KotlinConstantConditions")
             private fun visitProperty(element: ParadoxScriptProperty) {
                 val definitionInfo = element.definitionInfo ?: return
-                if (definitionInfo.name.isEmpty()) return //ignored for anonymous definitions
+                if (definitionInfo.name.isEmpty()) return // ignored for anonymous definitions
                 if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()

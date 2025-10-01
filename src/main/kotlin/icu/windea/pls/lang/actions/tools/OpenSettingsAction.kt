@@ -21,7 +21,7 @@ abstract class OpenSettingsAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
+        // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
         if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
@@ -29,11 +29,11 @@ abstract class OpenSettingsAction : DumbAwareAction() {
 
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
-        //这里需要兼容直接从项目根目录右键打开菜单的情况
+        // 这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
         val rootInfo = file.fileInfo?.rootInfo ?: return
         if (!isAvailable(rootInfo)) return
-        //必须位于当前项目中
+        // 必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
@@ -41,15 +41,15 @@ abstract class OpenSettingsAction : DumbAwareAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        //这里需要兼容直接从项目根目录右键打开菜单的情况
+        // 这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
         val rootInfo = file.fileInfo?.rootInfo ?: return
         if (!isAvailable(rootInfo)) return
-        //必须位于当前项目中
+        // 必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
-        //打开配置前确保已有配置数据
+        // 打开配置前确保已有配置数据
         application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
 
         showSettingsDialog(rootInfo, project)

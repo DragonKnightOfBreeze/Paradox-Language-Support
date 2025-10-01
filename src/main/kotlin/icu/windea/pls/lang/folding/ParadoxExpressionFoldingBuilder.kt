@@ -43,16 +43,16 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
             private fun visitProperty(element: ParadoxScriptProperty) {
                 val configs = ParadoxExpressionManager.getConfigs(element)
-                if (configs.isEmpty()) return  //must match
+                if (configs.isEmpty()) return  // must match
                 val propertyKey = element.name.lowercase()
                 val settings = settingsMap.get(propertyKey) ?: return
-                //property key is ignore case, properties must be kept in order (declared by keys)
+                // property key is ignore case, properties must be kept in order (declared by keys)
                 val propertyValue = element.propertyValue ?: return
                 val elementsToKeep: List<PsiElement> = when {
                     settings.key != null && propertyValue !is ParadoxScriptBlock -> {
@@ -79,7 +79,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 }
                 if (elementsToKeep.isEmpty()) return
 
-                //references in placeholder must be kept in order (declared by keys)
+                // references in placeholder must be kept in order (declared by keys)
                 val node = element.node
                 val descriptorNode = propertyValue.node
                 val rootRange = element.textRange
@@ -91,8 +91,8 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 val keys = settings.key?.singleton?.list() ?: settings.keys ?: emptyList()
                 for ((index, s) in list.withIndex()) {
                     if (index % 2 == 0) {
-                        //'{ k = v }' will be folded by ParadoxScriptFoldingBuilder
-                        //It's necessary to fold divided 'a = {' and ' ' inside 'a = { k = v }', so fold 'a = {' here
+                        // '{ k = v }' will be folded by ParadoxScriptFoldingBuilder
+                        // It's necessary to fold divided 'a = {' and ' ' inside 'a = { k = v }', so fold 'a = {' here
                         if (index == 0 && propertyValue is ParadoxScriptBlock) {
                             val propertyValueRange = propertyValue.textRange
                             val textRange = TextRange.create(startOffset, propertyValueRange.startOffset)
@@ -106,7 +106,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                             is ParadoxScriptProperty -> elementToKeep.propertyValue?.textRange
                             else -> elementToKeep?.textRange
                         }
-                        if (valueRange == null && index != list.lastIndex) return  //unexpected
+                        if (valueRange == null && index != list.lastIndex) return  // unexpected
                         val textStartOffset = startOffset
                         val textEndOffset = valueRange?.startOffset ?: endOffset
                         val textRange = TextRange.create(textStartOffset, textEndOffset)
@@ -114,9 +114,9 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                         val descriptor = FoldingDescriptor(descriptorNode, textRange, foldingGroup, s)
                         descriptors.add(descriptor)
                     } else {
-                        if (s.isEmpty()) return  //invalid
-                        if (s != keys.getOrNull(index / 2)) return  //invalid
-                        startOffset = valueRange?.endOffset ?: return  //unexpected
+                        if (s.isEmpty()) return  // invalid
+                        if (s != keys.getOrNull(index / 2)) return  // invalid
+                        startOffset = valueRange?.endOffset ?: return  // unexpected
                     }
                 }
                 allDescriptors.addAll(descriptors)

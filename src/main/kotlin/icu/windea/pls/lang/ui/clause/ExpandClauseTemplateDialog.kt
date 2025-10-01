@@ -18,8 +18,8 @@ import javax.swing.JPanel
 import javax.swing.ListSelectionModel
 import javax.swing.event.ChangeEvent
 
-//com.intellij.refactoring.extractInterface.ExtractInterfaceDialog
-//com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase
+// com.intellij.refactoring.extractInterface.ExtractInterfaceDialog
+// com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase
 
 /**
  * 在插入子句内联模版之前显示，用于对要插入的属性进行选取、排序和重复。
@@ -44,7 +44,7 @@ class ExpandClauseTemplateDialog(
     }
 
     override fun createNorthPanel() = panel {
-        //(textField) propertyName
+        // (textField) propertyName
         row {
             val propertyName = context.propertyName
                 ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
@@ -88,7 +88,7 @@ class ExpandClauseTemplateDialog(
         tableView.rowSelectionAllowed = true
         tableView.columnSelectionAllowed = true
         tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
-        //快速搜索
+        // 快速搜索
         val speedSearch = object : TableViewSpeedSearch<ElementDescriptor>(tableView, null) {
             override fun getItemText(element: ElementDescriptor): String {
                 return element.name
@@ -97,7 +97,7 @@ class ExpandClauseTemplateDialog(
         speedSearch.setupListeners()
         val listTable = ElementsListTable(tableView, elementsTableModel, disposable, context)
         val table = listTable.table
-        //add, remove, move up, move down, duplicate
+        // add, remove, move up, move down, duplicate
         val panel = ToolbarDecorator.createDecorator(table)
             .addExtraAction(ElementsToolbarActions.DuplicateAction(listTable))
             .letIf(multipleGroup) {

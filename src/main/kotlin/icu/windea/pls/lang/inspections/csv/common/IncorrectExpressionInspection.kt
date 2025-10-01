@@ -44,14 +44,14 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitColumn(element: ParadoxCsvColumn) {
-                if (element.isEmptyColumn()) return //skip empty columns
+                if (element.isEmptyColumn()) return // skip empty columns
 
                 if (element.isHeaderColumn()) return
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
-                //开始检查
+                // 开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
             }
         }
@@ -59,7 +59,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

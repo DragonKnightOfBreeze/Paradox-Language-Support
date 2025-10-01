@@ -10,5 +10,5 @@ import icu.windea.pls.core.util.setValue
 
 object PlsInspectionSessionKeys : KeyRegistry()
 
-//var LocalInspectionToolSession.disabled: Boolean? by createKey(PlsInspectionSessionKeys)
+// var LocalInspectionToolSession.disabled: Boolean? by createKey(PlsInspectionSessionKeys)
 var LocalInspectionToolSession.disabledElement: PsiElement? by createKey(PlsInspectionSessionKeys)

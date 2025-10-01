@@ -137,10 +137,10 @@ object ParadoxExpressionManager {
         val inBlockKeys by createKey<Set<String>>(Keys)
     }
 
-    //region Common Methods
+    // region Common Methods
 
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
-        //快速判断，不检测带参数后的语法是否合法
+        // 快速判断，不检测带参数后的语法是否合法
         if (text.length < 2) return false
         if (full) {
             // $PARAM$ - 仅限 高级插值语法 A
@@ -156,13 +156,13 @@ object ParadoxExpressionManager {
     }
 
     fun getParameterName(text: String): String? {
-        //$PARAM$ - 仅限 高级插值语法 A
+        // $PARAM$ - 仅限 高级插值语法 A
         if (!isParameterized(text, full = true)) return null
         return text.substring(1, text.length - 1).substringBefore('|')
     }
 
     fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
-        //比较复杂的实现逻辑
+        // 比较复杂的实现逻辑
         val ranges = mutableListOf<TextRange>()
         // a_$PARAM$_b - 高级插值语法 A - 深度计数
         var depth1 = 0
@@ -228,8 +228,8 @@ object ParadoxExpressionManager {
 
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
-            element is ParadoxScriptBlock -> "" //should not be used
-            element is ParadoxScriptInlineMath -> "" //should not be used
+            element is ParadoxScriptBlock -> "" // should not be used
+            element is ParadoxScriptInlineMath -> "" // should not be used
             rangeInElement != null -> rangeInElement.substring(element.text)
             element is ParadoxScriptStringExpressionElement -> element.text.unquote()
             element is ParadoxCsvColumn -> element.text.unquote()
@@ -239,8 +239,8 @@ object ParadoxExpressionManager {
 
     fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
         return when (element) {
-            is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
-            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
+            is ParadoxScriptBlock -> TextRange.create(0, 1) // "{"
+            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // "@[" or "@\["
             is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
             is ParadoxCsvColumn -> TextRange.create(0, element.text.length).unquote(element.text)
             else -> TextRange.create(0, element.text.length)
@@ -287,9 +287,9 @@ object ParadoxExpressionManager {
             && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
     }
 
-    //endregion
+    // endregion
 
-    //region Core Methods
+    // region Core Methods
 
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         ProgressManager.checkCanceled()
@@ -300,7 +300,7 @@ object ParadoxExpressionManager {
     private fun doGetConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
-            //also depends on localisation files (for loc references)
+            // also depends on localisation files (for loc references)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
@@ -336,8 +336,8 @@ object ParadoxExpressionManager {
         subPaths.forEachIndexed f1@{ i, subPath ->
             ProgressManager.checkCanceled()
 
-            //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
-            //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
+            // 如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
+            // 如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
 
             val isQuoted = subPath != originalSubPaths[i]
             val isParameterized = subPath.isParameterized()
@@ -353,7 +353,7 @@ object ParadoxExpressionManager {
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null
-                if (!isFullParameterized) return@lazy emptyList() //must be full parameterized yet
+                if (!isFullParameterized) return@lazy emptyList() // must be full parameterized yet
                 ParadoxParameterManager.getParameterizedKeyConfigs(elementToMatch)
             }
 
@@ -491,18 +491,18 @@ object ParadoxExpressionManager {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            //also depends on localisation files (for loc references)
+            // also depends on localisation files (for loc references)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
     private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
-        //use soft values to optimize memory
+        // use soft values to optimize memory
         return ContainerUtil.createConcurrentSoftValueMap()
     }
 
     private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
-        //未填写属性的值 - 匹配所有
+        // 未填写属性的值 - 匹配所有
         val keyExpression = when (element) {
             is ParadoxScriptFile -> null
             is ParadoxScriptProperty -> element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
@@ -524,11 +524,11 @@ object ParadoxExpressionManager {
         if (contextConfigs.isEmpty()) return emptyList()
 
         if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
-            //直接返回 contextConfigs
+            // 直接返回 contextConfigs
             if (BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return contextConfigs
         }
 
-        //匹配键
+        // 匹配键
         val resultMatchKey = when {
             keyExpression != null -> {
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
@@ -544,10 +544,10 @@ object ParadoxExpressionManager {
         }
         if (resultMatchKey.isEmpty()) return emptyList()
 
-        //如果无法获取valueExpression，则返回所有匹配键的规则
+        // 如果无法获取valueExpression，则返回所有匹配键的规则
         if (valueExpression == null) return resultMatchKey
 
-        //得到所有可能匹配的结果
+        // 得到所有可能匹配的结果
         ProgressManager.checkCanceled()
         val resultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         resultMatchKey.forEach f@{ config ->
@@ -555,24 +555,24 @@ object ParadoxExpressionManager {
             if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
             resultValues += ResultValue(config, matchResult)
         }
-        //如果无结果且需要使用默认值，则返回所有可能匹配的规则
+        // 如果无结果且需要使用默认值，则返回所有可能匹配的规则
         if (resultValues.isEmpty() && orDefault) return resultMatchKey
 
-        //优化匹配结果
+        // 优化匹配结果
         ProgressManager.checkCanceled()
         val optimizedResult = optimizeMatchedConfigs(element, valueExpression, resultValues, false, matchOptions)
-        //如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则
+        // 如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则
         if (optimizedResult.isEmpty() && orDefault) return resultMatchKey
         return optimizedResult
     }
 
     private fun doMatchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
-        //如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
-        //目前要求推断结果必须是唯一的
-        //目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
+        // 如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
+        // 目前要求推断结果必须是唯一的
+        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
 
-        if (pkConfigs == null) return null //不是作为参数的键，不作特殊处理
-        if (pkConfigs.size != 1) return false //推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
+        if (pkConfigs == null) return null // 不是作为参数的键，不作特殊处理
+        if (pkConfigs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
         return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
 
@@ -587,13 +587,13 @@ object ParadoxExpressionManager {
 
         val configGroup = resultValues.first().value.configGroup
 
-        //首先尝试直接的精确匹配，如果有结果，则直接返回
-        //然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        //然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        //然后，尝试非回退的匹配，如果有结果，则直接返回
-        //然后，尝试复杂表达式的回退的匹配（可以解析，但存在错误），如果有结果，则直接返回
-        //然后，尝试回退的匹配，如果有结果，则直接返回
-        //如果到这里仍然无法匹配，则直接返回空列表
+        // 首先尝试直接的精确匹配，如果有结果，则直接返回
+        // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
+        // 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
+        // 然后，尝试非回退的匹配，如果有结果，则直接返回
+        // 然后，尝试复杂表达式的回退的匹配（可以解析，但存在错误），如果有结果，则直接返回
+        // 然后，尝试回退的匹配，如果有结果，则直接返回
+        // 如果到这里仍然无法匹配，则直接返回空列表
 
         val result = run r1@{
             val exactMatched = resultValues.filter { it.result is ParadoxExpressionMatcher.Result.ExactMatch }
@@ -617,11 +617,11 @@ object ParadoxExpressionManager {
             addLazyMatchedConfigs { it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch }
 
             resultValues.filterTo(matched) p@{
-                if (it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
-                if (it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
-                if (it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
-                if (it.result is ParadoxExpressionMatcher.Result.PartialMatch) return@p false //之后再匹配
-                if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
+                if (it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false // 已经匹配过
+                if (it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false // 已经匹配过
+                if (it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true // 直接认为是匹配的
+                if (it.result is ParadoxExpressionMatcher.Result.PartialMatch) return@p false // 之后再匹配
+                if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false // 之后再匹配
                 it.result.get(matchOptions)
             }
             if (matched.isNotEmpty()) return@r1 matched.map { it.value }
@@ -638,9 +638,9 @@ object ParadoxExpressionManager {
 
         var newResult = result
 
-        //后续处理
+        // 后续处理
 
-        //如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
+        // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
         run r1@{
             if (newResult.size <= 1) return@r1
             if (expression.type != ParadoxType.String) return@r1
@@ -649,7 +649,7 @@ object ParadoxExpressionManager {
             newResult = result1
         }
 
-        //如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
+        // 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
         run r1@{
             if (newResult.isEmpty()) return@r1
             val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
@@ -672,7 +672,7 @@ object ParadoxExpressionManager {
             newResult = result1
         }
 
-        //如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
+        // 如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
         run r1@{
             if (newResult.isEmpty()) return@r1
             val result1 = mutableListOf<CwtMemberConfig<*>>()
@@ -682,7 +682,7 @@ object ParadoxExpressionManager {
                     result1 += config
                     return@f1
                 }
-                //这里需要再次进行匹配
+                // 这里需要再次进行匹配
                 overriddenConfigs.forEach { c ->
                     val matchResult = ParadoxScriptExpressionMatcher.matches(element, expression, c.configExpression, c, configGroup, matchOptions)
                     if (matchResult.get(matchOptions)) {
@@ -696,8 +696,8 @@ object ParadoxExpressionManager {
         return newResult.optimized()
     }
 
-    //兼容需要考虑内联的情况（如内联脚本）
-    //这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
+    // 兼容需要考虑内联的情况（如内联脚本）
+    // 这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
 
     /**
      * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
@@ -709,7 +709,7 @@ object ParadoxExpressionManager {
 
         ProgressManager.checkCanceled()
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
-        //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
+        // NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
         val cacheKey = childConfigs.joinToString(" ")
         return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs).optimized() }
     }
@@ -717,20 +717,20 @@ object ParadoxExpressionManager {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
-            //also depends on localisation files (for loc references)
+            // also depends on localisation files (for loc references)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
     private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
-        //use soft values to optimize memory
+        // use soft values to optimize memory
         return ContainerUtil.createConcurrentSoftValueMap()
     }
 
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if (configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().configGroup
-        //这里需要先按优先级排序
+        // 这里需要先按优先级排序
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
@@ -745,7 +745,7 @@ object ParadoxExpressionManager {
             occurrenceMap[childConfig.configExpression] = childConfig.toOccurrence(element, project)
         }
         ProgressManager.checkCanceled()
-        //注意这里需要考虑内联和可选的情况
+        // 注意这里需要考虑内联和可选的情况
         blockElement.members().options(conditional = true, inline = true).forEach f@{ data ->
             val expression = when (data) {
                 is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
@@ -753,7 +753,7 @@ object ParadoxExpressionManager {
                 else -> return@f
             }
             val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
-            //may contain parameter -> can't and should not get occurrences
+            // may contain parameter -> can't and should not get occurrences
             if (isParameterized) {
                 occurrenceMap.clear()
                 return@f
@@ -771,9 +771,9 @@ object ParadoxExpressionManager {
         return occurrenceMap
     }
 
-    //endregion
+    // endregion
 
-    //region Annotate Methods
+    // region Annotate Methods
 
     fun annotateScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>) {
         val expressionText = getExpressionText(element, rangeInElement)
@@ -824,7 +824,7 @@ object ParadoxExpressionManager {
 
     fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         if (range.isEmpty) return
-        //skip parameter ranges
+        // skip parameter ranges
         val parameterRanges = getParameterRangesInExpression(element)
         if (parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
@@ -840,7 +840,7 @@ object ParadoxExpressionManager {
     private fun annotateExpressionNodeByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
 
-        //merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
+        // merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
         if (expressionNode is ParadoxTokenNode) {
             val editorColorsManager = EditorColorsManager.getInstance()
             val schema = editorColorsManager.activeVisibleScheme ?: editorColorsManager.schemeForCurrentUITheme
@@ -858,9 +858,9 @@ object ParadoxExpressionManager {
         holder.newSilentAnnotation(HighlightInfoType.HIGHLIGHTED_REFERENCE_SEVERITY).range(range).textAttributes(DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE).create()
     }
 
-    //endregion
+    // endregion
 
-    //region Reference Methods
+    // region Reference Methods
 
     fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
@@ -875,8 +875,8 @@ object ParadoxExpressionManager {
     private fun doGetExpressionReferencesFromCache(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
 
-        //尝试兼容可能包含参数的情况
-        //if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
+        // 尝试兼容可能包含参数的情况
+        // if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
         val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
@@ -887,13 +887,13 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
-        //尝试基于CWT规则进行解析
+        // 尝试基于CWT规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
         val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
         val matchOptions = if (processMergedIndex) Options.SkipIndex or Options.SkipScope else Options.Default
         val configs = getConfigs(element, orDefault = isKey, matchOptions = matchOptions)
         val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) //unquoted text
+        val textRange = getExpressionTextRange(element) // unquoted text
         val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
         return reference.collectReferences()
     }
@@ -901,8 +901,8 @@ object ParadoxExpressionManager {
     private fun doGetExpressionReferencesFromCache(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
         if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
 
-        //尝试兼容可能包含参数的情况
-        //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
+        // 尝试兼容可能包含参数的情况
+        // if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
         val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
@@ -913,7 +913,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
-        //尝试解析为复杂表达式
+        // 尝试解析为复杂表达式
         val value = element.value
         val textRange = TextRange.create(0, value.length)
         val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
@@ -934,21 +934,21 @@ object ParadoxExpressionManager {
             else -> null
         }
         if (columnConfig == null) return PsiReference.EMPTY_ARRAY
-        val textRange = getExpressionTextRange(element) //unquoted text
+        val textRange = getExpressionTextRange(element) // unquoted text
         val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
         return arrayOf(reference)
     }
 
-    //endregion
+    // endregion
 
-    //region Resolve Methods
+    // region Resolve Methods
 
     fun resolveScriptExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
 
         if (configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return null //排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expressionText, config, isKey, exact)
         if (result != null) return result
@@ -962,7 +962,7 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         if (configExpression == null) return emptySet()
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
 
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotEmpty()) return result
@@ -975,7 +975,7 @@ object ParadoxExpressionManager {
     private fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
         val resolvedConfig = config.resolved()
         if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
-            //特殊处理合成的CWT规则
+            // 特殊处理合成的CWT规则
             val gameType = configGroup.gameType
             val project = configGroup.project
             return CwtMemberConfigElement(element, resolvedConfig, gameType, project)
@@ -987,7 +987,7 @@ object ParadoxExpressionManager {
     fun resolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return null //排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return null // 排除引用文本带参数的情况
 
         val result = ParadoxLocalisationExpressionSupport.resolve(element, rangeInElement, expressionText)
         return result
@@ -996,7 +996,7 @@ object ParadoxExpressionManager {
     fun multiResolveLocalisationExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        if (expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
+        if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
 
         val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expressionText)
         return result
@@ -1021,7 +1021,7 @@ object ParadoxExpressionManager {
     }
 
     fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null //NOTE 1.4.0 - unnecessary to support yet
+        if (element !is ParadoxScriptStringExpressionElement) return null // NOTE 1.4.0 - unnecessary to support yet
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
 
@@ -1062,12 +1062,12 @@ object ParadoxExpressionManager {
         return resolved
     }
 
-    //endregion
+    // endregion
 
-    //region Misc Methods
+    // region Misc Methods
 
     fun isConstantMatch(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
-        //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
+        // 注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
         if (configExpression.isKey && expression.isKey == false) return false
         if (!configExpression.isKey && expression.isKey == true) return false
 
@@ -1086,7 +1086,7 @@ object ParadoxExpressionManager {
     }
 
     fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
@@ -1094,7 +1094,7 @@ object ParadoxExpressionManager {
     }
 
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
-        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
         if (constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
@@ -1184,5 +1184,5 @@ object ParadoxExpressionManager {
         return suffixes.map { name + it }
     }
 
-    //endregion
+    // endregion
 }

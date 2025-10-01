@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.properties
  */
 class IncorrectEventIdInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        //仅检查事件脚本文件
+        // 仅检查事件脚本文件
         if (file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
@@ -41,7 +41,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) return@f
             val nameElement = if (nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
-            if (nameElement == null) return@f //忽略
+            if (nameElement == null) return@f // 忽略
             holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
         }
 

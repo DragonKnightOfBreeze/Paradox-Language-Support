@@ -117,21 +117,21 @@ fun LookupElementBuilder.withScopeMatched(scopeMatched: Boolean): LookupElementB
     return withItemTextForeground(JBColor.GRAY)
 }
 
-//extensions for generic lookup elements
+// extensions for generic lookup elements
 
 private fun applyKeyOrValueInsertHandler(c: InsertionContext, context: ProcessingContext, isKey: Boolean?) {
-    //这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
-    //这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
+    // 这里的isKey需要在创建LookupElement时就预先获取（之后可能会有所变更）
+    // 这里的isKey如果是null，表示已经填充的只是KEY或VALUE的其中一部分
     if (!context.quoted) return
     val editor = c.editor
     val caretOffset = editor.caretModel.offset
     val charsSequence = editor.document.charsSequence
     val rightQuoted = charsSequence.get(caretOffset) == '"' && charsSequence.get(caretOffset - 1) != '\\'
     if (rightQuoted) {
-        //在必要时将光标移到右双引号之后
+        // 在必要时将光标移到右双引号之后
         if (isKey != null) editor.caretModel.moveToOffset(caretOffset + 1)
     } else {
-        //插入缺失的右双引号，且在必要时将光标移到右双引号之后
+        // 插入缺失的右双引号，且在必要时将光标移到右双引号之后
         EditorModificationUtil.insertStringAtCaret(editor, "\"", false, isKey != null)
     }
 }
@@ -186,7 +186,7 @@ private fun applyClauseInsertHandler(c: InsertionContext) {
     EditorModificationUtil.insertStringAtCaret(c.editor, text, false, true, length)
 }
 
-//extensions for script expressions
+// extensions for script expressions
 
 fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boolean): T {
     this.forceInsertCurlyBraces = forceInsertCurlyBraces
@@ -218,7 +218,7 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
 }
 
 fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): LookupElement? {
-    //check whether scope is matched again here
+    // check whether scope is matched again here
     if ((!scopeMatched || !context.scopeMatched) && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return null
 
     val config = context.config
@@ -229,7 +229,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         config is CwtSingleAliasConfig -> config.config
         config is CwtInlineConfig -> config.config
         else -> null
-    }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } //这里需要进行必要的内联
+    }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
     val isKeyOrStringElement = contextElement is ParadoxScriptPropertyKey || contextElement is ParadoxScriptString
@@ -247,7 +247,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         else -> false
     }
 
-    //排除重复项
+    // 排除重复项
     val completionId = when {
         isKeyOnly || isValueOnly -> lookupString
         constantValue != null -> "$lookupString = $constantValue"
@@ -278,7 +278,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
 
     if (!isKeyOrStringElement) return lookupElement
 
-    if (isKeyOnly || isValueOnly) { //key or value only
+    if (isKeyOnly || isValueOnly) { // key or value only
         lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context, isKey) }
     } else if (isKey == true) { // key with value
         lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyWithValueInsertHandler(c, context, isKey, constantValue, insertCurlyBraces) }
@@ -286,7 +286,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
 
     val extraElements = mutableListOf<LookupElement>()
 
-    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    // 进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     if (isKey == true && !isKeyOnly && isBlock && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {
@@ -330,8 +330,8 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
 
 @Suppress("UnstableApiUsage")
 private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: ProcessingContext, entryConfigs: List<CwtMemberConfig<*>>): LookupElementBuilder {
-    //如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
-    //默认列出且仅允许选择直接的key为常量字符串的属性（忽略需要内联的情况）
+    // 如果补全位置所在的子句为空或者都不精确匹配，显示对话框时默认列出的属性/值应该有数种情况，因此这里需要传入entryConfigs
+    // 默认列出且仅允许选择直接的key为常量字符串的属性（忽略需要内联的情况）
 
     val file = context.parameters?.originalFile ?: return this
     val constantConfigGroupList = mutableListOf<Map<CwtDataExpression, List<CwtMemberConfig<*>>>>()
@@ -341,7 +341,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
             ?.filter { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Constant }
             ?.groupBy { it.configExpression }
             .orEmpty()
-        if (constantConfigGroup.isEmpty()) continue //skip
+        if (constantConfigGroup.isEmpty()) continue // skip
         val configList = entry.configs
             ?.distinctBy { it.configExpression }
             .orEmpty()
@@ -409,7 +409,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
                 }
                 val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
                 val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
-                documentManager.doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+                documentManager.doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
                 val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.expandClauseTemplate.name"))
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
@@ -434,7 +434,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
                 val template = templateBuilder.buildInlineTemplate()
                 TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
                     try {
-                        //如果从句中没有其他可能的元素，将光标移到子句的末尾
+                        // 如果从句中没有其他可能的元素，将光标移到子句的末尾
                         if (!hasRemain) editor.caretModel.moveToOffset(caretMarker.endOffset)
                         editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
                     } finally {
@@ -476,7 +476,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
     val lookupElement = ParadoxCompletionManager.blockLookupElement
     addElement(lookupElement)
 
-    //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    // 进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
     if (PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val config = context.config!!
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)

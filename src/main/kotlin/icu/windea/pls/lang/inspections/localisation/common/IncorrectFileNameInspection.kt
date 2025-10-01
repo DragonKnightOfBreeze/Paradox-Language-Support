@@ -37,7 +37,7 @@ import icu.windea.pls.model.paths.matches
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         val fileInfo = file.fileInfo ?: return false
         return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }
@@ -45,7 +45,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
 
-        //仅对于存在且仅存在一个locale的本地化文件
+        // 仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
         file.children().filterIsInstance<ParadoxLocalisationPropertyList>().process {
             if (theOnlyPropertyList == null) {
@@ -56,24 +56,24 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
             }
         }
         val locale = theOnlyPropertyList?.locale ?: return null
-        if (!locale.isValid) return null //locale尚未填写完成时也跳过检查
-        val localeConfig = selectLocale(locale) ?: return null //locale不支持时也跳过检查
+        if (!locale.isValid) return null // locale尚未填写完成时也跳过检查
+        val localeConfig = selectLocale(locale) ?: return null // locale不支持时也跳过检查
         val localeId = localeConfig.id
         val fileName = file.name
         val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
-        if (localeIdFromFile == localeId) return null //匹配语言环境，跳过
+        if (localeIdFromFile == localeId) return null // 匹配语言环境，跳过
         val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val quickFixes = buildList {
             this += RenameFileFix(locale, expectedFileName)
             if (localeIdFromFile != null) this += RenameLocaleFix(locale, localeIdFromFile)
         }.toTypedArray<LocalQuickFix>()
-        //将检查注册在locale上，而非file上
+        // 将检查注册在locale上，而非file上
         holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId), *quickFixes)
         return holder.resultsArray
     }
 
-    //org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
+    // org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention
 
     private class RenameFileFix(
         element: ParadoxLocalisationLocale,
@@ -106,7 +106,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
         element: ParadoxLocalisationLocale,
         private val expectedLocaleId: String
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-        override fun getPriority() = PriorityAction.Priority.TOP //高优先级，如果可用
+        override fun getPriority() = PriorityAction.Priority.TOP // 高优先级，如果可用
 
         override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.2", expectedLocaleId)
 

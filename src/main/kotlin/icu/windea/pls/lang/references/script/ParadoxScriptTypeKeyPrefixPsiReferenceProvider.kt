@@ -26,11 +26,11 @@ class ParadoxScriptTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
 
         if (element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
         if (!element.isBlockMember()) return PsiReference.EMPTY_ARRAY
-        if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY //不应当带有参数
+        if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY // 不应当带有参数
         val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY
-        val nextProperty = findNextProperty(element) ?: return PsiReference.EMPTY_ARRAY //之后的兄弟节点必须是属性（跳过空白和注释）
-        val typeConfig = nextProperty.definitionInfo?.typeConfig ?: return PsiReference.EMPTY_ARRAY //并且必须是定义
-        if (typeConfig.typeKeyPrefix.let { it == null || !it.equals(element.value, ignoreCase = true) }) return PsiReference.EMPTY_ARRAY //前缀规则必须存在且一致
+        val nextProperty = findNextProperty(element) ?: return PsiReference.EMPTY_ARRAY // 之后的兄弟节点必须是属性（跳过空白和注释）
+        val typeConfig = nextProperty.definitionInfo?.typeConfig ?: return PsiReference.EMPTY_ARRAY // 并且必须是定义
+        if (typeConfig.typeKeyPrefix.let { it == null || !it.equals(element.value, ignoreCase = true) }) return PsiReference.EMPTY_ARRAY // 前缀规则必须存在且一致
         val config = typeConfig.typeKeyPrefixConfig ?: return PsiReference.EMPTY_ARRAY
         val reference = ParadoxScriptTypeKeyPrefixPsiReference(element, rangeInElement, config)
         return arrayOf(reference)

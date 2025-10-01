@@ -27,7 +27,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 进行搜索时会尝试推断当前项目以及当前的游戏类型。
  */
 class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
-    //com.intellij.ide.util.gotoByName.CwtConfigSymbolChooseByNameContributor
+    // com.intellij.ide.util.gotoByName.CwtConfigSymbolChooseByNameContributor
 
     private fun getTypes(): Set<String> = buildSet {
         val settings = PlsFacade.getSettings().navigation

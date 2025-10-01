@@ -21,14 +21,14 @@ import icu.windea.pls.script.psi.findProperty
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
-        //gfx/interface/icons/modifiers/mod_$
+        // gfx/interface/icons/modifiers/mod_$
         registry += "gfx/interface/icons/modifiers/mod_${modifierInfo.name}"
     }
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
-    //对于由job生成的那些修正，需要应用特殊的图标继承逻辑
+    // 对于由job生成的那些修正，需要应用特殊的图标继承逻辑
 
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
@@ -55,20 +55,20 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryBasedModifierIconProvider : ParadoxModifierIconProvider {
-    //对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
+    // 对于由economic_category生成的那些修正，需要应用特殊的图标继承逻辑
 
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val economicCategoryInfo = modifierInfo.economicCategoryInfo ?: return
         val economicCategoryModifierInfo = modifierInfo.economicCategoryModifierInfo ?: return
         if (economicCategoryModifierInfo.useParentIcon) {
-            //去除默认的对应图标
+            // 去除默认的对应图标
             val economicCategoryName = economicCategoryModifierInfo.name
             registry -= "gfx/interface/icons/modifiers/mod_$economicCategoryName"
-            //加入所属经济分类的对应图标
+            // 加入所属经济分类的对应图标
             val name = economicCategoryModifierInfo.resolveName(economicCategoryInfo.name)
             registry += "gfx/interface/icons/modifiers/mod_${name}"
         }
-        //使用全局的对应图标
+        // 使用全局的对应图标
         val name = economicCategoryModifierInfo.resolveName(null)
         registry += "gfx/interface/icons/modifiers/mod_${name}"
     }

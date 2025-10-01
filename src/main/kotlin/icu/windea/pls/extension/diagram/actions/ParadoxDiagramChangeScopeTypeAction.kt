@@ -15,7 +15,7 @@ import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import javax.swing.Icon
 
-//com.intellij.uml.core.actions.scopes.UmlChangeScopeAction
+// com.intellij.uml.core.actions.scopes.UmlChangeScopeAction
 
 class ParadoxDiagramChangeScopeTypeAction(
     val scopeType: ParadoxSearchScopeType,

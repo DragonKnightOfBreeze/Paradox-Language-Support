@@ -61,10 +61,10 @@ import icu.windea.pls.script.psi.isExpression
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        //适用于脚本文件中的表达式
-        //获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
-        //包括内联规则以及内联后的规则
-        //包括其他一些相关的规则
+        // 适用于脚本文件中的表达式
+        // 获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
+        // 包括内联规则以及内联后的规则
+        // 包括其他一些相关的规则
 
         val element = ParadoxPsiFinder.findScriptExpression(file, offset) ?: return emptySet()
         val orDefault = element is ParadoxScriptPropertyKey
@@ -114,7 +114,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
 class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        //适用于脚本文件与本地化文件中的复杂表达式（中的节点）
+        // 适用于脚本文件与本地化文件中的复杂表达式（中的节点）
 
         val element = when (file) {
             is ParadoxScriptFile -> {
@@ -153,8 +153,8 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
 class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        //适用于封装变量的名字与引用，定义的类型键、名字与引用，参数用法，以及脚本文件中的表达式
-        //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
+        // 适用于封装变量的名字与引用，定义的类型键、名字与引用，参数用法，以及脚本文件中的表达式
+        // 包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
 
         val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
@@ -249,7 +249,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
 
 class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        //适用于CSV文件中的某一列对应的表达式
+        // 适用于CSV文件中的某一列对应的表达式
 
         val element = ParadoxPsiFinder.findCsvExpression(file, offset) ?: return emptySet()
         if (element !is ParadoxCsvColumn) return emptySet()

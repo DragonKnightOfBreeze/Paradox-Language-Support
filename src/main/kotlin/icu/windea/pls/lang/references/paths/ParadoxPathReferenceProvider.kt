@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 
-//org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
+// org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 
 /**
  * 用于支持在html/markdown等文件中，将特定的链接解析为匹配的目标引用（定义、本地化等）。

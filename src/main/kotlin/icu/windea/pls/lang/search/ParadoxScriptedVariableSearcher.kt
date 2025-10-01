@@ -91,19 +91,19 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
 
         if (PlsVfsManager.isInjectedFile(file)) {
             run {
-                //input file is an injected file (from argument value)
+                // input file is an injected file (from argument value)
                 val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
                 val parameterElement = injectionInfo.parameterElement ?: return@run
-                if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run //must be argument value, rather than parameter default value
+                if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be argument value, rather than parameter default value
                 val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run
                 return doProcessQueryForInlineScriptFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
             }
             return true
         }
 
-        if (PlsVfsManager.isLightFile(file)) return true //skip for other in-memory files
+        if (PlsVfsManager.isLightFile(file)) return true // skip for other in-memory files
 
-        //input file is an inline script file
+        // input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true
         return doProcessQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
     }
@@ -124,7 +124,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, inlineScriptFile.virtualFile)
             doProcessAllElements(name, project, fileScope) p@{ element ->
-                //do not skip scripted variables after related parameter, do not check that currently
+                // do not skip scripted variables after related parameter, do not check that currently
                 consumer.process(element)
             }.let { if (!it) return@p false }
             true

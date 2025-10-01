@@ -59,7 +59,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
         }
     }
 
-    //icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
+    // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
@@ -83,16 +83,16 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                 else -> null
             }
 
-            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
-            //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            //这里需要尝试使用图标的原始高度
+            // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
-                //点击可以导航到声明处（DDS）
+                // 点击可以导航到声明处（DDS）
                 val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
                 val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
                 val endOffset = element.endOffset

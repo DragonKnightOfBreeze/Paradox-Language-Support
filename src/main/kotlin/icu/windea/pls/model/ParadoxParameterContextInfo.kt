@@ -28,7 +28,7 @@ class ParadoxParameterContextInfo(
      * @property conditionStack 文件中从上到下，链表中从左到右，记录条件表达式的堆栈。如果[element]不是[ParadoxParameter]，则应当为null。
      */
     class Parameter(
-        private val elementPointer: SmartPsiElementPointer<PsiElement>, //ParadoxConditionParameter | ParadoxParameter
+        private val elementPointer: SmartPsiElementPointer<PsiElement>, // ParadoxConditionParameter | ParadoxParameter
         val name: String,
         val defaultValue: String? = null,
         val conditionStack: Deque<ReversibleValue<String>>? = null,

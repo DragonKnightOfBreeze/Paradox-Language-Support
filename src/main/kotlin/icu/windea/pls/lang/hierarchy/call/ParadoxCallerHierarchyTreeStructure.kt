@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.findParentDefinition
 
-//com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
+// com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
 class ParadoxCallerHierarchyTreeStructure(
     project: Project,
@@ -71,12 +71,12 @@ class ParadoxCallerHierarchyTreeStructure(
         val referenceElement = reference.element
         when (referenceElement.language) {
             is ParadoxScriptLanguage -> {
-                if (!settings.showDefinitionsInCallHierarchy) return //不显示
+                if (!settings.showDefinitionsInCallHierarchy) return // 不显示
                 val definition = referenceElement.findParentDefinition()
                 val definitionInfo = definition?.definitionInfo
                 if (definition == null || definitionInfo == null) return
                 ProgressManager.checkCanceled()
-                if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return //不显示
+                if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return // 不显示
                 val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
                 val d = synchronized(descriptors) {
                     descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
@@ -87,8 +87,8 @@ class ParadoxCallerHierarchyTreeStructure(
                 d.references.add(reference)
             }
             is ParadoxLocalisationLanguage -> {
-                if (!settings.showLocalisationsInCallHierarchy) return  //不显示
-                //兼容向上内联的情况
+                if (!settings.showLocalisationsInCallHierarchy) return  // 不显示
+                // 兼容向上内联的情况
                 val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
                 val localisationInfo = localisation?.localisationInfo
                 if (localisation == null || localisationInfo == null) return

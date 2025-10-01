@@ -11,7 +11,7 @@ import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.integrations.settings.PlsTigerHighlightDialog
 import javax.swing.JComponent
 
-//com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection
+// com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection
 
 class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection {
     companion object {

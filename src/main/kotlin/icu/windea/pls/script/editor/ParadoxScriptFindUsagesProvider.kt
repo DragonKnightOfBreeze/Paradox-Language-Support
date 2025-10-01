@@ -44,7 +44,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
                 }
             }
             is ParadoxScriptProperty -> {
-                //如果是定义，需要特殊处理
+                // 如果是定义，需要特殊处理
                 val definitionInfo = element.definitionInfo
                 if (definitionInfo != null) {
                     when (location) {

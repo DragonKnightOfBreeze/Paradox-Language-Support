@@ -10,5 +10,5 @@ class ParadoxLocalisationWordSelectionHandler : ExtendWordSelectionHandlerBase()
         return false
     }
 
-    //no specific situations here
+    // no specific situations here
 }

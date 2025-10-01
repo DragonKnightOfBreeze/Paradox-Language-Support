@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
  */
 class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
-        //delete existing colorId after press enter
+        // delete existing colorId after press enter
         if (context.completionChar == '\n' || context.completionChar == '\r') {
             val editor = context.editor
             val offset = editor.caretModel.offset

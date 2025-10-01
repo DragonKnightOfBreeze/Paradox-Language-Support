@@ -101,7 +101,7 @@ class EntryListTableModel<K, V>(
             tableView.intercellSpacing = Dimension(0, 0)
             tableView.selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
             tableView.updateColumnSizes()
-            //快速搜索
+            // 快速搜索
             val speedSearch = object : TableViewSpeedSearch<Entry<K, V>>(tableView, null) {
                 override fun getItemText(element: Entry<K, V>): String {
                     return keyGetter(element.key)

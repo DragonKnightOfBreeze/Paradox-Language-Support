@@ -41,8 +41,8 @@ class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisat
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("UnstableApiUsage")
     override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context<String>) {
-        //进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度
-        //并发性 - 文件级别
+        // 进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度
+        // 并发性 - 文件级别
 
         val (files, selectedLocale, data) = context
         val description = PlsAiManager.getOptimizedDescription(data)
@@ -76,7 +76,7 @@ class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisat
                         }
                         withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 
-                        //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                        // 不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                         if (request.index != contextsToHandle.size) withWarnings = true
                     }
 

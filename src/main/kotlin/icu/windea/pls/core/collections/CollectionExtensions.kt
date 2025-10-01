@@ -126,7 +126,7 @@ fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 }
 
 // fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
-//    //make List<T> properties mutable in actual if not empty (to hack them if necessary)
+//    // make List<T> properties mutable in actual if not empty (to hack them if necessary)
 //    if (this.isEmpty()) return this
 //    if (this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
 //    try {

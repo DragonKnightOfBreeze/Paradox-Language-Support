@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-//用于复制路径/引用（Edit > Copy Path/Reference...）
+// 用于复制路径/引用（Edit > Copy Path/Reference...）
 
 /**
  * - 如果是封装变量名：返回封装变量的名字
@@ -38,6 +38,6 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
     }
 
     override fun qualifiedNameToElement(fqn: String, project: Project): PsiElement? {
-        return null //不处理
+        return null // 不处理
     }
 }

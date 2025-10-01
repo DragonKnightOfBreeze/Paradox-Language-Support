@@ -24,10 +24,10 @@ import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.properties
 
 class NonTriggeredEventInspection : LocalInspectionTool() {
-    //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
+    // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        //仅检查事件脚本文件
+        // 仅检查事件脚本文件
         if (file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
@@ -41,8 +41,8 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
         file.properties().options(inline = true).forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
-            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  //no "triggered" subtype declared, skip
-            if ("inherited" in definitionInfo.subtypes) return@f  //ignore inherited events
+            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no "triggered" subtype declared, skip
+            if ("inherited" in definitionInfo.subtypes) return@f  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) return@f
             val fixes = buildList {
                 if (element.block != null) this += Fix1(element)
@@ -56,7 +56,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
     private class Fix1(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        //add "is_triggered_only = yes" into declaration (after "id" field or at start)
+        // add "is_triggered_only = yes" into declaration (after "id" field or at start)
 
         override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1")
 

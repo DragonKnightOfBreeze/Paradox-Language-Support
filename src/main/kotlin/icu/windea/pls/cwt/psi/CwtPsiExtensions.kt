@@ -5,7 +5,7 @@ package icu.windea.pls.cwt.psi
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.toBooleanYesNo
 
-//region Predicates
+// region Predicates
 
 fun CwtValue.isPropertyValue(): Boolean {
     val parent = parent
@@ -35,9 +35,9 @@ fun CwtExpressionElement.isExpression(): Boolean {
     }
 }
 
-//endregion
+// endregion
 
-//region Value Manipulations
+// region Value Manipulations
 
 val CwtBoolean.booleanValue: Boolean
     get() = this.value.toBooleanYesNo()
@@ -51,4 +51,4 @@ val CwtFloat.floatValue: Float
 val CwtString.stringValue: String
     get() = this.value
 
-//endregion
+// endregion

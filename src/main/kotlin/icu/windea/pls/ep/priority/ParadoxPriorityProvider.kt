@@ -60,7 +60,7 @@ interface ParadoxPriorityProvider {
                 val file1 = selectFile(o1) ?: return@c 1
                 val file2 = selectFile(o2) ?: return@c -1
                 if (file1 == file2) {
-                    //同一文件中后面的总是会覆盖前面的
+                    // 同一文件中后面的总是会覆盖前面的
                     if (searchParameters is ParadoxFilePathSearch.SearchParameters) return@c 0
                     return@c 1
                 }
@@ -70,7 +70,7 @@ interface ParadoxPriorityProvider {
                 val path2 = fileInfo2.path.path
                 val pathResult = path1.compareTo(path2)
                 if (pathResult != 0) {
-                    //文件路径不同时，基于优先级进行排序
+                    // 文件路径不同时，基于优先级进行排序
                     return@c when (priority) {
                         ParadoxPriority.FIOS -> pathResult
                         ParadoxPriority.LIOS -> -pathResult
@@ -82,10 +82,10 @@ interface ParadoxPriorityProvider {
                 val order2 = getOrder(fileInfo2, settings)
                 val orderResult = order1.compareTo(order2)
                 if (orderResult != 0) {
-                    //文件路径相同时，总是会按照order由大到小排序
+                    // 文件路径相同时，总是会按照order由大到小排序
                     return@c -orderResult
                 }
-                1 //这里按照原有顺序进行排序
+                1 // 这里按照原有顺序进行排序
             }
         }
 

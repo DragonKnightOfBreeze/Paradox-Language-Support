@@ -179,7 +179,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                 val element = elementPointer.element
                 val tierElements = ParadoxTechnologyManager.Stellaris.getAllTiers(project, element)
                 tierElements.forEach { tierElement ->
-                    val name = tierElement.name //= tierElement.definitionInfo?.name
+                    val name = tierElement.name // = tierElement.definitionInfo?.name
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, tierElement, false, name, type, NodeType.TechTier)
                 }
             }
@@ -195,7 +195,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                 val element = elementPointer.element
                 val categoryElements = ParadoxTechnologyManager.Stellaris.getAllCategories(project, element)
                 categoryElements.forEach { categoryElement ->
-                    val name = categoryElement.name //= categoryElement.definitionInfo?.name
+                    val name = categoryElement.name // = categoryElement.definitionInfo?.name
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, categoryElement, false, name, type, NodeType.TechCategory)
                 }
             }

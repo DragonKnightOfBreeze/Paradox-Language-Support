@@ -61,7 +61,7 @@ class ParadoxLocalisationPsiReferenceProvider : PsiReferenceProvider() {
 
     private fun getReference(element: ParadoxLocalisationConceptCommand): ParadoxLocalisationConceptPsiReference? {
         val nameElement = element.conceptName ?: return null
-        //作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
+        // 作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
         if (nameElement.isDatabaseObjectExpression(strict = true)) return null
         val rangeInElement = nameElement.textRangeInParent
         return ParadoxLocalisationConceptPsiReference(element, rangeInElement)

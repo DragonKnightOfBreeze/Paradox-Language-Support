@@ -32,12 +32,12 @@ private class CwtConfigPathImpl : CwtConfigPath {
     }
 
     private fun path2SubPaths(path: String): List<String> {
-        //use simple implementation
+        // use simple implementation
         return path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/') }
     }
 
     private fun subPaths2Path(subPaths: List<String>): String {
-        //use simple implementation
+        // use simple implementation
         return subPaths.joinToString("/") { it.replace("/", "\\/") }
     }
 

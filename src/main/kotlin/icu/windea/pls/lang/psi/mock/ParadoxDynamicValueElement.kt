@@ -29,7 +29,7 @@ class ParadoxDynamicValueElement(
     }
 
     override fun getIcon(): Icon {
-        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        val dynamicValueType = dynamicValueTypes.first() // first is ok
         return PlsIcons.Nodes.DynamicValue(dynamicValueType)
     }
 
@@ -38,7 +38,7 @@ class ParadoxDynamicValueElement(
     }
 
     override fun getTypeName(): String {
-        val dynamicValueType = dynamicValueTypes.first() //first is ok
+        val dynamicValueType = dynamicValueTypes.first() // first is ok
         return when (dynamicValueType) {
             "variable" -> PlsBundle.message("script.description.variable")
             else -> PlsBundle.message("script.description.dynamicValue")

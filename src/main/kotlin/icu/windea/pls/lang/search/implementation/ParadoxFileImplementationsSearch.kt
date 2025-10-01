@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.selector.withSearchScope
  */
 class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        //得到解析后的PSI元素
+        // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if (sourceElement !is PsiFile) return true
         val fileInfo = sourceElement.fileInfo ?: return true
@@ -27,9 +27,9 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         if (path.isEmpty()) return true
         val project = queryParameters.project
         ReadAction.nonBlocking<Unit> {
-            //这里不进行排序
+            // 这里不进行排序
             val selector = selector(project, sourceElement).file()
-                .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
+                .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxFilePathSearch.search(path, null, selector).forEach(Processor {
                 consumer.process(it.toPsiFile(project))
             })

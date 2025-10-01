@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class OverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
-        if (!inProject(file)) return false //only for project files
+        if (!inProject(file)) return false // only for project files
         return true
     }
 
@@ -55,10 +55,10 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 val selector = selector(project, file).definition()
                 val name = definitionInfo.name
                 val type = definitionInfo.type
-                if (name.isEmpty()) return //anonymous -> skipped
-                if (name.isParameterized()) return //parameterized -> ignored
+                if (name.isEmpty()) return // anonymous -> skipped
+                if (name.isParameterized()) return // parameterized -> ignored
                 val results = ParadoxDefinitionSearch.search(name, type, selector).findAll()
-                if (results.size < 2) return //no override -> skip
+                if (results.size < 2) return // no override -> skip
 
                 val locationElement = element.propertyKey
                 val message = PlsBundle.message("inspection.overriddenForDefinition.desc", name)

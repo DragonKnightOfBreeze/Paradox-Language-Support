@@ -30,7 +30,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
-        val targetUrl = getTargetUrl(fileInfo) ?: return //ignore
+        val targetUrl = getTargetUrl(fileInfo) ?: return // ignore
         BrowserUtil.open(targetUrl)
     }
 

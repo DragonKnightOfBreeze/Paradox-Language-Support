@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.awt.Font
 
-//com.intellij.ide.hierarchy.call.CallHierarchyNodeDescriptor
+// com.intellij.ide.hierarchy.call.CallHierarchyNodeDescriptor
 
 class ParadoxCallHierarchyNodeDescriptor(
     project: Project,

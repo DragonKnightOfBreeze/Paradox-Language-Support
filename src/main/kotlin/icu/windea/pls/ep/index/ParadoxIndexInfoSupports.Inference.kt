@@ -47,7 +47,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
             val expression = element.value
-            if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
+            if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
             val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.configExpression.value?.substringBefore('.') ?: return
@@ -89,7 +89,7 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
         run {
             if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
             val expression = element.value
-            if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
+            if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
             val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.configExpression.value?.substringBefore('.') ?: return
@@ -134,7 +134,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         run {
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
-            if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
+            if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
             val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.configExpression.value?.substringBefore('.') ?: return
@@ -200,7 +200,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         run {
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
-            if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
+            if (expression.isEmpty() || expression.isParameterized()) return // skip if expression is empty or parameterized
             val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.configExpression.value?.substringBefore('.') ?: return

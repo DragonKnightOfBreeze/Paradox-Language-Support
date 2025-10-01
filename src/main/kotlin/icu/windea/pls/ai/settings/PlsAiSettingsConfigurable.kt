@@ -28,35 +28,35 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
     override fun createPanel(): DialogPanel {
         val settings = PlsAiFacade.getSettings()
         return panel {
-            //enable
+            // enable
             row {
                 checkBox(PlsBundle.message("settings.ai.enable")).bindSelected(settings::enable)
                 contextHelp(PlsBundle.message("settings.ai.enable.tip"))
             }
-            //withContext
+            // withContext
             row {
                 checkBox(PlsBundle.message("settings.ai.withContext")).bindSelected(settings::withContext)
                 contextHelp(PlsBundle.message("settings.ai.withContext.tip"))
             }
-            //providerType
+            // providerType
             row {
                 label(PlsBundle.message("settings.ai.providerType"))
                 comboBox(ChatModelProviderType.entries, textListCellRenderer { it?.text })
                     .bindItem(settings::providerType.toNullableProperty())
             }
 
-            //features
+            // features
             collapsibleGroup(PlsBundle.message("settings.ai.features")) {
                 val featuresSettings = settings.features
                 val group = "pls.ai.features"
 
-                //localisationBatchSize
+                // localisationBatchSize
                 row {
                     label(PlsBundle.message("settings.ai.features.localisationChunkSize")).widthGroup(group)
                     intTextField(1..Int.MAX_VALUE, 1).bindIntText(featuresSettings::localisationChunkSize)
                     contextHelp(PlsBundle.message("settings.ai.features.localisationChunkSize.tip"))
                 }
-                //localisationMemorySize
+                // localisationMemorySize
                 row {
                     label(PlsBundle.message("settings.ai.features.localisationMemorySize")).widthGroup(group)
                     intTextField(0..Int.MAX_VALUE, 1).bindIntText(featuresSettings::localisationMemorySize)
@@ -64,13 +64,13 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 }
             }
 
-            //openAI
+            // openAI
             collapsibleGroup(PlsBundle.message("settings.ai.openAI")) {
                 val openAiSettings = settings.openAI
                 val openAiProperties = OpenAiChatModelProvider.Options.AtomicProperties()
                 val group = "pls.ai.openAI"
 
-                //modelName
+                // modelName
                 row {
                     label(PlsBundle.message("settings.ai.openAI.modelName")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)
@@ -84,7 +84,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .bindText(openAiSettings::modelNameEnv.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultModelNameEnv) }
                 }
-                //apiEndpoint
+                // apiEndpoint
                 row {
                     label(PlsBundle.message("settings.ai.openAI.apiEndpoint")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)
@@ -98,7 +98,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .bindText(openAiSettings::apiEndpointEnv.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiConstants.OpenAi.defaultApiEndpointEnv) }
                 }
-                //apiKey
+                // apiKey
                 row {
                     label(PlsBundle.message("settings.ai.openAI.apiKey")).widthGroup(group)
                     passwordField().columns(COLUMNS_MEDIUM)
@@ -125,13 +125,13 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 }
             }
 
-            //anthropic
+            // anthropic
             collapsibleGroup(PlsBundle.message("settings.ai.anthropic")) {
                 val group = "pls.ai.anthropic"
                 val anthropicProperties = AnthropicChatModelProvider.Options.AtomicProperties()
                 val anthropicSettings = settings.anthropic
 
-                //modelName
+                // modelName
                 row {
                     label(PlsBundle.message("settings.ai.anthropic.modelName")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)
@@ -145,7 +145,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .bindText(anthropicSettings::modelNameEnv.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultModelNameEnv) }
                 }
-                //apiEndpoint
+                // apiEndpoint
                 row {
                     label(PlsBundle.message("settings.ai.anthropic.apiEndpoint")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)
@@ -159,7 +159,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .bindText(anthropicSettings::apiEndpointEnv.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiConstants.Anthropic.defaultApiEndpointEnv) }
                 }
-                //apiKey
+                // apiKey
                 row {
                     label(PlsBundle.message("settings.ai.anthropic.apiKey")).widthGroup(group)
                     passwordField().columns(COLUMNS_MEDIUM)
@@ -186,13 +186,13 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                 }
             }
 
-            //local (Ollama)
+            // local (Ollama)
             collapsibleGroup(PlsBundle.message("settings.ai.local")) {
                 val group = "pls.ai.local"
                 val localProperties = LocalChatModelProvider.Options.AtomicProperties()
                 val localSettings = settings.local
 
-                //modelName
+                // modelName
                 row {
                     label(PlsBundle.message("settings.ai.local.modelName")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)
@@ -206,7 +206,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
                         .bindText(localSettings::modelNameEnv.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiConstants.Local.defaultModelNameEnv) }
                 }
-                //apiEndpoint
+                // apiEndpoint
                 row {
                     label(PlsBundle.message("settings.ai.local.apiEndpoint")).widthGroup(group)
                     textField().columns(COLUMNS_MEDIUM)

@@ -76,7 +76,7 @@ interface ParadoxModDependenciesPopupActions {
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val targetUrl = getTargetUrl() ?: return //ignore
+            val targetUrl = getTargetUrl() ?: return // ignore
             BrowserUtil.open(targetUrl)
         }
 
@@ -117,7 +117,7 @@ interface ParadoxModDependenciesPopupActions {
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val targetUrl = getTargetUrl() ?: return //ignore
+            val targetUrl = getTargetUrl() ?: return // ignore
             BrowserUtil.open(targetUrl)
         }
 

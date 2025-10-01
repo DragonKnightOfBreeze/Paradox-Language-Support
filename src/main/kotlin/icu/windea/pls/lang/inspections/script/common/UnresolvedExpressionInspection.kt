@@ -71,7 +71,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField
     var ignoredInInlineScriptFiles = false
 
-    //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
+    // 如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (ignoredInInjectedFiles && PlsVfsManager.isInjectedFile(file.virtualFile)) return false
@@ -98,26 +98,26 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val disabledElement = session.disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
-                //skip checking property if property key is parameterized
+                // skip checking property if property key is parameterized
                 val propertyKey = element.propertyKey
                 if (propertyKey.text.isParameterized()) return false
 
-                //NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
+                // NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
 
-                //skip if config context not exists
+                // skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
-                //skip if config context is not suitable
+                // skip if config context is not suitable
                 if (!configContext.isDefinitionOrMember() || configContext.isDefinition()) return true
-                //skip if there are no context configs
+                // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 if (configs.isEmpty()) {
                     val expectedConfigs = getExpectedConfigs(element)
                     if (expectedConfigs.isNotEmpty()) {
-                        //判断是否需要排除
+                        // 判断是否需要排除
                         if (isExcluded(expectedConfigs)) return true
-                        //判断是否需要忽略
+                        // 判断是否需要忽略
                         if (isIgnoredByConfigs(propertyKey, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
@@ -130,7 +130,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val highlightType = getHighlightType(propertyKey, expectedConfigs)
                     val fixes = getFixes(propertyKey, expectedConfigs)
                     holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
-                    //skip checking children
+                    // skip checking children
                     return false
                 }
                 return continueCheck(configs)
@@ -142,29 +142,29 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val disabledElement = session.disabledElement
                 if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
-                //skip checking value if it is parameterized
+                // skip checking value if it is parameterized
                 if (element is ParadoxScriptString && element.text.isParameterized()) return false
                 if (element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
 
-                //NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
+                // NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
 
-                //skip if config context not exists
+                // skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
-                //skip if config context is not suitable
+                // skip if config context is not suitable
                 if (!configContext.isDefinitionOrMember()) return true
-                //skip if there are no context configs
+                // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
                 val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
                 if (configs.isEmpty()) {
-                    //skip check value if it is a special tag and there are no matched configs
+                    // skip check value if it is a special tag and there are no matched configs
                     if (element.tagType() != null) return false
 
                     val expectedConfigs = getExpectedConfigs(element, configContext)
                     if (expectedConfigs.isNotEmpty()) {
-                        //判断是否需要排除
+                        // 判断是否需要排除
                         if (isExcluded(expectedConfigs)) return true
-                        //判断是否需要忽略
+                        // 判断是否需要忽略
                         if (isIgnoredByConfigs(element, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
@@ -177,14 +177,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val highlightType = getHighlightType(element, expectedConfigs)
                     val fixes = getFixes(element, expectedConfigs)
                     holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
-                    //skip checking children
+                    // skip checking children
                     return false
                 }
                 return continueCheck(configs)
             }
 
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
-                //这里使用合并后的子规则，即使parentProperty可以精确匹配
+                // 这里使用合并后的子规则，即使parentProperty可以精确匹配
                 val parentMemberElement = element.parentOfType<ParadoxScriptMember>() ?: return emptyList()
                 val parentConfigContext = ParadoxExpressionManager.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
@@ -192,7 +192,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     contextConfigs.forEach f@{ contextConfig ->
                         contextConfig.configs?.forEach f1@{ c1 ->
                             val c = c1 as? CwtPropertyConfig ?: return@f1
-                            //优先使用重载后的规则
+                            // 优先使用重载后的规则
                             val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
                             if (overriddenConfigs.isNotNullOrEmpty()) {
                                 addAll(overriddenConfigs)
@@ -269,7 +269,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
-                //any规则不需要再向下检查
+                // any规则不需要再向下检查
                 if (configs.any { it.configExpression.type == CwtDataTypes.Any }) return false
                 return true
             }
@@ -278,25 +278,25 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //showExpectInfo
+            // showExpectInfo
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.showExpectInfo"))
                     .bindSelected(::showExpectInfo)
                     .actionListener { _, component -> showExpectInfo = component.isSelected }
             }
-            //ignoredByConfigs
+            // ignoredByConfigs
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
                     .actionListener { _, component -> ignoredByConfigs = component.isSelected }
             }
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)
                     .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
-            //ignoredInInlineScriptFiles
+            // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles)

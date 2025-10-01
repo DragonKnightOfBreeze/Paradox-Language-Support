@@ -47,9 +47,9 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER", KEYWORD)
     @JvmField
-    val CONDITION_PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.CONDITION_PARAMETER", KEYWORD)  //KOTLIN_NAMED_ARGUMENT
+    val CONDITION_PARAMETER_KEY = createTextAttributesKey("PARADOX_SCRIPT.CONDITION_PARAMETER", KEYWORD)  // KOTLIN_NAMED_ARGUMENT
     @JvmField
-    val ARGUMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT", KEYWORD) //KOTLIN_NAMED_ARGUMENT
+    val ARGUMENT_KEY = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT", KEYWORD) // KOTLIN_NAMED_ARGUMENT
     @JvmField
     val PROPERTY_KEY_KEY = createTextAttributesKey("PARADOX_SCRIPT.PROPERTY_KEY", INSTANCE_FIELD)
     @JvmField
@@ -57,7 +57,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val STRING_KEY = createTextAttributesKey("PARADOX_SCRIPT.STRING", STRING)
     @JvmField
-    val COLOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.COLOR", KEYWORD) //HTML_TAG_NAME
+    val COLOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.COLOR", KEYWORD) // HTML_TAG_NAME
     @JvmField
     val VALID_ESCAPE_KEY = createTextAttributesKey("Paradox_Script.VALID_ESCAPE", VALID_STRING_ESCAPE)
     @JvmField
@@ -66,11 +66,11 @@ object ParadoxScriptAttributesKeys {
     val BAD_CHARACTER_KEY = createTextAttributesKey("PARADOX_SCRIPT.BAD_CHARACTER", BAD_CHARACTER)
 
     @JvmField
-    val DEFINITION_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY_KEY) //underscored
+    val DEFINITION_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION", PROPERTY_KEY_KEY) // underscored
     @JvmField
-    val DEFINITION_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") //background #223C23
+    val DEFINITION_NAME_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_NAME") // background #223C23
     @JvmField
-    val DEFINITION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DEFINITION_KEY)  //dotted line #707D95
+    val DEFINITION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINITION_REFERENCE", DEFINITION_KEY)  // dotted line #707D95
     @JvmField
     val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_SCRIPT.LOCALISATION_REFERENCE", LKeys.PROPERTY_KEY_KEY)
     @JvmField
@@ -80,7 +80,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.ENUM_VALUE", STATIC_FIELD)
     @JvmField
-    val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", INSTANCE_FIELD) //dotted line #707D95, italic
+    val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", INSTANCE_FIELD) // dotted line #707D95, italic
 
     @JvmField
     val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", CUSTOM_KEYWORD2_ATTRIBUTES)
@@ -100,7 +100,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val SCOPE_LINK_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE_LINK_VALUE")
     @JvmField
-    val VALUE_FIELD_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_FIELD", IDENTIFIER) //HTML_ENTITY_REFERENCE
+    val VALUE_FIELD_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_FIELD", IDENTIFIER) // HTML_ENTITY_REFERENCE
     @JvmField
     val VALUE_FIELD_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.VALUE_FIELD_PREFIX", KEYWORD)
     @JvmField
@@ -108,7 +108,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val DYNAMIC_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DYNAMIC_VALUE", GLOBAL_VARIABLE)
     @JvmField
-    val VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VARIABLE", GLOBAL_VARIABLE) //italic
+    val VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.VARIABLE", GLOBAL_VARIABLE) // italic
     @JvmField
     val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT_TYPE", KEYWORD)
     @JvmField

@@ -13,7 +13,7 @@ import javax.swing.JPanel
 
 abstract class DiagramExtrasEx : CommonDiagramExtras<PsiElement>() {
     override fun createNodeComponent(node: DiagramNode<PsiElement>, builder: DiagramBuilder, nodeRealizer: NodeRealizer, wrapper: JPanel): JComponent {
-        //允许添加自定义的组件
+        // 允许添加自定义的组件
         val component = super.createNodeComponent(node, builder, nodeRealizer, wrapper)
         if (component is DiagramNodeContainer) {
             val nodeBodyComponent = component.nodeBodyComponent

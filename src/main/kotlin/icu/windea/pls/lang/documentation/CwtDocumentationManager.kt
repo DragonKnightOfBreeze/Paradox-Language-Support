@@ -128,7 +128,7 @@ object CwtDocumentationManager {
     }
 
     private fun getStringDoc(element: CwtString, originalElement: PsiElement?, hint: Boolean): String? {
-        //only for property value or block value
+        // only for property value or block value
         if (!element.isExpression()) return null
 
         return buildDocumentation {
@@ -168,7 +168,7 @@ object CwtDocumentationManager {
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
             val byName = if (shortName == name) null else name
             val prefix = when {
-                referenceElement != null && tagName != null -> "(${tagName.id})" //处理特殊标签
+                referenceElement != null && tagName != null -> "(${tagName.id})" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
                 referenceElement is ParadoxScriptPropertyKey -> PlsStringConstants.definitionPropertyPrefix
                 referenceElement is ParadoxScriptValue -> PlsStringConstants.definitionValuePrefix
@@ -191,7 +191,7 @@ object CwtDocumentationManager {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
                 if (typeName.isNotNullOrEmpty()) {
-                    //在脚本文件中显示为链接
+                    // 在脚本文件中显示为链接
                     if (configGroup != null) {
                         val gameType = configGroup.gameType
                         val typeLink = ReferenceLinkType.CwtConfig.createLink(configType.category, typeName, gameType)
@@ -246,7 +246,7 @@ object CwtDocumentationManager {
                 ParadoxLocalisationSearch.search(key, selector).find()
             }
         }
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
             appendBr()
@@ -289,7 +289,7 @@ object CwtDocumentationManager {
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
@@ -310,13 +310,13 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
+        // 即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
 
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
-        //为link提示名字、描述、输入作用域、输出作用域的文档注释
-        //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
-        //仅为脚本文件和本地化文件中的引用提供
+        // 为link提示名字、描述、输入作用域、输出作用域的文档注释
+        // 为alias modifier localisation_command等提供分类、支持的作用域的文档注释
+        // 仅为脚本文件和本地化文件中的引用提供
         val sections = getSections(SECTIONS_INFO)
         val gameType = configGroup.gameType
         val contextElement = element
@@ -397,9 +397,9 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceElement: PsiElement, configGroup: CwtConfigGroup) {
-        //进行代码提示时也显示作用域上下文信息
-        //@Suppress("DEPRECATION")
-        //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // 进行代码提示时也显示作用域上下文信息
+        // @Suppress("DEPRECATION")
+        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
@@ -409,7 +409,7 @@ object CwtDocumentationManager {
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         if (scopeContext == null) return
-        //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
+        // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
         sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
     }

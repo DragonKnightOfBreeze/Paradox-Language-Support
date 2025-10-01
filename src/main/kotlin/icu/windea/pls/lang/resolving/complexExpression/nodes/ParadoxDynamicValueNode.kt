@@ -28,7 +28,7 @@ class ParadoxDynamicValueNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        val expression = configs.first().configExpression ?: return null //first is ok
+        val expression = configs.first().configExpression ?: return null // first is ok
         val dynamicValueType = expression.value ?: return null
         return when (element.language) {
             is ParadoxLocalisationLanguage -> {
@@ -73,7 +73,7 @@ class ParadoxDynamicValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
-            //text may contain parameters
+            // text may contain parameters
             if (configs.any { c -> c.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }

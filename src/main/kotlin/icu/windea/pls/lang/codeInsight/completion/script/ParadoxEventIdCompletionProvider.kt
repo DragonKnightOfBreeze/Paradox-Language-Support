@@ -31,13 +31,13 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
         if (keyword.contains('.')) return
-        val event = element.findParentByPath("id", definitionType = ParadoxDefinitionTypes.Event) //不处理内联的情况
+        val event = element.findParentByPath("id", definitionType = ParadoxDefinitionTypes.Event) // 不处理内联的情况
         if (event !is ParadoxScriptProperty) return
 
         ParadoxCompletionManager.initializeContext(parameters, context)
 
-        //仅提示脚本文件中向上查找到的那个合法的事件命名空间
-        val eventNamespace = ParadoxEventManager.getMatchedNamespace(event) ?: return //skip
+        // 仅提示脚本文件中向上查找到的那个合法的事件命名空间
+        val eventNamespace = ParadoxEventManager.getMatchedNamespace(event) ?: return // skip
         val name = eventNamespace.value ?: return
         val typeFile = eventNamespace.containingFile
         val lookupElement = LookupElementBuilder.create(eventNamespace, name)

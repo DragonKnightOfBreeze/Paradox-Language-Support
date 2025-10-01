@@ -13,7 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.ep.config.CwtRelatedConfigProvider
 
-//com.intellij.testIntegration.GotoTestOrCodeHandler
+// com.intellij.testIntegration.GotoTestOrCodeHandler
 
 class GotoRelatedConfigsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -21,7 +21,7 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
-        //possible for any element in script or localisation files (but related CWT configs may not exist)
+        // possible for any element in script or localisation files (but related CWT configs may not exist)
 
         val offset = editor.caretModel.offset
         val element = file.findElementAt(offset) {

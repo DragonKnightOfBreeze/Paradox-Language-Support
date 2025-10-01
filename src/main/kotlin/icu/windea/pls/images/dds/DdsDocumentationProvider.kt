@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.documentation.buildDocumentation
 
-//org.intellij.images.fileTypes.ImageDocumentationProvider
+// org.intellij.images.fileTypes.ImageDocumentationProvider
 
 class DdsDocumentationProvider : AbstractDocumentationProvider() {
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
@@ -22,7 +22,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
         if (metadata == null) return null
 
         return buildDocumentation {
-            //加入用于渲染的图片的标签
+            // 加入用于渲染的图片的标签
             run {
                 val maxSize = maxOf(metadata.width, metadata.height)
                 val maxImageSize = PlsFacade.getInternalSettings().maxImageSizeForDocumentation
@@ -33,7 +33,7 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
                 val imgTag = HtmlChunk.tag("img").attr("src", url).attr("width", imageWidth).attr("height", imageHeight)
                 append(imgTag)
             }
-            //加入图片的元数据信息
+            // 加入图片的元数据信息
             run {
                 val info = buildString {
                     append(metadata.width).append("\u00D7").append(metadata.height)

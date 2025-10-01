@@ -36,7 +36,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
-                //optimize performance
+                // optimize performance
                 val r = when (element.language) {
                     ParadoxScriptLanguage -> ParadoxScriptPsiUtil.isMemberContextElement(element)
                     ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContextElement(element)

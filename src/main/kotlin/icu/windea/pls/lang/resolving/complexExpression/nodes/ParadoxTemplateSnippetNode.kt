@@ -49,9 +49,9 @@ class ParadoxTemplateSnippetNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        //忽略不是引用的情况
+        // 忽略不是引用的情况
         if (!configExpression.type.isReference) return null
-        //排除可解析的情况
+        // 排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
         return ParadoxComplexExpressionErrorBuilder.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
@@ -80,13 +80,13 @@ class ParadoxTemplateSnippetNode(
             }
             return when {
                 resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+                resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
                 resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 else -> throw IncorrectOperationException()
             }
         }
 
-        //缓存解析结果以优化性能
+        // 缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
@@ -131,7 +131,7 @@ class ParadoxTemplateSnippetNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configExpression: CwtDataExpression): ParadoxTemplateSnippetNode {
-            //text may contain parameters
+            // text may contain parameters
             return ParadoxTemplateSnippetNode(text, textRange, configGroup, configExpression)
         }
     }

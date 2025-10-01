@@ -57,11 +57,11 @@ object ParadoxEconomicCategoryManager {
     }
 
     private fun doGetInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
-        //这种写法可能存在一定性能问题，但是问题不大
-        //兼容继承的mult修正
+        // 这种写法可能存在一定性能问题，但是问题不大
+        // 兼容继承的mult修正
         try {
             val name = definition.name.orNull() ?: return null
-            val resources = getResources(definition).orNull() ?: return null //unexpected
+            val resources = getResources(definition).orNull() ?: return null // unexpected
             val data = definition.getData<StellarisEconomicCategoryData>() ?: return null
             val parentDataMap = collectParentData(definition, data)
 
@@ -77,7 +77,7 @@ object ParadoxEconomicCategoryManager {
             // <economic_category>_<resource>_enum[economic_modifier_categories]_enum[economic_modifier_types] = { "AI Economy" }
 
             fun addModifier(key: String, category: String, type: String, triggered: Boolean, useParentIcon: Boolean) {
-                if (key.isEmpty()) return //skip invalid keys
+                if (key.isEmpty()) return // skip invalid keys
                 if (useForAiBudget || (type == "mult" && useForAiBudgetForMult)) {
                     modifiers.add(ParadoxEconomicCategoryInfo.ModifierInfo(key, null, category, type, triggered, useParentIcon))
                 }
@@ -120,7 +120,7 @@ object ParadoxEconomicCategoryManager {
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.Resource, selector).findAll()
-            .mapTo(mutableSetOf()) { it.name }  //it.name is ok
+            .mapTo(mutableSetOf()) { it.name }  // it.name is ok
     }
 
     private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {

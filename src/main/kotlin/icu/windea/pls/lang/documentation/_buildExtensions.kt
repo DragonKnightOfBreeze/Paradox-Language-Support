@@ -47,12 +47,12 @@ fun DocumentationBuilder.appendExternalLinkIcon(): DocumentationBuilder {
 }
 
 fun DocumentationBuilder.appendUnresolvedLink(label: String): DocumentationBuilder {
-    append(label) //直接显示对应的标签文本
+    append(label) // 直接显示对应的标签文本
     return this
 }
 
 fun DocumentationBuilder.appendLink(refText: String, label: String): DocumentationBuilder {
-    //不自动转义link的label
+    // 不自动转义link的label
     append("<a href=\"").append(refText).append("\">").append(label).append("</a>")
     return this
 }
@@ -80,7 +80,7 @@ fun DocumentationBuilder.appendImgTag(url: String, local: Boolean = true): Docum
 fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder {
     val finalUrl = if (local) url.toFileUrl() else url
     append("<img src=\"").append(finalUrl).append("\"")
-    //这里不能使用style="..."
+    // 这里不能使用style="..."
     append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
     append("/>")
     return this
@@ -88,18 +88,18 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = runReadAction { selectFile(element) } ?: return this
-    if (PlsVfsManager.isInjectedFile(file)) return this //ignored for injected PSI
+    if (PlsVfsManager.isInjectedFile(file)) return this // ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     if (rootInfo !is ParadoxRootInfo.MetadataBased) return this
     append("<span>")
-    //描述符信息（模组名、版本等）
+    // 描述符信息（模组名、版本等）
     append("[")
     append(rootInfo.qualifiedName.escapeXml())
     append("]")
     grayed {
-        //相关链接
-        //通过这种方式获取需要的url，使用rootPath而非gameRootPath
+        // 相关链接
+        // 通过这种方式获取需要的url，使用rootPath而非gameRootPath
         val rootUri = rootInfo.rootPath.toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
@@ -112,19 +112,19 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
                 is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrlInSteam(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrlInSteam(steamId)
             }
-            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) //自带外部链接图标
+            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
                 is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrl(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrl(steamId)
             }
-            appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+            appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) // 自带外部链接图标
         }
     }
     append("</span>")
     appendBr()
-    //文件信息（路径）
+    // 文件信息（路径）
     append("[").append(fileInfo.path).append("]")
     appendBr()
     return this
@@ -143,7 +143,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
         val filePath = relativePath.substringAfter('/', "").orNull() ?: return@f null
         tupleOf(fileProvider, configGroup, filePath)
     } ?: return this
-    //规则分组信息
+    // 规则分组信息
     val gameType = configGroup.gameType
     append("[").append(gameType.title).append(" Config]")
     val hintMessage = fileProvider.getHintMessage()
@@ -153,7 +153,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
         }
     }
     appendBr()
-    //文件信息（相对于规则分组根目录的路径）
+    // 文件信息（相对于规则分组根目录的路径）
     append("[").append(filePath.escapeXml()).append("]")
     appendBr()
     return this

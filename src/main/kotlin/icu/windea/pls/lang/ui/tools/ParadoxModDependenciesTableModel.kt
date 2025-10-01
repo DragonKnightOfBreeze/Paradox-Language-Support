@@ -7,7 +7,7 @@ import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 
-//com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
+// com.intellij.openapi.roots.ui.configuration.classpath.ClasspathTableModel
 
 class ParadoxModDependenciesTableModel(
     val settings: ParadoxGameOrModSettingsState,

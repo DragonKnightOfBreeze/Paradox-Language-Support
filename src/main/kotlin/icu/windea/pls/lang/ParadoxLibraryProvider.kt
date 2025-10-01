@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 
-//each library each project
+// each library each project
 
 class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {

@@ -40,9 +40,9 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        //compute once per file
+        // compute once per file
         val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-        //it's unnecessary to make it synced
+        // it's unnecessary to make it synced
         val statusMap = mutableMapOf<PsiElement, Boolean>()
 
         return object : PsiElementVisitor() {
@@ -66,7 +66,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) //use file as context
+                        val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) // use file as context
                         val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {

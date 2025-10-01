@@ -51,7 +51,7 @@ object ParadoxScriptDataResolver {
     fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
         val propertyKey = element.propertyKey
         val propertyValue = element.propertyValue
-        if (propertyValue == null) return null //ignore
+        if (propertyValue == null) return null // ignore
 
         val children = when {
             propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue, conditional, inline).children

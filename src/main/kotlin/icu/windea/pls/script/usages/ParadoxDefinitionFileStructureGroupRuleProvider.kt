@@ -9,7 +9,7 @@ import com.intellij.usages.rules.UsageGroupingRule
  * 文件结构支持 - 定义的使用分组规则。
  */
 class ParadoxDefinitionFileStructureGroupRuleProvider : FileStructureGroupRuleProvider {
-    //com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider
+    // com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider
 
     override fun getUsageGroupingRule(project: Project): UsageGroupingRule {
         return getUsageGroupingRule(project, UsageViewSettings.instance)

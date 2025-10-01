@@ -17,7 +17,7 @@ class ParadoxCsvAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxCsvExpressionElement, holder: AnnotationHolder) {
-        //不高亮表格头中的列
+        // 不高亮表格头中的列
         if(element is ParadoxCsvColumn && element.isHeaderColumn()) return
 
         val columnConfig = when (element) {

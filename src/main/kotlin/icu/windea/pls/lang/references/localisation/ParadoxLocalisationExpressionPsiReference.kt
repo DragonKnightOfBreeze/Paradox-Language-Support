@@ -35,7 +35,7 @@ class ParadoxLocalisationExpressionPsiReference(
         return result.orNull()
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationExpressionPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxLocalisationExpressionPsiReference, incompleteCode: Boolean) = ref.doResolve()
@@ -54,12 +54,12 @@ class ParadoxLocalisationExpressionPsiReference(
     }
 
     private fun doResolve(): PsiElement? {
-        //根据对应的expression进行解析
+        // 根据对应的expression进行解析
         return ParadoxExpressionManager.resolveLocalisationExpression(element, rangeInElement)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
-        //根据对应的expression进行解析
+        // 根据对应的expression进行解析
         return ParadoxExpressionManager.multiResolveLocalisationExpression(element, rangeInElement)
             .mapToArray { PsiElementResolveResult(it) }
     }

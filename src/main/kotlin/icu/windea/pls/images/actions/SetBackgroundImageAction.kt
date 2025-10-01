@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.images.ImageManager
 import org.intellij.images.editor.actions.BackgroundImageDialog
 
-//org.intellij.images.editor.actions.SetBackgroundImageAction
+// org.intellij.images.editor.actions.SetBackgroundImageAction
 
 class SetBackgroundImageAction : DumbAwareAction() {
     override fun update(e: AnActionEvent) {

@@ -23,25 +23,25 @@ import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvPsiImplUtil {
-    //region ParadoxCsvRowHeader
+    // region ParadoxCsvRowHeader
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Row
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxCsvRow
+    // region ParadoxCsvRow
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Row
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxCsvColumn
+    // region ParadoxCsvColumn
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvColumn, @Iconable.IconFlags flags: Int): Icon {
@@ -66,7 +66,7 @@ object ParadoxCsvPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

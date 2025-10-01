@@ -14,8 +14,8 @@ import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
-//com.intellij.openapi.editor.actions.AddBomAction
-//com.intellij.openapi.editor.actions.RemoveBomAction
+// com.intellij.openapi.editor.actions.AddBomAction
+// com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
  * 不正确的的文件编码的检查。
@@ -27,7 +27,7 @@ import icu.windea.pls.model.paths.matches
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         val fileInfo = file.fileInfo ?: return false
         return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }

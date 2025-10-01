@@ -15,7 +15,7 @@ class ParadoxScriptValueArgumentValueNode(
     val argumentNode: ParadoxScriptValueArgumentNode?
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        //为参数值提供基础代码高亮
+        // 为参数值提供基础代码高亮
         val type = ParadoxTypeResolver.resolve(text)
         return when {
             type.isBooleanType() -> ParadoxScriptAttributesKeys.KEYWORD_KEY
@@ -25,17 +25,17 @@ class ParadoxScriptValueArgumentValueNode(
         }
     }
 
-    //相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
-    //see: icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
+    // 相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
+    // see: icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
 
-    //region
-    //override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
+    // region
+    // override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
     //    if(!getSettings().inference.parameterConfig) return null
     //    val parameterElement = argumentNode?.getReference(element)?.resolve() ?: return null
     //    return ParadoxParameterManager.getInferredConfig(parameterElement)
-    //}
+    // }
     //
-    //override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
+    // override fun getReference(element: ParadoxScriptStringExpressionElement): Reference? {
     //    if(!getSettings().inference.parameterConfig) return null
     //    if(valueNode == null) return null
     //    if(text.isEmpty()) return null
@@ -43,13 +43,13 @@ class ParadoxScriptValueArgumentValueNode(
     //    if (reference == null) return null
     //    val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
     //    return Reference(element, rangeInElement, this)
-    //}
+    // }
     //
-    //class Reference(
+    // class Reference(
     //    element: ParadoxScriptStringExpressionElement,
     //    rangeInElement: TextRange,
     //    val node: ArgumentValueNode
-    //) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    // ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     //    override fun handleElementRename(newElementName: String): PsiElement {
     //        throw IncorrectOperationException()
     //    }
@@ -57,8 +57,8 @@ class ParadoxScriptValueArgumentValueNode(
     //    override fun resolve(): PsiElement? {
     //        return null
     //    }
-    //}
-    //endregion
+    // }
+    // endregion
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?): ParadoxScriptValueArgumentValueNode {

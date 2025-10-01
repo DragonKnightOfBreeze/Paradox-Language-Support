@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
-    //https://github.com/cwtools/cwtools-vscode/issues/58
+    // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val typeExpression = "<technology.repeatable>"
 
@@ -57,7 +57,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         run {
             val offset = expressionText.length - separatorIndex - 1
             if (offset <= 0) return@run
-            //annotate only if snippet after '@' is number like
+            // annotate only if snippet after '@' is number like
             if (!expressionText.substring(separatorIndex + 1).all { it.isExactDigit() }) return@run
             val attributesKey = ParadoxScriptAttributesKeys.NUMBER_KEY
             val range3 = range.let { TextRange.create(it.endOffset - offset, it.endOffset) }

@@ -54,13 +54,13 @@ class IntroduceGlobalScriptedVariableDialog(
         init()
     }
 
-    //（输入框）输入变量名
-    //（输入框）输入变量值
-    //（文件选择框）选择目标文件
+    // （输入框）输入变量名
+    // （输入框）输入变量值
+    // （文件选择框）选择目标文件
 
     override fun createCenterPanel() = panel {
         row {
-            //输入变量名
+            // 输入变量名
             label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
             textField()
                 .bindText(variableNameProperty)
@@ -71,7 +71,7 @@ class IntroduceGlobalScriptedVariableDialog(
         }
         if (setVariableValue) {
             row {
-                //输入变量值
+                // 输入变量值
                 label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
                 textField()
                     .bindText(variableValueProperty)
@@ -82,7 +82,7 @@ class IntroduceGlobalScriptedVariableDialog(
             }
         }
         row {
-            //选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
+            // 选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
             label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
             val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
                 .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
@@ -106,7 +106,7 @@ class IntroduceGlobalScriptedVariableDialog(
             comment(message("path.completion.shortcut", shortcutText))
         }
     }.apply {
-        withPreferredWidth(width * 2) //2倍宽度 - 基于调试结果
+        withPreferredWidth(width * 2) // 2倍宽度 - 基于调试结果
     }
 
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {

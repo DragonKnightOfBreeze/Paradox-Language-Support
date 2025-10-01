@@ -28,7 +28,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
                 for ((key, values) in propertyGroup) {
                     if (values.size <= 1) continue
                     for (value in values) {
-                        //第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
+                        // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                         val location = value.propertyKey
                         val fix = NavigateToDuplicatesFix(key, value, values)
                         val message = PlsBundle.message("inspection.localisation.duplicateProperties.desc", key)

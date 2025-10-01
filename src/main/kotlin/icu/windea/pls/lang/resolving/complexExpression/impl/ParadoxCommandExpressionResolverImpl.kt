@@ -20,7 +20,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
     override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         if (expressionString.isEmpty()) return null
 
-        //val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        // val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
 
@@ -67,7 +67,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
             while (tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString0.indexOf('.', index)
-                if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+                if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
                 if (tokenIndex == -1) tokenIndex = textLength
                 run r2@{
                     val nodeText = expressionString0.substring(startIndex, tokenIndex)

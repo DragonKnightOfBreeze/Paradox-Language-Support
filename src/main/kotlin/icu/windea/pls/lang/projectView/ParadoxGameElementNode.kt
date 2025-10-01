@@ -55,7 +55,7 @@ class ParadoxGameElementNode(
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.length != 1) return@p true
             if (file.isDirectory) {
-                //直接位于入口目录中，且未被排除
+                // 直接位于入口目录中，且未被排除
                 if (!directoryNames.add(file.name)) return@p true
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FilePath, file, project)
                 if (!fileData.values.single().included) return@p true
@@ -63,10 +63,10 @@ class ParadoxGameElementNode(
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children += elementNode
             } else {
-                ////排除直接位于入口目录下的文件
-                //val psiFile = file.toPsiFile(project) ?: return@p true
-                //val elementNode = PsiFileNode(project, psiFile, settings)
-                //children += elementNode
+                // // 排除直接位于入口目录下的文件
+                // val psiFile = file.toPsiFile(project) ?: return@p true
+                // val elementNode = PsiFileNode(project, psiFile, settings)
+                // children += elementNode
             }
             true
         }

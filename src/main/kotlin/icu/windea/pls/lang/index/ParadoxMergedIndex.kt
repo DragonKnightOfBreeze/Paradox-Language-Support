@@ -111,7 +111,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                         ep.indexLocalisationExpression(element, fileData)
                     }
                 }
-                if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return //optimize
+                if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
             }
         })
@@ -174,8 +174,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if (PlsVfsManager.isInjectedFile(file)) return true
-        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
-        //if (file.fileType is ParadoxLocalisationFileType) return true //to prevent recursion, see #127
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
+        // if (file.fileType is ParadoxLocalisationFileType) return true // to prevent recursion, see #127
         return false
     }
 }

@@ -36,7 +36,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
             }
 
             private fun checkComparisonOperator(element: PsiElement) {
-                //不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
+                // 不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
                 if (element !is ParadoxScriptProperty) return
                 val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
                 val propertyKey = element.propertyKey
@@ -49,7 +49,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
 
             @Suppress("unused")
             private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
-                //number, scalar, parametric
+                // number, scalar, parametric
                 return true
             }
 
@@ -62,7 +62,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                         val resolvedValueElement = resolved.scriptedVariableValue ?: return true
                         canResolveToNumber(resolvedValueElement)
                     }
-                    element is ParadoxScriptString -> true //scalar, parametric
+                    element is ParadoxScriptString -> true // scalar, parametric
                     element is ParadoxScriptInlineMath -> true
                     else -> false
                 }

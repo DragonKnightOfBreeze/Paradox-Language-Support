@@ -86,21 +86,21 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         context.configGroup = configGroup
 
         when {
-            //key_
-            //key_ =
-            //key_ = { ... }
+            // key_
+            // key_ =
+            // key_ = { ... }
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
                 val elementPath = ParadoxExpressionPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
-                if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
+                if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
                 val typeKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
                     if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
-                    //需要考虑不指定子类型的情况
+                    // 需要考虑不指定子类型的情况
                     val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, configGroup)
                     val config = declarationConfigContext?.getConfig(declarationConfig) ?: continue
 
@@ -108,7 +108,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.isKey = true
                     context.expressionTailText = ""
 
-                    //排除正在输入的那一个
+                    // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .notSamePosition(element)
                         .distinctByName()
@@ -117,8 +117,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     ParadoxCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
-            //event = { id = _ }
-            //#131 won't be a number or some type else on completion
+            // event = { id = _ }
+            // #131 won't be a number or some type else on completion
             element is ParadoxScriptString && element.isDefinitionName() -> {
                 val definition = element.findParentDefinition() ?: return
                 val definitionInfo = definition.definitionInfo
@@ -130,8 +130,8 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     context.isKey = false
                     context.expressionTailText = ""
 
-                    //这里需要基于rootKey过滤结果
-                    //排除正在输入的那一个
+                    // 这里需要基于rootKey过滤结果
+                    // 排除正在输入的那一个
                     val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.typeKey, true) }
                         .notSamePosition(definition)
@@ -147,7 +147,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
     private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
         val definitionInfo = element.definitionInfo ?: return true
-        if (definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return true // ignore anonymous definitions
         val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, definitionInfo.name)

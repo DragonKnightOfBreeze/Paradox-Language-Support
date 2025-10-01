@@ -30,16 +30,16 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
-    //region ParadoxScriptRootBlock
+    // region ParadoxScriptRootBlock
 
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
         return PlsStringConstants.blockFolder
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptScriptedVariable
+    // region ParadoxScriptScriptedVariable
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
@@ -55,7 +55,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariable, name: String): ParadoxScriptScriptedVariable {
         val nameElement = element.scriptedVariableName
-        if (nameElement.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if (nameElement.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newNameElement = ParadoxScriptElementFactory.createScriptedVariableName(element.project, name)
         nameElement.replace(newNameElement)
         return element
@@ -88,15 +88,15 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
-        //name & gameType
+        // name & gameType
         return another is ParadoxScriptScriptedVariable
             && element.name?.equals(another.name) == true
             && selectGameType(element) == selectGameType(another)
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptScriptedVariableName
+    // region ParadoxScriptScriptedVariableName
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptScriptedVariableName): PsiElement? {
@@ -105,7 +105,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String? {
-        //不包含作为前缀的"@"
+        // 不包含作为前缀的"@"
         return element.text.removePrefix("@").orNull()
     }
 
@@ -114,9 +114,9 @@ object ParadoxScriptPsiImplUtil {
         return element.name
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptProperty
+    // region ParadoxScriptProperty
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
@@ -135,12 +135,12 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptProperty, name: String): ParadoxScriptProperty {
-        //仅允许重命名定义，如果定义的名字来自某个定义属性，则修改那个属性的值
+        // 仅允许重命名定义，如果定义的名字来自某个定义属性，则修改那个属性的值
         val definitionInfo = element.definitionInfo
         if (definitionInfo == null) throw IncorrectOperationException()
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            val nameProperty = element.findProperty(nameField) //不处理内联的情况
+            val nameProperty = element.findProperty(nameField) // 不处理内联的情况
             if (nameProperty != null) {
                 val nameElement = nameProperty.propertyValue<ParadoxScriptString>()
                 nameElement?.setValue(name)
@@ -167,7 +167,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getDepth(element: ParadoxScriptProperty): Int {
-        //得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
+        // 得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
         var current: PsiElement? = element
         var depth = 0
         while (true) {
@@ -191,14 +191,14 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement): Boolean {
-        //for definition: definitionName & definitionType & gameType
-        //for others: never
+        // for definition: definitionName & definitionType & gameType
+        // for others: never
         return another is ParadoxScriptProperty && element.definitionInfo?.equals(another.definitionInfo) == true
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptPropertyKey
+    // region ParadoxScriptPropertyKey
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptPropertyKey): PsiElement? {
@@ -226,9 +226,9 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptScriptedVariableReference
+    // region ParadoxScriptScriptedVariableReference
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptScriptedVariableReference): PsiElement? {
@@ -252,14 +252,14 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptScriptedVariableReference, name: String): ParadoxScriptScriptedVariableReference {
-        if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createVariableReference(element.project, name)
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptString
+    // region ParadoxScriptString
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptString): PsiElement? {
@@ -283,9 +283,9 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptColor
+    // region ParadoxScriptColor
 
     @JvmStatic
     fun getValue(element: ParadoxScriptColor): String {
@@ -312,9 +312,9 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxColorProvider.setColor(element, color, fromToken = false)
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptBlock
+    // region ParadoxScriptBlock
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
@@ -326,9 +326,9 @@ object ParadoxScriptPsiImplUtil {
         return PlsStringConstants.blockFolder
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptValue
+    // region ParadoxScriptValue
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
@@ -351,9 +351,9 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptParameterCondition
+    // region ParadoxScriptParameterCondition
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
@@ -387,9 +387,9 @@ object ParadoxScriptPsiImplUtil {
         return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptInlineParameterCondition
+    // region ParadoxScriptInlineParameterCondition
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineParameterCondition, @Iconable.IconFlags flags: Int): Icon {
@@ -423,9 +423,9 @@ object ParadoxScriptPsiImplUtil {
         return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptParameterConditionParameter
+    // region ParadoxScriptParameterConditionParameter
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameterConditionParameter): PsiElement {
@@ -464,9 +464,9 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxConditionParameterPsiReference(element, nameElement.textRangeInParent)
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptInlineMath
+    // region ParadoxScriptInlineMath
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
@@ -478,18 +478,18 @@ object ParadoxScriptPsiImplUtil {
         return element.findChild { it.elementType == INLINE_MATH_TOKEN }
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptInlineMathNumber
+    // region ParadoxScriptInlineMathNumber
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMathNumber): String {
         return element.text
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptInlineMathVariableReference
+    // region ParadoxScriptInlineMathVariableReference
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathScriptedVariableReference): PsiElement? {
@@ -508,7 +508,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathScriptedVariableReference, name: String): ParadoxScriptInlineMathScriptedVariableReference {
-        if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createInlineMathVariableReference(element.project, name)
         return element.replace(newElement).cast()
     }
@@ -518,9 +518,9 @@ object ParadoxScriptPsiImplUtil {
         return element.name
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptParameter
+    // region ParadoxScriptParameter
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameter): PsiElement? {
@@ -544,7 +544,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptParameter, name: String): ParadoxScriptParameter {
-        if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
     }
@@ -561,7 +561,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptParameter): String? {
-        //兼容默认值为空字符串的情况
+        // 兼容默认值为空字符串的情况
         return element.argumentElement?.idElement?.text
     }
 
@@ -571,9 +571,9 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptInlineMathParameter
+    // region ParadoxScriptInlineMathParameter
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathParameter): PsiElement? {
@@ -597,7 +597,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxScriptInlineMathParameter, name: String): ParadoxScriptInlineMathParameter {
-        if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
+        if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
     }
@@ -614,7 +614,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
-        //兼容默认值为空字符串的情况
+        // 兼容默认值为空字符串的情况
         return element.argumentElement?.idElement?.text
     }
 
@@ -624,16 +624,16 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxScriptParameterArgument
+    // region ParadoxScriptParameterArgument
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptParameterArgument): PsiElement? {
         return element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
     }
 
-    //endregion
+    // endregion
 
     @JvmStatic
     fun getMemberList(element: PsiElement): List<ParadoxScriptMember> {

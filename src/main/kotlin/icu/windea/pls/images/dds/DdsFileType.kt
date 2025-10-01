@@ -4,7 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.fileTypes.UserBinaryFileType
 import icu.windea.pls.PlsBundle
 
-//org.intellij.images.fileTypes.impl.ImageFileType
+// org.intellij.images.fileTypes.impl.ImageFileType
 
 object DdsFileType : UserBinaryFileType() {
     override fun getName() = "DDS"

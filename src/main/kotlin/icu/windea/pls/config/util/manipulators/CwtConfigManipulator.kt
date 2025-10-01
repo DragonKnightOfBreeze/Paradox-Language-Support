@@ -262,16 +262,16 @@ object CwtConfigManipulator {
     }
 
     fun mergeConfig(config1: CwtMemberConfig<*>, config2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
-        if (config1 === config2) return config1 //reference equality
-        if (config1.pointer == config2.pointer) return config1 //value equality (should be)
-        if (getDistinctKey(config1) == getDistinctKey(config2)) return config1 //distinct key equality
+        if (config1 === config2) return config1 // reference equality
+        if (config1.pointer == config2.pointer) return config1 // value equality (should be)
+        if (getDistinctKey(config1) == getDistinctKey(config2)) return config1 // distinct key equality
         return null
     }
 
     fun mergeValueConfig(config1: CwtValueConfig, config2: CwtValueConfig): CwtValueConfig? {
-        if (config1 === config2) return config1 //reference equality
-        if (config1.pointer == config2.pointer) return config1 //value equality (should be)
-        if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
+        if (config1 === config2) return config1 // reference equality
+        if (config1.pointer == config2.pointer) return config1 // value equality (should be)
+        if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
         val expressionString = CwtDataExpressionMerger.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null
         return CwtValueConfig.resolve(
@@ -285,18 +285,18 @@ object CwtConfigManipulator {
     fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
         if (configs.isEmpty()) return false
         for (config in configs) {
-            val e1 = configExpression //expect
-            val e2 = config.configExpression //actual (e.g., from parameterized key)
-            val e3 = CwtDataExpressionMerger.merge(e1, e2, config.configGroup) ?: continue //merged
+            val e1 = configExpression // expect
+            val e2 = config.configExpression // actual (e.g., from parameterized key)
+            val e3 = CwtDataExpressionMerger.merge(e1, e2, config.configGroup) ?: continue // merged
             if (e3 == e2.expressionString) return true
         }
         return false
     }
 
     private fun mergeOptions(options1: List<CwtOptionMemberConfig<*>>?, options2: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
-        //keep duplicate options here (no affect to features)
+        // keep duplicate options here (no affect to features)
         return merge(options1, options2)
     }
 
-    //endregion
+    // endregion
 }

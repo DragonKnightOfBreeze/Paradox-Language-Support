@@ -55,7 +55,7 @@ object ImageManager {
         IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageReaderSpi)
     }
 
-    //utility methods
+    // utility methods
 
     fun sliceImage(image: BufferedImage, frameInfo: ImageFrameInfo): BufferedImage? {
         if (!frameInfo.canApply()) return null

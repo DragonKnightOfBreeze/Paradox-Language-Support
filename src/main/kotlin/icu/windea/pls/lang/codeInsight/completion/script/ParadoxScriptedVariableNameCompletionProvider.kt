@@ -40,7 +40,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
 
         ParadoxCompletionManager.initializeContext(parameters, context)
 
-        //这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
+        // 这里不需要查找本地的封装变量（即当前文件中声明的封装变量）
         val selector = selector(project, element).scriptedVariable().contextSensitive().notSamePosition(element).distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
 
@@ -49,7 +49,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
 
     @Suppress("SameReturnValue")
     private fun processScriptedVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
-        //不自动插入后面的等号
+        // 不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name ?: return true
         val icon = PlsIcons.Nodes.ScriptedVariable

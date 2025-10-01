@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.isExpression
 
-//com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
+// com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
 class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
@@ -63,7 +63,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             var inInlineMath = false
 
             override fun visitElement(element: PsiElement) {
-                //兼容向下内联的情况（即使内联后为自身）
+                // 兼容向下内联的情况（即使内联后为自身）
                 if (element is ParadoxScriptMember) {
                     val inlined = ParadoxInlineSupport.getInlinedElement(element)
                     if (inlined != null) {
@@ -73,22 +73,22 @@ class ParadoxCalleeHierarchyTreeStructure(
                 }
                 when {
                     element is ParadoxScriptedVariableReference -> {
-                        addDescriptor(element) //scripted_variable
+                        addDescriptor(element) // scripted_variable
                     }
                     element is ParadoxScriptExpressionElement && element.isExpression() -> {
-                        addDescriptor(element) //definition | localisation
+                        addDescriptor(element) // definition | localisation
                     }
                     element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {
-                        addDescriptor(element) //definition
+                        addDescriptor(element) // definition
                     }
                     element is ParadoxLocalisationParameter -> {
-                        addDescriptor(element) //localisation
+                        addDescriptor(element) // localisation
                     }
                 }
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -125,9 +125,9 @@ class ParadoxCalleeHierarchyTreeStructure(
         val resolved = reference.resolve()
         when (resolved) {
             is ParadoxScriptScriptedVariable -> {
-                if (!settings.showScriptedVariablesInCallHierarchy) return //不显示
+                if (!settings.showScriptedVariablesInCallHierarchy) return // 不显示
                 val key = "v:${resolved.name}"
-                if (descriptors.containsKey(key)) return //去重
+                if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
                 synchronized(descriptors) {
@@ -135,11 +135,11 @@ class ParadoxCalleeHierarchyTreeStructure(
                 }
             }
             is ParadoxScriptDefinitionElement -> {
-                if (!settings.showDefinitionsInCallHierarchy) return //不显示
+                if (!settings.showDefinitionsInCallHierarchy) return // 不显示
                 val definitionInfo = resolved.definitionInfo ?: return
-                if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return //不显示
+                if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return // 不显示
                 val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
-                if (descriptors.containsKey(key)) return //去重
+                if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
                 synchronized(descriptors) {
@@ -147,10 +147,10 @@ class ParadoxCalleeHierarchyTreeStructure(
                 }
             }
             is ParadoxLocalisationProperty -> {
-                if (!settings.showLocalisationsInCallHierarchy) return //不显示
+                if (!settings.showLocalisationsInCallHierarchy) return // 不显示
                 val localisationInfo = resolved.localisationInfo ?: return
                 val key = "l:${localisationInfo.name}"
-                if (descriptors.containsKey(key)) return //去重
+                if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
                 synchronized(descriptors) {

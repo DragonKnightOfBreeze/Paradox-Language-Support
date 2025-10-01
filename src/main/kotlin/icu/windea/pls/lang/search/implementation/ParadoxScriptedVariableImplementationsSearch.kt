@@ -18,15 +18,15 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        //得到解析后的PSI元素
+        // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if (sourceElement !is ParadoxScriptScriptedVariable) return true
         val name = runReadAction { sourceElement.name }
         if (name.isNullOrEmpty()) return true
         val project = queryParameters.project
         ReadAction.nonBlocking<Unit> {
-            //这里不进行排序
-            //使用全部作用域
+            // 这里不进行排序
+            // 使用全部作用域
             val selector = selector(project, sourceElement).scriptedVariable().withSearchScope(GlobalSearchScope.allScope(project))
             ParadoxScriptedVariableSearch.searchLocal(name, selector).forEach(consumer)
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).forEach(consumer)

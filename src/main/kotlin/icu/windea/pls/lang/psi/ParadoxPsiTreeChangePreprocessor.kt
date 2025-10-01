@@ -11,7 +11,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
-//com.intellij.psi.impl.PsiModificationTrackerImpl
+// com.intellij.psi.impl.PsiModificationTrackerImpl
 
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
@@ -24,7 +24,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         }
     }
 
-    //这个方法应当尽可能地快
+    // 这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
         if (!PsiModificationTrackerImpl.canAffectPsi(event)) return
 

@@ -24,7 +24,7 @@ import icu.windea.pls.inject.annotations.InjectTarget
  */
 @InjectTarget("com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor")
 class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
-    //用于兼容CWT语言的各种注释（行注释"# ..."，选项注释"## ..."，文档注释"### ..."）
+    // 用于兼容CWT语言的各种注释（行注释"# ..."，选项注释"## ..."，文档注释"### ..."）
 
     @InjectMethod
     fun preprocessOnPaste(project: Project, file: PsiFile, editor: Editor, text: String, rawText: RawText?): String {

@@ -13,7 +13,7 @@ import com.intellij.ui.dsl.builder.*
 import org.intellij.images.ImagesBundle
 import javax.swing.JComponent
 
-//org.intellij.images.actions.EditExternalImageEditorAction
+// org.intellij.images.actions.EditExternalImageEditorAction
 
 class EditExternalImageEditorAction : DumbAwareAction() {
     companion object {

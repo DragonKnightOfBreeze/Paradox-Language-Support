@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * @see ParadoxInlineScriptManager
  */
 class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
-    //这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
+    // 这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
 
     override fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptFile? {
         // 排除为空或者带参数的情况

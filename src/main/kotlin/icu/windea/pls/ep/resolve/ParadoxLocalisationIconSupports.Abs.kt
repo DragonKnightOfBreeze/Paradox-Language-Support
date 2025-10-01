@@ -86,7 +86,7 @@ class DefinitionBasedParadoxLocalisationIconSupport(
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val icon = PlsIcons.Nodes.LocalisationIcon //使用特定图标
+        val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
@@ -126,7 +126,7 @@ class ImageFileBasedParadoxLocalisationIconSupport(
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val icon = PlsIcons.Nodes.LocalisationIcon //使用特定图标
+        val icon = PlsIcons.Nodes.LocalisationIcon // 使用特定图标
         val tailText = " from image file"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project

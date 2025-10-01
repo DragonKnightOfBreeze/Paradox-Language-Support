@@ -44,8 +44,8 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             private fun visitBlock(element: ParadoxScriptBlock) {
                 if (!element.isExpression()) return // skip check if element is not an expression
 
-                //skip checking property if its property key may contain parameters
-                //position: (in property) property key / (standalone) left curly brace
+                // skip checking property if its property key may contain parameters
+                // position: (in property) property key / (standalone) left curly brace
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
@@ -68,13 +68,13 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun skipCheck(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
-                //子句可以精确匹配多个子句规则时，适用此检查
+                // 子句可以精确匹配多个子句规则时，适用此检查
                 if (configs.isEmpty()) return true
-                //这里需要先按实际对应的规则位置去重
+                // 这里需要先按实际对应的规则位置去重
                 if (configs.distinctBy { it.pointer }.size == 1) return true
-                //如果是重载后提供的规则，跳过此检查
+                // 如果是重载后提供的规则，跳过此检查
                 if (isOverriddenConfigs(configs)) return true
-                //如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
+                // 如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
                 val configsToCheck = filterConfigs(element, configs)
                 if (configsToCheck.size == 1) return true
                 return false

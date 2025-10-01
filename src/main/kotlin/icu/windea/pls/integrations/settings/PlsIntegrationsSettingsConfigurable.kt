@@ -30,7 +30,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         callbackLock.reset()
         val settings = PlsFacade.getIntegrationsSettings()
         return panel {
-            //image tools
+            // image tools
             group(PlsBundle.message("settings.integrations.image")) {
                 val imageSettings = settings.image
                 lateinit var cbMagick: JBCheckBox
@@ -46,14 +46,14 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }
-                //enableMagick
+                // enableMagick
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(imageSettings::enableMagick)
                         .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                         .applyToComponent { cbMagick = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
                 }
-                //magickPath
+                // magickPath
                 row {
                     label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
                     val descriptor = FileChooserDescriptorFactory.singleFile()
@@ -65,7 +65,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
             }
-            //translation tools
+            // translation tools
             group(PlsBundle.message("settings.integrations.translation")) {
                 row {
                     comment(PlsBundle.message("settings.integrations.translation.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -79,20 +79,20 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                     link(PlsBundle.message("settings.integrations.translation.from.ai.link")) {
                         DataManager.getInstance().dataContextFromFocusAsync.then {
-                            //直接转到AI设置页面
+                            // 直接转到AI设置页面
                             Settings.KEY.getData(it)?.let { settings ->
                                 settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
                                     settings.select(configurable)
                                 }
                             }
 
-                            //这会嵌套打开AI设置页面
-                            //ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
+                            // 这会嵌套打开AI设置页面
+                            // ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
                         }
                     }
                 }
             }
-            //linting tools
+            // linting tools
             group(PlsBundle.message("settings.integrations.lint")) {
                 val lintSettings = settings.lint
                 lateinit var cbTiger: JBCheckBox
@@ -103,7 +103,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     comment(PlsBundle.message("settings.integrations.lint.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
-                //enableTiger
+                // enableTiger
                 row {
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(lintSettings::enableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
@@ -129,7 +129,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     row {
                         label(PlsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
                         val descriptor = FileChooserDescriptorFactory.singleFile()
-                            //.withExtensionFilter("conf") //这里不预先按扩展名过滤
+                            // .withExtensionFilter("conf") // 这里不预先按扩展名过滤
                             .withTitle(PlsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(confPathProp.toNonNullableProperty(""))

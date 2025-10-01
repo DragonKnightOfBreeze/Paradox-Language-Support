@@ -77,7 +77,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     }
 
     protected open fun beforeInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {
-        //弹出对话框，以确认是否真的要处理本地化
+        // 弹出对话框，以确认是否真的要处理本地化
         val actionName = e.presentation.text
         val toProcess = files.size
         val title = PlsBundle.message("manipulation.confirm.title")

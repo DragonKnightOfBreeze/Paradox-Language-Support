@@ -16,7 +16,7 @@ class ParadoxScriptErrorQuickFixProvider : ErrorQuickFixProvider {
         if (errorElement.language !is ParadoxScriptLanguage) return
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxParameter -> {
-                //PARAMETER_END
+                // PARAMETER_END
                 builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
             }
         }

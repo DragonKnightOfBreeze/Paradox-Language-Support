@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withGameType
 import javax.swing.tree.DefaultTreeModel
 
-//com.intellij.ide.projectView.impl.PackageViewPane
+// com.intellij.ide.projectView.impl.PackageViewPane
 
 class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncSupport(project) {
     companion object {
@@ -97,12 +97,12 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
         }
     }
 
-    //icu.windea.pls.core.projectView.ParadoxFilesViewProjectNode
+    // icu.windea.pls.core.projectView.ParadoxFilesViewProjectNode
     //  icu.windea.pls.core.projectView.ParadoxGameElementNode
     //    icu.windea.pls.core.projectView.ParadoxDirectoryElementNode / PsiFiles
 
-    //only include main entry directories and game files under them
-    //e.g., DO NOT include directory "previewer_assets" and game files under it
+    // only include main entry directories and game files under them
+    // e.g., DO NOT include directory "previewer_assets" and game files under it
 
-    override fun getWeight() = 100 //very low
+    override fun getWeight() = 100 // very low
 }

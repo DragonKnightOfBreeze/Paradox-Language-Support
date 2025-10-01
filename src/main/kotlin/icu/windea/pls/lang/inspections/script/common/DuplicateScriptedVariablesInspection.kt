@@ -39,7 +39,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -55,7 +55,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
             ProgressManager.checkCanceled()
             if (values.size <= 1) continue
             for (value in values) {
-                //第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
+                // 第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                 val location = value.scriptedVariableName
                 val message = PlsBundle.message("inspection.script.duplicateScriptedVariables.desc", name)
                 val fix = NavigateToDuplicatesFix(name, value, values)

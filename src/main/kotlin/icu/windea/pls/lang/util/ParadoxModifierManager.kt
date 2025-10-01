@@ -67,17 +67,17 @@ object ParadoxModifierManager {
         val modifierIconPaths by createKey<Set<String>>(Keys)
     }
 
-    //rootFile -> cacheKey -> modifierInfo
-    //depends on config group
+    // rootFile -> cacheKey -> modifierInfo
+    // depends on config group
     private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
         createNestedCache<VirtualFile, String, ParadoxModifierInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxModifierInfo>> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }
 
-    //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
-    //不同的游戏类型存在一些通过不同逻辑生成的修正
-    //插件使用的modifiers.cwt中应当去除生成的修正
+    // 可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
+    // 不同的游戏类型存在一些通过不同逻辑生成的修正
+    // 插件使用的modifiers.cwt中应当去除生成的修正
 
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         return ParadoxModifierSupport.matchModifier(name, element, configGroup)
@@ -109,7 +109,7 @@ object ParadoxModifierManager {
     }
 
     private fun doCompleteTemplateModifier(contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>, index: Int, builder: String) {
-        //用于提示生成的修正，为了优化性能，这里仅支持部分数据类型
+        // 用于提示生成的修正，为了优化性能，这里仅支持部分数据类型
         ProgressManager.checkCanceled()
         val project = configGroup.project
         if (index == configExpression.snippetExpressions.size) {
@@ -136,7 +136,7 @@ object ParadoxModifierManager {
             }
             CwtDataTypes.EnumValue -> {
                 val enumName = snippetExpression.value ?: return
-                //提示简单枚举
+                // 提示简单枚举
                 val enumConfig = configGroup.enums[enumName]
                 if (enumConfig != null) {
                     ProgressManager.checkCanceled()
@@ -148,7 +148,7 @@ object ParadoxModifierManager {
                     }
                 }
                 ProgressManager.checkCanceled()
-                //提示复杂枚举值
+                // 提示复杂枚举值
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
@@ -179,7 +179,7 @@ object ParadoxModifierManager {
                 val selector = selector(project, contextElement).dynamicValue().distinctByName()
                 ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
-                    //去除后面的作用域信息
+                    // 去除后面的作用域信息
                     doCompleteTemplateModifier(contextElement, configExpression, configGroup, processor, index + 1, builder + info.name)
                     true
                 }
@@ -193,7 +193,7 @@ object ParadoxModifierManager {
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.get(cacheKey) {
-            //进行代码补全时，可能需要使用指定的扩展点解析修正
+            // 进行代码补全时，可能需要使用指定的扩展点解析修正
             useSupport?.resolveModifier(name, element, configGroup)?.also { it.support = useSupport }
                 ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
                 ?: ParadoxModifierInfo.EMPTY
@@ -264,11 +264,11 @@ object ParadoxModifierManager {
     }
 
     fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        val finalValue = value ?: "economic_unit" //default to economic_unit
-        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap() //unexpected
+        val finalValue = value ?: "economic_unit" // default to economic_unit
+        val enumConfig = configGroup.enums["scripted_modifier_category"] ?: return emptyMap() // unexpected
         var keys = getModifierCategoryOptionValues(enumConfig, finalValue)
         if (keys == null) keys = getModifierCategoryOptionValues(enumConfig, "economic_unit")
-        if (keys == null) keys = emptySet() //unexpected
+        if (keys == null) keys = emptySet() // unexpected
         if (keys.isEmpty()) return emptyMap()
         val modifierCategories = configGroup.modifierCategories
         val result = mutableMapOf<String, CwtModifierCategoryConfig>()

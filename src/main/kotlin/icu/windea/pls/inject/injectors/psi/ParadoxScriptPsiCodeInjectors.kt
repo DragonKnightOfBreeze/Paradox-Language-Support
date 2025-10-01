@@ -5,7 +5,7 @@ import icu.windea.pls.inject.annotations.InjectFieldBasedCache
 import icu.windea.pls.inject.annotations.InjectTarget
 
 interface ParadoxScriptPsiCodeInjectors {
-    //用于优化性能
+    // 用于优化性能
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptProperty */
     @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl", pluginId = "icu.windea.pls")

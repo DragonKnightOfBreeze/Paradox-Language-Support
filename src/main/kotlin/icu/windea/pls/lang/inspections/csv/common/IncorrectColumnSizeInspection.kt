@@ -37,7 +37,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
 
         val expectColumnSize = rowConfig.columns.size
 
-        //如果表头中的列数与期望的不一致，则直接跳过检查
+        // 如果表头中的列数与期望的不一致，则直接跳过检查
         val headerColumnSize = ParadoxCsvManager.computeHeaderColumnSize(header)
         if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -50,7 +50,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
                 val columnSize = ParadoxCsvManager.computeColumnSize(element)
                 if (columnSize == expectColumnSize) return
 
-                val locationElement = element.lastChild ?: return //latest non-empty column or separator
+                val locationElement = element.lastChild ?: return // latest non-empty column or separator
                 val description = PlsBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
                 holder.registerProblem(locationElement, description)
             }
@@ -59,7 +59,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

@@ -37,11 +37,11 @@ abstract class ParadoxExpressionEditablePostfixTemplate(
     }
 }
 
-//com.intellij.codeInsight.template.postfix.templates.editable.EditablePostfixTemplateWithMultipleExpressions.createTemplate
+// com.intellij.codeInsight.template.postfix.templates.editable.EditablePostfixTemplateWithMultipleExpressions.createTemplate
 
 private fun createTemplate(setting: CwtPostfixTemplateSettingsConfig): TemplateImpl {
     val template = TemplateImpl("fakeKey", setting.expression, "")
     template.isToReformat = true
-    (template as Template).templateText //call template.parseSegments(), and pass compatibility verification
+    (template as Template).templateText // call template.parseSegments(), and pass compatibility verification
     return template
 }

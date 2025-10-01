@@ -26,9 +26,9 @@ import icu.windea.pls.model.ParadoxRootInfo
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         if (selectRootFile(file) == null) return false
-        if (!inProject(file)) return false //only for project files
+        if (!inProject(file)) return false // only for project files
         return true
     }
 
@@ -48,7 +48,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
                 val selector = selector(project, file).file()
                 val path = fileInfo.path.path
                 val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
-                if (results.size < 2) return //no override -> skip
+                if (results.size < 2) return // no override -> skip
 
                 val locationElement = file
                 val message = PlsBundle.message("inspection.overriddenForFile.desc", path)

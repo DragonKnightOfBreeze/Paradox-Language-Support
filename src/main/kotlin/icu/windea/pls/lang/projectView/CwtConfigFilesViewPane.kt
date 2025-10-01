@@ -14,7 +14,7 @@ import com.intellij.psi.PsiDirectory
 import icu.windea.pls.PlsBundle
 import javax.swing.tree.DefaultTreeModel
 
-//com.intellij.ide.projectView.impl.PackageViewPane
+// com.intellij.ide.projectView.impl.PackageViewPane
 
 class CwtConfigFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncSupport(project) {
     companion object {
@@ -55,9 +55,9 @@ class CwtConfigFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyn
         }
     }
 
-    //icu.windea.pls.core.projectView.CwtConfigFilesViewProjectNode
+    // icu.windea.pls.core.projectView.CwtConfigFilesViewProjectNode
     //  icu.windea.pls.core.projectView.CwtConfigGameElementNode
     //    icu.windea.pls.core.projectView.CwtConfigDirectoryElementNode / PsiFiles
 
-    override fun getWeight() = 200 //lower than ParadoxFilesViewPane
+    override fun getWeight() = 200 // lower than ParadoxFilesViewPane
 }

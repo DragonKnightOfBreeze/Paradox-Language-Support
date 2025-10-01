@@ -26,7 +26,7 @@ import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
-//目前仅提供有限的支持
+// 目前仅提供有限的支持
 
 class ParadoxCsvBoolExpressionSupport: ParadoxCsvExpressionSupport {
     override fun supports(config: CwtValueConfig): Boolean {
@@ -94,21 +94,21 @@ class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
         val enumName = config.configExpression.value ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
-        //尝试解析为简单枚举
+        // 尝试解析为简单枚举
         val enumConfig = configGroup.enums[enumName]
         if (enumConfig != null) {
             return ParadoxExpressionManager.resolvePredefinedEnumValue(expressionText, enumName, configGroup)
         }
-        //尝试解析为复杂枚举
+        // 尝试解析为复杂枚举
         val complexEnumConfig = configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
             val searchScope = complexEnumConfig.searchScopeType
             val selector = selector(project, element).complexEnumValue()
                 .withSearchScopeType(searchScope)
-            //.contextSensitive(exact) //unnecessary
+            // .contextSensitive(exact) // unnecessary
             val info = ParadoxComplexEnumValueSearch.search(expressionText, enumName, selector).findFirst()
             if (info != null) {
-                val readWriteAccess = ReadWriteAccessDetector.Access.Read //usage
+                val readWriteAccess = ReadWriteAccessDetector.Access.Read // usage
                 return ParadoxComplexEnumValueElement(element, info.name, info.enumName, readWriteAccess, info.gameType, project)
             }
         }

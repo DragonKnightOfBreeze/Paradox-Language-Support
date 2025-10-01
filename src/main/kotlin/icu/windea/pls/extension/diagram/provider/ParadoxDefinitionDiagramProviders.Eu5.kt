@@ -33,7 +33,7 @@ class Eu5EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile
+        file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
@@ -41,7 +41,7 @@ class Eu5EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
             if (settings !is Eu5EventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
 
-            //对于每组配置，只要其中任意一个配置匹配即可
+            // 对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 var enabled = false

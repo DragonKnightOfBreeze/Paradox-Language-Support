@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import kotlinx.coroutines.launch
 import javax.swing.Icon
 
-//each library each project
+// each library each project
 
 class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
     @Volatile
@@ -52,7 +52,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
             }
             modSettings.modDependencies.forEach f1@{ modDependencySettings ->
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                if (modDependencyDirectory == modDirectory) return@f1 //需要排除这种情况
+                if (modDependencyDirectory == modDirectory) return@f1 // 需要排除这种情况
                 val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
                 if (!modDependencyFile.exists()) return@f1
                 if (projectFileIndex.isInContent(modDependencyFile)) return@f1

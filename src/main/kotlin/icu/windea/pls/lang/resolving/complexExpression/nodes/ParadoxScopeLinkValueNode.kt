@@ -27,8 +27,8 @@ class ParadoxScopeLinkValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
-            //text may contain parameters
-            //child node can be ParadoxScopeLinkNode / ParadoxDynamicValueExpression / ParadoxDataSourceNode
+            // text may contain parameters
+            // child node can be ParadoxScopeLinkNode / ParadoxDynamicValueExpression / ParadoxDataSourceNode
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {

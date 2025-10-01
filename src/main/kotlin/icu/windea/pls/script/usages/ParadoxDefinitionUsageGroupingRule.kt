@@ -17,8 +17,8 @@ import icu.windea.pls.script.psi.findParentDefinition
 class ParadoxDefinitionUsageGroupingRule(
     private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
-    //com.intellij.usages.impl.rules.MethodGroupingRule
-    //org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
+    // com.intellij.usages.impl.rules.MethodGroupingRule
+    // org.jetbrains.kotlin.idea.findUsages.KotlinDeclarationGroupingRule
 
     private fun getDefinition(usage: Usage, targets: Array<out UsageTarget>): ParadoxScriptDefinitionElement? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null

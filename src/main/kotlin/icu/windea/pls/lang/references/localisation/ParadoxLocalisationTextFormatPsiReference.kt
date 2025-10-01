@@ -35,7 +35,7 @@ class ParadoxLocalisationTextFormatPsiReference(
         return element.setName(newElementName)
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationTextFormatPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxLocalisationTextFormatPsiReference, incompleteCode: Boolean) = ref.doResolve()

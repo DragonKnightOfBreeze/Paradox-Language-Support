@@ -33,11 +33,11 @@ class ParadoxLocalisationParameterPsiReference(
     val project by lazy { element.project }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        //TODO 重命名关联的definition
+        // TODO 重命名关联的definition
         return element.setName(newElementName)
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationParameterPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxLocalisationParameterPsiReference, incompleteCode: Boolean) = ref.doResolve()
@@ -66,7 +66,7 @@ class ParadoxLocalisationParameterPsiReference(
         val locale = selectLocale(file)
         val name = element.name
 
-        //尝试解析成localisation或者synced_localisation
+        // 尝试解析成localisation或者synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         val resolved = when (type) {
             Normal -> ParadoxLocalisationSearch.search(name, selector).find()
@@ -74,7 +74,7 @@ class ParadoxLocalisationParameterPsiReference(
         }
         if (resolved != null) return resolved
 
-        //尝试解析成parameter
+        // 尝试解析成parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
         if (resolvedParameter != null) return resolvedParameter
 
@@ -88,15 +88,15 @@ class ParadoxLocalisationParameterPsiReference(
         val locale = selectLocale(file)
         val name = element.name
 
-        //尝试解析成localisation或者synced_localisation
+        // 尝试解析成localisation或者synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         val resolved = when (type) {
-            Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言环境的
-            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言环境的
+            Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() // 查找所有语言环境的
+            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() // 查找所有语言环境的
         }
         if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
 
-        //尝试解析成localisation_parameter
+        // 尝试解析成localisation_parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
         if (resolvedParameter != null) return resolvedParameter.let { arrayOf(PsiElementResolveResult(it)) }
 

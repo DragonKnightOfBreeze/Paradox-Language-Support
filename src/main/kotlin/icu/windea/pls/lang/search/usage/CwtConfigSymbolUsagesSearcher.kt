@@ -24,8 +24,8 @@ class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, References
         val extraWords = getExtraWords(target)
         if (extraWords.isEmpty()) return
 
-        //这里不能直接使用target.useScope，否则文件高亮会出现问题
-        //只需要在CWT文件中查询
+        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 只需要在CWT文件中查询
         val useScope = queryParameters.effectiveSearchScope
             .let { GlobalSearchScopeUtil.toGlobalSearchScope(it, queryParameters.project).withFileTypes(CwtFileType) }
         val searchContext = UsageSearchContext.IN_CODE

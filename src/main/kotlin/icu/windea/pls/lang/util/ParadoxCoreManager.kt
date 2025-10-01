@@ -46,7 +46,7 @@ object ParadoxCoreManager {
     fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
 
-        //首先尝试获取注入的rootInfo
+        // 首先尝试获取注入的rootInfo
         val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
         if (injectedRootInfo != null) return injectedRootInfo
 
@@ -57,7 +57,7 @@ object ParadoxCoreManager {
             val cachedRootInfo1 = rootFile.getUserData(PlsKeys.rootInfo)
             if (cachedRootInfo1 != null) return cachedRootInfo1.castOrNull()
 
-            //resolve rootInfo
+            // resolve rootInfo
             try {
                 val rootInfo = doGetRootInfo(rootFile)
                 rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
@@ -85,11 +85,11 @@ object ParadoxCoreManager {
     }
 
     fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        //首先尝试获取注入的fileInfo
+        // 首先尝试获取注入的fileInfo
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
         if (injectedFileInfo != null) return injectedFileInfo
 
-        //no fileInfo for VirtualFileWindow (injected PSI)
+        // no fileInfo for VirtualFileWindow (injected PSI)
         if (PlsVfsManager.isInjectedFile(file)) return null
 
         val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
@@ -99,7 +99,7 @@ object ParadoxCoreManager {
             val cachedFileInfo1 = file.getUserData(PlsKeys.fileInfo)
             if (cachedFileInfo1 != null) return cachedFileInfo1.castOrNull()
 
-            //resolve fileInfo by file path
+            // resolve fileInfo by file path
             try {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null
@@ -127,7 +127,7 @@ object ParadoxCoreManager {
 
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
         try {
-            //直接尝试通过filePath获取fileInfo
+            // 直接尝试通过filePath获取fileInfo
             var currentFilePath = filePath.path.toPathOrNull() ?: return null
             var currentFile = VfsUtil.findFile(currentFilePath, false)
             while (true) {
@@ -148,7 +148,7 @@ object ParadoxCoreManager {
     }
 
     private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
-        //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
+        // 尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
         try {
             if (file is LightVirtualFile) {
                 file.originalFile?.let { return it }
@@ -201,9 +201,9 @@ object ParadoxCoreManager {
     }
 
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        //使用简单缓存与文件索引以优化性能（避免直接访问PSI）
+        // 使用简单缓存与文件索引以优化性能（避免直接访问PSI）
 
-        //首先尝试获取注入的localeConfig
+        // 首先尝试获取注入的localeConfig
         val injectedLocaleConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
         if (injectedLocaleConfig != null) return injectedLocaleConfig
 
@@ -241,10 +241,10 @@ object ParadoxCoreManager {
     }
 
     fun validateGameDirectory(builder: ValidationInfoBuilder, gameType: ParadoxGameType, gameDirectory: String?): ValidationInfo? {
-        //验证游戏目录是否合法
-        //* 路径合法
-        //* 路径对应的目录存在
-        //* 路径是游戏目录（基于 ParadoxMetadataProvider）
+        // 验证游戏目录是否合法
+        // * 路径合法
+        // * 路径对应的目录存在
+        // * 路径是游戏目录（基于 ParadoxMetadataProvider）
         val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))

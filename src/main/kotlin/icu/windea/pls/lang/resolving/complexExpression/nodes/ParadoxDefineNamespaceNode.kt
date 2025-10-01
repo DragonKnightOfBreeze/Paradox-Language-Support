@@ -62,7 +62,7 @@ class ParadoxDefineNamespaceNode(
             throw IncorrectOperationException()
         }
 
-        //缓存解析结果以优化性能
+        // 缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()

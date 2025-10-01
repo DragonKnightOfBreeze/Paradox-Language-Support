@@ -83,7 +83,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
-//org.intellij.images.editor.impl.ImageEditorUI
+// org.intellij.images.editor.impl.ImageEditorUI
 
 class ImageEditorUI(
     private val editor: ImageEditor?,
@@ -108,7 +108,7 @@ class ImageEditorUI(
     private val wheelAdapter: ImageWheelAdapter = ImageWheelAdapter()
     private val changeListener: ChangeListener = DocumentChangeListener()
     val imageComponent: ImageComponent = ImageComponent()
-    //val contentComponent: JComponent get() = contentPanel
+    // val contentComponent: JComponent get() = contentPanel
     private val contentPanel: JPanel
     private var infoLabel: JLabel? = null
 
@@ -192,7 +192,7 @@ class ImageEditorUI(
         })
 
         if (!isOpaque) {
-            //setOpaque(false)
+            // setOpaque(false)
             contentPanel.isOpaque = false
             myScrollPane.isOpaque = false
             myScrollPane.viewport.isOpaque = false

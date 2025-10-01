@@ -15,7 +15,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * 用于在 *随处搜索（Search Everywhere）* 中查找同步本地化。
  */
 class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributorEx {
-    //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
+    // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
     private val indexKey = ParadoxIndexKeys.SyncedLocalisationName
 

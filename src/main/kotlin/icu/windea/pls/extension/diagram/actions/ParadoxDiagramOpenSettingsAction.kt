@@ -9,7 +9,7 @@ import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable
 
-//com.intellij.uml.core.actions.DiagramOpenSettingsAction
+// com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
 class ParadoxDiagramOpenSettingsAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

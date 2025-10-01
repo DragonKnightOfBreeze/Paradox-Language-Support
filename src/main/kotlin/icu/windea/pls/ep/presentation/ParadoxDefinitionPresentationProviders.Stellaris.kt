@@ -66,26 +66,26 @@ class StellarisTechnologyPresentationData(definition: ParadoxScriptDefinitionEle
         }
 
         private fun getPanel(): JPanel? {
-            //GFX_technology_unknown 52*52
-            //GFX_technology_xxx 52*52
+            // GFX_technology_unknown 52*52
+            // GFX_technology_xxx 52*52
 
-            //GFX_bottom_line_physics 533*1
-            //GFX_bottom_line_society 533*1
-            //GFX_bottom_line_engineering 533*1
+            // GFX_bottom_line_physics 533*1
+            // GFX_bottom_line_society 533*1
+            // GFX_bottom_line_engineering 533*1
 
-            //背景
-            //GFX_tech_entry_physics_bg 452*96
-            //GFX_tech_entry_society_bg 452*96
-            //GFX_tech_entry_engineering_bg 452*96
-            //GFX_tech_entry_rare_bg 452*96
-            //GFX_tech_entry_dangerous_bg 452*96
-            //GFX_tech_entry_dangerous_rare_bg 452*96
+            // 背景
+            // GFX_tech_entry_physics_bg 452*96
+            // GFX_tech_entry_society_bg 452*96
+            // GFX_tech_entry_engineering_bg 452*96
+            // GFX_tech_entry_rare_bg 452*96
+            // GFX_tech_entry_dangerous_bg 452*96
+            // GFX_tech_entry_dangerous_rare_bg 452*96
 
-            //突破图标
-            //GFX_tech_gateway 24*24
+            // 突破图标
+            // GFX_tech_gateway 24*24
 
-            //标题 - 左上 - 白色
-            //费用 - 右上 - 绿色
+            // 标题 - 左上 - 白色
+            // 费用 - 右上 - 绿色
 
             val backgroundIcon = getBackgroundIcon() ?: return null
             val bottomLineIcon = getBottomLineIcon() ?: return null
@@ -97,20 +97,20 @@ class StellarisTechnologyPresentationData(definition: ParadoxScriptDefinitionEle
                 override fun paintComponent(g: Graphics) {
                     super.paintComponent(g)
                     g as Graphics2D
-                    g.color = Constants.backgroundColor //设置背景色
+                    g.color = Constants.backgroundColor // 设置背景色
                     g.fillRect(0, 0, 452, 97)//填充背景色
-                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON) //抗锯齿
+                    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON) // 抗锯齿
                     g.drawImage(backgroundIcon.toImage(), 0, 0, 452, 96, this)
                     g.drawImage(bottomLineIcon.toImage(), 0, 96, 452, 1, this)
                 }
             }
             panel.size = Dimension(452, 97)
             panel.preferredSize = panel.size
-            panel.add(nameLabel.withLocation(6, 2)) //6, 2
-            panel.add(costLabel.withLocation(452 - 6 - costLabel.width, 2)) //452 - 6 - width, 2
+            panel.add(nameLabel.withLocation(6, 2)) // 6, 2
+            panel.add(costLabel.withLocation(452 - 6 - costLabel.width, 2)) // 452 - 6 - width, 2
             panel.add(icon.toLabel().withLocation(4, 32)) // (60 - 52) / 2, 20 + ((76 - 52) / 2)
             if (categoryIcon != null) {
-                panel.add(categoryIcon.toLabel().withLocation(452 - 6 - categoryIcon.iconWidth, 26)) //452 - 6 - width, 20 + 6
+                panel.add(categoryIcon.toLabel().withLocation(452 - 6 - categoryIcon.iconWidth, 26)) // 452 - 6 - width, 20 + 6
             }
             return panel
         }
@@ -121,7 +121,7 @@ class StellarisTechnologyPresentationData(definition: ParadoxScriptDefinitionEle
         }
 
         private fun getCostLabel(): JLabel {
-            val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, definition)?.color //Green
+            val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, definition)?.color // Green
             val cost = definition.getData<StellarisTechnologyData>()?.cost ?: 0
             return ParadoxPresentationManager.getLabel(cost.toString(), color)
         }

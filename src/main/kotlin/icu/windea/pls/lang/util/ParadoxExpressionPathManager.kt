@@ -58,7 +58,7 @@ object ParadoxExpressionPathManager {
                     depth++
                 }
             }
-            //如果发现深度超出指定的最大深度，则直接返回null
+            // 如果发现深度超出指定的最大深度，则直接返回null
             if (maxDepth >= 0 && maxDepth < depth) return null
             current = current.parent ?: break
         }
@@ -93,7 +93,7 @@ object ParadoxExpressionPathManager {
                     depth++
                 }
             }
-            //如果发现深度超出指定的最大深度，则直接返回null
+            // 如果发现深度超出指定的最大深度，则直接返回null
             if (maxDepth >= 0 && maxDepth < depth) return null
             current = tree.getParent(current) ?: break
         }
@@ -155,7 +155,7 @@ object ParadoxExpressionPathManager {
                     else -> return result ?: emptyList()
                 }
             } else {
-                if (n == node) flag = true //这里需要使用值相等
+                if (n == node) flag = true // 这里需要使用值相等
             }
         }
         return result ?: emptyList()

@@ -36,7 +36,7 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         val configGroup = context.configGroup ?: return
         val path = parameters.originalFile.fileInfo?.path
 
-        //判断所在文件是否可能包含定义，如果可能，则不提示关键字
+        // 判断所在文件是否可能包含定义，如果可能，则不提示关键字
         val isDefinitionAwareFile = path != null && configGroup.types.values.any { CwtConfigManager.matchesFilePathPattern(it, path) }
         if(isDefinitionAwareFile) return
 

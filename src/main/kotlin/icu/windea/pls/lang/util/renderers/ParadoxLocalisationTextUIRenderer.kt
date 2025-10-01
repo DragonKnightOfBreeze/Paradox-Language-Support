@@ -15,7 +15,7 @@ import javax.swing.JLabel
 class ParadoxLocalisationTextUIRenderer(
     val color: Color? = null
 ) {
-    //com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
+    // com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
 
     fun render(text: String): JLabel {
         return doRender(doGetFinalText(text))

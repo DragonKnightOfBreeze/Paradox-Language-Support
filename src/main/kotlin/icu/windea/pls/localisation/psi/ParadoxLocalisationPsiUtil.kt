@@ -33,7 +33,7 @@ object ParadoxLocalisationPsiUtil {
         val elementType = element.elementType
         when {
             elementType == ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN -> {
-                //后面只能是空白或冒号,接下来的后面只能是空白，接着前面只能是空白，并且要在一行的开头
+                // 后面只能是空白或冒号,接下来的后面只能是空白，接着前面只能是空白，并且要在一行的开头
                 val prevElement = element.prevLeaf(false)
                 if (prevElement != null) {
                     val prevElementType = prevElement.elementType

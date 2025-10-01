@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class ParadoxLocalisationTextRenderer(
     var builder: StringBuilder = StringBuilder()
 ) {
-    private val guardStack = ArrayDeque<String>() //防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
 
     fun render(element: ParadoxLocalisationProperty): String {
         renderTo(element)
@@ -59,14 +59,14 @@ class ParadoxLocalisationTextRenderer(
     }
 
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText) {
-        //直接渲染其中的文本
+        // 直接渲染其中的文本
         for (v in element.richTextList) {
             renderRichTextTo(v)
         }
     }
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter) {
-        //直接解析为本地化（或者封装变量）以优化性能
+        // 直接解析为本地化（或者封装变量）以优化性能
         val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
         when {
             resolved is ParadoxLocalisationProperty -> {
@@ -75,7 +75,7 @@ class ParadoxLocalisationTextRenderer(
                 } else {
                     val resolvedName = resolved.name
                     if (guardStack.contains(resolvedName)) {
-                        //infinite recursion, do not render context
+                        // infinite recursion, do not render context
                         builder.append(element.text)
                     } else {
                         try {
@@ -99,17 +99,17 @@ class ParadoxLocalisationTextRenderer(
     }
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand) {
-        //直接显示命令文本
+        // 直接显示命令文本
         builder.append(element.text)
     }
 
     private fun renderIconTo(element: ParadoxLocalisationIcon) {
-        //忽略
-        //builder.append(":${element.name}:")
+        // 忽略
+        // builder.append(":${element.name}:")
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand) {
-        //尝试渲染概念文本
+        // 尝试渲染概念文本
         val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
             textElement is ParadoxLocalisationConceptText -> textElement.richTextList
@@ -129,7 +129,7 @@ class ParadoxLocalisationTextRenderer(
     }
 
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat) {
-        //直接渲染其中的文本
+        // 直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return
         for (richText in richTextList) {
@@ -138,7 +138,7 @@ class ParadoxLocalisationTextRenderer(
     }
 
     private fun renderTextIconTo(element: ParadoxLocalisationTextIcon) {
-        //忽略
-        //builder.append(":${element.name}:")
+        // 忽略
+        // builder.append(":${element.name}:")
     }
 }

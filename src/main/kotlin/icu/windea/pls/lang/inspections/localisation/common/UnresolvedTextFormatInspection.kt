@@ -29,7 +29,7 @@ import javax.swing.JComponent
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {
-    //aka predefined format styles, or color expressions, or combined
+    // aka predefined format styles, or color expressions, or combined
     @JvmField
     var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip"
     @JvmField
@@ -51,7 +51,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
             private fun visitIcon(element: ParadoxLocalisationTextFormat) {
                 val name = element.name ?: return
                 ignoredNames.splitOptimized(';').forEach {
-                    if (name.matchesPattern(it, true)) return //忽略
+                    if (name.matchesPattern(it, true)) return // 忽略
                 }
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
@@ -74,7 +74,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
                     .align(Align.FILL)
                     .resizableColumn()
             }
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

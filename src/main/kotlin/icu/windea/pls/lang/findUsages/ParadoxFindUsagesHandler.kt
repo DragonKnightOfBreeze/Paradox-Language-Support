@@ -5,7 +5,7 @@ import com.intellij.find.findUsages.FindUsagesHandler
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.psi.PsiElement
 
-//com.intellij.find.findUsages.JavaFindUsagesHandler
+// com.intellij.find.findUsages.JavaFindUsagesHandler
 
 open class ParadoxFindUsagesHandler(
     private val element: PsiElement,

@@ -90,7 +90,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
-        //invalidated on file modification
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             val file = element.containingFile
             val value = doGetInfo(element, file)
@@ -111,15 +111,15 @@ object ParadoxComplexEnumValueManager {
         if (complexEnumConfig == null) return null
         val name = getName(value) ?: return null
         val enumName = complexEnumConfig.name
-        val readWriteAccess = Access.Write //write (declaration)
+        val readWriteAccess = Access.Write // write (declaration)
         val elementOffset = element.startOffset
         return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
     }
 
-    //NOTE 这里匹配时并不兼容向下内联的情况
+    // NOTE 这里匹配时并不兼容向下内联的情况
 
     fun getMatchedComplexEnumConfig(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, path: ParadoxPath): CwtComplexEnumConfig? {
-        //优先从基于文件路径的缓存中获取
+        // 优先从基于文件路径的缓存中获取
         val configs = configGroup.complexEnumConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesComplexEnum(element, config, null) }
@@ -161,11 +161,11 @@ object ParadoxComplexEnumValueManager {
 
     private fun doMatchParent(element: PsiElement, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         if (config is CwtPropertyConfig) {
-            //match key only
+            // match key only
             if (element !is ParadoxScriptProperty) return false
             if (!doMatchKey(element, config, complexEnumConfig)) return false
         } else if (config is CwtValueConfig) {
-            //blockConfig vs blockElement
+            // blockConfig vs blockElement
             if (element !is ParadoxScriptBlockElement) return false
         } else {
             return false
@@ -193,7 +193,7 @@ object ParadoxComplexEnumValueManager {
             ProgressManager.checkCanceled()
             when {
                 c is CwtPropertyConfig -> {
-                    //ignore same config or enum name config
+                    // ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
                     val notMatched = parentBlockElement.properties().options(inline = true).none { propElement ->
                         doMatchProperty(propElement, c, complexEnumConfig)
@@ -201,7 +201,7 @@ object ParadoxComplexEnumValueManager {
                     if (notMatched) return false
                 }
                 c is CwtValueConfig -> {
-                    //ignore same config or enum name config
+                    // ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
                     val notMatched = parentBlockElement.values().options(inline = true).none { valueElement ->
                         doMatchValue(valueElement, c, complexEnumConfig)

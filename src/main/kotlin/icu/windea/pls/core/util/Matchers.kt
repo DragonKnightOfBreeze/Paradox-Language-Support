@@ -214,7 +214,7 @@ object Matchers {
          * @param usePattern 如果启用，用来匹配的子路径可以是一个GLOB表达式。参见：[GlobMatcher]。
          */
         fun matches(input: List<String>, other: List<String>, ignoreCase: Boolean = false, useAny: Boolean = false, usePattern: Boolean = false): Boolean {
-            if (input.size != other.size) return false //路径过短或路径长度不一致
+            if (input.size != other.size) return false // 路径过短或路径长度不一致
             for ((index, otherPath) in other.withIndex()) {
                 val inputPath = input[index]
                 val r = matches(inputPath, otherPath, ignoreCase, useAny, usePattern)

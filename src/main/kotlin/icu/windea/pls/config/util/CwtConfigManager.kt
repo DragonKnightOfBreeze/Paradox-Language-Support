@@ -342,7 +342,7 @@ object CwtConfigManager {
     }
 
     private fun doGetDocumentationFromCache(element: CwtMember): String? {
-        //invalidated on file modification
+        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDocumentation) {
             runReadAction {
                 val file = element.containingFile
@@ -430,8 +430,8 @@ object CwtConfigManager {
     }
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
-        //This method should be very fast
-        //1.4.2 optimized, DO NOT use config.filePathPatterns here
+        // This method should be very fast
+        // 1.4.2 optimized, DO NOT use config.filePathPatterns here
 
         val pathPatterns = config.pathPatterns
         if (pathPatterns.isNotEmpty()) {
@@ -503,7 +503,7 @@ object CwtConfigManager {
 
     fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
         val filePath = getFilePath(file) ?: return emptyList()
-        if (filePath.startsWith("internal/")) return emptyList() //排除内部规则文件
+        if (filePath.startsWith("internal/")) return emptyList() // 排除内部规则文件
         val configPath = getConfigPath(containerElement)
         if (configPath == null) return emptyList()
 
@@ -542,7 +542,7 @@ object CwtConfigManager {
             is CwtSchemaExpression.Template -> {
                 value.matchesPattern(schemaExpression.pattern)
             }
-            else -> true //fast check
+            else -> true // fast check
         }
     }
 }

@@ -9,7 +9,7 @@ class ParadoxBaseDynamicValueInferredScopeContextProvider : ParadoxDynamicValueI
     }
 
     override fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContextInferenceInfo? {
-        //TODO 1.1.10+
+        // TODO 1.1.10+
         return null
     }
 }

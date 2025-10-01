@@ -26,7 +26,7 @@ class MissingLocaleInspection : LocalInspectionTool() {
     var ignoredFileNames = ""
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         return true
     }
 
@@ -35,9 +35,9 @@ class MissingLocaleInspection : LocalInspectionTool() {
 
         val fileName = file.name
         ignoredFileNames.splitOptimized(';').forEach {
-            if (fileName.matchesPattern(it, true)) return null //忽略
+            if (fileName.matchesPattern(it, true)) return null // 忽略
         }
-        if (file.propertyLists.all { it.locale != null }) return null //没有问题，跳过
+        if (file.propertyLists.all { it.locale != null }) return null // 没有问题，跳过
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         holder.registerProblem(file, PlsBundle.message("inspection.localisation.missingLocale.desc"))
         return holder.resultsArray

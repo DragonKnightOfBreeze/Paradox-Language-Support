@@ -41,33 +41,33 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
 
-        //将光标移到int_token或float_token的开始并选中
+        // 将光标移到int_token或float_token的开始并选中
         editor.caretModel.moveToOffset(element.startOffset)
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
-        //打开对话框
-        val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
+        // 打开对话框
+        val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return true // 不期望的结果
         val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsFacade.getInternalSettings().defaultScriptedVariableName)
-        if (!dialog.showAndGet()) return true //取消
+        if (!dialog.showAndGet()) return true // 取消
 
         val variableName = dialog.variableName
         val variableValue = element.text
-        val targetFile = dialog.file.toPsiFile(project) ?: return true //不期望的结果
+        val targetFile = dialog.file.toPsiFile(project) ?: return true // 不期望的结果
         if (targetFile !is ParadoxScriptFile) return true
         val command = Runnable {
-            //用封装参数（variableReference）替换当前位置的int或float
+            // 用封装参数（variableReference）替换当前位置的int或float
             val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableName)
             val newVariableReference = element.parent.replace(createdVariableReference)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
-            if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) //提交文档更改
+            if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
 
-            //在指定的文件中声明对应的封装变量
+            // 在指定的文件中声明对应的封装变量
             ParadoxPsiManager.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
             val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
-            if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
+            if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) // 提交文档更改
 
-            //光标移到newVariableReference的结束位置
+            // 光标移到newVariableReference的结束位置
             editor.caretModel.moveToOffset(newVariableReference.endOffset)
             editor.selectionModel.removeSelection()
             editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

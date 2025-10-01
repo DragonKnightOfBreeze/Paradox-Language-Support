@@ -39,16 +39,16 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         val type = ParadoxLocalisationType.resolve(file) ?: return
         val project = parameters.originalFile.project
 
-        //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
+        // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
 
-        //提示localisation或者synced_localisation
-        //排除正在输入的那一个
+        // 提示localisation或者synced_localisation
+        // 排除正在输入的那一个
         val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .notSamePosition(element)
-        //.distinctByName() //这里selector不需要指定去重
+        // .distinctByName() // 这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name
@@ -60,7 +60,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             result.addElement(lookupElement)
             true
         }
-        //保证索引在此readAction中可用
+        // 保证索引在此readAction中可用
         ReadAction.nonBlocking<Unit> {
             when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)

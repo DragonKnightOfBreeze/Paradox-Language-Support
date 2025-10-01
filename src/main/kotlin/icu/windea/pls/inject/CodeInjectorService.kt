@@ -45,7 +45,7 @@ class CodeInjectorService {
             try {
                 codeInjector.inject()
             } catch (e: Exception) {
-                //NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
+                // NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
                 logger.warn("ERROR when applying injector: ${codeInjector.id}")
                 logger.warn(e.message, e)
             }
@@ -71,35 +71,35 @@ class CodeInjectorService {
     }
 
     companion object {
-        //for Application
+        // for Application
         @JvmField
         val invokeInjectMethodKey = createKey<Method>("INVOKE_INJECT_METHOD_BY_WINDEA")
-        //for Application
+        // for Application
         @JvmField
         val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
 
-        //for Application
+        // for Application
         @JvmField
         val classPoolKey = createKey<ClassPool>("CLASS_POOL_BY_WINDEA")
-        //for Application
+        // for Application
         @JvmField
         val codeInjectorsKey = createKey<Map<String, CodeInjector>>("CODE_INJECTORS_BY_WINDEA")
 
-        //for CodeInjector
+        // for CodeInjector
         @JvmField
         val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
-        //for CodeInjector
+        // for CodeInjector
         @JvmField
         val injectMethodInfosKey = createKey<Map<String, InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
 
-        //method invoked by injected codes
+        // method invoked by injected codes
 
         @JvmStatic
         @Suppress("unused")
         private fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
-            //如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
-            //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
-            //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
+            // 如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
+            // 如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
+            // 不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
             val application = application
             val codeInjector = application.getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
             val injectMethodInfo = codeInjector.getUserData(injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
@@ -129,7 +129,7 @@ class CodeInjectorService {
             }
         }
 
-        //exception thrown when should continue invocation
+        // exception thrown when should continue invocation
 
         @JvmStatic
         private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")

@@ -23,7 +23,7 @@ object ParadoxSearchScopeTypes {
     }
 
     private fun doGetScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
-        //context: PsiDirectory | PsiFile | PsiElement | null
+        // context: PsiDirectory | PsiFile | PsiElement | null
         if (context == null) return null
         val file = selectFile(context) ?: return null
         val fileInfo = file.fileInfo ?: return null
@@ -56,7 +56,7 @@ object ParadoxSearchScopeTypes {
         return result
     }
 
-    //scope types
+    // scope types
 
     val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { project, context ->
         val contextElement = when {

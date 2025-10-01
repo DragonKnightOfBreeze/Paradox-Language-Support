@@ -32,7 +32,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
-//com.intellij.testIntegration.GotoTestOrCodeHandler
+// com.intellij.testIntegration.GotoTestOrCodeHandler
 
 class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {

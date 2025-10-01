@@ -7,7 +7,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
-//com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
+// com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
 
 class InsertMissingTokenFix(
     private val token: String,

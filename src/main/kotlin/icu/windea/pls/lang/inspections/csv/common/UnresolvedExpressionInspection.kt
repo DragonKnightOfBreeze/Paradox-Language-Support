@@ -53,7 +53,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val config = columnConfig.valueConfig ?: return
 
                 val description = PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
-                if (element.isEmptyColumn()) { //special handle for empty columns
+                if (element.isEmptyColumn()) { // special handle for empty columns
                     val isFirst = element.getColumnIndex() == 0
                     val locationElement = element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR } ?: return
                     holder.registerProblem(locationElement, description)
@@ -66,7 +66,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

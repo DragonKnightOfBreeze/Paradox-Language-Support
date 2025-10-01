@@ -19,7 +19,7 @@ import kotlin.experimental.or
  */
 class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
-        //0.7.8 这里不能仅仅用fileName去查找，需要基于CWT规则文件判断
+        // 0.7.8 这里不能仅仅用fileName去查找，需要基于CWT规则文件判断
         val target = queryParameters.elementToSearch
         if (target !is PsiFile) return
         val fileInfo = target.fileInfo
@@ -31,7 +31,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val extraWords = getExtraWords(target, filePath, configGroup)
         if (extraWords.isEmpty()) return
 
-        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         for (extraWord in extraWords) {

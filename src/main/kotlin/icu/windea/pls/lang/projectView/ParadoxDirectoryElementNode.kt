@@ -58,18 +58,18 @@ class ParadoxDirectoryElementNode(
         val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         val directoryNames = mutableSetOf<String>()
         val query = ParadoxFilePathSearch.search(null, null, selector)
-        val files = sortedSetOf(query.getPriorityComparator()) //按照覆盖顺序进行排序
+        val files = sortedSetOf(query.getPriorityComparator()) // 按照覆盖顺序进行排序
         query.processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.parent != value.path.path) return@p true
             if (file.isDirectory) {
-                //直接位于入口目录中，且未被排除
+                // 直接位于入口目录中，且未被排除
                 if (!directoryNames.add(file.name)) return@p true
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FilePath, file, project)
                 if (!fileData.values.single().included) return@p true
                 files.add(file)
             } else {
-                //直接位于入口目录中
+                // 直接位于入口目录中
                 files.add(file)
             }
             true
@@ -101,7 +101,7 @@ class ParadoxDirectoryElementNode(
                 return
             }
         } catch (e: Exception) {
-            //ignored
+            // ignored
         }
         value = null
     }

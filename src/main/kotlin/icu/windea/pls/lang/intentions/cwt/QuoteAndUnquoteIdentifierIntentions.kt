@@ -29,7 +29,7 @@ class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>
     }
 
     override fun isElementApplicable(element: CwtExpressionElement, context: ActionContext): Boolean {
-        //can also be applied to number value tokens
+        // can also be applied to number value tokens
         if (element is CwtValue && !(element.isPropertyValue() || element.isBlockValue())) return false
         return when (element) {
             is CwtPropertyKey -> canQuote(element)

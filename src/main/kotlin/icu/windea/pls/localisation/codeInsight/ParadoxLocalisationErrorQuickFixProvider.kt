@@ -21,27 +21,27 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
         if (errorElement.language !is ParadoxLocalisationLanguage) return
         when {
             errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
-                //LEFT_QUOTE
+                // LEFT_QUOTE
                 builder.registerFix(InsertMissingTokenFix("\"", errorElement.endOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
-                //RIGHT_QUOTE
+                // RIGHT_QUOTE
                 builder.registerFix(InsertMissingTokenFix("\"", errorElement.startOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationParameter -> {
-                //PARAMETER_END
+                // PARAMETER_END
                 builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
-                //ICON_END
+                // ICON_END
                 builder.registerFix(InsertMissingTokenFix("£", errorElement.startOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
-                //TEXT_FORMAT_END
+                // TEXT_FORMAT_END
                 builder.registerFix(InsertMissingTokenFix("#!", errorElement.startOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextIcon -> {
-                //TEXT_ICON_END
+                // TEXT_ICON_END
                 builder.registerFix(InsertMissingTokenFix("!", errorElement.startOffset), null, null, null, null)
             }
         }

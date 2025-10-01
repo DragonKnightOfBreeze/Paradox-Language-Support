@@ -41,10 +41,10 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxScriptHintsProvider<Set
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation,
         CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.AliasName, //需要兼容alias
-        CwtDataTypes.AliasKeysField, //需要兼容alias
-        CwtDataTypes.AliasMatchLeft, //需要兼容alias
-        CwtDataTypes.SingleAliasRight, //需要兼容single_alias
+        CwtDataTypes.AliasName, // 需要兼容alias
+        CwtDataTypes.AliasKeysField, // 需要兼容alias
+        CwtDataTypes.AliasMatchLeft, // 需要兼容alias
+        CwtDataTypes.SingleAliasRight, // 需要兼容single_alias
     )
 
     override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")

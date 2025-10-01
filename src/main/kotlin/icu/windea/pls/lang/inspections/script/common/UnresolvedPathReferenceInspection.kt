@@ -68,8 +68,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val text = element.text
-                if (text.isParameterized()) return //skip if expression is parameterized
-                val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return //match or single
+                if (text.isParameterized()) return // skip if expression is parameterized
+                val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return // match or single
                 if (isIgnoredByConfigs(element, valueConfig)) return
                 val configExpression = valueConfig.configExpression
                 val location = element
@@ -91,7 +91,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                             if (fileNames.any { fileName -> fileName.matchesPattern(it, true) }) return
                         }
                     }
-                    val selector = selector(project, file).file() //use file as context
+                    val selector = selector(project, file).file() // use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
@@ -113,7 +113,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredByConfigs
+            // ignoredByConfigs
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
@@ -129,13 +129,13 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     .align(Align.FILL)
                     .resizableColumn()
             }
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)
                     .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
-            //ignoredInInlineScriptFiles
+            // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles)

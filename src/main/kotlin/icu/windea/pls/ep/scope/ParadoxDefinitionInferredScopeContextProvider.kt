@@ -40,7 +40,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
                 if (!gameType.supportsByAnnotation(ep)) return@f
                 if (!ep.supports(definition, definitionInfo)) return@f
                 val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
-                if (info.hasConflict) return null //只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
+                if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
                 if (map == null) {
                     map = info.scopeContextMap
                 } else {

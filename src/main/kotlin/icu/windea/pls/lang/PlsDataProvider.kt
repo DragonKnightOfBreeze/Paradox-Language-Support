@@ -25,7 +25,7 @@ class PlsDataProvider {
     private val emptyPath = Path.of("")
 
     fun initAsync() {
-        //preload cached values
+        // preload cached values
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             launch {
@@ -39,13 +39,13 @@ class PlsDataProvider {
         }
     }
 
-    //region Paths
+    // region Paths
 
-    //Steam的实际安装路径：（通过特定命令获取）
-    //Steam游戏的实际安装路径：（通过特定命令获取）
-    //Steam游戏的默认安装路径：steamapps/common（其子目录是游戏名）
-    //创意工坊安装目录：steamapps/common/content（其子目录是游戏的steamId）
-    //游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
+    // Steam的实际安装路径：（通过特定命令获取）
+    // Steam游戏的实际安装路径：（通过特定命令获取）
+    // Steam游戏的默认安装路径：steamapps/common（其子目录是游戏名）
+    // 创意工坊安装目录：steamapps/common/content（其子目录是游戏的steamId）
+    // 游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
 
     /**
      * 得到Steam目录的路径。
@@ -57,14 +57,14 @@ class PlsDataProvider {
     private fun doGetSteamPath(): Path? {
         return when (OS.value) {
             OS.Windows -> {
-                //查找注册表
+                // 查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
                 val steamPath = commandResult?.orNull()?.toPathOrNull()?.formatted()
                 steamPath
             }
             OS.Linux -> {
-                //默认路径（不准确，但是已经足够）
+                // 默认路径（不准确，但是已经足够）
                 val steamPath = PlsPathConstants.userHome.resolve(Path.of(".local", "share", "Steam")).formatted()
                 steamPath
             }
@@ -81,19 +81,19 @@ class PlsDataProvider {
     private fun doGetSteamGamePath(steamId: String, gameName: String): Path? {
         return when (OS.value) {
             OS.Windows -> {
-                //查找注册表
+                // 查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
                 val fromCommandResult = commandResult?.orNull()?.toPathOrNull()?.formatted()
                 if (fromCommandResult != null) return fromCommandResult
 
-                //默认路径（不准确，可以放在不同库目录下）
+                // 默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath() ?: return null
                 val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
                 steamGamePath
             }
             OS.Linux -> {
-                //默认路径（不准确，可以放在不同库目录下）
+                // 默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath() ?: return null
                 val steamGamePath = steamPath.resolve(Path("steamapps", "common", gameName)).formatted()
                 steamGamePath
@@ -109,7 +109,7 @@ class PlsDataProvider {
     }
 
     private fun doGetSteamWorkshopPath(steamId: String): Path? {
-        //不准确，可以放在不同库目录下
+        // 不准确，可以放在不同库目录下
         val steamPath = getSteamPath() ?: return null
         return steamPath.resolve(Path("steamapps", "workshop", "content", steamId)).formatted()
     }
@@ -122,16 +122,16 @@ class PlsDataProvider {
     }
 
     private fun doGetGameDataPath(gameName: String): Path? {
-        //实际上应当基于launcher-settings.json中的gameDataPath
+        // 实际上应当基于launcher-settings.json中的gameDataPath
         return when (OS.value) {
             OS.Windows -> PlsPathConstants.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
             OS.Linux -> PlsPathConstants.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
     }
 
-    //endregion
+    // endregion
 
-    //region Urls
+    // region Urls
 
     /**
      * 得到指定ID对应的Steam游戏商店页面链接。
@@ -175,6 +175,6 @@ class PlsDataProvider {
         return "steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
     }
 
-    //endregion
+    // endregion
 }
 

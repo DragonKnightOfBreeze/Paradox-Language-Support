@@ -32,7 +32,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
             properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
                 val gameType = ParadoxGameType.get(gameTypeId) ?: return@f
                 row {
-                    //gameDirectory
+                    // gameDirectory
                     label(gameType.title + ":").widthGroup("left")
                     val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("gameDirectory.title"))
@@ -60,7 +60,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
 
     override fun doOKAction() {
         val newValues = properties.map { it.value.get() }
-        if (resultList.map { it.value } == newValues) return super.doOKAction() //unchanged
+        if (resultList.map { it.value } == newValues) return super.doOKAction() // unchanged
 
         resultList.clear()
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }
@@ -106,7 +106,7 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     override fun createCenterPanel(): JComponent {
         val settings = PlsFacade.getSettings().completion.clauseTemplate
         return panel {
-            //maxExpressionCountInOneLine
+            // maxExpressionCountInOneLine
             row {
                 label(PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine")).applyToComponent {
                     toolTipText = PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip")

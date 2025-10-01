@@ -105,7 +105,7 @@ fun ParadoxScopeContext.toScopeIdMap(showFrom: Boolean = true, showPrev: Boolean
     }
 }
 
-//val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
+// val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
 
 fun ParadoxScopeContext.Resolver.resolve(thisScope: String): ParadoxScopeContext {
     return SimpleParadoxScopeContext(ParadoxScope.of(thisScope))
@@ -129,7 +129,7 @@ fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScope
     val prevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
     val prevPrevPrevPrev = map.get("prevprevprevprev")?.let { ParadoxScopeContext.resolve(it) }
     val prevStack = buildList b@{
-        //break if previous-prev is null (but next-prev is null or not null)
+        // break if previous-prev is null (but next-prev is null or not null)
         prev?.let { add(it) } ?: return@b
         prevPrev?.let { add(it) } ?: return@b
         prevPrevPrev?.let { add(it) } ?: return@b
@@ -139,7 +139,7 @@ fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScope
 }
 
 fun ParadoxScopeContext.resolveNext(pushScope: String?, isFrom: Boolean = false): ParadoxScopeContext {
-    if (pushScope == null) return this //transfer current scope context
+    if (pushScope == null) return this // transfer current scope context
     val scope = ParadoxScope.of(pushScope)
     val root = if (isFrom) null else this.root
     val from = if (isFrom) null else this.from
@@ -216,4 +216,4 @@ private class LinkedParadoxScopeContext(
     }
 }
 
-//private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)
+// private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)

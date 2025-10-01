@@ -84,7 +84,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     private fun doGetScopeContext(definition: ParadoxScriptDefinitionElement): ParadoxScopeContextInferenceInfo? {
         val definitionInfo = definition.definitionInfo ?: return null
 
-        //optimize search scope
+        // optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         val configGroup = definitionInfo.configGroup
@@ -112,11 +112,11 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
-                        //TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
+                        // TODO 1.0.6+ 这里对应的引用可能属于某个复杂表达式的一部分（目前不需要考虑兼容这种情况）
                         val definitionName = info.definitionName
-                        if (definitionName != definitionInfo.name) return@f //matches definition name
+                        if (definitionName != definitionInfo.name) return@f // matches definition name
                         val eventType = info.typeExpression.substringBefore('.')
-                        if (eventType != definitionInfo.type) return@f //matches definition type
+                        if (eventType != definitionInfo.type) return@f // matches definition type
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
                         val m = e.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return@f
                         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(m) ?: return@f
@@ -188,7 +188,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventType = ParadoxEventManager.getType(definitionInfo)
-        //optimize search scope
+        // optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?.withFilePath("common/on_actions", "txt")
             ?: return null
@@ -223,10 +223,10 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                     if (eventName != thisEventName) return@f
                     val containingOnActionName = info.containingOnActionName
                     withRecursionCheck(containingOnActionName) {
-                        //这里使用psiFile作为contextElement
+                        // 这里使用psiFile作为contextElement
                         val config = configGroup.extendedOnActions.findFromPattern(containingOnActionName, psiFile, configGroup)
-                        if (config == null) return@f //missing
-                        if (config.eventType != thisEventType) return@f //invalid (mismatch)
+                        if (config == null) return@f // missing
+                        if (config.eventType != thisEventType) return@f // invalid (mismatch)
                         val map = config.config.optionData { replaceScopes } ?: return@f
                         if (scopeContextMap.isNotEmpty()) {
                             val mergedMap = ParadoxScopeManager.mergeScopeContextMap(scopeContextMap, map, true)
@@ -296,7 +296,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         val configGroup = definitionInfo.configGroup
         val thisEventName = definitionInfo.name
         val thisEventScope = ParadoxEventManager.getScope(definitionInfo)
-        //optimize search scope
+        // optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
@@ -334,7 +334,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                     withRecursionCheck(containingEventName) {
                         val scopesElementOffset = info.scopesElementOffset
                         if (scopesElementOffset != -1) {
-                            //从scopes = { ... }中推断
+                            // 从scopes = { ... }中推断
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false
@@ -443,11 +443,11 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
-        //skip if on action is predefined
+        // skip if on action is predefined
         val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup)
         if (config != null) return null
         val thisOnActionName = definitionInfo.name
-        //optimize search scope
+        // optimize search scope
         val searchScope = runReadAction { ParadoxSearchScope.fromElement(definition) }
             ?: return null
         val scopeContextMap = mutableMapOf<String, String>()
@@ -485,7 +485,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                     withRecursionCheck(containingEventName) {
                         val scopesElementOffset = info.scopesElementOffset
                         if (scopesElementOffset != -1) {
-                            //从scopes = { ... }中推断
+                            // 从scopes = { ... }中推断
                             ProgressManager.checkCanceled()
                             val scopesElement = psiFile.findElementAt(scopesElementOffset)?.parentOfType<ParadoxScriptProperty>() ?: return@p false
                             val scopesBlockElement = scopesElement.block ?: return@p false

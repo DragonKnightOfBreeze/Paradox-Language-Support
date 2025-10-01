@@ -29,7 +29,7 @@ interface ParadoxScriptStructureFilters {
         override fun isReverted() = true
 
         override fun isVisible(treeNode: TreeElement): Boolean {
-            //忽略本身是文件的定义
+            // 忽略本身是文件的定义
             return treeNode !is ParadoxScriptPropertyTreeElement || treeNode.element?.definitionInfo == null
         }
 

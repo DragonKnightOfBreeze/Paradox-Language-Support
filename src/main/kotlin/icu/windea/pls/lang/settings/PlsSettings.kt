@@ -214,7 +214,7 @@ class PlsSettingsState : BaseState() {
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
-        var definitionTypeBindingsInCallHierarchy by map<String, String>() //TODO 1.3.35+ 优化：考虑更好的配置方式
+        var definitionTypeBindingsInCallHierarchy by map<String, String>() // TODO 1.3.35+ 优化：考虑更好的配置方式
 
         var showEventInfo by property(false)
         var showEventInfoByType by property(true)

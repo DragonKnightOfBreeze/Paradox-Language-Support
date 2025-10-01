@@ -71,11 +71,11 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     }
 
     private fun doGetForcedDefinitionPriority(typeConfig: CwtTypeConfig): ParadoxPriority? {
-        //event namespace -> ORDERED (don't care)
+        // event namespace -> ORDERED (don't care)
         if (typeConfig.name == "event_namespace") return ParadoxPriority.ORDERED
-        //swapped type -> ORDERED (don't care)
+        // swapped type -> ORDERED (don't care)
         if (typeConfig.baseType != null) return ParadoxPriority.ORDERED
-        //anonymous -> ORDERED (don't care)
+        // anonymous -> ORDERED (don't care)
         if (typeConfig.typeKeyFilter != null && typeConfig.nameField == null) return ParadoxPriority.ORDERED
         return null
     }
@@ -147,7 +147,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     }
 
     private fun doGetPriority(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxPriority>): ParadoxPriority? {
-        //TODO 1.3.35+ check performance
+        // TODO 1.3.35+ check performance
 
         val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it] }
         if (fastResult != null) return fastResult

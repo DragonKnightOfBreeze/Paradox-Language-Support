@@ -147,8 +147,8 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is CwtProperty && element !is CwtValue) return null
-        val config = element.getUserData(PlsKeys.bindingConfig) ?: return null //retrieve config from user data
-        //这里目前仅支持可能用到的那些
+        val config = element.getUserData(PlsKeys.bindingConfig) ?: return null // retrieve config from user data
+        // 这里目前仅支持可能用到的那些
         val linkType = ReferenceLinkType.CwtConfig
         val categories = ReferenceLinkType.CwtConfig.Categories
         val builder = StringBuilder()
@@ -187,7 +187,7 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
         val project = contextElement.project
         val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
             .withGameType(gameType)
-        return ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() //global scripted variable only
+        return ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() // global scripted variable only
     }
 
     override fun getUnresolvedMessage(link: String): String {
@@ -230,7 +230,7 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxScriptDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
-        if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return null // ignore anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")
@@ -277,7 +277,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
     override val linkPrefix = ReferenceLinkType.FilePath.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
-        //can be resolved to file or directory
+        // can be resolved to file or directory
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val filePath = remain
@@ -292,7 +292,7 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
-        return null //unsupported since unnecessary
+        return null // unsupported since unnecessary
     }
 }
 
@@ -314,7 +314,7 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
-        return null //unsupported since unnecessary
+        return null // unsupported since unnecessary
     }
 }
 

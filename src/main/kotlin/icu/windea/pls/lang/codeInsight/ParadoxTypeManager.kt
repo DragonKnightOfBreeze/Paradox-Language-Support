@@ -143,7 +143,7 @@ object ParadoxTypeManager {
                 when {
                     element.isHeaderColumn() -> columnConfig.key
                     else -> {
-                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null //需要匹配
+                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // 需要匹配
                         columnConfig.value
                     }
                 }
@@ -186,7 +186,7 @@ object ParadoxTypeManager {
      * - 对应的预定义的CWT动态值规则
      */
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
-        //注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明
+        // 注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明
         when {
             element is ParadoxScriptProperty -> {
                 val definitionInfo = element.definitionInfo
@@ -194,7 +194,7 @@ object ParadoxTypeManager {
                     if (definitionInfo.types.size == 1) {
                         return definitionInfo.typeConfig.pointer.element.singleton.listOrEmpty()
                     } else {
-                        //这里的element可能是null，以防万一，处理是null的情况
+                        // 这里的element可能是null，以防万一，处理是null的情况
                         return buildList {
                             definitionInfo.typeConfig.pointer.element?.let { add(it) }
                             definitionInfo.subtypeConfigs.forEach { subtypeConfig ->
@@ -219,7 +219,7 @@ object ParadoxTypeManager {
                         val gameType = complexEnumValueInfo.gameType
                         val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
                         val enumName = complexEnumValueInfo.enumName
-                        val config = configGroup.complexEnums[enumName] ?: return emptyList() //unexpected
+                        val config = configGroup.complexEnums[enumName] ?: return emptyList() // unexpected
                         val resolved = config.pointer.element ?: return emptyList()
                         return resolved.singleton.list()
                     }

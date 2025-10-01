@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class SelectColumnCellAction : ManipulateColumnActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
-        //目前不支持批量处理
+        // 目前不支持批量处理
 
         val project = file.project
         val editor = e.editor ?: return
@@ -84,8 +84,8 @@ sealed class MoveColumnActionBase(private val left: Boolean) : ManipulateColumnA
     }
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
-        //目前不支持批量处理
-        //实际上是交换而非移动
+        // 目前不支持批量处理
+        // 实际上是交换而非移动
 
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
@@ -124,7 +124,7 @@ class MoveColumnRightAction : MoveColumnActionBase(left = false)
 
 class SelectColumnAction : ManipulateColumnActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
-        //目前不支持批量处理
+        // 目前不支持批量处理
 
         val project = file.project
         val editor = e.editor ?: return
@@ -145,7 +145,7 @@ class SelectColumnAction : ManipulateColumnActionBase() {
 
 class RemoveColumnAction : ManipulateColumnActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
-        //目前不支持批量处理
+        // 目前不支持批量处理
 
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)

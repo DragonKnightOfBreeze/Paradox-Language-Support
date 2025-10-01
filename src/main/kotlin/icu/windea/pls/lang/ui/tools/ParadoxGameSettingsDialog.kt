@@ -41,14 +41,14 @@ class ParadoxGameSettingsDialog(
         callbackLock.reset()
         return panel {
             row {
-                //gameType
+                // gameType
                 label(PlsBundle.message("game.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
-                //gameVersion
+                // gameVersion
                 label(PlsBundle.message("game.settings.gameVersion")).widthGroup("right")
                 textField()
                     .text(settings.gameVersion.orEmpty())
@@ -57,7 +57,7 @@ class ParadoxGameSettingsDialog(
                     .enabled(false)
             }
             row {
-                //gameDirectory
+                // gameDirectory
                 label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
@@ -69,17 +69,17 @@ class ParadoxGameSettingsDialog(
                     .enabled(false)
             }
 
-            //options
+            // options
             collapsibleGroup(PlsBundle.message("mod.options"), false) {
-                //disableTiger
-                row { //尽管目前仅适用于模组目录……
+                // disableTiger
+                row { // 尽管目前仅适用于模组目录……
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
             }
 
-            //modDependencies
+            // modDependencies
             collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)

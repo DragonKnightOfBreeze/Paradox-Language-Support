@@ -43,19 +43,19 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 
-        //compute `generatedModifiers` and `predefinedModifiers`
+        // compute `generatedModifiers` and `predefinedModifiers`
         run {
             currentCoroutineContext.ensureActive()
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
-                .sortedByDescending { it.template.snippetExpressions.size } //put xxx_<xxx>_xxx before xxx_<xxx>
+                .sortedByDescending { it.template.snippetExpressions.size } // put xxx_<xxx>_xxx before xxx_<xxx>
                 .associateByTo(configGroup.generatedModifiers) { it.name }
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isEmpty() }
                 .associateByTo(configGroup.predefinedModifiers) { it.name }
         }
 
-        //compute `swappedTypes` and add missing declarations with swapped type
+        // compute `swappedTypes` and add missing declarations with swapped type
         run {
             currentCoroutineContext.ensureActive()
             for (typeConfig in configGroup.types.values) {
@@ -74,7 +74,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //add missing localisation links from links
+        // add missing localisation links from links
         run {
             currentCoroutineContext.ensureActive()
             val localisationLinksStatic = configGroup.localisationLinks.values.filter { it.dataSource == null }
@@ -85,14 +85,14 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //bind specific links and localisation links
+        // bind specific links and localisation links
         run {
             currentCoroutineContext.ensureActive()
             configGroup.linksOfVariable += configGroup.links.values
                 .filter { it.forValue() && it.fromData && it.name == "variable" }
         }
 
-        //bind `categoryConfigMap` for modifier configs
+        // bind `categoryConfigMap` for modifier configs
         run {
             currentCoroutineContext.ensureActive()
             for (modifier in configGroup.modifiers.values) {
@@ -103,7 +103,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
+        // compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
         run {
             currentCoroutineContext.ensureActive()
             for ((k, v) in configGroup.aliasGroups) {
@@ -127,7 +127,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //compute `definitionTypesSupportParameters`
+        // compute `definitionTypesSupportParameters`
         run {
             currentCoroutineContext.ensureActive()
             with(configGroup.definitionTypesSupportParameters) {
@@ -142,10 +142,10 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //compute `definitionTypesMayWithTypeKeyPrefix`
+        // compute `definitionTypesMayWithTypeKeyPrefix`
         run {
-            //按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
-            //based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
+            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
             currentCoroutineContext.ensureActive()
             with(configGroup.definitionTypesMayWithTypeKeyPrefix) {
                 val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
@@ -158,7 +158,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        //computer `relatedLocalisationPatterns`
+        // computer `relatedLocalisationPatterns`
         run {
             currentCoroutineContext.ensureActive()
             with(configGroup.relatedLocalisationPatterns) {

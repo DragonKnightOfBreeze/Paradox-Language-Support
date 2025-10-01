@@ -57,9 +57,9 @@ class ParadoxLocalisationTextInlayRenderer(
     var textLengthLimit: Int = -1
     var iconHeightLimit: Int = -1
 
-    private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } //记录到需要截断为止所剩余的长度
+    private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false
-    private val guardStack = ArrayDeque<String>() //防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
 
     fun withLimit(textLengthLimit: Int, iconHeightLimit: Int): ParadoxLocalisationTextInlayRenderer {
         this.textLengthLimit = textLengthLimit
@@ -68,14 +68,14 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     fun render(element: ParadoxLocalisationProperty): InlayPresentation? {
-        //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
+        // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
         return doRender {
             renderTo(element)
         }
     }
 
     fun render(element: ParadoxLocalisationParameter): InlayPresentation? {
-        //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
+        // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
         return doRender {
             renderRichTextTo(element)
         }
@@ -119,7 +119,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun doRender(action: () -> Boolean): InlayPresentation? {
         val r = action()
-        if (!r) builder.add(factory.smallText("...")) //添加省略号
+        if (!r) builder.add(factory.smallText("...")) // 添加省略号
         return mergePresentation(builder)
     }
 
@@ -144,7 +144,7 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText): Boolean {
-        //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
+        // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
@@ -163,11 +163,11 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter): Boolean {
-        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
-            //如果处理文本失败，则使用原始文本
-            //直接解析为本地化（或者封装变量）以优化性能
+            // 如果处理文本失败，则使用原始文本
+            // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
             val presentation = when {
                 resolved is ParadoxLocalisationProperty -> {
@@ -207,11 +207,11 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
-        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
-            //直接显示命令文本，适用对应的颜色高亮
-            //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
+            // 直接显示命令文本，适用对应的颜色高亮
+            // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
             val presentations = mutableListOf<InlayPresentation>()
             element.forEachChild { c ->
                 if (c is ParadoxLocalisationCommandText) {
@@ -227,7 +227,7 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderIconTo(element: ParadoxLocalisationIcon): Boolean {
-        //尝试渲染图标
+        // 尝试渲染图标
         runCatchingCancelable r@{
             val resolved = element.reference?.resolve() ?: return@r
             val iconFrame = element.frame
@@ -238,31 +238,31 @@ class ParadoxLocalisationTextInlayRenderer(
                 else -> null
             }
 
-            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             val iconFileUrl = iconUrl.toFileUrl()
-            //找不到图标的话就直接跳过
+            // 找不到图标的话就直接跳过
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            //这里需要尝试使用图标的原始高度
+            // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > iconHeightLimit) return true //图标过大，不再尝试渲染
-            //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            if (originalIconHeight > iconHeightLimit) return true // 图标过大，不再尝试渲染
+            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
             builder.add(presentation)
             return true
         }
 
-        //直接显示原始文本
-        //点击其中的相关文本也能跳转到相关声明
+        // 直接显示原始文本
+        // 点击其中的相关文本也能跳转到相关声明
         val presentation = getElementPresentation(element)
         if (presentation != null) builder.add(presentation)
         return continueProcess()
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand): Boolean {
-        //尝试渲染概念文本
+        // 尝试渲染概念文本
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
             textElement is ParadoxLocalisationConceptText -> textElement.richTextList
@@ -292,11 +292,11 @@ class ParadoxLocalisationTextInlayRenderer(
             val referencePresentation = factory.psiSingleReference(presentation) { referenceElement }
             presentation = factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
                 override fun onHover(event: MouseEvent, translated: Point) {
-                    attributesFlags.isDefault = true //change foreground
+                    attributesFlags.isDefault = true // change foreground
                 }
 
                 override fun onHoverFinished() {
-                    attributesFlags.isDefault = false //reset foreground
+                    attributesFlags.isDefault = false // reset foreground
                 }
             })
             builder.add(presentation)
@@ -309,9 +309,9 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat): Boolean {
-        //TODO 1.4.1+ 更完善的支持（适用文本格式）
+        // TODO 1.4.1+ 更完善的支持（适用文本格式）
 
-        //直接渲染其中的文本
+        // 直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return true
         var continueProcess = true
@@ -327,10 +327,10 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun renderTextIconTo(element: ParadoxLocalisationTextIcon): Boolean {
-        //TODO 1.4.1+ 更完善的支持（渲染文本图标）
+        // TODO 1.4.1+ 更完善的支持（渲染文本图标）
 
-        //直接显示原始文本
-        //点击其中的相关文本也能跳转到相关声明
+        // 直接显示原始文本
+        // 点击其中的相关文本也能跳转到相关声明
         val presentation = getElementPresentation(element)
         if (presentation != null) builder.add(presentation)
         return continueProcess()
@@ -382,7 +382,7 @@ class ParadoxLocalisationTextInlayRenderer(
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
-            //不要尝试跳转到dynamicValue的声明处
+            // 不要尝试跳转到dynamicValue的声明处
             if (resolved == null || resolved is MockPsiElement) {
                 presentations.add(factory.smallText(s))
             } else {

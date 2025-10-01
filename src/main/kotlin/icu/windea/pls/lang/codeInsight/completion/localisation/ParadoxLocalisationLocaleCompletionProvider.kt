@@ -28,7 +28,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
  * 提供语言环境名字的代码补全。
  */
 class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<CompletionParameters>() {
-    //如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
+    // 如果之后没有英文冒号，则插入英文冒号（如果之后没有更多行，则还要插入换行符和必要的缩进），否则光标移到冒号之后
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         val editor = context.editor
         val chars = editor.document.charsSequence
@@ -57,7 +57,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
         val file = parameters.originalFile
         val project = file.project
         val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.let { ParadoxLocalisationFileManager.getLocaleIdFromFileName(it) }
-        //批量提示
+        // 批量提示
         val lookupElements = mutableSetOf<LookupElement>()
         val locales = PlsFacade.getConfigGroup(project).localisationLocalesById.values
         for (locale in locales) {
@@ -71,10 +71,10 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withInsertHandler(insertHandler)
                 .letIf(matched == false) {
-                    it.withItemTextForeground(JBColor.GRAY) //将不匹配的语言环境的提示项置灰
+                    it.withItemTextForeground(JBColor.GRAY) // 将不匹配的语言环境的提示项置灰
                 }
                 .letIf(matched == true) {
-                    it.withPriority(ParadoxCompletionPriorities.pinned) //优先提示与文件名匹配的语言环境
+                    it.withPriority(ParadoxCompletionPriorities.pinned) // 优先提示与文件名匹配的语言环境
                 }
             lookupElements.add(lookupElement)
         }

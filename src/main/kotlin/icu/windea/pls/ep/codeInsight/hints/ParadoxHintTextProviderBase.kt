@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
     protected fun createHintLocalisation(hintText: String, element: PsiElement): ParadoxLocalisationProperty {
         val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(element.project, "hint", hintText)
-        //it's necessary to inject fileInfo here (so that gameType can be got later)
+        // it's necessary to inject fileInfo here (so that gameType can be got later)
         hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, element.fileInfo)
         return hintLocalisation
     }

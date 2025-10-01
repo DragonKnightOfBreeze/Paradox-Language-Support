@@ -29,7 +29,7 @@ interface ParadoxModDependenciesToolbarActions {
         private val table: ParadoxModDependenciesTable
     ) : AnActionButtonRunnable {
         override fun run(e: AnActionButton) {
-            //添加模组依赖时可以多选
+            // 添加模组依赖时可以多选
             val settings = table.model.settings
             val qualifiedName = settings.qualifiedName
             val gameType = settings.gameType ?: return
@@ -42,10 +42,10 @@ interface ParadoxModDependenciesToolbarActions {
                     val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
                     for (file in files) {
                         val rootInfo = file.rootInfo
-                        if (rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
+                        if (rootInfo == null) continue // NOTE 目前要求这里的模组目录下必须有模组描述符文件
                         val modPath = file.path
                         count++
-                        if (!table.model.modDependencyDirectories.add(modPath)) continue //忽略已有的
+                        if (!table.model.modDependencyDirectories.add(modPath)) continue // 忽略已有的
                         val newSettings = ParadoxModDependencySettingsState()
                         newSettings.modDirectory = modPath
                         newSettings.enabled = true
@@ -168,7 +168,7 @@ interface ParadoxModDependenciesToolbarActions {
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun actionPerformed(e: AnActionEvent) {
-            //导出全部，而非当前选中的行
+            // 导出全部，而非当前选中的行
             val popup = ParadoxModDependenciesExportPopup(project, table)
             JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(e.dataContext)
         }

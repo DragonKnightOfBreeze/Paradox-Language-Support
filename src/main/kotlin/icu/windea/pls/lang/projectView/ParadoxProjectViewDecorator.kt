@@ -17,7 +17,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
         if (node is PsiDirectoryNode) {
             val file = node.virtualFile ?: return
             val rootInfo = file.rootInfo ?: return
-            if (data.locationString != null) return //忽略存在locationString的情况
+            if (data.locationString != null) return // 忽略存在locationString的情况
             val icon = when (rootInfo) {
                 is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
                 is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory

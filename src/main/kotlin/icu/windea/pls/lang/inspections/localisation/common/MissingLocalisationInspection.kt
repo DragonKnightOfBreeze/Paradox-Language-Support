@@ -71,7 +71,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 if (messages.isEmpty()) return
                 val fixes = getFixes(element, context).toTypedArray()
                 for (message in messages) {
-                    //显示为WEAK_WARNING
+                    // 显示为WEAK_WARNING
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
                 }
             }
@@ -111,18 +111,18 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //checkForPreferredLocale
+            // checkForPreferredLocale
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForPreferredLocale"))
                     .bindSelected(::checkForPreferredLocale)
                     .actionListener { _, component -> checkForPreferredLocale = component.isSelected }
                 cell(ActionLink(PlsBundle.message("configure")) {
-                    //ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
+                    // ShowSettingsUtil.getInstance().showSettingsDialog(null, ParadoxSettingsConfigurable::class.java)
                     val dialog = ParadoxPreferredLocaleDialog()
                     dialog.showAndGet()
                 })
             }
-            //checkForSpecificLocales
+            // checkForSpecificLocales
             row {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales)
@@ -135,7 +135,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet
-                        cb.text = locales //通知UI locales 已经被更改
+                        cb.text = locales // 通知UI locales 已经被更改
                     }
                 })
             }

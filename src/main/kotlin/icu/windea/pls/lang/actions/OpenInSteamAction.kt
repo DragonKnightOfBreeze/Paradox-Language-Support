@@ -14,11 +14,11 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.steamId
 
-//com.intellij.ide.actions.RevealFileAction
-//com.intellij.ide.actions.ShowFilePathAction
+// com.intellij.ide.actions.RevealFileAction
+// com.intellij.ide.actions.ShowFilePathAction
 
 class OpenInSteamAction : DumbAwareAction() {
-    //仅限游戏或模组的根目录
+    // 仅限游戏或模组的根目录
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -34,7 +34,7 @@ class OpenInSteamAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val virtualFile = getFile(e) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
-        val targetUrl = getTargetUrl(fileInfo) ?: return //ignore
+        val targetUrl = getTargetUrl(fileInfo) ?: return // ignore
         BrowserUtil.open(targetUrl)
     }
 

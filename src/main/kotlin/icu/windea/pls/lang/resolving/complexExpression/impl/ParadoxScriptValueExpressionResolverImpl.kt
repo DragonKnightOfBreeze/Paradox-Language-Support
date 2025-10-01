@@ -39,7 +39,7 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = expressionString.indexOf('|', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             val pipeNode = if (tokenIndex != -1) {
                 val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                 ParadoxMarkerNode("|", pipeRange, configGroup)
@@ -50,7 +50,7 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
                 tokenIndex = textLength
             }
             if (!incomplete && index == tokenIndex && tokenIndex == textLength) break
-            //resolve node
+            // resolve node
             val nodeText = expressionString.substring(startIndex, tokenIndex)
             val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
@@ -116,7 +116,7 @@ private class ParadoxScriptValueExpressionImpl(
         }
         var malformed = !result
         if (!malformed) {
-            //check whether pipe count is valid
+            // check whether pipe count is valid
             val pipeNodeCount = nodes.count { it is ParadoxTokenNode && it.text == "|" }
             if (pipeNodeCount == 1 || (pipeNodeCount != 0 && pipeNodeCount % 2 == 0)) {
                 malformed = true

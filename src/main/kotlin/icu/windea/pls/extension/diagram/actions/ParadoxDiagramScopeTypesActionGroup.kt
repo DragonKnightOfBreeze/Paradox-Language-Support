@@ -14,7 +14,7 @@ import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 
-//com.intellij.uml.core.actions.scopes.UmlScopesActionGroup
+// com.intellij.uml.core.actions.scopes.UmlScopesActionGroup
 
 class ParadoxDiagramScopeTypesActionGroup(
     val builder: DiagramBuilder

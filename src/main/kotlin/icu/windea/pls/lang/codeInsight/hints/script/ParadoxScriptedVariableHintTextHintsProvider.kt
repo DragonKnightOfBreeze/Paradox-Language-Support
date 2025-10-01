@@ -58,7 +58,7 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        //only for scripted variables, not for scripted variable references
+        // only for scripted variables, not for scripted variable references
 
         if (element !is ParadoxScriptScriptedVariable) return true
         val name = element.name

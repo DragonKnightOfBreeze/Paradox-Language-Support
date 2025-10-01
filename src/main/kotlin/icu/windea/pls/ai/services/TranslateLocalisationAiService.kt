@@ -28,7 +28,7 @@ private val logger = logger<TranslateLocalisationAiService>()
 @Service
 class TranslateLocalisationAiService : ManipulateLocalisationAiService<TranslateLocalisationAiRequest>() {
     override fun manipulate(request: TranslateLocalisationAiRequest): Flow<LocalisationAiResult>? {
-        //得到输入的本地化上下文，按特定数量进行分块，然后逐个发送请求（附带记忆）
+        // 得到输入的本地化上下文，按特定数量进行分块，然后逐个发送请求（附带记忆）
 
         val chatModel = ChatModelManager.getStreamingChatModel() ?: return null
         val memory = getMemory()

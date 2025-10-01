@@ -31,7 +31,7 @@ class ParadoxEventNamespacePsiReference(
     override fun resolve(): PsiElement? {
         val element = element
         val event = event.element ?: return null
-        //val definitionInfo = event.definitionInfo ?: return null
+        // val definitionInfo = event.definitionInfo ?: return null
         val preferredEventNamespace = ParadoxEventManager.getMatchedNamespace(event)
         if (preferredEventNamespace != null) return preferredEventNamespace
 
@@ -44,7 +44,7 @@ class ParadoxEventNamespacePsiReference(
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         val element = element
         val event = event.element ?: return ResolveResult.EMPTY_ARRAY
-        //val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
+        // val definitionInfo = event.definitionInfo ?: return ResolveResult.EMPTY_ARRAY
         val result = mutableSetOf<PsiElement>()
         val preferredEventNamespace = ParadoxEventManager.getMatchedNamespace(event)
         if (preferredEventNamespace != null) result.add(preferredEventNamespace)

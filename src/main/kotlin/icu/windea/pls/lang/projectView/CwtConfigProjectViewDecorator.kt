@@ -17,7 +17,7 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
             val file = node.virtualFile ?: return
             val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
             val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file } ?: return
-            if (data.locationString != null) return //忽略存在locationString的情况
+            if (data.locationString != null) return // 忽略存在locationString的情况
             data.setIcon(PlsIcons.General.ConfigGroupDirectory)
             if (node.parent is SyntheticLibraryElementNode) {
                 val hintMessage = fileProvider.getHintMessage()

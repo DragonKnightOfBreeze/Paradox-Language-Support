@@ -16,7 +16,7 @@ object CwtTokenSets {
     @JvmField
     val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
     @JvmField
-    val COMMENTS = TokenSet.create(COMMENT) //DO NOT add DOC_COMMENT here
+    val COMMENTS = TokenSet.create(COMMENT) // DO NOT add DOC_COMMENT here
     @JvmField
     val STRING_LITERALS = TokenSet.create(STRING_TOKEN)
 

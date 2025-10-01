@@ -42,7 +42,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
     class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile
+        file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
@@ -50,7 +50,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             if (settings !is StellarisEventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
 
-            //对于每组配置，只要其中任意一个配置匹配即可
+            // 对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 var enabled = false
@@ -96,14 +96,14 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
-            //基于科技领域和类型
+            // 基于科技领域和类型
             if (node !is Node) return super.getNodeBorderColor(builder, node, isSelected)
             return doGetNodeBorderColor(node) ?: super.getNodeBorderColor(builder, node, isSelected)
         }
 
         private fun doGetNodeBorderColor(node: Node): Color? {
-            //这里使用的颜色是来自灰机wiki的特殊字体颜色
-            //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
+            // 这里使用的颜色是来自灰机wiki的特殊字体颜色
+            // https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
             val data = node.getUserData(Keys.nodeData) ?: return null
             val definitionInfo = runReadAction { node.definitionInfo } ?: return null
             val types = definitionInfo.subtypes
@@ -121,7 +121,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile
+        file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
@@ -130,7 +130,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             val definitionInfo = definition.definitionInfo ?: return false
             val data = definition.getData<StellarisTechnologyData>() ?: return false
 
-            //对于每组配置，只要其中任意一个配置匹配即可
+            // 对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 var enabled = false

@@ -65,10 +65,10 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     }
 
     private fun doGetUsageType(element: ParadoxScriptExpressionElement, targets: Array<out UsageTarget>): UsageType? {
-        //#131
+        // #131
         if (!element.isResolvableExpression()) return null
 
-        //尝试解析为复杂枚举值声明
+        // 尝试解析为复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
@@ -80,18 +80,18 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
         val configExpression = config.configExpression
         val type = configExpression.type
-        //in invocation expression
+        // in invocation expression
         if (config.configExpression.type == CwtDataTypes.Parameter) {
             return ParadoxUsageTypes.PARAMETER_REFERENCE_4
         }
-        //in script value expression
+        // in script value expression
         if (type in CwtDataTypeGroups.ValueField) {
             val targetElement = targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
             if (targetElement is ParadoxParameterElement) {
                 return ParadoxUsageTypes.PARAMETER_REFERENCE_5
             }
         }
-        //in invocation expression (for localisation parameters)
+        // in invocation expression (for localisation parameters)
         if (config.configExpression.type == CwtDataTypes.LocalisationParameter) {
             return ParadoxUsageTypes.PARAMETER_REFERENCE_6
         }

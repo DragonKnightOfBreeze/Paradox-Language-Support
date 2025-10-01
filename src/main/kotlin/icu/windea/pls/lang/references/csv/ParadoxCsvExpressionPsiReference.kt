@@ -25,7 +25,7 @@ class ParadoxCsvExpressionPsiReference(
         return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxCsvExpressionPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxCsvExpressionPsiReference, incompleteCode: Boolean) = ref.doResolve()
@@ -50,7 +50,7 @@ class ParadoxCsvExpressionPsiReference(
             return columnConfig.pointer.element
         }
 
-        //根据对应的expression进行解析
+        // 根据对应的expression进行解析
         val config = columnConfig.valueConfig ?: return null
         return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, config)
     }
@@ -62,7 +62,7 @@ class ParadoxCsvExpressionPsiReference(
             return columnConfig.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
         }
 
-        //根据对应的expression进行解析
+        // 根据对应的expression进行解析
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
         return ParadoxExpressionManager.multiResolveCsvExpression(element, rangeInElement, config)
             .mapToArray { PsiElementResolveResult(it) }

@@ -50,7 +50,7 @@ object ParadoxCsvManager {
     private fun doGetRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
             val value = doGetRowConfig(file)
-            val tracker = ComputedModificationTracker { file.fileInfo } //文件内容发生变化时，这里的缓存并不需要刷新
+            val tracker = ComputedModificationTracker { file.fileInfo } // 文件内容发生变化时，这里的缓存并不需要刷新
             value.withDependencyItems(tracker)
         }
     }

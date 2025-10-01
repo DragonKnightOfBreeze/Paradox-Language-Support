@@ -52,14 +52,14 @@ class CwtBlock(
         }
 
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-            //变量声明分隔符周围的空格，属性分隔符周围的空格
+            // 变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
             return SpacingBuilder(settings, CwtLanguage)
-                .between(MEMBERS, MEMBERS).spaces(1) //属性/值之间需要有空格或者换行
-                .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) //间隔符周围按情况可能需要空格
-                .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格
-                .between(LEFT_BRACE, RIGHT_BRACE).none() //花括号之间总是不需要空格
-                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧按情况可能需要空格
+                .between(MEMBERS, MEMBERS).spaces(1) // 属性/值之间需要有空格或者换行
+                .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
+                .between(LEFT_BRACE, RIGHT_BRACE).none() // 花括号之间总是不需要空格
+                .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
         }
     }
 
@@ -76,8 +76,8 @@ class CwtBlock(
     }
 
     override fun getIndent(): Indent? {
-        //配置缩进
-        //block中的property、value、comment、documentation_comment和option_comment需要缩进
+        // 配置缩进
+        // block中的property、value、comment、documentation_comment和option_comment需要缩进
         val elementType = myNode.elementType
         val parentElementType = myNode.treeParent?.elementType
         return when {
@@ -87,9 +87,9 @@ class CwtBlock(
     }
 
     override fun getChildIndent(): Indent? {
-        //配置换行时的自动缩进
-        //在file和rootBlock中不要缩进
-        //在block中需要缩进
+        // 配置换行时的自动缩进
+        // 在file和rootBlock中不要缩进
+        // 在block中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()

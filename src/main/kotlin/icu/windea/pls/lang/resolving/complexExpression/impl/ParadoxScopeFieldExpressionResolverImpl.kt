@@ -31,7 +31,7 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = expressionString.indexOf('.', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             if (tokenIndex != -1 && expressionString.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
@@ -44,12 +44,12 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
             if (tokenIndex == -1) {
                 tokenIndex = textLength
             }
-            //resolve node
+            // resolve node
             val nodeText = expressionString.substring(startIndex, tokenIndex)
             val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
             val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
-            //handle mismatch situation
+            // handle mismatch situation
             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
             if (dotNode != null) nodes += dotNode

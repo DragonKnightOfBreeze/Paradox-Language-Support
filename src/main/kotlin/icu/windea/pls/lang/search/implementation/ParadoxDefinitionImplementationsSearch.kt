@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
  */
 class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        //得到解析后的PSI元素
+        // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if (sourceElement !is ParadoxScriptDefinitionElement) return true
         val definitionInfo = runReadAction { sourceElement.definitionInfo }
@@ -29,9 +29,9 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         val type = definitionInfo.type
         val project = queryParameters.project
         ReadAction.nonBlocking<Unit> {
-            //这里不进行排序
+            // 这里不进行排序
             val selector = selector(project, sourceElement).definition()
-                .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
+                .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
         }.inSmartMode(project).executeSynchronously()
         return true

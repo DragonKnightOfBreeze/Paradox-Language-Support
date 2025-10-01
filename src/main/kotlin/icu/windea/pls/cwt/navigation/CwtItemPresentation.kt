@@ -32,7 +32,7 @@ class CwtItemPresentation(
     // com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolContainerText
 
     override fun getLocationString(): String? {
-        //使用文件名
+        // 使用文件名
         val element = element
         return element?.containingFile?.name
     }

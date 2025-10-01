@@ -32,7 +32,7 @@ abstract class CopyPathAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
-        val targetPath = getTargetPath(fileInfo) ?: return //ignore
+        val targetPath = getTargetPath(fileInfo) ?: return // ignore
         CopyPasteManager.getInstance().setContents(StringSelection(targetPath.toString()))
     }
 

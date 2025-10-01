@@ -137,19 +137,19 @@ class ParadoxFileListener : AsyncFileListener {
     }
 
     private fun reparseOpenedFiles() {
-        //重新解析所有项目的所有已打开的文件
+        // 重新解析所有项目的所有已打开的文件
         val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsCoreManager.reparseFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
-        //重新解析所有项目的所有已打开的内联脚本文件
+        // 重新解析所有项目的所有已打开的内联脚本文件
         val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
         PlsCoreManager.reparseFiles(files)
     }
 
     private fun refreshForInlineScripts() {
-        //重新解析内联脚本文件
+        // 重新解析内联脚本文件
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
     }

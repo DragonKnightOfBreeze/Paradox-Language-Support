@@ -7,7 +7,7 @@ import icu.windea.pls.lang.ParadoxBaseLanguage
 class ParadoxContainerProvider : ContainerProvider {
     override fun getContainer(item: PsiElement): PsiElement? {
         if (item.language is ParadoxBaseLanguage) {
-            //no implementation, only containingFile
+            // no implementation, only containingFile
             return item.containingFile
         }
         return null

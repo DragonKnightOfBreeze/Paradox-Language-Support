@@ -30,12 +30,12 @@ class ParadoxValueFieldValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
-            //text may contain parameters
-            //child node can be:
-            //* ParadoxDynamicValueExpression
-            //* ParadoxScopeFieldExpression
-            //* ParadoxScriptValueExpression
-            //* ParadoxDataSourceNode
+            // text may contain parameters
+            // child node can be:
+            // * ParadoxDynamicValueExpression
+            // * ParadoxScopeFieldExpression
+            // * ParadoxScriptValueExpression
+            // * ParadoxDataSourceNode
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -62,7 +62,7 @@ class ParadoxValueFieldValueNode(
                 while (tokenIndex < textLength) {
                     index = tokenIndex + 1
                     tokenIndex = text.indexOf('|', index)
-                    if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+                    if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
                     if (tokenIndex == -1) break
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if (scriptValueConfig == null) {

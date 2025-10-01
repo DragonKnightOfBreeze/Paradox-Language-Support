@@ -18,14 +18,14 @@ object ParadoxEscapeManager {
                     'n' -> {
                         when (type) {
                             Type.Html -> builder.append("<br>\n")
-                            Type.Inlay -> return //内嵌提示不能换行，因此这里需要直接截断
+                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\n')
                         }
                     }
                     'r' -> {
                         when (type) {
                             Type.Html -> builder.append("<br>\r")
-                            Type.Inlay -> return //内嵌提示不能换行，因此这里需要直接截断
+                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\r')
                         }
                     }
@@ -71,14 +71,14 @@ object ParadoxEscapeManager {
                     'n' -> {
                         when (type) {
                             Type.Html -> builder.append("<br>\n")
-                            Type.Inlay -> return //内嵌提示不能换行，因此这里需要直接截断
+                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\n')
                         }
                     }
                     'r' -> {
                         when (type) {
                             Type.Html -> builder.append("<br>\r")
-                            Type.Inlay -> return //内嵌提示不能换行，因此这里需要直接截断
+                            Type.Inlay -> return // 内嵌提示不能换行，因此这里需要直接截断
                             else -> builder.append('\r')
                         }
                     }

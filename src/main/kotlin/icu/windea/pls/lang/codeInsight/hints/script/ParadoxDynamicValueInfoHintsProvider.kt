@@ -32,7 +32,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettin
     override fun createSettings() = NoSettings()
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-        //ignored for value_field or variable_field or other variants
+        // ignored for value_field or variable_field or other variants
 
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true

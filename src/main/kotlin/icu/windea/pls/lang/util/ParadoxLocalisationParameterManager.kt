@@ -44,7 +44,7 @@ object ParadoxLocalisationParameterManager {
     }
 
     private fun doGetParameterNamesFromCache(element: ParadoxLocalisationProperty): Set<String> {
-        //invalidated on element modification or ScriptFileTracker
+        // invalidated on element modification or ScriptFileTracker
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             val value = doGetParameters(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.ScriptFileTracker)

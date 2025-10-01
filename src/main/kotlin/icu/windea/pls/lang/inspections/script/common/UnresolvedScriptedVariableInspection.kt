@@ -50,7 +50,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
             private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
                 val name = element.name ?: return
-                if (name.isParameterized()) return //skip if name is parameterized
+                if (name.isParameterized()) return // skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
                 val quickFixes = listOf<LocalQuickFix>(
@@ -65,13 +65,13 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)
                     .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
-            //ignoredInInlineScriptFiles
+            // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
                     .bindSelected(::ignoredInInlineScriptFiles)

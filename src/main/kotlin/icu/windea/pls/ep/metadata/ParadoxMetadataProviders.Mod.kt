@@ -14,7 +14,7 @@ import icu.windea.pls.model.ParadoxModSource
 
 class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
-        //尝试在根目录中查找descriptor.mod
+        // 尝试在根目录中查找descriptor.mod
 
         val infoFile = runReadAction { ParadoxMetadataManager.getModDescriptorFile(rootFile) } ?: return null
         val info = ParadoxMetadataManager.getModDescriptorInfo(infoFile) ?: return null
@@ -55,7 +55,7 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
  */
 class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
-        //尝试在根目录的.metadata子目录中查找metadata.json
+        // 尝试在根目录的.metadata子目录中查找metadata.json
 
         val infoFile = runReadAction { ParadoxMetadataManager.getModMetadataFile(rootFile) } ?: return null
         val info = ParadoxMetadataManager.getModMetadataInfo(infoFile) ?: return null
@@ -88,7 +88,7 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         private fun doGetInferredGameTypeFromInfo(): ParadoxGameType? {
             return when (info.gameId) {
                 "victoria3" -> ParadoxGameType.Vic3
-                else -> ParadoxGameType.Vic3 //#134 by default vic3
+                else -> ParadoxGameType.Vic3 // #134 by default vic3
             }
         }
 

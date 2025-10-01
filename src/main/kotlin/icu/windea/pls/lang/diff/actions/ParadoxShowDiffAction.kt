@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
-//com.intellij.diff.actions.BaseShowDiffAction
+// com.intellij.diff.actions.BaseShowDiffAction
 
 abstract class ParadoxShowDiffAction : AnAction() {
     init {

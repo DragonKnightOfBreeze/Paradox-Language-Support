@@ -27,7 +27,7 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
-    //region ParadoxLocalisationPropertyList
+    // region ParadoxLocalisationPropertyList
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyList, @Iconable.IconFlags flags: Int): Icon {
@@ -44,9 +44,9 @@ object ParadoxLocalisationPsiImplUtil {
         return PROPERTY_LIST
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationLocale
+    // region ParadoxLocalisationLocale
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationLocale): PsiElement {
@@ -70,9 +70,9 @@ object ParadoxLocalisationPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationProperty
+    // region ParadoxLocalisationProperty
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationProperty, @Iconable.IconFlags flags: Int): Icon {
@@ -135,13 +135,13 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
-        //name & category (localisation / synced_localisation) & gameType
+        // name & category (localisation / synced_localisation) & gameType
         return another is ParadoxLocalisationProperty && element.localisationInfo?.equals(another.localisationInfo) == true
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationPropertyKey
+    // region ParadoxLocalisationPropertyKey
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationPropertyKey): PsiElement {
@@ -154,9 +154,9 @@ object ParadoxLocalisationPsiImplUtil {
         return PlsIcons.Nodes.LocalisationProperty
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationPropertyValue
+    // region ParadoxLocalisationPropertyValue
 
     @JvmStatic
     fun getTokenElement(element: ParadoxLocalisationPropertyValue): PsiElement? {
@@ -168,9 +168,9 @@ object ParadoxLocalisationPsiImplUtil {
         return element.tokenElement?.findChildren<_>() ?: emptyList()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationString
+    // region ParadoxLocalisationString
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationString): PsiElement {
@@ -178,9 +178,9 @@ object ParadoxLocalisationPsiImplUtil {
         return idElement
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationColorfulText
+    // region ParadoxLocalisationColorfulText
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationColorfulText): PsiElement? {
@@ -195,15 +195,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationParameter
+    // region ParadoxLocalisationParameter
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameter): PsiElement? {
@@ -223,15 +223,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationParameter, name: String): ParadoxLocalisationParameter {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createParameter(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationParameterArgument
+    // region ParadoxLocalisationParameterArgument
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameterArgument): PsiElement? {
@@ -239,9 +239,9 @@ object ParadoxLocalisationPsiImplUtil {
         return idElement
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationScriptedVariableReference
+    // region ParadoxLocalisationScriptedVariableReference
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationScriptedVariableReference): PsiElement? {
@@ -261,15 +261,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationScriptedVariableReference, name: String): ParadoxLocalisationScriptedVariableReference {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationCommand
+    // region ParadoxLocalisationCommand
 
     @JvmStatic
     fun getArgumentElement(element: ParadoxLocalisationCommand): ParadoxLocalisationCommandArgument? {
@@ -281,9 +281,9 @@ object ParadoxLocalisationPsiImplUtil {
         return PlsIcons.Nodes.LocalisationCommand
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationCommandText
+    // region ParadoxLocalisationCommandText
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
@@ -308,9 +308,9 @@ object ParadoxLocalisationPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationCommandArgument
+    // region ParadoxLocalisationCommandArgument
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
@@ -319,9 +319,9 @@ object ParadoxLocalisationPsiImplUtil {
         return idElement
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationIcon
+    // region ParadoxLocalisationIcon
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
@@ -348,7 +348,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
@@ -356,13 +356,13 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getFrame(element: ParadoxLocalisationIcon): Int {
-        //这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
+        // 这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
         return element.argumentElement?.idElement?.text?.toIntOrNull() ?: 0
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationIconArgument
+    // region ParadoxLocalisationIconArgument
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
@@ -371,9 +371,9 @@ object ParadoxLocalisationPsiImplUtil {
         return idElement
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationConceptCommand
+    // region ParadoxLocalisationConceptCommand
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConceptCommand, @Iconable.IconFlags flags: Int): Icon {
@@ -387,15 +387,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationConceptCommand, name: String): ParadoxLocalisationConceptCommand {
-        val idElement = element.conceptName?.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.conceptName?.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationConceptName
+    // region ParadoxLocalisationConceptName
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConceptName, @Iconable.IconFlags flags: Int): Icon {
@@ -425,9 +425,9 @@ object ParadoxLocalisationPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationTextFormat
+    // region ParadoxLocalisationTextFormat
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
@@ -449,15 +449,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationTextFormat, name: String): ParadoxLocalisationTextFormat {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
-    //region ParadoxLocalisationTextIcon
+    // region ParadoxLocalisationTextIcon
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
@@ -479,13 +479,13 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationTextIcon, name: String): ParadoxLocalisationTextIcon {
-        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val idElement = element.idElement ?: throw IncorrectOperationException() // 不支持重命名
         val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
-    //endregion
+    // endregion
 
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

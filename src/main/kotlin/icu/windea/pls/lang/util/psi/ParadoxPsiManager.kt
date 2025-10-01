@@ -71,7 +71,7 @@ object ParadoxPsiManager {
         val cachedArgumentTupleList by createKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
     }
 
-    //region Common Methods
+    // region Common Methods
 
     fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
         val r = doGetArgumentTupleListFromCache(element)
@@ -145,10 +145,10 @@ object ParadoxPsiManager {
     }
 
     fun getLineCommentText(element: PsiElement, lineSeparator: String = "\n"): String? {
-        //认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
+        // 认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
 
         var lines: LinkedList<String>? = null
-        var prevElement = element.prevSibling ?: element.parent?.prevSibling //兼容comment在rootBlock之外的特殊情况
+        var prevElement = element.prevSibling ?: element.parent?.prevSibling // 兼容comment在rootBlock之外的特殊情况
         while (prevElement != null) {
             val text = prevElement.text
             if (prevElement !is PsiWhiteSpace) {
@@ -166,8 +166,8 @@ object ParadoxPsiManager {
     }
 
     fun getDocCommentText(element: PsiElement, documentationElementType: IElementType, lineSeparator: String = "\n"): String? {
-        //如果某行注释以'#'开始，则输出时需要全部忽略
-        //如果某行注释以'\'结束，则输出时不要在这里换行
+        // 如果某行注释以'#'开始，则输出时需要全部忽略
+        // 如果某行注释以'\'结束，则输出时不要在这里换行
 
         var lines: MutableList<String>? = null
         var current: PsiElement = element
@@ -187,38 +187,38 @@ object ParadoxPsiManager {
         return lines.joinToString(lineSeparator).replace("\\$lineSeparator", "")
     }
 
-    //endregion
+    // endregion
 
-    //region Inline Methods
+    // region Inline Methods
 
     fun inlineScriptedVariable(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptScriptedVariable, project: Project) {
         if (element !is ParadoxScriptedVariableReference) return
 
         val toInline = declaration.scriptedVariableValue ?: return
         var newText = rangeInElement.replace(element.text, toInline.text)
-        //某些情况下newText会以"@"开始，需要去掉
+        // 某些情况下newText会以"@"开始，需要去掉
         if (element !is ParadoxScriptInlineMathScriptedVariableReference && newText.startsWith('@')) {
             newText = newText.drop(1)
         }
         val language = element.language
         when (language) {
             is ParadoxScriptLanguage -> {
-                //这里会把newText识别为一个值，但是实际上newText可以是任何文本，目前不进行额外的处理
+                // 这里会把newText识别为一个值，但是实际上newText可以是任何文本，目前不进行额外的处理
                 val newRef = ParadoxScriptElementFactory.createValue(project, newText)
                 element.replace(newRef)
             }
             is ParadoxLocalisationLanguage -> {
-                //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
-                newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
+                // 这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
+                newText = newText.unquote() // 内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
-                //element.parent should be something like "$@var$"
+                // element.parent should be something like "$@var$"
                 element.parent.replace(newRef)
             }
         }
     }
 
     fun inlineScriptedTrigger(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
-        //必须是一个调用而非任何引用
+        // 必须是一个调用而非任何引用
         if (element !is ParadoxScriptPropertyKey) return
         if (element.text.unquote().length != rangeInElement.length) return
 
@@ -265,12 +265,12 @@ object ParadoxPsiManager {
     }
 
     fun handleInlinedScriptedTrigger(element: PsiElement) {
-        //特殊处理
+        // 特殊处理
         element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
     fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
-        //必须是一个调用而非任何引用
+        // 必须是一个调用而非任何引用
         if (element !is ParadoxScriptPropertyKey) return
         if (element.text.unquote().length != rangeInElement.length) return
 
@@ -304,7 +304,7 @@ object ParadoxPsiManager {
     }
 
     fun handleInlinedScriptedEffect(element: PsiElement) {
-        //特殊处理
+        // 特殊处理
         element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
@@ -348,9 +348,9 @@ object ParadoxPsiManager {
         element.delete()
     }
 
-    //endregion
+    // endregion
 
-    //region Introduce Methods
+    // region Introduce Methods
 
     /**
      * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
@@ -375,7 +375,7 @@ object ParadoxPsiManager {
                 it !is PsiWhiteSpace && it !is PsiComment
             }
             if (anchor == null && parent is ParadoxScriptRootBlock) {
-                return parent.parent to null //(file, null)
+                return parent.parent to null // (file, null)
             }
             return parent to anchor
         }
@@ -399,20 +399,20 @@ object ParadoxPsiManager {
         return this to anchor
     }
 
-    //endregion
+    // endregion
 
-    //region Rename Methods
+    // region Rename Methods
 
     fun handleElementRename(element: ParadoxExpressionElement, rangeInElement: TextRange, newElementName: String): PsiElement {
         val element = element
         val resolvedElement = if (element is ParadoxScriptExpressionElement) element.resolved() else element
         return when {
             resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+            resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
             resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }
     }
 
-    //endregion
+    // endregion
 }

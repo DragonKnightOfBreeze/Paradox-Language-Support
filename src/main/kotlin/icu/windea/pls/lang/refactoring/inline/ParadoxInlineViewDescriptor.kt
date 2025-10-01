@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-//com.intellij.refactoring.inline.InlineViewDescriptor
+// com.intellij.refactoring.inline.InlineViewDescriptor
 
 class ParadoxInlineViewDescriptor(
     private val element: PsiElement

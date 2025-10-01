@@ -62,7 +62,7 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
     }
 
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence) {
-        //实际上是交换而非移动
+        // 实际上是交换而非移动
 
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)

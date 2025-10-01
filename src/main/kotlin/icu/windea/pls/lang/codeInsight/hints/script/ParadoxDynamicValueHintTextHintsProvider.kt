@@ -60,7 +60,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxScriptHintsProvider<Sett
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        //ignored for value_field or variable_field or other variants
+        // ignored for value_field or variable_field or other variants
 
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true

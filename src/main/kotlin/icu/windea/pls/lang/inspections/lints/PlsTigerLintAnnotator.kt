@@ -12,7 +12,7 @@ import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 
-//com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
+// com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
 /**
  * @see PlsTigerLintManager
@@ -30,7 +30,7 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
     }
 
     override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Info? {
-        return collectInformation(file) //兼容先前已经检测到错误的情况
+        return collectInformation(file) // 兼容先前已经检测到错误的情况
     }
 
     override fun doAnnotate(collectedInfo: Info?): PlsTigerLintResult? {
@@ -80,9 +80,9 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         // error(missing-item): media alias asia_confucianism_shin not defined in gfx/media_aliases/
 
         return buildString {
-            append("[").append(result.name).append("] ") //tool name
-            append(item.severity).append("(").append(item.key).append("): ") //prefix (severity+key)
-            append(item.message) //message
+            append("[").append(result.name).append("] ") // tool name
+            append(item.severity).append("(").append(item.key).append("): ") // prefix (severity+key)
+            append(item.message) // message
         }
     }
 

@@ -54,10 +54,10 @@ private sealed class ParadoxScriptExpressionBase : ParadoxScriptExpression {
 
     override fun matchesConstant(v: String): Boolean {
         if (value.isParameterized()) {
-            //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
+            // 兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
             return regex.matches(v)
         }
-        return value.equals(v, true) //忽略大小写
+        return value.equals(v, true) // 忽略大小写
     }
 
     override fun equals(other: Any?) = other is ParadoxScriptExpression && (value == other.value && quoted == other.quoted)
@@ -77,7 +77,7 @@ private class ParadoxScriptExpressionLazyImpl(
     private val matchOptions: Int,
     override val isKey: Boolean?
 ) : ParadoxScriptExpressionBase() {
-    //1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
+    // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
         when {
             BitUtil.isSet(matchOptions, ParadoxExpressionMatcher.Options.SkipIndex) -> null

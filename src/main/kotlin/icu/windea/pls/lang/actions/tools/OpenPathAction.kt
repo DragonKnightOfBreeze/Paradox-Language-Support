@@ -32,7 +32,7 @@ abstract class OpenPathAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val virtualFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
         val fileInfo = virtualFile.fileInfo ?: return
-        val targetPath = getTargetPath(fileInfo) ?: return //ignore
+        val targetPath = getTargetPath(fileInfo) ?: return // ignore
         when {
             targetPath.isDirectory() -> RevealFileAction.openDirectory(targetPath)
             else -> RevealFileAction.openFile(targetPath)

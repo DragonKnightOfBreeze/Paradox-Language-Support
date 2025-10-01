@@ -28,7 +28,7 @@ class ParadoxDynamicCommandFieldNode(
             val offset = textRange.startOffset
             var startIndex = 0
 
-            //匹配某一前缀的场合（如 "event_target:some_country"）
+            // 匹配某一前缀的场合（如 "event_target:some_country"）
             run r1@{
                 if (!text.contains(':')) return@r1
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromData && it.prefix != null }
@@ -51,7 +51,7 @@ class ParadoxDynamicCommandFieldNode(
                 return ParadoxDynamicCommandFieldNode(text, textRange, nodes, configGroup, linkConfigs)
             }
 
-            //匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
+            // 匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
             run r1@{
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromArgument && it.prefix != null }
@@ -88,7 +88,7 @@ class ParadoxDynamicCommandFieldNode(
                 return ParadoxDynamicCommandFieldNode(text, textRange, nodes, configGroup, linkConfigs)
             }
 
-            //没有前缀且允许没有前缀的场合
+            // 没有前缀且允许没有前缀的场合
             run r1@{
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromData && it.prefix == null }
                     .sortedByPriority({ it.dataSourceExpression }, { configGroup })

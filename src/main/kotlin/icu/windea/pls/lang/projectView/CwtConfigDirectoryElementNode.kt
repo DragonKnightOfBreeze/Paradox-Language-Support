@@ -114,7 +114,7 @@ class CwtConfigDirectoryElementNode(
                 return
             }
         } catch (_: Exception) {
-            //ignored
+            // ignored
         }
         value = null
     }

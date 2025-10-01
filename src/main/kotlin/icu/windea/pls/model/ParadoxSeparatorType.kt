@@ -7,7 +7,7 @@ enum class ParadoxSeparatorType(val id: String) {
     GT(">"),
     LE("<="),
     GE(">="),
-    SAFE_EQUAL("?="), //supported in ck3 and vic3, see #102
+    SAFE_EQUAL("?="), // supported in ck3 and vic3, see #102
     ;
 
     override fun toString() = id

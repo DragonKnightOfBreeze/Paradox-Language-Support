@@ -96,7 +96,7 @@ object PlsIcons {
         @JvmStatic
         val LocalisationTextFormat = IconManager.getInstance().getIcon("/icons/nodes/localisationTextFormat.svg")
         @JvmStatic
-        val LocalisationTextIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationTextIcon.svg") //same as LocalisationIcon
+        val LocalisationTextIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationTextIcon.svg") // same as LocalisationIcon
 
         @JvmStatic
         val Row = AllIcons.Nodes.DataTables

@@ -95,8 +95,8 @@ object ParadoxParameterManager {
         val parameterValueInjectionInfos by createKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
     }
 
-    //rootFile -> cacheKey -> parameterInfo
-    //depends on config group
+    // rootFile -> cacheKey -> parameterInfo
+    // depends on config group
     private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
         createNestedCache<VirtualFile, String, ParadoxParameterInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxParameterInfo>> {
             CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
@@ -186,7 +186,7 @@ object ParadoxParameterManager {
     private fun doGetContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         val file = element.containingFile
         val gameType = selectGameType(file) ?: return null
-        val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() //按名字进行排序
+        val parameters = sortedMapOf<String, MutableList<ParadoxParameterContextInfo.Parameter>>() // 按名字进行排序
         val fileConditionStack = ArrayDeque<ReversibleValue<String>>()
         element.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -207,7 +207,7 @@ object ParadoxParameterManager {
                     }
                     true
                 }
-                //value may be empty (invalid condition expression)
+                // value may be empty (invalid condition expression)
                 fileConditionStack.addLast(ReversibleValue(operator, value))
                 super.visitElement(element)
             }
@@ -216,16 +216,16 @@ object ParadoxParameterManager {
                 val name = element.name ?: return
                 val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, null, null)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
-                //不需要继续向下遍历
+                // 不需要继续向下遍历
             }
 
             private fun visitParameter(element: ParadoxParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = ArrayDeque(fileConditionStack) //not null
+                val conditionalStack = ArrayDeque(fileConditionStack) // not null
                 val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
-                //不需要继续向下遍历
+                // 不需要继续向下遍历
             }
 
             override fun elementFinished(element: PsiElement?) {
@@ -244,15 +244,15 @@ object ParadoxParameterManager {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return true
         return parameterInfos.all f@{ parameterInfo ->
-            //如果带有默认值，则为可选
+            // 如果带有默认值，则为可选
             if (parameterInfo.defaultValue != null) return@f true
-            //如果是条件参数，则为可选
+            // 如果是条件参数，则为可选
             if (parameterInfo.conditionStack == null) return@f true
-            //如果基于条件表达式上下文是可选的，则为可选
+            // 如果基于条件表达式上下文是可选的，则为可选
             if (parameterInfo.conditionStack.isNotEmpty() && parameterInfo.conditionStack
                     .all { it.withOperator { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }
             ) return@f true
-            //如果作为传入参数的值，则认为是可选的
+            // 如果作为传入参数的值，则认为是可选的
             if (parameterInfo.expressionConfigs
                     .any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
             ) return@f true
@@ -262,14 +262,14 @@ object ParadoxParameterManager {
 
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        //向上找到参数上下文
+        // 向上找到参数上下文
         val parameterContext = ParadoxParameterSupport.findContext(element) ?: return
         val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return
         for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
             ProgressManager.checkCanceled()
             val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
-            //排除当前正在输入的那个
+            // 排除当前正在输入的那个
             if (parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = when {
                 parameter is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(parameter)
@@ -290,19 +290,19 @@ object ParadoxParameterManager {
 
     fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        if (context.quoted) return //输入参数不允许用引号括起
+        if (context.quoted) return // 输入参数不允许用引号括起
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
-        //整合查找到的所有参数上下文
+        // 整合查找到的所有参数上下文
         ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
             val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
-                //排除已输入的
+                // 排除已输入的
                 if (!argumentNames.add(parameterName)) continue
 
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
@@ -454,15 +454,15 @@ object ParadoxParameterManager {
         if (injectionInfos.isNullOrEmpty()) return null
         val injectionInfo = when {
             host is ParadoxScriptStringExpressionElement -> {
-                val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile //actual PsiFile of VirtualFileWindow
+                val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile // actual PsiFile of VirtualFileWindow
                 val shreds = file0.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
-                //it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
+                // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
                 injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
             }
             host is ParadoxParameter -> {
-                //just use the only one
+                // just use the only one
                 injectionInfos.singleOrNull()
             }
             else -> null

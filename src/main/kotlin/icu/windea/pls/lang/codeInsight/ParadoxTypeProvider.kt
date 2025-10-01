@@ -10,7 +10,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.model.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
-//com.intellij.codeInsight.hint.JavaTypeProvider
+// com.intellij.codeInsight.hint.JavaTypeProvider
 
 /**
  * 用于显示各种类型信息（`View > Type Info`）。

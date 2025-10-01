@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
-        if (!inProject(file)) return false //only for project files
+        if (!inProject(file)) return false // only for project files
         return true
     }
 
@@ -43,10 +43,10 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
 
         val isGlobal = "common/scripted_variables".matchesPath(fileInfo.path.path)
-        if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
+        if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR // only for global scripted variables
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
+        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR // only for project files
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -56,10 +56,10 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val selector = selector(project, file).scriptedVariable()
                 val name = element.name
-                if (name.isNullOrEmpty()) return //anonymous -> skipped
-                if (name.isParameterized()) return //parameterized -> ignored
+                if (name.isNullOrEmpty()) return // anonymous -> skipped
+                if (name.isParameterized()) return // parameterized -> ignored
                 val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
-                if (results.size < 2) return //no override -> skip
+                if (results.size < 2) return // no override -> skip
 
                 val locationElement = element.scriptedVariableName
                 val message = PlsBundle.message("inspection.overriddenForScriptedVariable.desc", name)

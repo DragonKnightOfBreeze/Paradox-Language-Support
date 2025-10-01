@@ -27,7 +27,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
     var ignoredFileNames = "languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         return true
     }
 
@@ -36,9 +36,9 @@ class MultipleLocalesInspection : LocalInspectionTool() {
 
         val fileName = file.name
         ignoredFileNames.splitOptimized(';').forEach {
-            if (fileName.matchesPattern(it, true)) return null //忽略
+            if (fileName.matchesPattern(it, true)) return null // 忽略
         }
-        if (file.propertyLists.size <= 1) return null //不存在多个语言环境，忽略
+        if (file.propertyLists.size <= 1) return null // 不存在多个语言环境，忽略
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         return holder.resultsArray

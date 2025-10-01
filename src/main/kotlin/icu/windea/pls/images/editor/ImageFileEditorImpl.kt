@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-//org.intellij.images.editor.impl.ImageFileEditorImpl
+// org.intellij.images.editor.impl.ImageFileEditorImpl
 
 class ImageFileEditorImpl(
     project: Project,

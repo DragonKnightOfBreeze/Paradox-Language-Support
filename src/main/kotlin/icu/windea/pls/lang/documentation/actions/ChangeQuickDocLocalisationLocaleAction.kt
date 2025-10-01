@@ -14,13 +14,13 @@ import icu.windea.pls.lang.documentation.targetElement
 import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
-//cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction
-//com.intellij.codeInsight.documentation.actions.CopyQuickDocAction
+// cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction
+// com.intellij.codeInsight.documentation.actions.CopyQuickDocAction
 
 class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    //use local-cached locale (on documentationTarget.element)
+    // use local-cached locale (on documentationTarget.element)
 
     override fun update(e: AnActionEvent) {
         var isVisible = false

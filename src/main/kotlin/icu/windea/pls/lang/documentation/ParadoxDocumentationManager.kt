@@ -177,7 +177,7 @@ object ParadoxDocumentationManager {
 
     private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            //对于相关图片信息，在definition部分显示在相关本地化信息之后，在sections部分则显示在之前
+            // 对于相关图片信息，在definition部分显示在相关本地化信息之后，在sections部分则显示在之前
             if (!hint) initSections(3)
             buildDefinitionDefinition(element, definitionInfo)
             if (hint) return@buildDocumentation
@@ -222,7 +222,7 @@ object ParadoxDocumentationManager {
     private fun getLocalisationColorDoc(element: ParadoxLocalisationColorfulText, originalElement: PsiElement?, hint: Boolean): String? {
         val name = element.name ?: return null
         return buildDocumentation {
-            //加上元素定义信息
+            // 加上元素定义信息
             buildLocalisationColorDefinition(name)
         }
     }
@@ -242,7 +242,7 @@ object ParadoxDocumentationManager {
         definition {
             val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
             if (!r) {
-                //显示默认的快速文档
+                // 显示默认的快速文档
                 append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
@@ -253,7 +253,7 @@ object ParadoxDocumentationManager {
         definition {
             val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if (!r) {
-                //显示默认的快速文档
+                // 显示默认的快速文档
                 append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
@@ -275,10 +275,10 @@ object ParadoxDocumentationManager {
                 append(": ").append(enumName)
             }
 
-            //加上相关本地化信息：同名的本地化
+            // 加上相关本地化信息：同名的本地化
             addRelatedLocalisationsForComplexEnumValue(element)
 
-            //加上作用域上下文信息
+            // 加上作用域上下文信息
             addScopeContext(element, name, configGroup)
         }
     }
@@ -288,7 +288,7 @@ object ParadoxDocumentationManager {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(element.name, element, usedLocale)
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
             appendBr()
@@ -328,10 +328,10 @@ object ParadoxDocumentationManager {
                 }
             }
 
-            //加上相关本地化信息：同名的本地化
+            // 加上相关本地化信息：同名的本地化
             addRelatedLocalisationsForDynamicValue(element)
 
-            //加上作用域上下文信息
+            // 加上作用域上下文信息
             addScopeContext(element, name, configGroup)
         }
     }
@@ -341,7 +341,7 @@ object ParadoxDocumentationManager {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxDynamicValueManager.getNameLocalisation(element.name, element, usedLocale)
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
             appendBr()
@@ -365,7 +365,7 @@ object ParadoxDocumentationManager {
         definition {
             val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
             if (!r) {
-                //显示默认的快速文档
+                // 显示默认的快速文档
                 append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
 
@@ -401,7 +401,7 @@ object ParadoxDocumentationManager {
                 ParadoxLocalisationSearch.search(key, selector).find()
             }
         }
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
             appendBr()
@@ -443,7 +443,7 @@ object ParadoxDocumentationManager {
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             }
         }
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (iconFile == null) return@run
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
@@ -464,7 +464,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
+        // 即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
@@ -481,9 +481,9 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        //进行代码提示时也显示作用域上下文信息
-        //@Suppress("DEPRECATION")
-        //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // 进行代码提示时也显示作用域上下文信息
+        // @Suppress("DEPRECATION")
+        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
@@ -493,16 +493,16 @@ object ParadoxDocumentationManager {
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         if (scopeContext == null) return
-        //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
+        // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
         // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
         sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
     }
 
     private fun DocumentationBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
         definition {
-            //加上文件信息
+            // 加上文件信息
             appendFileInfoHeader(element)
-            //加上定义信息
+            // 加上定义信息
             append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
             when (valueElement) {
@@ -510,7 +510,7 @@ object ParadoxDocumentationManager {
                 is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
             }
 
-            //加上相关本地化信息：同名的本地化
+            // 加上相关本地化信息：同名的本地化
             addRelatedLocalisationsForScriptedVariable(element, name)
         }
     }
@@ -520,7 +520,7 @@ object ParadoxDocumentationManager {
         val gameType = selectGameType(element) ?: return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, usedLocale)
-        //如果没找到的话，不要在文档中显示相关信息
+        // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (nameLocalisation == null) return@run
             appendBr()
@@ -541,9 +541,9 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildPropertyDefinition(element: ParadoxScriptProperty, name: String) {
         definition {
-            //加上文件信息
+            // 加上文件信息
             appendFileInfoHeader(element)
-            //加上定义信息
+            // 加上定义信息
             append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
             when (valueElement) {
@@ -555,13 +555,13 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         definition {
-            //加上文件信息
+            // 加上文件信息
             appendFileInfoHeader(element)
 
-            //加上定义信息
+            // 加上定义信息
             addDefinitionInfo(element, definitionInfo)
 
-            //加上继承的定义信息
+            // 加上继承的定义信息
             val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo)
             val superDefinitionInfo = superDefinition?.definitionInfo
             if (superDefinitionInfo != null) {
@@ -569,25 +569,25 @@ object ParadoxDocumentationManager {
                 addSuperDefinitionInfo(superDefinition, superDefinitionInfo)
             }
 
-            //加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
+            // 加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo)
 
-            //加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
+            // 加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
             addRelatedImagesForDefinition(element, definitionInfo)
 
-            //加上生成的修正的信息
+            // 加上生成的修正的信息
             addGeneratedModifiersForDefinition(element, definitionInfo)
 
-            //加上修正分类和作用域信息（如果支持）
+            // 加上修正分类和作用域信息（如果支持）
             addModifierScopeForDefinition(element, definitionInfo)
 
-            //加上作用域上下文信息（如果支持）
+            // 加上作用域上下文信息（如果支持）
             addScopeContextForDefinition(element, definitionInfo)
 
-            //加上参数信息（如果支持且存在）
+            // 加上参数信息（如果支持且存在）
             addParametersForDefinition(element, definitionInfo)
 
-            //加上事件类型信息（对于on_action）
+            // 加上事件类型信息（对于on_action）
             addEventTypeForOnAction(element, definitionInfo)
         }
     }
@@ -646,7 +646,7 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in localisationInfos) {
             if (sectionKeys.contains(key)) continue
-            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue //发生意外，直接跳过
+            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
                 map.put(key, resolveResult.message)
             } else if (resolveResult.element != null) {
@@ -661,7 +661,7 @@ object ParadoxDocumentationManager {
             if (resolvedElement != null) {
                 sectionKeys.add(key)
                 if (sections != null && PlsFacade.getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
-                    //加上渲染后的相关本地化文本
+                    // 加上渲染后的相关本地化文本
                     val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(resolvedElement)
                     sections.put(key, richText)
                 }
@@ -683,7 +683,7 @@ object ParadoxDocumentationManager {
         val sectionKeys = mutableSetOf<String>()
         for ((key, locationExpression, required) in imagesInfos) {
             if (sectionKeys.contains(key)) continue
-            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue //发生意外，直接跳过
+            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
                 map.put(key, resolveResult.message)
             } else if (resolveResult.element != null) {
@@ -707,7 +707,7 @@ object ParadoxDocumentationManager {
             if (resolveElement != null) {
                 sectionKeys.add(key)
                 if (render && sections != null) {
-                    //渲染图片
+                    // 渲染图片
                     val url = when {
                         resolveElement is ParadoxScriptDefinitionElement && resolveElement.definitionInfo != null -> {
                             ParadoxImageManager.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
@@ -737,7 +737,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        //即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
+        // 即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
@@ -753,9 +753,9 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        //进行代码提示时也显示作用域上下文信息
-        //@Suppress("DEPRECATION")
-        //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
+        // 进行代码提示时也显示作用域上下文信息
+        // @Suppress("DEPRECATION")
+        // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
         if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
@@ -772,17 +772,17 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
-        if (parameterContextInfo.parameters.isEmpty()) return //ignore
+        if (parameterContextInfo.parameters.isEmpty()) return // ignore
         val parametersText = buildString {
             append("<pre>")
             var isFirst = true
             parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
                 if (isFirst) isFirst = false else append("<br>")
                 append(parameterName)
-                //加上推断得到的规则信息
+                // 加上推断得到的规则信息
                 val isOptional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
-                if (isOptional) append("?") //optional marker
-                //加上推断得到的类型信息
+                if (isOptional) append("?") // optional marker
+                // 加上推断得到的类型信息
                 val parameterElement = elements.firstOrNull()?.parameterElement
                 val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }
                 if (inferredType.isNotNullOrEmpty()) append(": ").append(inferredType.escapeXml())
@@ -794,7 +794,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
-        //有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
+        // 有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
         val configGroup = definitionInfo.configGroup
         val gameType = configGroup.gameType
         val config = definitionInfo.configGroup.extendedOnActions.findFromPattern(definitionInfo.name, element, definitionInfo.configGroup)
@@ -808,29 +808,29 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
         definition {
-            //加上元素定义信息
+            // 加上元素定义信息
             append(PlsStringConstants.localePrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildLocalisationPropertyDefinition(element: ParadoxLocalisationProperty) {
         definition {
-            //加上文件信息
+            // 加上文件信息
             appendFileInfoHeader(element)
-            //加上元素定义信息
+            // 加上元素定义信息
             append(PlsStringConstants.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {
         definition {
-            //加上文件信息
+            // 加上文件信息
             appendFileInfoHeader(element)
 
-            //加上定义信息
+            // 加上定义信息
             addLocalisationInfo(localisationInfo)
 
-            //加上相关定义信息
+            // 加上相关定义信息
             addRelatedDefinitionsForLocalisation(element, localisationInfo)
         }
     }
@@ -855,7 +855,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
-        //加上渲染后的本地化文本
+        // 加上渲染后的本地化文本
         if (!PlsFacade.getSettings().documentation.renderLocalisationForLocalisations) return
         val locale = selectLocale(element)
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element, locale)
@@ -881,14 +881,14 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
         definition {
-            //加上元素定义信息
+            // 加上元素定义信息
             append(PlsStringConstants.localisationIconPrefix).append(" <b>").append(name).append("</b>")
         }
     }
 
     private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) {
         definition {
-            //加上元素定义信息
+            // 加上元素定义信息
             append(PlsStringConstants.localisationColorPrefix).append(" <b>").append(name).append("</b>")
         }
     }
@@ -907,7 +907,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {
-        //加上单行注释文本
+        // 加上单行注释文本
         if (!PlsFacade.getSettings().documentation.renderLineComment) return
         val docText = ParadoxPsiManager.getLineCommentText(element, "<br>")
         if (docText.isNotNullOrEmpty()) {

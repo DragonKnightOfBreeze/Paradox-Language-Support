@@ -53,7 +53,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val parentElement = parameterInfo.parentElement ?: return null
         when {
             element is ParadoxConditionParameter -> {
-                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") //bool-like
+                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") // bool-like
             }
             element is ParadoxScriptParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
@@ -98,7 +98,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         val configGroup = expressionContextConfigs.first().configGroup
         val passingConfig = inlinedContextConfigs.find { it.configExpression.type == CwtDataTypes.ParameterValue }
         if (passingConfig != null) {
-            //处理参数传递的情况
+            // 处理参数传递的情况
             if (passingConfig !is CwtValueConfig) return null
             val argumentNameElement = parentElement?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
             val argumentNameConfig = passingConfig.propertyConfig ?: return null
@@ -125,10 +125,10 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
  * 用于推断在脚本表达式中使用的参数的上下文规则，适用于参数作为复杂表达式节点的场合。
  */
 class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
-    //root.trigger:$PARAM$ -> alias_keys_field[trigger]
-    //root.$PARAM$.owner -> scope_field
-    //root.value:$PARAM$|K|V| -> <script_value>
-    //root.value:some_script_value|K|$PARAM$| -> (from parameter K)
+    // root.trigger:$PARAM$ -> alias_keys_field[trigger]
+    // root.$PARAM$.owner -> scope_field
+    // root.value:$PARAM$|K|V| -> <script_value>
+    // root.value:some_script_value|K|$PARAM$| -> (from parameter K)
 
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement

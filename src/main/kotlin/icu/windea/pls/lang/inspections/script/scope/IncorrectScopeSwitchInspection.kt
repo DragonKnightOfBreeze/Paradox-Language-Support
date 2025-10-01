@@ -64,13 +64,13 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                     holder.registerProblem(propertyKey, rangeInExpression, description)
                                 }
                             }
-                            //TODO 1.3.0+ dynamic value
+                            // TODO 1.3.0+ dynamic value
                             is ParadoxDynamicScopeLinkNode -> {
 
                             }
-                            //NOTE may depend on usages
-                            //skip if checkForSystemScopes is false
-                            //skip if root parent scope context is not from event, scripted_trigger or scripted_effect
+                            // NOTE may depend on usages
+                            // skip if checkForSystemScopes is false
+                            // skip if root parent scope context is not from event, scripted_trigger or scripted_effect
                             is ParadoxSystemScopeNode -> {
                                 if (!checkForSystemScopes) continue
                                 if (scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
@@ -84,7 +84,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 }
                             }
                             is ParadoxParameterizedScopeLinkNode -> pass()
-                            //error
+                            // error
                             is ParadoxErrorScopeLinkNode -> break
                         }
                     }

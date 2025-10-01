@@ -25,7 +25,7 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxBaseLanguage
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
-    //similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications
+    // similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications
 
     val project = element.project
     val file = element.containingFile?.virtualFile
@@ -45,7 +45,7 @@ fun getTargetPresentation(element: PsiElement): TargetPresentation {
 }
 
 private fun getModuleTextWithIcon(value: Any?): TextWithIcon? {
-    //copied from [com.intellij.ide.util.PsiElementListCellRenderer.getModuleTextWithIcon]
+    // copied from [com.intellij.ide.util.PsiElementListCellRenderer.getModuleTextWithIcon]
 
     val factory = ModuleRendererFactory.findInstance(value)
     if (factory is PlatformModuleRendererFactory) {
@@ -68,7 +68,7 @@ private fun ItemPresentation.getContainerText(): String? {
 }
 
 fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
-    //delegate to [icu.windea.pls.core.psiDocumentationTargets] or use fallback logic
+    // delegate to [icu.windea.pls.core.psiDocumentationTargets] or use fallback logic
 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets

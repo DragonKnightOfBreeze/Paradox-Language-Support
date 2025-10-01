@@ -71,7 +71,7 @@ abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
                         .smaller()
 
                     if (optionCommentProvider != null) {
-                        //add related label (e.g., localized name) as comment lazily
+                        // add related label (e.g., localized name) as comment lazily
                         comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
                             coroutineScope.launch {
                                 val p = readAction { optionCommentProvider(key) }

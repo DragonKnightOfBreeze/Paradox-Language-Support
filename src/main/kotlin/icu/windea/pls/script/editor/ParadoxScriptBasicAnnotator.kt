@@ -28,7 +28,7 @@ class ParadoxScriptBasicAnnotator : Annotator {
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
         // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里并不能捕捉到（计划以后重构，目前不视为语法性错误）
-        //不允许紧邻的字面量
+        // 不允许紧邻的字面量
         if (element.isLiteral() && element.prevSibling.isLiteral()) {
             holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
                 .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))

@@ -46,21 +46,21 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         val element = findElement(file, offset) ?: return false
         val name = PlsFacade.getInternalSettings().defaultScriptedVariableName
 
-        //将光标移到所在PSI元素的结束位置并选中
+        // 将光标移到所在PSI元素的结束位置并选中
         editor.caretModel.moveToOffset(element.endOffset)
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
-        //要求对应的int_token或float_token在定义声明内
+        // 要求对应的int_token或float_token在定义声明内
         val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
         val command = Runnable {
-            //用封装参数（variableReference）替换当前位置的int或float
+            // 用封装参数（variableReference）替换当前位置的int或float
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
             newVariableReference = element.parent.replace(newVariableReference).cast()
 
-            //声明对应名字的封装变量，以内联模版的方式编辑变量名
+            // 声明对应名字的封装变量，以内联模版的方式编辑变量名
             val variableValue = element.text
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
-            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) //提交文档更改
+            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
             val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
             val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
@@ -73,7 +73,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
             val template = templateBuilder.buildInlineTemplate()
             TemplateManager.getInstance(project).startTemplate(editor, template, TemplateEditingFinishedListener { _, _ ->
                 try {
-                    //回到原来的光标位置
+                    // 回到原来的光标位置
                     editor.caretModel.moveToOffset(caretMarker.endOffset)
                     editor.selectionModel.removeSelection()
                     editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

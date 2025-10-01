@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 提供封装变量引用的名字的代码补全。
  */
 class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionParameters>() {
-    //因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，并将光标移到补充"$"之前
+    // 因为只能在$...$引用中出现，如果后面没有"$"，需要自动补充，并将光标移到补充"$"之前
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         val editor = context.editor
         val caretModel = editor.caretModel

@@ -68,8 +68,8 @@ class ParadoxDatabaseObjectDataSourceNode(
     }
 
     fun isForcedBase(): Boolean {
-        //referencing base database objects repeatedly is supported, to force show non-swapped form in the game
-        //(pre-condition: database object type can be swapped & database object names should be the same)
+        // referencing base database objects repeatedly is supported, to force show non-swapped form in the game
+        // (pre-condition: database object type can be swapped & database object names should be the same)
         if (config == null) return false
         if (config.localisation != null) return false
         if (isBase || config.type == null || config.swapType == null) return false
@@ -103,7 +103,7 @@ class ParadoxDatabaseObjectDataSourceNode(
         if (!ParadoxDefinitionTypeExpression.resolve(typeToSearch).matches(definitionInfo)) return false
         if (isBase) return true
 
-        //filter out mismatched swap definition vs base definition
+        // filter out mismatched swap definition vs base definition
         val expectedSuperDefinitionName = expression.valueNode?.text?.orNull() ?: return false
         val expectedSuperDefinitionType = config.type ?: return false
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo) ?: return false
@@ -134,7 +134,7 @@ class ParadoxDatabaseObjectDataSourceNode(
             return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
         }
 
-        //缓存解析结果以优化性能
+        // 缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()

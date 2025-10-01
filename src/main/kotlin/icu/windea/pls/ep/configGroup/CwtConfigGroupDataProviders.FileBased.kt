@@ -112,7 +112,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
-                        if (fileProvider.type != CwtConfigGroupFileProvider.Type.BuiltIn) return@p true //不允许覆盖内部规则文件
+                        if (fileProvider.type != CwtConfigGroupFileProvider.Type.BuiltIn) return@p true // 不允许覆盖内部规则文件
                         allInternalFiles.putIfAbsent(filePath, file)
                         return@p true
                     }
@@ -131,7 +131,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
                 val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
                 processFile(fileConfig, configGroup)
-                //configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
+                // configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
             }
         }
 

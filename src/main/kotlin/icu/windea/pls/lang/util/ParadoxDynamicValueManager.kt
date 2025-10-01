@@ -33,7 +33,7 @@ object ParadoxDynamicValueManager {
     }
 
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
-        if (!name.isIdentifier()) return null //skip invalid names
+        if (!name.isIdentifier()) return null // skip invalid names
         val gameType = configGroup.gameType
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueType = configExpression.value ?: return null
@@ -41,7 +41,7 @@ object ParadoxDynamicValueManager {
     }
 
     fun resolveDynamicValue(element: ParadoxExpressionElement, name: String, configExpressions: Iterable<CwtDataExpression>, configGroup: CwtConfigGroup): ParadoxDynamicValueElement? {
-        if (!name.isIdentifier()) return null //skip invalid names
+        if (!name.isIdentifier()) return null // skip invalid names
         val gameType = configGroup.gameType
         val configExpression = configExpressions.firstOrNull() ?: return null
         val readWriteAccess = getReadWriteAccess(configExpression)

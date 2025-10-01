@@ -31,9 +31,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         if (selectRootFile(file) == null) return false
-        if (!inProject(file)) return false //only for project files
+        if (!inProject(file)) return false // only for project files
         return true
     }
 
@@ -49,10 +49,10 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
 
         val isGlobal = "common/scripted_variables".matchesPath(fileInfo.path.path)
-        if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
+        if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR // only for global scripted variables
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
+        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR // only for project files
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -61,13 +61,13 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val priority = ParadoxPriorityProvider.getPriority(element)
-                if (priority == ParadoxPriority.ORDERED) return //only for FIOS and LIOS
+                if (priority == ParadoxPriority.ORDERED) return // only for FIOS and LIOS
                 val selector = selector(project, file).scriptedVariable()
                 val name = element.name
-                if (name.isNullOrEmpty()) return //anonymous -> skipped
-                if (name.isParameterized()) return //parameterized -> ignored
+                if (name.isNullOrEmpty()) return // anonymous -> skipped
+                if (name.isParameterized()) return // parameterized -> ignored
                 val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
-                if (results.size < 2) return //no override -> skip
+                if (results.size < 2) return // no override -> skip
                 val firstResult = results.first()
                 val firstRootInfo = firstResult.fileInfo?.rootInfo
                 if (firstRootInfo !is ParadoxRootInfo.MetadataBased) return
@@ -75,7 +75,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 if (rootInfo !is ParadoxRootInfo.MetadataBased) return
                 if (firstRootInfo.rootFile == rootInfo.rootFile) return
 
-                //different root file -> incorrect override
+                // different root file -> incorrect override
                 val locationElement = element.scriptedVariableName
                 val message = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.desc", name, priority)
                 val fix = NavigateToOverriddenScriptedVariablesFix(name, element, results)

@@ -18,7 +18,7 @@ import icu.windea.pls.lang.references.paths.ParadoxPathReference
  */
 @InjectTarget("com.intellij.openapi.paths.PathReferenceManagerImpl")
 class PathReferenceManagerImplCodeInjector : CodeInjectorBase() {
-    //如果解析得到的路径引用中包含 ParadoxPathReference，则仅保留它
+    // 如果解析得到的路径引用中包含 ParadoxPathReference，则仅保留它
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun createReferences(

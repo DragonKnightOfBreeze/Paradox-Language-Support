@@ -19,12 +19,12 @@ class ParadoxLocalisationConceptPsiReference(
     val project by lazy { element.project }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        //cannot rename when use alias
+        // cannot rename when use alias
         if (element.name != resolve()?.name) throw IncorrectOperationException()
         return element.setName(rangeInElement.replace(element.text, newElementName))
     }
 
-    //缓存解析结果以优化性能
+    // 缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptPsiReference, ParadoxScriptDefinitionElement> {
         override fun resolve(ref: ParadoxLocalisationConceptPsiReference, incompleteCode: Boolean) = ref.doResolve()

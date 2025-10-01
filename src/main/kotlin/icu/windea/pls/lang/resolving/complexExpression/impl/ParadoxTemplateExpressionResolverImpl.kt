@@ -31,7 +31,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
         if (!incomplete && expressionString.isEmpty()) return null
 
-        //这里需要允许部分匹配
+        // 这里需要允许部分匹配
         val (_, matchResult) = CwtTemplateExpressionManager.toMatchedRegex(templateExpression, expressionString, incomplete) ?: return null
 
         val matchGroups = matchResult.groups.drop(1)

@@ -33,9 +33,9 @@ object ParadoxMetadataManager {
     )
 
     fun getLauncherSettingsFile(rootFile: VirtualFile): VirtualFile? {
-        //relative paths:
-        //* launcher-settings.json
-        //* launcher/launcher-settings.json
+        // relative paths:
+        // * launcher-settings.json
+        // * launcher/launcher-settings.json
 
         if (rootFile.name == "launcher") return null
         rootFile.findChild("launcher-settings.json")
@@ -60,8 +60,8 @@ object ParadoxMetadataManager {
     }
 
     fun getModDescriptorFile(rootFile: VirtualFile): VirtualFile? {
-        //relative paths:
-        //* descriptor.mod
+        // relative paths:
+        // * descriptor.mod
 
         rootFile.findChild("descriptor.mod")
             ?.takeIf { it.isFile }?.let { return it }
@@ -79,10 +79,10 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetModDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
-        //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
+        // val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null // 会导致StackOverflowError
         val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
         val data = ParadoxScriptDataResolver.resolve(psiFile)
-        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" //如果没有name属性，则使用根目录名
+        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" // 如果没有name属性，则使用根目录名
         val version = data?.getData("version")?.value?.stringValue()
         val picture = data?.getData("picture")?.value?.stringValue()
         val tags = data?.getAllData("tags")?.mapNotNull { it.value?.stringValue() }?.toSet().orEmpty()
@@ -93,8 +93,8 @@ object ParadoxMetadataManager {
     }
 
     fun getModMetadataFile(rootFile: VirtualFile): VirtualFile? {
-        //relative paths:
-        //* .metadata/metadata.json
+        // relative paths:
+        // * .metadata/metadata.json
 
         rootFile.findFileByRelativePath(".metadata/metadata.json")
             ?.takeIf { it.isFile }?.let { return it }

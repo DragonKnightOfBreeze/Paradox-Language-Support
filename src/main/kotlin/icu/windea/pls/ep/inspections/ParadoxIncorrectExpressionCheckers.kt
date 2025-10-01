@@ -65,7 +65,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
         if (element !is ParadoxScriptExpressionElement && element !is ParadoxCsvExpressionElement) return
 
         val configExpression = config.configExpression
-        if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
+        if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return // for int and float
         val floatRange = configExpression.floatRange ?: return
         val floatValue = when {
             element is ParadoxScriptExpressionElement -> element.resolved()?.floatValue()
@@ -167,7 +167,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        //switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
+        // switch = {...}和inverted_switch = {...}中指定的应当是一个simple_trigger
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
@@ -194,7 +194,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         if (element !is ParadoxScriptExpressionElement) return
 
-        //complex_trigger_modifier = {...}中指定的应当是一个simple_trigger（如果不带参数）或者complex_trigger（如果带参数）
+        // complex_trigger_modifier = {...}中指定的应当是一个simple_trigger（如果不带参数）或者complex_trigger（如果带参数）
         if (element !is ParadoxScriptString && element !is ParadoxScriptScriptedVariableReference) return
         if (config !is CwtValueConfig || config.value != "alias_keys_field[trigger]") return
 
@@ -212,10 +212,10 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
                 holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))
             }
         } else {
-            //can also be complex trigger here, for some parameters can be ignored (like "count = xxx")
-            //if(resultTriggerConfigs.none { !it.config.isBlock }) {
+            // can also be complex trigger here, for some parameters can be ignored (like "count = xxx")
+            // if(resultTriggerConfigs.none { !it.config.isBlock }) {
             //    holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
-            //}
+            // }
         }
     }
 }

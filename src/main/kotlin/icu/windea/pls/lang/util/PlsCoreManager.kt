@@ -23,7 +23,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.index.ParadoxMergedIndex
 
 object PlsCoreManager {
-    //region ThreadLocals
+    // region ThreadLocals
 
     /**
      * 用于标记当前线程是否正在为[ParadoxMergedIndex]编制索引。
@@ -45,9 +45,9 @@ object PlsCoreManager {
      */
     val incompleteComplexExpression = ThreadLocal<Boolean>()
 
-    //endregion
+    // endregion
 
-    //region Global Methods
+    // region Global Methods
 
     /**
      * 比较游戏版本。允许通配符，如："3.3.*"
@@ -76,13 +76,13 @@ object PlsCoreManager {
             .createNotification(title, content, notificationType)
     }
 
-    //endregion
+    // endregion
 
-    //region VFS Methods
+    // region VFS Methods
 
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
-        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
-        //exclude some specific root file paths to avoid parsing and indexing unexpected files
+        // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
+        // exclude some specific root file paths to avoid parsing and indexing unexpected files
         return rootFilePath.isEmpty() || rootFilePath == "/"
     }
 
@@ -131,12 +131,12 @@ object PlsCoreManager {
         return files
     }
 
-    //endregion
+    // endregion
 
-    //region VFS Refresh Methods
+    // region VFS Refresh Methods
 
     @Volatile
-    private var reparseLock = false //防止抖动（否则可能出现SOF）
+    private var reparseLock = false // 防止抖动（否则可能出现SOF）
 
     fun reparseFiles(files: Collection<VirtualFile>) {
         if (reparseLock) return
@@ -163,9 +163,9 @@ object PlsCoreManager {
             ParadoxModificationTrackers.refreshPsi()
             FileContentUtilCore.reparseFiles(files)
 
-            //restart DaemonCodeAnalyzer
+            // restart DaemonCodeAnalyzer
             psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
-            //refresh inlay hints
+            // refresh inlay hints
             editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
         }
     }
@@ -188,18 +188,18 @@ object PlsCoreManager {
         }
 
         if (restartDaemon) {
-            //restart DaemonCodeAnalyzer
+            // restart DaemonCodeAnalyzer
             psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
         }
         if (refreshInlayHints) {
-            //refresh inlay hints
+            // refresh inlay hints
             editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
         }
     }
 
-    //目前并未用到 - 当图片发生更改时，不自动刷新所有可能用来渲染图片的内嵌提示
-    //@Suppress("UnstableApiUsage")
-    //suspend fun refreshInlayHintsImagesChangedIfNecessary() {
+    // 目前并未用到 - 当图片发生更改时，不自动刷新所有可能用来渲染图片的内嵌提示
+    // @Suppress("UnstableApiUsage")
+    // suspend fun refreshInlayHintsImagesChangedIfNecessary() {
     //    val settings = InlayHintsSettings.instance()
     //    val enabledScriptProviders = InlayHintsProviderExtension.allForLanguage(ParadoxScriptLanguage)
     //        .filter { it is ParadoxScriptHintsProvider<*> && it.renderIcon }
@@ -225,7 +225,7 @@ object PlsCoreManager {
     //    withContext(Dispatchers.UI) {
     //        editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
     //    }
-    //}
+    // }
 
-    //endregion
+    // endregion
 }

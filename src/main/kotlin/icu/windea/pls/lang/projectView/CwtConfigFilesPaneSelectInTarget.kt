@@ -25,7 +25,7 @@ class CwtConfigFilesPaneSelectInTarget(private val project: Project) : ProjectVi
 
     override fun getMinorViewId() = CwtConfigFilesViewPane.ID
 
-    override fun getWeight() = 200.0f //lower than ParadoxFilesPaneSelectInTarget
+    override fun getWeight() = 200.0f // lower than ParadoxFilesPaneSelectInTarget
 
     override fun toString() = PlsBundle.message("select.in.cwt.config.files")
 }

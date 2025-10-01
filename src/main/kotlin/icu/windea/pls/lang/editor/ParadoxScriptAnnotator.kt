@@ -51,13 +51,13 @@ class ParadoxScriptAnnotator : Annotator {
         }
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
-            //如果存在，高亮定义名对应的字符串（可能还有其他高亮）
-            val propertyElement = element.findProperty(nameField) //不处理内联的情况
+            // 如果存在，高亮定义名对应的字符串（可能还有其他高亮）
+            val propertyElement = element.findProperty(nameField) // 不处理内联的情况
             val nameElement = propertyElement?.propertyValue<ParadoxScriptString>()
             if (nameElement != null) {
                 val nameString = definitionInfo.name.escapeXml().or.anonymous()
                 val typesString = definitionInfo.typesText
-                //这里不能使用PSI链接
+                // 这里不能使用PSI链接
                 val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY).create()
             }
@@ -65,10 +65,10 @@ class ParadoxScriptAnnotator : Annotator {
     }
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
-        //#131
+        // #131
         if (!element.isResolvableExpression()) return
 
-        //高亮特殊标签
+        // 高亮特殊标签
         run {
             if (element !is ParadoxScriptString) return@run
             val tagType = element.tagType()
@@ -77,7 +77,7 @@ class ParadoxScriptAnnotator : Annotator {
             return
         }
 
-        //高亮复杂枚举值声明
+        // 高亮复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             if (element.complexEnumValueInfo == null) return@run
@@ -88,22 +88,22 @@ class ParadoxScriptAnnotator : Annotator {
         val isKey = element is ParadoxScriptPropertyKey
         val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
-            //如果不是字符串，除非是定义引用，否则不作高亮
+            // 如果不是字符串，除非是定义引用，否则不作高亮
             if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
 
-            //高亮脚本表达式
+            // 高亮脚本表达式
             annotateExpression(element, holder, config)
             return
         }
     }
 
     private fun annotateTag(element: ParadoxScriptString, holder: AnnotationHolder) {
-        //目前不在这里显示标签类型，而是在快速文档中
+        // 目前不在这里显示标签类型，而是在快速文档中
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG_KEY).create()
     }
 
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
-        //高亮复杂枚举值声明对应的表达式
+        // 高亮复杂枚举值声明对应的表达式
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
             .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY)
             .create()

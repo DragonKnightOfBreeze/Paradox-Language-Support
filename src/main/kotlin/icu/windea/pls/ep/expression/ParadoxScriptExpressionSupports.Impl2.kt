@@ -24,7 +24,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if (element !is ParadoxScriptStringExpressionElement) return //only for string expressions in script files
+        if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -32,7 +32,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null //only for string expressions in script files
+        if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
     }
 
@@ -49,7 +49,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-        if (element !is ParadoxScriptStringExpressionElement) return //only for string expressions in script files
+        if (element !is ParadoxScriptStringExpressionElement) return // only for string expressions in script files
         val attributesKey = ParadoxScriptAttributesKeys.ARGUMENT_KEY
         val textRange = element.textRange
         val range = rangeInElement?.shiftRight(textRange.startOffset) ?: textRange.unquote(element.text)
@@ -57,11 +57,11 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null //only for string expressions in script files
+        if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
         return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        //NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
+        // NOTE 不兼容本地化参数（CwtDataTypes.LocalisationParameter），因为那个引用实际上也可能对应一个缺失的本地化的名字
     }
 }

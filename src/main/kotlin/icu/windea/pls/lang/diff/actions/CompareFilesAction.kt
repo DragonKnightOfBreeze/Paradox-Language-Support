@@ -61,20 +61,20 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         if (file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
-        //val gameType = fileInfo.rootInfo.gameType
-        //val path = fileInfo.path.path
+        if (fileInfo.path.length <= 1) return null // 忽略直接位于游戏或模组入口目录下的文件
+        // val gameType = fileInfo.rootInfo.gameType
+        // val path = fileInfo.path.path
         return file
     }
 
     override fun update(e: AnActionEvent) {
-        //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
+        // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
         if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
 
-        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
+        // 出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
         val file = findFile(e)
@@ -94,7 +94,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             }
         }
         if (virtualFiles.size <= 1) {
-            //unexpected, should not be empty here
+            // unexpected, should not be empty here
             PlsCoreManager.createNotification(
                 NotificationType.INFORMATION,
                 PlsBundle.message("diff.compare.files.content.title.info.1")
@@ -146,7 +146,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
                 index++
                 val icon = otherFile.fileType.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-                //窗口定位到当前光标位置
+                // 窗口定位到当前光标位置
                 if (!binary && editor != null) {
                     val currentLine = editor.caretModel.logicalPosition.line
                     request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
@@ -168,7 +168,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, file: VirtualFile): DocumentContent {
-        //创建临时文件作为只读副本
+        // 创建临时文件作为只读副本
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), file, project) }
         val document = runReadAction { FileDocumentManager.getInstance().getDocument(tempFile) }!!
         return FileDocumentReadonlyContent(project, document, tempFile, file)
@@ -243,7 +243,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
             override fun getTextFor(value: DiffRequestProducer) = value.name
 
-            //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
+            // com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             @Suppress("UseJBColor")
             override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
 

@@ -11,7 +11,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
 
-//org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
+// org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
 class CwtDocumentationTarget(
     val element: PsiElement,

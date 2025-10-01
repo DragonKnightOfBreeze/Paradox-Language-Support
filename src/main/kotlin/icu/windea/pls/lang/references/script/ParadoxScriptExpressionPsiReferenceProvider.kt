@@ -18,7 +18,7 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
         ProgressManager.checkCanceled()
 
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-        if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY //#131
+        if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY // #131
 
         // 跳过 element 是定义的 typeKey 的情况
         if(element is ParadoxScriptPropertyKey && element.isDefinitionTypeKey()) return PsiReference.EMPTY_ARRAY
@@ -27,7 +27,7 @@ class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
             val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
-            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) //unquoted text
+            val textRange = ParadoxExpressionManager.getExpressionTextRange(element) // unquoted text
             val reference = ParadoxComplexEnumValuePsiReference(element, textRange, complexEnumValueInfo, element.project)
             return arrayOf(reference)
         }

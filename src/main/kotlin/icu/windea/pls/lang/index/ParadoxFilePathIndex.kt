@@ -35,7 +35,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
 
     override fun getIndexer(): DataIndexer<String, Info, FileContent> {
         return DataIndexer { inputData ->
-            //这里索引的路径，使用相对于入口目录的路径
+            // 这里索引的路径，使用相对于入口目录的路径
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
             val path = fileInfo.path.path
             val directoryPath = fileInfo.path.parent
@@ -84,9 +84,9 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         val parent = file.parent
         if (parent != null && parent.fileInfo != null && !isIncluded(parent)) return false
         val fileName = file.name
-        if (fileName.startsWith('.')) return false //排除隐藏目录或文件
+        if (fileName.startsWith('.')) return false // 排除隐藏目录或文件
         if (file.isDirectory) {
-            if (fileName in ParadoxIndexManager.excludeDirectoriesForFilePathIndex) return false //排除一些特定的目录
+            if (fileName in ParadoxIndexManager.excludeDirectoriesForFilePathIndex) return false // 排除一些特定的目录
             return true
         }
         val fileExtension = fileName.substringAfterLast('.')

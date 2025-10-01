@@ -63,11 +63,11 @@ enum class ParadoxResolveConstraint {
             return when (element) {
                 is ParadoxScriptExpressionElement -> element.isResolvableExpression() && element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
-                is ParadoxLocalisationIcon -> true //<sprite>, etc.
-                is ParadoxLocalisationConceptCommand -> true //<game_concept>
-                is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
-                is ParadoxLocalisationTextFormat -> true //<text_format>
-                is ParadoxLocalisationTextIcon -> true //<text_icon>
+                is ParadoxLocalisationIcon -> true // <sprite>, etc.
+                is ParadoxLocalisationConceptCommand -> true // <game_concept>
+                is ParadoxLocalisationTextColorAwareElement -> true // <text_color>
+                is ParadoxLocalisationTextFormat -> true // <text_format>
+                is ParadoxLocalisationTextIcon -> true // <text_icon>
                 is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
@@ -95,12 +95,12 @@ enum class ParadoxResolveConstraint {
                 is ParadoxDatabaseObjectDataSourceNode.Reference -> {
                     reference.node.config?.type != null
                 }
-                is ParadoxScriptValueNode.Reference -> true //<script_value>
-                is ParadoxLocalisationIconPsiReference -> true //<sprite>, etc.
-                is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
-                is ParadoxLocalisationTextColorPsiReference -> true //<text_color>
-                is ParadoxLocalisationTextFormatPsiReference -> true //<text_format>
-                is ParadoxLocalisationTextIconPsiReference -> true //<text_icon>
+                is ParadoxScriptValueNode.Reference -> true // <script_value>
+                is ParadoxLocalisationIconPsiReference -> true // <sprite>, etc.
+                is ParadoxLocalisationConceptPsiReference -> true // <game_concept>
+                is ParadoxLocalisationTextColorPsiReference -> true // <text_color>
+                is ParadoxLocalisationTextFormatPsiReference -> true // <text_format>
+                is ParadoxLocalisationTextIconPsiReference -> true // <text_icon>
                 is ParadoxCsvExpressionPsiReference -> {
                     val configExpression = reference.columnConfig.valueConfig?.configExpression ?: return false
                     val dataType = configExpression.type
@@ -116,7 +116,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression(strict = true)
                 is ParadoxLocalisationParameter -> true
-                //is ParadoxCsvColumn -> !element.isHeaderColumn()
+                // is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }

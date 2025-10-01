@@ -30,7 +30,7 @@ class ParadoxModDependencySettingsDialog(
     override fun createCenterPanel(): DialogPanel {
         return panel {
             row {
-                //name
+                // name
                 label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
@@ -39,13 +39,13 @@ class ParadoxModDependencySettingsDialog(
                     .enabled(false)
             }
             row {
-                //version
+                // version
                 label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
-                //supportedVersion
+                // supportedVersion
                 label(PlsBundle.message("mod.dependency.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
@@ -54,7 +54,7 @@ class ParadoxModDependencySettingsDialog(
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
-                //gameType
+                // gameType
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
@@ -62,7 +62,7 @@ class ParadoxModDependencySettingsDialog(
                     .enabled(false)
             }
             row {
-                //modDirectory
+                // modDirectory
                 label(PlsBundle.message("mod.dependency.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("mod.dependency.settings.modDirectory.title"))

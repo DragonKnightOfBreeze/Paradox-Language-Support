@@ -38,7 +38,7 @@ import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import java.util.*
 
-//com.intellij.testIntegration.GotoTestOrCodeHandler
+// com.intellij.testIntegration.GotoTestOrCodeHandler
 
 class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {

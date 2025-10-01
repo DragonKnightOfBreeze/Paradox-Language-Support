@@ -12,7 +12,7 @@ import icu.windea.pls.core.writeIntFast
 import java.io.DataInput
 import java.io.DataOutput
 
-//org.intellij.images.index.ImageInfoIndex
+// org.intellij.images.index.ImageInfoIndex
 
 @Service
 class TgaMetadataIndex {

@@ -15,8 +15,8 @@ import icu.windea.pls.lang.util.PlsVfsManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 
-//com.intellij.openapi.editor.actions.AddBomAction
-//com.intellij.openapi.editor.actions.RemoveBomAction
+// com.intellij.openapi.editor.actions.AddBomAction
+// com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
  * 不正确的的文件编码的检查。
@@ -28,23 +28,23 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
         if (selectRootFile(file) == null) return false
         return true
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         val virtualFile = file.virtualFile ?: return null
-        val fileInfo = virtualFile.fileInfo ?: return null //无法获取文件信息时跳过检查
+        val fileInfo = virtualFile.fileInfo ?: return null // 无法获取文件信息时跳过检查
         val charset = virtualFile.charset
         val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
         val isValidCharset = charset == Charsets.UTF_8
         val validBom = run {
             val gameType = selectGameType(virtualFile)
             when {
-                //name list file -> BOM, others -> NO BOM
+                // name list file -> BOM, others -> NO BOM
                 gameType == ParadoxGameType.Stellaris -> fileInfo.path.parent.startsWith("common/name_lists")
-                //all -> unspecified
+                // all -> unspecified
                 else -> null
             }
         }

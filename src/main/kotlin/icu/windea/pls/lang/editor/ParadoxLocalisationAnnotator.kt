@@ -33,7 +33,7 @@ class ParadoxLocalisationAnnotator : Annotator {
 
     private fun annotateParameter(element: ParadoxLocalisationParameter, holder: AnnotationHolder) {
         run {
-            //如果可以被解析为本地化，则高亮为本地化引用
+            // 如果可以被解析为本地化，则高亮为本地化引用
             if (element.resolveLocalisation() == null) return@run
             val idElement = element.idElement ?: return@run
             val attributesKey = ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
@@ -55,7 +55,7 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
 
     private fun annotateTextColor(element: ParadoxLocalisationTextColorAwareElement, holder: AnnotationHolder) {
-        //颜色高亮
+        // 颜色高亮
         val color = element.colorInfo?.color ?: return
         val attributesKey = ParadoxLocalisationAttributesKeys.getColorKey(color) ?: return
         val (idElement, idOffset) = ParadoxTextColorManager.getIdElementAndOffset(element) ?: return

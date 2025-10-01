@@ -20,7 +20,7 @@ import org.intellij.images.thumbnail.actionSystem.ThumbnailViewActions
 import java.awt.Color
 import javax.swing.JComponent
 
-//org.intellij.images.editor.impl.ImageEditorImpl
+// org.intellij.images.editor.impl.ImageEditorImpl
 
 class ImageEditorImpl(
     private val project: Project,

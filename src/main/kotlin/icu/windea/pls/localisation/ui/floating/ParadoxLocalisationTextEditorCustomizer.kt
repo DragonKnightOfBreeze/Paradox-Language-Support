@@ -12,10 +12,10 @@ import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import kotlinx.coroutines.coroutineScope
 
-//org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
+// org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 
-//com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
-//NOTE the EP interface is marked as @Internal (nothing to say...)
+// com.intellij.openapi.fileEditor.impl.text.TextEditorCustomizer
+// NOTE the EP interface is marked as @Internal (nothing to say...)
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {

@@ -5,7 +5,7 @@ import icu.windea.pls.inject.annotations.InjectFieldBasedCache
 import icu.windea.pls.inject.annotations.InjectTarget
 
 interface ParadoxLocalisationPsiCodeInjectors {
-    //用于优化性能
+    // 用于优化性能
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationLocale */
     @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationLocaleImpl", pluginId = "icu.windea.pls")

@@ -32,9 +32,9 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
-        //重载switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
-        //重载inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
-        //兼容使用内联或者使用封装变量的情况
+        // 重载switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
+        // 重载inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
+        // 兼容使用内联或者使用封装变量的情况
 
         if (config !is CwtPropertyConfig) return null
         if (config.key != Constants.CASE_KEY) return null
@@ -47,12 +47,12 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
             ?.findProperty(triggerConfigKey, inline = true)
             ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (resultTriggerConfig.config.valueType == CwtType.Block) continue //not simple trigger, skip
+            if (resultTriggerConfig.config.valueType == CwtType.Block) continue // not simple trigger, skip
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_KEY) ?: continue
             resultConfigs.add(inlined)
         }
@@ -69,9 +69,9 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
-        //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
-        //重载export_trigger_value_to_variable = {...}中属性parameters的值对应的CWT规则
-        //兼容使用内联或者使用封装变量的情况
+        // 重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
+        // 重载export_trigger_value_to_variable = {...}中属性parameters的值对应的CWT规则
+        // 兼容使用内联或者使用封装变量的情况
 
         if (config !is CwtPropertyConfig) return null
         if (config.key != Constants.PARAMETERS_KEY) return null
@@ -84,12 +84,12 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             ?: return null
         val triggerProperty = contextProperty.findProperty(Constants.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
-        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null //must be a predefined trigger
+        if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val resultConfigs = mutableListOf<CwtPropertyConfig>()
         for (resultTriggerConfig in resultTriggerConfigs) {
-            if (resultTriggerConfig.config.valueType != CwtType.Block) continue //not complex trigger, skip
+            if (resultTriggerConfig.config.valueType != CwtType.Block) continue // not complex trigger, skip
             val inlined = CwtConfigManipulator.inlineWithConfig(config, resultTriggerConfig.config, CwtConfigInlineMode.VALUE_TO_VALUE) ?: continue
             resultConfigs.add(inlined)
         }
@@ -97,10 +97,10 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     }
 
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
-        //for export_trigger_value_to_variable, skip all properties
+        // for export_trigger_value_to_variable, skip all properties
 
-        //for complex_trigger_modifier, skip properties whose value config type is one of the following types:
-        //int / float / value_field / int_value_field / variable_field / int_variable_field
+        // for complex_trigger_modifier, skip properties whose value config type is one of the following types:
+        // int / float / value_field / int_value_field / variable_field / int_variable_field
 
         if (!configExpression.isKey) return false
         configs.forEach { c1 ->

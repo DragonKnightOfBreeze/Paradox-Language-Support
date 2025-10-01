@@ -72,7 +72,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxScriptFile, reference: PsiReference?) {
-        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return //unexpected
+        val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return // unexpected
         if (configContext.inlineScriptHasRecursion == true) {
             val message = PlsBundle.message("refactoring.inlineScript.recursive", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

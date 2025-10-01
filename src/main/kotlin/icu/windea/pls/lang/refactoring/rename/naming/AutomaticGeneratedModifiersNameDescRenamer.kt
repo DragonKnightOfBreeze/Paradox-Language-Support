@@ -51,7 +51,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
             val modifierName = info.name
             val newModifierName = CwtTemplateExpressionManager.extract(info.config.template, newName)
             run {
-                //use first key only -> $_name
+                // use first key only -> $_name
                 val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
                 val newKey = ParadoxModifierManager.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()
@@ -61,7 +61,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
                 result.forEach { allRenames[it] = newKey }
             }
             run {
-                //use first key only -> $_desc
+                // use first key only -> $_desc
                 val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run
                 val newKey = ParadoxModifierManager.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()

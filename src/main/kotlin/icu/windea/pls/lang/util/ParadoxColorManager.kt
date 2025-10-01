@@ -67,13 +67,13 @@ object ParadoxColorManager {
             val g = colorArgs.get(1).toFloat().let { it * 255 }.toInt().coerceIn(0..255)
             val b = colorArgs.get(2).toFloat().let { it * 255 }.toInt().coerceIn(0..255)
             val a = colorArgs.getOrNull(3)?.toFloat()?.let { it * 255 }?.toInt() ?: 255 // a - < 0 or > 255 is allowed
-            return Color(r, g, b, a) //r,g,b,a - int[0..255]
+            return Color(r, g, b, a) // r,g,b,a - int[0..255]
         } else {
             val r = colorArgs.get(0).toInt().takeIf { it in 0..255 } ?: return null
             val g = colorArgs.get(1).toInt().takeIf { it in 0..255 } ?: return null
             val b = colorArgs.get(2).toInt().takeIf { it in 0..255 } ?: return null
             val a = colorArgs.getOrNull(3)?.toInt() ?: 255 // a - < 0 or > 255 is allowed
-            return Color(r, g, b, a) //r,g,b,a - int[0..255]
+            return Color(r, g, b, a) // r,g,b,a - int[0..255]
         }
     }
 
@@ -83,7 +83,7 @@ object ParadoxColorManager {
         val h = colorArgs.get(0).toFloat().coerceIn(0f..1f)
         val s = colorArgs.get(1).toFloat().coerceIn(0f..1f)
         val v = colorArgs.get(2).toFloat().coerceIn(0f..1f)
-        val (r, g, b) = Color.getHSBColor(h, s, v) //h,s,v - float[0.0..1.0]
+        val (r, g, b) = Color.getHSBColor(h, s, v) // h,s,v - float[0.0..1.0]
         return Color(r, g, b)
     }
 
@@ -93,12 +93,12 @@ object ParadoxColorManager {
         val h = colorArgs.get(0).toInt().let { it / 360.0f }.coerceIn(0f..1f)
         val s = colorArgs.get(1).toInt().let { it / 100.0f }.coerceIn(0f..1f)
         val v = colorArgs.get(2).toInt().let { it / 100.0f }.coerceIn(0f..1f)
-        val (r, g, b) = Color.getHSBColor(h, s, v) //h,s,v - float[0.0..1.0]
+        val (r, g, b) = Color.getHSBColor(h, s, v) // h,s,v - float[0.0..1.0]
         return Color(r, g, b)
     }
 
     fun getNewColorArgs(colorType: String, colorArgs: List<String>, newColor: Color): List<String>? {
-        //保留3位小数
+        // 保留3位小数
         val precision = -3
         return when (colorType) {
             "rgb" -> {

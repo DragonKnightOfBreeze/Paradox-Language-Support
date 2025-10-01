@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 用于在 *随处搜索（Search Everywhere）* 中查找封装变量。
  */
 class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx {
-    //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
+    // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
     private val indexKey = ParadoxIndexKeys.ScriptedVariableName
 

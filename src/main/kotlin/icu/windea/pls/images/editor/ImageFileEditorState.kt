@@ -5,7 +5,7 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel
 import com.intellij.openapi.fileEditor.TransferableFileEditorState
 import java.io.Serializable
 
-//org.intellij.images.editor.impl.ImageFileEditorState
+// org.intellij.images.editor.impl.ImageFileEditorState
 
 class ImageFileEditorState(
     var isBackgroundVisible: Boolean,

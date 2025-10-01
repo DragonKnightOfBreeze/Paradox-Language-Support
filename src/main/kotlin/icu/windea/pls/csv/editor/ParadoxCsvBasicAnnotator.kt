@@ -32,7 +32,7 @@ class ParadoxCsvBasicAnnotator : Annotator {
             ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER_KEY
             ParadoxType.Float -> ParadoxCsvAttributesKeys.NUMBER_KEY
             ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD_KEY
-            //ParadoxType.String -> ParadoxCsvAttributesKeys.STRING_KEY
+            // ParadoxType.String -> ParadoxCsvAttributesKeys.STRING_KEY
             else -> null
         }
         return attributesKeys

@@ -143,7 +143,7 @@ object ParadoxTechnologyManager {
          * 得到作为前提条件的科技列表。
          */
         fun getPreTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-            //NOTE 1. 目前不兼容封装变量引用
+            // NOTE 1. 目前不兼容封装变量引用
 
             val name = definition.definitionInfo?.name
             val type = ParadoxDefinitionTypes.Technology
@@ -167,7 +167,7 @@ object ParadoxTechnologyManager {
          * 得到后续的科技列表。
          */
         fun getPostTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-            //NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
+            // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
 
             val name = definition.definitionInfo?.name
             val type = ParadoxDefinitionTypes.Technology

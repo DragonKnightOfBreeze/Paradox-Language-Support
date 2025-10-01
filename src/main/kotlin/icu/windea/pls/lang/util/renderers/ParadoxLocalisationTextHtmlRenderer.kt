@@ -57,7 +57,7 @@ class ParadoxLocalisationTextHtmlRenderer(
     var color: Color? = null,
     var forDoc: Boolean = false,
 ) {
-    private val guardStack = ArrayDeque<String>() //防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
     private val colorStack = ArrayDeque<Color>()
 
     fun render(element: ParadoxLocalisationProperty): String {
@@ -113,7 +113,7 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText) {
-        //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
+        // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
@@ -126,12 +126,12 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter) {
-        //如果处理文本失败，则使用原始文本
-        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        // 如果处理文本失败，则使用原始文本
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) {
-            //直接解析为本地化（或者封装变量）以优化性能
+            // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
             when {
                 resolved is ParadoxLocalisationProperty -> {
@@ -170,13 +170,13 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand) {
-        //如果处理文本失败，则使用原始文本
-        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        // 如果处理文本失败，则使用原始文本
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) r@{
-            //直接显示命令文本，适用对应的颜色高亮
-            //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
+            // 直接显示命令文本，适用对应的颜色高亮
+            // （仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
             builder.append("<code>")
             element.forEachChild { c ->
                 if (c is ParadoxLocalisationCommandText) {
@@ -190,7 +190,7 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderIconTo(element: ParadoxLocalisationIcon) {
-        //尝试渲染图标
+        // 尝试渲染图标
         runCatchingCancelable r@{
             val resolved = element.reference?.resolve() ?: return@r
             val iconFrame = element.frame
@@ -201,15 +201,15 @@ class ParadoxLocalisationTextHtmlRenderer(
                 else -> null
             }
 
-            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            //这里需要尝试使用图标的原始高度
+            // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            //如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
-            //实际上，本地化文本可以嵌入任意大小的图片
+            // 如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
+            // 实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
             val locFontSize = PlsFacade.getInternalSettings().localisationFontSize
             val locMaxTextIconSize = PlsFacade.getInternalSettings().localisationTextIconSizeLimit
@@ -227,15 +227,15 @@ class ParadoxLocalisationTextHtmlRenderer(
             return
         }
 
-        //直接显示原始文本
-        //（仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
+        // 直接显示原始文本
+        // （仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
         builder.append("<code>")
         renderElementText(element)
         builder.append("</code>")
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand) {
-        //尝试渲染概念文本
+        // 尝试渲染概念文本
         val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
         val editorColorsManager = EditorColorsManager.getInstance()
         val schema = editorColorsManager.schemeForCurrentUITheme
@@ -273,9 +273,9 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat) {
-        //TODO 1.4.1+ 更完善的支持（适用文本格式）
+        // TODO 1.4.1+ 更完善的支持（适用文本格式）
 
-        //直接渲染其中的文本
+        // 直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return
         for (richText in richTextList) {
@@ -285,10 +285,10 @@ class ParadoxLocalisationTextHtmlRenderer(
     }
 
     private fun renderTextIconTo(element: ParadoxLocalisationTextIcon) {
-        //TODO 1.4.1+ 更完善的支持（渲染文本图标）
+        // TODO 1.4.1+ 更完善的支持（渲染文本图标）
 
-        //直接显示原始文本
-        //（仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
+        // 直接显示原始文本
+        // （仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
         builder.append("<code>")
         renderElementText(element)
         builder.append("</code>")
@@ -318,14 +318,14 @@ class ParadoxLocalisationTextHtmlRenderer(
             }
             i = reference.rangeInElement.endOffset
             val resolved = reference.resolve()
-            //不要尝试跳转到dynamicValue的声明处
+            // 不要尝试跳转到dynamicValue的声明处
             if (resolved == null || resolved is MockPsiElement) {
                 val s = reference.rangeInElement.substring(text)
                 builder.append(s.escapeXml())
             } else {
                 val link = ReferenceLinkProvider.createPsiLink(resolved)
                 if (link != null) {
-                    //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
+                    // 如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val usedColor = if (colorStack.isEmpty()) defaultColor else null
                     renderWithColorTo(usedColor) {
                         builder.append(link)

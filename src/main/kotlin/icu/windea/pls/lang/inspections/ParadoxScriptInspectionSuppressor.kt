@@ -86,7 +86,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         toolId: String,
         private val definitionInfo: ParadoxDefinitionInfo
     ) : SuppressByCommentFix(toolId, ParadoxScriptProperty::class.java) {
-        //definition here should be a property, not a file
+        // definition here should be a property, not a file
 
         override fun getText(): String {
             return PlsBundle.message("suppress.for.definition", definitionInfo.name)
@@ -108,7 +108,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     private class SuppressForExpressionFix(
         toolId: String
     ) : SuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
-        //here just call scriptMemberElement (property / value) "expression"
+        // here just call scriptMemberElement (property / value) "expression"
 
         override fun getText(): String {
             return PlsBundle.message("suppress.for.expression")

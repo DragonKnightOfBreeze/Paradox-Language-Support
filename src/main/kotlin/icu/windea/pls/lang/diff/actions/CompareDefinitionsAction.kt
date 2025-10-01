@@ -73,9 +73,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         if (file.fileType !is ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
-        //val gameType = fileInfo.rootInfo.gameType
-        //val path = fileInfo.path.path
+        if (fileInfo.path.length <= 1) return null // 忽略直接位于游戏或模组入口目录下的文件
+        // val gameType = fileInfo.rootInfo.gameType
+        // val path = fileInfo.path.path
         return file
     }
 
@@ -90,13 +90,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
+        // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
         if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
 
-        //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
+        // 出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
@@ -132,13 +132,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         runWithModalProgressBlocking(project, PlsBundle.message("diff.compare.definitions.collect.title")) {
             readAction {
                 val selector = selector(project, file).definition()
-                //pass main type only
+                // pass main type only
                 val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
                 definitions.addAll(result)
             }
         }
         if (definitions.size <= 1) {
-            //unexpected, should not be empty here
+            // unexpected, should not be empty here
             PlsCoreManager.createNotification(
                 NotificationType.INFORMATION,
                 PlsBundle.message("diff.compare.definitions.content.title.info.1")
@@ -186,7 +186,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
-                //窗口定位到当前光标位置
+                // 窗口定位到当前光标位置
                 if (editor != null) {
                     val currentLine = editor.caretModel.logicalPosition.line
                     request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
@@ -205,7 +205,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
 
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
-        //创建临时文件
+        // 创建临时文件
         val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
         val text = definition.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
@@ -214,7 +214,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val elementPathPrefix = ParadoxExpressionPath.resolve(elementPath.originalSubPaths.dropLast(1))
             tempFile.putUserData(PlsKeys.injectedElementPathPrefix, elementPathPrefix)
         }
-        //return contentFactory.createDocument(project, tempFile)
+        // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
     }
 
@@ -294,7 +294,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
 
             override fun getTextFor(value: DiffRequestProducer) = value.name
 
-            //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
+            // com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             @Suppress("UseJBColor")
             override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
 

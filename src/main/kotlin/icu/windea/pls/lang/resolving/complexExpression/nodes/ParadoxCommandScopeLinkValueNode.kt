@@ -25,7 +25,7 @@ class ParadoxCommandScopeLinkValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
-            //text may contain parameters
+            // text may contain parameters
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)

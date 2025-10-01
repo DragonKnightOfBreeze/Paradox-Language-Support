@@ -57,7 +57,7 @@ class ParadoxModSettingsDialog(
         callbackLock.reset()
         return panel {
             row {
-                //name
+                // name
                 label(PlsBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
@@ -66,13 +66,13 @@ class ParadoxModSettingsDialog(
                     .enabled(false)
             }
             row {
-                //version
+                // version
                 label(PlsBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
-                //supportedVersion
+                // supportedVersion
                 label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
@@ -81,14 +81,14 @@ class ParadoxModSettingsDialog(
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
             row {
-                //gameType
+                // gameType
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
                     .bindItem(gameTypeProperty)
                     .columns(COLUMNS_SHORT)
-                    .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
-                    .enabled(settings.inferredGameType == null) //disabled if game type can be inferred
-                //gameVersion
+                    .onApply { settings.gameType = gameTypeProperty.get() } // set game type to non-default on apply
+                    .enabled(settings.inferredGameType == null) // disabled if game type can be inferred
+                // gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
                     .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.text = it } }
@@ -97,7 +97,7 @@ class ParadoxModSettingsDialog(
                     .enabled(false)
             }
             row {
-                //gameDirectory
+                // gameDirectory
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("gameDirectory.title"))
@@ -116,7 +116,7 @@ class ParadoxModSettingsDialog(
                 }
             }
             row {
-                //modDirectory
+                // modDirectory
                 label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
                 val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
@@ -128,9 +128,9 @@ class ParadoxModSettingsDialog(
                     .enabled(false)
             }
 
-            //options
+            // options
             collapsibleGroup(PlsBundle.message("mod.options"), false) {
-                //disableTiger
+                // disableTiger
                 row {
                     checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
                         .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
@@ -138,7 +138,7 @@ class ParadoxModSettingsDialog(
                 }
             }
 
-            //modDependencies
+            // modDependencies
             collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
@@ -151,7 +151,7 @@ class ParadoxModSettingsDialog(
     }
 
     private fun handleModSettings() {
-        //如果需要，加上缺失的模组自身的模组依赖配置
+        // 如果需要，加上缺失的模组自身的模组依赖配置
         if (modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
             val newSettings = ParadoxModDependencySettingsState()
             newSettings.modDirectory = settings.modDirectory

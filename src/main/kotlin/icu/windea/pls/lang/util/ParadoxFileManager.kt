@@ -69,7 +69,7 @@ object ParadoxFileManager {
         val fileInfo = file.fileInfo ?: return false
         val otherFileInfo = otherFile.fileInfo ?: return false
         if (fileInfo != otherFileInfo) return false
-        if (file.fileType != otherFile.fileType) return false //这里的判断会更慢，因此在最后判断
+        if (file.fileType != otherFile.fileType) return false // 这里的判断会更慢，因此在最后判断
         return true
     }
 
@@ -127,7 +127,7 @@ object ParadoxFileManager {
      * 基于指定的虚拟文件创建一个内存中的临时文件。
      */
     fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
-        //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
+        // 为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
         val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)

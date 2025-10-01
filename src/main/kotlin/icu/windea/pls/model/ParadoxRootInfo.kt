@@ -37,7 +37,7 @@ sealed class ParadoxRootInfo {
     class Mod(override val metadata: ParadoxMetadata.Mod) : MetadataBased(metadata) {
         val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
         val supportedVersion: String? get() = metadata.supportedVersion
-        val picture: String? get() = metadata.picture //相对于模组目录的路径
+        val picture: String? get() = metadata.picture // 相对于模组目录的路径
         val tags: Set<String> get() = metadata.tags
         val remoteId: String? get() = metadata.remoteId
         val source: ParadoxModSource get() = metadata.source

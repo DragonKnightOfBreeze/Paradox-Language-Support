@@ -42,7 +42,7 @@ object ParadoxLocalisationGenerator {
         val memberArray = members.toTypedArray()
         val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
         chooser.title = getChooserName(context)
-        //by default, select all checked missing localisations
+        // by default, select all checked missing localisations
         val missingMemberArray = memberArray.filter { it.info.check && it.info.missing }.toTypedArray()
         chooser.selectElements(missingMemberArray)
         chooser.show()
@@ -63,7 +63,7 @@ object ParadoxLocalisationGenerator {
         }
         context.infos.forEach f@{ info ->
             if (info.locale != locale) return@f
-            if (onlyMissing && !info.missing) return@f //if from inspection, only missing localisations should be included here
+            if (onlyMissing && !info.missing) return@f // if from inspection, only missing localisations should be included here
             val name = info.name ?: return@f
             members += ParadoxGenerateLocalisationsChooser.Item(name, info, context)
         }
@@ -90,12 +90,12 @@ object ParadoxLocalisationGenerator {
             var generatedFile: VirtualFile? = null
 
             override fun run(indicator: ProgressIndicator) {
-                generatedFile = generateFile(context, members, project, file, locale) //生成本地化文件
+                generatedFile = generateFile(context, members, project, file, locale) // 生成本地化文件
             }
 
             override fun onSuccess() {
                 val fileToOpen = generatedFile ?: return
-                OpenFileAction.openFile(fileToOpen, project) //在编辑器中打开临时文件
+                OpenFileAction.openFile(fileToOpen, project) // 在编辑器中打开临时文件
             }
         }
         ProgressManager.getInstance().run(task)
@@ -132,7 +132,7 @@ object ParadoxLocalisationGenerator {
             val indentSize = CodeStyle.getSettings(project).getIndentOptions(ParadoxLocalisationFileType).INDENT_SIZE
             val indent = " ".repeat(indentSize)
             for (localisation in members) {
-                //exclude duplicate localisation names
+                // exclude duplicate localisation names
                 if (namesToDistinct.add(localisation.name)) {
                     appendLocalisationLine(indent, localisation.name, project, file)
                 }
@@ -174,7 +174,7 @@ object ParadoxLocalisationGenerator {
             LocalisationGenerationStrategy.EmptyText -> ""
             LocalisationGenerationStrategy.SpecificText -> generationSettings.localisationStrategyText.orEmpty()
             LocalisationGenerationStrategy.FromLocale -> {
-                //使用对应语言环境的文本，如果不存在，以及其他任何意外，直接使用空字符串
+                // 使用对应语言环境的文本，如果不存在，以及其他任何意外，直接使用空字符串
                 val locale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
                 val selector = selector(project, file).localisation().contextSensitive().locale(locale)
                 val localisation = ParadoxLocalisationSearch.search(localisationName, selector).find()
@@ -187,7 +187,7 @@ object ParadoxLocalisationGenerator {
 
     private fun createLocalisationTempFile(fileName: String, text: String): VirtualFile {
         val lightFile = ParadoxFileManager.createLightFile(fileName, text, ParadoxLocalisationLanguage)
-        lightFile.bom = PlsConstants.utf8Bom //这里需要直接这样添加bom
+        lightFile.bom = PlsConstants.utf8Bom // 这里需要直接这样添加bom
         return lightFile
     }
 }

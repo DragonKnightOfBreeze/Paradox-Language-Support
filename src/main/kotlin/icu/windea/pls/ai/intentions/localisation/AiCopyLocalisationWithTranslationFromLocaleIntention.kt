@@ -83,7 +83,7 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 
-                    //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                    // 不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                     if (request.index != contextsToHandle.size) withWarnings = true
                 }
             }

@@ -69,9 +69,9 @@ object ParadoxEventManager {
 
     fun isMatchedEventId(eventId: String, eventNamespace: String): Boolean {
         val dotIndex = eventId.indexOf('.')
-        if (dotIndex == -1) return true //忽略
+        if (dotIndex == -1) return true // 忽略
         val prefix = eventId.substring(0, dotIndex)
-        if (prefix.isEmpty()) return true //忽略
+        if (prefix.isEmpty()) return true // 忽略
         return prefix == eventNamespace
     }
 
@@ -84,7 +84,7 @@ object ParadoxEventManager {
     }
 
     fun getNamespace(element: ParadoxScriptDefinitionElement): String {
-        return getName(element).substringBefore(".") //enough
+        return getName(element).substringBefore(".") // enough
     }
 
     /**
@@ -97,7 +97,7 @@ object ParadoxEventManager {
                 if (current.propertyValue is ParadoxScriptString) {
                     return current
                 } else {
-                    return null //invalid
+                    return null // invalid
                 }
             }
             current = current.prevSibling ?: return null
@@ -183,7 +183,7 @@ object ParadoxEventManager {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
 
@@ -191,7 +191,7 @@ object ParadoxEventManager {
                 ProgressManager.checkCanceled()
                 val value = element.value
                 if (result.contains(value)) return
-                if (!isValidEventId(value)) return //排除非法的事件ID
+                if (!isValidEventId(value)) return // 排除非法的事件ID
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
                 if (isEventConfig) {
@@ -211,8 +211,8 @@ object ParadoxEventManager {
      * 得到作为调用者的事件列表。
      */
     fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-        //NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
-        //NOTE 为了优化性能，这里可能需要新增并应用索引
+        // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
+        // NOTE 为了优化性能，这里可能需要新增并应用索引
 
         val name = definition.definitionInfo?.name
         if (name.isNullOrEmpty()) return emptyList()
@@ -240,8 +240,8 @@ object ParadoxEventManager {
      * 得到调用的事件列表。
      */
     fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-        //NOTE 1. 目前不兼容封装变量引用
-        //NOTE 为了优化性能，这里可能需要新增并应用索引
+        // NOTE 1. 目前不兼容封装变量引用
+        // NOTE 为了优化性能，这里可能需要新增并应用索引
 
         val name = definition.definitionInfo?.name
         if (name.isNullOrEmpty()) return emptyList()

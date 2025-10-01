@@ -18,7 +18,7 @@ import icu.windea.pls.inject.processors.InjectedFileProcessor
  */
 @InjectTarget("com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl")
 class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
-    //用于在创建或者重新解析注入的PSI文件时，进行额外的处理
+    // 用于在创建或者重新解析注入的PSI文件时，进行额外的处理
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun cacheEverything(place: Place, documentWindow: Any, viewProvider: Any, psiFile: PsiFile, returnValue: Boolean): Boolean {

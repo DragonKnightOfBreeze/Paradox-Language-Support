@@ -29,7 +29,7 @@ import icu.windea.pls.script.psi.stringValue
  */
 class MismatchedEventIdInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        //仅检查事件脚本文件
+        // 仅检查事件脚本文件
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
@@ -44,7 +44,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
             ProgressManager.checkCanceled()
             val definitionInfo = property.definitionInfo ?: continue
             if (definitionInfo.type == "event_namespace") {
-                //如果值不是一个字符串，作为空字符串存到缓存中
+                // 如果值不是一个字符串，作为空字符串存到缓存中
                 val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
                 namespace2Events.getOrPut(namespace) { mutableListOf() }

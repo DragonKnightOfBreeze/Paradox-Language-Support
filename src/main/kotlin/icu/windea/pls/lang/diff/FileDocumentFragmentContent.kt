@@ -25,8 +25,8 @@ import icu.windea.pls.lang.diff.actions.DocumentsSynchronizer
 import java.nio.charset.Charset
 import java.util.function.IntUnaryOperator
 
-//com.intellij.diff.contents.FileDocumentContentImpl
-//com.intellij.diff.actions.DocumentFragmentContent
+// com.intellij.diff.contents.FileDocumentContentImpl
+// com.intellij.diff.actions.DocumentFragmentContent
 
 class FileDocumentFragmentContent(
     project: Project?,
@@ -47,8 +47,8 @@ class FileDocumentFragmentContent(
         rangeMarker = createRangeMarker(original.document, range)
         val document1: Document = original.document
 
-        //val document2 = EditorFactory.getInstance().createDocument("")
-        //document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)
+        // val document2 = EditorFactory.getInstance().createDocument("")
+        // document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)
 
         val document2 = document
         document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)

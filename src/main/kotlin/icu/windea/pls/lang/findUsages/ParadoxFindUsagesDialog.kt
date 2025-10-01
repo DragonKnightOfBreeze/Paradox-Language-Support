@@ -9,7 +9,7 @@ import icu.windea.pls.PlsBundle
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 
-//com.intellij.find.findUsages.FindClassUsagesDialog
+// com.intellij.find.findUsages.FindClassUsagesDialog
 
 open class ParadoxFindUsagesDialog(
     element: PsiElement,

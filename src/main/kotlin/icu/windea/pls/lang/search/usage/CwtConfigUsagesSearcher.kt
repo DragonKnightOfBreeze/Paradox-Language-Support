@@ -21,9 +21,9 @@ import icu.windea.pls.cwt.psi.stringValue
  * 规则的使用的查询。
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
-    //* CWT规则的属性名为"alias[x:y]"时，其在脚本文件中匹配的属性名会是"y"，需要特殊处理。
-    //* CWT规则的属性名为"inline[x]"时，其在脚本文件中匹配的属性名会是"x"，需要特殊处理。
-    //* 对于CWT连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理。
+    // * CWT规则的属性名为"alias[x:y]"时，其在脚本文件中匹配的属性名会是"y"，需要特殊处理。
+    // * CWT规则的属性名为"inline[x]"时，其在脚本文件中匹配的属性名会是"x"，需要特殊处理。
+    // * 对于CWT连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理。
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch
@@ -31,11 +31,11 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         val extraWords = getExtraWords(target)
         if (extraWords.isEmpty()) return
 
-        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        // 这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE
         for (extraWord in extraWords) {
-            queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) //忽略大小写
+            queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) // 忽略大小写
         }
     }
 

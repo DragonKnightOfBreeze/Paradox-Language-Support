@@ -35,8 +35,8 @@ class ReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisatio
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("UnstableApiUsage")
     override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context) {
-        //进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度
-        //并发性 - 文件级别+本地化级别
+        // 进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度
+        // 并发性 - 文件级别+本地化级别
 
         val (files, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{

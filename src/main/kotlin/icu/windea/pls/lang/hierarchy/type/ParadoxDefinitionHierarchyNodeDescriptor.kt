@@ -29,7 +29,7 @@ import javax.swing.Icon
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
-//com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
+// com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
 
 class ParadoxDefinitionHierarchyNodeDescriptor(
     project: Project,
@@ -61,7 +61,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
                     NodeType.TechTier -> PlsDocBundle.technologyTier(name, gameType)
                     NodeType.TechArea -> PlsDocBundle.technologyArea(name, gameType, project, file)
                     NodeType.TechCategory -> PlsDocBundle.technologyCategory(name, gameType, project, file)
-                    else -> return@run //unexpected
+                    else -> return@run // unexpected
                 }
                 if (localizedName.isEmpty()) return@run
                 myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
@@ -134,7 +134,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         }
         run {
             if (nodeType == NodeType.Type || nodeType == NodeType.Subtype) {
-                //always show location info here
+                // always show location info here
                 val filePath = CwtConfigManager.getFilePath(file) ?: return@run
                 myHighlightedText.ending.addText(" in $filePath", getLocationAttributes())
                 return@run

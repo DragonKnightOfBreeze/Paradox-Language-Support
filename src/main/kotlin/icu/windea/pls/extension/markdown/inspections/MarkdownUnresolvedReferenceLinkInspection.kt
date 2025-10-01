@@ -9,7 +9,7 @@ import icu.windea.pls.lang.references.paths.ParadoxPathReference
 import org.intellij.plugins.markdown.lang.psi.MarkdownElementVisitor
 import org.intellij.plugins.markdown.lang.psi.impl.MarkdownLinkDestination
 
-//org.intellij.plugins.markdown.lang.references.paths.MarkdownUnresolvedFileReferenceInspection
+// org.intellij.plugins.markdown.lang.references.paths.MarkdownUnresolvedFileReferenceInspection
 
 class MarkdownUnresolvedReferenceLinkInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

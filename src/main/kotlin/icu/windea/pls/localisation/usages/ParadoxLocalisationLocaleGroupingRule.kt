@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 class ParadoxLocalisationLocaleGroupingRule(
     private val usageViewSettings: UsageViewSettings
 ) : SingleParentUsageGroupingRule() {
-    //com.intellij.usages.impl.rules.MethodGroupingRule
+    // com.intellij.usages.impl.rules.MethodGroupingRule
 
     @Suppress("UNUSED_PARAMETER")
     private fun getLocalisationLocale(usage: Usage, targets: Array<out UsageTarget>): ParadoxLocalisationLocale? {

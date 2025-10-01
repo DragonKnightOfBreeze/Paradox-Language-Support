@@ -17,7 +17,7 @@ private class ParadoxDefinitionSubtypeExpressionImpl(
     override val subtypes: List<ReversibleValue<String>> = text.split('&').map { ReversibleValue(it) }
 
     override fun matches(subtypes: Collection<String>): Boolean {
-        //目前仅支持"!"和"&"的组合
+        // 目前仅支持"!"和"&"的组合
         return this.subtypes.all { t -> t.withOperator { subtypes.contains(it) } }
     }
 

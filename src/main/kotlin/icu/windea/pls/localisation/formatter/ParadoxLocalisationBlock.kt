@@ -39,7 +39,7 @@ class ParadoxLocalisationBlock(
         }
 
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
-            //属性数字和属性值之间有一个空格，冒号和属性值之间也有
+            // 属性数字和属性值之间有一个空格，冒号和属性值之间也有
             return SpacingBuilder(settings, ParadoxLocalisationLanguage)
                 .between(COLON, PROPERTY_VALUE).spaces(1)
                 .between(PROPERTY_NUMBER, PROPERTY_VALUE).spaces(1)
@@ -59,9 +59,9 @@ class ParadoxLocalisationBlock(
     }
 
     override fun getIndent(): Indent? {
-        //配置缩进
-        //property_list中的property和comment需要缩进
-        //属性和非头部非行尾注释要缩进
+        // 配置缩进
+        // property_list中的property和comment需要缩进
+        // 属性和非头部非行尾注释要缩进
         val elementType = myNode.elementType
         val parentElementType = myNode.treeParent?.elementType
         return when {
@@ -71,9 +71,9 @@ class ParadoxLocalisationBlock(
     }
 
     override fun getChildIndent(): Indent? {
-        //配置换行时的自动缩进
-        //在file中不要缩进
-        //在property_list中需要缩进
+        // 配置换行时的自动缩进
+        // 在file中不要缩进
+        // 在property_list中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()

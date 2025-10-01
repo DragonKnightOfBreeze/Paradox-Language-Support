@@ -10,12 +10,12 @@ import icu.windea.pls.config.configGroup.enums
 class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         return when (configExpression.type) {
-            CwtDataTypes.Block -> 100.0 //highest
-            CwtDataTypes.Bool -> 100.0 //highest
-            CwtDataTypes.Int -> 90.0 //very high
-            CwtDataTypes.Float -> 90.0 //very high
-            CwtDataTypes.Scalar -> 2.0 //very low
-            CwtDataTypes.ColorField -> 90.0 //very high
+            CwtDataTypes.Block -> 100.0 // highest
+            CwtDataTypes.Bool -> 100.0 // highest
+            CwtDataTypes.Int -> 90.0 // very high
+            CwtDataTypes.Float -> 90.0 // very high
+            CwtDataTypes.Scalar -> 2.0 // very low
+            CwtDataTypes.ColorField -> 90.0 // very high
             else -> 0.0
         }
     }
@@ -24,14 +24,14 @@ class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
 class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         return when (configExpression.type) {
-            CwtDataTypes.Constant -> 100.0 //highest
-            CwtDataTypes.Any -> 1.0 //very low
+            CwtDataTypes.Constant -> 100.0 // highest
+            CwtDataTypes.Any -> 1.0 // very low
             CwtDataTypes.Parameter -> 10.0
-            CwtDataTypes.ParameterValue -> 90.0 //same to Scalar
+            CwtDataTypes.ParameterValue -> 90.0 // same to Scalar
             CwtDataTypes.LocalisationParameter -> 10.0
             CwtDataTypes.ShaderEffect -> 85.0
             CwtDataTypes.StellarisNameFormat -> 60.0
-            CwtDataTypes.TechnologyWithLevel -> 69.0 //lower than Definition
+            CwtDataTypes.TechnologyWithLevel -> 69.0 // lower than Definition
             CwtDataTypes.PercentageField -> 90.0
             CwtDataTypes.DateField -> 90.0
             CwtDataTypes.Localisation -> 60.0
@@ -43,10 +43,10 @@ class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
             CwtDataTypes.FileName -> 70.0
             CwtDataTypes.Definition -> 70.0
             CwtDataTypes.EnumValue -> {
-                val enumName = configExpression.value ?: return 0.0 //unexpected
+                val enumName = configExpression.value ?: return 0.0 // unexpected
                 if (configGroup.enums.containsKey(enumName)) return 80.0
                 if (configGroup.complexEnums.containsKey(enumName)) return 45.0
-                return 0.0 //unexpected
+                return 0.0 // unexpected
             }
             CwtDataTypes.Value -> 40.0
             CwtDataTypes.ValueSet -> 40.0
@@ -58,11 +58,11 @@ class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
             CwtDataTypes.IntValueField -> 45.0
             CwtDataTypes.VariableField -> 45.0
             CwtDataTypes.IntVariableField -> 45.0
-            CwtDataTypes.Modifier -> 75.0 //higher than Definition
-            CwtDataTypes.SingleAliasRight -> 0.0 //unexpected
-            CwtDataTypes.AliasName -> 0.0 //unexpected
-            CwtDataTypes.AliasKeysField -> 0.0 //unexpected
-            CwtDataTypes.AliasMatchLeft -> 0.0 //unexpected
+            CwtDataTypes.Modifier -> 75.0 // higher than Definition
+            CwtDataTypes.SingleAliasRight -> 0.0 // unexpected
+            CwtDataTypes.AliasName -> 0.0 // unexpected
+            CwtDataTypes.AliasKeysField -> 0.0 // unexpected
+            CwtDataTypes.AliasMatchLeft -> 0.0 // unexpected
             CwtDataTypes.TemplateExpression -> 65.0
             else -> 0.0
         }

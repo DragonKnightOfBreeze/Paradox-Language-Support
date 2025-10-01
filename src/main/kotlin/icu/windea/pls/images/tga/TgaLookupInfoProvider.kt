@@ -9,7 +9,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.file.FileLookupInfoProvider
 
-//org.intellij.images.completion.ImageLookupInfoProvider
+// org.intellij.images.completion.ImageLookupInfoProvider
 
 class TgaLookupInfoProvider : FileLookupInfoProvider() {
     private val fileTypes by lazy { arrayOf(TgaFileType) }

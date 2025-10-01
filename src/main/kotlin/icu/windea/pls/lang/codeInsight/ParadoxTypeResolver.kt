@@ -28,10 +28,10 @@ object ParadoxTypeResolver {
     }
 
     fun isInt(value: String): Boolean {
-        //return expression.toIntOrNull() != null
+        // return expression.toIntOrNull() != null
 
-        //use handwrite implementation to optimize memory and restrict validation
-        //can be: 0, 1, 01, -1
+        // use handwrite implementation to optimize memory and restrict validation
+        // can be: 0, 1, 01, -1
         var isFirst = true
         var containsDigit = false
         value.forEach f@{ c ->
@@ -51,10 +51,10 @@ object ParadoxTypeResolver {
     }
 
     fun isFloat(value: String): Boolean {
-        //return expression.toFloatOrNull() != null
+        // return expression.toFloatOrNull() != null
 
-        //use handwrite implementation to optimize memory and restrict validation
-        //can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
+        // use handwrite implementation to optimize memory and restrict validation
+        // can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
         var isFirst = true
         var containsDot = false
         var containsDigit = false

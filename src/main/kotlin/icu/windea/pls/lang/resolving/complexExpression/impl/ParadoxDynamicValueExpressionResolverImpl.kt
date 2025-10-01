@@ -41,11 +41,11 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
             tokenIndex = expressionString.indexOf('@', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex == -1) {
                 tokenIndex = textLength
             }
-            //resolve dynamicValueNode
+            // resolve dynamicValueNode
             run {
                 val nodeText = expressionString.substring(0, tokenIndex)
                 val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
@@ -54,13 +54,13 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
             }
             if (tokenIndex != textLength) {
                 run {
-                    //resolve at token
+                    // resolve at token
                     val nodeTextRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     val node = ParadoxMarkerNode("@", nodeTextRange, configGroup)
                     nodes += node
                 }
                 run {
-                    //resolve scope expression
+                    // resolve scope expression
                     val nodeText = expressionString.substring(tokenIndex + 1)
                     val nodeTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
                     val node = ParadoxScopeFieldExpression.resolve(nodeText, nodeTextRange, configGroup)
@@ -93,7 +93,7 @@ private class ParadoxDynamicValueExpression(
         val errors = mutableListOf<ParadoxComplexExpressionError>()
         val result = validateAllNodes(errors) {
             when {
-                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') //兼容点号
+                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') // 兼容点号
                 else -> true
             }
         }

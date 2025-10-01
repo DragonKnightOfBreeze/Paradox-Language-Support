@@ -170,7 +170,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
     abstract class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile
+        file: VirtualFile?, // umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         val definitionType = ParadoxDefinitionTypes.Event
@@ -178,7 +178,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         private val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
 
         override fun updateDataModel() {
-            //群星原版事件有5000+
+            // 群星原版事件有5000+
 
             val title = PlsDiagramBundle.message("eventTree.update.title")
             runWithModalProgressBlocking(project, title) action@{
@@ -247,7 +247,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         private fun createEdges(event: ParadoxScriptDefinitionElement) {
             ProgressManager.checkCanceled()
-            //事件 --> 调用的事件
+            // 事件 --> 调用的事件
             val invocations = ParadoxEventManager.getInvocations(event)
             invocations.forEach { invocation ->
                 ProgressManager.checkCanceled()

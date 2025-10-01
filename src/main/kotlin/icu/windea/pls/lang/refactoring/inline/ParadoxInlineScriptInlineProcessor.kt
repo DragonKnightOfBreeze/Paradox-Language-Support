@@ -37,7 +37,7 @@ class ParadoxInlineScriptInlineProcessor(
     private val inlineThisOnly: Boolean,
     private val keepTheDeclaration: Boolean,
 ) : BaseRefactoringProcessor(project, scope, null) {
-    //do not use DescriptiveNameUtil.getDescriptiveName(element) here
+    // do not use DescriptiveNameUtil.getDescriptiveName(element) here
     private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).or.anonymous()
 
     override fun getCommandName() = PlsBundle.message("inline.inlineScript.command", descriptiveName)
@@ -119,7 +119,7 @@ class ParadoxInlineScriptInlineProcessor(
         }
 
         if (!inlineThisOnly && !keepTheDeclaration) {
-            //删除对应的内联脚本文件
+            // 删除对应的内联脚本文件
             try {
                 element.delete()
             } catch (e: IncorrectOperationException) {

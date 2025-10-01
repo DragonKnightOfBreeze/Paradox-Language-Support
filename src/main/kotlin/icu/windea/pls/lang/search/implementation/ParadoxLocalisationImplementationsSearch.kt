@@ -23,7 +23,7 @@ import icu.windea.pls.model.ParadoxLocalisationType
  */
 class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters> {
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
-        //得到解析后的PSI元素
+        // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if (sourceElement !is ParadoxLocalisationProperty) return true
         val localisationInfo = runReadAction { sourceElement.localisationInfo }
@@ -33,10 +33,10 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         val project = queryParameters.project
         ReadAction.nonBlocking<Unit> {
             val type = localisationInfo.type
-            //这里不需要也无法进行排序
+            // 这里不需要也无法进行排序
             val selector = selector(project, sourceElement).localisation()
-                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言环境
-                .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
+                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) // 限定语言环境
+                .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             val localisations = when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
                 ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()

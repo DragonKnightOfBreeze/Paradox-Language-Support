@@ -37,6 +37,6 @@ class GenerateLocalisationsInFileFix(
 
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 
-    //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations
+    // true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations
     override fun availableInBatchMode() = true
 }

@@ -43,7 +43,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
         doInvoke(project, editor, file, elements)
     }
 
-    //默认不显示预览，因为可能涉及异步调用
+    // 默认不显示预览，因为可能涉及异步调用
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 
     override fun startInWriteAction() = false

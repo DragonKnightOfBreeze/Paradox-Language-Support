@@ -57,7 +57,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
             private fun visitScriptedVariableReference(element: ParadoxLocalisationScriptedVariableReference) {
                 val name = element.name ?: return
-                if (name.isParameterized()) return //skip if name is parameterized
+                if (name.isParameterized()) return // skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
                 val quickFixes = listOf<LocalQuickFix>(
@@ -72,7 +72,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         return panel {
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)
@@ -92,24 +92,24 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         override fun getFamilyName() = text
 
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            //打开对话框
+            // 打开对话框
             val virtualFile = file.virtualFile ?: return
-            val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+            val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return // 不期望的结果
             val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
-            if (!dialog.showAndGet()) return //取消
+            if (!dialog.showAndGet()) return // 取消
 
-            //声明对应名字的封装变量，默认值给0并选中
+            // 声明对应名字的封装变量，默认值给0并选中
             val variableNameToUse = dialog.variableName
             val variableValue = dialog.variableValue
-            val targetFile = dialog.file.toPsiFile(project) ?: return //不期望的结果
+            val targetFile = dialog.file.toPsiFile(project) ?: return // 不期望的结果
             if (targetFile !is ParadoxScriptFile) return
             val command = Runnable {
                 ParadoxPsiManager.introduceGlobalScriptedVariable(variableNameToUse, variableValue, targetFile, project)
 
                 val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
-                if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) //提交文档更改
+                if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) // 提交文档更改
 
-                //不移动光标
+                // 不移动光标
             }
             WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("localisation.command.introduceGlobalScriptedVariable.name"), null, command, targetFile)
         }

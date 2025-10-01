@@ -35,7 +35,7 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
 
-//com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
+// com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
 
 /**
  * 将选中的图片转化为指定的图片格式，并保存到指定的路径。可以批量转化。
@@ -143,7 +143,7 @@ abstract class ConvertImageFormatAction(
             CommandProcessor.getInstance().executeCommand(targetDirectory.project, { app.runWriteActionWithCancellableProgressInDispatchThread(title, targetDirectory.project, null, action) }, title, null)
             val throwable = thrown.get()
             if (throwable is ProcessCanceledException) {
-                //process was canceled, don't proceed with existing files
+                // process was canceled, don't proceed with existing files
                 return
             }
             rethrow(throwable)

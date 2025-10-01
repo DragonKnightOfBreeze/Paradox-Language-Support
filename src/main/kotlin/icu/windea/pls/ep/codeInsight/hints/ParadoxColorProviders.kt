@@ -78,7 +78,7 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
         val newString = ParadoxScriptElementFactory.createValue(project, newText)
         if (newString !is ParadoxScriptString) return
         val command = Runnable {
-            //element.replace(newString) //do not do this, element could be reused
+            // element.replace(newString) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newString.node)
         }
         val documentManager = PsiDocumentManager.getInstance(project)
@@ -157,7 +157,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         val documentManager = PsiDocumentManager.getInstance(project)
         val document = documentManager.getDocument(element.containingFile) ?: return
         val command = Runnable {
-            //element.replace(newBlock) //do not do this, element could be reused
+            // element.replace(newBlock) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newBlock.node)
         }
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
@@ -238,7 +238,7 @@ class ParadoxScriptColorColorProvider : ParadoxColorProvider {
         val newColor = ParadoxScriptElementFactory.createValue(project, newText)
         if (newColor !is ParadoxScriptColor) return
         val command = Runnable {
-            //element.replace(newColor) //do not do this, element could be reused
+            // element.replace(newColor) // do not do this, element could be reused
             (element.node as CompositeElement).replaceAllChildrenToChildrenOf(newColor.node)
         }
         val documentManager = PsiDocumentManager.getInstance(project)

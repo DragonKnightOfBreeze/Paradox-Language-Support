@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
  * 用于在 *随处搜索（Search Everywhere）* 中查找定义。
  */
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
-    //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
+    // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
     private val indexKey = ParadoxIndexKeys.DefinitionName
 

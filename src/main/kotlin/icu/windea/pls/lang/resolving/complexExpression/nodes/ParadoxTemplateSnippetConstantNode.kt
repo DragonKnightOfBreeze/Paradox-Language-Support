@@ -14,7 +14,7 @@ class ParadoxTemplateSnippetConstantNode(
 ) : ParadoxComplexExpressionNodeBase() {
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateSnippetConstantNode {
-            //text may contain parameters
+            // text may contain parameters
             return ParadoxTemplateSnippetConstantNode(text, textRange, configGroup)
         }
     }

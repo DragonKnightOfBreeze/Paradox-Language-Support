@@ -50,7 +50,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
             private fun visitIcon(element: ParadoxLocalisationTextIcon) {
                 val name = element.name ?: return
                 ignoredNames.splitOptimized(';').forEach {
-                    if (name.matchesPattern(it, true)) return //忽略
+                    if (name.matchesPattern(it, true)) return // 忽略
                 }
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
@@ -73,7 +73,7 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
                     .align(Align.FILL)
                     .resizableColumn()
             }
-            //ignoredInInjectedFile
+            // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

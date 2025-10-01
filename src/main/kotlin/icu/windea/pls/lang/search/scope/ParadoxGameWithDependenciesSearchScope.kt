@@ -31,8 +31,8 @@ class ParadoxGameWithDependenciesSearchScope(
     }
 
     private fun getOrder(file: VirtualFile): Int {
-        //-1 - 找不到rootFile
-        //0 - 位于游戏目录下
+        // -1 - 找不到rootFile
+        // 0 - 位于游戏目录下
         val rootFile = selectRootFile(file) ?: return -1
         if (rootFile == gameDirectory) return 0
         val i = dependencyDirectories.indexOf(rootFile)

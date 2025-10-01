@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.intellij.images.vfs.IfsUtil
 
-//org.intellij.images.editor.impl.ImageFileService
+// org.intellij.images.editor.impl.ImageFileService
 
 private val logger = logger<ImageFileService>()
 

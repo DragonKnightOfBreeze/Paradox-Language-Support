@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import kotlinx.coroutines.CoroutineScope
 
-//org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
+// org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 
 /**
  * 当用户鼠标选中本地化文本（的其中一部分）时,将会显示的悬浮工具栏栏。
@@ -46,13 +46,13 @@ class ParadoxLocalisationFloatingToolbar(
         val selectionModel = editor.selectionModel
         val selectionStart = selectionModel.selectionStart
         val selectionEnd = selectionModel.selectionEnd
-        //忽略没有选择文本的情况
+        // 忽略没有选择文本的情况
         if (selectionStart == selectionEnd) return false
-        //忽略跨行的情况
+        // 忽略跨行的情况
         if (editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
         val elementAtStart = file.findElementAt(selectionStart)
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
-        //要求开始位置和结束位置的左边或右边是STRING_TOKEN/LEFT_QUOTE/RIGHT_QUOTE，向上能查找到同一个ParadoxLocalisationPropertyValue
+        // 要求开始位置和结束位置的左边或右边是STRING_TOKEN/LEFT_QUOTE/RIGHT_QUOTE，向上能查找到同一个ParadoxLocalisationPropertyValue
         if (elementAtStart == null || elementAtEnd == null) return false
         val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_TOKEN_OR_QUOTE
         if (elementAtStart.elementType !in stringTokenOrQuote && elementAtStart.prevLeaf(false).elementType !in stringTokenOrQuote) return false
@@ -62,7 +62,7 @@ class ParadoxLocalisationFloatingToolbar(
         if (propertyValueAtStart !== propertyValueAtEnd) return false
         val propertyValue = propertyValueAtStart
         val textRange = propertyValue.textRange
-        //要求选择文本的范围在引号之间
+        // 要求选择文本的范围在引号之间
         val start = if (propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
         val end = if (propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
         return selectionStart >= start && selectionEnd <= end

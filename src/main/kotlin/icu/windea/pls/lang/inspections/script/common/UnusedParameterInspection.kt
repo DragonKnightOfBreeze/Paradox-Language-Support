@@ -38,9 +38,9 @@ class UnusedParameterInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
-        //compute once per file
+        // compute once per file
         val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile) }
-        //it's unnecessary to make it synced
+        // it's unnecessary to make it synced
         val statusMap = mutableMapOf<PsiElement, Boolean>()
 
         return object : PsiElementVisitor() {
@@ -61,12 +61,12 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     if (!ParadoxResolveConstraint.Parameter.canResolve(reference)) continue
                     val resolved = reference.resolve()
                     if (resolved !is ParadoxParameterElement) continue
-                    if (resolved.contextName.isParameterized()) continue //skip if context name is parameterized
+                    if (resolved.contextName.isParameterized()) continue // skip if context name is parameterized
                     if (resolved.readWriteAccess != Access.Write) continue
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = selector(project, file).parameter().withSearchScope(searchScope) //use file as context
+                        val selector = selector(project, file).parameter().withSearchScope(searchScope) // use file as context
                         val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {

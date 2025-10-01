@@ -16,7 +16,7 @@ class ParadoxPathReference(
     val link: String
 ) : PsiReferenceBase<PsiElement>(element, rangeInElement), EmptyResolveMessageProvider {
     override fun handleElementRename(newElementName: String): PsiElement {
-        throw IncorrectOperationException() //unsupported yet
+        throw IncorrectOperationException() // unsupported yet
     }
 
     override fun resolve(): PsiElement? {
