@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
@@ -15,7 +16,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
-public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
+public class CwtPropertyImpl extends ASTWrapperPsiElement implements CwtProperty {
 
   public CwtPropertyImpl(@NotNull ASTNode node) {
     super(node);

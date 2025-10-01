@@ -15,12 +15,13 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
+public class CwtStringImpl extends CwtValueImpl implements CwtString {
 
   public CwtStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull CwtVisitor visitor) {
     visitor.visitString(this);
   }

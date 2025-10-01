@@ -14,12 +14,13 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
+public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
 
   public CwtBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull CwtVisitor visitor) {
     visitor.visitBlock(this);
   }
