@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
 
-import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
 
 /**
  * 声明规则。

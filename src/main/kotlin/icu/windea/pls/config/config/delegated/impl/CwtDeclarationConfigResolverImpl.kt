@@ -7,7 +7,7 @@ import icu.windea.pls.config.processDescendants
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.lang.isIdentifier
 
 class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver {

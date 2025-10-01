@@ -48,7 +48,7 @@ import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized

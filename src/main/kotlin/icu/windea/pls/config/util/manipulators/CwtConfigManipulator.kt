@@ -24,7 +24,7 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.ep.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.configExpression.CwtDataExpressionMerger
-import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
 

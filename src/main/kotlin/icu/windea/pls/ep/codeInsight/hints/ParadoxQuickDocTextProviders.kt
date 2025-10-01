@@ -12,7 +12,7 @@ import icu.windea.pls.config.findFromPattern
 import icu.windea.pls.config.matchFromPattern
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.Source
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement

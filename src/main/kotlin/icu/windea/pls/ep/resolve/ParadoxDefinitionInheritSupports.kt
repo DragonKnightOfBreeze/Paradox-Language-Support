@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.ep.data.StellarisEventData
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.getData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

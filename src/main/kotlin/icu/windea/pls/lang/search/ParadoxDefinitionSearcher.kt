@@ -14,7 +14,7 @@ import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager

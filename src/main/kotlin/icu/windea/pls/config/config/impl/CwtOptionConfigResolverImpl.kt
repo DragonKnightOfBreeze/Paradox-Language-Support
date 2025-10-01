@@ -48,11 +48,11 @@ private class CwtOptionConfigImpl(
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId: Byte = valueType.optimizeValue() // use enum id as field to optimize memory
-    override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+    private val valueTypeId = valueType.optimizeValue() // use enum id as field to optimize memory
+    override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
-    private val separatorTypeId: Byte = separatorType.optimizeValue() // use enum id as field to optimize memory
-    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
+    private val separatorTypeId = separatorType.optimizeValue() // use enum id as field to optimize memory
+    override val separatorType get() = separatorTypeId.deoptimizeValue<CwtSeparatorType>()
 
     override fun toString() = "(option) $key $separatorType $value"
 }

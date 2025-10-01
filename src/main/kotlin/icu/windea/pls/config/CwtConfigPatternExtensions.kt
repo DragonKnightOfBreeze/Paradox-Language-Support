@@ -9,7 +9,7 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.ep.expression.PatternAwareParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 /**

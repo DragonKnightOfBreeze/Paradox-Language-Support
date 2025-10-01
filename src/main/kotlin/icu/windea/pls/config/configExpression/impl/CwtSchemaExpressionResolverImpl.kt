@@ -68,13 +68,9 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
 }
 
 private sealed class CwtSchemaExpressionImplBase : CwtSchemaExpression {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
+    override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }
 
 private class CwtSchemaConstantExpression(

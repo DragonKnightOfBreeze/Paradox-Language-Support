@@ -15,7 +15,7 @@ import icu.windea.pls.ep.resolve.CompositeParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.DefinitionBasedParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.getData
 import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
 import icu.windea.pls.model.ParadoxDefinitionInfo

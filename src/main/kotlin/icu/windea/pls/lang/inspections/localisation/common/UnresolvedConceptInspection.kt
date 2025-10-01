@@ -11,7 +11,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.PlsVfsManager

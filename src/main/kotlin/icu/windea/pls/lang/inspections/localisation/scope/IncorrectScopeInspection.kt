@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.expression.ParadoxCommandExpression
-import icu.windea.pls.lang.expression.ParadoxComplexExpression
-import icu.windea.pls.lang.expression.nodes.ParadoxCommandFieldNode
-import icu.windea.pls.lang.expression.nodes.ParadoxCommandScopeLinkNode
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxCommandFieldNode
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType

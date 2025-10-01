@@ -49,13 +49,9 @@ private class CwtImageLocationExpressionImpl(
     override val framePaths: Set<String> = emptySet(),
 ) : CwtImageLocationExpression {
     // 当 location 包含占位符 '$' 时，需要在后续步骤以名称文本替换
-    override val isPlaceholder: Boolean = location.contains('$')
+    override val isPlaceholder = location.contains('$')
 
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtImageLocationExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
+    override fun equals(other: Any?) = this === other || other is CwtImageLocationExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }

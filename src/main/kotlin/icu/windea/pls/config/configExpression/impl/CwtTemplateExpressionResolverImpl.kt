@@ -100,11 +100,7 @@ private class CwtTemplateExpressionImpl(
     // 过滤出“引用型”片段（非 Constant），用于后续引用解析/导航
     override val referenceExpressions = snippetExpressions.filter { it.type != CwtDataTypes.Constant }
 
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtTemplateExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
+    override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }

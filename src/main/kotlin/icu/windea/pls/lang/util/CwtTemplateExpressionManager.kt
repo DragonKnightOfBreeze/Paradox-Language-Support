@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 
 object CwtTemplateExpressionManager {
     fun extract(templateExpression: CwtTemplateExpression, referenceName: String): String {

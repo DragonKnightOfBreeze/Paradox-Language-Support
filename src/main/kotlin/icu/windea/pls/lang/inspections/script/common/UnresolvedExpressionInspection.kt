@@ -30,7 +30,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix

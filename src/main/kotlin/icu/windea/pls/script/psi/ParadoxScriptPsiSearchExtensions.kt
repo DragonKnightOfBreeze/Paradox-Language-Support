@@ -10,7 +10,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
 import icu.windea.pls.lang.util.dataFlow.ParadoxPropertySequence
 import icu.windea.pls.lang.util.dataFlow.ParadoxValueSequence

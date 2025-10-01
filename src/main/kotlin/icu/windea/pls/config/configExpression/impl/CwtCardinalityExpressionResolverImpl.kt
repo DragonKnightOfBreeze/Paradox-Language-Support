@@ -48,11 +48,7 @@ private class CwtCardinalityExpressionImpl(
     override val relaxMin: Boolean,
     override val relaxMax: Boolean
 ) : CwtCardinalityExpression {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
+    override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }

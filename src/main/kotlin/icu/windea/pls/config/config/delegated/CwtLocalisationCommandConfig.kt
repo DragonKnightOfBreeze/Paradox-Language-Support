@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.expression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
 
 /**
  * 本地化命令规则。

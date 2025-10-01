@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result

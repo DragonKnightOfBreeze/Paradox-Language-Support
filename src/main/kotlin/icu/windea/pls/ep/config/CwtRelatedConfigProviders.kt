@@ -32,11 +32,10 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.modifier.modifierConfig
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.expression.ParadoxComplexExpression
-import icu.windea.pls.lang.expression.ParadoxComplexExpressionVisitor
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.lang.expression.accept
-import icu.windea.pls.lang.expression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpressionVisitor
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement

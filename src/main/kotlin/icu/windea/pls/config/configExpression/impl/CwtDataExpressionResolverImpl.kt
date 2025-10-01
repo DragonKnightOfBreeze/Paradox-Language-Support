@@ -60,11 +60,7 @@ private class CwtDataExpressionImpl(
     override val isKey: Boolean,
     override val type: CwtDataType
 ) : UserDataHolderBase(), CwtDataExpression {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtDataExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
+    override fun equals(other: Any?) = this === other || other is CwtDataExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
 }

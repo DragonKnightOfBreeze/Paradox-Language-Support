@@ -35,8 +35,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.documentation.appendBr
 import icu.windea.pls.lang.documentation.appendIndent
 import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.expression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.expression.nodes.ParadoxScriptValueArgumentNode
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -281,9 +281,9 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 }
 
 /**
- * @see icu.windea.pls.lang.expression.ParadoxScriptValueExpression
- * @see icu.windea.pls.lang.expression.nodes.ParadoxScriptValueArgumentNode
- * @see icu.windea.pls.lang.expression.nodes.ParadoxScriptValueArgumentValueNode
+ * @see icu.windea.pls.lang.resolving.complexExpression.ParadoxScriptValueExpression
+ * @see icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentNode
+ * @see icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement) = false

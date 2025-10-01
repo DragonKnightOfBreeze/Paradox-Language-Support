@@ -5,7 +5,7 @@ import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.findFromPattern
-import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

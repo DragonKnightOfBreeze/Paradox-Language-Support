@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.properties
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.cancelable
-import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
 
 internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? = doResolve(config)

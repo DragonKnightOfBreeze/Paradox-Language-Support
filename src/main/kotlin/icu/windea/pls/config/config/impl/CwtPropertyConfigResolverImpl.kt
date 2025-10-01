@@ -6,7 +6,6 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -19,6 +18,7 @@ import icu.windea.pls.core.util.getUserDataOrDefault
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
@@ -217,8 +217,8 @@ private class CwtPropertyConfigDelegateWith(
     override val value = value.intern() // intern to optimize memory
 
     // do not use cache here, since key and value are overridden
-    override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, true)
-    override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val keyExpression get() = CwtDataExpression.resolve(value, true)
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 }
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {

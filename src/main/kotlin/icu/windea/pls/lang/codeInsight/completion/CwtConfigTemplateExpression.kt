@@ -49,7 +49,7 @@ sealed class CwtConfigTemplateExpression(
         val name: String
     ) : CwtConfigTemplateExpression(context, schemaExpression, range, text)
 
-    companion object Resolver {
+    open class Resolver {
         fun resolve(context: ProcessingContext, schemaExpression: CwtSchemaExpression, range: TextRange, text: String): CwtConfigTemplateExpression? {
             run {
                 val enumName = text.removeSurroundingOrNull("\$enum:", "$") ?: return@run
@@ -62,4 +62,6 @@ sealed class CwtConfigTemplateExpression(
             return null
         }
     }
+
+    companion object : Resolver()
 }

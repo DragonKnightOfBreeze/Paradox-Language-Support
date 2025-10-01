@@ -101,7 +101,7 @@ private abstract class CwtValueConfigImpl(
     // cached into user data to optimize performance and memory
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
-    override fun toString(): String = value
+    override fun toString() = value
 }
 
 // 12 + 8 * 4 + 1 * 1 = 45 -> 48
@@ -167,7 +167,7 @@ private abstract class CwtValueConfigDelegate(
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
 
-    override fun toString(): String = value
+    override fun toString() = value
 }
 
 // 12 + 4 * 4 = 28 -> 32
@@ -194,7 +194,7 @@ private class CwtValueConfigDelegateWith(
     override val value = value.intern() // intern to optimize memory
 
     // do not use cache here, since value is overridden
-    override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 }
 
 // 12 + 4 * 4 = 28 -> 32
@@ -213,7 +213,7 @@ private class CwtValueConfigFromPropertyConfig(
     // cached into user data to optimize performance and memory
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
-    override fun toString(): String = value
+    override fun toString() = value
 }
 
 private val CwtMemberConfig.Keys.valueExpression by createKey<_, CwtMemberConfig<*>>(CwtMemberConfig.Keys) { CwtDataExpression.resolve(value, false) }

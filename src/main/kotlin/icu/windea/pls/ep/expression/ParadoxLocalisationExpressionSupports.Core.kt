@@ -7,9 +7,8 @@ import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.expression.ParadoxCommandExpression
-import icu.windea.pls.lang.expression.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.expression.getAllReferences
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolving.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
