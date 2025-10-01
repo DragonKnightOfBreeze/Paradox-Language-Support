@@ -17,40 +17,61 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private IElementType handleLocaleToken() {
-        // 本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-        // locale之前必须没有任何缩进
-        // locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-        // 采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
+        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
-        int n = 1;
-        int l = yylength();
-        while(Character.isWhitespace(yycharat(l - n))) {
-            n++;
+        try {
+            // Start scanning right after the matched text (token + ':').
+            int i = zzCurrentPos + yylength();
+            int length = zzBuffer.length();
+            boolean onlyWhitespaceToEol = true;
+            while (i < length) {
+                char c = zzBuffer.charAt(i);
+                if (c == '\n' || c == '\r') break;
+                if (!Character.isWhitespace(c)) { onlyWhitespaceToEol = false; break; }
+                i++;
+            }
+
+            // Push back just ':' so it can be emitted next as COLON.
+            yypushback(1);
+            if (onlyWhitespaceToEol) {
+                yybegin(IN_LOCALE_COLON);
+                return LOCALE_TOKEN;
+            } else {
+                // Not a locale header: interpret as a property key followed by ':'
+                yybegin(IN_PROPERTY_COLON);
+                return PROPERTY_KEY_TOKEN;
+            }
+        } catch (Exception e) {
+            // Be lenient on unexpected conditions: assume a locale header.
+            yypushback(1);
+            yybegin(IN_LOCALE_COLON);
+            return LOCALE_TOKEN;
         }
-        yypushback(n);
-        yybegin(IN_LOCALE_COLON);
-        return LOCALE_TOKEN;
     }
 
     private IElementType handleRightQuote() {
-        // 本地化文本中的双引号实际上不需要转义
-        // 因此如果双引号不是当前行的最后一个，应当被识别为字符串（这里使用PROPERTY_VALUE_TOKEN）
+        // Double quotes inside localisation text do not need escaping.
+        // Heuristic used by vanilla files and editors:
+        //  - If there is ANOTHER '"' ahead on the same line, then the current '"' is part of the text (not closing).
+        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. # ...) exists.
 
         try {
-            int i = zzCurrentPos + 1;
+            int i = zzCurrentPos + yylength(); // position right after current match
             int length = zzBuffer.length();
-            while(i < length) {
+            while (i < length) {
                 char c = zzBuffer.charAt(i);
-				if(c == '\n' || c == '\r') break;
-                if(c == '"') return PROPERTY_VALUE_TOKEN;
+                if (c == '\n' || c == '\r') break; // reached EOL
+                if (c == '"') return PROPERTY_VALUE_TOKEN; // another quote exists -> current is not closing
                 i++;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             // ignored
         }
 
         yybegin(IN_PROPERTY_END);
-	    return RIGHT_QUOTE;
+        return RIGHT_QUOTE;
     }
 %}
 
@@ -86,7 +107,8 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
 <YYINITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
-    ^ {LOCALE_TOKEN} ":" \s* $ { return handleLocaleToken(); }
+    // Locale header candidate: start-of-line locale id followed by ':'
+    ^ {LOCALE_TOKEN} ":" { return handleLocaleToken(); }
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
 <IN_LOCALE_COLON>{

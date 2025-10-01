@@ -82,21 +82,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_BLOCKS = zzUnpackcmap_blocks();
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
-    "\11\0\1\1\1\2\2\3\1\4\22\0\1\1\1\0"+
-    "\1\5\1\6\3\0\1\7\5\0\2\7\1\0\12\10"+
-    "\1\11\6\0\32\7\4\0\1\12\1\0\32\12\12\0"+
-    "\1\3\32\0\1\1\u01bf\0\12\13\206\0\12\13\306\0"+
-    "\12\13\234\0\12\13\166\0\12\13\140\0\12\13\166\0"+
-    "\12\13\106\0\12\13\u0116\0\12\13\106\0\12\13\346\0"+
-    "\1\1\u015f\0\12\13\46\0\12\13\u012c\0\12\13\200\0"+
-    "\12\13\246\0\12\13\6\0\12\13\266\0\12\13\126\0"+
-    "\12\13\206\0\12\13\6\0\12\13\246\0\13\1\35\0"+
+    "\11\0\1\1\1\2\2\3\1\2\22\0\1\1\1\0"+
+    "\1\4\1\5\3\0\1\6\5\0\2\6\1\0\12\7"+
+    "\1\10\6\0\32\6\4\0\1\11\1\0\32\11\12\0"+
+    "\1\3\32\0\1\1\u01bf\0\12\12\206\0\12\12\306\0"+
+    "\12\12\234\0\12\12\166\0\12\12\140\0\12\12\166\0"+
+    "\12\12\106\0\12\12\u0116\0\12\12\106\0\12\12\346\0"+
+    "\1\1\u015f\0\12\12\46\0\12\12\u012c\0\12\12\200\0"+
+    "\12\12\246\0\12\12\6\0\12\12\266\0\12\12\126\0"+
+    "\12\12\206\0\12\12\6\0\12\12\246\0\13\1\35\0"+
     "\2\3\5\0\1\1\57\0\1\1\240\0\1\1\u01cf\0"+
-    "\12\13\46\0\12\13\306\0\12\13\26\0\12\13\126\0"+
-    "\12\13\u0196\0\12\13\246\0\12\13\206\0\12\13\u012c\0"+
-    "\12\13\200\0\12\13\74\0\12\13\220\0\12\13\166\0"+
-    "\12\13\146\0\12\13\206\0\12\13\106\0\12\13\266\0"+
-    "\12\13\u0164\0\62\13\100\0\12\13\266\0";
+    "\12\12\46\0\12\12\306\0\12\12\26\0\12\12\126\0"+
+    "\12\12\u0196\0\12\12\246\0\12\12\206\0\12\12\u012c\0"+
+    "\12\12\200\0\12\12\74\0\12\12\220\0\12\12\166\0"+
+    "\12\12\146\0\12\12\206\0\12\12\106\0\12\12\266\0"+
+    "\12\12\u0164\0\62\12\100\0\12\12\266\0";
 
   private static int [] zzUnpackcmap_blocks() {
     int [] result = new int[7680];
@@ -124,10 +124,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\10\0\1\1\1\2\1\3\1\4\2\5\1\6\1\7"+
-    "\1\10\1\11\2\12\1\13\1\1\2\0\2\14\1\15";
+    "\1\10\1\11\2\12\1\13\1\1\1\0\1\14";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[27];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -152,13 +152,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\14\0\30\0\44\0\60\0\74\0\110\0\124"+
-    "\0\140\0\154\0\170\0\204\0\220\0\234\0\140\0\140"+
-    "\0\140\0\250\0\264\0\300\0\140\0\170\0\170\0\314"+
-    "\0\314\0\330\0\314";
+    "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
+    "\0\130\0\143\0\156\0\171\0\204\0\217\0\130\0\130"+
+    "\0\130\0\232\0\245\0\260\0\130\0\156\0\156\0\130";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[27];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -181,24 +180,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\11\1\12\1\13\1\12\1\13\1\11\1\14\2\15"+
-    "\1\11\1\15\2\11\1\12\1\13\1\12\1\13\1\11"+
-    "\1\14\2\15\1\11\1\16\2\11\1\12\1\13\1\12"+
-    "\1\13\1\11\1\14\2\11\1\17\3\11\1\12\1\13"+
-    "\1\12\1\13\1\11\1\14\6\11\1\12\1\13\1\12"+
-    "\1\13\1\11\1\14\2\11\1\20\3\11\1\12\1\13"+
-    "\1\12\1\13\1\21\1\14\1\11\1\22\2\11\1\22"+
-    "\1\23\1\24\1\13\1\24\1\13\1\25\6\23\1\11"+
-    "\1\26\3\13\7\11\15\0\1\12\1\13\1\12\1\13"+
-    "\10\0\1\27\3\13\7\0\2\14\1\0\1\14\1\0"+
-    "\7\14\7\0\2\15\1\0\1\15\10\0\2\15\1\30"+
-    "\1\16\11\0\1\22\2\0\1\22\2\23\1\0\1\23"+
-    "\2\0\7\23\1\24\1\13\1\24\1\13\1\0\6\23"+
-    "\1\0\1\30\2\31\1\32\10\0\1\30\1\33\1\31"+
-    "\1\32\7\0";
+    "\1\11\1\12\1\13\1\12\1\11\1\14\2\15\1\11"+
+    "\1\15\2\11\1\12\1\13\1\12\1\11\1\14\2\15"+
+    "\1\11\1\16\2\11\1\12\1\13\1\12\1\11\1\14"+
+    "\2\11\1\17\3\11\1\12\1\13\1\12\1\11\1\14"+
+    "\6\11\1\12\1\13\1\12\1\11\1\14\2\11\1\20"+
+    "\3\11\1\12\1\13\1\12\1\21\1\14\1\11\1\22"+
+    "\2\11\1\22\1\23\1\24\1\13\1\24\1\25\6\23"+
+    "\1\11\1\26\2\13\7\11\14\0\1\12\1\13\1\12"+
+    "\10\0\1\27\2\13\7\0\2\14\1\0\10\14\6\0"+
+    "\2\15\1\0\1\15\7\0\2\15\1\30\1\16\10\0"+
+    "\1\22\2\0\1\22\2\23\1\0\1\23\1\0\7\23"+
+    "\1\24\1\13\1\24\1\0\6\23";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[228];
+    int [] result = new int[187];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -226,8 +222,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "ERROR: could not match input",
-    "ERROR: pushback value was too large"
+    "Error: could not match input",
+    "Error: pushback value was too large"
   };
 
   /**
@@ -236,11 +232,11 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\10\0\1\11\5\1\3\11\3\1\1\11\1\1\2\0"+
-    "\3\1";
+    "\10\0\1\11\5\1\3\11\3\1\1\11\1\1\1\0"+
+    "\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[27];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -312,40 +308,61 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
 
     private IElementType handleLocaleToken() {
-        // 本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-        // locale之前必须没有任何缩进
-        // locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-        // 采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
+        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
-        int n = 1;
-        int l = yylength();
-        while(Character.isWhitespace(yycharat(l - n))) {
-            n++;
+        try {
+            // Start scanning right after the matched text (token + ':').
+            int i = zzCurrentPos + yylength();
+            int length = zzBuffer.length();
+            boolean onlyWhitespaceToEol = true;
+            while (i < length) {
+                char c = zzBuffer.charAt(i);
+                if (c == '\n' || c == '\r') break;
+                if (!Character.isWhitespace(c)) { onlyWhitespaceToEol = false; break; }
+                i++;
+            }
+
+            // Push back just ':' so it can be emitted next as COLON.
+            yypushback(1);
+            if (onlyWhitespaceToEol) {
+                yybegin(IN_LOCALE_COLON);
+                return LOCALE_TOKEN;
+            } else {
+                // Not a locale header: interpret as a property key followed by ':'
+                yybegin(IN_PROPERTY_COLON);
+                return PROPERTY_KEY_TOKEN;
+            }
+        } catch (Exception e) {
+            // Be lenient on unexpected conditions: assume a locale header.
+            yypushback(1);
+            yybegin(IN_LOCALE_COLON);
+            return LOCALE_TOKEN;
         }
-        yypushback(n);
-        yybegin(IN_LOCALE_COLON);
-        return LOCALE_TOKEN;
     }
 
     private IElementType handleRightQuote() {
-        // 本地化文本中的双引号实际上不需要转义
-        // 因此如果双引号不是当前行的最后一个，应当被识别为字符串（这里使用PROPERTY_VALUE_TOKEN）
+        // Double quotes inside localisation text do not need escaping.
+        // Heuristic used by vanilla files and editors:
+        //  - If there is ANOTHER '"' ahead on the same line, then the current '"' is part of the text (not closing).
+        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. # ...) exists.
 
         try {
-            int i = zzCurrentPos + 1;
+            int i = zzCurrentPos + yylength(); // position right after current match
             int length = zzBuffer.length();
-            while(i < length) {
+            while (i < length) {
                 char c = zzBuffer.charAt(i);
-				if(c == '\n' || c == '\r') break;
-                if(c == '"') return PROPERTY_VALUE_TOKEN;
+                if (c == '\n' || c == '\r') break; // reached EOL
+                if (c == '"') return PROPERTY_VALUE_TOKEN; // another quote exists -> current is not closing
                 i++;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             // ignored
         }
 
         yybegin(IN_PROPERTY_END);
-	    return RIGHT_QUOTE;
+        return RIGHT_QUOTE;
     }
 
 
@@ -399,7 +416,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -501,10 +518,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-ERROR occurs.
+   * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException
   {
@@ -534,7 +551,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         case '\u2029':  // fall through
           zzAtBOL = true;
           break;
-        case '\r':
+        case '\r': 
           if (zzMarkedPosL < zzEndReadL)
             zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           else if (zzAtEOF)
@@ -544,9 +561,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             zzMarkedPosL = zzMarkedPos;
             zzEndReadL = zzEndRead;
             zzBufferL = zzBuffer;
-            if (eof)
+            if (eof) 
               zzAtBOL = false;
-            else
+            else 
               zzAtBOL = zzBufferL.charAt(zzMarkedPosL) != '\n';
           }
           break;
@@ -627,73 +644,62 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             { return BAD_CHARACTER;
             }
           // fall through
-          case 14: break;
+          case 13: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 15: break;
+          case 14: break;
           case 3:
             { yybegin(YYINITIAL); return WHITE_SPACE;
             }
           // fall through
-          case 16: break;
+          case 15: break;
           case 4:
             { return COMMENT;
             }
           // fall through
-          case 17: break;
+          case 16: break;
           case 5:
             { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 18: break;
+          case 17: break;
           case 6:
             { yybegin(IN_LOCALE_END); return COLON;
             }
           // fall through
-          case 19: break;
+          case 18: break;
           case 7:
             { yybegin(IN_PROPERTY_NUMBER); return COLON;
             }
           // fall through
-          case 20: break;
+          case 19: break;
           case 8:
             { yybegin(IN_PROPERTY_VALUE); return LEFT_QUOTE;
             }
           // fall through
-          case 21: break;
+          case 20: break;
           case 9:
             { return PROPERTY_NUMBER;
             }
           // fall through
-          case 22: break;
+          case 21: break;
           case 10:
             { return PROPERTY_VALUE_TOKEN;
             }
           // fall through
-          case 23: break;
+          case 22: break;
           case 11:
             { return handleRightQuote();
             }
           // fall through
-          case 24: break;
+          case 23: break;
           case 12:
-            // lookahead expression with fixed lookahead length
-            zzMarkedPos = Character.offsetByCodePoints
-                (zzBufferL, zzMarkedPos, -1);
             { return handleLocaleToken();
             }
           // fall through
-          case 25: break;
-          case 13:
-            // lookahead expression with fixed lookahead length
-            zzMarkedPos = Character.offsetByCodePoints
-                (zzBufferL, zzMarkedPos, -2);
-            { return handleLocaleToken();
-            }
-          // fall through
-          case 26: break;
+          case 24: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
