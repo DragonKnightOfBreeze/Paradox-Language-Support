@@ -30,7 +30,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.util.manipulators.PlsFileManipulator
+import icu.windea.pls.lang.util.PlsVfsManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
@@ -55,7 +55,7 @@ abstract class ConvertImageFormatAction(
     }
 
     protected open fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
-        return PlsFileManipulator.buildSequence(e).filter { isAvailableForFile(it) }
+        return PlsVfsManager.findFiles(e).filter { isAvailableForFile(it) }
     }
 
     override fun update(e: AnActionEvent) {

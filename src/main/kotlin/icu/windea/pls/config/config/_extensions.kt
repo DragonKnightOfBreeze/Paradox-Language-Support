@@ -2,12 +2,8 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.createPointer
 import icu.windea.pls.cwt.psi.CwtMemberElement
-import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.Occurrence
 
@@ -57,12 +53,3 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
 }
 
 // endregion
-
-/**
- * [CwtProperty] 的智能指针封装。保留对属性值（[CwtValue]）的指针，便于跨线程/缓存安全地访问属性及其值。
- */
-class CwtPropertyPointer(
-    private val delegate: SmartPsiElementPointer<CwtProperty>
-) : SmartPsiElementPointer<CwtProperty> by delegate {
-    val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
-}

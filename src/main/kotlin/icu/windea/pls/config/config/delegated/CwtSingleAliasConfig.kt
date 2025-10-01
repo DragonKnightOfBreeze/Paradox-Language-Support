@@ -29,17 +29,17 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 	   potential = single_alias_right[trigger_clause]
  * }
  * ```
+ *
  * @property name 名称。
+ *
+ * @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias
  */
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("single_alias[$]")
     val name: String
 
-    /** 将该单别名内联展开为普通属性规则。*/
-    fun inline(config: CwtPropertyConfig): CwtPropertyConfig
-
     interface Resolver {
-        /** 由属性规规则解析为单别名规则。*/
+        /** 由属性规则解析为单别名规则。*/
         fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig?
     }
 

@@ -21,7 +21,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsVfsManager
 import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
-import icu.windea.pls.lang.util.manipulators.PlsFileManipulator
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import kotlinx.coroutines.launch
 
@@ -68,7 +67,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     }
 
     protected open fun findFiles(e: AnActionEvent, project: Project): Sequence<PsiFile> {
-        return PlsFileManipulator.buildSequence(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
+        return PlsVfsManager.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
     }
 
     protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): ParadoxLocalisationSequence {

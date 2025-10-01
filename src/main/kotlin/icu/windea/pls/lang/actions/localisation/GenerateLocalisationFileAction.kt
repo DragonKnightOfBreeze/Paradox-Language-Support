@@ -35,7 +35,6 @@ import icu.windea.pls.lang.settings.PlsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsVfsManager
-import icu.windea.pls.lang.util.manipulators.PlsFileManipulator
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
@@ -174,7 +173,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     private fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
-        return PlsFileManipulator.buildSequence(e, deep = true).filter { isValidFile(it) }
+        return PlsVfsManager.findFiles(e, deep = true).filter { isValidFile(it) }
     }
 
     private fun findAllLocales(): Map<String, CwtLocaleConfig> {

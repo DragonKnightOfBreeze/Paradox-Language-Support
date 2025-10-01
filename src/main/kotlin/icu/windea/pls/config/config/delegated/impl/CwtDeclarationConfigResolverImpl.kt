@@ -4,7 +4,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.processDescendants
-import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression

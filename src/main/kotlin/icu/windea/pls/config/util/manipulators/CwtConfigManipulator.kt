@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.config.util.manipulators
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -6,6 +6,8 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
@@ -26,6 +28,7 @@ import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
 
+@Suppress("unused")
 object CwtConfigManipulator {
     // region Core Methods
 
@@ -75,7 +78,7 @@ object CwtConfigManipulator {
         val cs1 = config.configs
         if (cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEach f1@{ c1 ->
+        for (c1 in cs1) {
             val configs = deepCopyConfigs(c1)
             val c1Delegated = when (c1) {
                 is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs, parentConfig)
@@ -91,17 +94,16 @@ object CwtConfigManipulator {
         val cs1 = config.configs
         if (cs1.isNullOrEmpty()) return cs1
         val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEach f1@{ c1 ->
+        for (c1 in cs1) {
             if (c1 is CwtPropertyConfig) {
                 val subtypeExpression = c1.key.removeSurroundingOrNull("subtype[", "]")
                 if (subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
-                    if (subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, c1, context)
-                        if (cs2.isNullOrEmpty()) return@f1
-                        result += cs2
-                    }
-                    return@f1
+                    if (subtypes != null && !ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) continue
+                    val cs2 = deepCopyConfigsInDeclarationConfig(c1, c1, context)
+                    if (cs2.isNullOrEmpty()) continue
+                    result += cs2
+                    continue
                 }
             }
 
@@ -120,31 +122,72 @@ object CwtConfigManipulator {
 
     // region Inline Methods
 
-    enum class InlineMode {
-        KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
+    fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
+        // inline all value and configs
+        val other = singleAliasConfig.config
+        val inlined = CwtPropertyConfig.copy(
+            targetConfig = config,
+            value = other.value,
+            valueType = other.valueType,
+            configs = deepCopyConfigs(other),
+            optionConfigs = config.optionConfigs,
+        )
+        inlined.parentConfig = config.parentConfig
+        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.inlineConfig = config.inlineConfig
+        inlined.aliasConfig = config.aliasConfig
+        inlined.singleAliasConfig = singleAliasConfig
+        return inlined
     }
 
-    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: InlineMode): CwtPropertyConfig? {
+    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+        val configGroup = config.configGroup
+        val valueExpression = config.valueExpression
+        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
+        val singleAliasName = valueExpression.value ?: return null
+        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
+        return inlineSingleAlias(config, singleAliasConfig)
+    }
+
+    fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig {
+        val other = aliasConfig.config
+        val inlined = CwtPropertyConfig.copy(
+            targetConfig = config,
+            key = aliasConfig.subName,
+            value = other.value,
+            valueType = other.valueType,
+            configs = deepCopyConfigs(other),
+            optionConfigs = other.optionConfigs
+        )
+        inlined.parentConfig = config.parentConfig
+        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.inlineConfig = config.inlineConfig
+        inlined.aliasConfig = aliasConfig
+        inlined.singleAliasConfig = config.singleAliasConfig
+        return inlined
+    }
+
+    fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
             key = when (inlineMode) {
-                InlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
-                InlineMode.VALUE_TO_KEY -> otherConfig.value
+                CwtConfigInlineMode.KEY_TO_KEY -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
+                CwtConfigInlineMode.VALUE_TO_KEY -> otherConfig.value
                 else -> config.key
             },
             value = when (inlineMode) {
-                InlineMode.VALUE_TO_VALUE -> otherConfig.value
-                InlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
+                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.value
+                CwtConfigInlineMode.KEY_TO_VALUE -> if (otherConfig is CwtPropertyConfig) otherConfig.key else return null
                 else -> config.value
             },
             valueType = when (inlineMode) {
-                InlineMode.VALUE_TO_VALUE -> otherConfig.valueType
-                InlineMode.KEY_TO_VALUE -> CwtType.String
+                CwtConfigInlineMode.VALUE_TO_VALUE -> otherConfig.valueType
+                CwtConfigInlineMode.KEY_TO_VALUE -> CwtType.String
                 else -> config.valueType
             },
             configs = when (inlineMode) {
-                InlineMode.KEY_TO_VALUE -> null
-                InlineMode.VALUE_TO_VALUE -> deepCopyConfigs(otherConfig)
+                CwtConfigInlineMode.KEY_TO_VALUE -> null
+                CwtConfigInlineMode.VALUE_TO_VALUE -> deepCopyConfigs(otherConfig)
                 else -> deepCopyConfigs(config)
             },
         )
@@ -167,27 +210,18 @@ object CwtConfigManipulator {
         )
     }
 
-    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
-        val configGroup = config.configGroup
-        val valueExpression = config.valueExpression
-        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
-        val singleAliasName = valueExpression.value ?: return null
-        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        return singleAliasConfig.inline(config)
-    }
-
     // endregion
 
     // region Merge Methods
 
-    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
-        if (configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
-        if (configs.isEmpty()) return otherConfigs
-        if (otherConfigs.isEmpty()) return configs
+    fun mergeConfigs(configs1: List<CwtMemberConfig<*>>, configs2: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        if (configs1.isEmpty() && configs2.isEmpty()) return emptyList()
+        if (configs1.isEmpty()) return configs2
+        if (configs2.isEmpty()) return configs1
 
-        if (configs.size == 1 && otherConfigs.size == 1) {
-            val c1 = configs.single()
-            val c2 = otherConfigs.single()
+        if (configs1.size == 1 && configs2.size == 1) {
+            val c1 = configs1.single()
+            val c2 = configs2.single()
             if (c1 is CwtValueConfig && c2 is CwtValueConfig) {
                 if (c1.valueType == CwtType.Block && c2.valueType == CwtType.Block) {
                     val mergedConfigs = mergeConfigs(c1.configs.orEmpty(), c2.configs.orEmpty())
@@ -203,15 +237,15 @@ object CwtConfigManipulator {
             }
         }
 
-        if (configs.all { it is CwtValueConfig } && otherConfigs.all { it is CwtValueConfig }) {
+        if (configs1.all { it is CwtValueConfig } && configs2.all { it is CwtValueConfig }) {
             val c1 = when {
-                configs.size == 1 -> configs.single()
-                otherConfigs.size == 1 -> otherConfigs.single()
+                configs1.size == 1 -> configs1.single()
+                configs2.size == 1 -> configs2.single()
                 else -> null
             }?.castOrNull<CwtValueConfig>()
             val cs2 = when {
-                configs.size == 1 -> otherConfigs
-                otherConfigs.size == 1 -> configs
+                configs1.size == 1 -> configs2
+                configs2.size == 1 -> configs1
                 else -> null
             }?.castOrNull<List<CwtValueConfig>>()
             if (c1 != null && cs2.isNotNullOrEmpty()) {
@@ -220,31 +254,31 @@ object CwtConfigManipulator {
             }
         }
 
-        val m1 = configs.associateBy { getDistinctKey(it) }
-        val m2 = otherConfigs.associateBy { getDistinctKey(it) }
+        val m1 = configs1.associateBy { getDistinctKey(it) }
+        val m2 = configs2.associateBy { getDistinctKey(it) }
         val sameKeys = m1.keys intersect m2.keys
         val sameConfigs = sameKeys.mapNotNull { m1[it] ?: m2[it] }
         return sameConfigs
     }
 
-    fun mergeConfig(c1: CwtMemberConfig<*>, c2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
-        if (c1 === c2) return c1 //reference equality
-        if (c1.pointer == c2.pointer) return c1 //value equality (should be)
-        if (getDistinctKey(c1) == getDistinctKey(c2)) return c1 //distinct key equality
+    fun mergeConfig(config1: CwtMemberConfig<*>, config2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
+        if (config1 === config2) return config1 //reference equality
+        if (config1.pointer == config2.pointer) return config1 //value equality (should be)
+        if (getDistinctKey(config1) == getDistinctKey(config2)) return config1 //distinct key equality
         return null
     }
 
-    fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
-        if (c1 === c2) return c1 //reference equality
-        if (c1.pointer == c2.pointer) return c1 //value equality (should be)
-        if (c1.configExpression.type == CwtDataTypes.Block || c2.configExpression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
-        val expressionString = CwtDataExpressionMerger.merge(c1.configExpression, c2.configExpression, c1.configGroup)
+    fun mergeValueConfig(config1: CwtValueConfig, config2: CwtValueConfig): CwtValueConfig? {
+        if (config1 === config2) return config1 //reference equality
+        if (config1.pointer == config2.pointer) return config1 //value equality (should be)
+        if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
+        val expressionString = CwtDataExpressionMerger.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
-            configGroup = c1.configGroup,
+            configGroup = config1.configGroup,
             value = expressionString,
-            optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs)
+            optionConfigs = mergeOptions(config1.optionConfigs, config2.optionConfigs)
         )
     }
 
@@ -259,9 +293,9 @@ object CwtConfigManipulator {
         return false
     }
 
-    private fun mergeOptions(a: List<CwtOptionMemberConfig<*>>?, b: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
+    private fun mergeOptions(options1: List<CwtOptionMemberConfig<*>>?, options2: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
         //keep duplicate options here (no affect to features)
-        return merge(a, b)
+        return merge(options1, options2)
     }
 
     //endregion

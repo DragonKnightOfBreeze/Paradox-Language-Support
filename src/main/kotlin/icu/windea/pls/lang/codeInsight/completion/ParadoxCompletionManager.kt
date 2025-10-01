@@ -50,7 +50,7 @@ import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.matchFromPattern
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor

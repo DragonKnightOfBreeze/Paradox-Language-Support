@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 
 internal class CwtExtendedGameRuleConfigResolverImpl : CwtExtendedGameRuleConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig = doResolve(config)

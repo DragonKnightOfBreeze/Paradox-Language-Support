@@ -117,10 +117,10 @@ object ParadoxCsvManipulator {
                 val startIndex = previous.getColumnIndex()
                 val endIndex = column.getColumnIndex()
                 val columnsBetween = rows.flatMap { row0 ->
-                    when {
-                        row0 == firstRow -> previous.siblings(forward = forward, withSelf = false)
+                    when (row0) {
+                        firstRow -> previous.siblings(forward = forward, withSelf = false)
                             .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() <= endIndex }
-                        row0 == lastRow -> column.siblings(forward = !forward, withSelf = false)
+                        lastRow -> column.siblings(forward = !forward, withSelf = false)
                             .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() >= startIndex }.toList().reversed().asSequence()
                         else -> row0.children(forward = forward)
                             .filterIsInstance<ParadoxCsvColumn>().toList().subList(startIndex, endIndex).asSequence()

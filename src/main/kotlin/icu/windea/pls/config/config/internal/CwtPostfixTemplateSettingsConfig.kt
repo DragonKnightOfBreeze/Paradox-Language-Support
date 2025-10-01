@@ -5,6 +5,13 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
+/**
+ * 作为后缀模版设置的内部规则，目前尚不支持自定义。
+ *
+ * 用于提供额外的后缀补全，
+ *
+ * @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate
+ */
 data class CwtPostfixTemplateSettingsConfig(
     val id: String,
     val key: String,

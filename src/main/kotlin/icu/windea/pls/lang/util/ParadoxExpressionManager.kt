@@ -51,7 +51,7 @@ import icu.windea.pls.config.configGroup.localisationLinks
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
@@ -238,11 +238,11 @@ object ParadoxExpressionManager {
     }
 
     fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
-        return when {
-            element is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
-            element is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
-            element is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
-            element is ParadoxCsvColumn -> TextRange.create(0, element.text.length).unquote(element.text)
+        return when (element) {
+            is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
+            is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent //"@[" or "@\["
+            is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
+            is ParadoxCsvColumn -> TextRange.create(0, element.text.length).unquote(element.text)
             else -> TextRange.create(0, element.text.length)
         }
     }
@@ -453,12 +453,12 @@ object ParadoxExpressionManager {
                 aliasSubNames.forEach f1@{ aliasSubName ->
                     val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
                     aliasConfigs.forEach f2@{ aliasConfig ->
-                        val aliasConfigInlined = aliasConfig.inline(config)
-                        if (aliasConfigInlined.valueExpression.type == CwtDataTypes.SingleAliasRight) {
-                            result += CwtConfigManipulator.inlineSingleAlias(aliasConfigInlined) ?: return@f2
-                        } else {
-                            result += aliasConfigInlined
+                        val inlinedConfig = CwtConfigManipulator.inlineAlias(config, aliasConfig)
+                        val finalInlinedConfig = when (inlinedConfig.valueExpression.type) {
+                            CwtDataTypes.SingleAliasRight -> CwtConfigManipulator.inlineSingleAlias(inlinedConfig) ?: return@f2
+                            else -> inlinedConfig
                         }
+                        result += finalInlinedConfig
                     }
                 }
             }
@@ -503,16 +503,16 @@ object ParadoxExpressionManager {
 
     private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
         //未填写属性的值 - 匹配所有
-        val keyExpression = when {
-            element is ParadoxScriptFile -> null
-            element is ParadoxScriptProperty -> element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-            element is ParadoxScriptValue -> null
+        val keyExpression = when (element) {
+            is ParadoxScriptFile -> null
+            is ParadoxScriptProperty -> element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
+            is ParadoxScriptValue -> null
             else -> return emptyList()
         }
-        val valueExpression = when {
-            element is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
-            element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-            element is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
+        val valueExpression = when (element) {
+            is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
+            is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
+            is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
             else -> return emptyList()
         }
 
@@ -734,22 +734,22 @@ object ParadoxExpressionManager {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
-        val blockElement = when {
-            element is ParadoxScriptDefinitionElement -> element.block
-            element is ParadoxScriptBlockElement -> element
+        val blockElement = when (element) {
+            is ParadoxScriptDefinitionElement -> element.block
+            is ParadoxScriptBlockElement -> element
             else -> null
         }
         if (blockElement == null) return emptyMap()
         val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
         for (childConfig in childConfigs) {
-            occurrenceMap.put(childConfig.configExpression, childConfig.toOccurrence(element, project))
+            occurrenceMap[childConfig.configExpression] = childConfig.toOccurrence(element, project)
         }
         ProgressManager.checkCanceled()
         //注意这里需要考虑内联和可选的情况
         blockElement.members().options(conditional = true, inline = true).forEach f@{ data ->
-            val expression = when {
-                data is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
-                data is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
+            val expression = when (data) {
+                is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
+                is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
                 else -> return@f
             }
             val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
@@ -1113,26 +1113,26 @@ object ParadoxExpressionManager {
 
     fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
         val configGroup = config.configGroup
-        return when {
-            config is CwtPropertyConfig -> {
+        return when (config) {
+            is CwtPropertyConfig -> {
                 config.inlineConfig?.let { return getEntryConfigs(it) }
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
                 config.singleton.list()
             }
-            config is CwtValueConfig -> {
+            is CwtValueConfig -> {
                 config.propertyConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
                 config.singleton.list()
             }
-            config is CwtSingleAliasConfig -> {
+            is CwtSingleAliasConfig -> {
                 config.config.singleton.listOrEmpty()
             }
-            config is CwtAliasConfig -> {
+            is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
             }
-            config is CwtInlineConfig -> {
+            is CwtInlineConfig -> {
                 config.config.singleton.listOrEmpty()
             }
             else -> {
@@ -1149,8 +1149,8 @@ object ParadoxExpressionManager {
                     keys.add(it.key)
                 }
             }
-            when {
-                config is CwtPropertyConfig -> {
+            when (config) {
+                is CwtPropertyConfig -> {
                     val propertyConfig = config
                     propertyConfig.parentConfig?.configs?.forEach { c ->
                         if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
@@ -1158,7 +1158,7 @@ object ParadoxExpressionManager {
                         }
                     }
                 }
-                config is CwtValueConfig -> {
+                is CwtValueConfig -> {
                     val propertyConfig = config.propertyConfig
                     propertyConfig?.parentConfig?.configs?.forEach { c ->
                         if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
