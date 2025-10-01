@@ -79,7 +79,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -489,7 +489,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = configGroup.gameType
-        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(true) ?: return
+        val memberElement = element.parentOfType<ParadoxScriptMember>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         if (scopeContext == null) return

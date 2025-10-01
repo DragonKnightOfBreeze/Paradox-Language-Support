@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 
 /**
  * 定义的扩展规则。
@@ -37,7 +37,7 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
  * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
  */
-interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey
     val name: String
     @FromOption("type: string")

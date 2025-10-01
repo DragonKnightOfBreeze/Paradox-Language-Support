@@ -46,7 +46,7 @@ import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtString
@@ -145,12 +145,12 @@ object CwtConfigManager {
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
         if (element.language !is CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
-        val memberElement = element.parentOfType<CwtMemberElement>(withSelf = true)
+        val memberElement = element.parentOfType<CwtMember>(withSelf = true)
         if (memberElement == null) return null
         return doGetConfigPathFromCache(memberElement)
     }
 
-    private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
+    private fun doGetConfigPathFromCache(element: CwtMember): CwtConfigPath? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             runReadAction {
@@ -161,7 +161,7 @@ object CwtConfigManager {
         }
     }
 
-    private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
+    private fun doGetConfigPath(element: CwtMember): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -184,12 +184,12 @@ object CwtConfigManager {
 
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (element.language !is CwtLanguage) return null
-        val memberElement = element.parentOfType<CwtMemberElement>(withSelf = true)
+        val memberElement = element.parentOfType<CwtMember>(withSelf = true)
         if (memberElement == null) return null
         return doGetConfigTypeFromCache(memberElement)
     }
 
-    private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
+    private fun doGetConfigTypeFromCache(element: CwtMember): CwtConfigType? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
             runReadAction {
@@ -200,7 +200,7 @@ object CwtConfigManager {
         }
     }
 
-    private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
+    private fun doGetConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
         val filePath = getFilePath(file) ?: return null
         if (filePath.startsWith("internal/")) return null // 排除内部规则文件
@@ -341,7 +341,7 @@ object CwtConfigManager {
         return doGetDocumentationFromCache(element)
     }
 
-    private fun doGetDocumentationFromCache(element: CwtMemberElement): String? {
+    private fun doGetDocumentationFromCache(element: CwtMember): String? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDocumentation) {
             runReadAction {
@@ -352,7 +352,7 @@ object CwtConfigManager {
         }
     }
 
-    private fun doGetDocumentation(element: CwtMemberElement): String? {
+    private fun doGetDocumentation(element: CwtMember): String? {
         return ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
     }
 

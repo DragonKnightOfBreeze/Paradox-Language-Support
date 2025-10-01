@@ -656,7 +656,7 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     @JvmStatic
-    fun getMemberList(element: PsiElement): List<ParadoxScriptMemberElement> {
+    fun getMemberList(element: PsiElement): List<ParadoxScriptMember> {
         return element.findChildren<_>()
     }
 
@@ -667,7 +667,7 @@ object ParadoxScriptPsiImplUtil {
 
     private fun isComponent(element: PsiElement): Boolean {
         //允许混合value和property
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptMemberElement || element is ParadoxScriptParameterCondition
+        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptMember || element is ParadoxScriptParameterCondition
     }
 
     @JvmStatic

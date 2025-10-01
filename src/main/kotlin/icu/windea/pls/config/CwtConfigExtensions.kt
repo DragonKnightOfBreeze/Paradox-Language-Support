@@ -16,7 +16,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
 import icu.windea.pls.lang.PlsKeys
 
@@ -80,7 +80,7 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
     }
 }
 
-fun <T : CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
+fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
     this.putUserData(PlsKeys.bindingConfig, config)
     return this
 }

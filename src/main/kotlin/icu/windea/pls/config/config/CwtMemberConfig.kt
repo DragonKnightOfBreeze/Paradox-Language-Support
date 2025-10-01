@@ -2,7 +2,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.CwtType
 
 /**
@@ -18,9 +18,9 @@ import icu.windea.pls.model.CwtType
  * @property valueExpression 值对应的数据表达式，用于驱动解析与校验。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [CwtPropertyConfig.keyExpression] 或 [CwtValueConfig.valueExpression]）。
  *
- * @see CwtMemberElement
+ * @see CwtMember
  */
-sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
+sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     val value: String
     val valueType: CwtType
     val configs: List<CwtMemberConfig<*>>?

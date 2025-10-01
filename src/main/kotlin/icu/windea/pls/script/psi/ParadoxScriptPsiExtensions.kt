@@ -52,7 +52,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(
 
 //region Predicates
 
-fun ParadoxScriptMemberElement.isBlockMember(): Boolean {
+fun ParadoxScriptMember.isBlockMember(): Boolean {
     return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
 }
 

@@ -85,7 +85,7 @@ import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import icu.windea.pls.cwt.psi.CwtExpressionElement
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtOptionKey
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -222,7 +222,7 @@ object CwtConfigCompletionManager {
         if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionBlockValue()))) {
             val parentElementType = element.parent.elementType ?: return null
             if (parentElementType != CwtElementTypes.OPTION_COMMENT_TOKEN && parentElementType != CwtElementTypes.OPTION) return null
-            val memberElement = element.parentOfType<CwtOptionComment>()?.siblings(withSelf = false)?.findIsInstance<CwtMemberElement>() ?: return null
+            val memberElement = element.parentOfType<CwtOptionComment>()?.siblings(withSelf = false)?.findIsInstance<CwtMember>() ?: return null
             return when (memberElement) {
                 is CwtProperty -> memberElement.propertyKey
                 is CwtValue -> memberElement

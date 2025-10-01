@@ -70,7 +70,7 @@ import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
@@ -405,7 +405,7 @@ object CwtDocumentationManager {
 
         val sections = getSections(0) ?: return
         val gameType = configGroup.gameType
-        val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
+        val memberElement = referenceElement.parentOfType<ParadoxScriptMember>(true) ?: return
         if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         if (scopeContext == null) return

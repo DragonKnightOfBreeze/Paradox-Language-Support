@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.NESTED_RIGHT_BRACKET
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.RIGHT_BRACE
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.RIGHT_BRACKET
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 
@@ -30,7 +30,7 @@ class ParadoxScriptMover : ContainerBasedMover() {
 
     override fun isContainerElement(element: PsiElement) = element is ParadoxScriptMemberContainer
 
-    override fun isMemberElement(element: PsiElement) = element is ParadoxScriptMemberElement
+    override fun isMemberElement(element: PsiElement) = element is ParadoxScriptMember
 
     override fun canAttachComments(memberElement: PsiElement) = true
 

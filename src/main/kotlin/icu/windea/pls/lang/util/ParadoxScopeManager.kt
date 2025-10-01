@@ -89,7 +89,7 @@ import icu.windea.pls.model.toScopeIdMap
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -193,16 +193,16 @@ object ParadoxScopeManager {
         return false //cwt config error
     }
 
-    fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMemberElement? {
+    fun findParentMember(element: PsiElement, withSelf: Boolean): ParadoxScriptMember? {
         return element.parents(withSelf)
             .find { it is ParadoxScriptDefinitionElement || (it is ParadoxScriptBlock && it.isBlockMember()) }
-            .castOrNull<ParadoxScriptMemberElement>()
+            .castOrNull<ParadoxScriptMember>()
     }
 
     /**
      * @param indirect 是否包括间接支持作用域上下文的情况。（如事件）
      */
-    fun isScopeContextSupported(element: ParadoxScriptMemberElement, indirect: Boolean = false): Boolean {
+    fun isScopeContextSupported(element: ParadoxScriptMember, indirect: Boolean = false): Boolean {
         //some definitions, such as on_action, also support scope context on definition level
         if (element is ParadoxScriptDefinitionElement) {
             val definitionInfo = element.definitionInfo
@@ -259,7 +259,7 @@ object ParadoxScopeManager {
         return false
     }
 
-    fun isScopeContextChanged(element: ParadoxScriptMemberElement, scopeContext: ParadoxScopeContext): Boolean {
+    fun isScopeContextChanged(element: ParadoxScriptMember, scopeContext: ParadoxScopeContext): Boolean {
         //does not have scope context -> changed always
         val parentMember = findParentMember(element, withSelf = false)
         if (parentMember == null) return true
@@ -270,11 +270,11 @@ object ParadoxScopeManager {
         return false
     }
 
-    fun getSwitchedScopeContext(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+    fun getSwitchedScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
         return doGetSwitchedScopeContextFromCache(element)
     }
 
-    private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+    private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
             val value = doGetSwitchedScopeContextOfDefinition(element)
@@ -286,7 +286,7 @@ object ParadoxScopeManager {
         }
     }
 
-    private fun doGetSwitchedScopeContextOfDefinition(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+    private fun doGetSwitchedScopeContextOfDefinition(element: ParadoxScriptMember): ParadoxScopeContext? {
         //should be a definition
         val definitionInfo = element.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if (definitionInfo != null) {
@@ -305,7 +305,7 @@ object ParadoxScopeManager {
         return null
     }
 
-    private fun doGetSwitchedScopeContextOfDefinitionMember(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
+    private fun doGetSwitchedScopeContextOfDefinitionMember(element: ParadoxScriptMember): ParadoxScopeContext? {
         //element could be a definition member only if after inlined
 
         val parentMember = findParentMember(element, withSelf = false)

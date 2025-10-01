@@ -15,7 +15,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentDefinition
@@ -107,7 +107,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
 
     private class SuppressForExpressionFix(
         toolId: String
-    ) : SuppressByCommentFix(toolId, ParadoxScriptMemberElement::class.java) {
+    ) : SuppressByCommentFix(toolId, ParadoxScriptMember::class.java) {
         //here just call scriptMemberElement (property / value) "expression"
 
         override fun getText(): String {

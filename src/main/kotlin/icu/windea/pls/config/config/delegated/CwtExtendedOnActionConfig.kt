@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 
 /**
  * on action 的扩展规则。
@@ -35,7 +35,7 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * @property eventType 事件类型。
  * @property hint 额外提示信息（可选）。
  */
-interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey
     val name: String
     @FromOption("event_type: string")

@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptParameterCondition
  */
 interface ParadoxScriptMemberContainer: PsiElement {
-    val memberList: List<ParadoxScriptMemberElement>
+    val memberList: List<ParadoxScriptMember>
     val propertyList: List<ParadoxScriptProperty>
     val valueList: List<ParadoxScriptValue>
 }

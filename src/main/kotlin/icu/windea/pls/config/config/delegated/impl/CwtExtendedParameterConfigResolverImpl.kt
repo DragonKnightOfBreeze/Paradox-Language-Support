@@ -13,7 +13,7 @@ import icu.windea.pls.ep.parameter.containingContextReference
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 
 internal class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConfig.Resolver {
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? = doResolve(config)
@@ -45,7 +45,7 @@ private class CwtExtendedParameterConfigImpl(
         if (inherit) {
             run {
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
-                val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMemberElement>(false) ?: return@run
+                val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMember>(false) ?: return@run
                 val contextConfigs = ParadoxExpressionManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
                 PlsCoreManager.dynamicContextConfigs.set(true)
                 return contextConfigs

@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtOptionComment
-import icu.windea.pls.cwt.psi.CwtOptionMemberElement
+import icu.windea.pls.cwt.psi.CwtOptionMember
 import icu.windea.pls.model.CwtType
 
 /**
@@ -16,13 +16,13 @@ import icu.windea.pls.model.CwtType
  * @property valueType 选项值类型，用于后续解析与校验。
  * @property optionConfigs 子规则列表（其中嵌套的下级选项和选项值对应的规则）。
  *
- * @see CwtMemberElement
+ * @see CwtMember
  * @see CwtOptionComment
- * @see CwtOptionMemberElement
+ * @see CwtOptionMember
  * @see icu.windea.pls.config.util.data.CwtOptionDataAccessor
  * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors
  */
-sealed interface CwtOptionMemberConfig<out T : CwtOptionMemberElement> : CwtDetachedConfig {
+sealed interface CwtOptionMemberConfig<out T : CwtOptionMember> : CwtDetachedConfig {
     val value: String
     val valueType: CwtType
     val optionConfigs: List<CwtOptionMemberConfig<*>>?

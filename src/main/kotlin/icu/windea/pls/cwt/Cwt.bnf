@@ -41,7 +41,7 @@ property ::= property_key property_separator property_value {
   recoverWhile="#auto" // 当前属性解析失败时，需要跳过继续解析下一个
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtMemberElement"
+    "icu.windea.pls.cwt.psi.CwtMember"
   ]
   methods=[
     propertyKey="property_key" propertyValue="value"
@@ -61,8 +61,8 @@ private property_value ::= value
 value ::= boolean | int | float | string | block {
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
-    "icu.windea.pls.cwt.psi.CwtMemberElement"
-    "icu.windea.pls.cwt.psi.CwtOptionMemberElement"
+    "icu.windea.pls.cwt.psi.CwtMember"
+    "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
   methods=[getIcon getName getValue setValue]
 }
@@ -120,7 +120,7 @@ option ::= option_key option_separator option_value {
   pin=1
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
-    "icu.windea.pls.cwt.psi.CwtOptionMemberElement"
+    "icu.windea.pls.cwt.psi.CwtOptionMember"
   ]
   methods=[
     option_key="option_key" option_value="value"

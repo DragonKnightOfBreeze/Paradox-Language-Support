@@ -15,7 +15,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.systemScopes
-import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.lang.matching.findFromPattern
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -38,7 +38,7 @@ import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.properties
 
@@ -118,7 +118,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
                         val eventType = info.typeExpression.substringBefore('.')
                         if (eventType != definitionInfo.type) return@f //matches definition type
                         val e = psiFile.findElementAt(info.elementOffset) ?: return@f
-                        val m = e.parentOfType<ParadoxScriptMemberElement>(withSelf = false) ?: return@f
+                        val m = e.parentOfType<ParadoxScriptMember>(withSelf = false) ?: return@f
                         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(m) ?: return@f
                         val map = with(scopeContext) {
                             buildMap {

@@ -10,7 +10,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.CwtSeparatorType;
 import javax.swing.Icon;
 
-public interface CwtOption extends CwtNamedElement, CwtOptionMemberElement {
+public interface CwtOption extends CwtNamedElement, CwtOptionMember {
 
   @NotNull
   CwtOptionKey getOptionKey();

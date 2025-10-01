@@ -26,7 +26,7 @@ import icu.windea.pls.model.Occurrence
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.members
@@ -79,7 +79,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 doCheck(element, position, configs)
             }
 
-            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
+            private fun doCheck(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>) {
                 if (skipCheck(element, configs)) return
                 val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(element, configs)
                 if (occurrenceMap.isEmpty()) return
@@ -91,7 +91,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 }
             }
 
-            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
+            private fun skipCheck(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句不为空且可以精确匹配多个子句规则时，不适用此检查
                 return when {
                     configs.isEmpty() -> true
@@ -115,7 +115,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                 return null
             }
 
-            private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
+            private fun doCheckOccurrence(element: ParadoxScriptMember, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
                 val (actual, _, max, _, relaxMax) = occurrence
                 if (max != null && actual > max) {
                     val isKey = configExpression.isKey

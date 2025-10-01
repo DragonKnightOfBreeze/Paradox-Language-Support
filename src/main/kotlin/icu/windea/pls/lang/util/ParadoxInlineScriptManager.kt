@@ -43,7 +43,7 @@ import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
@@ -187,7 +187,7 @@ object ParadoxInlineScriptManager {
      *
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
-    fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+    fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if (!PlsFacade.getSettings().inference.configContextForInlineScripts) return emptyList()
         return withRecursionGuard {
             withRecursionCheck(expression) {
@@ -201,20 +201,20 @@ object ParadoxInlineScriptManager {
         }
     }
 
-    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         val fromConfig = doGetInferredContextConfigsFromConfig(expression, contextElement, context, matchOptions)
         if (fromConfig.isNotEmpty()) return fromConfig
 
         return doGetInferredContextConfigsFromUsages(expression, contextElement, context, matchOptions)
     }
 
-    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         val configGroup = context.configGroup
         val config = configGroup.extendedInlineScripts.findFromPattern(expression, contextElement, configGroup, matchOptions) ?: return emptyList()
         return config.getContextConfigs()
     }
 
-    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
         val fastInference = PlsFacade.getSettings().inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
@@ -223,7 +223,7 @@ object ParadoxInlineScriptManager {
         ParadoxInlineScriptUsageSearch.search(expression, selector).processQueryAsync p@{ p ->
             ProgressManager.checkCanceled()
             if (!p.name.isInlineScriptUsage()) return@p true // 再次确认
-            val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
+            val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
             if (fastInference && usageConfigs.isNotNullOrEmpty()) {

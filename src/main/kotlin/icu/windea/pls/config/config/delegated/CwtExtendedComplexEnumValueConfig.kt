@@ -4,7 +4,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 
 /**
  * 复杂枚举值的扩展规则。
@@ -33,7 +33,7 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * @property type 枚举名。
  * @property hint 提示文本（可选）。
  */
-interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey
     val name: String
     val type: String

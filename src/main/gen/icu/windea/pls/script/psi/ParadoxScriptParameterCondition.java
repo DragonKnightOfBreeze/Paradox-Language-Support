@@ -31,7 +31,7 @@ public interface ParadoxScriptParameterCondition extends ParadoxScriptMemberCont
 
   @Nullable String getPresentationText();
 
-  @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList();
+  @NotNull List<@NotNull ParadoxScriptMember> getMemberList();
 
   @NotNull List<@NotNull PsiElement> getComponents();
 

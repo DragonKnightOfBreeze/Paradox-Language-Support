@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 
 /**
  * 游戏规则的扩展规则。
@@ -33,7 +33,7 @@ import icu.windea.pls.cwt.psi.CwtMemberElement
  * @property hint 额外提示信息（可选）。
  * @property configForDeclaration 可直接用于检查定义声明的结构，经过处理后的属性规则（如果重载了声明规则）。
  */
-interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
+interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey
     val name: String
     @FromOption("hint: string?")

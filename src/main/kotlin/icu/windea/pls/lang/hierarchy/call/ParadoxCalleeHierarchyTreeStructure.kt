@@ -26,7 +26,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.isExpression
@@ -64,7 +64,7 @@ class ParadoxCalleeHierarchyTreeStructure(
 
             override fun visitElement(element: PsiElement) {
                 //兼容向下内联的情况（即使内联后为自身）
-                if (element is ParadoxScriptMemberElement) {
+                if (element is ParadoxScriptMember) {
                     val inlined = ParadoxInlineSupport.getInlinedElement(element)
                     if (inlined != null) {
                         searchElement(inlined, descriptor, descriptors)

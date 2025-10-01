@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtBlockElement
 import icu.windea.pls.cwt.psi.CwtElementTypes.LEFT_BRACE
 import icu.windea.pls.cwt.psi.CwtElementTypes.RIGHT_BRACE
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 
 /**
@@ -27,7 +27,7 @@ class CwtMover : ContainerBasedMover() {
 
     override fun isContainerElement(element: PsiElement) = element is CwtBlockElement
 
-    override fun isMemberElement(element: PsiElement) = element is CwtMemberElement
+    override fun isMemberElement(element: PsiElement) = element is CwtMember
 
     override fun canAttachComments(memberElement: PsiElement) = true
 

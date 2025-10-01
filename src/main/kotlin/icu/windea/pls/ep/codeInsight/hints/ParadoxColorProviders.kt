@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LEFT_BRACE
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.isBlockMember
@@ -165,7 +165,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
     }
 
     private fun getColorType(element: ParadoxScriptBlock): String? {
-        val elementToGetOption: ParadoxScriptMemberElement? = when {
+        val elementToGetOption: ParadoxScriptMember? = when {
             element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
             element.isBlockMember() -> element
             else -> null

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionPathManager
 import icu.windea.pls.model.paths.ParadoxExpressionPath
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
  * 用于提供脚本表达式所在的CWT规则上下文。
@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberElement
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, matchOptions: Int = Options.Default): String?
 
@@ -33,7 +33,7 @@ interface CwtConfigContextProvider {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
 
-        fun getContext(element: ParadoxScriptMemberElement): CwtConfigContext? {
+        fun getContext(element: ParadoxScriptMember): CwtConfigContext? {
             val file = element.containingFile ?: return null
             val elementPath = ParadoxExpressionPathManager.get(element) ?: return null
             val gameType = selectGameType(file)

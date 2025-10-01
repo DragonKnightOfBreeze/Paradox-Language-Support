@@ -109,9 +109,9 @@ fun PsiElement.findProperty(
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  * @see ParadoxExpressionPath
- * @see ParadoxScriptMemberElement
+ * @see ParadoxScriptMember
  */
-fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
+fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
     path: String,
     targetType: Class<T>,
     ignoreCase: Boolean = true,
@@ -119,7 +119,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     inline: Boolean = false
 ): T? {
     if (language !is ParadoxScriptLanguage) return null
-    var current: ParadoxScriptMemberElement = this
+    var current: ParadoxScriptMember = this
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
         for (subPath in elementPath.subPaths) {
@@ -172,7 +172,7 @@ fun PsiElement.findParentProperty(
     var current = this
     when {
         fromParentBlock -> current = current.parentOfType<ParadoxScriptBlockElement>() ?: return null
-        current is ParadoxScriptMemberElement -> current = current.parent ?: return null
+        current is ParadoxScriptMember -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
         ProgressManager.checkCanceled()
@@ -198,7 +198,7 @@ fun PsiElement.findParentProperty(
     var current = this
     when {
         fromParentBlock -> current = current.parentOfType<ParadoxScriptBlockElement>() ?: return null
-        current is ParadoxScriptMemberElement -> current = current.parent ?: return null
+        current is ParadoxScriptMember -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
         ProgressManager.checkCanceled()
@@ -216,10 +216,10 @@ fun PsiElement.findParentProperty(
  * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
  * @see ParadoxExpressionPath
- * @see ParadoxScriptMemberElement
+ * @see ParadoxScriptMember
  * @see ParadoxDefinitionTypeExpression
  */
-fun ParadoxScriptMemberElement.findParentByPath(
+fun ParadoxScriptMember.findParentByPath(
     path: String = "",
     ignoreCase: Boolean = true,
     definitionType: String? = null

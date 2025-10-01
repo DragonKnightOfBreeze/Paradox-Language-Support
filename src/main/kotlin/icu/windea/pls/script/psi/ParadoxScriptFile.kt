@@ -12,7 +12,7 @@ import icu.windea.pls.script.navigation.ParadoxScriptItemPresentation
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptMember, ParadoxScriptDefinitionElement {
     companion object {
         @JvmField
         val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)

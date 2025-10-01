@@ -159,7 +159,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsPatternConstants
 import icu.windea.pls.model.paths.ParadoxExpressionPath
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -203,7 +203,7 @@ object ParadoxCompletionManager {
         context.configGroup = configGroup
     }
 
-    fun addKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
+    fun addKeyCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
 
@@ -253,7 +253,7 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addValueCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
+    fun addValueCompletions(memberElement: ParadoxScriptMember, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
 

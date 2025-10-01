@@ -113,7 +113,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -293,11 +293,11 @@ object ParadoxExpressionManager {
 
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         ProgressManager.checkCanceled()
-        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return null
         return doGetConfigContextFromCache(memberElement)
     }
 
-    private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
+    private fun doGetConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
             //also depends on localisation files (for loc references)
@@ -305,12 +305,12 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun doGetConfigContext(element: ParadoxScriptMemberElement): CwtConfigContext? {
+    private fun doGetConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
         return CwtConfigContextProvider.getContext(element)
     }
 
     fun getConfigsForConfigContext(
-        element: ParadoxScriptMemberElement,
+        element: ParadoxScriptMember,
         rootConfigs: List<CwtMemberConfig<*>>,
         elementPathFromRoot: ParadoxExpressionPath,
         configGroup: CwtConfigGroup,
@@ -321,7 +321,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetConfigsForConfigContext(
-        element: ParadoxScriptMemberElement,
+        element: ParadoxScriptMember,
         rootConfigs: List<CwtMemberConfig<*>>,
         elementPathFromRoot: ParadoxExpressionPath,
         configGroup: CwtConfigGroup,
@@ -349,7 +349,7 @@ object ParadoxExpressionManager {
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
             val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.drop(i).dropLast(1))
-            val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMemberElement>() ?: return emptyList()
+            val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null
@@ -434,7 +434,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doInlineConfigForConfigContext(
-        element: ParadoxScriptMemberElement,
+        element: ParadoxScriptMember,
         key: String,
         isQuoted: Boolean,
         config: CwtPropertyConfig,
@@ -476,7 +476,7 @@ object ParadoxExpressionManager {
     ): List<CwtMemberConfig<*>> {
 
         ProgressManager.checkCanceled()
-        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)
         val cacheKey = buildString {
             append('#').append(orDefault.toInt())
@@ -702,7 +702,7 @@ object ParadoxExpressionManager {
     /**
      * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
      */
-    fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    fun getChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if (configs.isEmpty()) return emptyMap()
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
@@ -714,7 +714,7 @@ object ParadoxExpressionManager {
         return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs).optimized() }
     }
 
-    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
+    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             //also depends on localisation files (for loc references)
@@ -727,7 +727,7 @@ object ParadoxExpressionManager {
         return ContainerUtil.createConcurrentSoftValueMap()
     }
 
-    private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
+    private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
         if (configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().configGroup
         //这里需要先按优先级排序

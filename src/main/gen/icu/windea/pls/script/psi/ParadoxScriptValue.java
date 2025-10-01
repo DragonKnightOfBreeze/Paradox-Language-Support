@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMemberElement {
+public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMember {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

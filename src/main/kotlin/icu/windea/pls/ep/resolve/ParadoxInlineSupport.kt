@@ -5,7 +5,7 @@ import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.supportsByAnnotation
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
  * 用于提供对脚本片段的内联逻辑的支持。
@@ -19,12 +19,12 @@ import icu.windea.pls.script.psi.ParadoxScriptMemberElement
  */
 @WithGameTypeEP
 interface ParadoxInlineSupport {
-    fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
+    fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
 
-        fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
+        fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember? {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null

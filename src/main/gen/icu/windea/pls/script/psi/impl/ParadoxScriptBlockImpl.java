@@ -78,7 +78,7 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList() {
+  public @NotNull List<@NotNull ParadoxScriptMember> getMemberList() {
     return ParadoxScriptPsiImplUtil.getMemberList(this);
   }
 

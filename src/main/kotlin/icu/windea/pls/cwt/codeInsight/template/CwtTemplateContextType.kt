@@ -7,7 +7,7 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.editor.CwtSyntaxHighlighter
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 
 abstract class CwtTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
@@ -34,7 +34,7 @@ abstract class CwtTemplateContextType(presentableName: String) : TemplateContext
             val startOffset = templateActionContext.startOffset
             val start = file.findElementAt(startOffset) ?: return false
             val startElement = start.parents(withSelf = false)
-                .find { it is CwtMemberElement }
+                .find { it is CwtMember }
             return startElement != null
         }
 

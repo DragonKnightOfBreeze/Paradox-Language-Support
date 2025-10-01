@@ -12,7 +12,7 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighter
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 
 abstract class ParadoxScriptTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
@@ -43,7 +43,7 @@ abstract class ParadoxScriptTemplateContextType(presentableName: String) : Templ
                 .find {
                     if (it is ParadoxScriptInlineMath && it.startOffset != startOffset) return false
                     if (it is ParadoxScriptParameterConditionExpression && it.startOffset != startOffset) return false
-                    it is ParadoxScriptMemberElement
+                    it is ParadoxScriptMember
                 }
             return startElement != null
         }

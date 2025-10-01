@@ -25,7 +25,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.config.findFromPattern
+import icu.windea.pls.lang.matching.findFromPattern
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
@@ -44,7 +44,7 @@ import icu.windea.pls.lang.util.PlsVfsManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -185,7 +185,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
                 //这里使用合并后的子规则，即使parentProperty可以精确匹配
-                val parentMemberElement = element.parentOfType<ParadoxScriptMemberElement>() ?: return emptyList()
+                val parentMemberElement = element.parentOfType<ParadoxScriptMember>() ?: return emptyList()
                 val parentConfigContext = ParadoxExpressionManager.getConfigContext(parentMemberElement) ?: return emptyList()
                 return buildList {
                     val contextConfigs = parentConfigContext.getConfigs()

@@ -9,7 +9,7 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface CwtValue extends CwtExpressionElement, CwtMemberElement, CwtOptionMemberElement {
+public interface CwtValue extends CwtExpressionElement, CwtMember, CwtOptionMember {
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

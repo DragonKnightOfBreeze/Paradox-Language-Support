@@ -8,9 +8,9 @@ import icu.windea.pls.config.configGroup.extendedDynamicValues
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.extendedScriptedVariables
-import icu.windea.pls.config.findFromPattern
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.Source
+import icu.windea.pls.lang.matching.findFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression

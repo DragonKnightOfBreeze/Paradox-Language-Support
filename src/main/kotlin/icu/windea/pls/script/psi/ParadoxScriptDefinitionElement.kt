@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
  * @see ParadoxScriptFile
  * @see ParadoxScriptProperty
  */
-interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMemberElement {
+interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScriptMember {
     /**
      * 注意：如果这个对象是定义，这里得到的是定义的类型键（typeKey），而不一定是定义的名字（definitionName）。
      */

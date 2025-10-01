@@ -3,7 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.Occurrence
 
@@ -32,7 +32,7 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
  *
  * 说明：参数通过内联描述体现——[contextElement] 与 [project] 共同用于解析 `define` 的当前值。
  */
-fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
+fun <T : CwtMember> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
     val cardinality = this.optionData { cardinality } ?: return Occurrence(0, null, null)
     val cardinalityMinDefine = this.optionData { cardinalityMinDefine }
     val cardinalityMaxDefine = this.optionData { cardinalityMaxDefine }

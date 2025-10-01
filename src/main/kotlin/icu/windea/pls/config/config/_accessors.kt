@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.model.CwtType
 
@@ -57,7 +57,7 @@ var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfi
 var CwtValueConfig.tagType: CwtTagType? by createKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则的被覆写前的原始规则（用于规则覆盖、来源追踪等场景）。*/
-var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMember>? by createKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则对应的覆写提供者（来源于可覆写的规则分组）。*/
 var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKey(CwtMemberConfig.Keys)

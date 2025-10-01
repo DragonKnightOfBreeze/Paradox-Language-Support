@@ -20,7 +20,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.isExpression
@@ -57,7 +57,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 doCheck(element, position, configs, expression)
             }
 
-            private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>, expression: String) {
+            private fun doCheck(element: ParadoxScriptMember, position: PsiElement, configs: List<CwtMemberConfig<*>>, expression: String) {
                 if (skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
@@ -67,7 +67,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 holder.registerProblem(position, description)
             }
 
-            private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
+            private fun skipCheck(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句可以精确匹配多个子句规则时，适用此检查
                 if (configs.isEmpty()) return true
                 //这里需要先按实际对应的规则位置去重
@@ -84,7 +84,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
 
-            private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+            private fun filterConfigs(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
                 val configsToCheck = configs.filter { config ->
                     val childConfigs = config.configs
                     childConfigs != null && configs.any { config0 ->

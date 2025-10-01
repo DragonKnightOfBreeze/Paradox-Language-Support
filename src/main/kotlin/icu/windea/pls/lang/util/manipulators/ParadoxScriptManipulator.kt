@@ -6,7 +6,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.ep.resolve.ParadoxInlineSupport
 import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Member as MemberOptions
 
@@ -28,7 +28,7 @@ object ParadoxScriptManipulator {
         return ParadoxMemberSequence(delegate, options)
     }
 
-    private fun doBuildMemberSequence(file: PsiFile, options: MemberOptions): Sequence<ParadoxScriptMemberElement> {
+    private fun doBuildMemberSequence(file: PsiFile, options: MemberOptions): Sequence<ParadoxScriptMember> {
         if (file !is ParadoxScriptFile) return emptySequence()
         return sequence b@{
             val blockElement = file.block ?: return@b
@@ -36,20 +36,20 @@ object ParadoxScriptManipulator {
         }
     }
 
-    private fun doBuilderMemberSequence(blockElement: PsiElement, options: MemberOptions): Sequence<ParadoxScriptMemberElement> {
+    private fun doBuilderMemberSequence(blockElement: PsiElement, options: MemberOptions): Sequence<ParadoxScriptMember> {
         return sequence {
             doYieldMembers(blockElement, options)
         }
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMemberElement>.doYieldMembers(element: PsiElement, options: MemberOptions) {
+    private suspend fun SequenceScope<ParadoxScriptMember>.doYieldMembers(element: PsiElement, options: MemberOptions) {
         element.children(options.forward).forEach {
-            if (it is ParadoxScriptMemberElement) doYieldMember(it, options)
+            if (it is ParadoxScriptMember) doYieldMember(it, options)
             if (options.conditional && it is ParadoxScriptParameterCondition) doYieldMembers(it, options)
         }
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMemberElement>.doYieldMember(element: ParadoxScriptMemberElement, options: MemberOptions) {
+    private suspend fun SequenceScope<ParadoxScriptMember>.doYieldMember(element: ParadoxScriptMember, options: MemberOptions) {
         yield(element)
         if (options.inline) {
             val inlined = ParadoxInlineSupport.getInlinedElement(element)

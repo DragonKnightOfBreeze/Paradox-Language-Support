@@ -30,7 +30,7 @@ import java.util.concurrent.*
  * @see CwtConfigContextProvider
  */
 class CwtConfigContext(
-    val element: ParadoxScriptMemberElement, // use element directly here
+    val element: ParadoxScriptMember, // use element directly here
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxExpressionPath?,
     val gameType: ParadoxGameType,

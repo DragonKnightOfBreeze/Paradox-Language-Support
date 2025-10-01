@@ -22,7 +22,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -37,10 +37,10 @@ class IncorrectScopeInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxScriptMemberElement) visitMemberElement(element)
+                if (element is ParadoxScriptMember) visitMemberElement(element)
             }
 
-            private fun visitMemberElement(element: ParadoxScriptMemberElement) {
+            private fun visitMemberElement(element: ParadoxScriptMember) {
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 val config = configs.firstOrNull() ?: return
                 if (!ParadoxScopeManager.isScopeContextSupported(element)) return
@@ -66,7 +66,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 }
             }
 
-            private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtMemberConfig<*>): Set<String>? {
+            private fun getSupportedScopes(element: ParadoxScriptMember, config: CwtMemberConfig<*>): Set<String>? {
                 if (config.configExpression.type == CwtDataTypes.AliasKeysField) {
                     val configGroup = config.configGroup
                     val aliasName = config.configExpression.value ?: return null
@@ -97,7 +97,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 return supportedScopes
             }
 
-            private fun getExpressionElement(element: ParadoxScriptMemberElement): ParadoxScriptExpressionElement? {
+            private fun getExpressionElement(element: ParadoxScriptMember): ParadoxScriptExpressionElement? {
                 return when {
                     element is ParadoxScriptProperty -> element.propertyKey
                     element is ParadoxScriptValue -> element

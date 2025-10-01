@@ -60,7 +60,7 @@ public class ParadoxScriptRootBlockImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList() {
+  public @NotNull List<@NotNull ParadoxScriptMember> getMemberList() {
     return ParadoxScriptPsiImplUtil.getMemberList(this);
   }
 

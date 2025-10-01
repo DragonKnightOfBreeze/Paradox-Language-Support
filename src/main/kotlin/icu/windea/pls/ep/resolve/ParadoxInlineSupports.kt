@@ -5,7 +5,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     //这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
 
-    override fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptFile? {
+    override fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptFile? {
         // 排除为空或者带参数的情况
         if (element !is ParadoxScriptProperty) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element).orEmpty()

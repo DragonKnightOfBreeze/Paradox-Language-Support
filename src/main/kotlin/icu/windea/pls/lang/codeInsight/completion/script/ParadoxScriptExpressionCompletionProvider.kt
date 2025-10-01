@@ -19,7 +19,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -63,7 +63,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         if (mayBeKey) {
             //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
-            val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
+            val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
                 ParadoxCompletionManager.addKeyCompletions(memberElement, context, resultToUse)
             }
@@ -71,7 +71,7 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         if (mayBeValue) {
             //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
-            val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
+            val memberElement = blockElement?.parentOfType<ParadoxScriptMember>(withSelf = true)
             if (memberElement != null) {
                 ParadoxCompletionManager.addValueCompletions(memberElement, context, resultToUse)
             }

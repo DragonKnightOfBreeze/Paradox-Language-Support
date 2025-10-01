@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptMemberElement
+import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -115,7 +115,7 @@ object ParadoxExpressionPathManager {
      * 最后将它们转化为字符串列表（基于值，顺序从后往前）。
      */
     fun getKeyPrefixes(element: PsiElement): List<String> {
-        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
+        val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (memberElement !is ParadoxScriptProperty && memberElement !is ParadoxScriptValue) return emptyList()
         var result: MutableList<String>? = null
         memberElement.siblings(forward = false, withSelf = false).forEach f@{ e ->
