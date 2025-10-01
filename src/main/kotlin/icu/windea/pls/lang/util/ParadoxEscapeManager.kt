@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import java.util.*
 import java.util.function.IntUnaryOperator
 
+@Suppress("unused")
 object ParadoxEscapeManager {
     enum class Type {
         Default, Html, Inlay
@@ -10,7 +11,7 @@ object ParadoxEscapeManager {
 
     fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
-        value.forEach f@{ c ->
+        for (c in value) {
             if (isEscape) {
                 isEscape = false
                 when (c) {
@@ -38,10 +39,10 @@ object ParadoxEscapeManager {
                         builder.append(c)
                     }
                 }
-                return@f
+                continue
             }
-            when {
-                c == '\\' -> isEscape = true
+            when (c) {
+                '\\' -> isEscape = true
                 else -> builder.append(c)
             }
         }
@@ -54,12 +55,12 @@ object ParadoxEscapeManager {
     fun unescapeStringForLocalisationTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         var isLeftBracket = false
-        value.forEach f@{ c ->
+        for (c in value) {
             if (isLeftBracket) {
                 isLeftBracket = false
                 if (c == '[') {
                     builder.append('[')
-                    return@f
+                    continue
                 } else {
                     builder.append('[')
                 }
@@ -91,11 +92,11 @@ object ParadoxEscapeManager {
                         builder.append(c)
                     }
                 }
-                return@f
+                continue
             }
-            when {
-                c == '\\' -> isEscape = true
-                c == '[' -> isLeftBracket = true
+            when (c) {
+                '\\' -> isEscape = true
+                '[' -> isLeftBracket = true
                 else -> builder.append(c)
             }
         }
@@ -111,10 +112,7 @@ object ParadoxEscapeManager {
             out.append(chars)
             return true
         }
-        return parseScriptExpressionCharactersWithEscape(out, chars, sourceOffsets)
-    }
 
-    private fun parseScriptExpressionCharactersWithEscape(out: StringBuilder, chars: String, sourceOffsets: IntArray?): Boolean {
         val outOffset = out.length
         var index = 0
         while (index < chars.length) {
@@ -128,8 +126,7 @@ object ParadoxEscapeManager {
                 continue
             }
             if (index == chars.length) return false
-            val c1 = chars[index++]
-            when (c1) {
+            when (val c1 = chars[index++]) {
                 '"' -> {
                     out.append('"')
                     if (sourceOffsets != null) {
