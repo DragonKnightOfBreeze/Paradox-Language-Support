@@ -14,11 +14,12 @@ internal class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver {
 
     private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
         val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.intern() ?: return null
-        val typeKeyFilter: ReversibleValue<Set<String>>? = config.optionData { typeKeyFilter }
-        val typeKeyRegex: Regex? = config.optionData { typeKeyRegex }
-        val startsWith: String? = config.optionData { startsWith }
-        val onlyIfNot: Set<String>? = config.optionData { onlyIfNot }
-        return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, onlyIfNot?.optimized())
+        val typeKeyFilter = config.optionData { typeKeyFilter }
+        val typeKeyRegex = config.optionData { typeKeyRegex }
+        val startsWith = config.optionData { startsWith }
+        val onlyIfNot = config.optionData { onlyIfNot }
+        val group = config.optionData { group }
+        return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, onlyIfNot?.optimized(), group)
     }
 }
 
@@ -28,11 +29,8 @@ private class CwtSubtypeConfigImpl(
     override val typeKeyFilter: ReversibleValue<Set<String>>? = null,
     override val typeKeyRegex: Regex? = null,
     override val startsWith: String? = null,
-    override val onlyIfNot: Set<String>? = null
+    override val onlyIfNot: Set<String>? = null,
+    override val group: String? = null,
 ) : UserDataHolderBase(), CwtSubtypeConfig {
-    override fun inGroup(groupName: String): Boolean {
-        return config.optionData { group } == groupName
-    }
-
     override fun toString() = "CwtSubtypeConfigImpl(name='$name')"
 }

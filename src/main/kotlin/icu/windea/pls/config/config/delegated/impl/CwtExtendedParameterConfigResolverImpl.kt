@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.optionFlags
 import icu.windea.pls.config.util.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -23,7 +22,7 @@ internal class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConf
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextKey = config.optionData { contextKey } ?: return null
         val contextConfigsType = config.optionData { contextConfigsType }
-        val inherit = config.optionFlags.inherit
+        val inherit = config.optionData { flags }.inherit
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
 }

@@ -107,25 +107,25 @@ object ParadoxEventManager {
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {
         val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllTypes) {
-            eventConfig.subtypes.values.filter { it.inGroup("event_type") }.map { it.name }.toSet()
+            eventConfig.subtypes.values.filter { it.group == "event_type" }.map { it.name }.toSet()
         }
     }
 
     fun getAllTypeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
         val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
-        return eventConfig.subtypes.values.filter { it.inGroup("event_type") }
+        return eventConfig.subtypes.values.filter { it.group == "event_type" }
     }
 
     fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
         val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllAttributes) {
-            eventConfig.subtypes.values.filter { it.inGroup("event_attribute") }.map { it.name }.toSet()
+            eventConfig.subtypes.values.filter { it.group == "event_attribute" }.map { it.name }.toSet()
         }
     }
 
     fun getAllAttributeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
         val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
-        return eventConfig.subtypes.values.filter { it.inGroup("event_attribute") }
+        return eventConfig.subtypes.values.filter { it.group == "event_attribute" }
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
@@ -134,7 +134,7 @@ object ParadoxEventManager {
 
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
         return definitionInfo.getOrPutUserData(Keys.eventType) {
-            definitionInfo.subtypeConfigs.find { it.inGroup("event_type") }?.name
+            definitionInfo.subtypeConfigs.find { it.group == "event_type" }?.name
         }
     }
 
@@ -144,7 +144,7 @@ object ParadoxEventManager {
 
     fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
         return definitionInfo.getOrPutUserData(Keys.eventAttributes) {
-            definitionInfo.subtypeConfigs.filter { it.inGroup("event_attribute") }.mapTo(mutableSetOf()) { it.name }
+            definitionInfo.subtypeConfigs.filter { it.group == "event_attribute" }.mapTo(mutableSetOf()) { it.name }
         }
     }
 

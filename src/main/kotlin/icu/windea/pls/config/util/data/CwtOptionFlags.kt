@@ -12,14 +12,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 
 /**
- * 选项标志（Option Flags）。
+ * 选项标志。
  *
  * 成员规则上可以存在多个单独且类似标识符的选项值，用于附加布尔型标志。
  * 本类统一解析这些标志，便于检查特定的状态。
- *
- * 参考：
- * - CWTools 指引：[references/cwt/guidance.md](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
- * - PLS 规则系统说明：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
  *
  * @see CwtOptionValueConfig
  */
@@ -30,6 +26,8 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 适用对象：位置规则（[CwtLocationConfig]）。
      *
      * CWTools 兼容性：兼容。
+     *
+     * @see CwtLocationConfig
      */
     val required = value.contains("required")
 
@@ -40,6 +38,8 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 适用对象：位置规则（[CwtLocationConfig]）。
      *
      * CWTools 兼容性：兼容。
+     *
+     * @see CwtLocationConfig
      */
     val optional = value.contains("optional")
 
@@ -50,6 +50,8 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      * 适用对象：位置规则（[CwtLocationConfig]）。
      *
      * CWTools 兼容性：兼容。
+     *
+     * @see CwtLocationConfig
      */
     val primary = value.contains("primary")
 
@@ -61,6 +63,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      *
      * CWTools 兼容性：PLS 扩展。
      *
+     * @see CwtExtendedInlineScriptConfig
      * @see CwtExtendedParameterConfig
      */
     val inherit = value.contains("inherit")

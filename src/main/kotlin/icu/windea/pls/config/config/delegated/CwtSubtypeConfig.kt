@@ -36,6 +36,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property typeKeyRegex 类型键正则过滤器（忽略大小写）。
  * @property startsWith 类型键前缀要求（大小写敏感与否取决于实现，这里按字面匹配）。
  * @property onlyIfNot 排除名单：名称不在集合内才匹配。
+ * @property group 分组名。
  *
  * @see CwtTypeConfig
  */
@@ -50,9 +51,8 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     val startsWith: String?
     @FromOption("only_if_not: string[]?")
     val onlyIfNot: Set<String>?
-
-    /** 判断该子类型是否属于名为 [groupName] 的分组（若声明了分组信息）。*/
-    fun inGroup(groupName: String): Boolean
+    @FromOption("group: string?")
+    val group: String?
 
     interface Resolver {
         /** 由属性规则解析为子类型规则。*/

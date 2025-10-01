@@ -3,7 +3,7 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
-import icu.windea.pls.config.config.optionFlags
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 
 internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver {
@@ -15,7 +15,7 @@ internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver {
         // default to primary for `icon` if it represents an image location (by inference)
         val key = config.key
         val expression = config.stringValue ?: return null
-        val optionFlags = config.optionFlags
+        val optionFlags = config.optionData { flags }
         val required = optionFlags.required
         val optional = optionFlags.optional
         val primary = optionFlags.primary

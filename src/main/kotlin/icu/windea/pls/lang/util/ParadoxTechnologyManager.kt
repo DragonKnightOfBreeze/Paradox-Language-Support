@@ -92,13 +92,13 @@ object ParadoxTechnologyManager {
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
             val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
-                eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }.map { it.name }.toSet()
+                eventConfig.subtypes.values.filter { it.group == "technology_attribute" }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
             val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
-            return eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }
+            return eventConfig.subtypes.values.filter { it.group == "technology_attribute" }
         }
 
         fun getTier(element: ParadoxScriptDefinitionElement): String? {
@@ -119,7 +119,7 @@ object ParadoxTechnologyManager {
 
         fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
             return definitionInfo.getOrPutUserData(Keys.technologyAttributes) {
-                definitionInfo.subtypeConfigs.filter { it.inGroup("technology_attribute") }.mapTo(mutableSetOf()) { it.name }
+                definitionInfo.subtypeConfigs.filter { it.group == "technology_attribute" }.mapTo(mutableSetOf()) { it.name }
             }
         }
 

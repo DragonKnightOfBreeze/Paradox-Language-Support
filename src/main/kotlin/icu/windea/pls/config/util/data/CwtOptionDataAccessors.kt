@@ -50,6 +50,15 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     }
 
     /**
+     * 选项标志。
+     *
+     * 成员规则上可以存在多个单独且类似标识符的选项值，用于附加布尔型标志。
+     */
+    val flags: CwtOptionDataAccessor<CwtOptionFlags> by create {
+        CwtOptionFlags.from(this)
+    }
+
+    /**
      * 允许的出现次数范围（基数表达式）。
      *
      * 指定后续规则项的匹配次数上下限，形如 `min..max`，其中 `max` 可为 `inf` 或 `~1` 等形式。
@@ -282,17 +291,17 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
     }
 
     /**
-     * 分组名（group）。
+     * 分组名。
      *
-     * 常用于 `subtype[...]` 的分组管理，也可在 UI 展示中使用。
+     * 用于对子类型进行分组。
      *
-     * 适用对象：子类型规则（[CwtSubtypeConfig]）、以及其它需要分组展示的扩展规则。
+     * 适用对象：子类型规则（[CwtSubtypeConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      *
      * 示例：`## group = ships`
      */
-    val group: CwtOptionDataAccessor<String?> by create(cached = true) {
+    val group: CwtOptionDataAccessor<String?> by create {
         findOption("group")?.stringValue
     }
 
