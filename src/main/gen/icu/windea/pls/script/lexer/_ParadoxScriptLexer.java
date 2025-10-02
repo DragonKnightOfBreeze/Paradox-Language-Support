@@ -12,6 +12,11 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
+// Lexer for Paradox Script.
+// Notes:
+// - Uses a stack to manage nested braces/brackets.
+// - templateStateRef/parameterStateRef track states to resume after parameters/inline sections.
+
 
 public class _ParadoxScriptLexer implements FlexLexer {
 
@@ -49,8 +54,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
-     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15,
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
+     8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 
     16, 16, 17, 17, 18, 18
   };
 
@@ -311,39 +316,39 @@ public class _ParadoxScriptLexer implements FlexLexer {
     "\40\0\1\172\2\0\47\101\1\107\3\0\1\107\1\173"+
     "\2\0\6\107\4\0\2\107\1\0\1\107\1\0\12\107"+
     "\1\0\1\107\2\0\2\107\5\110\1\111\1\110\1\0"+
-    "\15\110\1\174\70\110\1\113\3\0\1\113\2\0\10\113"+
-    "\1\0\2\113\1\0\16\113\1\0\1\113\2\0\2\113"+
-    "\12\0\4\115\5\0\1\115\3\0\12\115\20\0\4\120"+
-    "\5\0\1\120\3\0\12\120\6\0\1\122\3\0\2\122"+
-    "\2\0\6\122\4\0\2\122\1\0\1\122\1\0\12\122"+
-    "\1\0\1\122\2\0\2\122\1\0\3\124\40\0\1\124"+
-    "\14\0\4\126\5\0\1\126\3\0\12\126\6\0\2\132"+
-    "\1\0\3\132\1\0\15\132\1\0\1\132\1\0\12\132"+
-    "\1\0\1\132\1\0\4\132\1\133\1\124\1\133\2\132"+
-    "\1\0\15\132\1\0\1\132\1\0\12\132\1\0\1\132"+
-    "\1\0\1\133\2\132\1\0\3\135\1\140\11\0\4\140"+
-    "\22\0\1\135\2\0\1\175\3\142\1\176\1\154\10\175"+
-    "\4\176\3\175\1\177\16\175\1\142\2\175\2\27\2\175"+
-    "\42\27\1\175\24\0\1\151\22\0\1\24\3\135\1\136"+
-    "\1\137\1\0\7\24\4\140\15\24\1\200\1\24\1\0"+
+    "\15\110\1\174\70\110\5\113\2\0\10\113\1\0\2\113"+
+    "\1\0\2\113\1\0\10\113\1\0\2\113\1\0\1\113"+
+    "\1\0\3\113\12\0\4\115\5\0\1\115\3\0\12\115"+
+    "\20\0\4\120\5\0\1\120\3\0\12\120\6\0\1\122"+
+    "\3\0\2\122\2\0\6\122\4\0\2\122\1\0\1\122"+
+    "\1\0\12\122\1\0\1\122\2\0\2\122\1\0\3\124"+
+    "\40\0\1\124\14\0\4\126\5\0\1\126\3\0\12\126"+
+    "\6\0\2\132\1\0\3\132\1\0\15\132\1\0\1\132"+
+    "\1\0\12\132\1\0\1\132\1\0\4\132\1\133\1\124"+
+    "\1\133\2\132\1\0\15\132\1\0\1\132\1\0\12\132"+
+    "\1\0\1\132\1\0\1\133\2\132\1\0\3\135\1\140"+
+    "\11\0\4\140\22\0\1\135\2\0\1\175\3\142\1\176"+
+    "\1\154\10\175\4\176\3\175\1\177\16\175\1\142\2\175"+
+    "\2\27\2\175\42\27\1\175\24\0\1\151\22\0\1\24"+
+    "\3\135\1\136\1\137\1\0\7\24\4\140\15\24\1\200"+
+    "\1\24\1\0\1\24\1\0\1\135\3\24\3\135\1\136"+
+    "\1\137\1\0\7\24\4\140\5\24\1\201\11\24\1\0"+
     "\1\24\1\0\1\135\3\24\3\135\1\136\1\137\1\0"+
-    "\7\24\4\140\5\24\1\201\11\24\1\0\1\24\1\0"+
-    "\1\135\3\24\3\135\1\136\1\137\1\0\7\24\4\140"+
-    "\14\24\1\156\2\24\1\0\1\24\1\0\1\135\2\24"+
-    "\1\0\3\161\13\0\1\162\24\0\1\161\2\0\47\65"+
-    "\1\64\3\0\1\64\1\163\2\0\6\64\4\0\2\64"+
-    "\1\0\1\64\1\0\7\64\1\166\2\64\1\0\1\64"+
-    "\2\0\2\64\5\175\1\154\17\175\1\177\70\175\1\24"+
-    "\1\202\2\135\1\136\1\137\1\0\5\24\1\203\1\24"+
-    "\4\140\17\24\1\204\1\24\1\0\1\135\3\24\1\202"+
-    "\2\135\1\136\1\137\1\0\7\24\4\140\17\24\1\204"+
-    "\1\24\1\0\1\135\2\24\1\0\1\202\2\135\1\140"+
-    "\11\0\4\140\17\0\1\204\2\0\1\135\2\0\1\24"+
-    "\3\135\1\136\1\137\1\0\6\24\1\205\4\140\17\24"+
-    "\1\0\1\24\1\0\1\135\2\24\1\0\1\204\1\0"+
-    "\1\204\5\0\5\204\25\0\1\206\2\204\1\0\1\24"+
-    "\3\135\1\136\1\137\1\0\3\24\1\201\3\24\4\140"+
-    "\17\24\1\0\1\24\1\0\1\135\2\24";
+    "\7\24\4\140\14\24\1\156\2\24\1\0\1\24\1\0"+
+    "\1\135\2\24\1\0\3\161\13\0\1\162\24\0\1\161"+
+    "\2\0\47\65\1\64\3\0\1\64\1\163\2\0\6\64"+
+    "\4\0\2\64\1\0\1\64\1\0\7\64\1\166\2\64"+
+    "\1\0\1\64\2\0\2\64\5\175\1\154\17\175\1\177"+
+    "\70\175\1\24\1\202\2\135\1\136\1\137\1\0\5\24"+
+    "\1\203\1\24\4\140\17\24\1\204\1\24\1\0\1\135"+
+    "\3\24\1\202\2\135\1\136\1\137\1\0\7\24\4\140"+
+    "\17\24\1\204\1\24\1\0\1\135\2\24\1\0\1\202"+
+    "\2\135\1\140\11\0\4\140\17\0\1\204\2\0\1\135"+
+    "\2\0\1\24\3\135\1\136\1\137\1\0\6\24\1\205"+
+    "\4\140\17\24\1\0\1\24\1\0\1\135\2\24\1\0"+
+    "\1\204\1\0\1\204\5\0\5\204\25\0\1\206\2\204"+
+    "\1\0\1\24\3\135\1\136\1\137\1\0\3\24\1\201"+
+    "\3\24\4\140\17\24\1\0\1\24\1\0\1\135\2\24";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[3120];
@@ -374,8 +379,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "ERROR: could not match input",
-    "ERROR: pushback value was too large"
+    "Error: could not match input",
+    "Error: pushback value was too large"
   };
 
   /**
@@ -573,7 +578,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -675,10 +680,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-ERROR occurs.
+   * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException
   {
@@ -846,7 +851,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 68: break;
           case 15:
-            { // 如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
+            { // If the matched text ends with '=', parse as a scripted variable; otherwise parse as a scripted variable reference.
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
             enterState(templateStateRef, yystate());

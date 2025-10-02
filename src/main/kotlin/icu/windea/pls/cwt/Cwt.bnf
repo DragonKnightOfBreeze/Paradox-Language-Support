@@ -16,7 +16,6 @@
 
 // Grammar for CWT (Clausewitz Text) configuration files.
 // Notes:
-// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
 // - Supports properties, blocks, and special option/doc comments with lazy parsing.
 
 // core rules

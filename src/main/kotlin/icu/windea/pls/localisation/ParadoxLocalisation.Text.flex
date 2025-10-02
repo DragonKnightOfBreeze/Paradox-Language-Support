@@ -13,15 +13,13 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 // Lexer for localisation rich text (color codes, parameters, icons, commands, concepts, text formats, text icons).
 // Notes:
-// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
-// - Uses a small stack to remember the state to return to after nested constructs (e.g. §...§!, $, [, £, #, @).
+// - Uses a small stack to remember the state to return to after nested constructs (e.g., §...§!, $, [, £, #, @).
 // - Feature gates are controlled by ParadoxSyntaxConstraint.*.supports(this).
+
 %%
 
 %{
     private ParadoxGameType gameType;
-
-    // Fix state stack for colorful text: push current state on '§', pop on '§!' to correctly restore nested contexts.
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {

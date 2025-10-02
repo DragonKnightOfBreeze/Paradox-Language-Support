@@ -13,6 +13,12 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
+// Lexer for Paradox CSV.
+// Notes:
+// - Tokens are simple: separator ';', comments '#', EOL, and column tokens.
+// - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
+// - QUOTED_COLUMN_TOKEN tolerates an optional closing quote for better error recovery.
+
 
 public class _ParadoxCsvLexer implements FlexLexer {
 
@@ -190,8 +196,8 @@ public class _ParadoxCsvLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "ERROR: could not match input",
-    "ERROR: pushback value was too large"
+    "Error: could not match input",
+    "Error: pushback value was too large"
   };
 
   /**
@@ -338,7 +344,7 @@ public class _ParadoxCsvLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -440,10 +446,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-ERROR occurs.
+   * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException
   {

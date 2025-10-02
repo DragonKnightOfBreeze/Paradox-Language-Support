@@ -20,7 +20,6 @@
 
 // Grammar for Paradox CSV.
 // Notes:
-// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
 // - Header and row share the same item structure; EOL is recognized by lexer token.
 // - Empty first/middle columns are allowed; quoted columns can be unterminated for recovery.
 

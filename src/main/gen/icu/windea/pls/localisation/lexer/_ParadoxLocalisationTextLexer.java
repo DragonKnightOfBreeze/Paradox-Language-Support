@@ -14,6 +14,11 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
+// Lexer for localisation rich text (color codes, parameters, icons, commands, concepts, text formats, text icons).
+// Notes:
+// - Uses a small stack to remember the state to return to after nested constructs (e.g., §...§!, $, [, £, #, @).
+// - Feature gates are controlled by ParadoxSyntaxConstraint.*.supports(this).
+
 
 public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
@@ -550,8 +555,6 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
   /* user code: */
     private ParadoxGameType gameType;
-
-    // NOTE: 修复彩色文本状态栈：在遇到 '§' 时入栈当前状态，'§!' 时出栈，确保在嵌套场景中能正确恢复至之前状态
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
@@ -612,7 +615,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
             yybegin(IN_COLOR_ID);
             return COLORFUL_TEXT_START;
         } else {
-            // skip into IN_COLORFUL_TEXT, rather than fallback
+            // Enter IN_COLORFUL_TEXT directly for robustness
             yypushback(yylength() - 1);
             yybegin(IN_COLORFUL_TEXT);
             return COLORFUL_TEXT_START;

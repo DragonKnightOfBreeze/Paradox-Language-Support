@@ -13,6 +13,10 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
+// Lexer for inline math fragments used in Paradox Script (e.g. @[ ... ]).
+// Notes:
+// - Tracks a simple state for the absolute-value operator using a left/right '|' toggle.
+
 
 public class _ParadoxScriptInlineMathLexer implements FlexLexer {
 
@@ -201,8 +205,8 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "ERROR: could not match input",
-    "ERROR: pushback value was too large"
+    "Error: could not match input",
+    "Error: pushback value was too large"
   };
 
   /**
@@ -340,7 +344,7 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -442,10 +446,10 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-ERROR occurs.
+   * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException
   {

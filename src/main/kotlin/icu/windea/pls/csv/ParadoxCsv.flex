@@ -15,6 +15,7 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 // - Tokens are simple: separator ';', comments '#', EOL, and column tokens.
 // - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
 // - QUOTED_COLUMN_TOKEN tolerates an optional closing quote for better error recovery.
+
 %%
 
 %{

@@ -13,7 +13,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 // Notes:
 // - Uses a stack to manage nested braces/brackets.
 // - templateStateRef/parameterStateRef track states to resume after parameters/inline sections.
-// - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
+
 %%
 
 %{
@@ -133,7 +133,7 @@ SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
 
 WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
-PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\\s\"][^#$=<>?{}\[\]\\s\"]*\"?
+PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without surrounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)

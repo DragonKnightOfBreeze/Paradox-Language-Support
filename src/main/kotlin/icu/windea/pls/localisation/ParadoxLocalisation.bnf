@@ -15,7 +15,6 @@
 
 // Grammar for Paradox localisation files (.yml style with locale headers and properties).
 // Notes:
-// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
 // - Locale header vs property is resolved by the lexer (see ParadoxLocalisation.flex).
 // - Property values are lazy-parsed to support rich text features without over-tokenizing at top level.
 

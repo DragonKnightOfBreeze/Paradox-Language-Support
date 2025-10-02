@@ -9,8 +9,8 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 // Lexer for CWT option comment blocks (## ...), with embedded options.
 // Notes:
-// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
 // - Tracks nesting depth to switch between TOP/NOT_TOP and option value states.
+
 %%
 
 %{
@@ -56,7 +56,7 @@ OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
-FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // Leading zero is permitted
+FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
 UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?

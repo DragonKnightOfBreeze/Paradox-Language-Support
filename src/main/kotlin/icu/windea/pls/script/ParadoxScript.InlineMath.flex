@@ -12,8 +12,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 // Lexer for inline math fragments used in Paradox Script (e.g. @[ ... ]).
 // Notes:
-// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
 // - Tracks a simple state for the absolute-value operator using a left/right '|' toggle.
+
 %%
 
 %{
@@ -38,11 +38,11 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 BLANK=\s+
 
-INT_NUMBER_TOKEN=[0-9]+ // Leading zero is permitted
-FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // Leading zero is permitted
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // Leading number is not permitted
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // Leading number is not permitted
-ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // Compatible with leading '@'
+INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
+FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
+SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
+PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]* // leading number is not permitted
+ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
 
 %%
 

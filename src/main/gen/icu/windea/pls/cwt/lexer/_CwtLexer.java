@@ -10,6 +10,11 @@ import java.util.*;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
+// Lexer for CWT (Clausewitz Text) configuration syntax.
+// Notes:
+// - Recognizes braces, comments, keys, separators, and values. Keys may be quoted.
+// - Option/Doc comments are classified early for downstream lazy parsing.
+
 
 public class _CwtLexer implements FlexLexer {
 
@@ -122,10 +127,10 @@ public class _CwtLexer implements FlexLexer {
     "\3\0\1\1\1\2\1\1\1\3\2\1\1\4\1\5"+
     "\2\1\1\6\1\7\2\10\2\5\1\11\1\0\2\1"+
     "\1\12\1\1\1\12\1\0\1\13\1\14\1\1\1\10"+
-    "\1\0\1\15\1\11\2\0\1\12";
+    "\1\0\1\15\1\11\2\0\2\12";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[37];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -152,12 +157,12 @@ public class _CwtLexer implements FlexLexer {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\24\0\50\0\74\0\120\0\144\0\170\0\214"+
     "\0\240\0\214\0\264\0\310\0\334\0\264\0\264\0\360"+
-    "\0\u0104\0\u0118\0\u012c\0\u0140\0\u0154\0\u0154\0\u0168\0\264"+
-    "\0\u017c\0\144\0\u0190\0\240\0\74\0\u01a4\0\264\0\u01b8"+
-    "\0\264\0\264\0\u01cc\0\u01e0\0\74";
+    "\0\u0104\0\u0118\0\u012c\0\u0140\0\u0154\0\u0154\0\u0168\0\u017c"+
+    "\0\u0190\0\144\0\u01a4\0\240\0\74\0\u01b8\0\264\0\u01cc"+
+    "\0\264\0\264\0\u017c\0\u01e0\0\74\0\264";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[37];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -198,10 +203,10 @@ public class _CwtLexer implements FlexLexer {
     "\1\21\1\37\7\21\1\40\7\21\12\0\1\41\24\0"+
     "\1\41\22\0\1\42\12\0\2\25\1\43\5\0\1\44"+
     "\1\30\11\0\1\4\2\25\1\4\1\26\1\0\3\4"+
-    "\1\27\1\30\1\45\6\4\2\0\2\6\1\25\1\6"+
-    "\1\26\4\6\1\31\2\32\1\33\33\6\1\4\2\25"+
-    "\1\4\1\26\1\0\3\4\1\27\1\30\5\4\1\35"+
-    "\1\4\2\0\24\21\12\0\1\30\24\0\1\30\10\0";
+    "\1\27\1\30\1\45\6\4\14\0\1\46\11\0\2\6"+
+    "\1\25\1\6\1\26\4\6\1\31\2\32\1\33\33\6"+
+    "\1\4\2\25\1\4\1\26\1\0\3\4\1\27\1\30"+
+    "\5\4\1\35\1\4\2\0\24\21\13\0\1\46\10\0";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[500];
@@ -232,8 +237,8 @@ public class _CwtLexer implements FlexLexer {
   /* error messages for the codes above */
   private static final String[] ZZ_ERROR_MSG = {
     "Unknown internal scanner error",
-    "ERROR: could not match input",
-    "ERROR: pushback value was too large"
+    "Error: could not match input",
+    "Error: pushback value was too large"
   };
 
   /**
@@ -242,12 +247,11 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\3\0\7\1\1\11\2\1\2\11\5\1\1\0\2\1"+
-    "\1\11\2\1\1\0\3\1\1\11\1\0\2\11\2\0"+
-    "\1\1";
+    "\3\0\7\1\1\11\2\1\2\11\5\1\1\0\5\1"+
+    "\1\0\3\1\1\11\1\0\2\11\2\0\1\1\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[37];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -377,7 +381,7 @@ public class _CwtLexer implements FlexLexer {
    *
    * @return      {@code false}, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   private boolean zzRefill() throws java.io.IOException {
     return true;
@@ -479,10 +483,10 @@ public class _CwtLexer implements FlexLexer {
 
   /**
    * Resumes scanning until the next regular expression is matched,
-   * the end of input is encountered or an I/O-ERROR occurs.
+   * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-ERROR occurs
+   * @exception   java.io.IOException  if any I/O-Error occurs
    */
   public IElementType advance() throws java.io.IOException
   {

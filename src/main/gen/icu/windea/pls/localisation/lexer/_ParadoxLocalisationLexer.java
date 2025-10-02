@@ -12,6 +12,11 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
+// Lexer for Paradox Localisation (headers, keys, numbers, quoted values).
+// Notes:
+// - Locale header vs property key is distinguished by scanning after ':' on the same line.
+// - Right-quote heuristic: if another '"' exists before EOL, current '"' is text; otherwise it closes the value.
+
 
 public class _ParadoxLocalisationLexer implements FlexLexer {
 
@@ -29,7 +34,6 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   public static final int IN_PROPERTY_NUMBER = 8;
   public static final int IN_PROPERTY_VALUE = 10;
   public static final int IN_PROPERTY_END = 12;
-  public static final int CHECK_RIGHT_QUOTE = 14;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -38,7 +42,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  3,  3,  7, 7
+     0,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  3, 3
   };
 
   /**
@@ -123,11 +127,11 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\10\0\1\1\1\2\1\3\1\4\2\5\1\6\1\7"+
-    "\1\10\1\11\2\12\1\13\1\1\1\0\1\14";
+    "\7\0\1\1\1\2\1\3\1\4\2\5\1\6\1\7"+
+    "\1\10\1\11\2\12\1\13\1\0\1\14";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[24];
+    int [] result = new int[22];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -153,11 +157,11 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
-    "\0\130\0\143\0\156\0\171\0\204\0\217\0\130\0\130"+
-    "\0\130\0\232\0\245\0\260\0\130\0\156\0\156\0\130";
+    "\0\130\0\143\0\156\0\171\0\204\0\115\0\115\0\115"+
+    "\0\217\0\232\0\245\0\115\0\143\0\115";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[24];
+    int [] result = new int[22];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -180,21 +184,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\11\1\12\1\13\1\12\1\11\1\14\2\15\1\11"+
-    "\1\15\2\11\1\12\1\13\1\12\1\11\1\14\2\15"+
-    "\1\11\1\16\2\11\1\12\1\13\1\12\1\11\1\14"+
-    "\2\11\1\17\3\11\1\12\1\13\1\12\1\11\1\14"+
-    "\6\11\1\12\1\13\1\12\1\11\1\14\2\11\1\20"+
-    "\3\11\1\12\1\13\1\12\1\21\1\14\1\11\1\22"+
-    "\2\11\1\22\1\23\1\24\1\13\1\24\1\25\6\23"+
-    "\1\11\1\26\2\13\7\11\14\0\1\12\1\13\1\12"+
-    "\10\0\1\27\2\13\7\0\2\14\1\0\10\14\6\0"+
-    "\2\15\1\0\1\15\7\0\2\15\1\30\1\16\10\0"+
-    "\1\22\2\0\1\22\2\23\1\0\1\23\1\0\7\23"+
-    "\1\24\1\13\1\24\1\0\6\23";
+    "\1\10\1\11\1\12\1\11\1\10\1\13\2\14\1\10"+
+    "\1\14\2\10\1\11\1\12\1\11\1\10\1\13\2\14"+
+    "\1\10\1\15\2\10\1\11\1\12\1\11\1\10\1\13"+
+    "\2\10\1\16\3\10\1\11\1\12\1\11\1\10\1\13"+
+    "\6\10\1\11\1\12\1\11\1\10\1\13\2\10\1\17"+
+    "\3\10\1\11\1\12\1\11\1\20\1\13\1\10\1\21"+
+    "\2\10\1\21\1\22\1\23\1\12\1\23\1\24\6\22"+
+    "\14\0\1\11\1\12\1\11\10\0\1\25\2\12\7\0"+
+    "\2\13\1\0\10\13\6\0\2\14\1\0\1\14\7\0"+
+    "\2\14\1\26\1\15\10\0\1\21\2\0\1\21\2\22"+
+    "\1\0\1\22\1\0\7\22\1\23\1\12\1\23\1\0"+
+    "\6\22";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[187];
+    int [] result = new int[176];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -232,11 +236,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\10\0\1\11\5\1\3\11\3\1\1\11\1\1\1\0"+
-    "\1\11";
+    "\7\0\1\11\5\1\3\11\3\1\1\11\1\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[24];
+    int [] result = new int[22];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -345,8 +348,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
         // Heuristic used by vanilla files and editors:
-        //  - If there is ANOTHER '"' ahead on the same line, then the current '"' is part of the text (not closing).
-        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. # ...) exists.
+        //  - If there is another '"' ahead on the same line, the current '"' is part of the text (not closing).
+        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. '# ...') exists.
 
         try {
             int i = zzCurrentPos + yylength(); // position right after current match
