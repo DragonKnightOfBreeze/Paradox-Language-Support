@@ -1,13 +1,22 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxDefineReferenceExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineNamespaceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 
 /**
- * 预设值引用表达式。对应的规则类型为 [icu.windea.pls.config.CwtDataTypes.DefineReference]。
+ * 预设值引用表达式。
+ *
+ * 说明：
+ * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
+ *
+ * 示例：
+ * ```
+ * define:NPortrait|GRACEFUL_AGING_START
+ * ```
  *
  * 语法：
  * ```bnf
@@ -15,13 +24,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariable
  * define_namespace ::= TOKEN // level 1 property keys in .txt files in common/defines
  * define_variable ::= TOKEN // level 2 property keys in .txt files in common/defines
  * ```
- *
- * 示例：
- * ```
- * define:NPortrait|GRACEFUL_AGING_START
- * ```
- *
- * @see icu.windea.pls.config.CwtDataTypes.DefineReference
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
     val namespaceNode: ParadoxDefineNamespaceNode?

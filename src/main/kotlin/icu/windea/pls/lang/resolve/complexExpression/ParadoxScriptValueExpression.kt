@@ -11,7 +11,14 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNod
 /**
  * 脚本值表达式。
  *
- * 作为 [ParadoxValueFieldExpression] 的一部分。
+ * 说明：
+ * - 作为 [ParadoxValueFieldExpression] 的一部分。
+ *
+ * 示例：
+ * ```
+ * some_sv
+ * some_sv|PARAM|VALUE|
+ * ```
  *
  * 语法：
  * ```bnf
@@ -20,14 +27,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNod
  * arg_name ::= TOKEN // argument name, no surrounding "$"
  * arg_value ::= TOKEN // boolean, int, float or string
  * ```
- *
- * 示例：
- * ```
- * some_sv
- * some_sv|PARAM|VALUE|
- * ```
- *
- * @see ParadoxValueFieldExpression
  */
 interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>

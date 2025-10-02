@@ -1,16 +1,26 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxValueFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 
 /**
- * 值字段表达式。对应的规则类型为 [icu.windea.pls.config.CwtDataTypeGroups.ValueField]。
+ * 值字段表达式。
+ *
+ * 说明：
+ * - 对应的规则数据类型为 [CwtDataTypeGroups.ValueField]。
+ *
+ * 示例：
+ * ```
+ * trigger:some_trigger
+ * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
+ * root.owner.some_variable
+ * ```
  *
  * 语法：
- *
  * ```bnf
  * value_field_expression ::= scope * value_field
  * scope ::= system_scope | scope_link | scope_link_from_data
@@ -27,15 +37,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
  * expression ::= data_source | dynamic_value_expression | sv_expression // see: ParadoxDataSourceNode, ParadoxDynamicValueExpression
  * sv_expression ::= sv_name ("|" (param_name "|" param_value "|")+)? // e.g. value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
  * ```
- *
- * 示例：
- * ```
- * trigger:some_trigger
- * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
- * root.owner.some_variable
- * ```
- *
- * @see icu.windea.pls.config.CwtDataTypeGroups.ValueField
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

@@ -3,14 +3,21 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxCommandExpressionResolverImpl
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
  * （本地化）命令表达式。
  *
- * 可以在本地化文件中作为命令文本使用。（如，`[Root.GetName]`）
+ * 说明：
+ * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
+ *
+ * 示例：
+ * ```
+ * Root.GetName
+ * Root.Owner.event_target:some_event_target.var
+ * ```
  *
  * 语法：
- *
  * ```bnf
  * command_expression ::= command_scope_link * (command_field) suffix ?
  * command_scope_link := system_command_scope | command_scope | dynamic_command_scope_link
@@ -24,14 +31,6 @@ import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxCommandExpressi
  * dynamic_command_field ::= TOKEN // matching config expression "<scripted_loc>" or "value[variable]"
  * suffix ::= TOKEN // see 99_README_GRAMMAR.txt
  * ```
- *
- * 示例：
- * ```
- * Root.GetName
- * Root.Owner.event_target:some_event_target.var
- * ```
- *
- * @see icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression {
     interface Resolver {

@@ -1,12 +1,23 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScopeFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 
 /**
- * 作用域字段表达式。对应的规则类型为 [icu.windea.pls.config.CwtDataTypeGroups.ScopeField]。
+ * 作用域字段表达式。
+ *
+ * 说明：
+ * - 对应的规则数据类型为 [CwtDataTypeGroups.ScopeField]。
+ *
+ * 示例：
+ * ```
+ * root
+ * root.owner
+ * event_target:some_target
+ * ```
  *
  * 语法：
  * ```bnf
@@ -19,15 +30,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * scope_link_value ::= expression // e.g. "some_variable" while the link's data source is "value[variable]"
  * expression ::= data_source | dynamic_value_expression // see: ParadoxDataSourceNode, ParadoxDynamicValueExpression
  * ```
- *
- * 示例：
- * ```
- * root
- * root.owner
- * event_target:some_target
- * ```
- *
- * @see icu.windea.pls.config.CwtDataTypeGroups.ScopeField
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>
