@@ -34,7 +34,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression {
     interface Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression?
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression?
     }
 
     companion object : Resolver by ParadoxCommandExpressionResolverImpl()

@@ -17,29 +17,29 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.util.PlsCoreManager
 
 internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineReferenceExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-        if (!incomplete && expressionString.isEmpty()) return null
+        if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxDefineReferenceExpressionImpl(expressionString, range, nodes, configGroup)
+        val expression = ParadoxDefineReferenceExpressionImpl(text, range, nodes, configGroup)
 
         run r1@{
             val offset = range.startOffset
             val prefix = "define:"
-            if (expressionString.startsWith(prefix)) {
+            if (text.startsWith(prefix)) {
                 val node = ParadoxDefinePrefixNode(prefix, TextRange.from(offset, prefix.length), configGroup)
                 nodes += node
             } else {
                 if (!incomplete) return null
-                val nodeTextRange = TextRange.from(offset, expressionString.length)
-                val node = ParadoxErrorTokenNode(expressionString, nodeTextRange, configGroup)
+                val nodeTextRange = TextRange.from(offset, text.length)
+                val node = ParadoxErrorTokenNode(text, nodeTextRange, configGroup)
                 nodes += node
                 return@r1
             }
-            val pipeIndex = expressionString.indexOf('|', prefix.length)
+            val pipeIndex = text.indexOf('|', prefix.length)
             run r2@{
-                val nodeText = if (pipeIndex == -1) expressionString.substring(prefix.length) else expressionString.substring(prefix.length, pipeIndex)
+                val nodeText = if (pipeIndex == -1) text.substring(prefix.length) else text.substring(prefix.length, pipeIndex)
                 val nodeTextRange = TextRange.from(offset + prefix.length, nodeText.length)
                 val node = ParadoxDefineNamespaceNode.resolve(nodeText, nodeTextRange, configGroup, expression)
                 nodes += node
@@ -51,7 +51,7 @@ internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefer
                 nodes += node
             }
             run r2@{
-                val nodeText = expressionString.substring(pipeIndex + 1)
+                val nodeText = text.substring(pipeIndex + 1)
                 val nodeTextRange = TextRange.from(offset + pipeIndex + 1, nodeText.length)
                 val node = ParadoxDefineVariableNode.resolve(nodeText, nodeTextRange, configGroup, expression)
                 nodes += node

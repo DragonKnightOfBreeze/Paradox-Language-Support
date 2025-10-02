@@ -35,7 +35,7 @@ interface ParadoxScriptValueExpression : ParadoxComplexExpression {
     val argumentNodes: List<Pair<ParadoxScriptValueArgumentNode, ParadoxScriptValueArgumentValueNode?>>
 
     interface Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression?
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression?
     }
 
     companion object : Resolver by ParadoxScriptValueExpressionResolverImpl()

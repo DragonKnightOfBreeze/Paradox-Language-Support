@@ -17,42 +17,42 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
-        if (expressionString.isEmpty()) return null
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
+        if (text.isEmpty()) return null
 
         // val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxCommandExpressionImpl(expressionString, range, nodes, configGroup)
+        val expression = ParadoxCommandExpressionImpl(text, range, nodes, configGroup)
         val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
 
         var suffixStartIndex: Int
         run r1@{
             run r2@{
-                suffixStartIndex = expressionString.indexOf('&')
+                suffixStartIndex = text.indexOf('&')
                 if (suffixStartIndex == -1) return@r2
                 run r3@{
                     val node = ParadoxMarkerNode("&", TextRange.from(suffixStartIndex, 1), configGroup)
                     suffixNodes += node
                 }
                 run r3@{
-                    val nodeText = expressionString.substring(suffixStartIndex + 1)
+                    val nodeText = text.substring(suffixStartIndex + 1)
                     val node = ParadoxCommandSuffixNode.resolve(nodeText, TextRange.from(suffixStartIndex + 1, nodeText.length), configGroup)
                     suffixNodes += node
                 }
                 return@r1
             }
             run r2@{
-                suffixStartIndex = expressionString.indexOf("::")
+                suffixStartIndex = text.indexOf("::")
                 if (suffixStartIndex == -1) return@r2
                 run r3@{
                     val node = ParadoxMarkerNode("::", TextRange.from(suffixStartIndex, 2), configGroup)
                     suffixNodes += node
                 }
                 run r3@{
-                    val nodeText = expressionString.substring(suffixStartIndex + 2)
+                    val nodeText = text.substring(suffixStartIndex + 2)
                     val node = ParadoxCommandSuffixNode.resolve(nodeText, TextRange.from(suffixStartIndex + 2, nodeText.length), configGroup)
                     suffixNodes += node
                 }
@@ -63,7 +63,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
             var index: Int
             var tokenIndex = -1
             var startIndex = 0
-            val expressionString0 = if (suffixStartIndex == -1) expressionString else expressionString.substring(0, suffixStartIndex)
+            val expressionString0 = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
             val textLength = expressionString0.length
             while (tokenIndex < textLength) {
                 index = tokenIndex + 1

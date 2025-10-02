@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
 internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
         val templateExpression = when {
             config is CwtModifierConfig -> {
                 config.template
@@ -29,10 +29,10 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         }.takeIf { it.expressionString.isNotEmpty() } ?: return null
 
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-        if (!incomplete && expressionString.isEmpty()) return null
+        if (!incomplete && text.isEmpty()) return null
 
         // 这里需要允许部分匹配
-        val (_, matchResult) = CwtTemplateExpressionManager.toMatchedRegex(templateExpression, expressionString, incomplete) ?: return null
+        val (_, matchResult) = CwtTemplateExpressionManager.toMatchedRegex(templateExpression, text, incomplete) ?: return null
 
         val matchGroups = matchResult.groups.drop(1)
         if (matchGroups.isEmpty()) return null
@@ -40,7 +40,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         if (!incomplete && matchGroups.size < templateExpression.referenceExpressions.size) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxTemplateExpressionImpl(expressionString, range, nodes, configGroup)
+        val expression = ParadoxTemplateExpressionImpl(text, range, nodes, configGroup)
 
         run r1@{
             val offset = range.startOffset
@@ -49,7 +49,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
                 if (matchGroup == null) return null
                 val matchRange = matchGroup.range
                 if (matchRange.first != startIndex) {
-                    val nodeText = expressionString.substring(startIndex, matchRange.first)
+                    val nodeText = text.substring(startIndex, matchRange.first)
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxTemplateSnippetConstantNode(nodeText, nodeTextRange, configGroup)
                     nodes += node
@@ -61,8 +61,8 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
                 nodes += node
                 startIndex = matchRange.last + 1
             }
-            if (startIndex < expressionString.length) {
-                val nodeText = expressionString.substring(startIndex)
+            if (startIndex < text.length) {
+                val nodeText = text.substring(startIndex)
                 val nodeTextRange = TextRange.from(offset, nodeText.length)
                 val node = ParadoxTemplateSnippetConstantNode(nodeText, nodeTextRange, configGroup)
                 nodes += node

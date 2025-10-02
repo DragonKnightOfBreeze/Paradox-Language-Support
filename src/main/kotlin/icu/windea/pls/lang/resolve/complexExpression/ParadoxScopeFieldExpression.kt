@@ -35,7 +35,7 @@ interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>
 
     interface Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression?
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression?
     }
 
     companion object : Resolver by ParadoxScopeFieldExpressionResolverImpl()

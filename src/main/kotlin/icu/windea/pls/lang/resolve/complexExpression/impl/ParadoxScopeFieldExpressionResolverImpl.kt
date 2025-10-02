@@ -16,27 +16,27 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
 internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-        if (!incomplete && expressionString.isEmpty()) return null
+        if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxScopeFieldExpressionImpl(expressionString, range, nodes, configGroup)
+        val expression = ParadoxScopeFieldExpressionImpl(text, range, nodes, configGroup)
 
         val offset = range.startOffset
         var index: Int
         var tokenIndex = -1
         var startIndex = 0
-        val textLength = expressionString.length
+        val textLength = text.length
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
-            tokenIndex = expressionString.indexOf('.', index)
+            tokenIndex = text.indexOf('.', index)
             if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
-            if (tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-            if (tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-            if (tokenIndex != -1 && expressionString.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+            if (tokenIndex != -1 && text.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+            if (tokenIndex != -1 && text.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+            if (tokenIndex != -1 && text.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
             val dotNode = if (tokenIndex != -1) {
                 val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                 ParadoxOperatorNode(".", dotRange, configGroup)
@@ -47,7 +47,7 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
                 tokenIndex = textLength
             }
             // resolve node
-            val nodeText = expressionString.substring(startIndex, tokenIndex)
+            val nodeText = text.substring(startIndex, tokenIndex)
             val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
             val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)

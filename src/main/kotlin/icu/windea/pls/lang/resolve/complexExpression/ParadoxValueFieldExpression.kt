@@ -44,7 +44,7 @@ interface ParadoxValueFieldExpression : ParadoxComplexExpression {
     val scriptValueExpression: ParadoxScriptValueExpression?
 
     interface Resolver {
-        fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression?
+        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression?
     }
 
     companion object : Resolver by ParadoxValueFieldExpressionResolverImpl()

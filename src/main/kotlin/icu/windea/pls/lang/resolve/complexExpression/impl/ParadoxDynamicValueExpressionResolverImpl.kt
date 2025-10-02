@@ -21,35 +21,35 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
 class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
-        return resolve(expressionString, range, configGroup, config.singleton.list())
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+        return resolve(text, range, configGroup, config.singleton.list())
     }
 
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
 
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-        if (!incomplete && expressionString.isEmpty()) return null
+        if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
+        val expression = ParadoxDynamicValueExpression(text, range, nodes, configGroup, configs)
 
         val offset = range.startOffset
         var index: Int
         var tokenIndex = -1
-        val textLength = expressionString.length
+        val textLength = text.length
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
-            tokenIndex = expressionString.indexOf('@', index)
+            tokenIndex = text.indexOf('@', index)
             if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             if (tokenIndex == -1) {
                 tokenIndex = textLength
             }
             // resolve dynamicValueNode
             run {
-                val nodeText = expressionString.substring(0, tokenIndex)
+                val nodeText = text.substring(0, tokenIndex)
                 val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
                 val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configGroup, configs) ?: return null
                 nodes += node
@@ -63,7 +63,7 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
                 }
                 run {
                     // resolve scope expression
-                    val nodeText = expressionString.substring(tokenIndex + 1)
+                    val nodeText = text.substring(tokenIndex + 1)
                     val nodeTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
                     val node = ParadoxScopeFieldExpression.resolve(nodeText, nodeTextRange, configGroup)
                         ?: ParadoxErrorTokenNode(nodeText, nodeTextRange, configGroup)

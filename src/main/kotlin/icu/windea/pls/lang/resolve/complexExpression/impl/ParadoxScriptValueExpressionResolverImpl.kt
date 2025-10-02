@@ -21,14 +21,14 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
 internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpression.Resolver {
-    override fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
         val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-        if (!incomplete && expressionString.isEmpty()) return null
+        if (!incomplete && text.isEmpty()) return null
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
+        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxScriptValueExpressionImpl(expressionString, range, nodes, configGroup, config)
+        val expression = ParadoxScriptValueExpressionImpl(text, range, nodes, configGroup, config)
 
         val offset = range.startOffset
         var n = 0
@@ -37,10 +37,10 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
         var index: Int
         var tokenIndex = -1
         var startIndex = 0
-        val textLength = expressionString.length
+        val textLength = text.length
         while (tokenIndex < textLength) {
             index = tokenIndex + 1
-            tokenIndex = expressionString.indexOf('|', index)
+            tokenIndex = text.indexOf('|', index)
             if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
             val pipeNode = if (tokenIndex != -1) {
                 val pipeRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
@@ -53,7 +53,7 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
             }
             if (!incomplete && index == tokenIndex && tokenIndex == textLength) break
             // resolve node
-            val nodeText = expressionString.substring(startIndex, tokenIndex)
+            val nodeText = text.substring(startIndex, tokenIndex)
             val nodeRange = TextRange.create(startIndex + offset, tokenIndex + offset)
             startIndex = tokenIndex + 1
             val node = when {
