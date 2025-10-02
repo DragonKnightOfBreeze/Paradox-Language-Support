@@ -16,14 +16,14 @@ object ParadoxComplexExpressionErrorBuilder {
     private const val CODE_UNRESOLVED_COMMAND_SCOPE = 9
     private const val CODE_UNRESOLVED_COMMAND_FIELD = 10
 
-    private const val CODE_UNRESOLVED_SCOPE_FIELD_EXPRESSION = 101
-    private const val CODE_UNRESOLVED_VALUE_FIELD_EXPRESSION = 102
-    private const val CODE_UNRESOLVED_VARIABLE_FIELD_EXPRESSION = 103
-    private const val CODE_UNRESOLVED_DYNAMIC_VALUE_EXPRESSION = 104
-    private const val CODE_UNRESOLVED_SCRIPT_VALUE_EXPRESSION = 105
-    private const val CODE_UNRESOLVED_DATABASE_OBJECT_EXPRESSION = 106
-    private const val CODE_UNRESOLVED_DEFINE_REFERENCE_EXPRESSION = 107
-    private const val CODE_UNRESOLVED_COMMAND_EXPRESSION = 108
+    private const val CODE_MALFORMED_SCOPE_FIELD_EXPRESSION = 101
+    private const val CODE_MALFORMED_VALUE_FIELD_EXPRESSION = 102
+    private const val CODE_MALFORMED_VARIABLE_FIELD_EXPRESSION = 103
+    private const val CODE_MALFORMED_DYNAMIC_VALUE_EXPRESSION = 104
+    private const val CODE_MALFORMED_SCRIPT_VALUE_EXPRESSION = 105
+    private const val CODE_MALFORMED_DATABASE_OBJECT_EXPRESSION = 106
+    private const val CODE_MALFORMED_DEFINE_REFERENCE_EXPRESSION = 107
+    private const val CODE_MALFORMED_COMMAND_EXPRESSION = 108
 
     fun unresolvedTemplateSnippet(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
         val code = CODE_UNRESOLVED_TEMPLATE_SNIPPET
@@ -82,42 +82,42 @@ object ParadoxComplexExpressionErrorBuilder {
     }
 
     fun malformedScopeFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_SCOPE_FIELD_EXPRESSION
+        val code = CODE_MALFORMED_SCOPE_FIELD_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
     }
 
     fun malformedValueFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_VALUE_FIELD_EXPRESSION
+        val code = CODE_MALFORMED_VALUE_FIELD_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedValueFieldExpression", text))
     }
 
     fun malformedVariableFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_VARIABLE_FIELD_EXPRESSION
+        val code = CODE_MALFORMED_VARIABLE_FIELD_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedVariableFieldExpression", text))
     }
 
     fun malformedDynamicValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_DYNAMIC_VALUE_EXPRESSION
+        val code = CODE_MALFORMED_DYNAMIC_VALUE_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDynamicValueExpression", text))
     }
 
     fun malformedScriptValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_SCRIPT_VALUE_EXPRESSION
+        val code = CODE_MALFORMED_SCRIPT_VALUE_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
     }
 
     fun malformedDatabaseObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_DATABASE_OBJECT_EXPRESSION
+        val code = CODE_MALFORMED_DATABASE_OBJECT_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDatabaseObjectExpression", text))
     }
 
     fun malformedDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_DEFINE_REFERENCE_EXPRESSION
+        val code = CODE_MALFORMED_DEFINE_REFERENCE_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDefineReferenceExpression", text))
     }
 
     fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = CODE_UNRESOLVED_COMMAND_EXPRESSION
+        val code = CODE_MALFORMED_COMMAND_EXPRESSION
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedCommandExpression", text))
     }
 }
