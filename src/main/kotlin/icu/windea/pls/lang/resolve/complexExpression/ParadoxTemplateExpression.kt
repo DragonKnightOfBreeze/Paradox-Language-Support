@@ -5,13 +5,13 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxTemplateExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 
 /**
  * 模版表达式。
  *
- * ### 说明
+ * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
  * - 模版由 CWT 规则提供（或由修正的 `template` 字段提供），本表达式文本按模版匹配并被切分为“常量片段/占位片段”。
  *

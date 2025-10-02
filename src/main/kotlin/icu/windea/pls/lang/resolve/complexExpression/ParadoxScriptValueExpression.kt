@@ -4,17 +4,17 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScriptValueExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 
 /**
  * 脚本值表达式。
  *
- * ### 说明
+ * 说明：
  * - 作为 [ParadoxValueFieldExpression] 的一部分。
  *
- * ### 示例
+ * 示例：
  * ```
  * some_sv
  * some_sv|PARAM|VALUE|

@@ -4,19 +4,19 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxVariableFieldExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 
 /**
  * 变量字段表达式。
  *
- * ### 说明
+ * 说明：
  * - 对应的规则数据类型为 [CwtDataTypeGroups.ValueField]。
  * - 作为 [ParadoxValueFieldExpression] 的子集。相较之下，仅支持调用变量。
  *
- * ### 示例
- * ```kotlin
+ * 示例：
+ * ```
  * root.owner.some_variable
  * ```
  *
@@ -31,7 +31,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * - 作用域链接：参见 [ParadoxScopeLinkNode]。
  * - 变量节点：末段解析为 [ParadoxDataSourceNode]，其数据源限定为 `linksOfVariable` 提供的变量链接配置。
  *
- * ### 备注
+ * #### 备注
  * - 纯数字文本（整数/浮点）与带一元运算符前缀的参数会被解析器直接排除（非变量场景）。
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {

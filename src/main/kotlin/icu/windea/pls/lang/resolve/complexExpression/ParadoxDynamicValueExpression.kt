@@ -7,15 +7,14 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxDynamicValueExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 
 /**
  * 动态值表达式。
  *
- * ### 说明
+ * 说明：
  * - 对应的规则数据类型为 [CwtDataTypeGroups.DynamicValue]。
  *
- * ### 示例
+ * 示例：
  * ```
  * some_variable
  * some_variable@root

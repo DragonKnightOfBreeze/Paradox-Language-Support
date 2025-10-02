@@ -3,20 +3,20 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxCommandExpressionResolverImpl
-import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
  * （本地化）命令表达式。
  *
- * ### 说明
+ * 说明：
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
  *
- * ### 示例
+ * 示例：
  * ```
  * Root.GetName
  * Root.Owner.event_target:some_event_target.var

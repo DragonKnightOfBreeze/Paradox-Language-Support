@@ -4,18 +4,14 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxValueFieldExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedValueFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 
 /**
  * 值字段表达式。

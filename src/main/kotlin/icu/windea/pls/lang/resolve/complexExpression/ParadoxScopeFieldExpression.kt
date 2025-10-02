@@ -5,7 +5,6 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScopeFieldExpressionResolverImpl
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
@@ -44,23 +43,15 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * - 括号传参与形式：`<prefixWithoutColon>(<value>)`（如 `relations(<value>)`）；括号由 [ParadoxOperatorNode] 表示。
  * - 无前缀形式：仅 `<value>`；当链接允许无前缀时生效。
  *
- * #### 值节点解析优先级：
+ * #### 值节点解析优先级
  * 1. 若链接的 `configExpression` 的类型属于 `ScopeField` 组，则值解析为单个作用域链接（[ParadoxScopeLinkNode]）。
  * 2. 否则若链接的 `dataSourceExpression` 的类型属于 `DynamicValue` 组，则解析为 [ParadoxDynamicValueExpression]。
  * 3. 否则解析为数据源节点 [ParadoxDataSourceNode]（引用变量/定义等）。
  *
- * #### 解析细节提示
- * **备注：**
+ * #### 备注
  * - 解析过程中会在相邻链接节点之间插入 `.` 运算符节点（[ParadoxOperatorNode]）。
  * - 参数文本中的 `.` 不作为分段切分点。
  * - 若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则停止继续切分，余下文本整体作为后续节点的输入。
- *
- * @property scopeNodes 仅返回解析得到的作用域链接节点（不含 `.` 运算符与其他子节点）。
- *
- * @see ParadoxScopeLinkNode
- * @see ParadoxScopeLinkValueNode
- * @see ParadoxDataSourceNode
- * @see ParadoxDynamicValueExpression
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

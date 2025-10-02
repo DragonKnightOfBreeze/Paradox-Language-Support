@@ -10,10 +10,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariable
 /**
  * 预设值引用表达式。
  *
- * ### 说明
+ * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
  *
- * ### 示例
+ * 示例：
  * ```
  * define:NPortrait|GRACEFUL_AGING_START
  * ```

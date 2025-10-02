@@ -11,11 +11,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 /**
  * 数据库对象表达式。
  *
- * ### 说明
+ * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.DatabaseObject]。
  * - 可以在本地化文件中作为概念名称（[ParadoxLocalisationConceptName]）使用。
  *
- * ### 示例
+ * 示例：
  * ```
  * civic:some_civic
  * civic:some_civic:some_swapped_civic
