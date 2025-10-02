@@ -18,7 +18,12 @@
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
-// 分隔符可以是比较运算符
+// Grammar for Paradox Script.
+// Notes:
+// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
+// - Property separators can be comparison operators as well (e.g. =, !=, <, >, <=, >=, ?=).
+
+// Separators can be comparison operators
 
 root ::= root_block ?
 root_block ::= root_block_item + {

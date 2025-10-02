@@ -9,6 +9,11 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
+// Lexer for Paradox Script.
+// Notes:
+// - Uses a stack to manage nested braces/brackets.
+// - templateStateRef/parameterStateRef track states to resume after parameters/inline sections.
+// - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
 %%
 
 %{
@@ -112,9 +117,12 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={}\s\"]*
-PROPERTY_SEPARTOR_CHECK=[=<>!?]
-PROPERTY_KEY_CHECK=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{PROPERTY_SEPARTOR_CHECK}
+// Separator characters between scripted variable name and value
+SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={}\\s\"]*
+
+// Separator characters between key and value
+PROPERTY_SEPARATOR_CHECK=[=<>!?]
+PROPERTY_KEY_CHECK=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{PROPERTY_SEPARATOR_CHECK}
 
 // leading number is not permitted for parameter names
 PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
@@ -123,11 +131,10 @@ PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+
 SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
 
-
 WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
-PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without arounding quotes
+PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\\s\"][^#$=<>?{}\[\]\\s\"]*\"?
+QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without surrounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
@@ -140,7 +147,7 @@ STRING_CHECK={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without arounding quotes
+QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without surrounding quotes
 
 // compatible with leading '@'
 ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+
@@ -164,7 +171,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     {SCRIPTED_VARIABLE_NAME_CHECK} {
-        // 如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
+        // If the matched text ends with '=', parse as a scripted variable; otherwise parse as a scripted variable reference.
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
             enterState(templateStateRef, yystate());

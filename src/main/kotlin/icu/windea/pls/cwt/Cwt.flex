@@ -7,6 +7,11 @@ import java.util.*;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
+// Lexer for CWT (Clausewitz Text) configuration syntax.
+// Notes:
+// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
+// - Recognizes braces, comments, keys, separators, and values. Keys may be quoted.
+// - Option/Doc comments are classified early for downstream lazy parsing.
 %%
 
 %{
@@ -47,7 +52,7 @@ UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes|no)
 INT_TOKEN=[+-]?\d+ // leading zero is permitted
-FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is permitted
+FLOAT_TOKEN=[+-]?\d*\.\d+ // Leading zero is permitted
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
 UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?

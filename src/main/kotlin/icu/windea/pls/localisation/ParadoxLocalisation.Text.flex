@@ -11,12 +11,17 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
+// Lexer for localisation rich text (color codes, parameters, icons, commands, concepts, text formats, text icons).
+// Notes:
+// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
+// - Uses a small stack to remember the state to return to after nested constructs (e.g. §...§!, $, [, £, #, @).
+// - Feature gates are controlled by ParadoxSyntaxConstraint.*.supports(this).
 %%
 
 %{
     private ParadoxGameType gameType;
 
-    // NOTE: 修复彩色文本状态栈：在遇到 '§' 时入栈当前状态，'§!' 时出栈，确保在嵌套场景中能正确恢复至之前状态
+    // Fix state stack for colorful text: push current state on '§', pop on '§!' to correctly restore nested contexts.
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
@@ -77,7 +82,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             yybegin(IN_COLOR_ID);
             return COLORFUL_TEXT_START;
         } else {
-            // skip into IN_COLORFUL_TEXT, rather than fallback
+            // Enter IN_COLORFUL_TEXT directly for robustness
             yypushback(yylength() - 1);
             yybegin(IN_COLORFUL_TEXT);
             return COLORFUL_TEXT_START;
@@ -366,7 +371,7 @@ TEXT_ICON_TOKEN=\w+
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
 
     {BLANK} { setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
-    // there may not be a whitespace after COMMA (and such situation will be treat as valid)
+    // Whitespace after COMMA may be absent; this is treated as valid
     [^] { yypushback(yylength()); setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); }
 }
 
@@ -386,7 +391,7 @@ TEXT_ICON_TOKEN=\w+
     {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
 
     {BLANK} { setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
-    // there may not be a whitespace after TEXT_FORMAT_TOKEN (and such situation should be invalid)
+    // Whitespace after TEXT_FORMAT_TOKEN may be absent; still enter text section
     [^] { yypushback(yylength()); setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); }
 }
 

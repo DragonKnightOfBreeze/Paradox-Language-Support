@@ -14,6 +14,11 @@
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
+// Grammar for CWT (Clausewitz Text) configuration files.
+// Notes:
+// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
+// - Supports properties, blocks, and special option/doc comments with lazy parsing.
+
 // core rules
 
 root ::= root_block ?
@@ -40,7 +45,7 @@ private comment ::= COMMENT
 
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto" // 当前属性解析失败时，需要跳过继续解析下一个
+  recoverWhile="#auto" // On property parse failure, skip to the next property
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"

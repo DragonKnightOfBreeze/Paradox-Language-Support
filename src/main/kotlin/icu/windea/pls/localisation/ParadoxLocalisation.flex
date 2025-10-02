@@ -9,6 +9,11 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
+// Lexer for Paradox Localisation (headers, keys, numbers, quoted values).
+// Notes:
+// - Public interface is stable: do NOT rename %class, token names, or ElementTypes.
+// - Locale header vs property key is distinguished by scanning after ':' on the same line.
+// - Right-quote heuristic: if another '"' exists before EOL, current '"' is text; otherwise it closes the value.
 %%
 
 %{
@@ -54,8 +59,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private IElementType handleRightQuote() {
         // Double quotes inside localisation text do not need escaping.
         // Heuristic used by vanilla files and editors:
-        //  - If there is ANOTHER '"' ahead on the same line, then the current '"' is part of the text (not closing).
-        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. # ...) exists.
+        //  - If there is another '"' ahead on the same line, the current '"' is part of the text (not closing).
+        //  - Otherwise, treat the current '"' as the closing quote, even if a trailing comment (e.g. '# ...') exists.
 
         try {
             int i = zzCurrentPos + yylength(); // position right after current match

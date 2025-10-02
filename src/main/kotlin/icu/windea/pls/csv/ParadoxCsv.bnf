@@ -18,6 +18,12 @@
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
+// Grammar for Paradox CSV.
+// Notes:
+// - Public interface is stable: do NOT change parserClass, psiClassPrefix, element/token factories.
+// - Header and row share the same item structure; EOL is recognized by lexer token.
+// - Empty first/middle columns are allowed; quoted columns can be unterminated for recovery.
+
 root ::= COMMENT * header ? (row | COMMENT) *
 
 header ::= column_items {
@@ -26,7 +32,7 @@ header ::= column_items {
   ]
   methods=[getIcon]
 }
-// Note that there are special codes to detect eol
+// EOL is recognized by a dedicated lexer token
 row ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
@@ -37,7 +43,7 @@ private column_items ::= column column_item * {
   pin=1
 }
 private column_item ::= <<checkEol>> SEPARATOR [<<checkEol>> column]
-// Note that empty first/middle columns are allowed
+// Empty first/middle columns are allowed
 column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"

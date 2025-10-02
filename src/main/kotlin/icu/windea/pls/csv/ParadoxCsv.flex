@@ -10,6 +10,11 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
+// Lexer for Paradox CSV.
+// Notes:
+// - Tokens are simple: separator ';', comments '#', EOL, and column tokens.
+// - Do NOT rename %class, token names, or ElementTypes; they are part of the public interface.
+// - QUOTED_COLUMN_TOKEN tolerates an optional closing quote for better error recovery.
 %%
 
 %{
@@ -43,11 +48,11 @@ BLANK=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 SEPARATOR=;
 
-// no non-column tokens (boolean tokens, number tokens, etc)
+// No extra token kinds beyond columns (booleans/numbers are treated as plain text)
 
 COLUMN_TOKEN=({UNQUOTED_COLUMN_TOKEN})|({QUOTED_COLUMN_TOKEN})
-UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // middle whitespaces are permitted
-QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
+UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // inner whitespaces are permitted
+QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"? // closing quote optional for recovery
 
 %%
 
