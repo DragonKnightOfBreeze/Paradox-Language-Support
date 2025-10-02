@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 

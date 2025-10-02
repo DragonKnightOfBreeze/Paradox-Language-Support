@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.presentation
 
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 

@@ -9,7 +9,7 @@ import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
 import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
 import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration

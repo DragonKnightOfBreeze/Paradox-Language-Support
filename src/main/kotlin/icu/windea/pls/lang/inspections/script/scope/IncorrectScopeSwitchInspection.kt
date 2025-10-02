@@ -12,11 +12,11 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxDynamicScopeLinkNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxErrorScopeLinkNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxSystemScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager

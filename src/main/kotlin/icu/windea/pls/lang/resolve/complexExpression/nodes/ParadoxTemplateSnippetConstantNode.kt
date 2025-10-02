@@ -1,0 +1,23 @@
+package icu.windea.pls.lang.resolve.complexExpression.nodes
+
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+
+/**
+ * @see ParadoxTemplateExpression
+ */
+class ParadoxTemplateSnippetConstantNode(
+    override val text: String,
+    override val rangeInExpression: TextRange,
+    override val configGroup: CwtConfigGroup
+) : ParadoxComplexExpressionNodeBase() {
+    open class Resolver {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxTemplateSnippetConstantNode {
+            // text may contain parameters
+            return ParadoxTemplateSnippetConstantNode(text, textRange, configGroup)
+        }
+    }
+
+    companion object : Resolver()
+}

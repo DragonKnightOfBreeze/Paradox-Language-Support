@@ -5,10 +5,10 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 
 /**
  * 链接规则。

@@ -15,13 +15,13 @@ import icu.windea.pls.lang.codeInsight.completion.isInt
 import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
 import icu.windea.pls.lang.codeInsight.completion.scopeName
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxDatabaseObjectExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxDefineReferenceExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxDynamicValueExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxTemplateExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxValueFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 

@@ -12,7 +12,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.extendedInlineScripts
-import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.normalizePath

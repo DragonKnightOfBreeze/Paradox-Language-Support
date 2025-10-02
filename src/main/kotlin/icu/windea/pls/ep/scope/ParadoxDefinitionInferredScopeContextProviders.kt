@@ -15,7 +15,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.systemScopes
-import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -27,7 +27,7 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.util.ParadoxEventManager

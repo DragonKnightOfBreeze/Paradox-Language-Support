@@ -9,8 +9,8 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 
 /**
  * 作用域上下文。

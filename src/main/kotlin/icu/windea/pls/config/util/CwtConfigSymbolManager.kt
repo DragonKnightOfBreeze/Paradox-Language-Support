@@ -29,7 +29,7 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.CwtConfigTextPatternSets
 import icu.windea.pls.model.constants.CwtConfigTextPatterns

@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 
 /**
  * 数据库对象类型规则。

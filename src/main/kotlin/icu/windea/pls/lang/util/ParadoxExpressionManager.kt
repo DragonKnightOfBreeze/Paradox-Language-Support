@@ -90,10 +90,10 @@ import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpression
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolving.complexExpression.nodes.ParadoxTokenNode
-import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.lang.util.dataFlow.options

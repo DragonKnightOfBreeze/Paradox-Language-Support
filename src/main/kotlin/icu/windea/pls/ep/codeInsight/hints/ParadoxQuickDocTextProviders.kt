@@ -8,14 +8,14 @@ import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedParameters
 import icu.windea.pls.config.configGroup.extendedScriptedVariables
 import icu.windea.pls.config.documentation
-import icu.windea.pls.lang.matching.findFromPattern
-import icu.windea.pls.lang.matching.matchFromPattern
+import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.Source
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.ParadoxDefinitionInfo

@@ -25,7 +25,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.lang.matching.findFromPattern
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
@@ -34,7 +34,7 @@ import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

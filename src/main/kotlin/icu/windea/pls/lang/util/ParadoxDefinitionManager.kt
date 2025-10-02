@@ -51,7 +51,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.resolving.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

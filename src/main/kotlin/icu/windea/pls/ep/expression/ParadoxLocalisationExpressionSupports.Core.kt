@@ -8,8 +8,8 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxCommandExpression
-import icu.windea.pls.lang.resolving.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement

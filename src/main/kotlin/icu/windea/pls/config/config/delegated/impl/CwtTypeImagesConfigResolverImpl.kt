@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.properties
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.cancelable
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)

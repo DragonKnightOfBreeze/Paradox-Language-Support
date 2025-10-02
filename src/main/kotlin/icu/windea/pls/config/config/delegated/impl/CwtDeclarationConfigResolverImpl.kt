@@ -8,7 +8,7 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.resolving.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver {
     override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(name, config)
