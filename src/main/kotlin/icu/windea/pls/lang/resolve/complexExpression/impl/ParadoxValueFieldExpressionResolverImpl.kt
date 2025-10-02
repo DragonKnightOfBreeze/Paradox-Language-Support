@@ -40,40 +40,42 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
         val expression = ParadoxValueFieldExpressionImpl(text, range, nodes, configGroup)
 
         val offset = range.startOffset
-        var isLast = false
-        var index: Int
-        var tokenIndex = -1
         var startIndex = 0
+        var i = 0
+        var depthParen = 0
+        var barrier = false // '@' 或 '|' 作为屏障：出现后不再按 '.' 切分
         val textLength = text.length
-        while (tokenIndex < textLength) {
-            index = tokenIndex + 1
-            tokenIndex = text.indexOf('.', index)
-            if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
-            if (tokenIndex != -1 && text.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-            if (tokenIndex != -1 && text.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-            if (tokenIndex != -1 && text.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-            val dotNode = if (tokenIndex != -1) {
-                val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
-                ParadoxOperatorNode(".", dotRange, configGroup)
-            } else {
-                null
+        while (i < textLength) {
+            val ch = text[i]
+            val inParam = parameterRanges.any { i in it }
+            if (!inParam) {
+                when (ch) {
+                    '(' -> depthParen++ // 支持 relations(x).owner：括号内的点不切分
+                    ')' -> if (depthParen > 0) depthParen--
+                    '@', '|' -> if (depthParen == 0) barrier = true
+                    '.' -> if (depthParen == 0 && !barrier) {
+                        // 中间段：按作用域链接解析
+                        val nodeText = text.substring(startIndex, i)
+                        val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
+                        val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                        if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                        nodes += node
+                        val dotRange = TextRange.create(i + offset, i + 1 + offset)
+                        nodes += ParadoxOperatorNode(".", dotRange, configGroup)
+                        startIndex = i + 1
+                    }
+                }
             }
-            if (tokenIndex == -1) {
-                tokenIndex = textLength
-                isLast = true
-            }
-            // resolve node
-            val nodeText = text.substring(startIndex, tokenIndex)
-            val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
-            startIndex = tokenIndex + 1
-            val node = when {
-                isLast -> ParadoxValueFieldNode.resolve(nodeText, nodeTextRange, configGroup)
-                else -> ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
-            }
-            // handle mismatch situation
+            i++
+        }
+        // 最后一段：按值字段解析
+        run {
+            val end = textLength
+            val nodeText = text.substring(startIndex, end)
+            val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
+            val node = ParadoxValueFieldNode.resolve(nodeText, nodeTextRange, configGroup)
             if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
-            if (dotNode != null) nodes += dotNode
         }
         if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolving()

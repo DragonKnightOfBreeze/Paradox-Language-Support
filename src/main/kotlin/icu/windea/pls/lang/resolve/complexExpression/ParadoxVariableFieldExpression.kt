@@ -7,6 +7,7 @@ import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxVariableFieldEx
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 变量字段表达式。
@@ -24,7 +25,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  *
  * #### 整体形态
  * - 由零个或多个“作用域链接”与一个“变量数据源”按 `.` 相连：`scope_link ('.' scope_link)* '.' variable`；也可仅含变量。
- * - 分段规则：按 `.` 切分，但会忽略参数文本中的点；若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则不再继续按 `.` 切分，余下文本作为单个节点交由后续解析。
+ * - 分段规则：按 `.` 切分；忽略参数文本与括号内的点；当进入括号后，仅在配对的 `)` 之后恢复 `.` 分段；`@` 和 `|` 在顶层作为屏障（其后不再继续 `.` 分段）。
  * - 在相邻节点之间会插入 `.` 运算符节点（[ParadoxOperatorNode]）。
  *
  * #### 节点组成
@@ -33,6 +34,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  *
  * #### 备注
  * - 纯数字文本（整数/浮点）与带一元运算符前缀的参数会被解析器直接排除（非变量场景）。
+ * - 若作用域链接段使用了带参数的动态链接（如 `relations(x)`），支持其不是末段（例如：`relations(x).owner.variable`）；参数的多项、空白与单引号字面量行为参见 [ParadoxScopeFieldExpression] 与 [ParadoxScopeLinkValueNode]。
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

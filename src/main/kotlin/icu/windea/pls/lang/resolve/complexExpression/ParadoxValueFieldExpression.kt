@@ -12,6 +12,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 值字段表达式。
@@ -30,7 +31,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValu
  *
  * #### 整体形态
  * - 由零个或多个“作用域链接”与一个“值字段”按 `.` 相连：`scope_link ('.' scope_link)* '.' value_field`；也可仅含值字段。
- * - 分段规则：按 `.` 切分，但会忽略参数文本中的点；若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则不再继续按 `.` 切分，余下文本作为单个节点交由后续解析。
+ * - 分段规则：按 `.` 切分；忽略参数文本与括号内的点；当进入括号后，仅在配对的 `)` 之后恢复 `.` 分段；`@` 和 `|` 在顶层作为屏障（其后不再继续 `.` 分段）。
  * - 在相邻节点之间会插入 `.` 运算符节点（[ParadoxOperatorNode]）。
  *
  * #### 节点组成
@@ -53,6 +54,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValu
  * 3. 否则：
  *    - 若文本包含 `|` 且可匹配脚本值配置（名称为 `script_value`），解析为 [ParadoxScriptValueExpression]；
  *    - 否则解析为 [ParadoxDataSourceNode]（变量/定义等数据源）。
+ *
+ * #### 备注（括号参数兼容性）
+ * - 若作用域链接段使用了带参数的动态链接（如 `relations(x)`），支持其不是末段（例如：`relations(x).owner`）。
+ * - 允许多个参数，逗号分隔并兼容多余空白；空白被保留为 [ParadoxBlankNode]；单引号字面量参数将作为字面量处理并以字符串样式高亮（详见 [ParadoxScopeLinkValueNode] 的实现）。
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

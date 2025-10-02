@@ -28,7 +28,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
         val expression = ParadoxCommandExpressionImpl(text, range, nodes, configGroup)
         val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
 
-        var suffixStartIndex: Int
+        var suffixStartIndex = -1
         run r1@{
             run r2@{
                 suffixStartIndex = text.indexOf('&')
@@ -60,31 +60,38 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
         }
         run r1@{
             val offset = range.startOffset
-            var index: Int
-            var tokenIndex = -1
-            var startIndex = 0
             val expressionString0 = if (suffixStartIndex == -1) text else text.substring(0, suffixStartIndex)
+            var startIndex = 0
+            var i = 0
+            var depthParen = 0
             val textLength = expressionString0.length
-            while (tokenIndex < textLength) {
-                index = tokenIndex + 1
-                tokenIndex = expressionString0.indexOf('.', index)
-                if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue // skip parameter text
-                if (tokenIndex == -1) tokenIndex = textLength
-                run r2@{
-                    val nodeText = expressionString0.substring(startIndex, tokenIndex)
-                    val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
-                    startIndex = tokenIndex + 1
-                    val node = when {
-                        tokenIndex != textLength -> ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
-                        else -> ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+            while (i < textLength) {
+                val ch = expressionString0[i]
+                val inParam = parameterRanges.any { it.contains(i) }
+                if (!inParam) {
+                    when (ch) {
+                        '(' -> depthParen++ // 括号内的点不切分
+                        ')' -> if (depthParen > 0) depthParen--
+                        '.' -> if (depthParen == 0) {
+                            val nodeText = expressionString0.substring(startIndex, i)
+                            val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
+                            val node = ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                            nodes += node
+                            val dotRange = TextRange.create(i + offset, i + 1 + offset)
+                            nodes += ParadoxOperatorNode(".", dotRange, configGroup)
+                            startIndex = i + 1
+                        }
                     }
-                    nodes += node
                 }
-                run r2@{
-                    if (tokenIndex == textLength) return@r2
-                    val node = ParadoxOperatorNode(".", TextRange.from(tokenIndex, 1), configGroup)
-                    nodes += node
-                }
+                i++
+            }
+            // last segment -> command field
+            run {
+                val end = textLength
+                val nodeText = expressionString0.substring(startIndex, end)
+                val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
+                val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+                nodes += node
             }
         }
         nodes += suffixNodes

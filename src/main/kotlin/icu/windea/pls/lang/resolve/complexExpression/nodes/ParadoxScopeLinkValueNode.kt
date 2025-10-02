@@ -6,8 +6,11 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.isEscapedCharAt
+import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxScopeLinkValueNode(
@@ -27,28 +30,115 @@ class ParadoxScopeLinkValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
-            // text may contain parameters
-            // child node can be ParadoxScopeLinkNode / ParadoxDynamicValueExpression / ParadoxDataSourceNode
+            // text may contain parameters & may be an argument list inside parentheses
+            // For argumented dynamic links, we support multi-args separated by commas with optional blanks,
+            // and single-quoted literal arguments.
+
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-            run {
-                val scopeFieldConfig = linkConfigs.find { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
-                if (scopeFieldConfig == null) return@run
-                val node = ParadoxScopeLinkNode.resolve(text, textRange, configGroup)
-                nodes += node
+
+            fun resolveSingle(coreText: String, coreRange: TextRange) {
+                // precedence: ScopeField -> DynamicValue -> DataSource
+                run {
+                    val scopeFieldConfig = linkConfigs.find { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
+                    if (scopeFieldConfig == null) return@run
+                    val node = ParadoxScopeLinkNode.resolve(coreText, coreRange, configGroup)
+                    nodes += node
+                }
+                run {
+                    if (nodes.lastOrNull()?.rangeInExpression == coreRange) return@run
+                    val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
+                    if (configs.isEmpty()) return@run
+                    val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs) ?: return@run
+                    nodes += node
+                }
+                run {
+                    if (nodes.lastOrNull()?.rangeInExpression == coreRange) return@run
+                    val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, linkConfigs)
+                    nodes += node
+                }
             }
+
+            // Detect top-level commas to decide whether it's an argument list
+            var hasTopLevelComma = false
             run {
-                if (nodes.isNotEmpty()) return@run
-                val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
-                if (configs.isEmpty()) return@run
-                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs) ?: return@run
-                nodes += node
+                var i = 0
+                var depthParen = 0
+                var inSingleQuote = false
+                while (i < text.length) {
+                    val ch = text[i]
+                    val inParam = parameterRanges.any { i in it }
+                    if (!inParam) {
+                        if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
+                        else if (!inSingleQuote) when (ch) {
+                            '(' -> depthParen++
+                            ')' -> if (depthParen > 0) depthParen--
+                            ',' -> if (depthParen == 0) { hasTopLevelComma = true; return@run }
+                        }
+                    }
+                    i++
+                }
             }
-            run {
-                if (nodes.isNotEmpty()) return@run
-                val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
-                nodes += node
+
+            if (!hasTopLevelComma) {
+                // original single-value resolution path
+                resolveSingle(text, textRange)
+                return ParadoxScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
             }
+
+            // Argument list path: split by top-level commas, emit blanks and markers
+            val offset = textRange.startOffset
+            var startIndex = 0
+            var i = 0
+            var depthParen = 0
+            var inSingleQuote = false
+            fun emitSegment(endExclusive: Int) {
+                if (endExclusive <= startIndex) return
+                // leading blanks
+                var a = startIndex
+                while (a < endExclusive && text[a].isWhitespace()) a++
+                if (a > startIndex) {
+                    val blankRange = TextRange.create(startIndex + offset, a + offset)
+                    nodes += ParadoxBlankNode(text.substring(startIndex, a), blankRange, configGroup)
+                }
+                // core
+                var b = endExclusive - 1
+                while (b >= a && text[b].isWhitespace()) b--
+                if (b >= a) {
+                    val coreText = text.substring(a, b + 1)
+                    val coreRange = TextRange.create(a + offset, b + 1 + offset)
+                    if (coreText.isQuoted('\'')) {
+                        nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
+                    } else {
+                        resolveSingle(coreText, coreRange)
+                    }
+                }
+                // trailing blanks
+                if (b + 1 < endExclusive) {
+                    val blankRange2 = TextRange.create(b + 1 + offset, endExclusive + offset)
+                    nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), blankRange2, configGroup)
+                }
+            }
+            while (i < text.length) {
+                val ch = text[i]
+                val inParam = parameterRanges.any { i in it }
+                if (!inParam) {
+                    if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
+                    else if (!inSingleQuote) when (ch) {
+                        '(' -> depthParen++
+                        ')' -> if (depthParen > 0) depthParen--
+                        ',' -> if (depthParen == 0) {
+                            emitSegment(i)
+                            // emit comma marker
+                            nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                            startIndex = i + 1
+                        }
+                    }
+                }
+                i++
+            }
+            emitSegment(text.length)
             return ParadoxScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
         }
     }
