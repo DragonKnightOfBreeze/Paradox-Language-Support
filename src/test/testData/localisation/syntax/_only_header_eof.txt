@@ -1,0 +1,5 @@
+ParadoxLocalisationFile: _only_header_eof.test.yml(0,10)
+  ParadoxLocalisationPropertyList(0,10)
+    ParadoxLocalisationLocale: l_english(0,10)
+      PsiElement(LOCALE_TOKEN)('l_english')(0,9)
+      PsiElement(COLON)(':')(9,10)
