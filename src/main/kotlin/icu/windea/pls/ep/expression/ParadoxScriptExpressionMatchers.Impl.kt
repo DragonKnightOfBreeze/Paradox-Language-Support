@@ -116,6 +116,9 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val r = expression.type.isColorType() && configExpression.value?.let { expression.value.startsWith(it) } != false
                 Result.of(r)
             }
+            CwtDataTypes.Any -> {
+                Result.FallbackMatch
+            }
             else -> null
         }
     }
@@ -243,24 +246,6 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (variableFieldExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
-            CwtDataTypes.DatabaseObject -> {
-                if (!expression.type.isStringType()) return Result.NotMatch
-                if (expression.isParameterized()) return Result.ParameterizedMatch
-                val textRange = TextRange.create(0, expression.value.length)
-                val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression.value, textRange, configGroup)
-                if (databaseObjectExpression == null) return Result.NotMatch
-                if (databaseObjectExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
-                Result.ExactMatch
-            }
-            CwtDataTypes.DefineReference -> {
-                if (!expression.type.isStringType()) return Result.NotMatch
-                if (expression.isParameterized()) return Result.ParameterizedMatch
-                val textRange = TextRange.create(0, expression.value.length)
-                val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expression.value, textRange, configGroup)
-                if (defineReferenceExpression == null) return Result.NotMatch
-                if (defineReferenceExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
-                Result.ExactMatch
-            }
             CwtDataTypes.Modifier -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
@@ -287,9 +272,6 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch // 不在这里处理
             }
-            CwtDataTypes.Any -> {
-                Result.FallbackMatch
-            }
             CwtDataTypes.Parameter -> {
                 // 匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
@@ -307,14 +289,32 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 Result.ExactMatch
             }
-            CwtDataTypes.ShaderEffect -> {
-                // TODO 1.2.2+ 暂时作为一般的字符串处理
+            CwtDataTypes.DatabaseObject -> {
+                if (!expression.type.isStringType()) return Result.NotMatch
+                if (expression.isParameterized()) return Result.ParameterizedMatch
+                val textRange = TextRange.create(0, expression.value.length)
+                val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression.value, textRange, configGroup)
+                if (databaseObjectExpression == null) return Result.NotMatch
+                if (databaseObjectExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
+                Result.ExactMatch
+            }
+            CwtDataTypes.DefineReference -> {
+                if (!expression.type.isStringType()) return Result.NotMatch
+                if (expression.isParameterized()) return Result.ParameterizedMatch
+                val textRange = TextRange.create(0, expression.value.length)
+                val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expression.value, textRange, configGroup)
+                if (defineReferenceExpression == null) return Result.NotMatch
+                if (defineReferenceExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
+                Result.ExactMatch
+            }
+            CwtDataTypes.StellarisNameFormat -> {
+                // TODO 1.2.2+ 需要考虑进一步的支持
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 Result.FallbackMatch
             }
-            CwtDataTypes.StellarisNameFormat -> {
-                // TODO 1.2.2+ 需要考虑进一步的支持
+            CwtDataTypes.ShaderEffect -> {
+                // TODO 1.2.2+ 暂时作为一般的字符串处理
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 Result.FallbackMatch

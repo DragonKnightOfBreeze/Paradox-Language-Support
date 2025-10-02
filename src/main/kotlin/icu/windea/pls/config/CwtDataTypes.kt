@@ -10,6 +10,7 @@ object CwtDataTypes {
     val Float = CwtDataType("Float")
     val Scalar = CwtDataType("Scalar")
     val ColorField = CwtDataType("ColorField")
+    val Any = CwtDataType("Any")
 
     val PercentageField = CwtDataType("PercentageField")
     val DateField = CwtDataType("DateField")
@@ -38,12 +39,9 @@ object CwtDataTypes {
     val AliasKeysField = CwtDataType("AliasKeysField", isReference = true)
     val AliasMatchLeft = CwtDataType("AliasMatchLeft", isReference = true)
 
-    val Any = CwtDataType("Any")
     val Parameter = CwtDataType("Parameter", isReference = true)
     val ParameterValue = CwtDataType("ParameterValue", isReference = true)
     val LocalisationParameter = CwtDataType("LocalisationParameter", isReference = true)
-    // effects in .shader files
-    val ShaderEffect = CwtDataType("ShaderEffect"/*, isReference = true*/)
 
     // e.g., civic:xxx:xxx
     /** @since 1.3.9 */
@@ -53,9 +51,11 @@ object CwtDataTypes {
     /** @since 1.3.25 */
     // @WithGameType(ParadoxGameType.Vic3) // not limited yet
     val DefineReference = CwtDataType("DefineReference", isReference = true)
-
     @WithGameType(ParadoxGameType.Stellaris)
-    val StellarisNameFormat = CwtDataType("StellarisNameFormat"/*, isReference = true*/)
+    val StellarisNameFormat = CwtDataType("StellarisNameFormat", isReference = true)
+
+    // effects in .shader files
+    val ShaderEffect = CwtDataType("ShaderEffect"/*, isReference = true*/)
     @WithGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType("TechnologyWithLevel", isReference = true)
 

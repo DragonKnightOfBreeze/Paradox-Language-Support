@@ -32,6 +32,8 @@ class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() },
         rule(CwtDataTypes.ColorField, "color_field"),
         rule(CwtDataTypes.ColorField, "color[", "]") { value = it.orNull() },
+
+        rule(CwtDataTypes.Any, "\$any"),
     )
 }
 
@@ -85,15 +87,15 @@ class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]") { value = it.orNull() },
         rule(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]") { value = it.orNull() },
 
-        rule(CwtDataTypes.Any, "\$any"),
+        rule(CwtDataTypes.DatabaseObject, "\$database_object"),
+        rule(CwtDataTypes.DefineReference, "\$define_reference"),
+        rule(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() },
 
         rule(CwtDataTypes.Parameter, "\$parameter"),
         rule(CwtDataTypes.ParameterValue, "\$parameter_value"),
         rule(CwtDataTypes.LocalisationParameter, "\$localisation_parameter"),
+
         rule(CwtDataTypes.ShaderEffect, "\$shader_effect"),
-        rule(CwtDataTypes.DatabaseObject, "\$database_object"),
-        rule(CwtDataTypes.DefineReference, "\$define_reference"),
-        rule(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]") { value = it.orNull() },
     )
 }
 
