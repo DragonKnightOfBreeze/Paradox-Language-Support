@@ -34,7 +34,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  *
  * #### 备注
  * - 纯数字文本（整数/浮点）与带一元运算符前缀的参数会被解析器直接排除（非变量场景）。
- * - 若作用域链接段使用了带参数的动态链接（如 `relations(x)`），支持其不是末段（例如：`relations(x).owner.variable`）；参数的多项、空白与单引号字面量行为参见 [ParadoxScopeFieldExpression] 与 [ParadoxScopeLinkValueNode]。
+ * - 若作用域链接段使用了带参数的动态链接（如 `prefix(x)`），支持其不是末段（例如：`prefix(x).owner.variable`）；参数的多项、空白与单引号字面量行为参见 [ParadoxScopeFieldExpression] 与 [ParadoxScopeLinkValueNode]。
  */
 interface ParadoxVariableFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>

@@ -50,7 +50,7 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
             val inParam = parameterRanges.any { i in it }
             if (!inParam) {
                 when (ch) {
-                    '(' -> depthParen++ // 支持 relations(x).owner：括号内的点不切分
+                    '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
                     ')' -> if (depthParen > 0) depthParen--
                     '@', '|' -> if (depthParen == 0) barrier = true
                     '.' -> if (depthParen == 0 && !barrier) {

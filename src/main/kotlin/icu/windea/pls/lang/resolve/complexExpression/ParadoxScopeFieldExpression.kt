@@ -4,8 +4,8 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScopeFieldExpressionResolverImpl
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
@@ -25,7 +25,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * root
  * root.owner
  * event_target:some_target
- * relations(root)
  * ```
  *
  * ### 语法与结构
@@ -45,7 +44,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * - 无前缀形式：仅 `<value>`；当链接允许无前缀时生效。
  *
  * #### 括号参数（仅动态链接 fromArgument）
- * - 允许不是链接中的最后一个节点（例如：`relations(x).owner`）。
+ * - 允许不是链接中的最后一个节点（例如：`prefix(x).owner`）。
  * - 允许多个参数，以逗号分隔；括号与参数之间、参数与逗号之间的空白均被接受并保留为 [ParadoxBlankNode]。
  * - 允许用单引号包裹的字面量参数（例如：`'abc'`），将作为字面量处理，不做引用解析，对应地规则侧可使用 `data_source = scalar`。
  *

@@ -46,7 +46,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
             val inParam = parameterRanges.any { i in it }
             if (!inParam) {
                 when (ch) {
-                    '(' -> depthParen++ // 支持 relations(x).owner
+                    '(' -> depthParen++ // 支持 prefix(x).owner
                     ')' -> if (depthParen > 0) depthParen--
                     '@', '|' -> if (depthParen == 0) barrier = true
                     '.' -> if (depthParen == 0 && !barrier) {

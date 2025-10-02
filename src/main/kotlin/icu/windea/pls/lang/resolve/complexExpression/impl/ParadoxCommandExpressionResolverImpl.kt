@@ -17,10 +17,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
-    override fun invoke(text: String, range: TextRange, configGroup: CwtConfigGroup, nodes: List<ParadoxComplexExpressionNode>): ParadoxCommandExpression {
-        return ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
-    }
-
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         if (text.isEmpty()) return null
 

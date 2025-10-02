@@ -4,15 +4,16 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxValueFieldExpressionResolverImpl
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.*
 
 /**
  * 值字段表达式。
@@ -24,6 +25,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  * ```
  * trigger:some_trigger
  * value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
+ * relations(root)
  * root.owner.some_variable
  * ```
  *
@@ -56,7 +58,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.*
  *    - 否则解析为 [ParadoxDataSourceNode]（变量/定义等数据源）。
  *
  * #### 备注（括号参数兼容性）
- * - 若作用域链接段使用了带参数的动态链接（如 `relations(x)`），支持其不是末段（例如：`relations(x).owner`）。
+ * - 若作用域链接段使用了带参数的动态链接（如 `prefix(x)`），支持其不是末段（例如：`prefix(x).owner`）。
  * - 允许多个参数，逗号分隔并兼容多余空白；空白被保留为 [ParadoxBlankNode]；单引号字面量参数将作为字面量处理并以字符串样式高亮（详见 [ParadoxScopeLinkValueNode] 的实现）。
  */
 interface ParadoxValueFieldExpression : ParadoxComplexExpression {
