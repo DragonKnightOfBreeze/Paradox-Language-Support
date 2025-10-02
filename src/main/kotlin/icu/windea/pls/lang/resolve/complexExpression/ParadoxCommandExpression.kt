@@ -4,33 +4,40 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxCommandExpressionResolverImpl
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 
 /**
  * （本地化）命令表达式。
  *
- * 说明：
+ * ### 说明
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
  *
- * 示例：
+ * ### 示例
  * ```
  * Root.GetName
  * Root.Owner.event_target:some_event_target.var
  * ```
  *
- * 语法：
- * ```bnf
- * command_expression ::= command_scope_link * (command_field) suffix ?
- * command_scope_link := system_command_scope | command_scope | dynamic_command_scope_link
- * system_command_scope := TOKEN // predefined by CWT Config (see system scopes)
- * command_scope := TOKEN // predefined by CWT Config (see localisation links)
- * dynamic_command_scope_link := dynamic_command_scope_link_prefix ? dynamic_command_scope_link_value
- * dynamic_command_scope_link_prefix := TOKEN // "event_target:", "parameter:", etc.
- * dynamic_command_scope_link_value := TOKEN // matching config expression "value[event_target]" or "value[global_event_target]"
- * command_field ::= predefined_command_field | dynamic_command_field
- * predefined_command_field := TOKEN // predefined by CWT Config (see localisation commands)
- * dynamic_command_field ::= TOKEN // matching config expression "<scripted_loc>" or "value[variable]"
- * suffix ::= TOKEN // see 99_README_GRAMMAR.txt
- * ```
+ * ### 语法与结构
+ *
+ * #### 整体形态
+ * - 由一个或多个“命令作用域链接”与一个“命令字段”按 `.` 相连，之后可选带后缀：
+ *   - `command_scope_link ('.' command_scope_link)* '.' command_field [suffix]`
+ *   - 或仅 `command_field [suffix]`
+ * - 若存在后缀，形式为：`&<suffix>` 或 `::<suffix>`（保留分隔符作为独立标记）。
+ *
+ * #### 节点组成
+ * - 作用域链接段：[ParadoxCommandScopeLinkNode]（按 `.` 切分的前若干段）。
+ * - 字段段：[ParadoxCommandFieldNode]（最后一段）。
+ * - 点分隔符：`.`（[ParadoxOperatorNode]，插入在相邻段之间）。
+ * - 后缀：由分隔符（[ParadoxMarkerNode] 的 `&` 或 `::`）与 [ParadoxCommandSuffixNode] 组成（可选）。
+ *
+ * #### 分段规则
+ * - 主体按 `.` 切分，忽略参数文本中的点；切分范围在后缀开始位置之前。
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression {
     interface Resolver {

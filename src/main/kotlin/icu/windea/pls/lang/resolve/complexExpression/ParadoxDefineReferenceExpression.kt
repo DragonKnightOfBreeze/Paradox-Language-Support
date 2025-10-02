@@ -10,20 +10,22 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariable
 /**
  * 预设值引用表达式。
  *
- * 说明：
+ * ### 说明
  * - 对应的规则数据类型为 [CwtDataTypes.DefineReference]。
  *
- * 示例：
+ * ### 示例
  * ```
  * define:NPortrait|GRACEFUL_AGING_START
  * ```
  *
- * 语法：
- * ```bnf
- * define_reference_expression ::= "define:" define_namespace "|" define_variable
- * define_namespace ::= TOKEN // level 1 property keys in .txt files in common/defines
- * define_variable ::= TOKEN // level 2 property keys in .txt files in common/defines
- * ```
+ * ### 语法与结构
+ *
+ * #### 整体形态
+ * - 固定以前缀 `define:` 开头，随后是命名空间与变量名，以 `|` 分隔：`define:<namespace>|<variable>`。
+ *
+ * #### 节点组成
+ * - 命名空间：[ParadoxDefineNamespaceNode]（`common/defines` 下 .txt 的一级键）。
+ * - 变量名：[ParadoxDefineVariableNode]（同文件的二级键）。
  */
 interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
     val namespaceNode: ParadoxDefineNamespaceNode?

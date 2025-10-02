@@ -4,7 +4,15 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.impl.ParadoxScopeFieldExpressionResolverImpl
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefixNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 
 /**
  * 作用域字段表达式。
@@ -17,19 +25,42 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * root
  * root.owner
  * event_target:some_target
+ * relations(root)
  * ```
  *
- * 语法：
- * ```bnf
- * scope_field_expression ::= scope +
- * scope ::= system_scope | scope_link | scope_link_from_data
- * system_scope ::= TOKEN // predefined by CWT Config (see system_scopes.cwt)
- * scope_link ::= TOKEN // predefined by CWT Config (see links.cwt)
- * scope_link_from_data ::= scope_link_prefix scope_link_value // predefined by CWT Config (see links.cwt)
- * scope_link_prefix ::= TOKEN // e.g. "event_target:" while the link's prefix is "event_target:"
- * scope_link_value ::= expression // e.g. "some_variable" while the link's data source is "value[variable]"
- * expression ::= data_source | dynamic_value_expression // see: ParadoxDataSourceNode, ParadoxDynamicValueExpression
- * ```
+ * ### 语法与结构
+ *
+ * #### 整体形态
+ * - 由一个或多个“作用域链接”按 `.` 相连：`scope_link ('.' scope_link)*`。
+ * - 分段规则：按 `.` 切分，但会忽略参数文本中的点；若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则不再继续按 `.` 切分，余下文本作为单个节点交由后续解析。
+ *
+ * #### 作用域链接类别
+ * - [ParadoxSystemScopeNode]：来自 `system_scopes.cwt` 的预定义系统作用域，例如 `root`。
+ * - [ParadoxScopeNode]：来自 `links.cwt` 的预定义作用域链接（`forScope()` 且 `fromData == false`），例如 `owner`。
+ * - [ParadoxDynamicScopeLinkNode]：来自 `links.cwt` 的动态作用域链接（`fromData == true` 或 `fromArgument == true`）。
+ *
+ * #### 动态作用域链接形态
+ * - 前缀形式：`<prefix><value>`（如 `event_target:<value>`）；前缀由 [ParadoxScopeLinkPrefixNode] 表示，值由 [ParadoxScopeLinkValueNode] 表示。
+ * - 括号传参与形式：`<prefixWithoutColon>(<value>)`（如 `relations(<value>)`）；括号由 [ParadoxOperatorNode] 表示。
+ * - 无前缀形式：仅 `<value>`；当链接允许无前缀时生效。
+ *
+ * #### 值节点解析优先级：
+ * 1. 若链接的 `configExpression` 的类型属于 `ScopeField` 组，则值解析为单个作用域链接（[ParadoxScopeLinkNode]）。
+ * 2. 否则若链接的 `dataSourceExpression` 的类型属于 `DynamicValue` 组，则解析为 [ParadoxDynamicValueExpression]。
+ * 3. 否则解析为数据源节点 [ParadoxDataSourceNode]（引用变量/定义等）。
+ *
+ * #### 解析细节提示
+ * **备注：**
+ * - 解析过程中会在相邻链接节点之间插入 `.` 运算符节点（[ParadoxOperatorNode]）。
+ * - 参数文本中的 `.` 不作为分段切分点。
+ * - 若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则停止继续切分，余下文本整体作为后续节点的输入。
+ *
+ * @property scopeNodes 仅返回解析得到的作用域链接节点（不含 `.` 运算符与其他子节点）。
+ *
+ * @see ParadoxScopeLinkNode
+ * @see ParadoxScopeLinkValueNode
+ * @see ParadoxDataSourceNode
+ * @see ParadoxDynamicValueExpression
  */
 interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>
