@@ -144,6 +144,7 @@
 
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
+
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptSyncedLocalisationExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptInlineLocalisationExpressionSupport"/>
