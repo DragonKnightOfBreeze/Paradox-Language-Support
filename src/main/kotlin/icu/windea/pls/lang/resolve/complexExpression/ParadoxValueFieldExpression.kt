@@ -23,8 +23,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
  * value_link ::= TOKEN // predefined by CWT Config (see links.cwt)
  * value_link_from_data ::= value_field_prefix value_field_value // predefined by CWT Config (see links.cwt)
  * value_field_prefix ::= TOKEN // e.g. "value:" while the link's prefix is "value:"
- * value_field_value ::= expression // e.g. "some" while the link's data source is "value[variable]"
- * expression ::= data_expression | dynamic_value_expression | sv_expression // see: ParadoxDataExpression, ParadoxDynamicValueExpression
+ * value_field_value ::= expression // e.g. "some_variable" while the link's data source is "value[variable]"
+ * expression ::= data_source | dynamic_value_expression | sv_expression // see: ParadoxDataSourceNode, ParadoxDynamicValueExpression
  * sv_expression ::= sv_name ("|" (param_name "|" param_value "|")+)? // e.g. value:some_sv|PARAM1|VALUE1|PARAM2|VALUE2|
  * ```
  *

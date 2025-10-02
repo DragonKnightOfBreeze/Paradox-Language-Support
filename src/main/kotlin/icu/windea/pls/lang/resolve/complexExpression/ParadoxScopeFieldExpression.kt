@@ -16,8 +16,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
  * scope_link ::= TOKEN // predefined by CWT Config (see links.cwt)
  * scope_link_from_data ::= scope_link_prefix scope_link_value // predefined by CWT Config (see links.cwt)
  * scope_link_prefix ::= TOKEN // e.g. "event_target:" while the link's prefix is "event_target:"
- * scope_link_value ::= EXPRESSION // e.g. "some_variable" while the link's data source is "value[variable]"
- * expression ::= data_expression | dynamic_value_expression // see: ParadoxDataExpression, ParadoxDynamicValueExpression
+ * scope_link_value ::= expression // e.g. "some_variable" while the link's data source is "value[variable]"
+ * expression ::= data_source | dynamic_value_expression // see: ParadoxDataSourceNode, ParadoxDynamicValueExpression
  * ```
  *
  * 示例：

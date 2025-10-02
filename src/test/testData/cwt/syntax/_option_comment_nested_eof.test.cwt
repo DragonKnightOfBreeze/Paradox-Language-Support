@@ -1,0 +1,5 @@
+root = {
+  ## cardinality = 0..0
+  a = yes
+  ## primary
+  b = 2

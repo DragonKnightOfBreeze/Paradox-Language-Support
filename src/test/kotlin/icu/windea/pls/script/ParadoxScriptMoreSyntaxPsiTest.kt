@@ -14,4 +14,9 @@ class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "test.tx
     fun test_empty() = doTest(true)
     fun test_only_comments() = doTest(true)
     fun test_error_unclosed_brace() = doTest(true)
+
+    fun test_property_separators() = doTest(true)
+    fun test_inline_math_mismatch() = doTest(true)
+    fun test_parameter_condition_nested() = doTest(true)
+    fun test_unterminated_quoted_string_value() = doTest(true)
 }
