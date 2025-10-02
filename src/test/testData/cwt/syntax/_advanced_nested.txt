@@ -1,4 +1,4 @@
-CwtFile: _advanced_nested.cwt(0,128)
+CwtFile: _advanced_nested.test.cwt(0,128)
   CwtRootBlock(0,128)
     CwtProperty: types(0,128)
       CwtPropertyKey: types(0,5)

@@ -1,4 +1,4 @@
-CwtFile: _error_unclosed_brace.cwt(0,18)
+CwtFile: _error_unclosed_brace.test.cwt(0,18)
   CwtRootBlock(0,18)
     CwtProperty: root(0,18)
       CwtPropertyKey: root(0,4)

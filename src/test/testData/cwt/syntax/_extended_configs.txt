@@ -1,4 +1,4 @@
-CwtFile: _extended_configs.cwt(0,372)
+CwtFile: _extended_configs.test.cwt(0,372)
   CwtRootBlock(0,372)
     CwtProperty: @var(0,8)
       CwtPropertyKey: @var(0,4)

@@ -16,9 +16,12 @@ CREATE TABLE IF NOT EXISTS playsets (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   isActive INTEGER NOT NULL DEFAULT 0,
-  loadOrder TEXT
+  loadOrder TEXT,
+  createdOn datetime NOT NULL,
+  updatedOn datetime,
+  syncedOn datetime
 );
-INSERT INTO playsets(id, name, isActive) VALUES ('ps1', 'Test Playset', 1);
+INSERT INTO playsets(id, name, isActive, createdOn) VALUES ('ps1', 'Test Playset', 1, datetime('now'));
 
 -- mods table
 CREATE TABLE IF NOT EXISTS mods (
