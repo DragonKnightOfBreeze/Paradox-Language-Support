@@ -6,9 +6,9 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.core.isQuoted
 import icu.windea.pls.core.isEscapedCharAt
+import icu.windea.pls.core.isQuoted
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
@@ -18,9 +18,9 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 class ParadoxValueFieldValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>
+    val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -92,7 +92,7 @@ class ParadoxValueFieldValueNode(
             if (!hasTopLevelComma) {
                 // original single-value path
                 resolveSingle(text, textRange)
-                return ParadoxValueFieldValueNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxValueFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // argument list path: split by top-level commas, preserve blanks and comma markers
@@ -137,7 +137,7 @@ class ParadoxValueFieldValueNode(
                 i++
             }
             emitSegment(text.length)
-            return ParadoxValueFieldValueNode(text, textRange, nodes, configGroup, linkConfigs)
+            return ParadoxValueFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }
 

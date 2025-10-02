@@ -17,6 +17,10 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
+    override fun invoke(text: String, range: TextRange, configGroup: CwtConfigGroup, nodes: List<ParadoxComplexExpressionNode>): ParadoxCommandExpression {
+        return ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
+    }
+
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
         if (text.isEmpty()) return null
 
@@ -25,7 +29,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxCommandExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxCommandExpressionImpl(text, range, configGroup, nodes)
         val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
 
         var suffixStartIndex = -1
@@ -103,8 +107,8 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
 private class ParadoxCommandExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
     override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
 
@@ -123,4 +127,5 @@ private class ParadoxCommandExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxCommandExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

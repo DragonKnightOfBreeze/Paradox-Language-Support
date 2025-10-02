@@ -23,7 +23,7 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxScopeFieldExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxScopeFieldExpressionImpl(text, range, configGroup, nodes)
 
         val offset = range.startOffset
         var startIndex = 0
@@ -72,8 +72,8 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
 private class ParadoxScopeFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxScopeFieldExpression {
     override val scopeNodes: List<ParadoxScopeLinkNode>
         get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
@@ -95,4 +95,5 @@ private class ParadoxScopeFieldExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxScopeFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

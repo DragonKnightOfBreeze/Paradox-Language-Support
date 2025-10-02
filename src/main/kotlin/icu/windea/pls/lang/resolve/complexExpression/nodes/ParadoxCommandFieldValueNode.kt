@@ -11,9 +11,9 @@ import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 class ParadoxCommandFieldValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -31,7 +31,7 @@ class ParadoxCommandFieldValueNode(
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
             }
-            return ParadoxCommandFieldValueNode(text, textRange, nodes, configGroup, linkConfigs)
+            return ParadoxCommandFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }
 

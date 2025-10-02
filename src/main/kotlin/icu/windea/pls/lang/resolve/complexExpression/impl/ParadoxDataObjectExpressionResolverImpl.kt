@@ -21,7 +21,7 @@ internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectEx
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxDatabaseObjectExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxDatabaseObjectExpressionImpl(text, range, configGroup, nodes)
 
         run r1@{
             val offset = range.startOffset
@@ -68,8 +68,8 @@ internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectEx
 private class ParadoxDatabaseObjectExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDatabaseObjectExpression {
     override val typeNode: ParadoxDatabaseObjectTypeNode?
         get() = nodes.getOrNull(0)?.castOrNull()
@@ -99,4 +99,5 @@ private class ParadoxDatabaseObjectExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxDatabaseObjectExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

@@ -33,7 +33,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
         if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(text, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxVariableFieldExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxVariableFieldExpressionImpl(text, range, configGroup, nodes)
 
         val offset = range.startOffset
         var startIndex = 0
@@ -85,8 +85,8 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
 private class ParadoxVariableFieldExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxVariableFieldExpression {
     override val scopeNodes: List<ParadoxScopeLinkNode>
         get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
@@ -110,4 +110,5 @@ private class ParadoxVariableFieldExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxVariableFieldExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

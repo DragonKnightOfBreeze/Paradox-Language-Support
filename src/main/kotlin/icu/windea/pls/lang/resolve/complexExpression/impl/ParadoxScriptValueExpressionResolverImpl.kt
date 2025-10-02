@@ -28,7 +28,7 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxScriptValueExpressionImpl(text, range, nodes, configGroup, config)
+        val expression = ParadoxScriptValueExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset
         var n = 0
@@ -83,9 +83,9 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
 private class ParadoxScriptValueExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
-    override val config: CwtConfig<*>
+    override val config: CwtConfig<*>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxScriptValueExpression {
     override val scriptValueNode: ParadoxScriptValueNode
         get() = nodes.first().cast()
@@ -131,4 +131,5 @@ private class ParadoxScriptValueExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxScriptValueExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

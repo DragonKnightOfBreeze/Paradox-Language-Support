@@ -34,7 +34,7 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxDynamicValueExpression(text, range, nodes, configGroup, configs)
+        val expression = ParadoxDynamicValueExpression(text, range, configGroup, configs, nodes)
 
         val offset = range.startOffset
         var index: Int
@@ -81,9 +81,9 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
 private class ParadoxDynamicValueExpression(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
-    override val configs: List<CwtConfig<*>>
+    override val configs: List<CwtConfig<*>>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDynamicValueExpression {
     override val dynamicValueNode: ParadoxDynamicValueNode
         get() = nodes.get(0).cast()
@@ -107,4 +107,5 @@ private class ParadoxDynamicValueExpression(
 
     override fun equals(other: Any?) = this === other || other is ParadoxDynamicValueExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

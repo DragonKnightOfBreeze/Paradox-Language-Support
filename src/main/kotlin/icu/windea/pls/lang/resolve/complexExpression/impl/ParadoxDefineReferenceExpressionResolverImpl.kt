@@ -22,7 +22,7 @@ internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefer
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxDefineReferenceExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxDefineReferenceExpressionImpl(text, range, configGroup, nodes)
 
         run r1@{
             val offset = range.startOffset
@@ -66,8 +66,8 @@ internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefer
 private class ParadoxDefineReferenceExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxDefineReferenceExpression {
     override val namespaceNode: ParadoxDefineNamespaceNode?
         get() = nodes.getOrNull(1)?.cast()
@@ -92,4 +92,5 @@ private class ParadoxDefineReferenceExpressionImpl(
 
     override fun equals(other: Any?) = this === other || other is ParadoxDefineReferenceExpression && text == other.text
     override fun hashCode() = text.hashCode()
+    override fun toString() = text
 }

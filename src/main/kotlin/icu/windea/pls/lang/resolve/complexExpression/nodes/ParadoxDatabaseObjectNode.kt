@@ -15,9 +15,9 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 class ParadoxDatabaseObjectNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDatabaseObjectExpression,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase() {
     val config = expression.typeNode?.config
 
@@ -39,7 +39,7 @@ class ParadoxDatabaseObjectNode(
                 val node = ParadoxDatabaseObjectDataSourceNode.resolve(text, textRange, configGroup, expression, isBase)
                 nodes += node
             }
-            return ParadoxDatabaseObjectNode(text, textRange, nodes, configGroup, expression)
+            return ParadoxDatabaseObjectNode(text, textRange, configGroup, expression, nodes)
         }
     }
 

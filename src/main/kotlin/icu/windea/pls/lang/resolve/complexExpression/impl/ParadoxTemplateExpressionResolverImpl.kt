@@ -40,7 +40,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         if (!incomplete && matchGroups.size < templateExpression.referenceExpressions.size) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = ParadoxTemplateExpressionImpl(text, range, nodes, configGroup)
+        val expression = ParadoxTemplateExpressionImpl(text, range, configGroup, nodes)
 
         run r1@{
             val offset = range.startOffset
@@ -77,11 +77,12 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
 private class ParadoxTemplateExpressionImpl(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
-    override val configGroup: CwtConfigGroup
+    override val configGroup: CwtConfigGroup,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), ParadoxTemplateExpression {
     override val errors: List<ParadoxComplexExpressionError> get() = emptyList()
 
     override fun equals(other: Any?) = this === other || other is ParadoxTemplateExpression && text == other.text
     override fun hashCode(): Int = text.hashCode()
+    override fun toString() = text
 }

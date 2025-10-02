@@ -14,9 +14,9 @@ import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 class ParadoxCommandScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -63,7 +63,7 @@ class ParadoxCommandScopeLinkValueNode(
 
             if (!hasTopLevelComma) {
                 resolveSingle(text, textRange)
-                return ParadoxCommandScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // split by top-level commas, preserving blanks and comma markers
@@ -108,7 +108,7 @@ class ParadoxCommandScopeLinkValueNode(
                 i++
             }
             emitSegment(text.length)
-            return ParadoxCommandScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
+            return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }
 

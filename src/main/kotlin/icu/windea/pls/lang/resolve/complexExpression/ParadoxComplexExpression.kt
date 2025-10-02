@@ -22,6 +22,10 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     fun getAllErrors(element: ParadoxExpressionElement?): List<ParadoxComplexExpressionError>
     fun getAllReferences(element: ParadoxExpressionElement): List<PsiReference>
 
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
+
     interface Resolver {
         fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression?
         fun resolveByDataType(text: String, range: TextRange, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>? = null): ParadoxComplexExpression?

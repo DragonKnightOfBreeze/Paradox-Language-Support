@@ -11,9 +11,9 @@ import icu.windea.pls.core.collections.findIsInstance
 class ParadoxDynamicValueFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>
+    val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxValueFieldPrefixNode>()
     val valueNode get() = nodes.findIsInstance<ParadoxValueFieldValueNode>()!!
@@ -48,7 +48,7 @@ class ParadoxDynamicValueFieldNode(
                     val node = ParadoxValueFieldValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                 }
-                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicValueFieldNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
@@ -85,7 +85,7 @@ class ParadoxDynamicValueFieldNode(
                     else ParadoxOperatorNode(")", nodeTextRange, configGroup)
                     nodes += node
                 }
-                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicValueFieldNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 没有前缀且允许没有前缀的场合
@@ -95,7 +95,7 @@ class ParadoxDynamicValueFieldNode(
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxValueFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
-                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicValueFieldNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             return null

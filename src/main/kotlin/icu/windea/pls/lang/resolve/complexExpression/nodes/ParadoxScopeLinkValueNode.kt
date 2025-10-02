@@ -16,9 +16,9 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 class ParadoxScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase() {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
@@ -84,7 +84,7 @@ class ParadoxScopeLinkValueNode(
             if (!hasTopLevelComma) {
                 // original single-value resolution path
                 resolveSingle(text, textRange)
-                return ParadoxScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // Argument list path: split by top-level commas, emit blanks and markers
@@ -139,7 +139,7 @@ class ParadoxScopeLinkValueNode(
                 i++
             }
             emitSegment(text.length)
-            return ParadoxScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
+            return ParadoxScopeLinkValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }
 

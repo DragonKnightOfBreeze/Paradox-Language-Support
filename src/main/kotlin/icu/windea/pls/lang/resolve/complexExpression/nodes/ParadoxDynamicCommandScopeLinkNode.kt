@@ -11,9 +11,9 @@ import icu.windea.pls.core.collections.findIsInstance
 class ParadoxDynamicCommandScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxCommandScopeLinkNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxCommandScopeLinkPrefixNode>()
     val valueNode get() = nodes.findIsInstance<ParadoxCommandScopeLinkValueNode>()!!
@@ -46,7 +46,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                     val node = ParadoxCommandScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                 }
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
@@ -83,7 +83,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                     else ParadoxOperatorNode(")", nodeTextRange, configGroup)
                     nodes += node
                 }
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 没有前缀且允许没有前缀的场合
@@ -93,7 +93,7 @@ class ParadoxDynamicCommandScopeLinkNode(
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxCommandScopeLinkValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
-                return ParadoxDynamicCommandScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicCommandScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             return null

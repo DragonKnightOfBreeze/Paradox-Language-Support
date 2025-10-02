@@ -11,9 +11,9 @@ import icu.windea.pls.core.collections.findIsInstance
 class ParadoxDynamicScopeLinkNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixNode>()
     val valueNode get() = nodes.findIsInstance<ParadoxScopeLinkValueNode>()!!
@@ -46,7 +46,7 @@ class ParadoxDynamicScopeLinkNode(
                     val node = ParadoxScopeLinkValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node
                 }
-                return ParadoxDynamicScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
@@ -83,7 +83,7 @@ class ParadoxDynamicScopeLinkNode(
                     else ParadoxOperatorNode(")", nodeTextRange, configGroup)
                     nodes += node
                 }
-                return ParadoxDynamicScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             // 没有前缀且允许没有前缀的场合
@@ -93,7 +93,7 @@ class ParadoxDynamicScopeLinkNode(
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxScopeLinkValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
-                return ParadoxDynamicScopeLinkNode(text, textRange, nodes, configGroup, linkConfigs)
+                return ParadoxDynamicScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
             return null
