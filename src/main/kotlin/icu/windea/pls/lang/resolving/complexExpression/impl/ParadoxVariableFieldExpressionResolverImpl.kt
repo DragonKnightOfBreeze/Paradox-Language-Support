@@ -34,6 +34,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = ParadoxVariableFieldExpressionImpl(text, range, nodes, configGroup)
+
         val offset = range.startOffset
         var isLast = false
         var index: Int
@@ -71,6 +72,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
             if (dotNode != null) nodes += dotNode
         }
         if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
         return expression
     }
 

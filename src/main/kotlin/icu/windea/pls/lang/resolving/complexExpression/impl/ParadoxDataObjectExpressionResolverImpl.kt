@@ -22,6 +22,7 @@ internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectEx
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = ParadoxDatabaseObjectExpressionImpl(text, range, nodes, configGroup)
+
         run r1@{
             val offset = range.startOffset
             val colonIndex1 = text.indexOf(':')
@@ -59,6 +60,7 @@ internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectEx
             }
         }
         if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
         return expression
     }
 }

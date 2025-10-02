@@ -140,11 +140,11 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val result = mutableListOf<CwtConfig<*>>()
         complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
-            override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
+            override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (finalOffset in node.rangeInExpression) {
                     result.addAll(0, node.getRelatedConfigs())
                 }
-                return super.visit(node, parentNode)
+                return super.visit(node)
             }
         })
         return result.toSet()

@@ -23,6 +23,7 @@ internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefer
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = ParadoxDefineReferenceExpressionImpl(expressionString, range, nodes, configGroup)
+
         run r1@{
             val offset = range.startOffset
             val prefix = "define:"
@@ -57,6 +58,7 @@ internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineRefer
             }
         }
         if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
         return expression
     }
 }

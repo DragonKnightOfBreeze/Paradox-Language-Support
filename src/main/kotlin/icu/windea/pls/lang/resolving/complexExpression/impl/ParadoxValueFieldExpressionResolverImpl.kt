@@ -37,6 +37,8 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
         if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val expression = ParadoxValueFieldExpressionImpl(expressionString, range, nodes, configGroup)
+
         val offset = range.startOffset
         var isLast = false
         var index: Int
@@ -74,7 +76,8 @@ internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpres
             if (dotNode != null) nodes += dotNode
         }
         if (!incomplete && nodes.isEmpty()) return null
-        return ParadoxValueFieldExpressionImpl(expressionString, range, nodes, configGroup)
+        expression.finishResolving()
+        return expression
     }
 
     private fun isNumber(text: String): Boolean {

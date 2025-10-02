@@ -34,6 +34,8 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val expression = ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
+
         val offset = range.startOffset
         var index: Int
         var tokenIndex = -1
@@ -71,7 +73,8 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
             break
         }
         if (!incomplete && nodes.isEmpty()) return null
-        return ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
+        expression.finishResolving()
+        return expression
     }
 }
 

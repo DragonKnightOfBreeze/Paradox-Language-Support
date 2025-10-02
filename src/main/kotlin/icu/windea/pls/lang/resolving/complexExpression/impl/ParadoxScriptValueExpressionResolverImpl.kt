@@ -28,6 +28,8 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val expression = ParadoxScriptValueExpressionImpl(expressionString, range, nodes, configGroup, config)
+
         val offset = range.startOffset
         var n = 0
         var valueNode: ParadoxScriptValueNode? = null
@@ -73,7 +75,8 @@ internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpr
             n++
         }
         if (!incomplete && nodes.isEmpty()) return null
-        return ParadoxScriptValueExpressionImpl(expressionString, range, nodes, configGroup, config)
+        expression.finishResolving()
+        return expression
     }
 }
 

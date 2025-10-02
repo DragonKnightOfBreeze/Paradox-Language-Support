@@ -23,6 +23,8 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val expression = ParadoxScopeFieldExpressionImpl(expressionString, range, nodes, configGroup)
+
         val offset = range.startOffset
         var index: Int
         var tokenIndex = -1
@@ -55,7 +57,8 @@ internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpres
             if (dotNode != null) nodes += dotNode
         }
         if (!incomplete && nodes.isEmpty()) return null
-        return ParadoxScopeFieldExpressionImpl(expressionString, range, nodes, configGroup)
+        expression.finishResolving()
+        return expression
     }
 }
 

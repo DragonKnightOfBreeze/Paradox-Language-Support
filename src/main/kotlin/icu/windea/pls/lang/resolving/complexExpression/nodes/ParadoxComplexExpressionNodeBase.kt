@@ -3,11 +3,8 @@ package icu.windea.pls.lang.resolving.complexExpression.nodes
 import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpressionVisitor
 
 abstract class ParadoxComplexExpressionNodeBase : ParadoxComplexExpressionNode {
+    override val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
     override var parent: ParadoxComplexExpressionNode? = null
-
-    init {
-        nodes.forEach { if (it is ParadoxComplexExpressionNodeBase) it.parent = this }
-    }
 
     override fun accept(visitor: ParadoxComplexExpressionVisitor) {
         visitor.visit(this)

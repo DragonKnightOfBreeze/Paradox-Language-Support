@@ -154,12 +154,12 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: List<CwtValueConfig>? = null
         expression.accept(object : ParadoxComplexExpressionVisitor() {
-            override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
+            override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (node.rangeInExpression == rangeInExpressionElement) {
                     result = getConfigsFromNode(expressionElement, expressionConfig, node)
                     if (result.isNotNullOrEmpty()) return false
                 }
-                return super.visit(node, parentNode)
+                return super.visit(node)
             }
         })
         if (result.isNullOrEmpty()) return null

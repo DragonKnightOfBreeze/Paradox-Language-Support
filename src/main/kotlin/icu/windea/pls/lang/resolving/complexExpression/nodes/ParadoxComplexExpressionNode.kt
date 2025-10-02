@@ -17,7 +17,7 @@ import icu.windea.pls.lang.resolving.complexExpression.ParadoxComplexExpressionV
 interface ParadoxComplexExpressionNode {
     val text: String
     val rangeInExpression: TextRange
-    val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
+    val nodes: List<ParadoxComplexExpressionNode>
     val configGroup: CwtConfigGroup
     val parent: ParadoxComplexExpressionNode?
 

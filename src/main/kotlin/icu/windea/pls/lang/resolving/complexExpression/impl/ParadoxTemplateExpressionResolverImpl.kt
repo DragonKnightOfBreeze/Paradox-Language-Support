@@ -41,6 +41,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = ParadoxTemplateExpressionImpl(expressionString, range, nodes, configGroup)
+
         run r1@{
             val offset = range.startOffset
             var startIndex = 0
@@ -68,6 +69,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
             }
         }
         if (!incomplete && nodes.isEmpty()) return null
+        expression.finishResolving()
         return expression
     }
 }

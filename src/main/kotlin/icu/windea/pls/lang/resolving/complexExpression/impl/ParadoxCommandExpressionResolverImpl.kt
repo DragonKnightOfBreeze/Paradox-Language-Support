@@ -27,6 +27,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = ParadoxCommandExpressionImpl(expressionString, range, nodes, configGroup)
         val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
+
         var suffixStartIndex: Int
         run r1@{
             run r2@{
@@ -87,6 +88,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
             }
         }
         nodes += suffixNodes
+        expression.finishResolving()
         return expression
     }
 }
