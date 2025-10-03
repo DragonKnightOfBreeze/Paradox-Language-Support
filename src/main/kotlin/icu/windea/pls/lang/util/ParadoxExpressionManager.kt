@@ -332,23 +332,21 @@ object ParadoxExpressionManager {
         var result: List<CwtMemberConfig<*>> = rootConfigs
 
         val subPaths = elementPathFromRoot.subPaths
-        val originalSubPaths = elementPathFromRoot.originalSubPaths
         subPaths.forEachIndexed f1@{ i, subPath ->
             ProgressManager.checkCanceled()
 
             // 如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
             // 如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
 
-            val isQuoted = subPath != originalSubPaths[i]
             val isParameterized = subPath.isParameterized()
             val isFullParameterized = subPath.isParameterized(full = true)
             val shift = subPaths.lastIndex - i
             val matchesKey = isPropertyValue || shift > 0
-            val expression = ParadoxScriptExpression.resolve(subPath, isQuoted, true)
+            val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
-            val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.drop(i).dropLast(1))
+            val pathToMatch = ParadoxExpressionPath.resolve(subPaths.drop(i).dropLast(1))
             val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {
@@ -393,7 +391,7 @@ object ParadoxExpressionManager {
                                 val matchResult = ParadoxScriptExpressionMatcher.matches(elementToMatch, expression, config.keyExpression, config, configGroup, matchOptions)
                                 if (!matchResult.get(matchOptions)) return@f3
                             }
-                            val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, isQuoted, config, matchOptions)
+                            val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
                             if (inlinedConfigs.isEmpty()) {
                                 addToMatchedConfigs(config)
                             } else {
@@ -436,7 +434,6 @@ object ParadoxExpressionManager {
     private fun doInlineConfigForConfigContext(
         element: ParadoxScriptMember,
         key: String,
-        isQuoted: Boolean,
         config: CwtPropertyConfig,
         matchOptions: Int
     ): List<CwtMemberConfig<*>> {
@@ -449,7 +446,7 @@ object ParadoxExpressionManager {
             } else if (configValueExpression.type == CwtDataTypes.AliasMatchLeft) {
                 val aliasName = configValueExpression.value ?: return@run
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                val aliasSubNames = getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
+                val aliasSubNames = getAliasSubNames(element, key, false, aliasName, configGroup, matchOptions)
                 aliasSubNames.forEach f1@{ aliasSubName ->
                     val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
                     aliasConfigs.forEach f2@{ aliasConfig ->

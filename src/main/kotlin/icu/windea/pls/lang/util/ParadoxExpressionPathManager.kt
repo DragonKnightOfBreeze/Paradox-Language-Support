@@ -11,11 +11,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.children
-import icu.windea.pls.core.childrenOfType
-import icu.windea.pls.core.firstChild
-import icu.windea.pls.core.internNode
 import icu.windea.pls.core.parent
-import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
@@ -23,11 +19,9 @@ import icu.windea.pls.model.paths.ParadoxExpressionPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -45,16 +39,16 @@ object ParadoxExpressionPathManager {
     fun get(element: PsiElement, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: PsiElement = element
         var depth = 0
-        val originalSubPaths = ArrayDeque<String>()
+        val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
-                    val p = current.propertyKey.text
-                    originalSubPaths.addFirst(p)
+                    val p = current.name
+                    subPaths.addFirst(p)
                     depth++
                 }
                 current is ParadoxScriptValue && current.isBlockMember() -> {
-                    originalSubPaths.addFirst("-")
+                    subPaths.addFirst("-")
                     depth++
                 }
             }
@@ -66,10 +60,10 @@ object ParadoxExpressionPathManager {
             val virtualFile = selectFile(current)
             val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
+                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxExpressionPath.resolve(originalSubPaths)
+        return ParadoxExpressionPath.resolve(subPaths)
     }
 
     /**
@@ -78,18 +72,16 @@ object ParadoxExpressionPathManager {
     fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: LighterASTNode = node
         var depth = 0
-        val originalSubPaths = ArrayDeque<String>()
+        val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
                 current.tokenType == PROPERTY -> {
-                    val p = current.firstChild(tree, PROPERTY_KEY)
-                        ?.firstChild(tree, PROPERTY_KEY_TOKEN)
-                        ?.internNode(tree)?.toString() ?: return null
-                    originalSubPaths.addFirst(p)
+                    val p = ParadoxScriptLightTreeUtil.getNameFromPropertyNode(current, tree) ?: return null
+                    subPaths.addFirst(p)
                     depth++
                 }
                 ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == BLOCK -> {
-                    originalSubPaths.addFirst("-")
+                    subPaths.addFirst("-")
                     depth++
                 }
             }
@@ -101,10 +93,10 @@ object ParadoxExpressionPathManager {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
+                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxExpressionPath.resolve(originalSubPaths)
+        return ParadoxExpressionPath.resolve(subPaths)
     }
 
     /**
@@ -148,7 +140,7 @@ object ParadoxExpressionPathManager {
                 when (tokenType) {
                     TokenType.WHITE_SPACE, COMMENT -> continue
                     STRING -> {
-                        val v = getValueFromStringNode(n, tree) ?: return result ?: emptyList()
+                        val v = ParadoxScriptLightTreeUtil.getValueFromStringNode(n, tree) ?: return result ?: emptyList()
                         if (result == null) result = mutableListOf()
                         result += v
                     }
@@ -159,10 +151,5 @@ object ParadoxExpressionPathManager {
             }
         }
         return result ?: emptyList()
-    }
-
-    private fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.childrenOfType(tree, STRING_TOKEN).singleOrNull()
-            ?.internNode(tree)?.toString()?.unquote()
     }
 }

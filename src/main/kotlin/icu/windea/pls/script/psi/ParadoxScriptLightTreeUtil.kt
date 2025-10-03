@@ -49,4 +49,9 @@ object ParadoxScriptLightTreeUtil {
     //     return node.firstChild(tree, BLOCK)
     //         ?.firstChild(tree) { it.tokenType == PROPERTY && predicate(getNameFromPropertyNode(it, tree)) }
     // }
+
+    fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.childrenOfType(tree, STRING_TOKEN).singleOrNull()
+            ?.internNode(tree)?.toString()?.unquote()
+    }
 }

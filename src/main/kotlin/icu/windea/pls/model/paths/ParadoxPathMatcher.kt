@@ -3,7 +3,9 @@ package icu.windea.pls.model.paths
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * 用于匹配文件路径，提供各种常见的匹配逻辑。
+ * 文件路径的匹配器。
+ *
+ * 提供各种常见的匹配逻辑。
  */
 @Suppress("SameParameterValue")
 enum class ParadoxPathMatcher {

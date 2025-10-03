@@ -3,13 +3,16 @@ package icu.windea.pls.model.paths
 import icu.windea.pls.model.paths.impl.ParadoxPathResolverImpl
 
 /**
- * 文件路径。相对于游戏或模组入口目录（不一定是根目录）。保留大小写。
+ * 游戏或模组文件的路径。
+ *
+ * 说明：
+ * - 相对于游戏或模组入口目录（不一定是根目录）。
+ * - 使用 "/" 分隔子路径。
+ * - 保留大小写。
  *
  * 示例：
  * - `common/buildings/00_capital_buildings.txt`
  * - `localisation/simp_chinese/l_simp_chinese.yml`
- *
- * @property path 使用"/"分割的路径。
  */
 interface ParadoxPath : Iterable<String> {
     val path: String

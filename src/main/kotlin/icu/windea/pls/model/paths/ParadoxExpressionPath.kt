@@ -4,27 +4,29 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.model.paths.impl.ParadoxExpressionPathResolverImpl
 
 /**
- * 表达式路径。保留大小写。
+ * 脚本成员在脚本文件中的路径。
+ *
+ * 说明：
+ * - 相对于脚本文件，或者其他脚本成员。
+ * - 使用 "/" 分隔子路径。如果子路径中存在 "/"，会先用反引号转义。
+ * - 保留大小写。
+ * - 去除括起的双引号。
  *
  * 可以用来表示：
- * - 定义成员相对于所属定义的路径。
+ * - 脚本成员相对于所在文件的路径。
  * - 定义相对于所在文件的路径。
+ * - 定义成员相对于所属定义的路径。
  *
  * 示例：
  * - （空字符串） - 对应所属文件或定义本身。
- * - `foo` - 对应所属文件或定义中名为"foo"的属性。
- * - `foo/bar` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性
- * - `foo/"bar"` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，名为"bar"的属性（属性名在脚本中用引号括起）
- * - `foo/-` - 对应所属文件或定义中名为"foo"的属性的值（代码块）中，任意的值
- *
- * @property path 使用"/"分隔的路径（预先移除括起的双引号）。
- * @property originalPath 使用"/"分隔的路径（保留括起的双引号）。
+ * - `foo` - 对应所属文件或定义中名为 `foo` 的属性。
+ * - `foo/bar` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar` 的属性。
+ * - `foo/"bar"` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar`的属性（属性名在脚本中用引号括起）。
+ * - `foo/-` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，任意的值。
  */
 interface ParadoxExpressionPath : Iterable<String> {
     val path: String
-    val subPaths: List<String>
-    val originalPath: String
-    val originalSubPaths: List<String>
+    val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
 
     fun isEmpty(): Boolean = length == 0
@@ -37,8 +39,8 @@ interface ParadoxExpressionPath : Iterable<String> {
 
     interface Resolver {
         fun resolveEmpty(): ParadoxExpressionPath
-        fun resolve(originalPath: String): ParadoxExpressionPath
-        fun resolve(originalSubPaths: List<String>): ParadoxExpressionPath
+        fun resolve(path: String): ParadoxExpressionPath
+        fun resolve(subPaths: List<String>): ParadoxExpressionPath
     }
 
     companion object: Resolver by ParadoxExpressionPathResolverImpl()

@@ -1,9 +1,16 @@
 package icu.windea.pls.model.paths
 
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.model.paths.impl.CwtConfigPathResolverImpl
 
 /**
- * CWT 规则的路径。保留大小写。忽略括起的双引号。
+ * 规则在规则文件中的路径。
+ *
+ * 说明：
+ * - 相对于文件。
+ * - 使用 "/" 分隔子路径。如果子路径中存在 "/"，会先用反引号转义。
+ * - 保留大小写。
+ * - 去除括起的双引号。
  */
 interface CwtConfigPath : Iterable<String> {
     val path: String
@@ -26,4 +33,12 @@ interface CwtConfigPath : Iterable<String> {
     }
 
     companion object : Resolver by CwtConfigPathResolverImpl()
+}
+
+@Suppress("unused")
+fun CwtConfigPath.relativeTo(other: CwtConfigPath): CwtConfigPath? {
+    if (this == other) return CwtConfigPath.resolveEmpty()
+    if (this.isEmpty()) return other
+    val path = other.path.removePrefixOrNull(this.path + "/") ?: return null
+    return CwtConfigPath.resolve(path)
 }
