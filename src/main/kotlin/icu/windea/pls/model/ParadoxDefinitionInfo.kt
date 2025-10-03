@@ -19,7 +19,7 @@ import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -35,7 +35,7 @@ class ParadoxDefinitionInfo(
     name0: String?, // null -> lazy get
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
-    val elementPath: ParadoxExpressionPath,
+    val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {

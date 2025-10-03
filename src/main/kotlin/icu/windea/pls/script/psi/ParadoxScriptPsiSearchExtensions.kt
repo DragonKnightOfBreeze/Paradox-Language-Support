@@ -17,7 +17,7 @@ import icu.windea.pls.lang.util.dataFlow.ParadoxValueSequence
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.lang.util.dataFlow.transform
 import icu.windea.pls.lang.util.manipulators.ParadoxScriptManipulator
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 
 fun ParadoxScriptFile.members(): ParadoxMemberSequence {
@@ -108,7 +108,7 @@ fun PsiElement.findProperty(
  * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- * @see ParadoxExpressionPath
+ * @see ParadoxElementPath
  * @see ParadoxScriptMember
  */
 fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
@@ -121,7 +121,7 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
     if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMember = this
     if (path.isNotEmpty()) {
-        val elementPath = ParadoxExpressionPath.resolve(path)
+        val elementPath = ParadoxElementPath.resolve(path)
         for (subPath in elementPath.subPaths) {
             if (subPath == "-") {
                 return null // TODO 暂不支持
@@ -215,7 +215,7 @@ fun PsiElement.findParentProperty(
 /**
  * 基于路径向上查找指定的属性或值（块）。如果路径为空，则返回查找到的第一个属性或值（块）。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
- * @see ParadoxExpressionPath
+ * @see ParadoxElementPath
  * @see ParadoxScriptMember
  * @see ParadoxDefinitionTypeExpression
  */
@@ -227,7 +227,7 @@ fun ParadoxScriptMember.findParentByPath(
     if (language !is ParadoxScriptLanguage) return null
     var current = this
     if (path.isNotEmpty()) {
-        val elementPath = ParadoxExpressionPath.resolve(path)
+        val elementPath = ParadoxElementPath.resolve(path)
         for (subPath in elementPath.subPaths.reversed()) {
             current = when (subPath) {
                 "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null

@@ -103,7 +103,7 @@ import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -312,7 +312,7 @@ object ParadoxExpressionManager {
     fun getConfigsForConfigContext(
         element: ParadoxScriptMember,
         rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxExpressionPath,
+        elementPathFromRoot: ParadoxElementPath,
         configGroup: CwtConfigGroup,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
@@ -323,7 +323,7 @@ object ParadoxExpressionManager {
     private fun doGetConfigsForConfigContext(
         element: ParadoxScriptMember,
         rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxExpressionPath,
+        elementPathFromRoot: ParadoxElementPath,
         configGroup: CwtConfigGroup,
         matchOptions: Int
     ): List<CwtMemberConfig<*>> {
@@ -346,7 +346,7 @@ object ParadoxExpressionManager {
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
             val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
-            val pathToMatch = ParadoxExpressionPath.resolve(subPaths.drop(i).dropLast(1))
+            val pathToMatch = ParadoxElementPath.resolve(subPaths.drop(i).dropLast(1))
             val elementToMatch = memberElement.findParentByPath(pathToMatch.path)?.castOrNull<ParadoxScriptMember>() ?: return emptyList()
 
             val parameterizedKeyConfigs by lazy {

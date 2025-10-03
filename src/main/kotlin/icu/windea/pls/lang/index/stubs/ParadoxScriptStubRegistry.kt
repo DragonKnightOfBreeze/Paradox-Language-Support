@@ -18,7 +18,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.deoptimizeValue
 import icu.windea.pls.model.optimizeValue
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -159,7 +159,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     val definitionSubtypesSize = dataStream.readInt()
                     val definitionSubtypes = if (definitionSubtypesSize == -1) null else MutableList(definitionSubtypesSize) { dataStream.readNameString().orEmpty() }
                     val typeKey = dataStream.readNameString().orEmpty()
-                    val elementPath = dataStream.readNameString().orEmpty().let { ParadoxExpressionPath.resolve(it) }
+                    val elementPath = dataStream.readNameString().orEmpty().let { ParadoxElementPath.resolve(it) }
                     ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
                 }
                 Flags.inlineScriptUsage -> {

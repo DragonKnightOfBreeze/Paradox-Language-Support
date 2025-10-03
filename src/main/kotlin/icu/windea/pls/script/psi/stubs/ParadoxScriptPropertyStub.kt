@@ -5,7 +5,7 @@ import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -33,7 +33,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         val definitionType: String
         val definitionSubtypes: List<String>?
         val typeKey: String
-        val elementPath: ParadoxExpressionPath
+        val elementPath: ParadoxElementPath
     }
 
     /**
@@ -86,7 +86,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionType: String,
         override val definitionSubtypes: List<String>?,
         override val typeKey: String,
-        override val elementPath: ParadoxExpressionPath,
+        override val elementPath: ParadoxElementPath,
     ) : Base(parent), Definition {
         override val name get() = typeKey
 
@@ -134,7 +134,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             definitionType: String,
             definitionSubtypes: List<String>?,
             typeKey: String,
-            elementPath: ParadoxExpressionPath,
+            elementPath: ParadoxElementPath,
         ): Definition {
             return DefinitionImpl(parent, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
         }

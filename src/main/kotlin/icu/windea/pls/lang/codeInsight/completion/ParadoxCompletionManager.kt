@@ -144,7 +144,7 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.util.ParadoxExpressionPathManager
+import icu.windea.pls.lang.util.ParadoxElementPathManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -157,7 +157,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsPatternConstants
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -209,9 +209,9 @@ object ParadoxCompletionManager {
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.isDefinitionOrMember()) {
-            val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+            val elementPath = ParadoxElementPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
             if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
-            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
+            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxElementPathManager.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
             completeKey(context, result, elementPath, typeKeyPrefix)
             return
@@ -380,7 +380,7 @@ object ParadoxCompletionManager {
 
     // region Base Completion Methods
 
-    fun completeKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath, rootKeyPrefix: Lazy<String?>) {
+    fun completeKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxElementPath, rootKeyPrefix: Lazy<String?>) {
         // 从以下来源收集需要提示的key（顶级键和类型键）
         // - skip_root_key
         // - type_key_filter

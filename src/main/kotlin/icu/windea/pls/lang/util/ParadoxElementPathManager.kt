@@ -15,7 +15,7 @@ import icu.windea.pls.core.parent
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
@@ -30,13 +30,13 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
 /**
- * @see ParadoxExpressionPath
+ * @see ParadoxElementPath
  */
-object ParadoxExpressionPathManager {
+object ParadoxElementPathManager {
     /**
      * 得到指定的属性或值对应的PSI的相对于所属文件的表达式路径。
      */
-    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxExpressionPath? {
+    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -63,13 +63,13 @@ object ParadoxExpressionPathManager {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxExpressionPath.resolve(subPaths)
+        return ParadoxElementPath.resolve(subPaths)
     }
 
     /**
      * 得到指定的属性或值对应的节点的相对于所属文件的表达式路径。
      */
-    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxExpressionPath? {
+    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
         var current: LighterASTNode = node
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -96,7 +96,7 @@ object ParadoxExpressionPathManager {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxExpressionPath.resolve(subPaths)
+        return ParadoxElementPath.resolve(subPaths)
     }
 
     /**

@@ -1,7 +1,7 @@
 package icu.windea.pls.model.paths
 
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.model.paths.impl.ParadoxExpressionPathResolverImpl
+import icu.windea.pls.model.paths.impl.ParadoxElementPathResolverImpl
 
 /**
  * 脚本成员在脚本文件中的路径。
@@ -24,7 +24,7 @@ import icu.windea.pls.model.paths.impl.ParadoxExpressionPathResolverImpl
  * - `foo/"bar"` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar`的属性（属性名在脚本中用引号括起）。
  * - `foo/-` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，任意的值。
  */
-interface ParadoxExpressionPath : Iterable<String> {
+interface ParadoxElementPath : Iterable<String> {
     val path: String
     val subPaths: List<String> // 子路径中不用保留括起的双引号
     val length: Int
@@ -38,17 +38,17 @@ interface ParadoxExpressionPath : Iterable<String> {
     override fun toString(): String
 
     interface Resolver {
-        fun resolveEmpty(): ParadoxExpressionPath
-        fun resolve(path: String): ParadoxExpressionPath
-        fun resolve(subPaths: List<String>): ParadoxExpressionPath
+        fun resolveEmpty(): ParadoxElementPath
+        fun resolve(path: String): ParadoxElementPath
+        fun resolve(subPaths: List<String>): ParadoxElementPath
     }
 
-    companion object: Resolver by ParadoxExpressionPathResolverImpl()
+    companion object: Resolver by ParadoxElementPathResolverImpl()
 }
 
-fun ParadoxExpressionPath.relativeTo(other: ParadoxExpressionPath): ParadoxExpressionPath? {
-    if (this == other) return ParadoxExpressionPath.resolveEmpty()
+fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath? {
+    if (this == other) return ParadoxElementPath.resolveEmpty()
     if (this.isEmpty()) return other
     val path = other.path.removePrefixOrNull(this.path + "/") ?: return null
-    return ParadoxExpressionPath.resolve(path)
+    return ParadoxElementPath.resolve(path)
 }

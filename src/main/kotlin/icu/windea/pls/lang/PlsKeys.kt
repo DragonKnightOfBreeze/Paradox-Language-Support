@@ -12,7 +12,7 @@ import icu.windea.pls.model.ImageFrameInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 
 object PlsKeys : KeyRegistry() {
     /** 用于在应用级别或项目级别缓存规则分组数据。 */
@@ -38,7 +38,7 @@ object PlsKeys : KeyRegistry() {
     /** 用于为临时文件注入语言环境规则（[CwtLocaleConfig]）。 */
     val injectedLocaleConfig by createKey<CwtLocaleConfig>(this)
     /** 用于为临时脚本文件注入表达式路径前缀 */
-    val injectedElementPathPrefix by createKey<ParadoxExpressionPath>(this)
+    val injectedElementPathPrefix by createKey<ParadoxElementPath>(this)
 
     /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
     val bindingConfig by createKey<CwtConfig<*>>(this)

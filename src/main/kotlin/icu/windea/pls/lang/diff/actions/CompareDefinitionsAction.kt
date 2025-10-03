@@ -51,7 +51,7 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -211,7 +211,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
         if (elementPath != null && elementPath.length > 1) {
-            val elementPathPrefix = ParadoxExpressionPath.resolve(elementPath.subPaths.dropLast(1))
+            val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
             tempFile.putUserData(PlsKeys.injectedElementPathPrefix, elementPathPrefix)
         }
         // return contentFactory.createDocument(project, tempFile)

@@ -1,23 +1,23 @@
 package icu.windea.pls.model.paths.impl
 
 import icu.windea.pls.model.paths.CwtConfigPath
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 
-internal class ParadoxExpressionPathResolverImpl : ParadoxExpressionPath.Resolver {
-    override fun resolveEmpty(): ParadoxExpressionPath = EmptyParadoxExpressionPath
+internal class ParadoxElementPathResolverImpl : ParadoxElementPath.Resolver {
+    override fun resolveEmpty(): ParadoxElementPath = EmptyParadoxElementPath
 
-    override fun resolve(path: String): ParadoxExpressionPath {
-        if (path.isEmpty()) return EmptyParadoxExpressionPath
-        return ParadoxExpressionPathImpl(path)
+    override fun resolve(path: String): ParadoxElementPath {
+        if (path.isEmpty()) return EmptyParadoxElementPath
+        return ParadoxElementPathImpl(path)
     }
 
-    override fun resolve(subPaths: List<String>): ParadoxExpressionPath {
-        if (subPaths.isEmpty()) return EmptyParadoxExpressionPath
-        return ParadoxExpressionPathImpl(subPaths)
+    override fun resolve(subPaths: List<String>): ParadoxElementPath {
+        if (subPaths.isEmpty()) return EmptyParadoxElementPath
+        return ParadoxElementPathImpl(subPaths)
     }
 }
 
-private class ParadoxExpressionPathImpl : ParadoxExpressionPath {
+private class ParadoxElementPathImpl : ParadoxElementPath {
     override val path: String
     override val subPaths: List<String>
     override val length: Int get() = subPaths.size
@@ -47,12 +47,12 @@ private class ParadoxExpressionPathImpl : ParadoxExpressionPath {
     override fun toString() = path
 }
 
-private object EmptyParadoxExpressionPath : ParadoxExpressionPath {
+private object EmptyParadoxElementPath : ParadoxElementPath {
     override val path: String = ""
     override val subPaths: List<String> = emptyList()
     override val length: Int = 0
 
-    override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }

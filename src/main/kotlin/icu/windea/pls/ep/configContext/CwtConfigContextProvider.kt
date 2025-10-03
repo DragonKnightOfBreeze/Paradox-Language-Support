@@ -8,9 +8,9 @@ import icu.windea.pls.config.configContext.provider
 import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.util.ParadoxElementPathManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.util.ParadoxExpressionPathManager
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 @WithGameTypeEP
 interface CwtConfigContextProvider {
-    fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext?
+    fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext?
 
     fun getCacheKey(context: CwtConfigContext, matchOptions: Int = Options.Default): String?
 
@@ -35,7 +35,7 @@ interface CwtConfigContextProvider {
 
         fun getContext(element: ParadoxScriptMember): CwtConfigContext? {
             val file = element.containingFile ?: return null
-            val elementPath = ParadoxExpressionPathManager.get(element) ?: return null
+            val elementPath = ParadoxElementPathManager.get(element) ?: return null
             val gameType = selectGameType(file)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null

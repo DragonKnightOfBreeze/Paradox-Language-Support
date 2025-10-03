@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.PlsVfsManager
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.paths.relativeTo
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -49,7 +49,7 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContex
  * - 直接基于文件信息（包括注入的文件信息）。
  */
 class BaseCwtConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
@@ -104,7 +104,7 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
 class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本调用可以在定义声明之外
 
-    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
@@ -115,7 +115,7 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
 
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo // 注意这里的 fileInfo 可以为 null（例如，在内联脚本参数的多行参数值中）
-        val elementPathFromRoot = ParadoxExpressionPath.resolve(elementPath.subPaths.let { it.subList(rootIndex + 1, it.size) })
+        val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.subPaths.let { it.subList(rootIndex + 1, it.size) })
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         configContext.elementPathFromRoot = elementPathFromRoot
@@ -150,7 +150,7 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
 class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
-    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
@@ -219,7 +219,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
  * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */
 class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
-    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
+    override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
         // 兼容适用语言注入功能的 VirtualFileWindow

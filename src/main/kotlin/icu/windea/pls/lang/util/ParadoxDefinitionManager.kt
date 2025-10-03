@@ -57,7 +57,7 @@ import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.paths.ParadoxExpressionPath
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptBoolean
@@ -131,10 +131,10 @@ object ParadoxDefinitionManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
-        val elementPath = ParadoxExpressionPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxElementPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
-        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
+        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxElementPathManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath, gameType, configGroup)
     }
@@ -176,7 +176,7 @@ object ParadoxDefinitionManager {
         element: ParadoxScriptDefinitionElement,
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
+        elementPath: ParadoxElementPath,
         typeKey: String,
         typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
@@ -191,7 +191,7 @@ object ParadoxDefinitionManager {
         tree: LighterAST,
         configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
+        elementPath: ParadoxElementPath,
         typeKey: String,
         typeKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
@@ -205,7 +205,7 @@ object ParadoxDefinitionManager {
         element: ParadoxScriptDefinitionElement,
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxExpressionPath?,
+        elementPath: ParadoxElementPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
@@ -244,7 +244,7 @@ object ParadoxDefinitionManager {
         tree: LighterAST,
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxExpressionPath?,
+        elementPath: ParadoxElementPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
@@ -277,7 +277,7 @@ object ParadoxDefinitionManager {
     fun matchesTypeByUnknownDeclaration(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxExpressionPath?,
+        elementPath: ParadoxElementPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
@@ -293,7 +293,7 @@ object ParadoxDefinitionManager {
     fun matchesTypeFast(
         typeConfig: CwtTypeConfig,
         path: ParadoxPath?,
-        elementPath: ParadoxExpressionPath?,
+        elementPath: ParadoxElementPath?,
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean? {
