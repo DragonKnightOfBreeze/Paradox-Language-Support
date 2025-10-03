@@ -144,13 +144,13 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.withState
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -1351,6 +1351,51 @@ object ParadoxCompletionManager {
         context.keywordOffset = keywordOffset
         context.node = oldNode
         context.isKey = isKey
+    }
+
+    fun completeStellarisNameFormatExpression(context: ProcessingContext, result: CompletionResultSet) {
+        // TODO 2.0.6 提取更多工具方法 & 更严格的代码补全
+
+        val element = context.contextElement as? ParadoxScriptStringExpressionElement ?: return
+        val config = context.config ?: return
+        val formatName = config.configExpression?.value ?: return
+        val defType = "${formatName}_name_parts_list"
+
+        // caret position inside expression
+        val caretInExpr = context.offsetInParent - context.expressionOffset
+        if (caretInExpr < 0) return
+        val exprText = element.value
+        val caret = caretInExpr.coerceAtMost(exprText.length)
+        val before = exprText.substring(0, caret)
+
+        // heuristics: detect inside [...] or <...>
+        val inSquare = before.lastIndexOf('[') > before.lastIndexOf(']')
+        val inAngle = before.lastIndexOf('<') > before.lastIndexOf('>')
+
+        if (inSquare) {
+            // delegate to command expression completion
+            completeCommandExpression(context, result)
+            return
+        }
+
+        if (inAngle) {
+            // complete definition names of ${format}_name_parts_list
+            val cfg = CwtValueConfig.resolve(emptyPointer(), config.configGroup, "<$defType>")
+            val bak = context.config
+            context.config = cfg
+            completeDefinition(context, result)
+            context.config = bak
+            return
+        }
+
+        // otherwise treat as localisation name
+        run {
+            val cfg = CwtValueConfig.resolve(emptyPointer(), config.configGroup, "localisation")
+            val bak = context.config
+            context.config = cfg
+            ParadoxCompletionManager.completeLocalisation(context, result)
+            context.config = bak
+        }
     }
 
     /**

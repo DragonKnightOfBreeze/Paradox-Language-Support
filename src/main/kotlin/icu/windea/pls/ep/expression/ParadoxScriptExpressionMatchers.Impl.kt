@@ -26,6 +26,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpre
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
@@ -312,10 +313,9 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.value.length)
-                val expr = icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
-                    .resolve(expression.value, textRange, configGroup, config ?: return Result.NotMatch)
-                if (expr == null) return Result.NotMatch
-                if (expr.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
+                val stellarisNameFormatExpression = StellarisNameFormatExpression.resolve(expression.value, textRange, configGroup, config ?: return Result.NotMatch)
+                if (stellarisNameFormatExpression == null) return Result.NotMatch
+                if (stellarisNameFormatExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
             CwtDataTypes.ShaderEffect -> {

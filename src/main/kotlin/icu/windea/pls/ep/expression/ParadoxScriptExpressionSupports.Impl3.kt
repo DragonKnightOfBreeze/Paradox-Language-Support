@@ -22,6 +22,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -258,5 +259,32 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSup
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeDefineReferenceExpression(context, result)
+    }
+}
+
+class ParadoxScriptStellarisNameFormatExpressionSupport : ParadoxScriptExpressionSupport {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.configExpression?.type == CwtDataTypes.StellarisNameFormat
+    }
+
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val expr = StellarisNameFormatExpression.resolve(expressionText, range, configGroup, config) ?: return
+        ParadoxExpressionManager.annotateComplexExpression(element, expr, holder, config)
+    }
+
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val expr = StellarisNameFormatExpression.resolve(expressionText, range, configGroup, config)
+        if (expr == null) return PsiReference.EMPTY_ARRAY
+        return expr.getAllReferences(element).toTypedArray()
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeStellarisNameFormatExpression(context, result)
     }
 }
