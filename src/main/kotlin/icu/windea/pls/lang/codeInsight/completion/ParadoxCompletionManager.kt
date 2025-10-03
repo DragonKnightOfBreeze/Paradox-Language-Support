@@ -139,12 +139,12 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withFileExtensions
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.util.ParadoxElementPathManager
+import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -209,9 +209,9 @@ object ParadoxCompletionManager {
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.isDefinitionOrMember()) {
-            val elementPath = ParadoxElementPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+            val elementPath = ParadoxScriptFileManager.getElementPath(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
             if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
-            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxElementPathManager.getKeyPrefixes(it).firstOrNull() } }
+            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptFileManager.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
             completeKey(context, result, elementPath, typeKeyPrefix)
             return
@@ -321,7 +321,7 @@ object ParadoxCompletionManager {
             return
         }
 
-        val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
+        val columnConfig = ParadoxCsvFileManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
         context.config = config
         completeCsvExpression(context, result)
@@ -837,7 +837,7 @@ object ParadoxCompletionManager {
         if (!column.isHeaderColumn()) return
         val file = context.parameters?.originalFile ?: return
         if (file !is ParadoxCsvFile) return
-        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
+        val rowConfig = ParadoxCsvFileManager.getRowConfig(file) ?: return
         val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
         val existingHeaderNames = header.children()
             .mapNotNull { it as? ParadoxCsvColumn }

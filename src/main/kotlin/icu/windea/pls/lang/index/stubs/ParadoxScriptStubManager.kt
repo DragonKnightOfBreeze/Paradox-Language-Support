@@ -15,7 +15,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxElementPathManager
+import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -105,9 +105,9 @@ object ParadoxScriptStubManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
-        val elementPath = ParadoxElementPathManager.get(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
+        val elementPath = ParadoxScriptFileManager.getElementPath(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
         if (elementPath == null) return null
-        val typeKeyPrefix = lazy { ParadoxElementPathManager.getKeyPrefixes(node, tree).firstOrNull() }
+        val typeKeyPrefix = lazy { ParadoxScriptFileManager.getKeyPrefixes(node, tree).firstOrNull() }
         val typeConfig = ParadoxDefinitionManager.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         val definitionName = ParadoxDefinitionManager.resolveNameFromTypeConfig(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionType = typeConfig.name

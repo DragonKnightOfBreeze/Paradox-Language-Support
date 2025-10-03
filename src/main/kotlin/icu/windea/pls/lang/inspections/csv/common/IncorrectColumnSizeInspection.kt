@@ -10,7 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.PlsVfsManager
 import javax.swing.JComponent
 
@@ -32,13 +32,13 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val header = file.header
         if (header == null) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvManager.getRowConfig(file)
+        val rowConfig = ParadoxCsvFileManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
         val expectColumnSize = rowConfig.columns.size
 
         // 如果表头中的列数与期望的不一致，则直接跳过检查
-        val headerColumnSize = ParadoxCsvManager.computeHeaderColumnSize(header)
+        val headerColumnSize = ParadoxCsvFileManager.computeHeaderColumnSize(header)
         if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -47,7 +47,7 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
             }
 
             private fun visitRow(element: ParadoxCsvRow) {
-                val columnSize = ParadoxCsvManager.computeColumnSize(element)
+                val columnSize = ParadoxCsvFileManager.computeColumnSize(element)
                 if (columnSize == expectColumnSize) return
 
                 val locationElement = element.lastChild ?: return // latest non-empty column or separator

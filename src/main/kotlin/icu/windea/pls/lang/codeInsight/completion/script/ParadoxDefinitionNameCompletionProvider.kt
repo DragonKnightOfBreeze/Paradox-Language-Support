@@ -46,7 +46,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxElementPathManager
+import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -92,9 +92,9 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
-                val elementPath = ParadoxElementPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+                val elementPath = ParadoxScriptFileManager.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
                 if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
-                val typeKeyPrefix = lazy { ParadoxElementPathManager.getKeyPrefixes(element).firstOrNull() }
+                val typeKeyPrefix = lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
                     if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue

@@ -29,14 +29,13 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
-/**
- * @see ParadoxElementPath
- */
-object ParadoxElementPathManager {
+object ParadoxScriptFileManager {
     /**
-     * 得到指定的属性或值对应的PSI的相对于所属文件的表达式路径。
+     * 得到 [element] 对应的的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
+     *
+     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
      */
-    fun get(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
+    fun getElementPath(element: PsiElement, maxDepth: Int = -1): ParadoxElementPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -52,8 +51,7 @@ object ParadoxElementPathManager {
                     depth++
                 }
             }
-            // 如果发现深度超出指定的最大深度，则直接返回null
-            if (maxDepth >= 0 && maxDepth < depth) return null
+            if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = current.parent ?: break
         }
         if (current is PsiFile) {
@@ -67,9 +65,11 @@ object ParadoxElementPathManager {
     }
 
     /**
-     * 得到指定的属性或值对应的节点的相对于所属文件的表达式路径。
+     * 得到 [node] 对应的脚本成员的节点的相对于所在文件的路径。
+     *
+     * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
      */
-    fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
+    fun getElementPath(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxElementPath? {
         var current: LighterASTNode = node
         var depth = 0
         val subPaths = ArrayDeque<String>()
@@ -85,8 +85,7 @@ object ParadoxElementPathManager {
                     depth++
                 }
             }
-            // 如果发现深度超出指定的最大深度，则直接返回null
-            if (maxDepth >= 0 && maxDepth < depth) return null
+            if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = tree.getParent(current) ?: break
         }
         if (current.tokenType == ParadoxScriptFile.ELEMENT_TYPE) {
@@ -100,10 +99,10 @@ object ParadoxElementPathManager {
     }
 
     /**
-     * 得到指定的属性或值对应的PSI的键前缀。
+     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组键前缀。
      *
-     * 找到[element]对应的[ParadoxScriptProperty]或[ParadoxScriptValue]，
-     * 接着找到直接在其前面的连续的一组[ParadoxScriptString]（忽略空白和注释），
+     * 找到 [element] 对应的 [ParadoxScriptMember]，
+     * 接着找到直接在其前面的连续的一组 [ParadoxScriptString]（忽略空白和注释），
      * 最后将它们转化为字符串列表（基于值，顺序从后往前）。
      */
     fun getKeyPrefixes(element: PsiElement): List<String> {
@@ -125,7 +124,7 @@ object ParadoxElementPathManager {
     }
 
     /**
-     * 得到指定的属性对应的节点的键前缀。
+     * 得到 [node] 对应的脚本成员的节点的一组键前缀。
      */
     fun getKeyPrefixes(node: LighterASTNode, tree: LighterAST): List<String> {
         val parent = node.parent(tree) ?: return emptyList()

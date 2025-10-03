@@ -13,7 +13,7 @@ import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.PlsVfsManager
 import javax.swing.JComponent
 
@@ -35,7 +35,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val header = file.header
         if (header == null) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvManager.getRowConfig(file)
+        val rowConfig = ParadoxCsvFileManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -47,8 +47,8 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 if (element.isEmptyColumn()) return // skip empty columns
 
                 if (element.isHeaderColumn()) return
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
-                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+                val columnConfig = ParadoxCsvFileManager.getColumnConfig(element, rowConfig) ?: return
+                if (ParadoxCsvFileManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
                 // 开始检查

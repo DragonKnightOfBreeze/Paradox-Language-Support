@@ -26,7 +26,7 @@ import icu.windea.pls.ep.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.paths.ParadoxPath
 
-object ParadoxCsvManager {
+object ParadoxCsvFileManager {
     object Keys : KeyRegistry() {
         val cachedRowConfig by createKey<CachedValue<CwtRowConfig>>(Keys)
     }

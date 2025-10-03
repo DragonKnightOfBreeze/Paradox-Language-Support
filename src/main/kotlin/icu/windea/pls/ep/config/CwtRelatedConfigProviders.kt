@@ -41,7 +41,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionVis
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -253,7 +253,7 @@ class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val element = ParadoxPsiFinder.findCsvExpression(file, offset) ?: return emptySet()
         if (element !is ParadoxCsvColumn) return emptySet()
-        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
+        val columnConfig = ParadoxCsvFileManager.getColumnConfig(element) ?: return emptySet()
 
         val result = mutableSetOf<CwtConfig<*>>()
         if (element.isHeaderColumn()) {

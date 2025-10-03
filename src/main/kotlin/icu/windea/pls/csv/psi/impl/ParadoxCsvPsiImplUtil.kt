@@ -18,7 +18,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.psi.PlsPsiManager
 import javax.swing.Icon
 
@@ -61,7 +61,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
-        val extraChars = ParadoxCsvManager.getSeparator().toString()
+        val extraChars = ParadoxCsvFileManager.getSeparator().toString()
         val newValue = value.quoteIfNecessary(extraChars = extraChars, blank = false)
         val newElement = ParadoxCsvElementFactory.createColumn(element.project, newValue)
         return element.replace(newElement).cast()

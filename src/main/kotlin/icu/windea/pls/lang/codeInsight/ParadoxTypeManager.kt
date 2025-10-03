@@ -18,7 +18,7 @@ import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -139,11 +139,11 @@ object ParadoxTypeManager {
             }
             is ParadoxCsvExpressionElement -> {
                 if (element !is ParadoxCsvColumn) return null
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+                val columnConfig = ParadoxCsvFileManager.getColumnConfig(element) ?: return null
                 when {
                     element.isHeaderColumn() -> columnConfig.key
                     else -> {
-                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null // 需要匹配
+                        if (!ParadoxCsvFileManager.isMatchedColumnConfig(element, columnConfig)) return null // 需要匹配
                         columnConfig.value
                     }
                 }

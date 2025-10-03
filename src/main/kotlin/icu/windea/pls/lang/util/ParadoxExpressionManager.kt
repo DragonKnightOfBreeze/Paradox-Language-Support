@@ -927,7 +927,7 @@ object ParadoxExpressionManager {
 
     private fun doGetExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
         val columnConfig = when (element) {
-            is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
+            is ParadoxCsvColumn -> ParadoxCsvFileManager.getColumnConfig(element)
             else -> null
         }
         if (columnConfig == null) return PsiReference.EMPTY_ARRAY
