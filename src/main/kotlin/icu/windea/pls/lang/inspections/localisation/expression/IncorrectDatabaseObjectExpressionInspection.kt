@@ -16,7 +16,7 @@ import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
 /**
- * 不正确的[ParadoxDatabaseObjectExpression]的检查。
+ * 不正确的 [ParadoxDatabaseObjectExpression] 的检查。
  */
 class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

@@ -24,7 +24,7 @@ import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
 /**
- * 不正确的[ParadoxCommandExpression]的检查。
+ * 不正确的 [ParadoxCommandExpression] 的检查。
  */
 class IncorrectCommandExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

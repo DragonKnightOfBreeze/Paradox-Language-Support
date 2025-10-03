@@ -7,17 +7,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypeGroups
-import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 不正确的 [ParadoxVariableFieldExpression] 的检查。
+ * 不正确的 [StellarisNameFormatExpression] 的检查。
  */
-class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
+class IncorrectStellarisNameFormatExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
         return true
@@ -33,10 +33,10 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.configExpression.type
-                if (dataType !in CwtDataTypeGroups.VariableField) return
+                if (dataType != CwtDataTypes.StellarisNameFormat) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
-                val expression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return
+                val expression = StellarisNameFormatExpression.resolve(value, textRange, configGroup, config) ?: return
                 val errors = expression.getAllErrors(element)
                 if (errors.isEmpty()) return
                 errors.forEach { error -> error.register(element, holder) }

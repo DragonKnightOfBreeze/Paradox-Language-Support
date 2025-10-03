@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 不正确的[ParadoxDynamicValueExpression]的检查。
+ * 不正确的 [ParadoxDynamicValueExpression] 的检查。
  */
 class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

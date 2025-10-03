@@ -168,6 +168,10 @@
                      key="inspection.script.incorrectDefineReferenceExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDefineReferenceExpressionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectStellarisNameFormatExpression"
+                     key="inspection.script.incorrectStellarisNameFormatExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="ERROR"
+                     implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectStellarisNameFormatExpressionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Events-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
