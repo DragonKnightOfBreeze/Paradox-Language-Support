@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -11,12 +10,13 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
@@ -50,17 +50,32 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
 
         fun addConstant(s: Int, e: Int) {
             if (e <= s) return
-            val nodeText = text.substring(s, e)
-            val nodeRange = TextRange.create(s + offset, e + offset)
-            nodes += ParadoxTemplateSnippetConstantNode.resolve(nodeText, nodeRange, configGroup)
+            var k = s
+            while (k < e) {
+                // blanks
+                var bStart = k
+                while (k < e && text[k].isWhitespace()) k++
+                if (k > bStart) {
+                    val nodeText = text.substring(bStart, k)
+                    val nodeRange = TextRange.create(bStart + offset, k + offset)
+                    nodes += ParadoxBlankNode(nodeText, nodeRange, configGroup)
+                }
+                // non-blanks
+                var tStart = k
+                while (k < e && !text[k].isWhitespace()) k++
+                if (k > tStart) {
+                    val nodeText = text.substring(tStart, k)
+                    val nodeRange = TextRange.create(tStart + offset, k + offset)
+                    nodes += StellarisNameFormatTextNode.resolve(nodeText, nodeRange, configGroup)
+                }
+            }
         }
 
         fun addLocalisation(nameStart: Int, nameEnd: Int) {
             if (nameEnd <= nameStart) return
             val nameText = text.substring(nameStart, nameEnd)
             val nameRange = TextRange.create(nameStart + offset, nameEnd + offset)
-            val locExpr = CwtDataExpression.resolve("localisation", true)
-            nodes += ParadoxTemplateSnippetNode.resolve(nameText, nameRange, configGroup, locExpr)
+            nodes += StellarisNameFormatLocalisationNode.resolve(nameText, nameRange, configGroup)
         }
 
         fun addDefinition(nameStart: Int, nameEnd: Int) {
@@ -73,8 +88,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                 nodes += ParadoxErrorTokenNode(nameText, nameRange, configGroup)
                 return
             }
-            val defExpr = CwtDataExpression.resolve("definition[$defType]", true)
-            nodes += ParadoxTemplateSnippetNode.resolve(nameText, nameRange, configGroup, defExpr)
+            nodes += StellarisNameFormatDefinitionNode.resolve(nameText, nameRange, configGroup, defType)
         }
 
         fun findMatchingBracket(startIndex: Int, endExclusive: Int): Int {
@@ -227,8 +241,8 @@ private class StellarisNameFormatExpressionImpl(
         @Suppress("RemoveExplicitTypeArguments")
         val ok = validateAllNodes(errors) {
             when {
-                it is ParadoxTemplateSnippetNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
-                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                it is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
+                it is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
                 else -> true
             }
         }
