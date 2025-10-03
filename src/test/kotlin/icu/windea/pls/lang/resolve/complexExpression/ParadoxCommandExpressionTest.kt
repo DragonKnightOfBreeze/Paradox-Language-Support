@@ -35,6 +35,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic() {
         val s = "Root.GetName"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -46,6 +47,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_chain_noSuffix() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxSystemCommandScopeNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -70,6 +72,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     fun testWithSuffix_amp() {
         val s = "Root.GetName&L"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxCommandScopeLinkNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -83,6 +86,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     fun testWithSuffix_doubleColon() {
         val s = "Root.GetName::UPPER"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
             node<ParadoxCommandScopeLinkNode>("Root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)

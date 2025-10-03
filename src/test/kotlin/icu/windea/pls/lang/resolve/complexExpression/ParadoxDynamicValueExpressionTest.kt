@@ -33,6 +33,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_withoutScopeSuffix() {
         val s = "some_variable"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDynamicValueExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueNode>(s, 0..13)
         }
@@ -42,6 +43,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_withScopeSuffix() {
         val s = "some_variable@root"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDynamicValueExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0..13)
             node<ParadoxMarkerNode>("@", 13..14)
@@ -55,6 +57,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_withScopeSuffix_chained() {
         val s = "some_variable@root.owner"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDynamicValueExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueNode>("some_variable", 0..13)
             node<ParadoxMarkerNode>("@", 13..14)

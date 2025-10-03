@@ -37,6 +37,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testTrigger() {
         val s = "trigger:some_trigger"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>(s, 0..20) {
                 node<ParadoxValueFieldPrefixNode>("trigger:", 0..8)
@@ -51,6 +52,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testScriptValue_basic() {
         val s = "value:some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>(s, 0..26) {
                 node<ParadoxValueFieldPrefixNode>("value:", 0..6)
@@ -72,6 +74,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testScriptValue_inChain_withDotBefore_andBarrierAfter() {
         val s = "root.value:some_sv|A|B|.owner"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -96,6 +99,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testForArgument() {
         val s = "relations(root)"
         val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>("relations(root)", 0..15) {
                 node<ParadoxValueFieldPrefixNode>("relations", 0..9)
@@ -114,6 +118,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testVariable_inChain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)

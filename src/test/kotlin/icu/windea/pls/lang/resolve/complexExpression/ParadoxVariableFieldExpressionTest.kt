@@ -28,6 +28,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_chain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -41,6 +42,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testBarrier_noFurtherSplit() {
         val s = "root.owner|x.y"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxVariableFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)

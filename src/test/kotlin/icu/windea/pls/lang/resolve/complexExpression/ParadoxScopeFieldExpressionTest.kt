@@ -34,6 +34,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testSingleScopeNode_root() {
         val s = "root"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxSystemScopeNode>("root", 0..4)
         }
@@ -43,6 +44,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testDotSegmentation_basic() {
         val s = "root.owner"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -54,6 +56,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testEventTarget() {
         val s = "event_target:some_target"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicScopeLinkNode>("event_target:some_target", 0..24) {
                 node<ParadoxScopeLinkPrefixNode>("event_target:", 0..13)
@@ -70,6 +73,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testBarrier_At_NoFurtherSplit() {
         val s = "root.owner@x.y"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -81,6 +85,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testBarrier_Pipe_NoFurtherSplit() {
         val s = "root.owner|x.y"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)

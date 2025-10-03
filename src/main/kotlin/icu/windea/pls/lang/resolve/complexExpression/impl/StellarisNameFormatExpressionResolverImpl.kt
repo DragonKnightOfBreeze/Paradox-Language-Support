@@ -17,7 +17,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
@@ -42,11 +41,11 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
         val expression = StellarisNameFormatExpressionImpl(text, range, configGroup, config, formatName, definitionType, nodes)
 
-        val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
         val offset = range.startOffset
         val textLength = text.length
 
-        fun inParam(i: Int): Boolean = parameterRanges.any { i in it }
+        // 对于命名格式：不将任何位置视为“参数区间”，以免误将 [ ... ] 内容整体跳过
+        fun inParam(i: Int): Boolean = false
 
         fun addConstant(s: Int, e: Int) {
             if (e <= s) return
@@ -141,23 +140,31 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                 when (val ch = text[i]) {
                     '<' -> {
                         addConstant(segStart, i)
+                        // add marker for '<'
+                        nodes += ParadoxMarkerNode("<", TextRange.create(i + offset, i + 1 + offset), configGroup)
                         val close = text.indexOf('>', i + 1).takeIf { it in (i + 1)..<end } ?: -1
                         if (close == -1) {
-                            val nodeText = text.substring(i, end)
-                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + offset, end + offset), configGroup)
+                            // content as error token without including '<'
+                            val nodeText = text.substring(i + 1, end)
+                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
                             return
                         }
                         addDefinition(i + 1, close)
+                        // add marker for '>'
+                        nodes += ParadoxMarkerNode(">", TextRange.create(close + offset, close + 1 + offset), configGroup)
                         i = close + 1
                         segStart = i
                         continue
                     }
                     '[' -> {
                         addConstant(segStart, i)
+                        // add marker for '['
+                        nodes += ParadoxMarkerNode("[", TextRange.create(i + offset, i + 1 + offset), configGroup)
                         val close = findMatchingBracket(i, end)
                         if (close == -1) {
-                            val nodeText = text.substring(i, end)
-                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + offset, end + offset), configGroup)
+                            // content as error token without including '['
+                            val nodeText = text.substring(i + 1, end)
+                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
                             return
                         }
                         val innerText = text.substring(i + 1, close)
@@ -165,6 +172,8 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                         val cmd = ParadoxCommandExpression.resolve(innerText, innerRange, configGroup)
                             ?: ParadoxErrorTokenNode(innerText, innerRange, configGroup)
                         nodes += cmd
+                        // add marker for ']'
+                        nodes += ParadoxMarkerNode("]", TextRange.create(close + offset, close + 1 + offset), configGroup)
                         i = close + 1
                         segStart = i
                         continue

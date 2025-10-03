@@ -29,6 +29,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_twoSegments() {
         val s = "civic:some_civic"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0..5)
             node<ParadoxMarkerNode>(":", 5..6)
@@ -42,6 +43,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_threeSegments() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("civic", 0..5)
             node<ParadoxMarkerNode>(":", 5..6)
@@ -59,6 +61,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_job() {
         val s = "job:job_soldier"
         val exp = parse(s)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDatabaseObjectExpression>(s, 0..s.length) {
             node<ParadoxDatabaseObjectTypeNode>("job", 0..3)
             node<ParadoxMarkerNode>(":", 3..4)
@@ -73,7 +76,6 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
         val dsl = buildExpression<ParadoxDatabaseObjectExpression>("", 0..0) {}
-        // exp.check(dsl)
-        println(exp.render())
+        exp.check(dsl)
     }
 }
