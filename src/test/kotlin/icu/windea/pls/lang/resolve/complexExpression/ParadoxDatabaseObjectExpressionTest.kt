@@ -75,7 +75,9 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
-        val dsl = buildExpression<ParadoxDatabaseObjectExpression>("", 0..0) {}
+        val dsl = buildExpression<ParadoxDatabaseObjectExpression>("", 0..0) {
+            node<ParadoxDatabaseObjectTypeNode>("", 0..0)
+        }
         exp.check(dsl)
     }
 }

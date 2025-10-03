@@ -25,6 +25,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -95,6 +97,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxDatabaseObjectDataSourceNode.Reference -> {
                     reference.node.config?.type != null
                 }
+                is StellarisNameFormatDefinitionNode.Reference -> true
                 is ParadoxScriptValueNode.Reference -> true // <script_value>
                 is ParadoxLocalisationIconPsiReference -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true // <game_concept>
@@ -116,7 +119,6 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression(strict = true)
                 is ParadoxLocalisationParameter -> true
-                // is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }
@@ -136,6 +138,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxDatabaseObjectDataSourceNode.Reference -> {
                     reference.node.config?.localisation != null
                 }
+                is StellarisNameFormatLocalisationNode.Reference -> true
                 is ParadoxLocalisationParameterPsiReference -> true
                 else -> false
             }

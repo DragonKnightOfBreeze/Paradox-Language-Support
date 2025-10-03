@@ -9,6 +9,7 @@ import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -39,7 +40,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         val definitionType = formatName?.let { "${it}_name_parts_list" }
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-        val expression = StellarisNameFormatExpressionImpl(text, range, configGroup, config, formatName, definitionType, nodes)
+        val expression = StellarisNameFormatExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset
         val textLength = text.length
@@ -136,7 +137,9 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
             var segStart = start
             var i = start
             while (i < end) {
-                if (inParam(i)) { i++; continue }
+                if (inParam(i)) {
+                    i++; continue
+                }
                 when (val ch = text[i]) {
                     '<' -> {
                         addConstant(segStart, i)
@@ -238,25 +241,21 @@ private class StellarisNameFormatExpressionImpl(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     override val config: CwtConfig<*>,
-    override val formatName: String?,
-    override val definitionType: String?,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionBase(), StellarisNameFormatExpression {
     override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
 
     private fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        // 基础结构校验：占位与引用名必须是标识符。
-        @Suppress("RemoveExplicitTypeArguments")
-        val ok = validateAllNodes(errors) {
-            when {
-                it is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
-                it is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
+        val result = validateAllNodes(errors) {
+            when (it) {
+                is StellarisNameFormatDefinitionNode -> it.text.isParameterAwareIdentifier()
+                is StellarisNameFormatLocalisationNode -> it.text.isParameterAwareIdentifier('.', '-', '\'')
                 else -> true
             }
         }
-        // 目前未提供专属 malformed 错误码，保留节点级错误（未解析等）。
-        ok // ignore result, collected errors already include unresolved ones via getAllErrors
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrorBuilder.malformedStellarisNameFormatExpression(rangeInExpression, text)
         return errors
     }
 

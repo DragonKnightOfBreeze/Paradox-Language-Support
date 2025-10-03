@@ -43,7 +43,7 @@ class StellarisNameFormatLocalisationNode(
         if (text.isEmpty()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolve() != null) return null
-        return ParadoxComplexExpressionErrorBuilder.unresolvedDataSource(rangeInExpression, text, "localisation")
+        return ParadoxComplexExpressionErrorBuilder.unresolvedStellarisNameFormatLocalisation(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): PsiPolyVariantReferenceBase<ParadoxExpressionElement>? {
@@ -67,6 +67,7 @@ class StellarisNameFormatLocalisationNode(
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
         }
+
         private object MultiResolver : ResolveCache.PolyVariantResolver<Reference> {
             override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doMultiResolve()
         }
@@ -74,6 +75,7 @@ class StellarisNameFormatLocalisationNode(
         override fun resolve(): PsiElement? {
             return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
         }
+
         override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
             return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
         }
@@ -96,5 +98,6 @@ class StellarisNameFormatLocalisationNode(
             return StellarisNameFormatLocalisationNode(text, textRange, configGroup)
         }
     }
+
     companion object : Resolver()
 }
