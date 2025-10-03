@@ -17,18 +17,6 @@
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="\(#(\d+)\)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="GH-(\d+)" />
-          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
-          <option name="issueRegexp" value="\(#(\d+)\)" />
           <option name="linkRegexp" value="https://github.com/cwtools/cwtools-stellaris-config/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
@@ -62,6 +50,18 @@
         <IssueNavigationLink>
           <option name="issueRegexp" value="GH-(\d+)" />
           <option name="linkRegexp" value="https://github.com/cwtools/cwtools-vic3-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="\(#(\d+)\)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="GH-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/DragonKnightOfBreeze/cwtools-stellaris-config/issues/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
           <option name="issueRegexp" value="\(#(\d+)\)" />

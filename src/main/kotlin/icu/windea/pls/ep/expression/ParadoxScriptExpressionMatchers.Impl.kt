@@ -309,10 +309,14 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 Result.ExactMatch
             }
             CwtDataTypes.StellarisNameFormat -> {
-                // TODO 1.2.2+ 需要考虑进一步的支持
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                Result.FallbackMatch
+                val textRange = TextRange.create(0, expression.value.length)
+                val expr = icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
+                    .resolve(expression.value, textRange, configGroup, config ?: return Result.NotMatch)
+                if (expr == null) return Result.NotMatch
+                if (expr.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
+                Result.ExactMatch
             }
             CwtDataTypes.ShaderEffect -> {
                 // TODO 1.2.2+ 暂时作为一般的字符串处理
