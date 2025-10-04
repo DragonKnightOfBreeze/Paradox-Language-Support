@@ -232,24 +232,23 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } // 这里需要进行必要的内联
 
     val contextElement = context.contextElement
-    val isKeyOrStringElement = contextElement is ParadoxScriptPropertyKey || contextElement is ParadoxScriptString
+    val isKeyElement = contextElement is ParadoxScriptPropertyKey
+    val isStringElement = contextElement is ParadoxScriptString
     val isKey = context.isKey
-    val isKeyOnly = contextElement is ParadoxScriptPropertyKey && isKey != false
-    val isValueOnly = contextElement is ParadoxScriptString && isKey != true
-    val isBlock = targetConfig?.let { it.valueType == CwtType.Block } ?: false
+    val isBlockConfig = targetConfig?.let { it.valueType == CwtType.Block } ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
         else -> null
     }
     val insertCurlyBraces = when {
         forceInsertCurlyBraces -> true
-        completeWithValue -> isBlock
+        completeWithValue -> isBlockConfig
         else -> false
     }
 
     // 排除重复项
     val completionId = when {
-        isKeyOnly || isValueOnly -> lookupString
+        isKeyElement || (isStringElement && isKey != true) -> lookupString
         constantValue != null -> "$lookupString = $constantValue"
         insertCurlyBraces -> "$lookupString = {...}"
         else -> lookupString
@@ -268,7 +267,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     }
     val patchableTailText = this.patchableTailText
     val tailText = buildString {
-        if (!isKeyOnly && !isValueOnly) {
+        if (!(isKeyElement || isStringElement && isKey != true)) {
             if (constantValue != null) append(" = ").append(constantValue)
             if (insertCurlyBraces) append(" = {...}")
         }
@@ -276,18 +275,19 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     }
     lookupElement = lookupElement.withTailText(tailText, true)
 
-    if (!isKeyOrStringElement) return lookupElement
+    if (!isKeyElement && !isStringElement) return lookupElement // not in a key or value position
+    if (isKey == null) return lookupElement // not complete full key or value
 
-    if (isKeyOnly || isValueOnly) { // key or value only
+    if (isKeyElement || isStringElement && !isKey) { // key or value only
         lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context, isKey) }
-    } else if (isKey == true) { // key with value
+    } else if (isKey) { // key with value
         lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyWithValueInsertHandler(c, context, isKey, constantValue, insertCurlyBraces) }
     }
 
     val extraElements = mutableListOf<LookupElement>()
 
     // 进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (isKey == true && !isKeyOnly && isBlock && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
+    if (isKey && !isKeyElement && isBlockConfig && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {
             val extraTailText = buildString {

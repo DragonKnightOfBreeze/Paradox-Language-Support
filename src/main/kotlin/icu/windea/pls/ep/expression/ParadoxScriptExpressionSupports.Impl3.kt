@@ -9,8 +9,7 @@ import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
-import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.isInt
 import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
@@ -52,7 +51,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeTemplateExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeTemplateExpression(context, result)
     }
 }
 
@@ -79,7 +78,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDynamicValueExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)
     }
 }
 
@@ -116,7 +115,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeScopeFieldExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeScopeFieldExpression(context, result)
         when (configExpression.type) {
             CwtDataTypes.Scope -> {
                 context.scopeName = null
@@ -159,7 +158,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeValueFieldExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeValueFieldExpression(context, result)
         when (configExpression.type) {
             CwtDataTypes.IntValueField -> {
                 context.isInt = null
@@ -199,7 +198,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
             }
             else -> {}
         }
-        ParadoxCompletionManager.completeVariableFieldExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeVariableFieldExpression(context, result)
         when (configExpression.type) {
             CwtDataTypes.IntVariableField -> {
                 context.isInt = null
@@ -232,7 +231,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }
 
@@ -259,7 +258,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSup
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDefineReferenceExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeDefineReferenceExpression(context, result)
     }
 }
 
@@ -287,6 +286,6 @@ class ParadoxScriptStellarisNameFormatExpressionSupport : ParadoxScriptExpressio
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         // ParadoxCompletionManager.completeStellarisNameFormatExpression(context, result)
-        ParadoxComplexExpressionManager.completeStellarisNameFormatExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeStellarisNameFormatExpression(context, result)
     }
 }

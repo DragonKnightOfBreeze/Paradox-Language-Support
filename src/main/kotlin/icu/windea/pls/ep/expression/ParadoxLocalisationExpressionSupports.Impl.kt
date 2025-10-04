@@ -6,7 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -43,7 +43,7 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressio
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeCommandExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeCommandExpression(context, result)
     }
 }
 
@@ -77,6 +77,6 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationEx
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeDatabaseObjectExpression(context, result)
     }
 }

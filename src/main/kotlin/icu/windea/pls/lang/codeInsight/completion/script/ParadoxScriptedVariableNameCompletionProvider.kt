@@ -12,6 +12,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
@@ -44,7 +45,7 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         val selector = selector(project, element).scriptedVariable().contextSensitive().notSamePosition(element).distinctByName()
         ParadoxScriptedVariableSearch.searchGlobal(null, selector).processQueryAsync { processScriptedVariable(context, result, it) }
 
-        ParadoxCompletionManager.completeExtendedScriptedVariable(context, result)
+        ParadoxExtendedCompletionManager.completeExtendedScriptedVariable(context, result)
     }
 
     @Suppress("SameReturnValue")

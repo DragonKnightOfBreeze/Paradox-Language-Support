@@ -19,6 +19,7 @@ import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
@@ -114,7 +115,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         .distinctByName()
                     ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 
-                    ParadoxCompletionManager.completeExtendedDefinition(context, result)
+                    ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
             // event = { id = _ }
@@ -138,7 +139,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         .distinctByName()
                     ParadoxDefinitionSearch.search(null, type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 
-                    ParadoxCompletionManager.completeExtendedDefinition(context, result)
+                    ParadoxExtendedCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
         }

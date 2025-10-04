@@ -13,6 +13,7 @@ import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configGroup
 import icu.windea.pls.lang.codeInsight.completion.contextElement
@@ -67,6 +68,6 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
 
         context.config = configGroup.mockVariableConfig
 
-        ParadoxCompletionManager.completeDynamicValueExpression(context, result)
+        ParadoxComplexExpressionCompletionManager.completeDynamicValueExpression(context, result)
     }
 }

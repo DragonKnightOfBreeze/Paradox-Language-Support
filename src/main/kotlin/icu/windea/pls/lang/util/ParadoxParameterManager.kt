@@ -57,7 +57,7 @@ import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport
-import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.argumentNames
 import icu.windea.pls.lang.codeInsight.completion.config
@@ -285,7 +285,7 @@ object ParadoxParameterManager {
 
         val contextKey = ParadoxParameterSupport.getContextKeyFromContext(parameterContext) ?: return
         context.contextKey = contextKey
-        ParadoxCompletionManager.completeExtendedParameter(context, result)
+        ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
     fun completeArguments(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -322,7 +322,7 @@ object ParadoxParameterManager {
 
         context.contextKey = contextReferenceInfo.contextKey
         context.argumentNames = argumentNames
-        ParadoxCompletionManager.completeExtendedParameter(context, result)
+        ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
 
     fun getReadWriteAccess(element: PsiElement): ReadWriteAccessDetector.Access {
