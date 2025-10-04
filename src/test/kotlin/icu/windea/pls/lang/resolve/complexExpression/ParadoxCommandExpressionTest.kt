@@ -69,6 +69,38 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    fun test_endsWithDot() {
+        val s = "Root."
+        val exp = parse(s)!!
+        // println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandFieldNode>("", 5..5) {
+                node<ParadoxCommandFieldValueNode>("", 5..5) {
+                    node<ParadoxDataSourceNode>("", 5..5)
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    fun test_endsWithVar() {
+        val s = "Root.Var"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>(s, 0..s.length) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandFieldNode>("Var", 5..8) {
+                node<ParadoxCommandFieldValueNode>("Var", 5..8) {
+                    node<ParadoxDataSourceNode>("Var", 5..8)
+                }
+            }
+        }
+        exp.check(dsl)
+    }
+
     fun testWithSuffix_amp() {
         val s = "Root.GetName&L"
         val exp = parse(s)!!
