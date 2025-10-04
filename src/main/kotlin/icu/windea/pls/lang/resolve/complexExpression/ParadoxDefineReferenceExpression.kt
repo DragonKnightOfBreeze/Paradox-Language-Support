@@ -18,8 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariable
  * define:NPortrait|GRACEFUL_AGING_START
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
  * define_reference_expression ::= "define:" define_namespace "|" define_variable
  * ```

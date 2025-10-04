@@ -21,17 +21,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValue
  * root.owner.some_variable
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
- * variable_field_expression ::= variable
- *                             | link ("." link)* "." variable
- *
- * private link ::= system_scope | scope | dynamic_scope_link
- * private dynamic_scope_link ::= scope_link_prefix? scope_link_value
- *                              | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
+ * variable_field_expression ::= variable | link ("." link)* "." variable
+ * link ::= system_scope | scope | dynamic_scope_link
+ * dynamic_scope_link ::= scope_link_prefix? scope_link_value | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
  * private dynamic_scope_link_args ::= dynamic_scope_link_arg ("," dynamic_scope_link_arg)*
- *
  * private variable ::= data_source
  * ```
  *

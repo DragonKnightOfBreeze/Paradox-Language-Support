@@ -22,13 +22,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
  * job:job_soldier
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
- * database_object_expression ::= db_type ":" db_value (":" db_value)?
- *
- * private db_type ::= database_object_type
- * private db_value ::= database_object
+ * database_object_expression ::= database_object_type ":" database_object (":" database_object)?
+ * database_object ::= database_object_data
  * ```
  *
  * ### 语法与结构

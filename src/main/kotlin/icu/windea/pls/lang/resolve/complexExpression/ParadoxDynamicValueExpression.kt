@@ -20,11 +20,9 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
  * some_variable@root
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
- * dynamic_value_expression ::= dynamic_value
- *                            | dynamic_value "@" scope_field_expression
+ * dynamic_value_expression ::= dynamic_value ("@" scope_field_expression)?
  * ```
  *
  * ### 语法与结构

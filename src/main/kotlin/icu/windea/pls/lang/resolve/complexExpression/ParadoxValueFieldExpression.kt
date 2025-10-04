@@ -29,18 +29,13 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValu
  * root.owner.some_variable
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
- * value_field_expression ::= value_field
- *                          | link ("." link)* "." value_field
- *
- * private link ::= system_scope | scope | dynamic_scope_link
- * private dynamic_scope_link ::= scope_link_prefix? scope_link_value
- *                              | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
+ * value_field_expression ::= value_field | link ("." link)* "." value_field
+ * link ::= system_scope | scope | dynamic_scope_link
+ * dynamic_scope_link ::= scope_link_prefix? scope_link_value | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
  * private dynamic_scope_link_args ::= dynamic_scope_link_arg ("," dynamic_scope_link_arg)*
- *
- * private value_field ::= predefined_value_field | dynamic_value_field | parameterized_value_field
+ * value_field ::= predefined_value_field | dynamic_value_field | parameterized_value_field
  * ```
  *
  * ### 语法与结构

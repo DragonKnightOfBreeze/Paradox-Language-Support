@@ -21,13 +21,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * Root.Owner.event_target:some_event_target.var
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
- * command_expression ::= command_field command_suffix?
- *                      | link ("." link)* "." command_field command_suffix?
- *
- * private link ::= command_scope_link
+ * command_expression ::= command_field command_suffix? | link ("." link)* "." command_field command_suffix?
+ * link ::= command_scope_link
  * private command_suffix ::= "&" suffix | "::" suffix
  * ```
  *

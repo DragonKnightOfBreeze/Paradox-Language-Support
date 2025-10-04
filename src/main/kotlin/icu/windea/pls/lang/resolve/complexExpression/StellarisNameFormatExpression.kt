@@ -20,17 +20,14 @@ import icu.windea.pls.lang.resolve.complexExpression.impl.StellarisNameFormatExp
  * {alpha}
  * ```
  *
- * ### 语法
- *
+ * 语法：
  * ```bnf
  * name_format_expression ::= closure+
- *
- * private closure ::= "{" closure_content? "}"
- * private closure_content ::= closure_item*
+ * closure ::= "{" closure_content? "}"
+ * closure_content ::= closure_item*
  * private closure_item ::= name_part | command | localisation | text | closure
- *
- * private name_part ::= "<" definition ">"
- * private command ::= "[" command_expression "]"
+ * name_part ::= "<" definition ">"
+ * command ::= "[" command_expression "]"
  * ```
  *
  * ### 语法与结构
