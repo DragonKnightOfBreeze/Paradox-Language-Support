@@ -5,6 +5,7 @@ import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
@@ -20,13 +21,15 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getHeaderColumn
 
 /**
- * 用于基于上下文进行高亮。
+ * 用于在 CSV 文件中提供基础的额外高亮。
  *
  * - 当光标位置是列时，高亮对应的头列。
  * - 当光标位置是分隔符时，高亮同一行的所有分隔符。
  * - 当光标位置是列时，如果其中的表达式可以解析引用，高亮当前列。
  */
-class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
+class ParadoxCsvBasicHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
+    // NOTE 注意：这个 EP 会覆盖读写引用的高亮
+
     override fun createHighlightUsagesHandler(editor: Editor, file: PsiFile): HighlightUsagesHandlerBase<*>? {
         val targets = mutableListOf<PsiElement>()
         addTargetsForSeparator(file, editor, targets)
@@ -38,16 +41,12 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
             override fun selectTargets(targets: List<PsiElement>, selectionConsumer: Consumer<in List<PsiElement>>) = selectionConsumer.consume(targets)
 
             override fun computeUsages(targets: List<PsiElement>) {
-                val occurrences = mutableListOf<PsiElement>()
+                val occurrences = mutableListOf<TextRange>()
                 addOccurrencesForSeparatorInSameRow(targets, occurrences)
                 addOccurrencesForRelatedColumnInHeader(targets, occurrences)
                 addOccurrencesForReferenceColumn(targets, occurrences)
                 for (occurrence in occurrences) {
-                    val range = when (occurrence) {
-                        is ParadoxCsvColumn -> occurrence.textRange.unquote(occurrence.text)
-                        else -> occurrence.textRange
-                    }
-                    myReadUsages.add(range)
+                    myReadUsages.add(occurrence)
                 }
             }
         }
@@ -65,33 +64,34 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
         targets += target
     }
 
-    fun addOccurrencesForSeparatorInSameRow(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+    fun addOccurrencesForSeparatorInSameRow(targets: List<PsiElement>, occurrences: MutableList<TextRange>) {
         for (target in targets) {
             if (target.elementType != ParadoxCsvElementTypes.SEPARATOR) continue
             val container = target.parent?.takeIf { it is ParadoxCsvRow } ?: continue
             container.forEachChild {
                 if (it.elementType == ParadoxCsvElementTypes.SEPARATOR) {
-                    occurrences += it
+                    val range = it.textRange
+                    occurrences += range
                 }
             }
         }
     }
 
-    fun addOccurrencesForRelatedColumnInHeader(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+    fun addOccurrencesForRelatedColumnInHeader(targets: List<PsiElement>, occurrences: MutableList<TextRange>) {
         for (target in targets) {
             if (target !is ParadoxCsvColumn) continue
             val headerColumn = target.getHeaderColumn()
             if (headerColumn == null) continue
-            occurrences += headerColumn
+            occurrences += headerColumn.textRange.unquote(headerColumn.text)
         }
     }
 
-    fun addOccurrencesForReferenceColumn(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+    fun addOccurrencesForReferenceColumn(targets: List<PsiElement>, occurrences: MutableList<TextRange>) {
         for (target in targets) {
             if (target !is ParadoxCsvColumn) continue
             if (DumbService.isDumb(target.project)) continue
             if (target.references.all { it.resolveFirst() == null }) continue
-            occurrences += target
+            occurrences += target.textRange.unquote(target.text)
         }
     }
 }

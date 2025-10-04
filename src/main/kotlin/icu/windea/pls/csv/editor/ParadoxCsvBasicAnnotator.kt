@@ -10,6 +10,12 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.model.ParadoxType
 
+/**
+ * 用于在 CSV 文件中提供基础的语义高亮。
+ *
+ * - 对于列（头列），提供特殊高亮。
+ * - 对于列（非头列），如果格式匹配布尔值或数字，提供对应的高亮。
+ */
 class ParadoxCsvBasicAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
@@ -29,9 +35,9 @@ class ParadoxCsvBasicAnnotator : Annotator {
 
         val resolvedType = ParadoxTypeResolver.resolve(element.value)
         val attributesKeys = when (resolvedType) {
+            ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD_KEY
             ParadoxType.Int -> ParadoxCsvAttributesKeys.NUMBER_KEY
             ParadoxType.Float -> ParadoxCsvAttributesKeys.NUMBER_KEY
-            ParadoxType.Boolean -> ParadoxCsvAttributesKeys.KEYWORD_KEY
             // ParadoxType.String -> ParadoxCsvAttributesKeys.STRING_KEY
             else -> null
         }
