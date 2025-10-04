@@ -12,7 +12,9 @@ import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.findReferenceAt
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
@@ -20,6 +22,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -28,6 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionName
@@ -61,7 +65,7 @@ object ParadoxPsiFinder {
             if (result != null) return result
         } else {
             if (BitUtil.isSet(options, ScriptedVariableOptions.BY_NAME)) {
-                val result = file.findElementAt(offset) p@{
+                val result = file.findElementAt(offset) t@{
                     it.parentOfType<ParadoxScriptScriptedVariableName>()?.parentOfType<ParadoxScriptScriptedVariable>()
                 }
                 if (result != null) return result
@@ -147,7 +151,7 @@ object ParadoxPsiFinder {
             if (result != null) return result
         } else {
             if (BitUtil.isSet(options, LocalisationOptions.BY_NAME)) {
-                val result = file.findElementAt(offset) p@{
+                val result = file.findElementAt(offset) t@{
                     it.parentOfType<ParadoxLocalisationPropertyKey>()?.parentOfType<ParadoxLocalisationProperty>()
                 }
                 if (result != null) return result
@@ -160,27 +164,6 @@ object ParadoxPsiFinder {
         return findLocalisation(file, offset, LocalisationOptions.optionsProvider())
     }
 
-    fun findScriptExpression(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        if (file.language !is ParadoxScriptLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxScriptExpressionElement>(false)
-        }?.takeIf { it.isExpression() }
-    }
-
-    fun findLocalisationExpression(file: PsiFile, offset: Int): ParadoxLocalisationExpressionElement? {
-        if (file.language !is ParadoxLocalisationLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxLocalisationExpressionElement>(false)
-        }?.takeIf { it.isComplexExpression() }
-    }
-
-    fun findCsvExpression(file: PsiFile, offset: Int): ParadoxCsvExpressionElement? {
-        if (file.language !is ParadoxCsvLanguage) return null
-        return file.findElementAt(offset) {
-            it.parentOfType<ParadoxCsvExpressionElement>(false)
-        }
-    }
-
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
         if (file.language !is ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) t@{
@@ -191,9 +174,41 @@ object ParadoxPsiFinder {
 
     fun findLocalisationLocale(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationLocale? {
         if (file.language !is ParadoxLocalisationLanguage) return null
-        return file.findElementAt(offset) p@{
-            if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@p null
+        return file.findElementAt(offset) t@{
+            if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationLocale>(false)
+        }
+    }
+
+    fun findScriptExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxScriptExpressionElement? {
+        if (file.language !is ParadoxScriptLanguage) return null
+        return file.findElementAt(offset) t@{
+            if(fromToken && it.elementType !in ParadoxScriptTokenSets.EXPRESSION_TOKENS) return@t null
+            it.parentOfType<ParadoxScriptExpressionElement>(false)
+        }?.takeIf { it.isExpression() }
+    }
+
+    fun findLocalisationExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxLocalisationExpressionElement? {
+        if (file.language !is ParadoxLocalisationLanguage) return null
+        return file.findElementAt(offset) t@{
+            if(fromToken && it.elementType !in ParadoxLocalisationTokenSets.EXPRESSION_TOKENS) return@t null
+            it.parentOfType<ParadoxLocalisationExpressionElement>(false)
+        }?.takeIf { it.isComplexExpression() }
+    }
+
+    fun findCsvExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxCsvExpressionElement? {
+        if (file.language !is ParadoxCsvLanguage) return null
+        return file.findElementAt(offset) t@{
+            if(fromToken && it.elementType !in ParadoxCsvTokenSets.EXPRESSION_TOKENS) return@t null
+            it.parentOfType<ParadoxCsvExpressionElement>(false)
+        }
+    }
+
+    fun findExpressionForComplexExpression(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxExpressionElement? {
+        return when (file.language) {
+            is ParadoxScriptLanguage -> findScriptExpression(file, offset, fromToken)
+            is ParadoxLocalisationLanguage -> findLocalisationExpression(file, offset, fromToken)
+            else -> null
         }
     }
 }

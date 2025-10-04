@@ -47,6 +47,11 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
         }
     }
 
+    override fun resolveByConfig(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+        val dataType = config.configExpression?.type ?: return null
+        return resolveByDataType(text, range, configGroup, dataType, config)
+    }
+
     override fun resolveByDataType(text: String, range: TextRange, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
         return when {
             dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(text, range, configGroup, config ?: return null)
@@ -59,10 +64,5 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
             dataType == CwtDataTypes.StellarisNameFormat -> StellarisNameFormatExpression.resolve(text, range, configGroup, config ?: return null)
             else -> null
         }
-    }
-
-    override fun resolveByConfig(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
-        val dataType = config.configExpression?.type ?: return null
-        return resolveByDataType(text, range, configGroup, dataType, config)
     }
 }

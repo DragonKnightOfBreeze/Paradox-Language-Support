@@ -8,10 +8,17 @@ object ParadoxComplexExpressionUtil {
     private val markerPairsL2R = matchedMarkers.chunked(2).associate { it.take(1) to it.takeLast(1) }
     private val markerPairs = matchedMarkers.chunked(2).flatMap { listOf(it, it.reversed()) }.associate { it.take(1) to it.takeLast(1) }
 
-    @Suppress("unused")
-    fun isLeftMarkerNode(node: ParadoxComplexExpressionNode): Boolean {
-        if (node !is ParadoxMarkerNode) return false
-        return node.text in markerPairsL2R
+    fun isValidLeftMaker(leftMarker: String, expression: ParadoxComplexExpression): Boolean {
+        return when(expression) {
+            is ParadoxScopeFieldExpression, is ParadoxValueFieldExpression, is ParadoxVariableFieldExpression -> leftMarker == "("
+            is ParadoxCommandExpression -> leftMarker == "("
+            is StellarisNameFormatExpression -> leftMarker in "{<["
+            else -> false
+        }
+    }
+
+    fun getRightMarker(leftMarker: String): String? {
+        return markerPairsL2R[leftMarker]
     }
 
     fun getMatchedMarkerNode(node: ParadoxComplexExpressionNode): ParadoxComplexExpressionNode? {

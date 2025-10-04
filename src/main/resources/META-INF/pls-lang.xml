@@ -83,6 +83,8 @@
     <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigUsageTypeProvider"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxUsageTypeProvider"/>
 
+    <typedHandler implementation="icu.windea.pls.lang.codeInsight.editorActions.ParadoxTypedHandler"/>
+
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionHintTextHintsProvider"/>

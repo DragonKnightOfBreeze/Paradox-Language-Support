@@ -84,6 +84,8 @@ object ParadoxScriptTokenSets {
     // @JvmField
     // val BLOCK_OR_ROOT_BLOCK = TokenSet.create(BLOCK, ROOT_BLOCK)
 
+    val EXPRESSION_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
+
     @JvmField
     val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE, PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
 

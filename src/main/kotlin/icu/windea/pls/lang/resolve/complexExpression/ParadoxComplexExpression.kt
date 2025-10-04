@@ -28,8 +28,8 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
 
     interface Resolver {
         fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression?
-        fun resolveByDataType(text: String, range: TextRange, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>? = null): ParadoxComplexExpression?
         fun resolveByConfig(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression?
+        fun resolveByDataType(text: String, range: TextRange, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>? = null): ParadoxComplexExpression?
     }
 
     companion object : Resolver by ParadoxComplexExpressionResolverImpl()
