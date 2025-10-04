@@ -23,9 +23,9 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
- * [StellarisNameFormatExpression] 中的定义节点。
+ * [StellarisNameFormatExpression] 中的定义节点。即 `{<x>}` 中的 `x`。
  *
- * `<x>` 中的 `x`。其中 `x` 的定义类型由表达式所属规则的 `formatName` 推导为 `${format}_name_parts_list`。
+ * 其中 `x` 的定义类型由表达式所属规则的 `formatName` 推导为 `${format}_name_parts_list`。
  */
 class StellarisNameFormatDefinitionNode(
     override val text: String,

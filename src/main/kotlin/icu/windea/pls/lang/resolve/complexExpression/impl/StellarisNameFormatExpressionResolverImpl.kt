@@ -16,6 +16,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatClosureNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
 import icu.windea.pls.lang.util.PlsCoreManager
@@ -48,7 +50,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         // 对于命名格式：不将任何位置视为“参数区间”，以免误将 [ ... ] 内容整体跳过
         fun inParam(i: Int): Boolean = false
 
-        fun addConstant(s: Int, e: Int) {
+        fun addConstant(targetNodes: MutableList<ParadoxComplexExpressionNode>, s: Int, e: Int) {
             if (e <= s) return
             var k = s
             while (k < e) {
@@ -58,7 +60,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                 if (k > bStart) {
                     val nodeText = text.substring(bStart, k)
                     val nodeRange = TextRange.create(bStart + offset, k + offset)
-                    nodes += ParadoxBlankNode(nodeText, nodeRange, configGroup)
+                    targetNodes += ParadoxBlankNode(nodeText, nodeRange, configGroup)
                 }
                 // non-blanks
                 var tStart = k
@@ -66,29 +68,25 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                 if (k > tStart) {
                     val nodeText = text.substring(tStart, k)
                     val nodeRange = TextRange.create(tStart + offset, k + offset)
-                    nodes += StellarisNameFormatTextNode.resolve(nodeText, nodeRange, configGroup)
+                    targetNodes += StellarisNameFormatTextNode.resolve(nodeText, nodeRange, configGroup)
                 }
             }
         }
 
-        fun addLocalisation(nameStart: Int, nameEnd: Int) {
+        fun addLocalisation(targetNodes: MutableList<ParadoxComplexExpressionNode>, nameStart: Int, nameEnd: Int) {
             if (nameEnd <= nameStart) return
             val nameText = text.substring(nameStart, nameEnd)
             val nameRange = TextRange.create(nameStart + offset, nameEnd + offset)
-            nodes += StellarisNameFormatLocalisationNode.resolve(nameText, nameRange, configGroup)
+            targetNodes += StellarisNameFormatLocalisationNode.resolve(nameText, nameRange, configGroup)
         }
 
-        fun addDefinition(nameStart: Int, nameEnd: Int) {
-            if (nameEnd <= nameStart) return
+        fun buildDefinitionNode(nameStart: Int, nameEnd: Int): ParadoxComplexExpressionNode {
+            if (nameEnd <= nameStart) return ParadoxErrorTokenNode("", TextRange.create(nameStart + offset, nameStart + offset), configGroup)
             val nameText = text.substring(nameStart, nameEnd)
             val nameRange = TextRange.create(nameStart + offset, nameEnd + offset)
             val defType = definitionType
-            if (defType.isNullOrEmpty()) {
-                // 无法推断定义类型，退化为错误标记
-                nodes += ParadoxErrorTokenNode(nameText, nameRange, configGroup)
-                return
-            }
-            nodes += StellarisNameFormatDefinitionNode.resolve(nameText, nameRange, configGroup, defType)
+            return if (defType.isNullOrEmpty()) ParadoxErrorTokenNode(nameText, nameRange, configGroup)
+            else StellarisNameFormatDefinitionNode.resolve(nameText, nameRange, configGroup, defType)
         }
 
         fun findMatchingBracket(startIndex: Int, endExclusive: Int): Int {
@@ -133,7 +131,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
             return ch.isLetterOrDigit() || ch == '_' || ch == '-' || ch == '.' || ch == '\''
         }
 
-        fun parseContent(start: Int, end: Int) {
+        fun parseContent(start: Int, end: Int, targetNodes: MutableList<ParadoxComplexExpressionNode>) {
             var segStart = start
             var i = start
             while (i < end) {
@@ -142,58 +140,69 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                 }
                 when (val ch = text[i]) {
                     '<' -> {
-                        addConstant(segStart, i)
+                        addConstant(targetNodes, segStart, i)
+                        val children = mutableListOf<ParadoxComplexExpressionNode>()
                         // add marker for '<'
-                        nodes += ParadoxMarkerNode("<", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                        children += ParadoxMarkerNode("<", TextRange.create(i + offset, i + 1 + offset), configGroup)
                         val close = text.indexOf('>', i + 1).takeIf { it in (i + 1)..<end } ?: -1
                         if (close == -1) {
                             // content as error token without including '<'
                             val nodeText = text.substring(i + 1, end)
-                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
+                            children += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
+                            // wrap into name-parts list node
+                            val wrap = StellarisNamePartNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
+                            targetNodes += wrap
                             return
                         }
-                        addDefinition(i + 1, close)
+                        children += buildDefinitionNode(i + 1, close)
                         // add marker for '>'
-                        nodes += ParadoxMarkerNode(">", TextRange.create(close + offset, close + 1 + offset), configGroup)
+                        children += ParadoxMarkerNode(">", TextRange.create(close + offset, close + 1 + offset), configGroup)
+                        val wrap = StellarisNamePartNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
+                        targetNodes += wrap
                         i = close + 1
                         segStart = i
                         continue
                     }
                     '[' -> {
-                        addConstant(segStart, i)
+                        addConstant(targetNodes, segStart, i)
                         // add marker for '['
-                        nodes += ParadoxMarkerNode("[", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                        targetNodes += ParadoxMarkerNode("[", TextRange.create(i + offset, i + 1 + offset), configGroup)
                         val close = findMatchingBracket(i, end)
                         if (close == -1) {
                             // content as error token without including '['
                             val nodeText = text.substring(i + 1, end)
-                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
+                            targetNodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
                             return
                         }
                         val innerText = text.substring(i + 1, close)
                         val innerRange = TextRange.create(i + 1 + offset, close + offset)
                         val cmd = ParadoxCommandExpression.resolve(innerText, innerRange, configGroup)
                             ?: ParadoxErrorTokenNode(innerText, innerRange, configGroup)
-                        nodes += cmd
+                        targetNodes += cmd
                         // add marker for ']'
-                        nodes += ParadoxMarkerNode("]", TextRange.create(close + offset, close + 1 + offset), configGroup)
+                        targetNodes += ParadoxMarkerNode("]", TextRange.create(close + offset, close + 1 + offset), configGroup)
                         i = close + 1
                         segStart = i
                         continue
                     }
                     '{' -> {
-                        addConstant(segStart, i)
-                        // nested block
+                        addConstant(targetNodes, segStart, i)
+                        // nested block -> wrap as closure node
                         val close = findMatchingBrace(i, end)
+                        val children = mutableListOf<ParadoxComplexExpressionNode>()
                         if (close == -1) {
-                            nodes += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                            children += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
                             val nodeText = text.substring(i + 1, end)
-                            nodes += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
+                            children += ParadoxErrorTokenNode(nodeText, TextRange.create(i + 1 + offset, end + offset), configGroup)
+                            val wrap = StellarisNameFormatClosureNode(text.substring(i, end), TextRange.create(i + offset, end + offset), configGroup, children)
+                            targetNodes += wrap
                             return
                         }
-                        nodes += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
-                        parseContent(i + 1, close)
-                        nodes += ParadoxMarkerNode("}", TextRange.create(close + offset, close + 1 + offset), configGroup)
+                        children += ParadoxMarkerNode("{", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                        parseContent(i + 1, close, children)
+                        children += ParadoxMarkerNode("}", TextRange.create(close + offset, close + 1 + offset), configGroup)
+                        val wrap = StellarisNameFormatClosureNode(text.substring(i, close + 1), TextRange.create(i + offset, close + 1 + offset), configGroup, children)
+                        targetNodes += wrap
                         i = close + 1
                         segStart = i
                         continue
@@ -205,8 +214,8 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                             while (j < end && !inParam(j) && isIdentifierChar(text[j])) j++
                             // treat as localisation name only if it looks like an identifier
                             if (text.substring(i, j).isParameterAwareIdentifier('.', '-', '\'')) {
-                                addConstant(segStart, i)
-                                addLocalisation(i, j)
+                                addConstant(targetNodes, segStart, i)
+                                addLocalisation(targetNodes, i, j)
                                 i = j
                                 segStart = i
                                 continue
@@ -217,18 +226,21 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
                     }
                 }
             }
-            addConstant(segStart, i)
+            addConstant(targetNodes, segStart, i)
         }
 
         // entry: prefer a single root block { ... }
         if (textLength >= 1 && text[0] == '{') {
-            nodes += ParadoxMarkerNode("{", TextRange.create(offset, offset + 1), configGroup)
             val endIndex = if (textLength >= 2 && text.last() == '}') textLength - 1 else textLength
-            parseContent(1, endIndex)
-            if (endIndex == textLength - 1) nodes += ParadoxMarkerNode("}", TextRange.create(offset + endIndex, offset + endIndex + 1), configGroup)
+            val children = mutableListOf<ParadoxComplexExpressionNode>()
+            children += ParadoxMarkerNode("{", TextRange.create(offset, offset + 1), configGroup)
+            parseContent(1, endIndex, children)
+            if (endIndex == textLength - 1) children += ParadoxMarkerNode("}", TextRange.create(offset + endIndex, offset + endIndex + 1), configGroup)
+            val wrap = StellarisNameFormatClosureNode(text.substring(0, if (endIndex == textLength - 1) textLength else textLength), TextRange.create(offset, offset + (if (endIndex == textLength - 1) textLength else textLength)), configGroup, children)
+            nodes += wrap
         } else {
             if (!incomplete) return null
-            parseContent(0, textLength)
+            parseContent(0, textLength, nodes)
         }
 
         expression.finishResolving()

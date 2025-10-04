@@ -27,7 +27,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
- * [StellarisNameFormatExpression] 中的本地化节点。
+ * [StellarisNameFormatExpression] 中的本地化节点。即 `{x}` 中的 `x`。
  */
 class StellarisNameFormatLocalisationNode(
     override val text: String,
