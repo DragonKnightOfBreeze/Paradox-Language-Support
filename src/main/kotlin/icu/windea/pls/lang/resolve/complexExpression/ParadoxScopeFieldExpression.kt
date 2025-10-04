@@ -27,6 +27,17 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * event_target:some_target
  * ```
  *
+ * ### 语法
+ *
+ * ```bnf
+ * scope_field_expression ::= link ("." link)*
+ *
+ * private link ::= system_scope | scope | dynamic_scope_link
+ * private dynamic_scope_link ::= scope_link_prefix? scope_link_value
+ *                              | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
+ * private dynamic_scope_link_args ::= dynamic_scope_link_arg ("," dynamic_scope_link_arg)*
+ * ```
+ *
  * ### 语法与结构
  *
  * #### 整体形态

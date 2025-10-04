@@ -14,23 +14,27 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 
 /**
  * （本地化）命令表达式。
- *
- * 说明：
  * - 可以在本地化文件中作为命令文本（[ParadoxLocalisationCommandText]）使用。
- *
  * 示例：
  * ```
  * Root.GetName
  * Root.Owner.event_target:some_event_target.var
  * ```
  *
+ * ### 语法
+ *
+ * ```bnf
+ * command_expression ::= command_field command_suffix?
+ *                      | link ("." link)* "." command_field command_suffix?
+ *
+ * private link ::= command_scope_link
+ * private command_suffix ::= "&" suffix | "::" suffix
+ * ```
+ *
  * ### 语法与结构
  *
  * #### 整体形态
  * - 由一个或多个“命令作用域链接”与一个“命令字段”按 `.` 相连，之后可选带后缀：
- *   - `command_scope_link ('.' command_scope_link)* '.' command_field [suffix]`
- *   - 或仅 `command_field [suffix]`
- * - 若存在后缀，形式为：`&<suffix>` 或 `::<suffix>`（保留分隔符作为独立标记）。
  * - 分段规则：按 `.` 切分；忽略参数文本与括号内的点；当进入括号后，仅在配对的 `)` 之后恢复 `.` 分段。
  *
  * #### 节点组成
