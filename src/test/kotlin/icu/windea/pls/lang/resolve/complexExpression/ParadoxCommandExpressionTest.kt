@@ -18,7 +18,9 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
+import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
@@ -26,9 +28,11 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
 
     private fun parse(
         text: String,
-        gameType: ParadoxGameType = ParadoxGameType.Stellaris
+        gameType: ParadoxGameType = ParadoxGameType.Stellaris,
+        incomplete: Boolean = false
     ): ParadoxCommandExpression? {
         val group = initConfigGroup(gameType)
+        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), group)
     }
 
@@ -125,6 +129,20 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxCommandFieldNode>("GetName", 5..12)
             node<ParadoxMarkerNode>("::", 12..14)
             node<ParadoxCommandSuffixNode>("UPPER", 14..19)
+        }
+        exp.check(dsl)
+    }
+
+    fun testEmpty_incompleteDiff() {
+        Assert.assertNull(parse("", incomplete = false))
+        val exp = parse("", incomplete = true)!!
+        // println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("", 0..0) {
+            node<ParadoxDynamicCommandFieldNode>("", 0..0) {
+                node<ParadoxCommandFieldValueNode>("", 0..0) {
+                    node<ParadoxDataSourceNode>("", 0..0)
+                }
+            }
         }
         exp.check(dsl)
     }

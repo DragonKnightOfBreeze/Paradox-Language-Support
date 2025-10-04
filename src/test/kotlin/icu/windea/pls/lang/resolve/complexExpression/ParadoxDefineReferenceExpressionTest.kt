@@ -43,6 +43,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDefineReferenceExpression>("", 0..0) {
             node<ParadoxErrorTokenNode>("", 0..0)
         }

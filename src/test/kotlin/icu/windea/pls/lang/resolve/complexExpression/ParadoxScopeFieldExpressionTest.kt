@@ -97,6 +97,7 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxScopeFieldExpression>("", 0..0) {
             node<ParadoxErrorScopeLinkNode>("", 0..0)
         }

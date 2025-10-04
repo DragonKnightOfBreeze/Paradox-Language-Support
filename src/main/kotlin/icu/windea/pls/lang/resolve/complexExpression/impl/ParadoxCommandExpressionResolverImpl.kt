@@ -12,15 +12,16 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLi
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
 
 internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
-        if (text.isEmpty()) return null
-
-        // val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
@@ -76,6 +77,7 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
                             val nodeText = expressionString0.substring(startIndex, i)
                             val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
                             val node = ParadoxCommandScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
+                            if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                             nodes += node
                             val dotRange = TextRange.create(i + offset, i + 1 + offset)
                             nodes += ParadoxOperatorNode(".", dotRange, configGroup)
@@ -91,10 +93,12 @@ internal class ParadoxCommandExpressionResolverImpl : ParadoxCommandExpression.R
                 val nodeText = expressionString0.substring(startIndex, end)
                 val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
                 val node = ParadoxCommandFieldNode.resolve(nodeText, nodeTextRange, configGroup)
+                if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                 nodes += node
             }
         }
         nodes += suffixNodes
+        if (!incomplete && nodes.isEmpty()) return null
         expression.finishResolving()
         return expression
     }

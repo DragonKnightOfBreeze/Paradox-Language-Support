@@ -54,6 +54,7 @@ class ParadoxVariableFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxVariableFieldExpression>("", 0..0) {
             node<ParadoxDataSourceNode>("", 0..0)
         }

@@ -73,6 +73,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
+        // println(exp.render())
         val dsl = buildExpression<ParadoxDynamicValueExpression>("", 0..0) {
             node<ParadoxDynamicValueNode>("", 0..0)
         }

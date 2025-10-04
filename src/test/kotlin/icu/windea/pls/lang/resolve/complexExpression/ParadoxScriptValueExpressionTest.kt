@@ -11,6 +11,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArg
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
@@ -59,6 +60,16 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildExpression<ParadoxScriptValueExpression>("some_sv|", 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
             node<ParadoxMarkerNode>("|", 7..8)
+        }
+        exp.check(dsl)
+    }
+
+    fun testEmpty_incompleteDiff() {
+        Assert.assertNull(parse("", incomplete = false))
+        val exp = parse("", incomplete = true)!!
+        // println(exp.render())
+        val dsl = buildExpression<ParadoxScriptValueExpression>("", 0..0) {
+            node<ParadoxScriptValueNode>("", 0..0)
         }
         exp.check(dsl)
     }
