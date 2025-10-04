@@ -72,7 +72,7 @@ class ParadoxDynamicValueNode(
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when(constraint) {
+            return when (constraint) {
                 ParadoxResolveConstraint.DynamicValue -> true
                 ParadoxResolveConstraint.DynamicValueStrictly -> true
                 else -> false

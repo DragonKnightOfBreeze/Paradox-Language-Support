@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -26,7 +27,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
- * Stellaris 命名格式中的本地化名节点：`x`。
+ * [StellarisNameFormatExpression] 中的本地化节点。
  */
 class StellarisNameFormatLocalisationNode(
     override val text: String,
@@ -94,7 +95,7 @@ class StellarisNameFormatLocalisationNode(
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when(constraint) {
+            return when (constraint) {
                 ParadoxResolveConstraint.Localisation -> true
                 else -> false
             }

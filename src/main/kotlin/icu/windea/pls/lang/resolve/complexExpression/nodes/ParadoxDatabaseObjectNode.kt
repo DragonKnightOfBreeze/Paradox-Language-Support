@@ -36,7 +36,7 @@ class ParadoxDatabaseObjectNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, expression: ParadoxDatabaseObjectExpression, isBase: Boolean): ParadoxDatabaseObjectNode {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
-                val node = ParadoxDatabaseObjectDataSourceNode.resolve(text, textRange, configGroup, expression, isBase)
+                val node = ParadoxDatabaseObjectDataNode.resolve(text, textRange, configGroup, expression, isBase)
                 nodes += node
             }
             return ParadoxDatabaseObjectNode(text, textRange, configGroup, expression, nodes)

@@ -28,5 +28,6 @@ class StellarisNameFormatTextNode(
             return StellarisNameFormatTextNode(text, textRange, configGroup)
         }
     }
+
     companion object : Resolver()
 }

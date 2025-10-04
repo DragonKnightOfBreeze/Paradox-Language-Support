@@ -97,7 +97,7 @@ class ParadoxScriptValueNode(
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when(constraint) {
+            return when (constraint) {
                 ParadoxResolveConstraint.Definition -> true // <script_value>
                 else -> false
             }

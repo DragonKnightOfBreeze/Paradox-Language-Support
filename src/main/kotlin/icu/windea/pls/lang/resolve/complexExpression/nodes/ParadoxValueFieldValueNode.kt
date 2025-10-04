@@ -47,20 +47,26 @@ class ParadoxValueFieldValueNode(
                     val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
                     if (configs.isEmpty()) return@r1
                     val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs)
-                    if (node != null) { nodes += node; return }
+                    if (node != null) {
+                        nodes += node; return
+                    }
                 }
                 run r1@{
                     val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.ScopeField }
                     if (configs.isEmpty()) return@r1
                     val node = ParadoxScopeFieldExpression.resolve(coreText, coreRange, configGroup)
-                    if (node != null) { nodes += node; return }
+                    if (node != null) {
+                        nodes += node; return
+                    }
                 }
                 run r1@{
                     if (!coreText.contains('|')) return@r1
                     val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
                     if (scriptValueConfig == null) return@r1
                     val node = ParadoxScriptValueExpression.resolve(coreText, coreRange, configGroup, scriptValueConfig)
-                    if (node != null) { nodes += node; return }
+                    if (node != null) {
+                        nodes += node; return
+                    }
                 }
                 run r1@{
                     val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, linkConfigs)
@@ -82,7 +88,9 @@ class ParadoxValueFieldValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) { hasTopLevelComma = true; return@run }
+                            ',' -> if (depthParen == 0) {
+                                hasTopLevelComma = true; return@run
+                            }
                         }
                     }
                     i++

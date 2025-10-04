@@ -131,7 +131,7 @@ class ParadoxTemplateSnippetNode(
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
             val dataType = config.configExpression.type
-            return when(constraint) {
+            return when (constraint) {
                 ParadoxResolveConstraint.Definition -> dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 ParadoxResolveConstraint.Localisation -> dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
                 ParadoxResolveConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField

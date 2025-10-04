@@ -9,7 +9,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErr
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataSourceNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
@@ -83,7 +83,7 @@ private class ParadoxDatabaseObjectExpressionImpl(
         val config = typeNode?.config
         val result = validateAllNodes(errors) {
             when {
-                it is ParadoxDatabaseObjectDataSourceNode -> {
+                it is ParadoxDatabaseObjectDataNode -> {
                     when {
                         config?.localisation != null -> it.text.isParameterAwareIdentifier('.', '-', '\'')
                         else -> it.text.isParameterAwareIdentifier()

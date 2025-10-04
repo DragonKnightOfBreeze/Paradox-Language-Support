@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -22,8 +23,9 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
- * Stellaris 命名格式中的定义占位节点：`<x>`。
- * 其中 `x` 的定义类型由表达式所属规则的 `formatName` 推导为 `${format}_name_parts_list`。
+ * [StellarisNameFormatExpression] 中的定义节点。
+ *
+ * `<x>` 中的 `x`。其中 `x` 的定义类型由表达式所属规则的 `formatName` 推导为 `${format}_name_parts_list`。
  */
 class StellarisNameFormatDefinitionNode(
     override val text: String,
@@ -90,7 +92,7 @@ class StellarisNameFormatDefinitionNode(
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
-            return when(constraint) {
+            return when (constraint) {
                 ParadoxResolveConstraint.Definition -> true
                 else -> false
             }

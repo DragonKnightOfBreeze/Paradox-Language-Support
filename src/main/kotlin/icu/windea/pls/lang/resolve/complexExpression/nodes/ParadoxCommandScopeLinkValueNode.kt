@@ -54,7 +54,9 @@ class ParadoxCommandScopeLinkValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) { hasTopLevelComma = true; return@run }
+                            ',' -> if (depthParen == 0) {
+                                hasTopLevelComma = true; return@run
+                            }
                         }
                     }
                     i++
