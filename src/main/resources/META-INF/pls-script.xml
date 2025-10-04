@@ -7,27 +7,27 @@
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
-    <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.folding.ParadoxScriptFoldingBuilder"/>
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>
-    <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptQuoteHandler"/>
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBasicAnnotator"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
+    <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.highlighting.ParadoxScriptBraceMatcher"/>
+    <lang.quoteHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptQuoteHandler"/>
     <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptSmartEnterProcessor"/>
     <statementUpDownMover implementation="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptMover"/>
+    <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
+    <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_MEMBERS" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Members"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_INLINE_MATH_EXPRESSIONS" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$InlineMathExpressions"/>
-    <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
-    <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>

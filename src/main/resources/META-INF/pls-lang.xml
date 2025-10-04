@@ -77,10 +77,11 @@
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider-->
 
-    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.CwtConfigReadWriteAccessDetector"/>
-    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.CwtConfigUsageTypeProvider"/>
-    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxUsageTypeProvider"/>
+    <heavyBracesHighlighter implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxHeavyBraceHighlighter"/>
+    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigReadWriteAccessDetector"/>
+    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxReadWriteAccessDetector"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.CwtConfigUsageTypeProvider"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlighting.ParadoxUsageTypeProvider"/>
 
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider"/>
@@ -126,8 +127,6 @@
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.ParadoxScriptAnnotator"/>
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.ParadoxLocalisationAnnotator"/>
     <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.editor.ParadoxCsvAnnotator"/>
-
-    <highlightUsagesHandlerFactory implementation="icu.windea.pls.lang.editor.ParadoxHighlightUsagesHandlerFactory"/>
 
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.highlight
+package icu.windea.pls.lang.codeInsight.highlighting
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
 import com.intellij.openapi.progress.ProgressManager

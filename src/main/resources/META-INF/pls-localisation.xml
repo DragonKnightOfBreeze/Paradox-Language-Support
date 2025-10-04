@@ -6,9 +6,7 @@
     <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
-    <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>
     <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>
-    <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationQuoteHandler"/>
     <lang.findUsagesProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationWordSelectionHandler"/>
@@ -18,13 +16,15 @@
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
+    <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.highlighting.ParadoxLocalisationBraceMatcher"/>
+    <lang.quoteHandler language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationQuoteHandler"/>
     <statementUpDownMover implementation="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationMover"/>
+    <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT" baseContextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$LocalisationText"/>
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
-    <lang.unwrapDescriptor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.unwrap.ParadoxLocalisationUnwrapDescriptor"/>
     <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>

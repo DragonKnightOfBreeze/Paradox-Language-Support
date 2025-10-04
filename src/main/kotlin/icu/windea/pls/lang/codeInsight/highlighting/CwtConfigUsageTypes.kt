@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.highlight
+package icu.windea.pls.lang.codeInsight.highlighting
 
 import com.intellij.usages.impl.rules.UsageType
 import icu.windea.pls.PlsBundle

@@ -1,4 +1,4 @@
-package icu.windea.pls.csv.editor
+package icu.windea.pls.csv.codeInsight.highlighting
 
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory
@@ -21,7 +21,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.getHeaderColumn
 
 /**
- * 用于在 CSV 文件中提供基础的额外高亮。
+ * 用于在 CSV 文件中提供基础的语义高亮。
  *
  * - 当光标位置是列时，高亮对应的头列。
  * - 当光标位置是分隔符时，高亮同一行的所有分隔符。
