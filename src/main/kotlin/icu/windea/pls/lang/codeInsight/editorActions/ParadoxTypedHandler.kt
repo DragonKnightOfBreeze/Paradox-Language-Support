@@ -43,10 +43,11 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         if (complexExpression == null) return null
 
         // 这里字符尚未输入，当前无法判断要输入的字符是否是开标记，因此直接按复杂表达式类型过滤即可
-        if (!ParadoxComplexExpressionUtil.isValidLeftMaker(leftMarker, complexExpression)) return null
+        if (!ParadoxComplexExpressionUtil.isLeftMaker(leftMarker, complexExpression)) return null
 
         // // 判断刚键入的字符是否被识别为 MarkerNode，且作为开标记
-        // val startOffset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element)
+        // val elementOffset = element.startOffset
+        // val startOffset = elementOffset + ParadoxExpressionManager.getExpressionOffset(element)
         // val offsetInExpression = caretOffset - startOffset
         // var matched = false
         // complexExpression.accept(object : ParadoxComplexExpressionVisitor() {

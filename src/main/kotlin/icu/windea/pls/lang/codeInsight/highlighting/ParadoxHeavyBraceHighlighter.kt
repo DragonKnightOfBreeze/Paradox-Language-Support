@@ -37,6 +37,18 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         val element = ParadoxPsiFinder.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
         if (element == null) return null
 
+        val elementOffset = element.startOffset
+        val startOffset = elementOffset + ParadoxExpressionManager.getExpressionOffset(element)
+        val offsetInExpression = caretOffset - startOffset
+
+        // 预先过滤
+        val text = element.text
+        val c1 = text.getOrNull(caretOffset - elementOffset - 1)
+        val c2 = text.getOrNull(caretOffset - elementOffset)
+        val possible = (c1 != null && (ParadoxComplexExpressionUtil.isLeftMaker(c1.toString())))
+            || (c2 != null && ParadoxComplexExpressionUtil.isLeftMaker(c2.toString()))
+        if (!possible) return null
+
         val project = file.project
         val gameType = selectGameType(file) ?: return null
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
@@ -44,8 +56,6 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         if (complexExpression == null) return null
 
         val ref = Ref<Pair<TextRange, TextRange>>()
-        val startOffset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element)
-        val offsetInExpression = caretOffset - startOffset
         complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode): Boolean {
                 if (!inRange(node)) return super.visit(node)
