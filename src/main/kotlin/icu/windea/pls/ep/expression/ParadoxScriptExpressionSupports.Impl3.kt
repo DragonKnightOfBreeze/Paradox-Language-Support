@@ -10,6 +10,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
+import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.isInt
 import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
@@ -285,6 +286,7 @@ class ParadoxScriptStellarisNameFormatExpressionSupport : ParadoxScriptExpressio
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxCompletionManager.completeStellarisNameFormatExpression(context, result)
+        // ParadoxCompletionManager.completeStellarisNameFormatExpression(context, result)
+        ParadoxComplexExpressionManager.completeStellarisNameFormatExpression(context, result)
     }
 }

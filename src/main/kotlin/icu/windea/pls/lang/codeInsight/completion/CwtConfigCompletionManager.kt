@@ -265,6 +265,10 @@ object CwtConfigCompletionManager {
         completeByContextConfigs(contextConfigs, schema, context, result)
     }
 
+    // endregion
+
+    // region Base Methods
+
     private fun completeByDeclarationConfig(schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
         val declarationConfig = schema.constraints["declaration"] ?: return
         if (context.inOption) {
