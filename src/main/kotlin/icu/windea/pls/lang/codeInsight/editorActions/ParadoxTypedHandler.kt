@@ -31,7 +31,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
 
     private fun charTypedInComplexExpression(c: Char, project: Project, editor: Editor, file: PsiFile): Result? {
         val leftMarker = c.toString()
-        val closeMarker = ParadoxComplexExpressionUtil.getRightMarker(leftMarker) ?: return null
+        val closeMarker = ParadoxComplexExpressionUtil.getMatchedMarker(leftMarker) ?: return null
         val closeChar = closeMarker.singleOrNull() ?: return null
         val caretOffset = editor.caretModel.offset
         val element = ParadoxPsiFinder.findExpressionForComplexExpression(file, caretOffset, fromToken = true)

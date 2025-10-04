@@ -69,7 +69,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * - 参数文本中的 `.` 不作为分段切分点。
  * - 若在下一处 `.` 之前出现 `@`、`|` 或 `(`（且均不在参数文本内），则停止继续切分，余下文本整体作为后续节点的输入。
  */
-interface ParadoxScopeFieldExpression : ParadoxComplexExpression {
+interface ParadoxScopeFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>
 
     interface Resolver {

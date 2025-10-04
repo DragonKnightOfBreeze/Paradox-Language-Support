@@ -47,7 +47,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * - 允许不是链接中的最后一个节点（例如：`Relations(x).GetName`）。
  * - 允许多个参数，使用逗号分隔并兼容多余空白；空白会被保留为 [ParadoxBlankNode]；单引号包裹的参数将作为字面量并以字符串样式高亮，详见 [ParadoxCommandScopeLinkValueNode]。
  */
-interface ParadoxCommandExpression : ParadoxComplexExpression {
+interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
     interface Resolver {
         fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression?
     }

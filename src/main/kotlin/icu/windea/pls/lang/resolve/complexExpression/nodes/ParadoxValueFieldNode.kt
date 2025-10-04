@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
-sealed interface ParadoxValueFieldNode : ParadoxComplexExpressionNode {
+sealed interface ParadoxValueFieldNode : ParadoxLinkNode {
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldNode {
             ParadoxPredefinedValueFieldNode.resolve(text, textRange, configGroup)?.let { return it }

@@ -45,8 +45,8 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
         val text = element.text
         val c1 = text.getOrNull(caretOffset - elementOffset - 1)
         val c2 = text.getOrNull(caretOffset - elementOffset)
-        val possible = (c1 != null && (ParadoxComplexExpressionUtil.isLeftMaker(c1.toString())))
-            || (c2 != null && ParadoxComplexExpressionUtil.isLeftMaker(c2.toString()))
+        val possible = (c1 != null && (ParadoxComplexExpressionUtil.isLeftOrRightMaker(c1.toString())))
+            || (c2 != null && ParadoxComplexExpressionUtil.isLeftOrRightMaker(c2.toString()))
         if (!possible) return null
 
         val project = file.project

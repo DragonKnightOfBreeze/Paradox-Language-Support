@@ -75,7 +75,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValu
  * - 若作用域链接段使用了带参数的动态链接（如 `prefix(x)`），支持其不是末段（例如：`prefix(x).owner`）。
  * - 允许多个参数，逗号分隔并兼容多余空白；空白被保留为 [ParadoxBlankNode]；单引号字面量参数将作为字面量处理并以字符串样式高亮（详见 [ParadoxScopeLinkValueNode] 的实现）。
  */
-interface ParadoxValueFieldExpression : ParadoxComplexExpression {
+interface ParadoxValueFieldExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
     val scopeNodes: List<ParadoxScopeLinkNode>
     val valueFieldNode: ParadoxValueFieldNode
     val scriptValueExpression: ParadoxScriptValueExpression?
