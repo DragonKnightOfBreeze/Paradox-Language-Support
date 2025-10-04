@@ -4,11 +4,11 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
-import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -26,6 +26,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErr
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.resolved
 
@@ -37,7 +38,7 @@ class ParadoxTemplateSnippetNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val configExpression: CwtDataExpression
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     val config = CwtValueConfig.resolve(emptyPointer(), configGroup, configExpression.expressionString)
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
@@ -57,7 +58,7 @@ class ParadoxTemplateSnippetNode(
         return ParadoxComplexExpressionErrorBuilder.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
     }
 
-    override fun getReference(element: ParadoxExpressionElement): PsiReference? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, config, configGroup)
@@ -69,7 +70,7 @@ class ParadoxTemplateSnippetNode(
         val name: String,
         val config: CwtValueConfig,
         val configGroup: CwtConfigGroup
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         val project = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -126,6 +127,17 @@ class ParadoxTemplateSnippetNode(
             val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
             if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
             return ResolveResult.EMPTY_ARRAY
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            val dataType = config.configExpression.type
+            return when(constraint) {
+                ParadoxResolveConstraint.Definition -> dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.Localisation -> dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.ComplexEnumValue -> dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
+                ParadoxResolveConstraint.DynamicValue -> dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
+                else -> false
+            }
         }
     }
 

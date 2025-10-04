@@ -29,7 +29,7 @@ class ParadoxDefineNamespaceNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDefineReferenceExpression
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.DEFINE_NAMESPACE_KEY
     }
@@ -53,7 +53,7 @@ class ParadoxDefineNamespaceNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxDefineNamespaceNode
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         val expression = node.expression
         val project = expression.configGroup.project
         val namespace = node.text

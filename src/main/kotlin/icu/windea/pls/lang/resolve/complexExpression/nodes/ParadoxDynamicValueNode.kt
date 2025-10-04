@@ -15,6 +15,7 @@ import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxDynamicValueNode(
@@ -22,7 +23,7 @@ class ParadoxDynamicValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val configs: List<CwtConfig<*>>
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return configs
     }
@@ -58,7 +59,7 @@ class ParadoxDynamicValueNode(
         val name: String,
         val configs: List<CwtConfig<*>>,
         val configGroup: CwtConfigGroup
-    ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         // val configExpressions = configs.mapNotNull { it.configExpression }
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -68,6 +69,14 @@ class ParadoxDynamicValueNode(
         override fun resolve(): PsiElement? {
             val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
             return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when(constraint) {
+                ParadoxResolveConstraint.DynamicValue -> true
+                ParadoxResolveConstraint.DynamicValueStrictly -> true
+                else -> false
+            }
         }
     }
 

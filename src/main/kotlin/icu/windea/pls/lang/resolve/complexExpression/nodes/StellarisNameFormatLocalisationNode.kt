@@ -22,6 +22,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
@@ -31,7 +32,7 @@ class StellarisNameFormatLocalisationNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
             is icu.windea.pls.localisation.ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
@@ -46,7 +47,7 @@ class StellarisNameFormatLocalisationNode(
         return ParadoxComplexExpressionErrorBuilder.unresolvedStellarisNameFormatLocalisation(rangeInExpression, text)
     }
 
-    override fun getReference(element: ParadoxExpressionElement): PsiPolyVariantReferenceBase<ParadoxExpressionElement>? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isEmpty()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, this)
@@ -56,7 +57,7 @@ class StellarisNameFormatLocalisationNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         private val node: StellarisNameFormatLocalisationNode,
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
 
@@ -90,6 +91,13 @@ class StellarisNameFormatLocalisationNode(
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
             return ParadoxLocalisationSearch.search(name, selector).findAll().mapToArray { PsiElementResolveResult(it) }
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when(constraint) {
+                ParadoxResolveConstraint.Localisation -> true
+                else -> false
+            }
         }
     }
 

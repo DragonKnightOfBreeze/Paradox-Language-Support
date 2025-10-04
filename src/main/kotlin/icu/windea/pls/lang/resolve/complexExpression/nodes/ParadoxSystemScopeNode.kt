@@ -22,7 +22,7 @@ class ParadoxSystemScopeNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtSystemScopeConfig
-) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxScopeLinkNode, ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.singleton.set()
     }
@@ -38,7 +38,7 @@ class ParadoxSystemScopeNode(
     }
 
     class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :
-        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
+        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved), ParadoxIdentifierNode.Reference
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxSystemScopeNode? {

@@ -19,14 +19,7 @@ import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataSourceNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxIdentifierNode
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -55,6 +48,7 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptedVariablePsiReference -> true
                 else -> false
             }
@@ -77,28 +71,12 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetNode.Reference -> {
-                    val configExpression = reference.config.configExpression
-                    val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                }
-                is ParadoxDataSourceNode.Reference -> {
-                    reference.node.linkConfigs.any { linkConfig ->
-                        val configExpression = linkConfig.configExpression ?: return@any false
-                        val dataType = configExpression.type
-                        dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                    }
-                }
-                is ParadoxDatabaseObjectDataSourceNode.Reference -> {
-                    reference.node.config?.type != null
-                }
-                is StellarisNameFormatDefinitionNode.Reference -> true
-                is ParadoxScriptValueNode.Reference -> true // <script_value>
                 is ParadoxLocalisationIconPsiReference -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true // <game_concept>
                 is ParadoxLocalisationTextColorPsiReference -> true // <text_color>
@@ -125,20 +103,12 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetNode.Reference -> {
-                    val configExpression = reference.config.configExpression
-                    val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.LocalisationAware || dataType == CwtDataTypes.AliasKeysField
-                }
-                is ParadoxDatabaseObjectDataSourceNode.Reference -> {
-                    reference.node.config?.localisation != null
-                }
-                is StellarisNameFormatLocalisationNode.Reference -> true
                 is ParadoxLocalisationParameterPsiReference -> true
                 else -> false
             }
@@ -156,12 +126,12 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.Parameter
                 }
-                is ParadoxScriptValueArgumentNode.Reference -> true
                 is ParadoxParameterPsiReference -> true
                 is ParadoxConditionParameterPsiReference -> true
                 else -> false
@@ -179,6 +149,7 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
@@ -200,22 +171,11 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                }
-                is ParadoxTemplateSnippetNode.Reference -> {
-                    val configExpression = reference.config.configExpression
-                    val dataType = configExpression.type
-                    dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                }
-                is ParadoxDataSourceNode.Reference -> {
-                    reference.node.linkConfigs.any { linkConfig ->
-                        val configExpression = linkConfig.configExpression ?: return@any false
-                        val dataType = configExpression.type
-                        dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                    }
                 }
                 is ParadoxComplexEnumValuePsiReference -> true
                 is ParadoxCsvExpressionPsiReference -> {
@@ -238,24 +198,12 @@ enum class ParadoxResolveConstraint {
 
         override fun canResolve(reference: PsiReference): Boolean {
             return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.configExpression ?: return false
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetNode.Reference -> {
-                    val configExpression = reference.config.configExpression
-                    val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
-                }
-                is ParadoxDataSourceNode.Reference -> {
-                    reference.node.linkConfigs.any { linkConfig ->
-                        val configExpression = linkConfig.configExpression ?: return@any false
-                        val dataType = configExpression.type
-                        dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
-                    }
-                }
-                is ParadoxDynamicValueNode.Reference -> true
                 else -> false
             }
         }
@@ -266,9 +214,10 @@ enum class ParadoxResolveConstraint {
         }
 
         override fun canResolve(reference: PsiReference): Boolean {
-            if (reference is ParadoxTemplateSnippetNode.Reference) return false
-            if (reference is ParadoxDataSourceNode.Reference) return false
-            return DynamicValue.canResolve(reference)
+            return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                else -> DynamicValue.canResolve(reference)
+            }
         }
     },
     ;

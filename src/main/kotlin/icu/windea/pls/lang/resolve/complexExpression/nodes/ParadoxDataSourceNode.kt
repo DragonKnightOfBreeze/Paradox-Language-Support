@@ -7,6 +7,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.CwtDataTypeGroups
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -19,13 +20,14 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErr
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 class ParadoxDataSourceNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     private val linkConfigsDynamicValue = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
     private val linkConfigsNotDynamicValue = linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
 
@@ -76,7 +78,7 @@ class ParadoxDataSourceNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxDataSourceNode
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name = node.text
         private val project = node.configGroup.project
         private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
@@ -140,6 +142,16 @@ class ParadoxDataSourceNode(
                 if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
             }
             return ResolveResult.EMPTY_ARRAY
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            val dataTypes = node.linkConfigs.mapNotNull { it.configExpression?.type }
+            return when (constraint) {
+                ParadoxResolveConstraint.Definition -> dataTypes.any { it in CwtDataTypeGroups.DefinitionAware || it == CwtDataTypes.AliasKeysField }
+                ParadoxResolveConstraint.ComplexEnumValue -> dataTypes.any { it == CwtDataTypes.EnumValue || it == CwtDataTypes.AliasKeysField }
+                ParadoxResolveConstraint.DynamicValue -> dataTypes.any { it in CwtDataTypeGroups.DynamicValue || it == CwtDataTypes.AliasKeysField }
+                else -> false
+            }
         }
     }
 

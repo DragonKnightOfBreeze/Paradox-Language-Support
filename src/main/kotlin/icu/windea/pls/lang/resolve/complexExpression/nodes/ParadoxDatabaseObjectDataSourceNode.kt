@@ -31,6 +31,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
@@ -40,7 +41,7 @@ class ParadoxDatabaseObjectDataSourceNode(
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDatabaseObjectExpression,
     val isBase: Boolean,
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     val config = expression.typeNode?.config
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
@@ -126,7 +127,7 @@ class ParadoxDatabaseObjectDataSourceNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxDatabaseObjectDataSourceNode
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name = node.text
         private val project = node.configGroup.project
 
@@ -192,6 +193,14 @@ class ParadoxDatabaseObjectDataSourceNode(
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .mapToArray { PsiElementResolveResult(it) }
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when(constraint) {
+                ParadoxResolveConstraint.Definition -> node.config?.type != null
+                ParadoxResolveConstraint.Localisation -> node.config?.localisation != null
+                else -> false
+            }
         }
     }
 

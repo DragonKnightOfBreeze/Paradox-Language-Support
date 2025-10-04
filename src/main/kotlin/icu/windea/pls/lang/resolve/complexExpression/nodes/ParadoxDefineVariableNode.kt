@@ -29,7 +29,7 @@ class ParadoxDefineVariableNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val expression: ParadoxDefineReferenceExpression
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.DEFINE_VARIABLE_KEY
     }
@@ -53,7 +53,7 @@ class ParadoxDefineVariableNode(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         node: ParadoxDefineVariableNode
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         val expression = node.expression
         val project = expression.configGroup.project
         val namespace = expression.namespaceNode?.text

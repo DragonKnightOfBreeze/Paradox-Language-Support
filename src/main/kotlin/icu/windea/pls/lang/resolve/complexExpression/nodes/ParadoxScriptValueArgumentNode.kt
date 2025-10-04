@@ -10,6 +10,7 @@ import icu.windea.pls.ep.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -18,7 +19,7 @@ class ParadoxScriptValueArgumentNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val valueNode: ParadoxScriptValueNode?
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if (text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.ARGUMENT_KEY
@@ -41,7 +42,7 @@ class ParadoxScriptValueArgumentNode(
         element: ParadoxScriptStringExpressionElement,
         rangeInElement: TextRange,
         val node: ParadoxScriptValueArgumentNode
-    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
@@ -49,6 +50,13 @@ class ParadoxScriptValueArgumentNode(
         override fun resolve(): ParadoxParameterElement? {
             val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
             return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when (constraint) {
+                ParadoxResolveConstraint.Parameter -> true
+                else -> false
+            }
         }
     }
 

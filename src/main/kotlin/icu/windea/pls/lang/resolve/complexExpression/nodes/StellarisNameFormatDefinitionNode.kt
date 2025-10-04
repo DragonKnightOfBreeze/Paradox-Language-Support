@@ -18,6 +18,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 /**
@@ -29,7 +30,7 @@ class StellarisNameFormatDefinitionNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val definitionType: String?,
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
     }
@@ -42,7 +43,7 @@ class StellarisNameFormatDefinitionNode(
         return ParadoxComplexExpressionErrorBuilder.unresolvedStellarisNamePartsList(rangeInExpression, text, definitionType)
     }
 
-    override fun getReference(element: ParadoxExpressionElement): PsiPolyVariantReferenceBase<ParadoxExpressionElement>? {
+    override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isEmpty()) return null
         val typeToSearch = definitionType ?: return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
@@ -54,7 +55,7 @@ class StellarisNameFormatDefinitionNode(
         rangeInElement: TextRange,
         private val node: StellarisNameFormatDefinitionNode,
         private val typeToSearch: String,
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
 
@@ -86,6 +87,13 @@ class StellarisNameFormatDefinitionNode(
         private fun doMultiResolve(): Array<out ResolveResult> {
             val selector = selector(project, element).definition().contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll().mapToArray { PsiElementResolveResult(it) }
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when(constraint) {
+                ParadoxResolveConstraint.Definition -> true
+                else -> false
+            }
         }
     }
 

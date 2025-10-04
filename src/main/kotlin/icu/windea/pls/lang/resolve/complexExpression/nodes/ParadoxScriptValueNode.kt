@@ -19,6 +19,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -27,7 +28,7 @@ class ParadoxScriptValueNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtConfig<*>
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return config.singleton.set()
     }
@@ -61,7 +62,7 @@ class ParadoxScriptValueNode(
         val name: String,
         val config: CwtConfig<*>,
         val configGroup: CwtConfigGroup
-    ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
+    ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         val project = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
@@ -93,6 +94,13 @@ class ParadoxScriptValueNode(
         private fun doMultiResolve(): Array<out ResolveResult> {
             return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
                 .mapToArray { PsiElementResolveResult(it) }
+        }
+
+        override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
+            return when(constraint) {
+                ParadoxResolveConstraint.Definition -> true // <script_value>
+                else -> false
+            }
         }
     }
 

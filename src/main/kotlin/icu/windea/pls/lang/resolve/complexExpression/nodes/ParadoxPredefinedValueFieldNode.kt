@@ -19,7 +19,7 @@ class ParadoxPredefinedValueFieldNode(
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
     val config: CwtLinkConfig
-) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode {
+) : ParadoxComplexExpressionNodeBase(), ParadoxValueFieldNode, ParadoxIdentifierNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
     }
@@ -31,7 +31,7 @@ class ParadoxPredefinedValueFieldNode(
     }
 
     class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :
-        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
+        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved), ParadoxIdentifierNode.Reference
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedValueFieldNode? {
