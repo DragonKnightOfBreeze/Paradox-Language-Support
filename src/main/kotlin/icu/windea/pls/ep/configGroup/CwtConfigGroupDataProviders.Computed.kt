@@ -77,9 +77,9 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // add missing localisation links from links
         run {
             currentCoroutineContext.ensureActive()
-            val localisationLinksStatic = configGroup.localisationLinks.values.filter { it.dataSource == null }
+            val localisationLinksStatic = configGroup.localisationLinks.values.filter { it.dataSources.isEmpty() }
             if (localisationLinksStatic.isNotEmpty()) return@run
-            val linksStatic = configGroup.links.values.filter { it.dataSource == null }
+            val linksStatic = configGroup.links.values.filter { it.dataSources.isEmpty() }
             for (linkConfig in linksStatic) {
                 configGroup.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
             }

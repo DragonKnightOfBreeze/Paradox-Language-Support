@@ -55,12 +55,15 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
  * @property fromData 为动态链接时，是否从数据中读取动态数据。对应的节点格式形如 `prefix:data`。
  * @property fromArgument （PLS 扩展）为动态链接时，是否从传入参数中读取动态数据。对应的节点格式形如 `func(arg)`。
  * @property prefix 为动态链接时，携带的前缀。如果为 null，则将整个文本作为动态数据。
- * @property dataSource 数据源（数据表达式）。如果为 null，则将链接视为静态的。
+ * @property dataSources 数据源（数据表达式）。如果有多个传参，则可以有多个。如果为空，则将链接视为静态链接。
  * @property inputScopes 输入作用域（类型）的集合。
  * @property outputScope 输出作用域（类型）。
  * @property forDefinitionType 仅用于指定的定义类型。
- * @property forLocalisation 是否为本地化链接（在本地化文件而非脚本文件中使用）。
- * @property dataSourceExpression 数据源对应的数据表达式。
+ * @property isStatic 是否为静态链接。
+ * @property isLocalisationLink 是否为本地化链接（可在本地化命令中使用）。
+ * @property dataSourceIndex 数据源的索引。适用于有多个传参的场合。
+ * @property dataSourceExpression 指定索引（[dataSourceIndex]）的数据源对应的数据表达式。
+ * @property dataSourceExpressions 数据源对应的一组数据表达式。
  * @property configExpression 绑定到该规则的数据表达式（等同于 [dataSourceExpression]）。
  *
  * @see ParadoxScopeFieldExpression
@@ -79,8 +82,8 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val fromArgument: Boolean
     @FromProperty("prefix: string?")
     val prefix: String?
-    @FromProperty("data_source: string?")
-    val dataSource: String?
+    @FromProperty("data_source: string?", multiple = true)
+    val dataSources: List<String>
     @FromProperty("input_scopes: string[]")
     val inputScopes: Set<String>
     @FromProperty("output_scope: string?")
@@ -88,9 +91,13 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromProperty("for_definition_type: string?")
     val forDefinitionType: String?
 
-    val forLocalisation: Boolean
+    val isStatic: Boolean
+    val isLocalisationLink: Boolean
 
+    val dataSourceIndex: Int
     val dataSourceExpression: CwtDataExpression?
+    val dataSourceExpressions: List<CwtDataExpression>
+
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     // type = null -> default to "scope"
@@ -109,6 +116,8 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
         fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig?
         /** 由已有的（常规）链接规则，解析为本地化链接规则。*/
         fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig
+        /** 构造一个委托版本（wrapper），并指定数据源的索引。 */
+        fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig
     }
 
     companion object : Resolver by CwtLinkConfigResolverImpl()

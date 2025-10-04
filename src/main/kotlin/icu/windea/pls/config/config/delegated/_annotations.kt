@@ -17,7 +17,7 @@ annotation class FromKey(
  * @property value 名字与类型的声明。格式为 `{name}: {type}`。如果规则是单独的值，则直接为 `{name}`。
  * @property defaultValue 默认值。如果为空则表示未声明。
  * @property allowedValues 允许的值。如果为空则表示未声明。
- * @property multiple 作为来源的规则是否可以重复。
+ * @property multiple 是否可以有多个。
  */
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)
@@ -34,7 +34,7 @@ annotation class FromOption(
  * @property value 名字与类型的声明。格式为 `{name}: {type}`。如果规则是单独的值，则直接为 `{name}`。如果 `{name}` 为空，则直接来自规则的值。
  * @property defaultValue 默认值。如果为空则表示未声明。
  * @property allowedValues 允许的值。如果为空则表示未声明。
- * @property multiple 作为来源的规则是否可以重复。
+ * @property multiple 是否可以有多个。
  */
 @MustBeDocumented
 @Target(AnnotationTarget.PROPERTY)

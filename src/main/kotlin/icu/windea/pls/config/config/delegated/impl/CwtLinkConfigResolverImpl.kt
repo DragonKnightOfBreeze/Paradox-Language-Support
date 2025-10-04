@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -19,13 +20,13 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
 
     override fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig = doResolve(linkConfig, true)
 
-    private fun doResolve(config: CwtPropertyConfig, forLocalisation: Boolean = false): CwtLinkConfig? {
+    private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean = false): CwtLinkConfig? {
         val name = config.key
         var type: String? = null
         var fromData = false
         var fromArgument = false
         var prefix: String? = null
-        var dataSource: String? = null
+        val dataSources = mutableListOf<String>()
         var inputScopes: Set<String>? = null
         var outputScope: String? = null
         var forDefinitionType: String? = null
@@ -35,8 +36,8 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
                 "type" -> type = prop.stringValue
                 "from_data" -> fromData = prop.booleanValue ?: false
                 "from_argument" -> fromArgument = prop.booleanValue ?: false
-                "prefix" -> prefix = prop.stringValue
-                "data_source" -> dataSource = prop.stringValue?.orNull()
+                "prefix" -> prefix = prop.stringValue?.orNull()
+                "data_source" -> prop.stringValue?.orNull()?.let { dataSources += it }
                 "input_scopes", "input_scope" -> inputScopes = buildSet {
                     prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
                     prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
@@ -45,25 +46,31 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
                 "for_definition_type" -> forDefinitionType = prop.stringValue
             }
         }
-        if (fromData && dataSource == null) return null // invalid
-        if (fromArgument && dataSource == null) return null // invalid
-        if (prefix == "") prefix = null
+        // default first dataSource for backward compatibility
+        if (fromData && dataSources.isEmpty()) return null // invalid
+        if (fromArgument && dataSources.isEmpty()) return null // invalid
         if (prefix != null && !prefix.endsWith(':')) prefix += ":" // ensure prefix ends with ':'
         inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
         return CwtLinkConfigImpl(
-            config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope,
-            forDefinitionType, forLocalisation
+            config, name, type, fromData, fromArgument, prefix, dataSources.optimized(), inputScopes, outputScope,
+            forDefinitionType, isLocalisationLink
         )
     }
 
     @Suppress("SameParameterValue")
-    private fun doResolve(linkConfig: CwtLinkConfig, forLocalisation: Boolean = false): CwtLinkConfig {
+    private fun doResolve(linkConfig: CwtLinkConfig, isLocalisationLink: Boolean = false): CwtLinkConfig {
         return linkConfig.apply {
             CwtLinkConfigImpl(
-                config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope,
-                forDefinitionType, forLocalisation
+                config, name, type, fromData, fromArgument, prefix, dataSources, inputScopes, outputScope,
+                forDefinitionType, isLocalisationLink
             )
         }
+    }
+
+    override fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig {
+        if (dataSourceIndex == linkConfig.dataSourceIndex) return linkConfig
+        if (linkConfig.dataSourceExpressions.size <= 1) return linkConfig
+        return CwtLinkConfigDelegate(linkConfig, dataSourceIndex)
     }
 }
 
@@ -74,15 +81,23 @@ private class CwtLinkConfigImpl(
     override val fromData: Boolean,
     override val fromArgument: Boolean,
     override val prefix: String?,
-    override val dataSource: String?,
+    override val dataSources: List<String>,
     override val inputScopes: Set<String>,
     override val outputScope: String?,
     override val forDefinitionType: String?,
-    override val forLocalisation: Boolean
+    override val isLocalisationLink: Boolean
 ) : UserDataHolderBase(), CwtLinkConfig {
-    override val dataSourceExpression = dataSource?.let { CwtDataExpression.resolve(it, false) } // cached
+    override val isStatic get() = dataSources.isEmpty()
+    override val dataSourceIndex: Int get() = 0
+    override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it, false) }
+    override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
 
     override fun toString(): String {
         return "CwtLinkConfigImpl(name='$name')"
     }
 }
+
+private class CwtLinkConfigDelegate(
+    val delegate: CwtLinkConfig,
+    override val dataSourceIndex: Int
+) : CwtLinkConfig by delegate

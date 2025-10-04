@@ -24,7 +24,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         incomplete: Boolean = false
     ): ParadoxDynamicValueExpression? {
         val group = initConfigGroup(gameType)
-        val configs = group.links.values.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
+        val configs = group.links.values.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         return ParadoxDynamicValueExpression.resolve(text, TextRange(0, text.length), group, configs)

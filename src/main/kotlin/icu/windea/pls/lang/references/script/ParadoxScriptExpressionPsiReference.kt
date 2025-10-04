@@ -11,7 +11,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.bindConfig
-import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.core.collections.mapToArray
@@ -34,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,
     rangeInElement: TextRange,
-    val config: CwtConfig<*>,
+    val config: CwtMemberConfig<*>,
     val isKey: Boolean?
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
     val project by lazy { config.configGroup.project }
@@ -56,8 +56,8 @@ class ParadoxScriptExpressionPsiReference(
         return when {
             resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             resolved is PsiFileSystemItem -> {
-                // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#33
-                val configExpression = config.configExpression ?: throw IncorrectOperationException()
+                // #33
+                val configExpression = config.configExpression
                 val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
                 val newFilePath = fileInfo.path.parent + "/" + newElementName
@@ -78,7 +78,6 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun getReferences(): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
-        if (config.configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)

@@ -162,7 +162,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
             config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val category = if (config.forLocalisation) categories.localisationLinks else categories.links
+                val category = if (config.isLocalisationLink) categories.localisationLinks else categories.links
                 val link = linkType.createLink(category, name, gameType)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }

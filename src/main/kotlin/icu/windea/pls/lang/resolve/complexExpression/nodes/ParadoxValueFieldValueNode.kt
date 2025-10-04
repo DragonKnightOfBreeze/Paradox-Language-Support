@@ -44,7 +44,7 @@ class ParadoxValueFieldValueNode(
             fun resolveSingle(coreText: String, coreRange: TextRange) {
                 // precedence: DynamicValue -> ScopeField -> ScriptValue -> DataSource
                 run r1@{
-                    val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
+                    val configs = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
                     if (configs.isEmpty()) return@r1
                     val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs)
                     if (node != null) {
@@ -52,7 +52,7 @@ class ParadoxValueFieldValueNode(
                     }
                 }
                 run r1@{
-                    val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.ScopeField }
+                    val configs = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
                     if (configs.isEmpty()) return@r1
                     val node = ParadoxScopeFieldExpression.resolve(coreText, coreRange, configGroup)
                     if (node != null) {

@@ -19,10 +19,13 @@ class ParadoxScopeLinkValueNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxLinkValueNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
     }
+
+    override val argumentNodes: List<ParadoxComplexExpressionNode>
+        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_LINK_VALUE_KEY
@@ -48,7 +51,7 @@ class ParadoxScopeLinkValueNode(
                 }
                 run {
                     if (nodes.lastOrNull()?.rangeInExpression == coreRange) return@run
-                    val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
+                    val configs = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
                     if (configs.isEmpty()) return@run
                     val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs) ?: return@run
                     nodes += node

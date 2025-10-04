@@ -33,7 +33,7 @@ class ParadoxDynamicCommandFieldNode(
                 if (!text.contains(':')) return@r1
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromData && it.prefix != null }
                     .filter { text.startsWith(it.prefix!!) }
-                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                    .sortedByPriority({ it.configExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
@@ -56,7 +56,7 @@ class ParadoxDynamicCommandFieldNode(
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromArgument && it.prefix != null }
                     .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
-                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                    .sortedByPriority({ it.configExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!.dropLast(1)
@@ -91,7 +91,7 @@ class ParadoxDynamicCommandFieldNode(
             // 没有前缀且允许没有前缀的场合
             run r1@{
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromData && it.prefix == null }
-                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                    .sortedByPriority({ it.configExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxCommandFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
