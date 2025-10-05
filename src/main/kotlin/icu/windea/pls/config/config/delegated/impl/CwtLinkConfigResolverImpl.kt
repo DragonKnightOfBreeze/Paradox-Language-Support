@@ -46,11 +46,15 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
                 "for_definition_type" -> forDefinitionType = prop.stringValue
             }
         }
-        // default first dataSource for backward compatibility
-        if (fromData && dataSources.isEmpty()) return null // invalid
-        if (fromArgument && dataSources.isEmpty()) return null // invalid
-        if (prefix != null && !prefix.endsWith(':')) prefix += ":" // ensure prefix ends with ':'
+
+        // when from data or from argument, data sources must not be empty
+        if (fromData && dataSources.isEmpty()) return null
+        if (fromArgument && dataSources.isEmpty()) return null
+        // ensure prefix not ends with ':' when from argument (note that may not end with ':' when from data)
+        if (fromArgument && prefix != null) prefix = prefix.removeSuffix(":")
+        // optimize input scopes
         inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
+
         return CwtLinkConfigImpl(
             config, name, type, fromData, fromArgument, prefix, dataSources.optimized(), inputScopes, outputScope,
             forDefinitionType, isLocalisationLink

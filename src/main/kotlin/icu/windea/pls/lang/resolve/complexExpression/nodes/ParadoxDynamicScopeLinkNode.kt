@@ -53,11 +53,11 @@ class ParadoxDynamicScopeLinkNode(
             run r1@{
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.links.values.filter { it.forScope() && it.fromArgument && it.prefix != null }
-                    .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
+                    .filter { text.startsWith(it.prefix!! + '(') }
                     .sortedByPriority({ it.configExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
-                    val nodeText = linkConfigs.first().prefix!!.dropLast(1)
+                    val nodeText = linkConfigs.first().prefix!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxScopeLinkPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node

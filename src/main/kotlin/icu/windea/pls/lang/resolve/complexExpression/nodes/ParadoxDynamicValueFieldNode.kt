@@ -28,7 +28,7 @@ class ParadoxDynamicValueFieldNode(
             val offset = textRange.startOffset
             var startIndex = 0
 
-            // 匹配某一前缀的场合（如，"event_target:some_country"）
+            // 匹配某一前缀的场合（如，`event_target:some_job`）
             run r1@{
                 if (!text.contains(':')) return@r1
                 val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix != null }
@@ -55,11 +55,11 @@ class ParadoxDynamicValueFieldNode(
             run r1@{
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromArgument && it.prefix != null }
-                    .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
+                    .filter { text.startsWith(it.prefix + '(') }
                     .sortedByPriority({ it.configExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
-                    val nodeText = linkConfigs.first().prefix!!.dropLast(1)
+                    val nodeText = linkConfigs.first().prefix!!
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxValueFieldPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
                     nodes += node

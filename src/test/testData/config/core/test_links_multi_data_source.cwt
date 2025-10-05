@@ -1,14 +1,18 @@
 # Test CWT config for multi data_source links
 
+# Examples in script files:
+# - root.test_scope(root, some_building)
+# - root.test_scope(root, some_building).test_value(some_flag, some_job)
+
 links = {
     test_value_link = {
         type = value
         from_argument = yes
         prefix = test_value
         data_source = value[test_flag]
-        data_source = <country>
-        input_scopes = { country }
-        output_scope = country
+        data_source = <job>
+        input_scopes = { any }
+        output_scope = any
     }
 
     test_scope_link = {
@@ -16,8 +20,8 @@ links = {
         from_argument = yes
         prefix = test_scope
         data_source = scope_field
-        data_source = <planet>
-        input_scopes = { planet }
-        output_scope = planet
+        data_source = <building>
+        input_scopes = { any }
+        output_scope = any
     }
 }

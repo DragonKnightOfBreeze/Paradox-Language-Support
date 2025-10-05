@@ -705,14 +705,14 @@ object ParadoxComplexExpressionCompletionManager {
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = valueNode.rangeInExpression.startOffset
-            val oldArgIndex = context.argumentIndex
             context.argumentIndex = argIndex
             completeScopeLinkValue(context, resultToUse, prefixNode.text, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             context.scopeContext = scopeContext
             return true
         } else {
@@ -722,19 +722,19 @@ object ParadoxComplexExpressionCompletionManager {
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = node.rangeInExpression.startOffset
+            context.argumentIndex = argIndex
             if (inFirstNode) {
                 completeSystemScope(context, resultToUse)
                 completeScope(context, resultToUse)
                 completeScopeLinkPrefix(context, resultToUse)
             }
-            val oldArgIndex = context.argumentIndex
-            context.argumentIndex = argIndex
             completeScopeLinkValue(context, resultToUse, null, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return false
         }
     }
@@ -760,32 +760,32 @@ object ParadoxComplexExpressionCompletionManager {
 
             val keywordToUse = valueNode.text.substring(0, offset - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = valueNode.rangeInExpression.startOffset
-            val oldArgIndex = context.argumentIndex
             context.argumentIndex = argIndex
             completeValueFieldValue(context, resultToUse, prefixNode.text, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return true
         } else {
             val inFirstNode = valueNode == null || valueNode.nodes.isEmpty()
                 || offset <= valueNode.nodes.first().rangeInExpression.endOffset
             val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = node.rangeInExpression.startOffset
+            context.argumentIndex = argIndex
             if (inFirstNode) {
                 completeValueField(context, resultToUse)
                 completeValueFieldPrefix(context, resultToUse)
             }
-            val oldArgIndex = context.argumentIndex
-            context.argumentIndex = argIndex
             completeValueFieldValue(context, resultToUse, null, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return false
         }
     }
@@ -823,14 +823,14 @@ object ParadoxComplexExpressionCompletionManager {
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = valueNode.rangeInExpression.startOffset
-            val oldArgIndex = context.argumentIndex
             context.argumentIndex = argIndex
             completeCommandScopeLinkValue(context, resultToUse, prefixNode.text, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             context.scopeContext = scopeContext
             return true
         } else {
@@ -840,19 +840,19 @@ object ParadoxComplexExpressionCompletionManager {
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = node.rangeInExpression.startOffset
+            context.argumentIndex = argIndex
             if (inFirstNode) {
                 completeSystemScope(context, resultToUse)
                 completeCommandScope(context, resultToUse)
                 completeCommandScopeLinkPrefix(context, resultToUse)
             }
-            val oldArgIndex = context.argumentIndex
-            context.argumentIndex = argIndex
             completeCommandScopeLinkValue(context, resultToUse, null, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return false
         }
     }
@@ -878,33 +878,33 @@ object ParadoxComplexExpressionCompletionManager {
 
             val keywordToUse = valueNode.text.substring(0, offset - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = valueNode.rangeInExpression.startOffset
-            val oldArgIndex = context.argumentIndex
             context.argumentIndex = argIndex
             completeCommandFieldValue(context, resultToUse, prefixNode.text, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return true
         } else {
             val inFirstNode = valueNode == null || valueNode.nodes.isEmpty()
                 || offset <= valueNode.nodes.first().rangeInExpression.endOffset
             val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
+            val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
             context.keywordOffset = node.rangeInExpression.startOffset
+            context.argumentIndex = argIndex
             if (inFirstNode) {
                 completePredefinedCommandField(context, resultToUse)
                 completeCommandField(context, resultToUse)
                 completeCommandFieldPrefix(context, resultToUse)
             }
-            val oldArgIndex = context.argumentIndex
-            context.argumentIndex = argIndex
             completeCommandFieldValue(context, resultToUse, null, currentArgNode)
-            context.argumentIndex = oldArgIndex
             context.keyword = keyword
             context.keywordOffset = keywordOffset
+            context.argumentIndex = oldArgIndex
             return false
         }
     }
@@ -968,7 +968,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -978,10 +978,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler { c, _ ->
-                    val editor = c.editor
-                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
-                }
+                .withAddParenthesesInsertHandler()
             result.addElement(lookupElement, context)
         }
 
@@ -1022,6 +1019,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigs = configGroup.links.values.filter { it.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
+        context.config = null
         context.configs = linkConfigs
 
         when (argNode) {
@@ -1074,7 +1072,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1084,10 +1082,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler { c, _ ->
-                    val editor = c.editor
-                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
-                }
+                .withAddParenthesesInsertHandler()
             result.addElement(lookupElement, context)
         }
 
@@ -1384,7 +1379,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1394,10 +1389,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler { c, _ ->
-                    val editor = c.editor
-                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
-                }
+                .withAddParenthesesInsertHandler()
             result.addElement(lookupElement, context)
         }
 
@@ -1437,6 +1429,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
+        context.config = null
         context.configs = linkConfigs
 
         completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
@@ -1509,7 +1502,7 @@ object ParadoxComplexExpressionCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
-            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
             val tailText = "(...) from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
@@ -1519,10 +1512,7 @@ object ParadoxComplexExpressionCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
-                .withInsertHandler { c, _ ->
-                    val editor = c.editor
-                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
-                }
+                .withAddParenthesesInsertHandler()
             result.addElement(lookupElement, context)
         }
 
@@ -1561,6 +1551,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.prefix == prefix }
             .mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }
             .sortedByPriority({ it.configExpression }, { configGroup })
+        context.config = null
         context.configs = linkConfigs
 
         completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
@@ -1575,6 +1566,19 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             context.config = linkConfig
             ParadoxCompletionManager.completeScriptExpression(context, result)
+        }
+    }
+
+    private fun LookupElementBuilder.withAddParenthesesInsertHandler() = withInsertHandler { c, _ ->
+        // 按照当前的字符来决定是要插入左右括号，还是仅插入左括号，还是什么都不做
+        val editor = c.editor
+        val caretOffset = editor.caretModel.offset
+        val charsSequence = editor.document.charsSequence
+        val c = charsSequence.get(caretOffset)
+        when (c) {
+            '(' -> {}
+            ')' -> EditorModificationUtil.insertStringAtCaret(editor, "(", false, true, 1)
+            else -> EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
         }
     }
 
