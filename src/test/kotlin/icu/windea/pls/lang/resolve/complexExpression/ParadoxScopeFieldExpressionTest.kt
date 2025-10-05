@@ -103,4 +103,34 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         }
         exp.check(dsl)
     }
+
+    fun test_forArguments() {
+        val s = "root.test_scope(root, some_planet)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_withTrailComma() {
+        val s = "root.test_scope(root, some_planet,)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_1() {
+        val s = "root.test_scope(root,)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_2() {
+        val s = "root.test_scope(root, some_planet)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_3() {
+        val s = "root.test_scope(root, some_planet)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
 }

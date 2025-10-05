@@ -1,15 +1,12 @@
-# Test CWT config for multi data_source links (for debugging only)
-# This file is placed under src/test/testData/config/core as requested.
-# It is not used by production parser; intended for future tests/debug.
+# Test CWT config for multi data_source links
 
 links = {
     test_value_link = {
         type = value
         from_argument = yes
-        prefix = rel
-        # two data sources for argument index 0 and 1
-        data_source = "dynamic_value[test_flag]"
-        data_source = "<country>"
+        prefix = test_value
+        data_source = value[test_flag]
+        data_source = <country>
         input_scopes = { country }
         output_scope = country
     }
@@ -17,11 +14,10 @@ links = {
     test_scope_link = {
         type = scope
         from_argument = yes
-        prefix = owner
-        # two data sources for argument index 0 and 1
-        data_source = "scope_field[scope]"
-        data_source = "<planet>"
+        prefix = test_scope
+        data_source = scope_field
+        data_source = <planet>
         input_scopes = { planet }
-        output_scope = country
+        output_scope = planet
     }
 }

@@ -150,4 +150,34 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         }
         exp.check(dsl)
     }
+
+    fun test_forArguments() {
+        val s = "root.test_scope(root, some_planet).test_value(some_flag, some_country)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_withTrailComma() {
+        val s = "root.test_scope(root, some_planet,).test_value(some_flag, some_country,)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_1() {
+        val s = "root.test_scope(root,).test_value(some_flag,)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_2() {
+        val s = "root.test_scope(root).test_value(some_flag)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
+
+    fun test_forArguments_missingArgument_3() {
+        val s = "root.test_scope(, some_planet).test_value(, some_country)"
+        val exp = parse(s)!!
+        println(exp.render())
+    }
 }

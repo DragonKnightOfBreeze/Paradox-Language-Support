@@ -72,19 +72,18 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
         val gameType = configGroup.gameType
-        return if (gameType != ParadoxGameType.Core) {
-            if (isEnabled) {
-                PlsBundle.message("configGroup.notification", messageIndex, gameType)
-            } else {
-                PlsBundle.message("configGroup.notificationDisabled", messageIndex, gameType)
-            }
-        } else {
-            if (isEnabled || type == CwtConfigGroupFileProvider.Type.BuiltIn) {
-                PlsBundle.message("configGroup.notificationShared", messageIndex)
-            } else {
-                PlsBundle.message("configGroup.notificationSharedDisabled", messageIndex)
-            }
+        val isBuiltIn = type == CwtConfigGroupFileProvider.Type.BuiltIn
+        val isShared = gameType != ParadoxGameType.Core
+        val title = when {
+            isShared -> PlsBundle.message("configGroup.title.shared", messageIndex)
+            else -> PlsBundle.message("configGroup.title", messageIndex)
         }
+        val notification = PlsBundle.message("configGroup.notification", title, gameType.title)
+        val message = when {
+            isEnabled || (isBuiltIn && isShared) -> PlsBundle.message("configGroup.notification.enabled", notification)
+            else -> PlsBundle.message("configGroup.notification.disabled", notification)
+        }
+        return message
     }
 }
 
@@ -93,8 +92,8 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  *
  * 位置：`config/{gameType}`
  *
- * - 位于插件压缩包中的插件jar包中。
- * - `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
+ * - 位于插件压缩包中的插件 jar 包中。
+ * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  *
  * 注意：共享的内置规则分组总是会被启用。
  */
@@ -124,10 +123,10 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * 位置：`{remoteConfigDirectory}/{directoryName}`
  *
- * - `{remoteConfigDirectory}`可以配置。
- * - `{directoryName}`为仓库目录的名字，对于共享的规则分组则为`core`。
+ * - `{remoteConfigDirectory}` 可以配置。
+ * - `{directoryName}` 为仓库目录的名字，对于共享的规则分组则为 `core`。
  *
- * 更改配置后，PLS会自动从配置的远程仓库中克隆和拉取这些规则分组。
+ * 更改配置后，PLS 会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
  *
  * @see CwtConfigRepositoryManager
@@ -177,8 +176,8 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * 位置：`{localConfigDirectory}/{gameType}`
  *
- * - `{localConfigDirectory}`可以配置。
- * - `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
+ * - `{localConfigDirectory}` 可以配置。
+ * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
 class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
@@ -205,8 +204,8 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * 位置：`{projectLocalConfigDirectoryName}/{gameType}`
  *
- * - `{projectLocalConfigDirectoryName}`位于项目根目录中，且可以配置。
- * - `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
+ * - `{projectLocalConfigDirectoryName}` 位于项目根目录中，且可以配置。
+ * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
@@ -225,4 +224,30 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     }
 
     override fun getMessageIndex() = 3
+}
+
+/**
+ * 可在单元测试中使用的规则分组。
+ *
+ * 位置：`config/{gameType}`
+ *
+ * - 位于特定的测试数据目录中，一般是 `src/test/testData`。
+ * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
+ */
+class TestCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+    private val rootDirectory by lazy { doGetRootDirectory() }
+
+    override val type get() = CwtConfigGroupFileProvider.Type.Local
+
+    override val isEnabled get() = PlsFacade.isUnitTestMode()
+
+    override fun getRootDirectory(project: Project): VirtualFile? {
+        return rootDirectory
+    }
+
+    private fun doGetRootDirectory(): VirtualFile? {
+        val path = "src/test/testData/config".toPathOrNull() ?: return null
+        val file = VfsUtil.findFile(path, true)
+        return file?.takeIf { it.isDirectory }
+    }
 }

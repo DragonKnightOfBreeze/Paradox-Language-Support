@@ -108,6 +108,7 @@
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.RemoteCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.LocalCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.ProjectCwtConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.TestCwtConfigGroupFileProvider"/>
 
     <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxSpriteData$Provider"/>
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEconomicCategoryData$Provider"/>
