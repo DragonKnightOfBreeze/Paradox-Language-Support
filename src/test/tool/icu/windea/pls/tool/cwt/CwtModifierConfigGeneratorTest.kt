@@ -7,7 +7,7 @@ import org.junit.Test
 
 class CwtModifierConfigGeneratorTest {
     @Before
-    fun before() = AssumePredicates.includeTool()
+    fun setup() = AssumePredicates.includeTool()
 
     @Test
     fun testForCk3() {
@@ -40,4 +40,3 @@ class CwtModifierConfigGeneratorTest {
         ).generate()
     }
 }
-

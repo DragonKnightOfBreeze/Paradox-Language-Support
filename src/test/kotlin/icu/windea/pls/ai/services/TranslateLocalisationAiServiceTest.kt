@@ -24,7 +24,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun before() = AssumePredicates.includeAi()
+    fun setup() = AssumePredicates.includeAi()
 
     @Test
     fun testOpenAi() {

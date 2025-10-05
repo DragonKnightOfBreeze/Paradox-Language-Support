@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.expression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
@@ -26,22 +27,30 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Vic3)
 
     private fun parse(
         text: String,
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxValueFieldExpression? {
-        PlsTestUtil.initConfigGroup(this.project, gameType)
-        val group = Unit
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxValueFieldExpression.resolve(text, TextRange(0, text.length), group)
+        return ParadoxValueFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
+    @Test
     fun testTrigger() {
         val s = "trigger:some_trigger"
         val exp = parse(s)!!
@@ -57,6 +66,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testScriptValue_basic() {
         val s = "value:some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
@@ -79,6 +89,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testScriptValue_inChain_withDotBefore_andBarrierAfter() {
         val s = "root.value:some_sv|A|B|.owner"
         val exp = parse(s)!!
@@ -104,6 +115,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testForArgument() {
         val s = "relations(root)"
         val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
@@ -123,6 +135,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testVariable_inChain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
@@ -143,6 +156,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
@@ -159,6 +173,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_forArguments() {
         val s = "root.test_scope(root, some_building).test_value(some_flag, some_job)"
         val exp = parse(s)!!
@@ -197,6 +212,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_forArguments_withTrailComma() {
         val s = "root.test_scope(root, some_building,).test_value(some_flag, some_job,)"
         val exp = parse(s)!!
@@ -237,6 +253,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_forArguments_missingArgument_1() {
         val s = "root.test_scope(root).test_value(some_flag)"
         val exp = parse(s)!!
@@ -269,6 +286,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_forArguments_missingArgument_2() {
         val s = "root.test_scope(root,).test_value(some_flag,)"
         val exp = parse(s)!!
@@ -303,6 +321,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_forArguments_missingArgument_3() {
         val s = "root.test_scope(, some_building).test_value(, some_job)"
         val exp = parse(s)!!
@@ -326,7 +345,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 31..41)
                 node<ParadoxOperatorNode>("(", 41..42)
                 node<ParadoxValueFieldValueNode>(", some_job", 42..56) {
-            node<ParadoxErrorTokenNode>("", 42..42)
+                    node<ParadoxErrorTokenNode>("", 42..42)
                     node<ParadoxMarkerNode>(",", 42..43)
                     node<ParadoxBlankNode>(" ", 43..44)
                     node<ParadoxDataSourceNode>("some_job", 44..56)

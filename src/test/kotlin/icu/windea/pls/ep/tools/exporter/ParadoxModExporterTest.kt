@@ -42,7 +42,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     private val remoteIds = listOf("1623423360", "819148835", "937289339") // UIOD, PD, RS
 
     @Before
-    fun before() {
+    fun setup() {
         AssumePredicates.includeLocalEnv()
         addAllowedRoots()
     }

@@ -22,10 +22,9 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
-    fun scriptedVariableNameIndex_Local() {
-        val file = myFixture.file.virtualFile
-        myFixture.configureByFile("script/syntax/_code_settings.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/_code_settings.test.txt", ParadoxGameType.Stellaris)
+    fun testScriptedVariableNameIndex_Local() {
+        myFixture.configureByFile("features/index/script/local_vars.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -36,16 +35,15 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
             ParadoxScriptScriptedVariable::class.java
         )
         Assert.assertTrue(elements.isNotEmpty())
-        Assert.assertTrue(elements.any { it.containingFile.virtualFile.name == "_code_settings.test.txt" })
+        Assert.assertTrue(elements.any { it.containingFile.virtualFile.name == "local_vars.test.txt" })
     }
 
     @Test
-    fun scriptedVariableSearcher_Local() {
-        val file = myFixture.file.virtualFile
-        myFixture.configureByFile("script/syntax/_code_settings.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/_code_settings.test.txt", ParadoxGameType.Stellaris)
+    fun testScriptedVariableSearcher_Local() {
+        myFixture.configureByFile("features/index/script/local_vars.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).scriptedVariable()
+        val selector = selector(project, myFixture.file.virtualFile).scriptedVariable()
         val results = mutableListOf<String>()
         ParadoxScriptedVariableSearch.searchLocal("var", selector).processQuery(false) { v ->
             results += v.name ?: ""
@@ -55,10 +53,25 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun scriptedVariableNameIndex_Global() {
-        val file = myFixture.file.virtualFile
+    fun testScriptedVariableSearcher_Local_SkipAfterCaret() {
+        myFixture.configureByFile("features/index/script/local_vars.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
+        val project = project
+        val context = myFixture.file.findElementAt(myFixture.caretOffset)!!
+        val selector = selector(project, context).scriptedVariable()
+        val results = mutableListOf<String>()
+        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQuery(false) { v ->
+            results += v.name ?: ""
+            true
+        }
+        Assert.assertTrue("Expected to contain variable defined before caret", results.contains("var"))
+        Assert.assertFalse("Should skip variable defined after caret", results.contains("other_var"))
+    }
+
+    @Test
+    fun testScriptedVariableNameIndex_Global() {
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -72,34 +85,16 @@ class ParadoxScriptedVariableIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun scriptedVariableSearcher_Global() {
-        val file = myFixture.file.virtualFile
+    fun testScriptedVariableSearcher_Global() {
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).scriptedVariable()
+        val selector = selector(project, myFixture.file).scriptedVariable()
         val results = mutableListOf<String>()
         ParadoxScriptedVariableSearch.searchGlobal("var", selector).processQuery(false) { v ->
             results += v.name ?: ""
             true
         }
         Assert.assertTrue(results.contains("var"))
-    }
-
-    @Test
-    fun scriptedVariableSearcher_Local_SkipAfterCaret() {
-        val file = myFixture.file.virtualFile
-        myFixture.configureByFile("features/index/script/local_vars_positions.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/local_vars_positions.test.txt", ParadoxGameType.Stellaris)
-        val project = project
-        val context = myFixture.file.findElementAt(myFixture.caretOffset)!!
-        val selector = selector(project, context).scriptedVariable()
-        val results = mutableListOf<String>()
-        ParadoxScriptedVariableSearch.searchLocal(null, selector).processQuery(false) { v ->
-            results += v.name ?: ""
-            true
-        }
-        Assert.assertTrue("Expected to contain variable defined before caret", results.contains("a"))
-        Assert.assertFalse("Should skip variable defined after caret", results.contains("b"))
     }
 }

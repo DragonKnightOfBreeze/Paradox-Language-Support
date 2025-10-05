@@ -23,10 +23,9 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
-    fun localisationNameIndex_Basic() {
-        val file = myFixture.file.virtualFile
+    fun testLocalisationNameIndex_Basic() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -41,12 +40,11 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun localisationSearch_ByName() {
-        val file = myFixture.file.virtualFile
+    fun testLocalisationSearch_ByName() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).localisation()
+        val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.search("UI_OK", selector).processQuery(false) { p ->
             results += p.name
@@ -56,10 +54,9 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun syncedLocalisationNameIndex_Basic() {
-        val file = myFixture.file.virtualFile
+    fun testSyncedLocalisationNameIndex_Basic() {
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -74,12 +71,11 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun syncedLocalisationSearch_ByName() {
-        val file = myFixture.file.virtualFile
+    fun testSyncedLocalisationSearch_ByName() {
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).localisation()
+        val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
         ParadoxSyncedLocalisationSearch.search("SYNC_TITLE", selector).processQuery(false) { p ->
             results += p.name
@@ -89,12 +85,11 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun localisationSearch_NotFound() {
-        val file = myFixture.file.virtualFile
+    fun testLocalisationSearch_NotFound() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).localisation()
+        val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
         ParadoxLocalisationSearch.search("NOT_EXISTS", selector).processQuery(false) { p ->
             results += p.name
@@ -104,12 +99,11 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun syncedLocalisationSearch_NotFound() {
-        val file = myFixture.file.virtualFile
+    fun testSyncedLocalisationSearch_NotFound() {
         myFixture.configureByFile("features/index/localisation_synced/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation_synced/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).localisation()
+        val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
         ParadoxSyncedLocalisationSearch.search("NOT_EXISTS", selector).processQuery(false) { p ->
             results += p.name

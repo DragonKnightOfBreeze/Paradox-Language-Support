@@ -16,21 +16,19 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
-    fun fileLocaleIndex_English() {
-        val file = myFixture.file.virtualFile
+    fun testFileLocaleIndex_English() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
-        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, file, project)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_english", key)
     }
 
     @Test
-    fun fileLocaleIndex_SimpChinese() {
-        val file = myFixture.file.virtualFile
+    fun testFileLocaleIndex_SimpChinese() {
         myFixture.configureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
-        PlsTestUtil.injectFileInfo(file, "localisation/simp_chinese/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
-        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, file, project)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/simp_chinese/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
+        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_simp_chinese", key)
     }

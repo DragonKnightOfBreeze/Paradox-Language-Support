@@ -4,12 +4,17 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import org.junit.Assert.*
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 class CwtTemplateExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {
         CwtDataExpressionResolver.EP_NAME.extensionList.isNotEmpty()
     } catch (_: Throwable) { false }
 
+    @Test
     fun testResolveEmpty() {
         val e = CwtTemplateExpression.resolveEmpty()
         assertEquals("", e.expressionString)
@@ -19,6 +24,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertSame(e, CwtTemplateExpression.resolveEmpty())
     }
 
+    @Test
     fun testResolveConstant_returnsEmptyExpression() {
         if (!hasEp()) return
         val s = "hello"
@@ -28,6 +34,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertTrue(e.referenceExpressions.isEmpty())
     }
 
+    @Test
     fun testResolveDynamic_withoutBlanks_producesSnippets() {
         if (!hasEp()) return
         val s = "a_value[foo]_b" // uses RuleBased dynamic rule: value[...]
@@ -50,6 +57,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals(e.hashCode(), CwtTemplateExpression.resolve(s).hashCode())
     }
 
+    @Test
     fun testResolveDynamic_atStart_and_atEnd() {
         if (!hasEp()) return
         val s1 = "value[foo]_b"
@@ -69,6 +77,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("foo", e2.snippetExpressions[1].value)
     }
 
+    @Test
     fun testResolveDynamic_adjacentSegments() {
         if (!hasEp()) return
         val s = "a_value[foo]value[bar]_b"
@@ -86,6 +95,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("_b", e.snippetExpressions[3].value)
     }
 
+    @Test
     fun testResolveDynamic_multipleInMiddle() {
         if (!hasEp()) return
         val s = "foo_value[bar]_value[baz]_qux"
@@ -104,6 +114,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("_qux", e.snippetExpressions[4].value)
     }
 
+    @Test
     fun testResolve_containsBlank_returnsEmptyExpression() {
         val s = "a value[foo] b"
         val e = CwtTemplateExpression.resolve(s)
@@ -112,6 +123,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertTrue(e.referenceExpressions.isEmpty())
     }
 
+    @Test
     fun testResolve_cachingDifferentInputs() {
         if (!hasEp()) return
         val e1 = CwtTemplateExpression.resolve("a_value[foo]_b")
@@ -119,6 +131,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertNotEquals(e1, e2)
     }
 
+    @Test
     fun testResolveDynamic_definitionAngleBrackets() {
         if (!hasEp()) return
         val s = "job_<foo>_add" // uses DynamicRule: <...>
@@ -134,6 +147,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("_add", e.snippetExpressions[2].value)
     }
 
+    @Test
     fun testResolveDynamic_iconWithGamePrefixStripped() {
         if (!hasEp()) return
         val s = "a_icon[game/ui/icon.dds]_b" // Core resolver removes game/ prefix
@@ -148,6 +162,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("_b", e.snippetExpressions[2].value)
     }
 
+    @Test
     fun testResolveDynamic_scopeAnyValueNull() {
         if (!hasEp()) return
         val s = "a_scope[any]_b" // scope[any] -> value should be null
@@ -158,6 +173,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertNull(e.snippetExpressions[1].value)
     }
 
+    @Test
     fun testResolveDynamic_enumAndValueMix() {
         if (!hasEp()) return
         val s = "x_enum[PLANET_CLASS]_value[foo]_y"
@@ -176,6 +192,7 @@ class CwtTemplateExpressionTest : BasePlatformTestCase() {
         assertEquals("_y", e.snippetExpressions[4].value)
     }
 
+    @Test
     fun testResolve_singleDynamicOnly_returnsEmptyExpression() {
         if (!hasEp()) return
         val s = "value[foo]"

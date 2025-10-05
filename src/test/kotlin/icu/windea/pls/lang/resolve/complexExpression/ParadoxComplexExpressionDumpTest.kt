@@ -2,22 +2,27 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslRender
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
-    override fun setUp() {
-        super.setUp()
-    }
+    @Before
+    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris, ParadoxGameType.Vic3)
 
     private fun parseScope(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxScopeFieldExpression? {
-        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
         return ParadoxScopeFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
@@ -53,6 +58,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // ScopeField samples
+    @Test
     fun testDump_Scope_basicSamples() {
         listOf(
             "root",
@@ -68,6 +74,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // ValueField samples (incl. Vic3-only valueField with arguments)
+    @Test
     fun testDump_Value_basicSamples() {
         listOf(
             ParadoxGameType.Stellaris to "trigger:some_trigger",
@@ -83,6 +90,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // VariableField samples
+    @Test
     fun testDump_Variable_basicSamples() {
         val s = "root.owner.some_variable"
         val exp = parseVariable(s)!!
@@ -92,6 +100,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // DatabaseObject samples
+    @Test
     fun testDump_DatabaseObject_basicSamples() {
         listOf(
             "civic:some_civic",
@@ -106,6 +115,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // DefineReference samples
+    @Test
     fun testDump_DefineReference_basicSamples() {
         val s = "define:NPortrait|GRACEFUL_AGING_START"
         val exp = parseDefine(s)!!
@@ -115,6 +125,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // Command samples
+    @Test
     fun testDump_Command_basicSamples() {
         listOf(
             "Root.GetName",
@@ -128,6 +139,7 @@ class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     }
 
     // Incomplete vs trimmed compare for ValueField
+    @Test
     fun testDump_Value_incomplete_trimmedCompare() {
         val s = ""
         val exp = parseValue(s, incomplete = true)!!

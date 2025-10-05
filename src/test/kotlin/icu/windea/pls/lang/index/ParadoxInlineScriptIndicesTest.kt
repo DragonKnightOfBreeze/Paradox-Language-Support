@@ -22,10 +22,9 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
-    fun usageIndex_DirectForm() {
-        val file = myFixture.file.virtualFile
+    fun testUsageIndex_DirectForm() {
         myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_direct_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_direct_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -41,10 +40,9 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun usageIndex_BlockForm() {
-        val file = myFixture.file.virtualFile
+    fun testUsageIndex_BlockForm() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -60,10 +58,9 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun argumentIndex_BlockForm_All() {
-        val file = myFixture.file.virtualFile
+    fun testArgumentIndex_BlockForm_All() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -78,10 +75,9 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun usageIndex_Parameterized_ShouldSkip() {
-        val file = myFixture.file.virtualFile
+    fun testUsageIndex_Parameterized_ShouldSkip() {
         myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_parameterized_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_parameterized_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -103,10 +99,9 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun usageIndex_VariableRef_ShouldSkip() {
-        val file = myFixture.file.virtualFile
+    fun testUsageIndex_VariableRef_ShouldSkip() {
         myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_variable_ref_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_variable_ref_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -128,12 +123,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parameterSearcher_All() {
-        val file = myFixture.file.virtualFile
+    fun testParameterSearcher_All() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).parameter()
+        val selector = selector(project, myFixture.file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search(null, contextKey, selector).processQuery(false) { info ->
@@ -144,12 +138,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parameterSearcher_ByName() {
-        val file = myFixture.file.virtualFile
+    fun testParameterSearcher_ByName() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).parameter()
+        val selector = selector(project, myFixture.file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search("EVENT_ID", contextKey, selector).processQuery(false) { info ->
@@ -160,12 +153,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun parameterSearcher_ByName_NotFound() {
-        val file = myFixture.file.virtualFile
+    fun testParameterSearcher_ByName_NotFound() {
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, file).parameter()
+        val selector = selector(project, myFixture.file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search("NOT_EXISTS", contextKey, selector).processQuery(false) { info ->

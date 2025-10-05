@@ -7,7 +7,7 @@ import org.junit.Test
 
 class CwtOnActionConfigFromCsvGeneratorTest {
     @Before
-    fun before() = AssumePredicates.includeTool()
+    fun setup() = AssumePredicates.includeTool()
 
     @Test
     fun testForCk2() {

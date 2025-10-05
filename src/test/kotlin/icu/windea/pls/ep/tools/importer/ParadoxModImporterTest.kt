@@ -27,7 +27,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     private val gameType = ParadoxGameType.Stellaris
 
     @Before
-    fun before() {
+    fun setup() {
         AssumePredicates.includeLocalEnv()
         addAllowedRoots()
     }

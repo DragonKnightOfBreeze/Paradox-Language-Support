@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
@@ -22,21 +23,30 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
 
     private fun parse(
         text: String,
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxCommandExpression? {
-        val configGroup = PlsTestUtil.initConfigGroup(this.project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
+    @Test
     fun testBasic() {
         val s = "Root.GetName"
         val exp = parse(s)!!
@@ -49,6 +59,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_chain_noSuffix() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = parse(s)!!
@@ -74,6 +85,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_endsWithDot() {
         val s = "Root."
         val exp = parse(s)!!
@@ -90,6 +102,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun test_endsWithVar() {
         val s = "Root.Var"
         val exp = parse(s)!!
@@ -106,6 +119,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testWithSuffix_amp() {
         val s = "Root.GetName&L"
         val exp = parse(s)!!
@@ -120,6 +134,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testWithSuffix_doubleColon() {
         val s = "Root.GetName::UPPER"
         val exp = parse(s)!!
@@ -134,6 +149,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!

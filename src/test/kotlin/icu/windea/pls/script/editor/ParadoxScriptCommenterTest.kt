@@ -4,11 +4,16 @@ import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptCommenterTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Test
     fun testCommenterBasics() {
         val commenter = ParadoxScriptCommenter()
         // prefixes
@@ -29,6 +34,7 @@ class ParadoxScriptCommenterTest : BasePlatformTestCase() {
         assertFalse(commenter.isDocumentationComment(null))
     }
 
+    @Test
     fun testCommenter() {
         myFixture.configureByText("commenter.test.txt", "<caret>k = v")
         val commentAction = CommentByLineCommentAction()

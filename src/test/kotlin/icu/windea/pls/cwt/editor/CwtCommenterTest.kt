@@ -9,11 +9,16 @@ import icu.windea.pls.cwt.editor.CwtCommenter.Companion.DOC_COMMENT_PREFIX
 import icu.windea.pls.cwt.editor.CwtCommenter.Companion.LINE_COMMENT_PREFIX
 import icu.windea.pls.cwt.editor.CwtCommenter.Companion.OPTION_COMMENT_PREFIX
 import icu.windea.pls.cwt.psi.CwtElementTypes
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtCommenterTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Test
     fun testCommentPrefixes() {
         val commenter = CwtCommenter()
         assertEquals(LINE_COMMENT_PREFIX, commenter.lineCommentPrefix)
@@ -29,6 +34,7 @@ class CwtCommenterTest : BasePlatformTestCase() {
         assertEquals("###", DOC_COMMENT_PREFIX)
     }
 
+    @Test
     fun testCommentTokenTypesAndDocDetection() {
         val commenter = CwtCommenter()
         assertEquals(CwtElementTypes.COMMENT, commenter.lineCommentTokenType)
@@ -56,6 +62,7 @@ class CwtCommenterTest : BasePlatformTestCase() {
         assertEquals(true, commenter.isDocumentationCommentText(docFirstChild!!))
     }
 
+    @Test
     fun testCommenter() {
         myFixture.configureByText("commenter.test.cwt", "<caret>k = v")
         val commentAction = CommentByLineCommentAction()

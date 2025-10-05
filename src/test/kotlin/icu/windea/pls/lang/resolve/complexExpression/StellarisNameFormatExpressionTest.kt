@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
@@ -25,10 +26,18 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
 
     private fun parse(
         text: String,
@@ -36,13 +45,13 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false,
     ): StellarisNameFormatExpression? {
-        PlsTestUtil.initConfigGroup(this.project, gameType)
-        val g = Unit
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        val cfg = CwtValueConfig.resolve(emptyPointer(), g, "stellaris_name_format[$formatName]")
-        return StellarisNameFormatExpression.resolve(text, TextRange(0, text.length), g, cfg)
+        val cfg = CwtValueConfig.resolve(emptyPointer(), configGroup, "stellaris_name_format[$formatName]")
+        return StellarisNameFormatExpression.resolve(text, TextRange(0, text.length), configGroup, cfg)
     }
 
+    @Test
     fun testBasic_empire1() {
         val s = "{<eater_adj> {<patron_noun>}}"
         val exp = parse(s, formatName = "empire")!!
@@ -71,6 +80,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_empire2() {
         val s = "{AofB{<imperial_mil> [This.GetCapitalSystemNameOrRandom]}}"
         val exp = parse(s, formatName = "empire")!!
@@ -104,6 +114,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_empire3() {
         val s = "{<home_planet> Fleet}"
         val exp = parse(s, formatName = "empire")!!
@@ -124,6 +135,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_federation() {
         val s = "{<union_adj> Council}"
         val exp = parse(s, formatName = "federation")!!
@@ -144,6 +156,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", formatName = "empire", incomplete = false))
         val exp = parse("", formatName = "empire", incomplete = true)!!
@@ -154,6 +167,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
 
     // Strict DSL checks — ensure Marker vs ErrorToken are strictly distinguished
 
+    @Test
     fun testStrict_braces_empty() {
         val s = "{}"
         val exp = parse(s, formatName = "empire")!!
@@ -167,6 +181,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_localisation_simple() {
         val s = "{alpha}"
         val exp = parse(s, formatName = "empire")!!
@@ -181,6 +196,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_definition_simple() {
         val s = "{<x> y}"
         val exp = parse(s, formatName = "empire")!!
@@ -201,6 +217,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_command_simple() {
         val s = "{[Root.GetName]}"
         val exp = parse(s, formatName = "empire")!!
@@ -223,6 +240,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_nested_mixed() {
         val s = "{X{<Y> [Root.GetName]}}"
         val exp = parse(s, formatName = "empire")!!
@@ -256,6 +274,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_error_unmatched_angle() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
@@ -275,6 +294,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_error_unmatched_bracket() {
         // NOTE 顶层与闭包层的“空错误节点”逻辑是幂等的：若子层已在当前层末位放置了错误节点（例如 [ 未闭合导致的当前层末尾空错误），则闭包层不会再重复添加。
 
@@ -302,6 +322,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_text_and_blanks() {
         val s = "{Alpha Beta}"
         val exp = parse(s, formatName = "empire")!!
@@ -318,6 +339,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_top_level_blanks_and_closure() {
         val s = "   { <x> y  }   "
         val exp = parse(s, formatName = "empire")!!
@@ -342,6 +364,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_top_level_errors_and_closure() {
         val s = "foo { <x> y  } <bar> "
         val exp = parse(s, formatName = "empire")!!
@@ -369,6 +392,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_no_open_brace_whole_error() {
         val s = "<x> y} "
         val exp = parse(s, formatName = "empire")!!
@@ -380,6 +404,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_stray_close_in_closure() {
         val s = "{x> y}"
         val exp = parse(s, formatName = "empire")!!
@@ -397,6 +422,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_extra_close_top_level() {
         val s = "{<x>> y}}"
         val exp = parse(s, formatName = "empire")!!
@@ -419,6 +445,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_empty_command_in_closure() {
         val s = "{[]}"
         val exp = parse(s, formatName = "empire")!!
@@ -437,6 +464,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_empty_definition_in_closure() {
         val s = "{<>}"
         val exp = parse(s, formatName = "empire")!!
@@ -455,6 +483,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_unmatched_angle_stop_at_space() {
         val s = "{<abc y}"
         val exp = parse(s, formatName = "empire")!!
@@ -475,6 +504,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_unmatched_bracket_stop_at_space() {
         val s = "{[Root. y}"
         val exp = parse(s, formatName = "empire")!!
@@ -503,6 +533,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_stray_close_bracket_in_closure() {
         val s = "{x] y}"
         val exp = parse(s, formatName = "empire")!!
@@ -520,6 +551,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_top_level_after_closure_text() {
         val s = "{x}y"
         val exp = parse(s, formatName = "empire")!!
@@ -535,6 +567,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_braces_blank_inside() {
         val s = "{ }"
         val exp = parse(s, formatName = "empire")!!
@@ -549,6 +582,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testStrict_command_adjacent_no_space() {
         val s = "{x[Root.GetName]}"
         val exp = parse(s, formatName = "empire")!!

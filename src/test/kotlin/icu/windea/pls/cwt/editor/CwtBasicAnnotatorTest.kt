@@ -3,11 +3,16 @@ package icu.windea.pls.cwt.editor
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class CwtBasicAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Test
     fun testAdjacentLiterals_errorAndFix() {
         val errorMsg = PlsBundle.message("neighboring.literal.not.supported")
         val openingMsg = PlsBundle.message("missing.opening.quote")
@@ -28,6 +33,7 @@ class CwtBasicAnnotatorTest : BasePlatformTestCase() {
         assertEquals("a\" b", myFixture.editor.document.text)
     }
 
+    @Test
     fun testMissingQuotes_errors() {
         val openingMsg = PlsBundle.message("missing.opening.quote")
         val closingMsg = PlsBundle.message("missing.closing.quote")

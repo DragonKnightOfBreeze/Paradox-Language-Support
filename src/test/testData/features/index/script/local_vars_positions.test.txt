@@ -1,9 +1,0 @@
-@a = 1
-
-settings = {
-    boolean_value = yes
-}
-
-<caret>
-
-@b = 2

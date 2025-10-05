@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
@@ -12,22 +13,30 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
 
     private fun parse(
         text: String,
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxDatabaseObjectExpression? {
-        PlsTestUtil.initConfigGroup(this.project, gameType)
-        val group = Unit
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), group)
+        return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
+    @Test
     fun testBasic_twoSegments() {
         val s = "civic:some_civic"
         val exp = parse(s)!!
@@ -42,6 +51,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_threeSegments() {
         val s = "civic:some_civic:some_swapped_civic"
         val exp = parse(s)!!
@@ -60,6 +70,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testBasic_job() {
         val s = "job:job_soldier"
         val exp = parse(s)!!
@@ -74,6 +85,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         exp.check(dsl)
     }
 
+    @Test
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!

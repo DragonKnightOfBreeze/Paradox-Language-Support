@@ -3,7 +3,11 @@ package icu.windea.pls.config.configExpression
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 class CwtDataExpressionTest : BasePlatformTestCase() {
     private fun hasEp(): Boolean = try {
         CwtDataExpressionResolver.EP_NAME.extensionList.isNotEmpty()
@@ -11,6 +15,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         false
     }
 
+    @Test
     fun testResolveEmpty_key_and_value() {
         val ek = CwtDataExpression.resolveEmpty(true)
         assertEquals("", ek.expressionString)
@@ -33,6 +38,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertNotSame(ek, ev)
     }
 
+    @Test
     fun testResolveBlock() {
         val e = CwtDataExpression.resolveBlock()
         assertEquals("{...}", e.expressionString)
@@ -41,6 +47,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertSame(e, CwtDataExpression.resolveBlock())
     }
 
+    @Test
     fun testResolveConstant_key_and_value() {
         if (!hasEp()) return
         val s = "hello"
@@ -59,6 +66,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertNotSame(ek, ev)
     }
 
+    @Test
     fun testResolveBaseRules_int_float_scalar_color_bool() {
         if (!hasEp()) return
         // int and int range
@@ -130,6 +138,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
     }
 
+    @Test
     fun testResolveCoreRules_common() {
         if (!hasEp()) return
         // percentage field
@@ -245,6 +254,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
     }
 
+    @Test
     fun testResolvePatternAware_ant_and_regex() {
         if (!hasEp()) return
         run {
@@ -273,6 +283,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
     }
 
+    @Test
     fun testResolveTemplateExpression_viaDataExpression() {
         if (!hasEp()) return
         val s = "a_value[foo]_b"
@@ -287,6 +298,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         assertEquals(e, CwtDataExpression.resolve(s, false))
     }
 
+    @Test
     fun testResolveTemplateSegments_direct() {
         if (!hasEp()) return
         run {
@@ -301,6 +313,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         }
     }
 
+    @Test
     fun testCaching_same_instance_on_repeated_calls() {
         if (!hasEp()) return
         val s1 = "int[1..10]"

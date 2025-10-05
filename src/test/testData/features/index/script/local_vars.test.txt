@@ -1,0 +1,3 @@
+@var = 1
+<caret>
+@other_var = 2
