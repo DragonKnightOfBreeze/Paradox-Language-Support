@@ -65,7 +65,7 @@ class ParadoxDynamicScopeLinkNode(
                 }
                 run r2@{
                     val nodeTextRange = TextRange.from(offset + startIndex, 1)
-                    val node = ParadoxOperatorNode("(", nodeTextRange, configGroup)
+                    val node = ParadoxMarkerNode("(", nodeTextRange, configGroup)
                     nodes += node
                     startIndex += 1
                 }
@@ -80,7 +80,7 @@ class ParadoxDynamicScopeLinkNode(
                 run r2@{
                     val nodeTextRange = TextRange.from(offset + startIndex, text.length - valueEndIndex)
                     val node = if (nodeTextRange.isEmpty) ParadoxErrorTokenNode("", nodeTextRange, configGroup)
-                    else ParadoxOperatorNode(")", nodeTextRange, configGroup)
+                    else ParadoxMarkerNode(")", nodeTextRange, configGroup)
                     nodes += node
                 }
                 return ParadoxDynamicScopeLinkNode(text, textRange, configGroup, linkConfigs, nodes)
