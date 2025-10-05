@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
@@ -73,8 +74,10 @@ class ParadoxDynamicValueNode(
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {
             return when (constraint) {
+                // always true
                 ParadoxResolveConstraint.DynamicValue -> true
-                ParadoxResolveConstraint.DynamicValueStrictly -> true
+                // skip if related link config can have multiple arguments
+                ParadoxResolveConstraint.DynamicValueStrictly -> configs.all { it !is CwtLinkConfig || it.dataSources.size == 1 }
                 else -> false
             }
         }
