@@ -8,6 +8,9 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.9.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2022.3.2.2"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
+
+    // 用于在缺失本地仓库时按需下载 CWT 规则 zip（HTTPS），以兼容 CI 环境
+    id("de.undercouch.download") version "5.6.0" // https://github.com/michel-kraemer/gradle-download-task
 }
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -237,36 +240,95 @@ val excludesInZip = buildList {
     }
 }
 
-val cwtConfigDirs = listOf(
-    "core" to "core",
-    "cwtools-ck2-config" to "ck2",
-    "cwtools-ck3-config" to "ck3",
-    "cwtools-eu4-config" to "eu4",
-    "cwtools-eu5-config" to "eu5",
-    "cwtools-hoi4-config" to "hoi4",
-    "cwtools-ir-config" to "ir",
-    "cwtools-stellaris-config" to "stellaris",
-    "cwtools-vic2-config" to "vic2",
-    "cwtools-vic3-config" to "vic3",
+// ========== CWT 规则来源配置（本地优先，缺失即下载）==========
+// 下载来源行为的可配置参数（通过 -P 覆盖）
+val cwtDownloadIfMissing = providers.gradleProperty("pls.cwt.downloadIfMissing").orElse("true")
+val cwtAcceptAnyCertificate = providers.gradleProperty("pls.cwt.acceptAnyCertificate").orElse("false")
+
+data class CwtRepository(
+    val repoDir: String,
+    val gameTypeId: String,
+    val owner: String = "DragonKnightOfBreeze",
+    val branch: String = "master",
+    val downloadable: Boolean = true,
+) {
+    val zipUrl = "https://github.com/${owner}/${repoDir}/archive/refs/heads/${branch}.zip"
+}
+
+val cwtRepositories = listOf(
+    CwtRepository("core", "core", downloadable = false), // core 在当前仓库内，无需下载
+    CwtRepository("cwtools-ck2-config", "ck2"),
+    CwtRepository("cwtools-ck3-config", "ck3"),
+    CwtRepository("cwtools-eu4-config", "eu4"),
+    CwtRepository("cwtools-eu5-config", "eu5"),
+    CwtRepository("cwtools-hoi4-config", "hoi4"),
+    CwtRepository("cwtools-ir-config", "ir"),
+    CwtRepository("cwtools-stellaris-config", "stellaris"),
+    CwtRepository("cwtools-vic2-config", "vic2"),
+    CwtRepository("cwtools-vic3-config", "vic3"),
 )
 
+// 生成产物目录（用于存放解压后的规则），本地缺失时作为备用来源
+val generatedCwtDir = layout.buildDirectory.dir("generated/cwt")
+// 准备任务：收拢后续下载与解压依赖，便于 jar 统一依赖
+val prepareCwtConfigs = tasks.register("prepareCwtConfigs")
+
+// 为每个可下载的仓库注册下载与解压任务（本地存在时跳过）
+cwtRepositories.filter { it.downloadable }.forEach { r ->
+    val localDir = layout.projectDirectory.dir("cwt/${r.repoDir}")
+    val zipUrl = providers.provider { r.zipUrl }
+    val zipFile = layout.buildDirectory.file("tmp/cwt/${r.repoDir}.zip")
+    val unzipDir = generatedCwtDir.map { it.dir(r.repoDir) }
+
+    val download = tasks.register("downloadCwtConfig_${r.gameTypeId}", de.undercouch.gradle.tasks.download.Download::class) {
+        // 仅当本地不存在对应仓库时才尝试下载，减少 CI 与本地不必要的网络开销
+        src(zipUrl)
+        dest(zipFile)
+        overwrite(false)
+        if (cwtAcceptAnyCertificate.get().toBoolean()) acceptAnyCertificate(true) // 如遇 SSL 握手失败，可通过 -Ppls.cwt.acceptAnyCertificate=true 临时绕过
+        onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() && !zipFile.get().asFile.exists() }
+    }
+    val unzip = tasks.register<Copy>("unzipCwtConfig_${r.gameTypeId}") {
+        // 解压下载的 zip 到构建生成目录，作为本地缺失时的备用规则来源
+        dependsOn(download)
+        onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() }
+        from({ zipTree(zipFile) })
+        into(unzipDir)
+    }
+    prepareCwtConfigs.configure { dependsOn(unzip) }
+}
+
 tasks {
+    withType<Copy> {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
     jar {
+        // 统一依赖规则准备任务：确保在打包前完成本地检查与必要的下载/解压
+        dependsOn(prepareCwtConfigs)
         // 添加项目文档和许可证
         from("README.md", "README_en.md", "LICENSE")
         // 排除特定文件
         excludesInJar.forEach { exclude(it) }
 
-        // 添加规则文件
-        cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
-            into("config/$toDir") {
-                from("cwt/$cwtConfigDir") {
+        // 添加规则文件（本地优先，缺失则使用解压后的备用来源）
+        cwtRepositories.forEach { r ->
+            val gameTypeId = r.gameTypeId
+            into("config/$gameTypeId") {
+                // 根据是否存在本地目录选择有效来源，避免在 CI 上缺失规则
+                val effectiveSource = providers.provider {
+                    val local = file("cwt/${r.repoDir}")
+                    if (local.exists()) local else generatedCwtDir.get().dir(r.repoDir).asFile
+                }
+                from(effectiveSource) {
                     includeEmptyDirs = false
+                    // 仅包含需要的文件（不包括规则目录中的 script-docs 子目录中的日志文件）
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
-                    // 打平config子目录中的文件
+                    // 规范路径：
+                    // - 打平规则目录中的 {repoDir}-{branch} 子目录中的文件
+                    // - 打平规则目录中的 config 子目录中的文件
                     eachFile {
-                        val i = path.indexOf("/config", ignoreCase = true)
-                        if (i != -1) path = path.removeRange(i, i + 7)
+                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/")
+                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/")
                     }
                 }
             }
@@ -277,14 +339,16 @@ tasks {
         }
     }
     instrumentedJar {
+        // 统一依赖规则准备任务，确保与 jar 的资源一致（覆盖运行/调试场景）
+        dependsOn(prepareCwtConfigs)
         // 排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
     patchPluginXml {
-        if(lite) pluginVersion = properties("pluginVersion").get() + "-lite"
+        if (lite) pluginVersion = properties("pluginVersion").get() + "-lite"
     }
     buildPlugin {
-        if(lite) archiveVersion = properties("pluginVersion").get() + "-lite"
+        if (lite) archiveVersion = properties("pluginVersion").get() + "-lite"
         // 排除特定文件
         excludesInZip.forEach { exclude(it) }
         // 重命名插件包
@@ -307,9 +371,6 @@ tasks {
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
     }
 
-    withType<Copy> {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
     withType<AbstractArchiveTask> {
         // 保证读取到最新的内置规则文件
         // 让 entry 时间戳与写入时间一致（不再被规范化为常量）

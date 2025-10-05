@@ -5,7 +5,7 @@ root_path=$(cd "$(dirname "$0")/../"; pwd)
 cd $root_path
 
 # rm -rf cwtools-ck2-config
-git clone git@github.com:DragonKnightOfBreeze/cwtools-ck2-config && echo "git clone c wtools-ck2-config: DONE" 2>&1
+git clone git@github.com:DragonKnightOfBreeze/cwtools-ck2-config && echo "git clone cwtools-ck2-config: DONE" 2>&1
 
 # rm -rf cwtools-ck3-config
 git clone git@github.com:DragonKnightOfBreeze/cwtools-ck3-config && echo "git clone cwtools-ck3-config: DONE" 2>&1
