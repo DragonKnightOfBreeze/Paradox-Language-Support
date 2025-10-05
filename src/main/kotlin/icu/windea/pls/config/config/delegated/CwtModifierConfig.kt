@@ -20,7 +20,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 规则名称在这里用于匹配（而非等同于）修正名，可以是：
  * - 常量（[Constant]） - 匹配预定义的修正。
- * - 模版表达式（[TemplateExpression]） - 匹配动态生成的修正。
+ * - 模板表达式（[TemplateExpression]） - 匹配动态生成的修正。
  *
  * 路径定位：
  * 1. `modifiers/{name}`，`{name}` 匹配规则名称。

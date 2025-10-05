@@ -149,7 +149,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 }
 
 /**
- * 提供对通过模版表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
+ * 提供对通过模板表达式生成的修正的支持。（如：`job_<job>_add` -> `job_researcher_add`）
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
@@ -232,7 +232,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
         append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
-        // 加上模版信息
+        // 加上模板信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType

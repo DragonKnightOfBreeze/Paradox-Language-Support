@@ -286,7 +286,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
 
     val extraElements = mutableListOf<LookupElement>()
 
-    // 进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
     if (isKey && !isKeyElement && isBlockConfig && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {
@@ -476,7 +476,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
     val lookupElement = ParadoxCompletionManager.blockLookupElement
     addElement(lookupElement)
 
-    // 进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
+    // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
     if (PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val config = context.config!!
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)

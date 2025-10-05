@@ -29,15 +29,15 @@ class PromptTemplateImpl(
     private fun process(content: String, variables: Map<String, Any?>, context: Context): String {
         // 1. 去除末尾的空白，并规范化换行符
         val contentLines = content.trimEnd().lines()
-        // 2. 按指令切分模版文本成一组片段
+        // 2. 按指令切分模板文本成一组片段
         val snippets = parseSnippets(contentLines)
-        // 3. 按指令的语义渲染模版文本
+        // 3. 按指令的语义渲染模板文本
         val rendered = renderSnippets(snippets, variables, context)
         // 4. 进行占位符替换（一次性）
         return replacePlaceholders(rendered, variables)
     }
 
-    // 按指令切分模版文本成一组片段
+    // 按指令切分模板文本成一组片段
 
     private fun parseSnippets(contentLines: List<String>): MutableList<Snippet> {
         val snippets = mutableListOf<Snippet>()
@@ -98,7 +98,7 @@ class PromptTemplateImpl(
         return snippets
     }
 
-    // 按指令的语义渲染模版文本
+    // 按指令的语义渲染模板文本
 
     private fun renderSnippets(snippets: MutableList<Snippet>, variables: Map<String, Any?>, context: Context): String {
         val builder = StringBuilder()

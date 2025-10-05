@@ -1,10 +1,10 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * include 指令。用于导入其他模版。
+ * include 指令。用于导入其他模板。
  *
  * 参数：
- * - `path` - 相对于当前模版文件的资源路径（如 `prompts/includes/header.md`）
+ * - `path` - 相对于当前模板文件的资源路径（如 `prompts/includes/header.md`）
  */
 object IncludePromptTemplateDirective : PromptTemplateDirective {
     override val name = "include"
@@ -15,7 +15,7 @@ object IncludePromptTemplateDirective : PromptTemplateDirective {
  * if 指令。用于条件判断，与 `elseif` `else` `endif` 指令组合使用。
  *
  * 参数：
- * - `condition` - 条件表达式。目前仅支持两种格式，`var` 与 `!var`，其中 `var` 是模版变量名。
+ * - `condition` - 条件表达式。目前仅支持两种格式，`var` 与 `!var`，其中 `var` 是模板变量名。
  */
 object IfPromptTemplateDirective : PromptTemplateDirective {
     override val name = "if"
@@ -26,7 +26,7 @@ object IfPromptTemplateDirective : PromptTemplateDirective {
  * elseif 指令。用于条件判断，与 `if` `else` `endif` 指令组合使用。
  *
  * 参数：
- * - `condition` - 条件表达式。目前仅支持两种格式，`var` 与 `!var`，其中 `var` 是模版变量名。
+ * - `condition` - 条件表达式。目前仅支持两种格式，`var` 与 `!var`，其中 `var` 是模板变量名。
  */
 object ElseIfPromptTemplateDirective : PromptTemplateDirective {
     override val name = "elseif"

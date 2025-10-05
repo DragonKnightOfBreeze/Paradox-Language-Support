@@ -9,11 +9,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 
 /**
- * 模版表达式。
+ * 模板表达式。
  *
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.TemplateExpression]。
- * - 模版由 CWT 规则提供（或由修正的 `template` 字段提供），本表达式文本按模版匹配并被切分为“常量片段/占位片段”。
+ * - 模板由 CWT 规则提供（或由修正的 `template` 字段提供），本表达式文本按模板匹配并被切分为“常量片段/占位片段”。
  *
  * 语法：
  * ```bnf
@@ -24,16 +24,16 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  * ### 语法与结构
  *
  * #### 整体形态
- * - 表达式文本与模版按组匹配，顺序交替产生：常量片段与占位片段。
+ * - 表达式文本与模板按组匹配，顺序交替产生：常量片段与占位片段。
  * - 允许部分匹配（不完整代码场景）。
  *
  * #### 节点组成
- * - 常量片段：[ParadoxTemplateSnippetConstantNode]（与模版的常量部分对应）。
- * - 占位片段：[ParadoxTemplateSnippetNode]（与模版的引用/占位部分对应）。
+ * - 常量片段：[ParadoxTemplateSnippetConstantNode]（与模板的常量部分对应）。
+ * - 占位片段：[ParadoxTemplateSnippetNode]（与模板的引用/占位部分对应）。
  *
  * #### 解析要点
- * - 模版来源：若配置为修正（`CwtModifierConfig`），取其 `template`；否则取 `configExpression` 中的 [CwtDataTypes.TemplateExpression]。
- * - 通过 `toMatchedRegex` 将模版转为正则并对文本进行组匹配，再依组构造片段节点。
+ * - 模板来源：若配置为修正（`CwtModifierConfig`），取其 `template`；否则取 `configExpression` 中的 [CwtDataTypes.TemplateExpression]。
+ * - 通过 `toMatchedRegex` 将模板转为正则并对文本进行组匹配，再依组构造片段节点。
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
     interface Resolver {

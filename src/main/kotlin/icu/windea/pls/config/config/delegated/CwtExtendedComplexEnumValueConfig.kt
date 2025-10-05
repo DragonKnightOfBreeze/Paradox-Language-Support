@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的复杂枚举值提供额外的提示信息（如文档注释、内嵌提示）。
  *
  * 说明：
- * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
  *
  * 路径定位：`complex_enum_values/{type}/{name}`，`{type}` 匹配枚举名，`{name}` 匹配规则名称。
  *

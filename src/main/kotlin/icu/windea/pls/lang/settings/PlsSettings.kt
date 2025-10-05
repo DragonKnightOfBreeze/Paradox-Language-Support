@@ -93,7 +93,7 @@ class PlsSettingsState : BaseState() {
      * @property completeInlineScriptInvocations 进行代码补全时，是否需要提供对内联脚本调用的代码补全。
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
-     * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模版。
+     * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模板。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
      * @property completeByLocalizedName 是否也根据定义和修正的本地化名称来进行代码补全。
      * @property completeByExtendedConfigs 是否也根据扩展的规则来进行代码补全。
@@ -115,7 +115,7 @@ class PlsSettingsState : BaseState() {
         var clauseTemplate by property(ClauseTemplateState())
 
         /**
-         * @property maxMemberCountInOneLine 当插入从句模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
+         * @property maxMemberCountInOneLine 当插入从句模板时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
          */
         @Tag("clauseTemplate")
         class ClauseTemplateState : BaseState() {

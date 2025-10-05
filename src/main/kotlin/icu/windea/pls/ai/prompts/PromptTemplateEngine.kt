@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * 轻量的提示模版引擎。
+ * 轻量的提示模板引擎。
  *
  * 支持占位符语法（如 `{{param}}`）以及数种指令语法（如 `<!-- @if predicate -->`）。
  *

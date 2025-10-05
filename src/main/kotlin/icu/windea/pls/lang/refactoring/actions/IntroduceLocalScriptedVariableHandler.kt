@@ -57,7 +57,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
             newVariableReference = element.parent.replace(newVariableReference).cast()
 
-            // 声明对应名字的封装变量，以内联模版的方式编辑变量名
+            // 声明对应名字的封装变量，以内联模板的方式编辑变量名
             val variableValue = element.text
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
             PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改

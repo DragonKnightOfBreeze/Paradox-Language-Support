@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的内联脚本（inline script）指定规则上下文与作用域上下文。
  *
  * 说明：
- * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
  * - 内联脚本文件是指扩展名为 `.txt`，位于 `common/inline_scripts` 目录下的脚本文件。
  *   这些脚本可以在其他脚本文件中（几乎任意位置）被调用。
  * - 名为 `x/y` 的规则会匹配路径为 `common/inline_scripts/x/y.txt` 的内联脚本文件。

@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.prompts
 
 /**
- * 提示模版的指令。
+ * 提示模板的指令。
  *
  * 指令是一种特殊的 Markdown/HTML 单行注释，
  * 格式为 `<!-- @{directiveName} {params...} -->`。

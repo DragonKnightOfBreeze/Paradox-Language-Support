@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.CwtMember
  * 用于为对应的定义提供额外的提示信息（如文档注释、内嵌提示），以及指定作用域上下文（如果支持）。
  *
  * 说明：
- * - 规则名称可以是常量、模版表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
+ * - 规则名称可以是常量、模板表达式、ANT 表达式或正则（见 [CwtDataTypeGroups.PatternAware]）。
  * - 作用域上下文同样是通过 `## replace_scope` 与 `## push_scope` 选项指定的。
  *
  * 路径定位：`definitions/{name}`，`{name}` 匹配规则名称。
