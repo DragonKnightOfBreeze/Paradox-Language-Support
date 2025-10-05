@@ -31,11 +31,21 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValu
  *
  * 语法：
  * ```bnf
- * value_field_expression ::= value_field | link ("." link)* "." value_field
- * link ::= system_scope | scope | dynamic_scope_link
- * dynamic_scope_link ::= scope_link_prefix? scope_link_value | dynamic_scope_link_name "(" dynamic_scope_link_args? ")"
- * private dynamic_scope_link_args ::= dynamic_scope_link_arg ("," dynamic_scope_link_arg)*
+ * value_field_expression ::= (scope_link ".")* value_field
+ * scope_link ::= system_scope | scope | dynamic_scope_link | parameterized_scope_link
+ * dynamic_scope_link ::= scope_link_with_prefix | scope_link_with_args
+ * private scope_link_with_prefix ::= scope_link_prefix? scope_link_value
+ * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
+ * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
+ * private scope_link_arg ::= scope_link_value
+ * scope_link_value ::= scope_link | dynamic_value_expression | data_source
  * value_field ::= predefined_value_field | dynamic_value_field | parameterized_value_field
+ * dynamic_value_field ::= value_field_with_prefix | value_field_with_args
+ * private value_field_with_prefix ::= value_field_prefix? value_field_value
+ * private value_field_with_args ::= value_field_prefix "(" value_field_args ")"
+ * private value_field_args ::= value_field_arg ("," value_field_arg)* // = value_field_value
+ * private value_field_arg ::= value_field_value
+ * value_field_value ::= dynamic_value_expression | scope_field_expression | script_value_expression | data_source
  * ```
  *
  * ### 语法与结构

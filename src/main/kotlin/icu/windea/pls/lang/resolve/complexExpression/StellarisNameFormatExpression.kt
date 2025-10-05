@@ -22,11 +22,11 @@ import icu.windea.pls.lang.resolve.complexExpression.impl.StellarisNameFormatExp
  *
  * 语法：
  * ```bnf
- * name_format_expression ::= closure+
- * closure ::= "{" closure_content? "}"
+ * name_format_expression ::= name_format_closure
+ * name_format_closure ::= "{" closure_content? "}"
  * closure_content ::= closure_item*
- * private closure_item ::= name_part | command | localisation | text | closure
- * name_part ::= "<" definition ">"
+ * private closure_item ::= name_format_closure | command | name_part | name_format_localisation | name_format_text
+ * name_part ::= "<" name_format_definition ">"
  * command ::= "[" command_expression "]"
  * ```
  *

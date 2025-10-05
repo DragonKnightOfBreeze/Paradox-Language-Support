@@ -23,9 +23,22 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  *
  * 语法：
  * ```bnf
- * command_expression ::= command_field command_suffix? | link ("." link)* "." command_field command_suffix?
- * link ::= command_scope_link
- * private command_suffix ::= "&" suffix | "::" suffix
+ * command_expression ::= (command_scope_link ".")* command_field command_suffix?
+ * command_scope_link ::= system_command_scope | command_scope | dynamic_command_scope_link | parameterized_command_scope_link
+ * dynamic_command_scope_link ::= command_scope_link_with_prefix | command_scope_link_with_args
+ * private command_scope_link_with_prefix ::= command_scope_link_prefix? command_scope_link_value
+ * private command_scope_link_with_args ::= command_scope_link_prefix "(" command_scope_link_args ")"
+ * private command_scope_link_args ::= command_scope_link_arg ("," command_scope_link_arg)* // = command_scope_link_value
+ * private command_scope_link_arg ::= command_scope_link_value
+ * command_scope_link_value ::= data_source
+ * command_field ::= predefined_command_field | dynamic_command_field | parameterized_command_field
+ * dynamic_command_field ::= command_field_with_prefix | command_field_with_args
+ * private command_field_with_prefix ::= command_field_prefix? command_field_value
+ * private command_field_with_args ::= command_field_prefix "(" command_field_args ")"
+ * private command_field_args ::= command_field_arg ("," command_field_arg)* // = command_field_value
+ * private command_field_arg ::= command_field_value
+ * command_field_value ::= data_source
+ * command_suffix ::= "&" SUFFIX | "::" SUFFIX
  * ```
  *
  * ### 语法与结构

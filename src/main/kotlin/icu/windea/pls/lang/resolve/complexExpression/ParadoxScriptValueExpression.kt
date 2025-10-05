@@ -22,8 +22,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNod
  *
  * 语法：
  * ```bnf
- * script_value_expression ::= script_value | script_value script_value_args
- * private script_value_args ::= ("|" script_value_arg "|" script_value_arg_value "|")+
+ * script_value_expression ::= script_value script_value_args?
+ * private script_value_args ::= "|" (script_value_argument "|" script_value_argument_value "|")+
  * ```
  *
  * ### 语法与结构
