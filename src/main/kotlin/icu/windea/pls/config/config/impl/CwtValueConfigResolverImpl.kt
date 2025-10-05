@@ -101,7 +101,7 @@ private abstract class CwtValueConfigImpl(
     // cached into user data to optimize performance and memory
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
-    override fun toString() = value
+    override fun toString() = "(value) $value"
 }
 
 // 12 + 8 * 4 + 1 * 1 = 45 -> 48

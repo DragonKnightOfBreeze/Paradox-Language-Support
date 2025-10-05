@@ -1,7 +1,6 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.config.impl.CwtFileConfigResolverImpl
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
 
@@ -12,10 +11,14 @@ import icu.windea.pls.cwt.psi.CwtFile
  *
  * @see CwtFile
  */
-class CwtFileConfig(
-    override val pointer: SmartPsiElementPointer<CwtFile>,
-    override val configGroup: CwtConfigGroup,
-    val properties: List<CwtPropertyConfig>,
-    val values: List<CwtValueConfig>,
+interface CwtFileConfig : CwtConfig<CwtFile> {
     val name: String
-) : UserDataHolderBase(), CwtConfig<CwtFile>
+    val properties: List<CwtPropertyConfig>
+    val values: List<CwtValueConfig>
+
+    interface Resolver {
+        fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig
+    }
+
+    companion object : Resolver by CwtFileConfigResolverImpl()
+}

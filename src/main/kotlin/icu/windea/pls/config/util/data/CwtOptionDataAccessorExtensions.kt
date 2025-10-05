@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
 /**
- * 选项数据读取扩展（Extensions Aware）。
+ * 为选项数据访问器提供扩展。
  *
  * 概述：
  * - 为规则成员（[CwtMemberConfig]）提供一组便捷方法，以在访问器实现中统一检索选项（[CwtOptionMemberConfig]）。
@@ -28,7 +28,7 @@ import icu.windea.pls.core.util.singleton
  * @see CwtOptionDataAccessors
  */
 @Suppress("unused")
-interface CwtOptionDataAccessorExtensionsAware {
+interface CwtOptionDataAccessorExtensions {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
         return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }
     }
@@ -63,5 +63,5 @@ interface CwtOptionDataAccessorExtensionsAware {
     }
 
     @Suppress("unused")
-    companion object : CwtOptionDataAccessorExtensionsAware
+    companion object : CwtOptionDataAccessorExtensions
 }

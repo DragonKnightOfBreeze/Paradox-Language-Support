@@ -112,7 +112,7 @@ private abstract class CwtPropertyConfigImpl(
     override val keyExpression get() = getUserDataOrDefault(CwtMemberConfig.Keys.keyExpression)
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else getUserDataOrDefault(CwtMemberConfig.Keys.valueExpression)
 
-    override fun toString() = "$key $separatorType $value"
+    override fun toString() = "(property) $key $separatorType $value"
 }
 
 // 12 + 9 * 4 + 2 * 1 = 50 -> 56

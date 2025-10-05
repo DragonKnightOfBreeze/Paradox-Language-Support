@@ -72,7 +72,6 @@ import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigCollector
-import icu.windea.pls.config.util.CwtConfigFileResolver
 import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -123,13 +122,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             allInternalFiles.forEach f@{ (filePath, file) ->
                 currentCoroutineContext.ensureActive()
                 val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-                val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
+                val fileConfig = CwtFileConfig.resolve(psiFile, configGroup)
                 processInternalFile(filePath, fileConfig, configGroup)
             }
             allFiles.forEach f@{ (_, file) ->
                 currentCoroutineContext.ensureActive()
                 val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-                val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
+                val fileConfig = CwtFileConfig.resolve(psiFile, configGroup)
                 processFile(fileConfig, configGroup)
                 // configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
             }

@@ -43,7 +43,7 @@ import icu.windea.pls.model.resolveNext
  *
  * @see CwtOptionDataAccessor
  */
-object CwtOptionDataAccessors : CwtOptionDataAccessorExtensionsAware {
+object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     @Suppress("NOTHING_TO_INLINE")
     inline fun <T> create(cached: Boolean = false, noinline action: CwtMemberConfig<*>.() -> T): CwtOptionDataAccessorProvider<T> {
         return CwtOptionDataAccessorProvider(cached, action)

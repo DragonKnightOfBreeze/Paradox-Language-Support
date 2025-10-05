@@ -1,9 +1,11 @@
-package icu.windea.pls.config.util
+package icu.windea.pls.config.config.impl
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -12,6 +14,7 @@ import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigCollector
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.emptyPointer
@@ -27,14 +30,14 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
 
-object CwtConfigFileResolver {
+internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver {
     private val logger = thisLogger()
 
-    fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig {
+    override fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig {
         val rootBlock = file.block
         val properties = mutableListOf<CwtPropertyConfig>()
         val values = mutableListOf<CwtValueConfig>()
-        val fileConfig = CwtFileConfig(file.createPointer(), configGroup, properties, values, file.name)
+        val fileConfig = CwtFileConfigImpl(file.createPointer(), configGroup, file.name, properties, values)
         rootBlock?.processChild { e ->
             when {
                 e is CwtProperty -> resolveProperty(e, file, fileConfig)?.also { properties.add(it) }
@@ -175,4 +178,14 @@ object CwtConfigFileResolver {
         }
         return optionConfigs.optimized() // optimized to optimize memory
     }
+}
+
+private class CwtFileConfigImpl(
+    override val pointer: SmartPsiElementPointer<CwtFile>,
+    override val configGroup: CwtConfigGroup,
+    override val name: String,
+    override val properties: List<CwtPropertyConfig>,
+    override val values: List<CwtValueConfig>,
+) : UserDataHolderBase(), CwtFileConfig {
+    override fun toString() = "CwtFileConfigImpl(name='$name')"
 }

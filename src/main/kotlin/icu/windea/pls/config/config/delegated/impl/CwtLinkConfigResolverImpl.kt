@@ -97,9 +97,7 @@ private class CwtLinkConfigImpl(
     override val dataSourceExpressions = dataSources.map { CwtDataExpression.resolve(it, false) }
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
 
-    override fun toString(): String {
-        return "CwtLinkConfigImpl(name='$name')"
-    }
+    override fun toString() = "CwtLinkConfigImpl(name='$name')"
 }
 
 private class CwtLinkConfigDelegate(
