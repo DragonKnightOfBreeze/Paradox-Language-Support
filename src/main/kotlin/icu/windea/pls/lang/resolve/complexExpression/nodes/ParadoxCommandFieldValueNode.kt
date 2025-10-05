@@ -36,8 +36,8 @@ class ParadoxCommandFieldValueNode(
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
-            fun resolveSingle(coreText: String, coreRange: TextRange) {
-                val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, linkConfigs)
+            fun resolveSingle(coreText: String, coreRange: TextRange, cfgs: List<CwtLinkConfig>) {
+                val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, cfgs)
                 nodes += node
             }
 
@@ -55,7 +55,9 @@ class ParadoxCommandFieldValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) { hasTopLevelComma = true; return@run }
+                            ',' -> if (depthParen == 0) {
+                                hasTopLevelComma = true; return@run
+                            }
                         }
                     }
                     i++
@@ -63,7 +65,8 @@ class ParadoxCommandFieldValueNode(
             }
 
             if (!hasTopLevelComma) {
-                resolveSingle(text, textRange)
+                val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, 0) }.ifEmpty { linkConfigs }
+                resolveSingle(text, textRange, cfgs)
                 return ParadoxCommandFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
@@ -73,23 +76,38 @@ class ParadoxCommandFieldValueNode(
             var i = 0
             var depthParen = 0
             var inSingleQuote = false
-            fun emitSegment(endExclusive: Int) {
-                if (endExclusive <= startIndex) return
+            var argIndex = 0
+            fun emitSegment(endExclusive: Int, fromComma: Boolean) {
                 // leading blanks
                 var a = startIndex
                 while (a < endExclusive && text[a].isWhitespace()) a++
-                if (a > startIndex) nodes += ParadoxBlankNode(text.substring(startIndex, a), TextRange.create(startIndex + offset, a + offset), configGroup)
+                if (a > startIndex) {
+                    val blankRange = TextRange.create(startIndex + offset, a + offset)
+                    nodes += ParadoxBlankNode(text.substring(startIndex, a), blankRange, configGroup)
+                }
                 // core
                 var b = endExclusive - 1
                 while (b >= a && text[b].isWhitespace()) b--
                 if (b >= a) {
                     val coreText = text.substring(a, b + 1)
                     val coreRange = TextRange.create(a + offset, b + 1 + offset)
-                    if (coreText.isQuoted('\'')) nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
-                    else resolveSingle(coreText, coreRange)
+                    if (coreText.isQuoted('\'')) {
+                        nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
+                    } else {
+                        val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                        resolveSingle(coreText, coreRange, cfgs)
+                    }
+                } else if (fromComma) {
+                    // empty argument -> insert error token node at the position before comma
+                    val p = startIndex + offset
+                    nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
                 }
                 // trailing blanks
-                if (b + 1 < endExclusive) nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), TextRange.create(b + 1 + offset, endExclusive + offset), configGroup)
+                if (b + 1 < endExclusive) {
+                    val blankRange2 = TextRange.create(b + 1 + offset, endExclusive + offset)
+                    nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), blankRange2, configGroup)
+                }
+                argIndex++
             }
             while (i < text.length) {
                 val ch = text[i]
@@ -100,7 +118,8 @@ class ParadoxCommandFieldValueNode(
                         '(' -> depthParen++
                         ')' -> if (depthParen > 0) depthParen--
                         ',' -> if (depthParen == 0) {
-                            emitSegment(i)
+                            emitSegment(i, true)
+                            // emit comma marker
                             nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }
@@ -108,7 +127,7 @@ class ParadoxCommandFieldValueNode(
                 }
                 i++
             }
-            emitSegment(text.length)
+            emitSegment(text.length, false)
             return ParadoxCommandFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }

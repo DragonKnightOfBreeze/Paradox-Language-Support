@@ -31,7 +31,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic() {
         val s = "some_sv"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
         }
@@ -41,7 +41,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testBasic_withArgs() {
         val s = "some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxScriptValueExpression>(s, 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
             node<ParadoxMarkerNode>("|", 7..8)
@@ -56,7 +56,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testMalformed_singlePipe_incompleteAccepted() {
         val s = "some_sv|"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxScriptValueExpression>("some_sv|", 0..s.length) {
             node<ParadoxScriptValueNode>("some_sv", 0..7)
             node<ParadoxMarkerNode>("|", 7..8)
@@ -67,7 +67,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxScriptValueExpression>("", 0..0) {
             node<ParadoxScriptValueNode>("", 0..0)
         }

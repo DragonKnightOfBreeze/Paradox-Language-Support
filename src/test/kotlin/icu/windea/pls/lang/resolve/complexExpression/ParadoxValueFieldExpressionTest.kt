@@ -10,6 +10,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
@@ -42,7 +43,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testTrigger() {
         val s = "trigger:some_trigger"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>(s, 0..20) {
                 node<ParadoxValueFieldPrefixNode>("trigger:", 0..8)
@@ -57,12 +58,12 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testScriptValue_basic() {
         val s = "value:some_sv|PARAM|VALUE|"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>(s, 0..26) {
                 node<ParadoxValueFieldPrefixNode>("value:", 0..6)
                 node<ParadoxValueFieldValueNode>("some_sv|PARAM|VALUE|", 6..26) {
-                    node<ParadoxScriptValueExpression>("some_sv|PARAM|VALUE|", 6..26) {
+                    expression<ParadoxScriptValueExpression>("some_sv|PARAM|VALUE|", 6..26) {
                         node<ParadoxScriptValueNode>("some_sv", 6..13)
                         node<ParadoxMarkerNode>("|", 13..14)
                         node<ParadoxScriptValueArgumentNode>("PARAM", 14..19)
@@ -79,14 +80,14 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testScriptValue_inChain_withDotBefore_andBarrierAfter() {
         val s = "root.value:some_sv|A|B|.owner"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
             node<ParadoxDynamicValueFieldNode>("value:some_sv|A|B|.owner", 5..29) {
                 node<ParadoxValueFieldPrefixNode>("value:", 5..11)
                 node<ParadoxValueFieldValueNode>("some_sv|A|B|.owner", 11..29) {
-                    node<ParadoxScriptValueExpression>("some_sv|A|B|.owner", 11..29) {
+                    expression<ParadoxScriptValueExpression>("some_sv|A|B|.owner", 11..29) {
                         node<ParadoxScriptValueNode>("some_sv", 11..18)
                         node<ParadoxMarkerNode>("|", 18..19)
                         node<ParadoxScriptValueArgumentNode>("A", 19..20)
@@ -104,13 +105,13 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testForArgument() {
         val s = "relations(root)"
         val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxDynamicValueFieldNode>("relations(root)", 0..15) {
                 node<ParadoxValueFieldPrefixNode>("relations", 0..9)
                 node<ParadoxOperatorNode>("(", 9..10)
                 node<ParadoxValueFieldValueNode>("root", 10..14) {
-                    node<ParadoxScopeFieldExpression>("root", 10..14) {
+                    expression<ParadoxScopeFieldExpression>("root", 10..14) {
                         node<ParadoxSystemScopeNode>("root", 10..14)
                     }
                 }
@@ -123,7 +124,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testVariable_inChain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>(s, 0..s.length) {
             node<ParadoxScopeLinkNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -131,7 +132,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             node<ParadoxOperatorNode>(".", 10..11)
             node<ParadoxDynamicValueFieldNode>("some_variable", 11..24) {
                 node<ParadoxValueFieldValueNode>("some_variable", 11..24) {
-                    node<ParadoxDynamicValueExpression>("some_variable", 11..24) {
+                    expression<ParadoxDynamicValueExpression>("some_variable", 11..24) {
                         node<ParadoxDynamicValueNode>("some_variable", 11..24)
                     }
                 }
@@ -143,11 +144,11 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun testEmpty_incompleteDiff() {
         Assert.assertNull(parse("", incomplete = false))
         val exp = parse("", incomplete = true)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>("", 0..0) {
             node<ParadoxDynamicValueFieldNode>("", 0..0) {
                 node<ParadoxValueFieldValueNode>("", 0..0) {
-                    node<ParadoxDynamicValueExpression>("", 0..0) {
+                    expression<ParadoxDynamicValueExpression>("", 0..0) {
                         node<ParadoxDynamicValueNode>("", 0..0)
                     }
                 }
@@ -167,7 +168,9 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxOperatorNode>("(", 15..16)
                 node<ParadoxScopeLinkValueNode>("root, some_planet", 16..33) {
-                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    expression<ParadoxScopeFieldExpression>("root", 16..20) {
+                        node<ParadoxSystemScopeNode>("root", 16..20)
+                    }
                     node<ParadoxMarkerNode>(",", 20..21)
                     node<ParadoxBlankNode>(" ", 21..22)
                     node<ParadoxDataSourceNode>("some_planet", 22..33)
@@ -190,39 +193,6 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             }
         }
         exp.check(dsl)
-
-        // output:
-        // buildExpression<ParadoxValueFieldExpression>("root.test_scope(root, some_planet).test_value(some_flag, some_country)", 0..70) {
-        //     node<ParadoxSystemScopeNode>("root", 0..4)
-        //     node<ParadoxOperatorNode>(".", 4..5)
-        //     node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet)", 5..34) {
-        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
-        //         node<ParadoxOperatorNode>("(", 15..16)
-        //         node<ParadoxScopeLinkValueNode>("root, some_planet", 16..33) {
-        //             node<ParadoxSystemScopeNode>("root", 16..20)
-        //             node<ParadoxMarkerNode>(",", 20..21)
-        //             node<ParadoxBlankNode>(" ", 21..22)
-        //             node<ParadoxErrorScopeLinkNode>("some_planet", 22..33)
-        //         }
-        //         node<ParadoxOperatorNode>(")", 33..34)
-        //     }
-        //     node<ParadoxOperatorNode>(".", 34..35)
-        //     node<ParadoxDynamicValueFieldNode>("test_value(some_flag, some_country)", 35..70) {
-        //         node<ParadoxValueFieldPrefixNode>("test_value", 35..45)
-        //         node<ParadoxOperatorNode>("(", 45..46)
-        //         node<ParadoxValueFieldValueNode>("some_flag, some_country", 46..69) {
-        //             expression<ParadoxDynamicValueExpression>("some_flag", 46..55) {
-        //                 node<ParadoxDynamicValueNode>("some_flag", 46..55)
-        //             }
-        //             node<ParadoxMarkerNode>(",", 55..56)
-        //             node<ParadoxBlankNode>(" ", 56..57)
-        //             expression<ParadoxDynamicValueExpression>("some_country", 57..69) {
-        //                 node<ParadoxDynamicValueNode>("some_country", 57..69)
-        //             }
-        //         }
-        //         node<ParadoxOperatorNode>(")", 69..70)
-        //     }
-        // }
     }
 
     fun test_forArguments_withTrailComma() {
@@ -236,7 +206,9 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxOperatorNode>("(", 15..16)
                 node<ParadoxScopeLinkValueNode>("root, some_planet,", 16..34) {
-                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    expression<ParadoxScopeFieldExpression>("root", 16..20) {
+                        node<ParadoxSystemScopeNode>("root", 16..20)
+                    }
                     node<ParadoxMarkerNode>(",", 20..21)
                     node<ParadoxBlankNode>(" ", 21..22)
                     node<ParadoxDataSourceNode>("some_planet", 22..33)
@@ -261,47 +233,12 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             }
         }
         exp.check(dsl)
-
-        // output:
-        // buildExpression<ParadoxValueFieldExpression>("root.test_scope(root, some_planet,).test_value(some_flag, some_country,)", 0..72) {
-        //     node<ParadoxSystemScopeNode>("root", 0..4)
-        //     node<ParadoxOperatorNode>(".", 4..5)
-        //     node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet,)", 5..35) {
-        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
-        //         node<ParadoxOperatorNode>("(", 15..16)
-        //         node<ParadoxScopeLinkValueNode>("root, some_planet,", 16..34) {
-        //             node<ParadoxSystemScopeNode>("root", 16..20)
-        //             node<ParadoxMarkerNode>(",", 20..21)
-        //             node<ParadoxBlankNode>(" ", 21..22)
-        //             node<ParadoxErrorScopeLinkNode>("some_planet", 22..33)
-        //             node<ParadoxMarkerNode>(",", 33..34)
-        //         }
-        //         node<ParadoxOperatorNode>(")", 34..35)
-        //     }
-        //     node<ParadoxOperatorNode>(".", 35..36)
-        //     node<ParadoxDynamicValueFieldNode>("test_value(some_flag, some_country,)", 36..72) {
-        //         node<ParadoxValueFieldPrefixNode>("test_value", 36..46)
-        //         node<ParadoxOperatorNode>("(", 46..47)
-        //         node<ParadoxValueFieldValueNode>("some_flag, some_country,", 47..71) {
-        //             expression<ParadoxDynamicValueExpression>("some_flag", 47..56) {
-        //                 node<ParadoxDynamicValueNode>("some_flag", 47..56)
-        //             }
-        //             node<ParadoxMarkerNode>(",", 56..57)
-        //             node<ParadoxBlankNode>(" ", 57..58)
-        //             expression<ParadoxDynamicValueExpression>("some_country", 58..70) {
-        //                 node<ParadoxDynamicValueNode>("some_country", 58..70)
-        //             }
-        //             node<ParadoxMarkerNode>(",", 70..71)
-        //         }
-        //         node<ParadoxOperatorNode>(")", 71..72)
-        //     }
-        // }
     }
 
     fun test_forArguments_missingArgument_1() {
         val s = "root.test_scope(root).test_value(some_flag)"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>("root.test_scope(root).test_value(some_flag)", 0..43) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -309,7 +246,9 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxOperatorNode>("(", 15..16)
                 node<ParadoxScopeLinkValueNode>("root", 16..20) {
-                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    expression<ParadoxScopeFieldExpression>("root", 16..20) {
+                        node<ParadoxSystemScopeNode>("root", 16..20)
+                    }
                 }
                 node<ParadoxOperatorNode>(")", 20..21)
             }
@@ -331,7 +270,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     fun test_forArguments_missingArgument_2() {
         val s = "root.test_scope(root,).test_value(some_flag,)"
         val exp = parse(s)!!
-        // println(exp.render())
+        println(exp.render())
         val dsl = buildExpression<ParadoxValueFieldExpression>("root.test_scope(root,).test_value(some_flag,)", 0..45) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
@@ -339,7 +278,9 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxOperatorNode>("(", 15..16)
                 node<ParadoxScopeLinkValueNode>("root,", 16..21) {
-                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    expression<ParadoxScopeFieldExpression>("root", 16..20) {
+                        node<ParadoxSystemScopeNode>("root", 16..20)
+                    }
                     node<ParadoxMarkerNode>(",", 20..21)
                 }
                 node<ParadoxOperatorNode>(")", 21..22)
@@ -371,6 +312,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxOperatorNode>("(", 15..16)
                 node<ParadoxScopeLinkValueNode>(", some_planet", 16..29) {
+                    node<ParadoxErrorTokenNode>("", 16..16)
                     node<ParadoxMarkerNode>(",", 16..17)
                     node<ParadoxBlankNode>(" ", 17..18)
                     node<ParadoxDataSourceNode>("some_planet", 18..29)
@@ -382,6 +324,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxValueFieldPrefixNode>("test_value", 31..41)
                 node<ParadoxOperatorNode>("(", 41..42)
                 node<ParadoxValueFieldValueNode>(", some_country", 42..56) {
+            node<ParadoxErrorTokenNode>("", 42..42)
                     node<ParadoxMarkerNode>(",", 42..43)
                     node<ParadoxBlankNode>(" ", 43..44)
                     node<ParadoxDataSourceNode>("some_country", 44..56)
@@ -390,33 +333,5 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
             }
         }
         exp.check(dsl)
-
-        // buildExpression<ParadoxValueFieldExpression>("root.test_scope(, some_planet).test_value(, some_country)", 0..57) {
-        //     node<ParadoxSystemScopeNode>("root", 0..4)
-        //     node<ParadoxOperatorNode>(".", 4..5)
-        //     node<ParadoxDynamicScopeLinkNode>("test_scope(, some_planet)", 5..30) {
-        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
-        //         node<ParadoxOperatorNode>("(", 15..16)
-        //         node<ParadoxScopeLinkValueNode>(", some_planet", 16..29) {
-        //             node<ParadoxMarkerNode>(",", 16..17)
-        //             node<ParadoxBlankNode>(" ", 17..18)
-        //             node<ParadoxErrorScopeLinkNode>("some_planet", 18..29)
-        //         }
-        //         node<ParadoxOperatorNode>(")", 29..30)
-        //     }
-        //     node<ParadoxOperatorNode>(".", 30..31)
-        //     node<ParadoxDynamicValueFieldNode>("test_value(, some_country)", 31..57) {
-        //         node<ParadoxValueFieldPrefixNode>("test_value", 31..41)
-        //         node<ParadoxOperatorNode>("(", 41..42)
-        //         node<ParadoxValueFieldValueNode>(", some_country", 42..56) {
-        //             node<ParadoxMarkerNode>(",", 42..43)
-        //             node<ParadoxBlankNode>(" ", 43..44)
-        //             expression<ParadoxDynamicValueExpression>("some_country", 44..56) {
-        //                 node<ParadoxDynamicValueNode>("some_country", 44..56)
-        //             }
-        //         }
-        //         node<ParadoxOperatorNode>(")", 56..57)
-        //     }
-        // }
     }
 }

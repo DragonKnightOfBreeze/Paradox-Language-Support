@@ -35,49 +35,43 @@ class ParadoxValueFieldValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
-            // text may contain parameters & may be an argument list inside parentheses for fromArgument links
-            // child node can be:
-            // * ParadoxDynamicValueExpression / ParadoxScopeFieldExpression / ParadoxScriptValueExpression / ParadoxDataSourceNode
-            // Additionally, when splitting arguments: ParadoxBlankNode and ParadoxMarkerNode(",") and ParadoxStringLiteralNode
+            // text may contain parameters & may be an argument list inside parentheses
+            // For argumented dynamic links, we support multi-args separated by commas with optional blanks,
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
-            fun resolveSingle(coreText: String, coreRange: TextRange) {
-                // precedence: DynamicValue -> ScopeField -> ScriptValue -> DataSource
-                run r1@{
-                    val configs = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
-                    if (configs.isEmpty()) return@r1
-                    val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs)
-                    if (node != null) {
-                        nodes += node; return
-                    }
+            fun resolveSingle(coreText: String, coreRange: TextRange, cfgs: List<CwtLinkConfig>) {
+                run {
+                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
+                    if (configs.isEmpty()) return@run
+                    val node = ParadoxDynamicValueExpression.resolve(coreText, coreRange, configGroup, configs) ?: return@run
+                    nodes += node
+                    return
                 }
-                run r1@{
-                    val configs = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
-                    if (configs.isEmpty()) return@r1
-                    val node = ParadoxScopeFieldExpression.resolve(coreText, coreRange, configGroup)
-                    if (node != null) {
-                        nodes += node; return
-                    }
+                run {
+                    val configs = cfgs.filter { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
+                    if (configs.isEmpty()) return@run
+                    val node = ParadoxScopeFieldExpression.resolve(coreText, coreRange, configGroup) ?: return@run
+                    nodes += node
+                    return
                 }
-                run r1@{
-                    if (!coreText.contains('|')) return@r1
-                    val scriptValueConfig = linkConfigs.find { it.name == "script_value" }
-                    if (scriptValueConfig == null) return@r1
-                    val node = ParadoxScriptValueExpression.resolve(coreText, coreRange, configGroup, scriptValueConfig)
-                    if (node != null) {
-                        nodes += node; return
-                    }
+                run {
+                    if (!coreText.contains('|')) return@run
+                    val scriptValueConfig = cfgs.find { it.name == "script_value" }
+                    if (scriptValueConfig == null) return@run
+                    val node = ParadoxScriptValueExpression.resolve(coreText, coreRange, configGroup, scriptValueConfig) ?: return@run
+                    nodes += node
+                    return
                 }
-                run r1@{
-                    val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, linkConfigs)
+                run {
+                    val node = ParadoxDataSourceNode.resolve(coreText, coreRange, configGroup, cfgs)
                     nodes += node
                 }
             }
 
-            // probe top-level commas to see if it's an argument list
+            // Detect top-level commas to decide whether it's an argument list
             var hasTopLevelComma = false
             run {
                 var i = 0
@@ -101,34 +95,50 @@ class ParadoxValueFieldValueNode(
             }
 
             if (!hasTopLevelComma) {
-                // original single-value path
-                resolveSingle(text, textRange)
+                // original single-value resolution path
+                val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, 0) }.ifEmpty { linkConfigs }
+                resolveSingle(text, textRange, cfgs)
                 return ParadoxValueFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
-            // argument list path: split by top-level commas, preserve blanks and comma markers
+            // Argument list path: split by top-level commas, emit blanks and markers
             val offset = textRange.startOffset
             var startIndex = 0
             var i = 0
             var depthParen = 0
             var inSingleQuote = false
-            fun emitSegment(endExclusive: Int) {
-                if (endExclusive <= startIndex) return
+            var argIndex = 0
+            fun emitSegment(endExclusive: Int, fromComma: Boolean) {
                 // leading blanks
                 var a = startIndex
                 while (a < endExclusive && text[a].isWhitespace()) a++
-                if (a > startIndex) nodes += ParadoxBlankNode(text.substring(startIndex, a), TextRange.create(startIndex + offset, a + offset), configGroup)
+                if (a > startIndex) {
+                    val blankRange = TextRange.create(startIndex + offset, a + offset)
+                    nodes += ParadoxBlankNode(text.substring(startIndex, a), blankRange, configGroup)
+                }
                 // core
                 var b = endExclusive - 1
                 while (b >= a && text[b].isWhitespace()) b--
                 if (b >= a) {
                     val coreText = text.substring(a, b + 1)
                     val coreRange = TextRange.create(a + offset, b + 1 + offset)
-                    if (coreText.isQuoted('\'')) nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
-                    else resolveSingle(coreText, coreRange)
+                    if (coreText.isQuoted('\'')) {
+                        nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
+                    } else {
+                        val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                        resolveSingle(coreText, coreRange, cfgs)
+                    }
+                } else if (fromComma) {
+                    // empty argument -> insert error token node at the position before comma
+                    val p = startIndex + offset
+                    nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
                 }
                 // trailing blanks
-                if (b + 1 < endExclusive) nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), TextRange.create(b + 1 + offset, endExclusive + offset), configGroup)
+                if (b + 1 < endExclusive) {
+                    val blankRange2 = TextRange.create(b + 1 + offset, endExclusive + offset)
+                    nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), blankRange2, configGroup)
+                }
+                argIndex++
             }
             while (i < text.length) {
                 val ch = text[i]
@@ -139,7 +149,8 @@ class ParadoxValueFieldValueNode(
                         '(' -> depthParen++
                         ')' -> if (depthParen > 0) depthParen--
                         ',' -> if (depthParen == 0) {
-                            emitSegment(i)
+                            emitSegment(i, true)
+                            // emit comma marker
                             nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }
@@ -147,7 +158,7 @@ class ParadoxValueFieldValueNode(
                 }
                 i++
             }
-            emitSegment(text.length)
+            emitSegment(text.length, false)
             return ParadoxValueFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
         }
     }

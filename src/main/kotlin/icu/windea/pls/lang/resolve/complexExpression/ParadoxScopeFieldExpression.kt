@@ -36,7 +36,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNod
  * private scope_link_with_args ::= scope_link_prefix "(" scope_link_args ")"
  * private scope_link_args ::= scope_link_arg ("," scope_link_arg)* // = scope_link_value
  * private scope_link_arg ::= scope_link_value
- * scope_link_value ::= scope_link | dynamic_value_expression | data_source
+ * scope_link_value ::= dynamic_value_expression | scope_field_expression | data_source
  * ```
  *
  * ### 语法与结构

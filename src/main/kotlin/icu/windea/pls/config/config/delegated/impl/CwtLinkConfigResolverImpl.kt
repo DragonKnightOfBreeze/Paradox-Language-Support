@@ -101,4 +101,8 @@ private class CwtLinkConfigImpl(
 private class CwtLinkConfigDelegate(
     val delegate: CwtLinkConfig,
     override val dataSourceIndex: Int
-) : CwtLinkConfig by delegate
+) : CwtLinkConfig by delegate {
+    // NOTE 需要重载下面两个属性
+    override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
+    override val configExpression get() = dataSourceExpression
+}

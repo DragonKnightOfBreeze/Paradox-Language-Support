@@ -1025,7 +1025,6 @@ object ParadoxComplexExpressionCompletionManager {
         context.configs = linkConfigs
 
         when (argNode) {
-            is ParadoxScopeLinkNode -> completeForScopeLinkNode(argNode, context, result)
             is ParadoxDynamicValueExpression -> completeDynamicValueExpression(context, result)
             is ParadoxScopeFieldExpression -> completeScopeFieldExpression(context, result)
             else -> completeScriptExpressionFromLinkConfigs(linkConfigs, context, result)
