@@ -697,11 +697,11 @@ object ParadoxComplexExpressionCompletionManager {
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
-        val endOffset = valueNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
             context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
 
-            val keywordToUse = valueNode.text.substring(0, offset - endOffset)
+            val keywordNode = currentArgNode ?: valueNode
+            val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
@@ -754,11 +754,11 @@ object ParadoxComplexExpressionCompletionManager {
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
-        val endOffset = valueNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
             // 不同于链接节点，这里没有必要切换作用域上下文
 
-            val keywordToUse = valueNode.text.substring(0, offset - endOffset)
+            val keywordNode = currentArgNode ?: valueNode
+            val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse
@@ -815,11 +815,11 @@ object ParadoxComplexExpressionCompletionManager {
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
-        val endOffset = valueNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
             context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
 
-            val keywordToUse = valueNode.text.substring(0, offset - endOffset)
+            val keywordNode = currentArgNode ?: valueNode
+            val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val keyword = context.keyword
             val keywordOffset = context.keywordOffset
@@ -872,11 +872,11 @@ object ParadoxComplexExpressionCompletionManager {
         // locate argument node and index (prefer ParadoxLinkValueNode)
         val argIndex = valueNode?.getArgumentIndex(offset) ?: 0
         val currentArgNode = valueNode?.argumentNodes?.getOrNull(argIndex)
-        val endOffset = valueNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && valueNode != null && offset >= valueNode.rangeInExpression.startOffset) {
             // 不同于链接节点，这里没有必要切换作用域上下文
 
-            val keywordToUse = valueNode.text.substring(0, offset - endOffset)
+            val keywordNode = currentArgNode ?: valueNode
+            val keywordToUse = keywordNode.text.substring(0, offset - keywordNode.rangeInExpression.startOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             val oldArgIndex = context.argumentIndex
             context.keyword = keywordToUse

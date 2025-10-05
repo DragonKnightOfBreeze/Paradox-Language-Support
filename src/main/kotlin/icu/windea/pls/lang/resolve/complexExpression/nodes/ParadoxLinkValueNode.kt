@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression.nodes
 
-import icu.windea.pls.core.castOrNull
-
 /**
  * 链接类“值节点”的统一接口。
  *
@@ -17,11 +15,7 @@ interface ParadoxLinkValueNode : ParadoxComplexExpressionNode {
      * 若偏移量位于所有参数之后，则返回最后一个参数的索引；若没有参数则返回 0。
      */
     fun getArgumentIndex(offsetInExpression: Int): Int {
-        val args = argumentNodes
-        if (args.isEmpty()) return 0
-        for ((i, n) in args.withIndex()) {
-            if (offsetInExpression <= n.rangeInExpression.endOffset) return i
-        }
-        return args.lastIndex
+        // 基于之前的逗号的个数
+        return nodes.filter { it is ParadoxMarkerNode && it.text == "," }.count { it.rangeInExpression.endOffset <= offsetInExpression }
     }
 }
