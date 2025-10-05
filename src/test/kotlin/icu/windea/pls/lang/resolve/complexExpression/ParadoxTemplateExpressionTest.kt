@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 import org.junit.Assume
 
@@ -14,7 +15,8 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     private fun pickModifierWithTemplate(gt: ParadoxGameType, predicate: (CwtModifierConfig) -> Boolean): CwtModifierConfig? {
-        val g = initConfigGroup(gt)
+        PlsTestUtil.initConfigGroup(this.project, gt)
+        val g = Unit
         return g.modifiers.values.toList().firstOrNull(predicate)
     }
 
@@ -30,7 +32,8 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
             val refMap = tpl.referenceExpressions.associateWith { "foo" }
             CwtTemplateExpressionManager.extract(tpl, refMap)
         }
-        val g = initConfigGroup(gt)
+        PlsTestUtil.initConfigGroup(this.project, gt)
+        val g = Unit
         val exp = ParadoxTemplateExpression.resolve(text, TextRange(0, text.length), g, cfg)!!
         val out = exp.render()
         println(out)
@@ -45,7 +48,8 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
         // 仅在单占位时生成用例，否则跳过
         Assume.assumeTrue(tpl.referenceExpressions.size == 1)
         val text = CwtTemplateExpressionManager.extract(tpl, "foo")
-        val g = initConfigGroup(gt)
+        PlsTestUtil.initConfigGroup(this.project, gt)
+        val g = Unit
         val exp = ParadoxTemplateExpression.resolve(text, TextRange(0, text.length), g, cfg)!!
         val out = exp.render()
         println(out)

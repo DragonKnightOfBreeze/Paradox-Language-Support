@@ -4,29 +4,29 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
-import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxDefineIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun testDefineIndex_Basic() {
-        // arrange
+    @Test
+    fun defineIndex_Basic() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        injectFileInfo("common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
-
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        PlsTestUtil.injectFileInfo(file, "common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(file)
 
         // act
         val scope = GlobalSearchScope.projectScope(project)
@@ -49,15 +49,15 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(info.elementOffsets.isNotEmpty())
     }
 
-    fun testDefineSearcher_ByNamespaceAndVariable() {
-        // arrange
+    @Test
+    fun defineSearcher_ByNamespaceAndVariable() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        injectFileInfo("common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
-
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        PlsTestUtil.injectFileInfo(file, "common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(file)
 
         // act
-        val selector = selector(project, myFixture.file).define()
+        val selector = selector(project, file).define()
         val results = mutableListOf<ParadoxDefineIndexInfo>()
         ParadoxDefineSearch.search("NGameplay", "MARINE", selector).processQuery(false) { info ->
             results += info
@@ -70,12 +70,5 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         Assert.assertEquals("NGameplay", info.namespace)
         Assert.assertEquals("MARINE", info.variable)
         Assert.assertEquals("defines_basic_stellaris.test.txt", info.virtualFile?.name)
-    }
-
-    private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
-        val vFile = myFixture.file.virtualFile
-        val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Script, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

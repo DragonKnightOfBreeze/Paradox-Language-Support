@@ -13,6 +13,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -24,7 +25,8 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxDynamicValueExpression? {
-        val group = initConfigGroup(gameType)
+        PlsTestUtil.initConfigGroup(this.project, gameType)
+        val group = Unit
         val configs = group.links.values.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()

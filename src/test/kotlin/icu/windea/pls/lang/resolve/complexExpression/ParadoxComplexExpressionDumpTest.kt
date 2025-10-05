@@ -5,46 +5,51 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslRender
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxComplexExpressionDumpTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
+    override fun setUp() {
+        super.setUp()
+    }
+
     private fun parseScope(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxScopeFieldExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxScopeFieldExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxScopeFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     private fun parseValue(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris, incomplete: Boolean = false): ParadoxValueFieldExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxValueFieldExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxValueFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     private fun parseVariable(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxVariableFieldExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxVariableFieldExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxVariableFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     private fun parseDb(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxDatabaseObjectExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     private fun parseDefine(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxDefineReferenceExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxDefineReferenceExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxDefineReferenceExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     private fun parseCommand(text: String, gameType: ParadoxGameType = ParadoxGameType.Stellaris): ParadoxCommandExpression? {
-        val g = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(project, gameType)
         PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), g)
+        return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     // ScopeField samples

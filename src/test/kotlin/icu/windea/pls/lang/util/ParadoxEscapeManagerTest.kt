@@ -7,7 +7,7 @@ class ParadoxEscapeManagerTest {
     @Test
     fun parseScriptExpressionCharacters() {
         val s = """###\"\\\\\"
-\"custom_tooltip\" = {}"""
+        \"custom_tooltip\" = {}""".trimIndent()
         val out = StringBuilder()
         val sourceOffsets = IntArray(s.length + 1)
         ParadoxEscapeManager.parseScriptExpressionCharacters(s, out, sourceOffsets)

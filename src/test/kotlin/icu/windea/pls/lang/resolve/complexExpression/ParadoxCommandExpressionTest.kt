@@ -20,6 +20,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedComm
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -31,9 +32,9 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxCommandExpression? {
-        val group = initConfigGroup(gameType)
+        val configGroup = PlsTestUtil.initConfigGroup(this.project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), group)
+        return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 
     fun testBasic() {

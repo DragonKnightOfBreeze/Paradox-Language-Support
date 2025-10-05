@@ -11,9 +11,9 @@ import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroupLibrary
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.withDoubleLock
-import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
@@ -65,35 +65,31 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCachesAsync() {
-        if (PlsFacade.isUnitTestMode()) return
         PlsPathConstants.initAsync()
         PlsFacade.getDataProvider().initAsync()
     }
 
     @Suppress("ObsoleteDispatchersEdt")
     private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
-        if (PlsFacade.isUnitTestMode()) return
+        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新
         // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
         if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
-        val builtInConfigRootDirectories = CwtConfigGroupFileProvider.EP_NAME.extensionList
-            .filter { it.type == CwtConfigGroupFileProvider.Type.BuiltIn }
-            .mapNotNull { it.getRootDirectory(project) }
-        if (builtInConfigRootDirectories.isEmpty()) return
+
+        val files = CwtConfigManager.getBuiltInConfigRootDirectories(project)
+        if (files.isEmpty()) return
 
         // 必须先切换到 EDT
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
             val title = PlsBundle.message("configGroup.refresh.builtin.progressTitle")
             runWithModalProgressBlocking(project, title) {
-                builtInConfigRootDirectories.forEach {
-                    VfsUtil.markDirtyAndRefresh(false, true, true, it)
-                }
+                files.forEach { VfsUtil.markDirtyAndRefresh(false, true, true, it) }
             }
         }
     }
 
     private fun initConfigGroupsAsync(project: Project) {
-        if (PlsFacade.isUnitTestMode()) return
+        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         if (project.isDisposed) return
         PlsFacade.getConfigGroupService().initAsync(project) {
             // 规则数据加载完毕后，异步地刷新外部库的根目录
@@ -102,7 +98,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun refreshRootsForLibrariesAsync(project: Project) {
-        if (PlsFacade.isUnitTestMode()) return
         if (project.isDefault) return
         if (project.isDisposed) return
         project.configGroupLibrary.refreshRootsAsync()

@@ -13,15 +13,14 @@
 - [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
 - [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 
-## 2.0.6
-
-- [ ] 更新 Stellaris 的规则文件以匹配最新游戏版本 4.1
-
 ## 2.0.6-dev
 
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [X] 同步其他游戏的规则文件 / Synchronize config files of other games 
 - [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复
+- [X] 优化：进一步优化脚本文件和本地化文件的 lexer & parser 的实现 / OP: Further optimize the implementation of lexer & parser for script files and localisation files
+- [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions. For nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed.
+- [X] 新功能：支持 Stellaris 中的命名格式表达式 #193 / NEW: Support the name format expressions in Stellaris #193 
 
 ## 2.0.5
 

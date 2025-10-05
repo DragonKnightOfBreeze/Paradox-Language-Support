@@ -23,6 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -35,7 +36,8 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false,
     ): StellarisNameFormatExpression? {
-        val g = initConfigGroup(gameType)
+        PlsTestUtil.initConfigGroup(this.project, gameType)
+        val g = Unit
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         val cfg = CwtValueConfig.resolve(emptyPointer(), g, "stellaris_name_format[$formatName]")
         return StellarisNameFormatExpression.resolve(text, TextRange(0, text.length), g, cfg)

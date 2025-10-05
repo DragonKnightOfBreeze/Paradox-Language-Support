@@ -8,12 +8,17 @@ import icu.windea.pls.lang.util.psi.PlsPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class PlsPsiManagerTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun testGetAttachedComments() {
+    @Test
+    fun getAttachedComments() {
         myFixture.configureByFile("script/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!
@@ -34,7 +39,8 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
         Assert.assertEquals(0, attachedComments2.size)
     }
 
-    fun testGetAttachingElement() {
+    @Test
+    fun getAttachingElement() {
         myFixture.configureByFile("script/attached_comments.test.txt")
         val file = myFixture.file as ParadoxScriptFile
         val rootBlock = file.block!!

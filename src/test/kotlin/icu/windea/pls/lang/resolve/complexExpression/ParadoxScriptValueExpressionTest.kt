@@ -11,6 +11,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArg
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -22,7 +23,8 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false
     ): ParadoxScriptValueExpression? {
-        val group = initConfigGroup(gameType)
+        PlsTestUtil.initConfigGroup(this.project, gameType)
+        val group = Unit
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         val linkConfig = group.links["script_value"] ?: error("script_value link not found in config group")
         return ParadoxScriptValueExpression.resolve(text, TextRange(0, text.length), group, linkConfig)

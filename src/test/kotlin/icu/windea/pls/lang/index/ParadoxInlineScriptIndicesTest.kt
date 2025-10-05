@@ -4,26 +4,28 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxParameterSearch
 import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.parameter
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun testUsageIndex_DirectForm() {
+    @Test
+    fun usageIndex_DirectForm() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_direct_stellaris.test.txt")
-        injectFileInfo("common/test/usage_direct_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_direct_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -38,9 +40,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals("inline_script", p.name)
     }
 
-    fun testUsageIndex_BlockForm() {
+    @Test
+    fun usageIndex_BlockForm() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -55,9 +59,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals("inline_script", p.name)
     }
 
-    fun testArgumentIndex_BlockForm_All() {
+    @Test
+    fun argumentIndex_BlockForm_All() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -71,9 +77,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(listOf("EVENT_ID", "SOME_FLAG"), names)
     }
 
-    fun testUsageIndex_Parameterized_ShouldSkip() {
+    @Test
+    fun usageIndex_Parameterized_ShouldSkip() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_parameterized_stellaris.test.txt")
-        injectFileInfo("common/test/usage_parameterized_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_parameterized_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -94,9 +102,11 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(0, arguments.size)
     }
 
-    fun testUsageIndex_VariableRef_ShouldSkip() {
+    @Test
+    fun usageIndex_VariableRef_ShouldSkip() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_variable_ref_stellaris.test.txt")
-        injectFileInfo("common/test/usage_variable_ref_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_variable_ref_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -117,11 +127,13 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(0, arguments.size)
     }
 
-    fun testParameterSearcher_All() {
+    @Test
+    fun parameterSearcher_All() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, myFixture.file).parameter()
+        val selector = selector(project, file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search(null, contextKey, selector).processQuery(false) { info ->
@@ -131,11 +143,13 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(setOf("EVENT_ID", "SOME_FLAG"), results.toSet())
     }
 
-    fun testParameterSearcher_ByName() {
+    @Test
+    fun parameterSearcher_ByName() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, myFixture.file).parameter()
+        val selector = selector(project, file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search("EVENT_ID", contextKey, selector).processQuery(false) { info ->
@@ -145,11 +159,13 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         Assert.assertEquals(listOf("EVENT_ID"), results)
     }
 
-    fun testParameterSearcher_ByName_NotFound() {
+    @Test
+    fun parameterSearcher_ByName_NotFound() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        injectFileInfo("common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
         val project = project
-        val selector = selector(project, myFixture.file).parameter()
+        val selector = selector(project, file).parameter()
         val contextKey = "inline_script@test_inline"
         val results = mutableListOf<String>()
         ParadoxParameterSearch.search("NOT_EXISTS", contextKey, selector).processQuery(false) { info ->
@@ -157,12 +173,5 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
             true
         }
         Assert.assertTrue(results.isEmpty())
-    }
-
-    private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
-        val vFile = myFixture.file.virtualFile
-        val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Script, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

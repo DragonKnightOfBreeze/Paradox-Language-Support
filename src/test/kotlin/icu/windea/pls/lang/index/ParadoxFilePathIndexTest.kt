@@ -14,16 +14,23 @@ import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun testFilePathIndex_Basic() {
+    @Test
+    fun filePathIndex_Basic() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("script/syntax/_code_settings.test.txt")
         val relPath = "common/scripted_variables/_code_settings.test.txt"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, relPath, ParadoxGameType.Stellaris)
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -39,13 +46,15 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(info.included)
     }
 
-    fun testFilePathSearcher_ExactPath() {
+    @Test
+    fun filePathSearcher_ExactPath() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("script/syntax/_code_settings.test.txt")
         val relPath = "common/scripted_variables/_code_settings.test.txt"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, relPath, ParadoxGameType.Stellaris)
 
         val project = project
-        val selector = selector(project, myFixture.file).file()
+        val selector = selector(project, file).file()
         val results = mutableListOf<String>()
         ParadoxFilePathSearch.search(relPath, selector = selector).processQuery(false) { vf ->
             results += vf.path
@@ -54,11 +63,13 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertEquals(1, results.size)
     }
 
-    fun testFilePathIndex_Localisation() {
+    @Test
+    fun filePathIndex_Localisation() {
+        val file = myFixture.file.virtualFile
         // index should record localisation yml files as included with correct directory and gameType
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         val relPath = "localisation/ui/ui_l_english.test.yml"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, relPath, ParadoxGameType.Stellaris)
 
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
@@ -74,12 +85,14 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(info.included)
     }
 
-    fun testFilePathSearcher_NotFound_ReturnsEmpty() {
+    @Test
+    fun filePathSearcher_NotFound_ReturnsEmpty() {
+        val file = myFixture.file.virtualFile
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        injectFileInfo("localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
 
         val project = project
-        val selector = selector(project, myFixture.file).file()
+        val selector = selector(project, file).file()
         val results = mutableListOf<String>()
         ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).processQuery(false) { vf ->
             results += vf.path
@@ -88,7 +101,8 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertTrue(results.isEmpty())
     }
 
-    fun testFilePathIndex_ExcludedTopDirectory() {
+    @Test
+    fun filePathIndex_ExcludedTopDirectory() {
         // files under excluded top directories (e.g., jomini) should be marked as included=false
         val copied = myFixture.copyFileToProject(
             "features/index/jomini/gfx/interface/icons/my_icon.png",
@@ -124,29 +138,19 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         Assert.assertFalse("Expected included=false for excluded top directory", info.included)
     }
 
-    fun testFilePathIndex_HiddenFile() {
+    @Test
+    fun filePathIndex_HiddenFile() {
+        val file = myFixture.file.virtualFile
         // hidden files (name starts with dot) should be marked as included=false
         myFixture.configureByFile("features/index/common/scripted_variables/.hidden.test.txt")
         val relPath = "common/scripted_variables/.hidden.test.txt"
-        injectFileInfo(relPath, ParadoxGameType.Stellaris)
-        val project = project
-        val scope = GlobalSearchScope.projectScope(project)
-        val values = FileBasedIndex.getInstance().getValues(
-            ParadoxIndexKeys.FilePath,
-            relPath,
-            scope
-        )
+        PlsTestUtil.injectFileInfo(file, relPath, ParadoxGameType.Stellaris)
+        val scope = GlobalSearchScope.projectScope(this.project)
+        val values = FileBasedIndex.getInstance().getValues(ParadoxIndexKeys.FilePath, relPath, scope)
         Assert.assertTrue(values.isNotEmpty())
         val info = values.single()
         Assert.assertEquals("common/scripted_variables", info.directory)
         Assert.assertEquals(ParadoxGameType.Stellaris, info.gameType)
         Assert.assertFalse("Expected included=false for hidden file", info.included)
-    }
-
-    private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
-        val vFile = myFixture.file.virtualFile
-        val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Script, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

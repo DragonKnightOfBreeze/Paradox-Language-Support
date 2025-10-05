@@ -121,6 +121,12 @@ object CwtConfigManager {
         }
     }
 
+    fun getBuiltInConfigRootDirectories(project: Project): List<VirtualFile> {
+        return CwtConfigGroupFileProvider.EP_NAME.extensionList
+            .filter { it.type == CwtConfigGroupFileProvider.Type.BuiltIn }
+            .mapNotNull { it.getRootDirectory(project) }
+    }
+
     fun getFilePath(element: PsiElement): String? {
         val file = runReadAction { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null

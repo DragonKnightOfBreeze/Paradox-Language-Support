@@ -12,6 +12,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxScopeLinkValueNode(
@@ -34,6 +35,8 @@ class ParadoxScopeLinkValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+
             // text may contain parameters & may be an argument list inside parentheses
             // For argumented dynamic links, we support multi-args separated by commas with optional blanks,
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
@@ -122,6 +125,11 @@ class ParadoxScopeLinkValueNode(
                     // empty argument -> insert error token node at the position before comma
                     val p = startIndex + offset
                     nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
+                } else if (incomplete) {
+                    // trailing empty argument in incomplete mode -> emit an empty argument node via resolveSingle
+                    val coreRange = TextRange.create(a + offset, a + offset)
+                    val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                    resolveSingle("", coreRange, cfgs)
                 }
                 // trailing blanks
                 if (b + 1 < endExclusive) {

@@ -4,40 +4,40 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
-import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxPath
-import kotlinx.coroutines.runBlocking
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
-    fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
-        // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
-        val configGroupService = PlsFacade.getConfigGroupService()
-        val configGroups = configGroupService.getConfigGroups(project).values
-        runBlocking { configGroupService.init(configGroups, project) }
+    // Load locale configs (CWT) to enable ignoreLocale path expansion in tests
+    @Before
+    fun beforeAll() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
 
+    @Test
+    fun ignoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
+        val file = myFixture.file.virtualFile
         // Arrange: ensure only english file exists in test
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        injectFileInfo("localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
 
         // Important: request reindex so FilePathIndex sees injected fileInfo
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        FileBasedIndex.getInstance().requestReindex(file)
 
         val project = project
-        val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = selector(project, file).file().withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_french.test.yml"
 
         // Act
@@ -58,25 +58,22 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         )
     }
 
-    fun testIgnoreLocale_BothLocales_ReturnsBoth() {
-        // Load locale configs (CWT)
-        val configGroupService = PlsFacade.getConfigGroupService()
-        val configGroups = configGroupService.getConfigGroups(project).values
-        runBlocking { configGroupService.init(configGroups, project) }
-
+    @Test
+    fun ignoreLocale_BothLocales_ReturnsBoth() {
+        val file = myFixture.file.virtualFile
         // Arrange: english and chinese files both exist
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        injectFileInfo("localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
 
         // configure chinese file as well and inject file info
         myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
-        injectFileInfo("localisation/ui/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(file, "localisation/ui/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
 
         // Important: request reindex so FilePathIndex sees injected fileInfo
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        FileBasedIndex.getInstance().requestReindex(file)
 
         val project = project
-        val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))
+        val selector = selector(project, file).file().withSearchScope(GlobalSearchScope.projectScope(project))
         val asked = "localisation/ui/ui_l_english.test.yml"
 
         // Act
@@ -93,12 +90,5 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         // Assert
         Assert.assertTrue(names.contains("ui_l_english.test.yml"))
         Assert.assertTrue(names.contains("ui_l_simp_chinese.test.yml"))
-    }
-
-    private fun injectFileInfo(relPath: String, gameType: ParadoxGameType) {
-        val vFile = myFixture.file.virtualFile
-        val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Localisation, ParadoxRootInfo.Injected(gameType))
-        vFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
-        vFile.putUserData(PlsKeys.injectedGameType, gameType)
     }
 }

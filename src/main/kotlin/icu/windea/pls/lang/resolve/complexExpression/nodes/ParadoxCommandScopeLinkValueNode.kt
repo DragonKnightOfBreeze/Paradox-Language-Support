@@ -10,6 +10,7 @@ import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.lang.util.PlsCoreManager
 
 class ParadoxCommandScopeLinkValueNode(
     override val text: String,
@@ -33,6 +34,7 @@ class ParadoxCommandScopeLinkValueNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
             // text may contain parameters & may be an argument list inside parentheses
             // Support multi-args separated by commas with optional blanks and single-quoted literal arguments.
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
@@ -103,6 +105,11 @@ class ParadoxCommandScopeLinkValueNode(
                     // empty argument -> insert error token node at the position before comma
                     val p = startIndex + offset
                     nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
+                } else if (incomplete) {
+                    // trailing empty argument in incomplete mode -> emit an empty argument node via resolveSingle
+                    val coreRange = TextRange.create(a + offset, a + offset)
+                    val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                    resolveSingle("", coreRange, cfgs)
                 }
                 // trailing blanks
                 if (b + 1 < endExclusive) {

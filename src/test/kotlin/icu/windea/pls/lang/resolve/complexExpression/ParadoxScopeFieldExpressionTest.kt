@@ -19,6 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValue
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 
 @TestDataPath("\$CONTENT_ROOT/testData")
@@ -30,7 +31,8 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         gameType: ParadoxGameType = ParadoxGameType.Stellaris,
         incomplete: Boolean = false,
     ): ParadoxScopeFieldExpression? {
-        val group = initConfigGroup(gameType)
+        PlsTestUtil.initConfigGroup(this.project, gameType)
+        val group = Unit
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
         return ParadoxScopeFieldExpression.resolve(text, TextRange(0, text.length), group)
     }

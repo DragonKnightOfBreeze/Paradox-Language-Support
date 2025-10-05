@@ -10,6 +10,7 @@ import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
+import icu.windea.pls.lang.util.PlsCoreManager
 
 class ParadoxCommandFieldValueNode(
     override val text: String,
@@ -32,6 +33,7 @@ class ParadoxCommandFieldValueNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldValueNode {
             // text may contain parameters & may be an argument list inside parentheses for fromArgument links
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -81,32 +83,30 @@ class ParadoxCommandFieldValueNode(
                 // leading blanks
                 var a = startIndex
                 while (a < endExclusive && text[a].isWhitespace()) a++
-                if (a > startIndex) {
-                    val blankRange = TextRange.create(startIndex + offset, a + offset)
-                    nodes += ParadoxBlankNode(text.substring(startIndex, a), blankRange, configGroup)
-                }
+                if (a > startIndex) nodes += ParadoxBlankNode(text.substring(startIndex, a), TextRange.create(startIndex + offset, a + offset), configGroup)
                 // core
                 var b = endExclusive - 1
                 while (b >= a && text[b].isWhitespace()) b--
                 if (b >= a) {
                     val coreText = text.substring(a, b + 1)
                     val coreRange = TextRange.create(a + offset, b + 1 + offset)
-                    if (coreText.isQuoted('\'')) {
-                        nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
-                    } else {
+                    if (coreText.isQuoted('\'')) nodes += ParadoxStringLiteralNode(coreText, coreRange, configGroup)
+                    else {
                         val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
                         resolveSingle(coreText, coreRange, cfgs)
                     }
                 } else if (fromComma) {
-                    // empty argument -> insert error token node at the position before comma
+                    // empty argument before comma -> error token
                     val p = startIndex + offset
                     nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
+                } else if (incomplete) {
+                    // trailing empty argument in incomplete mode -> emit an empty argument node via resolveSingle
+                    val coreRange = TextRange.create(a + offset, a + offset)
+                    val cfgs = linkConfigs.mapNotNull { CwtLinkConfig.delegatedWith(it, argIndex) }.ifEmpty { linkConfigs }
+                    resolveSingle("", coreRange, cfgs)
                 }
                 // trailing blanks
-                if (b + 1 < endExclusive) {
-                    val blankRange2 = TextRange.create(b + 1 + offset, endExclusive + offset)
-                    nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), blankRange2, configGroup)
-                }
+                if (b + 1 < endExclusive) nodes += ParadoxBlankNode(text.substring(b + 1, endExclusive), TextRange.create(b + 1 + offset, endExclusive + offset), configGroup)
                 argIndex++
             }
             while (i < text.length) {
@@ -119,7 +119,6 @@ class ParadoxCommandFieldValueNode(
                         ')' -> if (depthParen > 0) depthParen--
                         ',' -> if (depthParen == 0) {
                             emitSegment(i, true)
-                            // emit comma marker
                             nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }

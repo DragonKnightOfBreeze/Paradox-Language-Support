@@ -237,7 +237,7 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class TestCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
-    override val type get() = CwtConfigGroupFileProvider.Type.Local
+    override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
 
     override val isEnabled get() = PlsFacade.isUnitTestMode()
 
