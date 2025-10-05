@@ -18,6 +18,9 @@ class ParadoxCommandFieldValueNode(
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
 ) : ParadoxComplexExpressionNodeBase(), ParadoxLinkValueNode {
+    override val argumentNodes: List<ParadoxComplexExpressionNode>
+        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
+
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
     }
@@ -25,9 +28,6 @@ class ParadoxCommandFieldValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY
     }
-
-    override val argumentNodes: List<ParadoxComplexExpressionNode>
-        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldValueNode {

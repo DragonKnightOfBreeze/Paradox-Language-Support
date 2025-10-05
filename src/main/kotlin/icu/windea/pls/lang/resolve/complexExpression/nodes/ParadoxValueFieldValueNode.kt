@@ -21,7 +21,10 @@ class ParadoxValueFieldValueNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>,
     override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
-) : ParadoxComplexExpressionNodeBase() {
+) : ParadoxComplexExpressionNodeBase(), ParadoxLinkValueNode {
+    override val argumentNodes: List<ParadoxComplexExpressionNode>
+        get() = nodes.filter { it !is ParadoxBlankNode && it !is ParadoxMarkerNode }
+
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs
     }

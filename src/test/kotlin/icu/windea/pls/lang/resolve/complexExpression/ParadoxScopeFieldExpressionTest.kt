@@ -5,9 +5,13 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.expression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefixNode
@@ -108,29 +112,156 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root, some_planet)"
         val exp = parse(s)!!
         println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_planet)", 0..34) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet)", 5..34) {
+                node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+                node<ParadoxOperatorNode>("(", 15..16)
+                node<ParadoxScopeLinkValueNode>("root, some_planet", 16..33) {
+                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    node<ParadoxMarkerNode>(",", 20..21)
+                    node<ParadoxBlankNode>(" ", 21..22)
+                    node<ParadoxDataSourceNode>("some_planet", 22..33)
+                }
+                node<ParadoxOperatorNode>(")", 33..34)
+            }
+        }
+        exp.check(dsl)
+
+        // output:
+        // buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_planet)", 0..34) {
+        //     node<ParadoxSystemScopeNode>("root", 0..4)
+        //     node<ParadoxOperatorNode>(".", 4..5)
+        //     node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet)", 5..34) {
+        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+        //         node<ParadoxOperatorNode>("(", 15..16)
+        //         node<ParadoxScopeLinkValueNode>("root, some_planet", 16..33) {
+        //             node<ParadoxSystemScopeNode>("root", 16..20)
+        //             node<ParadoxMarkerNode>(",", 20..21)
+        //             node<ParadoxBlankNode>(" ", 21..22)
+        //             node<ParadoxErrorScopeLinkNode>("some_planet", 22..33)
+        //         }
+        //         node<ParadoxOperatorNode>(")", 33..34)
+        //     }
+        // }
     }
 
     fun test_forArguments_withTrailComma() {
         val s = "root.test_scope(root, some_planet,)"
         val exp = parse(s)!!
         println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_planet,)", 0..35) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet,)", 5..35) {
+                node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+                node<ParadoxOperatorNode>("(", 15..16)
+                node<ParadoxScopeLinkValueNode>("root, some_planet,", 16..34) {
+                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    node<ParadoxMarkerNode>(",", 20..21)
+                    node<ParadoxBlankNode>(" ", 21..22)
+                    node<ParadoxDataSourceNode>("some_planet", 22..33)
+                    node<ParadoxMarkerNode>(",", 33..34)
+                }
+                node<ParadoxOperatorNode>(")", 34..35)
+            }
+        }
+        exp.check(dsl)
+
+        // output:
+        // buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_planet,)", 0..35) {
+        //     node<ParadoxSystemScopeNode>("root", 0..4)
+        //     node<ParadoxOperatorNode>(".", 4..5)
+        //     node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_planet,)", 5..35) {
+        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+        //         node<ParadoxOperatorNode>("(", 15..16)
+        //         node<ParadoxScopeLinkValueNode>("root, some_planet,", 16..34) {
+        //             node<ParadoxSystemScopeNode>("root", 16..20)
+        //             node<ParadoxMarkerNode>(",", 20..21)
+        //             node<ParadoxBlankNode>(" ", 21..22)
+        //             node<ParadoxErrorScopeLinkNode>("some_planet", 22..33)
+        //             node<ParadoxMarkerNode>(",", 33..34)
+        //         }
+        //         node<ParadoxOperatorNode>(")", 34..35)
+        //     }
+        // }
     }
 
     fun test_forArguments_missingArgument_1() {
-        val s = "root.test_scope(root,)"
+        val s = "root.test_scope(root)"
         val exp = parse(s)!!
-        println(exp.render())
+        // println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root)", 0..21) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root)", 5..21) {
+                node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+                node<ParadoxOperatorNode>("(", 15..16)
+                node<ParadoxScopeLinkValueNode>("root", 16..20) {
+                    node<ParadoxSystemScopeNode>("root", 16..20)
+                }
+                node<ParadoxOperatorNode>(")", 20..21)
+            }
+        }
+        exp.check(dsl)
     }
 
     fun test_forArguments_missingArgument_2() {
-        val s = "root.test_scope(root, some_planet)"
+        val s = "root.test_scope(root,)"
         val exp = parse(s)!!
-        println(exp.render())
+        // println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root,)", 0..22) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root,)", 5..22) {
+                node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+                node<ParadoxOperatorNode>("(", 15..16)
+                node<ParadoxScopeLinkValueNode>("root,", 16..21) {
+                    node<ParadoxSystemScopeNode>("root", 16..20)
+                    node<ParadoxMarkerNode>(",", 20..21)
+                }
+                node<ParadoxOperatorNode>(")", 21..22)
+            }
+        }
+        exp.check(dsl)
     }
 
     fun test_forArguments_missingArgument_3() {
-        val s = "root.test_scope(root, some_planet)"
+        val s = "root.test_scope(, some_planet)"
         val exp = parse(s)!!
         println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_planet)", 0..30) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_scope(, some_planet)", 5..30) {
+                node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+                node<ParadoxOperatorNode>("(", 15..16)
+                node<ParadoxScopeLinkValueNode>(", some_planet", 16..29) {
+                    node<ParadoxErrorTokenNode>("", 16..16)
+                    node<ParadoxMarkerNode>(",", 16..17)
+                    node<ParadoxBlankNode>(" ", 17..18)
+                    node<ParadoxDataSourceNode>("some_planet", 18..29)
+                }
+                node<ParadoxOperatorNode>(")", 29..30)
+            }
+        }
+        exp.check(dsl)
+
+        // output:
+        // buildExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_planet)", 0..30) {
+        //     node<ParadoxSystemScopeNode>("root", 0..4)
+        //     node<ParadoxOperatorNode>(".", 4..5)
+        //     node<ParadoxDynamicScopeLinkNode>("test_scope(, some_planet)", 5..30) {
+        //         node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
+        //         node<ParadoxOperatorNode>("(", 15..16)
+        //         node<ParadoxScopeLinkValueNode>(", some_planet", 16..29) {
+        //             node<ParadoxMarkerNode>(",", 16..17)
+        //             node<ParadoxBlankNode>(" ", 17..18)
+        //             node<ParadoxErrorScopeLinkNode>("some_planet", 18..29)
+        //         }
+        //         node<ParadoxOperatorNode>(")", 29..30)
+        //     }
+        // }
     }
 }

@@ -67,9 +67,10 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
         }
     }
 
-    override fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig {
+    override fun delegatedWith(linkConfig: CwtLinkConfig, dataSourceIndex: Int): CwtLinkConfig? {
+        if (dataSourceIndex < 0 || dataSourceIndex > linkConfig.dataSources.lastIndex) return null
         if (dataSourceIndex == linkConfig.dataSourceIndex) return linkConfig
-        if (linkConfig.dataSourceExpressions.size <= 1) return linkConfig
+        if (linkConfig.dataSources.size <= 1) return linkConfig
         return CwtLinkConfigDelegate(linkConfig, dataSourceIndex)
     }
 }
