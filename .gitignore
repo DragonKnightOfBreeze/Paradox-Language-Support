@@ -1,7 +1,7 @@
 cwt/cwtools-*-config
 
 .clinerules
-.windsurf
+# .windsurf # why?
 lib
 tmp
 local.properties
