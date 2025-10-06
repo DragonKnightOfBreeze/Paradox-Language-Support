@@ -1,26 +1,16 @@
 # Changelog
 
-## Unreleased
-
-- [ ] 更新参考文档，更加详细，尽可能全面地介绍插件的功能
-- [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
-- [ ] 兼容通过内联脚本声明的定义，兼容相关语言功能（定义的名字在参数值中，而定义的声明在内联脚本文件中）
-- [ ] 支持为同一个模组配置多个模组依赖列表
-- [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
-- [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
-- [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
-- [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files
-- [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
-- [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
-
 ## 2.0.6-dev
 
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [X] 同步其他游戏的规则文件 / Synchronize config files of other games 
-- [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复
+- [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复D
+- [ ] 优化：优化插件的工具菜单的显示逻辑 / OP: Optimize the display logic of the plugin tool menu
 - [X] 优化：进一步优化脚本文件和本地化文件的 lexer & parser 的实现 / OP: Further optimize the implementation of lexer & parser for script files and localisation files
-- [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions. For nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed.
-- [X] 新功能：支持 Stellaris 中的命名格式表达式 #193 / NEW: Support the name format expressions in Stellaris #193 
+- [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
+- [X] 新功能：支持 Stellaris 中的命名格式表达式 #193 / NEW: Support the name format expressions in Stellaris #193
+- [ ] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files
+- [ ] 新功能：支持在 IDE 中启动游戏 / NEW: Support to launch game in IDE
 
 ## 2.0.5
 
