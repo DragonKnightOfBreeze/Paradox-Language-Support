@@ -7,7 +7,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns.or
 import com.intellij.patterns.PlatformPatterns.psiElement
-import icu.windea.pls.core.extend
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.CONCEPT_NAME_TOKEN
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_TOKEN
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE_TOKEN
@@ -21,45 +20,45 @@ import icu.windea.pls.model.constants.PlsConstants
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
     init {
-        // 当用户可能正在输入一个locale的名字时提示
+        // 当用户可能正在输入语言区域的名字时提示
         val localePattern = or(psiElement(LOCALE_TOKEN), psiElement(PROPERTY_KEY_TOKEN))
-        extend(localePattern, ParadoxLocalisationLocaleCompletionProvider())
+        extend(CompletionType.BASIC, localePattern, ParadoxLocalisationLocaleCompletionProvider())
 
-        // 当用户可能正在输入一个localisation的名字时提示
+        // 当用户可能正在输入本地化的名字时提示
         val localisationNamePattern = psiElement(PROPERTY_KEY_TOKEN)
         extend(CompletionType.BASIC, localisationNamePattern, ParadoxLocalisationNameCompletionProvider())
 
-        // 当用户可能正在输入一个color的ID时提示（因为colorId只有一个字符，这里需要特殊处理）
+        // 当用户可能正在输入color的ID时提示（因为colorId只有一个字符，这里需要特殊处理）
         val colorPattern = psiElement().atStartOf(psiElement().afterLeaf("§"))
-        extend(colorPattern, ParadoxLocalisationColorCompletionProvider())
+        extend(null, colorPattern, ParadoxLocalisationColorCompletionProvider())
 
-        // 当用户可能正在输入一个 parameter 的名字时提示
+        // 当用户可能正在输入 parameter 的名字时提示
         val parameterPattern = psiElement(PARAMETER_TOKEN)
-        extend(parameterPattern, ParadoxLocalisationParameterCompletionProvider())
+        extend(null, parameterPattern, ParadoxLocalisationParameterCompletionProvider())
 
-        // 当用户可能正在输入一个 scriptedVariableReference 的名字时提示
+        // 当用户可能正在输入 scriptedVariableReference 的名字时提示
         val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
-        extend(scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
+        extend(null, scriptedVariableReferencePattern, ParadoxScriptedVariableCompletionProvider())
 
-        // 当用户可能正在输入一个 localisationExpression 时提示
+        // 当用户可能正在输入 localisationExpression 时提示
         val expressionPattern = psiElement().withElementType(ParadoxLocalisationTokenSets.EXPRESSION_TOKENS)
-        extend(expressionPattern, ParadoxLocalisationExpressionCompletionProvider())
+        extend(null, expressionPattern, ParadoxLocalisationExpressionCompletionProvider())
 
-        // 当用户可能正在输入一个 icon 的名字时提示
+        // 当用户可能正在输入 icon 的名字时提示
         val iconPattern = psiElement(ICON_TOKEN)
-        extend(iconPattern, ParadoxLocalisationIconCompletionProvider())
+        extend(null, iconPattern, ParadoxLocalisationIconCompletionProvider())
 
-        // 当用户可能正在输入一个 conceptName 时提示
+        // 当用户可能正在输入 conceptName 时提示
         val conceptNamePattern = psiElement(CONCEPT_NAME_TOKEN)
-        extend(conceptNamePattern, ParadoxLocalisationConceptCompletionProvider())
+        extend(null, conceptNamePattern, ParadoxLocalisationConceptCompletionProvider())
 
-        // 当用户可能正在输入一个 textFormat 时提示
+        // 当用户可能正在输入 textFormat 时提示
         val textFormatPattern = psiElement(TEXT_FORMAT_TOKEN)
-        extend(textFormatPattern, ParadoxLocalisationTextFormatCompletionProvider())
+        extend(null, textFormatPattern, ParadoxLocalisationTextFormatCompletionProvider())
 
-        // 当用户可能正在输入一个 textIcon 时提示
+        // 当用户可能正在输入 textIcon 时提示
         val textIconPattern = psiElement(TEXT_ICON_TOKEN)
-        extend(textIconPattern, ParadoxLocalisationTextIconCompletionProvider())
+        extend(null, textIconPattern, ParadoxLocalisationTextIconCompletionProvider())
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {

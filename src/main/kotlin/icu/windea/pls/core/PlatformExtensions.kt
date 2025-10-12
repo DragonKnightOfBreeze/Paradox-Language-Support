@@ -2,10 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.codeInsight.completion.CompletionContributor
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.template.TemplateBuilder
 import com.intellij.codeInsight.template.TemplateBuilderImpl
 import com.intellij.codeInspection.InspectionProfileEntry
@@ -41,7 +37,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.IdeFrame
 import com.intellij.openapi.wm.ex.WindowManagerEx
-import com.intellij.patterns.ElementPattern
 import com.intellij.platform.backend.presentation.TargetPresentationBuilder
 import com.intellij.profile.codeInspection.InspectionProfileManager
 import com.intellij.psi.PsiDirectory
@@ -74,7 +69,6 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.model.constants.PlsConstants
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
@@ -268,25 +262,17 @@ fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate(
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
 
 /**
- * 获取包含当前位置前后文本的关键字。
+ * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
  */
 fun PsiElement.getKeyword(offsetInParent: Int): String {
     return text.substring(0, offsetInParent).unquote()
 }
 
 /**
- * 获取包含当前位置前后文本的完整关键字（常用于补全/高亮）。
+ * 获取包含当前位置（[offsetInParent]）之前与之后的文本的完整关键字。用于代码补全。
  */
-fun PsiElement.getFullKeyword(offsetInParent: Int): String {
-    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + PlsConstants.dummyIdentifier.length)).unquote()
-}
-
-/**
- * 如果不指定[CompletionType]，IDE的默认实现会让对应的[CompletionProvider]相比指定[CompletionType]的后执行。
- */
-fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider: CompletionProvider<CompletionParameters>) {
-    extend(CompletionType.BASIC, place, provider)
-    extend(CompletionType.SMART, place, provider)
+fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
+    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
 }
 
 // endregion

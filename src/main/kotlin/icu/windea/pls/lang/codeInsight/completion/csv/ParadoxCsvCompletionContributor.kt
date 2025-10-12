@@ -5,14 +5,14 @@ import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
-import icu.windea.pls.core.extend
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.model.constants.PlsConstants
 
 class ParadoxCsvCompletionContributor : CompletionContributor() {
     init {
+        // 当用户可能正在输入 csvExpression 时提示
         val expressionPattern = psiElement().withElementType(ParadoxCsvTokenSets.EXPRESSION_TOKENS)
-        extend(expressionPattern, ParadoxCsvExpressionCompletionProvider())
+        extend(null, expressionPattern, ParadoxCsvExpressionCompletionProvider())
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
