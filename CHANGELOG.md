@@ -5,12 +5,11 @@
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [X] 同步其他游戏的规则文件 / Synchronize config files of other games 
 - [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复D
-- [ ] 优化：优化插件的工具菜单的显示逻辑 / OP: Optimize the display logic of the plugin tool menu
-- [X] 优化：进一步优化脚本文件和本地化文件的 lexer & parser 的实现 / OP: Further optimize the implementation of lexer & parser for script files and localisation files
 - [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
-- [X] 新功能：支持 Stellaris 中的命名格式表达式 #193 / NEW: Support the name format expressions in Stellaris #193
+- [X] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris #193
 - [ ] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files
 - [ ] 新功能：支持在 IDE 中启动游戏 / NEW: Support to launch game in IDE
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.5
 
