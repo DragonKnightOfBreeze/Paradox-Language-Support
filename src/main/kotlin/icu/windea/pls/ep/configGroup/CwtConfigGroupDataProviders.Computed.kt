@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.configGroup
 
+import com.intellij.openapi.application.readAction
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
@@ -69,7 +70,8 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val configPaths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey) }
                 val c0 = baseDeclarationConfig.configForDeclaration
                 val c = configPaths.firstNotNullOfOrNull { c0.findPropertyByPath(it, ignoreCase = true) } ?: continue
-                val declarationConfig = CwtDeclarationConfig.resolve(c, name = typeName) ?: continue
+                // read action is required here (for logging)
+                val declarationConfig = readAction { CwtDeclarationConfig.resolve(c, name = typeName) } ?: continue
                 configGroup.declarations[typeName] = declarationConfig
             }
         }

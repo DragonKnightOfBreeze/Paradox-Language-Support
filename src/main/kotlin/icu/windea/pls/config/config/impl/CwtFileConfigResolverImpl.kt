@@ -2,6 +2,7 @@ package icu.windea.pls.config.config.impl
 
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
@@ -76,7 +77,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver {
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
-        logger.debug { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(propertyElement) }
+        logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(propertyElement) }
         return config
     }
 
@@ -95,7 +96,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver {
         CwtConfigCollector.postHandleConfig(config)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
-        logger.debug { "Resolved value config (value: ${config.value}).".withLocationPrefix(valueElement) }
+        logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(valueElement) }
         return config
     }
 
