@@ -1,32 +1,37 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
         val name = config.key
-        var supportedScopes: Set<String>? = null
-        val props = config.properties
-        if (props.isNullOrEmpty()) return null
-        for (prop in props) {
-            when (prop.key) {
-                // may be empty here (e.g., "AI Economy")
-                "supported_scopes" -> supportedScopes = buildSet {
-                    prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                    prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-                }
-            }
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid modifier category config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
         }
-        supportedScopes = supportedScopes?.optimized() ?: ParadoxScopeManager.anyScopeIdSet
+        // may be empty here (e.g., "AI Economy")
+        val supportedScopes = propElements.find { it.key == "supported_scopes" }?.let { prop ->
+            buildSet {
+                prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }
+        }?.optimized() ?: ParadoxScopeManager.anyScopeIdSet
+        logger.debug { "Resolved modifier category config (name: $name).".withLocationPrefix(config) }
         return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
     }
 }

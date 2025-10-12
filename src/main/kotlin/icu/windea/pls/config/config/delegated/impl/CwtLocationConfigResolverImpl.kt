@@ -7,6 +7,8 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 
 internal class CwtLocationConfigResolverImpl : CwtLocationConfig.Resolver {
+    // no logger here (unnecessary)
+
     override fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtLocationConfig? {

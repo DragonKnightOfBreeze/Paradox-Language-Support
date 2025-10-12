@@ -72,6 +72,7 @@ import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigCollector
+import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -119,22 +120,38 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     true
                 }
             }
-            allInternalFiles.forEach f@{ (filePath, file) ->
-                currentCoroutineContext.ensureActive()
-                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-                val fileConfig = CwtFileConfig.resolve(psiFile, configGroup)
-                processInternalFile(filePath, fileConfig, configGroup)
-            }
-            allFiles.forEach f@{ (_, file) ->
-                currentCoroutineContext.ensureActive()
-                val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-                val fileConfig = CwtFileConfig.resolve(psiFile, configGroup)
-                processFile(fileConfig, configGroup)
-                // configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
+        }
+        readAction {
+            try {
+                allInternalFiles.forEach f@{ (filePath, file) ->
+                    currentCoroutineContext.ensureActive()
+                    CwtConfigResolverUtil.setLocation(filePath, configGroup)
+                    resolveAndProcessInternalFile(filePath, file, configGroup)
+                }
+                allFiles.forEach f@{ (filePath, file) ->
+                    currentCoroutineContext.ensureActive()
+                    CwtConfigResolverUtil.setLocation(filePath, configGroup)
+                    resolveAndProcessFile(file, configGroup, filePath)
+                }
+            } finally {
+                CwtConfigResolverUtil.resetLocation()
             }
         }
 
         return true
+    }
+
+    private fun resolveAndProcessInternalFile(filePath: String, file: VirtualFile, configGroup: CwtConfigGroup) {
+        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
+        val fileConfig = CwtFileConfig.resolve(psiFile, filePath, configGroup)
+        processInternalFile(filePath, fileConfig, configGroup)
+    }
+
+    private fun resolveAndProcessFile(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String) {
+        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
+        val fileConfig = CwtFileConfig.resolve(psiFile, filePath, configGroup)
+        processFile(fileConfig, configGroup)
+        // configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
     }
 
     private fun processInternalFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {

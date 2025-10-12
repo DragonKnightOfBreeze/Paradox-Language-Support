@@ -139,3 +139,7 @@ fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 //    }
 //    return this
 // }
+
+fun <K, V> Map<K, List<V>>.getOne(key: K): V? = get(key)?.lastOrNull()
+
+fun <K, V> Map<K, List<V>>.getAll(key: K): List<V> = get(key).orEmpty()

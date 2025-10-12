@@ -55,26 +55,24 @@ class CwtConfigGroupService {
     }
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Initializing config groups for $targetName...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
             configGroup.init()
             getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Initialized config groups for $targetName in ${end - start} ms.")
     }
 
     suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Refreshing config groups for $targetName...")
         val start = System.currentTimeMillis()
         configGroups.forEachConcurrent { configGroup ->
             configGroup.init()
             getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
         }
         val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
     }
 

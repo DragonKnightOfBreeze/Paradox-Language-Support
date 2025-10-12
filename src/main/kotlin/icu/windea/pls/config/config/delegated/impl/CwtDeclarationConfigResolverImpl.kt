@@ -1,9 +1,12 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.processDescendants
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -11,11 +14,14 @@ import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 class CwtDeclarationConfigResolverImpl : CwtDeclarationConfig.Resolver {
-    override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(name, config)
+    private val logger = thisLogger()
 
-    private fun doResolve(name: String?, config: CwtPropertyConfig): CwtDeclarationConfigImpl? {
-        val name0 = name ?: config.key.takeIf { it.isIdentifier() } ?: return null
-        return CwtDeclarationConfigImpl(config, name0)
+    override fun resolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? = doResolve(config, name)
+
+    private fun doResolve(config: CwtPropertyConfig, inputName: String?): CwtDeclarationConfig? {
+        val name = inputName ?: config.key.takeIf { it.isIdentifier() } ?: return null
+        logger.debug { "Resolved declaration config (name: $name).".withLocationPrefix(config) }
+        return CwtDeclarationConfigImpl(config, name)
     }
 }
 

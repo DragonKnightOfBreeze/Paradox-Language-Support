@@ -1,20 +1,26 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.optionData
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 
 internal class CwtExtendedInlineScriptConfigResolverImpl : CwtExtendedInlineScriptConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig = doResolve(config)
 
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfigImpl {
+    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val contextConfigsType = config.optionData { contextConfigsType }
+        logger.debug { "Resolved extended inline script config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedInlineScriptConfigImpl(config, name, contextConfigsType)
     }
 }

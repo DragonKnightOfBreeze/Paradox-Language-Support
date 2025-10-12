@@ -1,18 +1,24 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 
 internal class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
         val id = config.key
         val baseId = config.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
         val name = config.stringValue ?: id
+        logger.debug { "Resolved system scope config (id: $id).".withLocationPrefix(config) }
         return CwtSystemScopeConfigImpl(config, id, baseId, name)
     }
 }

@@ -44,22 +44,20 @@ class CwtConfigGroup(
     }
 
     private suspend fun doInit() {
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Initializing config group '${gameType.id}' for $targetName...")
-        val start = System.currentTimeMillis()
         try {
+            val start = System.currentTimeMillis()
             val configGroupOnInit = CwtConfigGroup(project, gameType)
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
             dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
             configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
             modificationTracker.incModificationCount() // 显式增加修改计数
+            val end = System.currentTimeMillis()
+            val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             if (e is CancellationException) throw e
             logger.error(e) // 不期望在这里出现常规异常
-        } finally {
-            val end = System.currentTimeMillis()
-            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
         }
     }
 

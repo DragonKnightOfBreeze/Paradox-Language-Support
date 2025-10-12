@@ -1,17 +1,23 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.optionData
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 
 internal class CwtExtendedScriptedVariableConfigResolverImpl : CwtExtendedScriptedVariableConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig = doResolve(config)
 
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfigImpl {
+    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
         val name = if (config is CwtPropertyConfig) config.key else config.value
         val hint = config.optionData { hint }
+        logger.debug { "Resolved extended scripted variable config (name: $name).".withLocationPrefix(config) }
         return CwtExtendedScriptedVariableConfigImpl(config, name, hint)
     }
 }

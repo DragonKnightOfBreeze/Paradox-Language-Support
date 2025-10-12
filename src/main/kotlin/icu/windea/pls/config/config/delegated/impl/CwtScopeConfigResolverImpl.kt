@@ -1,25 +1,33 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.optimized
 
 internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtScopeConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtScopeConfig? {
         val name = config.key
-        var aliases: Set<String>? = null
-        val props = config.properties
-        if (props.isNullOrEmpty()) return null
-        for (prop in props) {
-            if (prop.key == "aliases") aliases = prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid scope config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
         }
-        if (aliases == null) aliases = emptySet()
+        val aliases = propElements.find { it.key == "aliases" }?.let { prop ->
+            prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
+        }?.optimized().orEmpty()
+        logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }
         return CwtScopeConfigImpl(config, name, aliases)
     }
 }

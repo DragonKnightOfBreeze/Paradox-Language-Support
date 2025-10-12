@@ -123,7 +123,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      */
     val predicate: CwtOptionDataAccessor<Map<String, ReversibleValue<String>>> by create(cached = true) {
         val option = findOption("predicate") ?: return@create emptyMap()
-        option.options?.associate { it.key to ReversibleValue(it.separatorType == CwtSeparatorType.EQUAL, it.value) }.orEmpty()
+        option.options?.associate { it.key to ReversibleValue(it.separatorType == CwtSeparatorType.EQUAL, it.value) }?.optimized().orEmpty()
     }
 
     /**
@@ -152,7 +152,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
                 val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
                 put(k, v)
             }
-        }
+        }.optimized()
     }
 
     /**
@@ -208,7 +208,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     val supportedScopes: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
         // ignore case for scopes (to lowercase)
         val option = findOption("scope", "scopes")
-        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }
+        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }?.optimized()
         if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
 
@@ -384,7 +384,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      * 示例：`## only_if_not = { simple complex }`
      */
     val onlyIfNot: CwtOptionDataAccessor<Set<String>?> by create {
-        findOption("only_if_not")?.getOptionValueOrValues()
+        findOption("only_if_not")?.getOptionValueOrValues()?.optimized()
     }
 
     /**
@@ -397,7 +397,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      * CWTools 兼容性：PLS 未实现相关功能。
      */
     val graphRelatedTypes: CwtOptionDataAccessor<Set<String>?> by create {
-        findOption("graph_related_types")?.getOptionValues()
+        findOption("graph_related_types")?.getOptionValues()?.optimized()
     }
 
     /**
@@ -415,7 +415,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager.completePathReference
      */
     val fileExtensions: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
-        findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
+        findOption("file_extensions")?.getOptionValueOrValues()?.optimized().orEmpty()
     }
 
     /**
@@ -430,7 +430,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      * @see icu.windea.pls.lang.util.ParadoxModifierManager.resolveModifierCategory
      */
     val modifierCategories: CwtOptionDataAccessor<Set<String>?> by create(cached = true) {
-        findOption("modifier_categories")?.getOptionValues()
+        findOption("modifier_categories")?.getOptionValues()?.optimized()
     }
 
     /**

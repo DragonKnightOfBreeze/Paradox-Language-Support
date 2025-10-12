@@ -1,46 +1,47 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.core.collections.getAll
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
 internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
         val name = config.key.removeSurroundingOrNull("row[", "]")?.orNull() ?: return null
-        val paths = sortedSetOf<String>()
-        var pathFile: String? = null
-        var pathExtension: String? = null
-        var pathStrict = false
-        val pathPatterns = sortedSetOf<String>()
-        val columnConfigs = mutableMapOf<String, CwtPropertyConfig>()
-        var endColumn: String? = null
-
-        val props = config.properties.orEmpty()
-        if (props.isEmpty()) return null
-        for (prop in props) {
-            when (prop.key) {
-                "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it.intern() }
-                "path_file" -> pathFile = prop.stringValue ?: continue
-                "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".")?.intern() ?: continue
-                "path_strict" -> pathStrict = prop.booleanValue ?: continue
-                "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
-                "columns" -> prop.properties.orEmpty().forEach { c -> columnConfigs[c.key] = c }
-                "end_column" -> endColumn = prop.stringValue ?: continue
-            }
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid row config (name: $name): Empty properties.".withLocationPrefix(config))
+            return null
         }
 
+        val propGroup = propElements.groupBy { it.key }
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathFile = propGroup.getOne("path_file")?.stringValue
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val columnConfigs = propGroup.getOne("columns")?.properties?.associateBy { it.key }.orEmpty()
+        val endColumn = propGroup.getOne("end_column")?.stringValue
+
+        logger.debug { "Resolved row config (name: $name).".withLocationPrefix(config) }
         return CwtRowConfigImpl(
             config, name,
-            paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
+            paths, pathFile, pathExtension, pathStrict, pathPatterns,
             columnConfigs, endColumn
         )
     }

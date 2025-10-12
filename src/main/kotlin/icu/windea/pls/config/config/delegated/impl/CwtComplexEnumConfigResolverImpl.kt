@@ -1,5 +1,7 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -10,44 +12,45 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.processDescendants
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.core.collections.getAll
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
 class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
 
-    private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfigImpl? {
+    private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
         val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull() ?: return null
-        val paths = sortedSetOf<String>()
-        var pathFile: String? = null
-        var pathExtension: String? = null
-        var pathStrict = false
-        val pathPatterns = sortedSetOf<String>()
-        var startFromRoot = false
-        var nameConfig: CwtPropertyConfig? = null
-
-        val props = config.properties.orEmpty()
-        if (props.isEmpty()) return null
-        for (prop in props) {
-            when (prop.key) {
-                "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it.intern() }
-                "path_file" -> pathFile = prop.stringValue ?: continue
-                "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".")?.intern() ?: continue
-                "path_strict" -> pathStrict = prop.booleanValue ?: continue
-                "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
-                "start_from_root" -> startFromRoot = prop.booleanValue ?: false
-                "name" -> nameConfig = prop
-            }
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid complex enum config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
         }
 
+        val propGroup = propElements.groupBy { it.key }
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathFile = propGroup.getOne("path_file")?.stringValue
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
+        val nameConfig = propGroup.getOne("name")
         val searchScopeType = config.optionData { searchScopeType }
 
-        if (nameConfig == null) return null
+        if (nameConfig == null) {
+            logger.warn("Skipped invalid complex enum config (name: $name): Missing name config.".withLocationPrefix(config))
+            return null
+        }
+        logger.debug { "Resolved complex enum config (name: $name).".withLocationPrefix(config) }
         return CwtComplexEnumConfigImpl(
             config, name,
-            paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
+            paths, pathFile, pathExtension, pathStrict, pathPatterns,
             startFromRoot, searchScopeType, nameConfig
         )
     }

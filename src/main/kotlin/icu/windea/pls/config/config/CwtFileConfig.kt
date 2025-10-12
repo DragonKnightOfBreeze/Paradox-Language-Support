@@ -13,11 +13,12 @@ import icu.windea.pls.cwt.psi.CwtFile
  */
 interface CwtFileConfig : CwtConfig<CwtFile> {
     val name: String
+    val path: String
     val properties: List<CwtPropertyConfig>
     val values: List<CwtValueConfig>
 
     interface Resolver {
-        fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig
+        fun resolve(file: CwtFile, filePath: String, configGroup: CwtConfigGroup): CwtFileConfig
     }
 
     companion object : Resolver by CwtFileConfigResolverImpl()

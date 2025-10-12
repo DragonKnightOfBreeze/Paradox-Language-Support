@@ -1,11 +1,14 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.optionData
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -16,13 +19,20 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 internal class CwtExtendedParameterConfigResolverImpl : CwtExtendedParameterConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? = doResolve(config)
 
-    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfigImpl? {
+    private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
         val name = if (config is CwtPropertyConfig) config.key else config.value
-        val contextKey = config.optionData { contextKey } ?: return null
+        val contextKey = config.optionData { contextKey }
+        if (contextKey == null) {
+            logger.warn("Skipped invalid extended parameter config (name: $name): Missing context_key option.".withLocationPrefix(config))
+            return null
+        }
         val contextConfigsType = config.optionData { contextConfigsType }
         val inherit = config.optionData { flags }.inherit
+        logger.debug { "Resolved extended parameter config (name: $name, context key: $contextKey).".withLocationPrefix(config) }
         return CwtExtendedParameterConfigImpl(config, name, contextKey, contextConfigsType, inherit)
     }
 }

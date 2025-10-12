@@ -1,5 +1,7 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
@@ -8,12 +10,17 @@ import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.core.collections.getAll
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
 
     override fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, true)
@@ -22,41 +29,46 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver {
 
     private fun doResolve(config: CwtPropertyConfig, isLocalisationLink: Boolean = false): CwtLinkConfig? {
         val name = config.key
-        var type: String? = null
-        var fromData = false
-        var fromArgument = false
-        var prefix: String? = null
-        val dataSources = mutableListOf<String>()
-        var inputScopes: Set<String>? = null
-        var outputScope: String? = null
-        var forDefinitionType: String? = null
-        val props = config.properties ?: return null
-        for (prop in props) {
-            when (prop.key) {
-                "type" -> type = prop.stringValue
-                "from_data" -> fromData = prop.booleanValue ?: false
-                "from_argument" -> fromArgument = prop.booleanValue ?: false
-                "prefix" -> prefix = prop.stringValue?.orNull()
-                "data_source" -> prop.stringValue?.orNull()?.let { dataSources += it }
-                "input_scopes", "input_scope" -> inputScopes = buildSet {
-                    prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                    prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-                }
-                "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
-                "for_definition_type" -> forDefinitionType = prop.stringValue
-            }
+        val props = config.properties ?: run {
+            logger.warn("Skipped invalid link config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
         }
 
+        val propGroup = props.groupBy { it.key }
+        val type = propGroup.getOne("type")?.stringValue
+        val fromData = propGroup.getOne("from_data")?.booleanValue ?: false
+        val fromArgument = propGroup.getOne("from_argument")?.booleanValue ?: false
+        var prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
+        val dataSources = propGroup.getAll("data_source").mapNotNull { it.stringValue }.optimized()
+        val inputScopes = buildSet {
+            // both input_scopes and input_scope are supported
+            propGroup.getAll("input_scopes").forEach { p ->
+                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }
+            propGroup.getAll("input_scope").forEach { p ->
+                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }
+        }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
+        val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
+        val forDefinitionType = propGroup.getOne("for_definition_type")?.stringValue
+
         // when from data or from argument, data sources must not be empty
-        if (fromData && dataSources.isEmpty()) return null
-        if (fromArgument && dataSources.isEmpty()) return null
+        if (fromData && dataSources.isEmpty()) {
+            logger.warn("Skipped invalid link config (name: $name): No data_source properties while from_data = yes.".withLocationPrefix(config))
+            return null
+        }
+        if (fromArgument && dataSources.isEmpty()) {
+            logger.warn("Skipped invalid link config (name: $name): No data_source properties while from_argument = yes.".withLocationPrefix(config))
+            return null
+        }
         // ensure prefix not ends with ':' when from argument (note that may not end with ':' when from data)
         if (fromArgument && prefix != null) prefix = prefix.removeSuffix(":")
-        // optimize input scopes
-        inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
 
+        logger.debug { "Resolved link config (name: $name).".withLocationPrefix(config) }
         return CwtLinkConfigImpl(
-            config, name, type, fromData, fromArgument, prefix, dataSources.optimized(), inputScopes, outputScope,
+            config, name, type, fromData, fromArgument, prefix, dataSources, inputScopes, outputScope,
             forDefinitionType, isLocalisationLink
         )
     }

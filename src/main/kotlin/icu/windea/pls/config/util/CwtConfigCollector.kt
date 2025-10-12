@@ -68,14 +68,18 @@ object CwtConfigCollector {
         val configGroup = config.configGroup
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
-                configExpression.value?.let { configGroup.filePathExpressions.add(configExpression) }
+                if (configExpression.value != null) {
+                    configGroup.filePathExpressions += configExpression
+                }
             }
             CwtDataTypes.Icon -> {
-                configExpression.value?.let { configGroup.filePathExpressions.add(configExpression) }
+                if (configExpression.value != null) {
+                    configGroup.filePathExpressions += configExpression
+                }
             }
             CwtDataTypes.Parameter -> {
                 if (config is CwtPropertyConfig) {
-                    configGroup.parameterConfigs.add(config)
+                    configGroup.parameterConfigs += config
                 }
             }
             else -> pass()

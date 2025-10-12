@@ -11,6 +11,8 @@ import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver {
+    // no logger here (unnecessary)
+
     override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {

@@ -1,39 +1,44 @@
 package icu.windea.pls.config.config.internal.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.postfixTemplateSettings
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.getOne
 
 internal class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplateSettingsConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
         val configs = fileConfig.properties
-        configs.forEach { groupProperty ->
+        for (groupProperty in configs) {
             val groupName = groupProperty.key
             val map = caseInsensitiveStringKeyMap<CwtPostfixTemplateSettingsConfig>()
-            groupProperty.properties?.forEach { property ->
+            for (property in groupProperty.properties.orEmpty()) {
                 val id = property.key
-                var key: String? = null
-                var example: String? = null
-                var variables: Map<String, String>? = null
-                var expression: String? = null
-                property.properties?.forEach { prop ->
-                    when {
-                        prop.key == "key" -> key = prop.stringValue
-                        prop.key == "example" -> example = prop.stringValue
-                        prop.key == "variables" -> variables = prop.properties?.let {
-                            buildMap { it.forEach { p -> put(p.key, p.value) } }
-                        }
-                        prop.key == "expression" -> expression = prop.stringValue
-                    }
+                val propElements = property.properties
+                if (propElements.isNullOrEmpty()) {
+                    logger.warn("Skipped invalid internal postfix template settings config (id: $id): Missing properties".withLocationPrefix(property))
+                    continue
                 }
-                if (key != null && expression != null) {
-                    val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key, example, variables.orEmpty(), expression)
-                    map.put(id, foldingSetting)
+                val propGroup = propElements.groupBy { it.key }
+                val key = propGroup.getOne("key")?.stringValue
+                val example = propGroup.getOne("example")?.stringValue
+                val variables = propGroup.getOne("variables")?.properties?.associateBy({ it.key }, { it.value }).orEmpty()
+                val expression = propGroup.getOne("expression")?.stringValue
+                if (key == null || expression == null) {
+                    logger.warn("Skipped invalid internal postfix template settings config (id: $id): Missing key or expression property".withLocationPrefix(property))
+                    continue
                 }
+                logger.debug { "Resolved internal postfix template settings config (id: $id).".withLocationPrefix(property) }
+                val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key, example, variables, expression)
+                map.put(id, foldingSetting)
             }
             configGroup.postfixTemplateSettings[groupName] = map
         }

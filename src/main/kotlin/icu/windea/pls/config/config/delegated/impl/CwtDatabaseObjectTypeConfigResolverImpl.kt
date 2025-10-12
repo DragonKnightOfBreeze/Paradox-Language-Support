@@ -1,31 +1,38 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.emptyPointer
 
 class CwtDatabaseObjectTypeConfigResolverImpl : CwtDatabaseObjectTypeConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? = doResolve(config)
 
-    private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfigImpl? {
+    private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
         val name = config.key
-        var type: String? = null
-        var swapType: String? = null
-        var localisation: String? = null
-        val props = config.properties
-        if (props.isNullOrEmpty()) return null
-        for (prop in props) {
-            when (prop.key) {
-                "type" -> type = prop.stringValue
-                "swap_type" -> swapType = prop.stringValue
-                "localisation" -> localisation = prop.stringValue
-            }
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid database object type config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
         }
-        if (type == null && localisation == null) return null
+        val propGroup = propElements.groupBy { it.key }
+        val type = propGroup.getOne("type")?.stringValue
+        val swapType = propGroup.getOne("swap_type")?.stringValue
+        val localisation = propGroup.getOne("localisation")?.stringValue
+        if (type == null && localisation == null) {
+            logger.warn("Skipped invalid database object type config (name: $name): Missing type or localisation property.".withLocationPrefix(config))
+            return null
+        }
+        logger.debug { "Resolved database object type config (name: $name).".withLocationPrefix(config) }
         return CwtDatabaseObjectTypeConfigImpl(config, name, type, swapType, localisation)
     }
 }

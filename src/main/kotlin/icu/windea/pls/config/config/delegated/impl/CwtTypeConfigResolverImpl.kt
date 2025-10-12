@@ -1,5 +1,7 @@
 package icu.windea.pls.config.config.delegated.impl
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.bindConfig
@@ -18,7 +20,10 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.type2ModifiersMap
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.getAll
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -26,99 +31,72 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
 
-
 internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
+    private val logger = thisLogger()
+
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         val configGroup = config.configGroup
-
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
-        var baseType: String? = null
-        val paths = sortedSetOf<String>()
-        var pathFile: String? = null
-        var pathExtension: String? = null
-        var pathStrict = false
-        val pathPatterns = sortedSetOf<String>()
-        var nameField: String? = null
-        var typeKeyPrefix: String? = null
-        var nameFromFile = false
-        var typePerFile = false
-        var unique = false
-        var severity: String? = null
-        var skipRootKey: MutableList<List<String>>? = null
+        val propElements = config.properties
+        if (propElements.isNullOrEmpty()) {
+            logger.warn("Skipped invalid type config (name: $name): Missing properties.".withLocationPrefix(config))
+            return null
+        }
+
+        val propGroup = propElements.groupBy { it.key }
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathFile = propGroup.getOne("path_file")?.stringValue
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val baseType = propGroup.getOne("base_type")?.stringValue
+        val nameField = propGroup.getOne("name_field")?.stringValue
+        val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
+        val nameFromFile = propGroup.getOne("name_from_file")?.booleanValue ?: false
+        val typePerFile = propGroup.getOne("type_per_file")?.booleanValue ?: false
+        val unique = propGroup.getOne("unique")?.booleanValue ?: false
+        val severity = propGroup.getOne("severity")?.stringValue
+        val skipRootKey = propGroup.getAll("skip_root_key").map { prop ->
+            // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
+            prop.stringValue?.let { listOf(it) } ?: prop.values?.mapNotNull { it.stringValue }?.optimized().orEmpty()
+        }
         val typeKeyFilter = config.optionData { typeKeyFilter }
         val typeKeyRegex = config.optionData { typeKeyRegex }
         val startsWith = config.optionData { startsWith }
         val graphRelatedTypes = config.optionData { graphRelatedTypes }
-        val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
-        var localisation: CwtTypeLocalisationConfig? = null
-        var images: CwtTypeImagesConfig? = null
+        val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
+        val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
+        val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
 
-        val props = config.properties.orEmpty()
-        if (props.isEmpty()) return null
-        for (prop in props) {
-            when (prop.key) {
-                "base_type" -> baseType = prop.stringValue
-                "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it.intern() }
-                "path_file" -> pathFile = prop.stringValue ?: continue
-                "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".")?.intern() ?: continue
-                "path_strict" -> pathStrict = prop.booleanValue ?: continue
-                "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
-                "name_field" -> nameField = prop.stringValue ?: continue
-                "type_key_prefix" -> typeKeyPrefix = prop.stringValue ?: continue
-                "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
-                "type_per_file" -> typePerFile = prop.booleanValue ?: continue
-                "unique" -> unique = prop.booleanValue ?: continue
-                "severity" -> severity = prop.stringValue ?: continue
-                "skip_root_key" -> {
-                    // 值可能是string也可能是stringArray
-                    val list = prop.stringValue?.let { listOf(it) }
-                        ?: prop.values?.mapNotNull { it.stringValue }
-                        ?: continue
-                    if (skipRootKey == null) skipRootKey = mutableListOf()
-                    skipRootKey.add(list) // 出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
-                }
-                "localisation" -> {
-                    localisation = CwtTypeLocalisationConfig.resolve(prop)
-                }
-                "images" -> {
-                    images = CwtTypeImagesConfig.resolve(prop)
-                }
-                "modifiers" -> {
-                    val propProps = prop.properties ?: continue
-                    for (p in propProps) {
-                        val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
-                        if (subtypeName != null) {
-                            val pps = p.properties ?: continue
-                            for (pp in pps) {
-                                val typeExpression = "$name.$subtypeName"
-                                val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
-                                configGroup.modifiers[modifierConfig.name] = modifierConfig
-                                configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
-                            }
-                        } else {
-                            val typeExpression = name
-                            val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
-                            configGroup.modifiers[modifierConfig.name] = modifierConfig
-                            configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
-                        }
+        // merge all properties named 'modifiers'
+        propGroup.getAll("modifiers").forEach { prop ->
+            for (p in prop.properties.orEmpty()) {
+                val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
+                if (subtypeName != null) {
+                    for (pp in p.properties.orEmpty()) {
+                        val typeExpression = "$name.$subtypeName"
+                        val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
+                        configGroup.modifiers[modifierConfig.name] = modifierConfig
+                        configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
                     }
+                } else {
+                    val typeExpression = name
+                    val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
+                    configGroup.modifiers[modifierConfig.name] = modifierConfig
+                    configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
                 }
-            }
-
-            run {
-                val subtypeConfig = CwtSubtypeConfig.resolve(prop) ?: return@run
-                subtypes[subtypeConfig.name] = subtypeConfig
             }
         }
 
+        logger.debug { "Resolved type config (name: $name).".withLocationPrefix(config) }
         return CwtTypeConfigImpl(
             config, name, baseType,
-            paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
+            paths, pathFile, pathExtension, pathStrict, pathPatterns,
             nameField, typeKeyPrefix, nameFromFile, typePerFile, unique, severity,
             skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
-            graphRelatedTypes?.optimized(), subtypes.optimized(), localisation, images
+            graphRelatedTypes, subtypes, localisation, images
         )
     }
 }
