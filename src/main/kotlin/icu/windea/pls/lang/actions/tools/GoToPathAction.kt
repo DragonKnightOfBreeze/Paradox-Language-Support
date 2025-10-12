@@ -21,17 +21,15 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    protected abstract fun setVisible(e: AnActionEvent): Boolean
-
     override fun update(panel: FileChooserPanel, e: AnActionEvent) {
         val presentation = e.presentation
-        presentation.isVisible = setVisible(e)
+        presentation.isVisible = isVisible(e)
         presentation.isEnabled = presentation.isVisible && targetPath != null
     }
 
     override fun update(fileChooser: FileSystemTree, e: AnActionEvent) {
         val presentation = e.presentation
-        presentation.isVisible = setVisible(e)
+        presentation.isVisible = isVisible(e)
         if (presentation.isEnabled) {
             presentation.isEnabled = presentation.isVisible && runCatchingCancelable {
                 val targetPath = targetPath ?: return@runCatchingCancelable false
@@ -55,4 +53,6 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             fileChooser.select(file, if (expand) Runnable { fileChooser.expand(file, null) } else null)
         }
     }
+
+    protected abstract fun isVisible(e: AnActionEvent): Boolean
 }

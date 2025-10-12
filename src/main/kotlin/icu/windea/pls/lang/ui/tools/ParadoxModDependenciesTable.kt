@@ -30,6 +30,15 @@ class ParadoxModDependenciesTable(
     val model: ParadoxModDependenciesTableModel
 ) : JBTable(model) {
     /**
+     * 得到选中项。
+     */
+    fun getSelectedItem(): ParadoxModDependencySettingsState? {
+        val selectedRow = selectedRow
+        val item = model.getItem(convertRowIndexToModel(selectedRow))
+        return item
+    }
+
+    /**
      * 判断模组依赖表格中的最后一个是否是当前模组自身。
      */
     fun isCurrentAtLast(): Boolean {

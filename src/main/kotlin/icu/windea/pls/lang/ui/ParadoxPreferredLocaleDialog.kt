@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui.locale
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.PlsCoreManager
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     init {
-        title = PlsBundle.message("ui.dialog.selectPreferred.title")
+        title = PlsBundle.message("ui.selectPreferredLocale.title")
         init()
     }
 

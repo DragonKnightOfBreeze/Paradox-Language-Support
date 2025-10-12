@@ -514,7 +514,7 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <group id="Pls.Tools" class="icu.windea.pls.lang.actions.tools.ToolsActionGroup" popup="true">
+    <group id="Pls.Tools" popup="true">
       <reference ref="Pls.OpenGameSettings"/>
       <reference ref="Pls.OpenModSettings"/>
       <reference ref="Pls.SyncConfigGroupFromRemote"/>

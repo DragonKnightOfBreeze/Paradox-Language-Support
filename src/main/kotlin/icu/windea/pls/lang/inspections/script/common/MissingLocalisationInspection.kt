@@ -17,8 +17,8 @@ import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.ui.locale.ParadoxLocaleCheckBoxDialog
-import icu.windea.pls.lang.ui.locale.ParadoxPreferredLocaleDialog
+import icu.windea.pls.lang.ui.ParadoxLocaleCheckBoxDialog
+import icu.windea.pls.lang.ui.ParadoxPreferredLocaleDialog
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
@@ -168,7 +168,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 cell(ActionLink(PlsBundle.message("configure")) {
                     val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
                     val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
-                    val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
+                    val dialog = ParadoxLocaleCheckBoxDialog(allLocaleMap.values, selectedLocales)
                     if (dialog.showAndGet()) {
                         val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
                         localeSet = newLocaleSet

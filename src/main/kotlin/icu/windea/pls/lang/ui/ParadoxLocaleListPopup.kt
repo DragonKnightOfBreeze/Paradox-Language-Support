@@ -1,6 +1,4 @@
-@file:Suppress("CanBeParameter")
-
-package icu.windea.pls.lang.ui.locale
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep
@@ -8,9 +6,10 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 
+@Suppress("CanBeParameter")
 class ParadoxLocaleListPopup(
     val allLocales: List<CwtLocaleConfig>
-) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), allLocales) {
+) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("ui.selectLocale.title"), allLocales) {
     var selectedLocale: CwtLocaleConfig? = null
 
     override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale

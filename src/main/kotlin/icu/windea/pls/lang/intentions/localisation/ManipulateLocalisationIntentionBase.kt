@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator

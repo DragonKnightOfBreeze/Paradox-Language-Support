@@ -1,20 +1,19 @@
-@file:Suppress("CanBeParameter")
-
-package icu.windea.pls.lang.ui.locale
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 
+@Suppress("CanBeParameter")
 class ParadoxLocaleCheckBoxDialog(
-    val selectedLocales: Collection<CwtLocaleConfig>,
-    val allLocales: Collection<CwtLocaleConfig>
+    val allLocales: Collection<CwtLocaleConfig>,
+    val selectedLocales: Collection<CwtLocaleConfig>
 ) : DialogWrapper(null, false) {
     val localeStatusMap = allLocales.associateWithTo(mutableMapOf()) { it in selectedLocales }
 
     init {
-        title = PlsBundle.message("ui.dialog.selectLocales.title")
+        title = PlsBundle.message("ui.selectLocales.title")
         init()
     }
 

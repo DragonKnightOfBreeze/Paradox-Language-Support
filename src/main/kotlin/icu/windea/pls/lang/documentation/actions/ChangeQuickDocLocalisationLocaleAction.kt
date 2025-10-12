@@ -11,7 +11,7 @@ import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.documentation.targetElement
-import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 // cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction

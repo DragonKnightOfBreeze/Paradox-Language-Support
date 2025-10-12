@@ -16,7 +16,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsVfsManager
 import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence

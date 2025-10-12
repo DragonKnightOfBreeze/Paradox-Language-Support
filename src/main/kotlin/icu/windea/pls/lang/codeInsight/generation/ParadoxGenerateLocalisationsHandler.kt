@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.ui.locale.ParadoxLocaleListPopup
+import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder

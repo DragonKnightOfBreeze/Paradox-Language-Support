@@ -11,7 +11,7 @@ interface GoToPathActions {
     class Steam : GoToPathAction() {
         override var targetPath: Path? = null
 
-        override fun setVisible(e: AnActionEvent): Boolean {
+        override fun isVisible(e: AnActionEvent): Boolean {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (targetPath == null) {
@@ -26,7 +26,7 @@ interface GoToPathActions {
 
         override var targetPath: Path? = null
 
-        override fun setVisible(e: AnActionEvent): Boolean {
+        override fun isVisible(e: AnActionEvent): Boolean {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
@@ -43,7 +43,7 @@ interface GoToPathActions {
         override var targetPath: Path? = null
         override val expand: Boolean = true
 
-        override fun setVisible(e: AnActionEvent): Boolean {
+        override fun isVisible(e: AnActionEvent): Boolean {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
@@ -60,7 +60,7 @@ interface GoToPathActions {
         override var targetPath: Path? = null
         override val expand: Boolean = true
 
-        override fun setVisible(e: AnActionEvent): Boolean {
+        override fun isVisible(e: AnActionEvent): Boolean {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {

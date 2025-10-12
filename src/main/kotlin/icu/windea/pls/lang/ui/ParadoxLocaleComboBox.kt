@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui.locale
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.dsl.builder.*

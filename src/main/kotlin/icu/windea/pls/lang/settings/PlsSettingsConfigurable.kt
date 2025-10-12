@@ -23,7 +23,7 @@ import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
 import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
 import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration
 import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
-import icu.windea.pls.lang.ui.locale.localeComboBox
+import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
