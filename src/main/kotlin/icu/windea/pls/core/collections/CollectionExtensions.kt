@@ -125,6 +125,22 @@ fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     return true
 }
 
+/** 将满足 [predicate] 的元素作为分隔符，分块输入的集合。 */
+fun <T> Iterable<T>.chunkedBy(predicate: (T) -> Boolean): List<List<T>> {
+    val result = mutableListOf<List<T>>()
+    val list = mutableListOf<T>()
+    for (e in this) {
+        if (predicate(e)) {
+            result += list.toList()
+            list.clear()
+        } else {
+            list += e
+        }
+    }
+    result += list.toList()
+    return result
+}
+
 // fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
 //    // make List<T> properties mutable in actual if not empty (to hack them if necessary)
 //    if (this.isEmpty()) return this

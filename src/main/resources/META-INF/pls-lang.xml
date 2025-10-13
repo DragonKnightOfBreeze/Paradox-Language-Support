@@ -467,6 +467,16 @@
       <add-to-group group-id="Pls.TableManipulationContextMenuGroup"/>
     </group>
 
+    <group id="Pls.ConfigGeneration">
+      <action id="Pls.Generation.GenerateTriggerConfig" class="icu.windea.pls.lang.actions.cwt.GenerateTriggerConfigAction"/>
+      <action id="Pls.Generation.GenerateEffectConfig" class="icu.windea.pls.lang.actions.cwt.GenerateEffectConfigAction"/>
+      <action id="Pls.Generation.GenerateLocalisationConfig" class="icu.windea.pls.lang.actions.cwt.GenerateLocalisationConfigAction"/>
+      <action id="Pls.Generation.GenerateModifierConfig" class="icu.windea.pls.lang.actions.cwt.GenerateModifierConfigAction"/>
+      <action id="Pls.Generation.GenerateModifierCategoryConfig" class="icu.windea.pls.lang.actions.cwt.GenerateModifierCategoryConfigAction"/>
+      <action id="Pls.Generation.GenerateGameRuleConfig" class="icu.windea.pls.lang.actions.cwt.GenerateGameRuleConfigAction"/>
+      <action id="Pls.Generation.GenerateOnActionConfig" class="icu.windea.pls.lang.actions.cwt.GenerateOnActionConfigAction"/>
+    </group>
+
     <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.tools.OpenSettingsActions$Game" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
@@ -538,6 +548,7 @@
       </group>
       <group id="Pls.Tools.Generation" popup="true">
         <reference ref="Pls.LocalisationGeneration"/>
+        <reference ref="Pls.ConfigGeneration"/>
       </group>
 
       <add-to-group group-id="ToolsMenu"/>

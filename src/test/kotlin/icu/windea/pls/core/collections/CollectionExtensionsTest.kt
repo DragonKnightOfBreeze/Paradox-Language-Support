@@ -84,4 +84,10 @@ class CollectionExtensionsTest {
         Assert.assertFalse(list.process { it < 3 })
         Assert.assertTrue(list.process { it <= 3 })
     }
+
+    @Test
+    fun chunkedBy_emptyString() {
+        val list = listOf("a","b","","c","","","d")
+        Assert.assertEquals(listOf(listOf("a","b"), listOf("c"), listOf(), listOf("d")), list.chunkedBy { it.isEmpty() })
+    }
 }

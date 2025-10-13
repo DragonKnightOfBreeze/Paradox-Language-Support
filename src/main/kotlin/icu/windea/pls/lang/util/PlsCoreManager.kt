@@ -49,23 +49,6 @@ object PlsCoreManager {
 
     // region Global Methods
 
-    /**
-     * 比较游戏版本。允许通配符，如："3.3.*"
-     */
-    @Suppress("unused")
-    fun compareGameVersion(version: String, otherVersion: String): Int {
-        val versionSnippets = version.split('.')
-        val otherVersionSnippets = otherVersion.split('.')
-        val minSnippetSize = Integer.min(versionSnippets.size, otherVersionSnippets.size)
-        for (i in 0 until minSnippetSize) {
-            val versionSnippet = versionSnippets[i]
-            val otherVersionSnippet = otherVersionSnippets[i]
-            if (versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
-            return versionSnippet.compareTo(otherVersionSnippet)
-        }
-        return 0
-    }
-
     fun createNotification(notificationType: NotificationType, content: String): Notification {
         return NotificationGroupManager.getInstance().getNotificationGroup("pls")
             .createNotification(content, notificationType)
