@@ -127,7 +127,7 @@ class CwtTriggerConfigGenerator(
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)
             appendLine()
-            appendLine("# TODO missing triggers")
+            appendLine(TODO_MISSING_TRIGGERS)
             for (name in missingNames) {
                 val info = infos[name] ?: continue
                 appendLine()
@@ -152,16 +152,14 @@ class CwtTriggerConfigGenerator(
     }
 
     private fun getElementsToDelete(psiFile: CwtFile, propertyNamesToDelete: List<String>): MutableList<PsiElement> {
-        val elementsToDelete = mutableListOf<PsiElement>()
-        psiFile.block?.children(forward = false)
+        val result = mutableListOf<PsiElement>()
+        val propsToDelete = psiFile.block?.children(forward = false)
             ?.filterIsInstance<CwtProperty> { p -> p.name in propertyNamesToDelete }
-            ?.forEach { p ->
-                elementsToDelete += p
-                p.siblings(forward = false, withSelf = false)
-                    .takeWhile { e -> e !is CwtProperty }
-                    .forEach { e -> elementsToDelete += e }
-            }
-        return elementsToDelete
+        propsToDelete?.forEach { p ->
+            result += p
+            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
+        }
+        return result
     }
 
     data class TriggerInfo(
@@ -187,5 +185,7 @@ class CwtTriggerConfigGenerator(
     companion object {
         private const val START_MARKER = "== TRIGGER DOCUMENTATION =="
         private const val END_MARKER = "================="
+
+        private const val TODO_MISSING_TRIGGERS = "# TODO missing triggers"
     }
 }

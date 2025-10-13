@@ -3,13 +3,16 @@ package icu.windea.pls.config.util.generators
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.siblings
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.filterIsInstance
+import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -42,37 +45,34 @@ class CwtLocalisationConfigGenerator(
         val unknownCommands = configInfo.commands - commandNamesInLog
 
         // 4) 基于 PSI 生成“删除未知项后”的文件文本
-        val file = java.io.File(outputPath)
+        val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { runCatching { file.readText() }.getOrElse { "" } }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         val elementsToDelete = readAction {
             val list = mutableListOf<PsiElement>()
-            list += getNestedElementsToDelete(psiFile, CONTAINER_PROMOTIONS, unknownPromotions)
-            list += getNestedElementsToDelete(psiFile, CONTAINER_COMMANDS, unknownCommands)
+            list += getElementsToDelete(psiFile, CONTAINER_PROMOTIONS, unknownPromotions)
+            list += getElementsToDelete(psiFile, CONTAINER_COMMANDS, unknownCommands)
             list
         }
-        val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
+        var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
-        // 5) 生成缺失项的 TODO 片段并拼接
-        val missingText = buildString {
-            if (missingPromotions.isNotEmpty()) {
-                appendLine()
-                appendLine("# TODO missing localisation_promotions")
+        // 5) 将缺失项直接插入到现有容器末尾（空行 + TODO 注释 + 条目）
+        if (missingPromotions.isNotEmpty()) {
+            val insertBlock = buildString {
+                appendLine(TODO_MISSING_PROMOTIONS)
                 for (name in missingPromotions.sorted()) {
                     val scopes = promotionScopesFromLog[name].orEmpty()
                     // 跳过 any（不需要生成项）
                     if ("any" in scopes) continue
-                    val scopesText = CwtConfigGeneratorUtil.getScopesOptionText(scopes)
-                    // 格式：key = { scopes }
                     val valueText = scopes.sorted().joinToString(" ", prefix = "{ ", postfix = " }").ifEmpty { "{}" }
-                    // 保留 scopes 选项以利于后续维护
-                    appendLine("# ${scopesText}")
-                    appendLine("${INDENT}${name} = ${valueText}")
+                    appendLine("${name} = ${valueText}")
                 }
-            }
-            if (missingCommands.isNotEmpty()) {
-                appendLine()
-                appendLine("# TODO missing localisation_commands")
+            }.trimEnd()
+            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_PROMOTIONS, insertBlock)
+        }
+        if (missingCommands.isNotEmpty()) {
+            val insertBlock = buildString {
+                appendLine(TODO_MOSSING_COMMANDS)
                 for (name in missingCommands.sorted()) {
                     val scopes = commandScopesFromLog[name].orEmpty()
                     val valueText = when {
@@ -80,20 +80,12 @@ class CwtLocalisationConfigGenerator(
                         "any" in scopes -> "{ any }"
                         else -> scopes.sorted().joinToString(" ", prefix = "{ ", postfix = " }")
                     }
-                    val scopesText = CwtConfigGeneratorUtil.getScopesOptionText(scopes)
-                    appendLine("# ${scopesText}")
-                    appendLine("${INDENT}${name} = ${valueText}")
+                    appendLine("${name} = ${valueText}")
                 }
-            }
-        }.trimEnd()
-
-        val fileText = buildString {
-            append(modifiedText)
-            if (missingText.isNotEmpty()) {
-                appendLine()
-                appendLine(missingText)
-            }
-        }.trimEnd()
+            }.trimEnd()
+            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_COMMANDS, insertBlock)
+        }
+        val fileText = modifiedText.trim()
 
         // 6) 汇总摘要与详情
         val summary = buildString {
@@ -102,7 +94,7 @@ class CwtLocalisationConfigGenerator(
             if (missingCommands.isNotEmpty()) appendLine("${missingCommands.size} missing localisation commands.")
             if (unknownCommands.isNotEmpty()) appendLine("${unknownCommands.size} unknown localisation commands.")
             if (isEmpty()) appendLine("No missing or unknown localisation promotions or commands.")
-        }.trimEnd()
+        }.trim()
         val details = buildString {
             if (missingPromotions.isNotEmpty()) {
                 appendLine("Missing localisation promotions:")
@@ -120,7 +112,7 @@ class CwtLocalisationConfigGenerator(
                 appendLine("Unknown localisation commands:")
                 unknownCommands.sorted().forEach { appendLine("- ${it}") }
             }
-        }.trimEnd()
+        }.trim()
 
         val hint = CwtConfigGenerator.Hint(summary, details, fileText)
         hint.putUserData(Keys.missingPromotionNames, missingPromotions)
@@ -141,7 +133,7 @@ class CwtLocalisationConfigGenerator(
     private enum class Position { ScopeName, Promotions, Properties }
 
     private fun parseLogFile(): List<LocalisationInfo> {
-        val logFile = java.io.File(inputPath)
+        val logFile = inputPath.toFile()
         val allLines = runCatching { logFile.readLines() }.getOrElse { emptyList() }
         val infos = mutableListOf<LocalisationInfo>()
         var info = LocalisationInfo()
@@ -191,44 +183,72 @@ class CwtLocalisationConfigGenerator(
         val text = withContext(Dispatchers.IO) { runCatching { file.readText() }.getOrElse { "" } }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
-            val topLevel = psiFile.block
-            val topLevelProps = topLevel?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-            val promotionsProp = topLevelProps.firstOrNull { it.name == CONTAINER_PROMOTIONS }
-            val commandsProp = topLevelProps.firstOrNull { it.name == CONTAINER_COMMANDS }
+            val rootBlock = psiFile.block
+            val rootProps = rootBlock?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
+            val promotionsProp = rootProps.find { it.name == CONTAINER_PROMOTIONS }
+            val commandsProp = rootProps.find { it.name == CONTAINER_COMMANDS }
 
-            val promotionNames = promotionsProp?.let {
-                PsiTreeUtil.findChildrenOfType(it, CwtProperty::class.java)
-                    .mapNotNull { p -> p.name }
-                    .filter { n -> n != CONTAINER_PROMOTIONS && n != CONTAINER_COMMANDS }
-                    .toSet()
-            }.orEmpty()
-            val commandNames = commandsProp?.let {
-                PsiTreeUtil.findChildrenOfType(it, CwtProperty::class.java)
-                    .mapNotNull { p -> p.name }
-                    .filter { n -> n != CONTAINER_PROMOTIONS && n != CONTAINER_COMMANDS }
-                    .toSet()
-            }.orEmpty()
+            val promotionNames = promotionsProp?.propertyValue?.castOrNull<CwtBlock>()?.children()
+                ?.filterIsInstance<CwtProperty>()
+                ?.mapTo(mutableSetOf()) { it.name }
+                .orEmpty()
+            val commandNames = commandsProp?.propertyValue?.castOrNull<CwtBlock>()?.children()
+                ?.filterIsInstance<CwtProperty>()
+                ?.mapTo(mutableSetOf()) { it.name }
+                .orEmpty()
             LocalisationConfigInfo(promotionNames, commandNames)
         }
     }
 
-    private fun getNestedElementsToDelete(
-        psiFile: CwtFile,
-        containerPropertyName: String,
-        namesToDelete: Set<String>
-    ): MutableList<PsiElement> {
+    private fun getElementsToDelete(psiFile: CwtFile, containerPropertyName: String, propertyNamesToDelete: Set<String>): MutableList<PsiElement> {
         val result = mutableListOf<PsiElement>()
-        val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-        val container = rootProps.firstOrNull { it.name == containerPropertyName } ?: return result
-        val nestedProps = PsiTreeUtil.findChildrenOfType(container, CwtProperty::class.java)
-            .filter { p -> p != container && p.name in namesToDelete }
-        for (p in nestedProps) {
+        val rootBlock = psiFile.block
+        val rootProps = rootBlock?.children()?.filterIsInstance<CwtProperty>()?.toList()
+        val container = rootProps?.find { it.name == containerPropertyName }
+        val propsToDelete = container?.propertyValue?.castOrNull<CwtBlock>()?.children()
+            ?.filterIsInstance<CwtProperty> { it.name in propertyNamesToDelete }
+        propsToDelete?.forEach { p ->
             result += p
-            p.siblings(forward = false, withSelf = false)
-                .takeWhile { e -> e !is CwtProperty }
-                .forEach { e -> result += e }
+            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
         }
         return result
+    }
+
+    private suspend fun insertIntoContainer(
+        project: Project,
+        fileText: String,
+        containerPropertyName: String,
+        insertBlock: String,
+    ): String {
+        val psiFile = readAction { CwtElementFactory.createDummyFile(project, fileText) }
+        val container = readAction {
+            val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
+            rootProps.firstOrNull { it.name == containerPropertyName }
+        }
+        if (container != null) {
+            val insertionOffset = readAction {
+                val containerText = container.text
+                val relIndex = containerText.lastIndexOf('}')
+                val rel = if (relIndex == -1) containerText.length else relIndex
+                container.textRange.startOffset + rel
+            }
+            return buildString(fileText.length + insertBlock.length + 64) {
+                appendLine(fileText.substring(0, insertionOffset))
+                appendLine(insertBlock.prependIndent(INDENT))
+                append(fileText.substring(insertionOffset))
+            }
+        }
+        // fallback：容器缺失，直接在文件末尾追加完整容器
+        val containerPatch = buildString {
+            appendLine("${containerPropertyName} = {")
+            appendLine(insertBlock.prependIndent(INDENT))
+            append("}")
+        }
+        return buildString(fileText.length + containerPatch.length + 64) {
+            append(fileText.trimEnd())
+            appendLine()
+            append(containerPatch)
+        }
     }
 
     private fun aggregateScopes(infos: List<LocalisationInfo>): Pair<Map<String, Set<String>>, Map<String, Set<String>>> {
@@ -258,8 +278,11 @@ class CwtLocalisationConfigGenerator(
     }
 
     private companion object {
-        const val CONTAINER_PROMOTIONS = "localisation_promotions"
-        const val CONTAINER_COMMANDS = "localisation_commands"
-        const val INDENT = "    "
+        private const val CONTAINER_PROMOTIONS = "localisation_promotions"
+        private const val CONTAINER_COMMANDS = "localisation_commands"
+        private const val INDENT = "    "
+
+        private const val TODO_MISSING_PROMOTIONS = "# TODO missing localisation promotions (in actual, key is the link name, value is the scope types)"
+        private const val TODO_MOSSING_COMMANDS = "# TODO missing localisation commands (in actual, key is the command name, value is the scope types)"
     }
 }
