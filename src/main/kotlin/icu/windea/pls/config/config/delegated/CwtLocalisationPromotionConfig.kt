@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
  *
  * **本地化命令提升（localisation command promotion）** 意指本地化命令字段的作用域提升逻辑，
  * 通过本地化链接切换作用域后，也可使用提升后的作用域匹配的本地化命令字段。
- * 可参见：`localisations.log`。
+ * 可参见：`localizations.log`。
  *
  * 路径定位：`localisation_promotions/{name}`，`{name}` 匹配规则名称。
  *

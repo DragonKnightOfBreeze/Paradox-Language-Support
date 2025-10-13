@@ -14,7 +14,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
  *
  * **本地化命令字段（localisation command field）** 可在本地化文本中的命令表达式中使用，用于获取动态文本。
  * 其允许的作用域类型是预定义且兼容提升的。
- * 可参见：`localisations.log`。
+ * 可参见：`localizations.log`。
  *
  * 在语义与格式上，它们类似编程语言中的属性或字段。
 
