@@ -11,6 +11,8 @@ class CwtModifierConfigGenerator(
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
+    override fun getDefaultGeneratedFileName() = "modifiers.cwt"
+
     override suspend fun generate(project: Project): CwtConfigGenerator.Hint {
         TODO("2.0.6-dev")
     }

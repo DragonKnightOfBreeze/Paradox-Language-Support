@@ -11,6 +11,8 @@ class CwtGameRuleConfigGenerator(
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
+    override fun getDefaultGeneratedFileName() = "game_rules.cwt"
+
     override suspend fun generate(project: Project): CwtConfigGenerator.Hint {
         TODO("2.0.6-dev")
     }

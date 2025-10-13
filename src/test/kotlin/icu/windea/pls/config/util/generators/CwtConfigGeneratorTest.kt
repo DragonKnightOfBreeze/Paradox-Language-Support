@@ -22,7 +22,7 @@ abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
             val fileName = generator.outputPath.substringAfterLast('/')
             val path = Path.of("build", "generated", "config", generator.gameType.id + "_" + version, fileName)
             path.createParentDirectories()
-            path.writeText(hint.fileText)
+            path.writeText(hint.fileText + "\n") // 在文件末尾添加一个换行符
             println()
             println("Generated file at: ${path}")
         }

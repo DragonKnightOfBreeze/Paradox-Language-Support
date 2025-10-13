@@ -19,6 +19,11 @@ interface CwtConfigGenerator {
     val outputPath: String
 
     /**
+     * 得到生成的规则文件的默认文件名。
+     */
+    fun getDefaultGeneratedFileName(): String
+
+    /**
      * 生成规则文件的维护提示。
      */
     suspend fun generate(project: Project): Hint

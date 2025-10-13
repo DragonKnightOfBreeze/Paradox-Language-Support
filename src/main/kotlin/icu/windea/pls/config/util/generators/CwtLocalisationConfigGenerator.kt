@@ -4,6 +4,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
+import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterIsInstance
@@ -21,14 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * 从 `localisations.log` 生成 `localisations.cwt`。
+ * 从 `localizations.log` 生成 `localisations.cwt`。
  */
 class CwtLocalisationConfigGenerator(
     override val gameType: ParadoxGameType,
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
-    override suspend fun generate(project: Project): CwtConfigGenerator.Hint {
+    override fun getDefaultGeneratedFileName() = "localisations.cwt"
+
+    override suspend fun generate(project: Project): Hint {
         // 1) 解析日志文件，汇总 promotions/commands -> scopes
         val infos = parseLogFile()
         val (promotionScopesFromLog, commandScopesFromLog) = aggregateScopes(infos)
@@ -46,7 +49,7 @@ class CwtLocalisationConfigGenerator(
 
         // 4) 基于 PSI 生成“删除未知项后”的文件文本
         val file = outputPath.toFile()
-        val text = withContext(Dispatchers.IO) { runCatching { file.readText() }.getOrElse { "" } }
+        val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         val elementsToDelete = readAction {
             val list = mutableListOf<PsiElement>()
@@ -85,7 +88,6 @@ class CwtLocalisationConfigGenerator(
             }.trimEnd()
             modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_COMMANDS, insertBlock)
         }
-        val fileText = modifiedText.trim()
 
         // 6) 汇总摘要与详情
         val summary = buildString {
@@ -94,7 +96,7 @@ class CwtLocalisationConfigGenerator(
             if (missingCommands.isNotEmpty()) appendLine("${missingCommands.size} missing localisation commands.")
             if (unknownCommands.isNotEmpty()) appendLine("${unknownCommands.size} unknown localisation commands.")
             if (isEmpty()) appendLine("No missing or unknown localisation promotions or commands.")
-        }.trim()
+        }.trimEnd()
         val details = buildString {
             if (missingPromotions.isNotEmpty()) {
                 appendLine("Missing localisation promotions:")
@@ -112,9 +114,10 @@ class CwtLocalisationConfigGenerator(
                 appendLine("Unknown localisation commands:")
                 unknownCommands.sorted().forEach { appendLine("- ${it}") }
             }
-        }.trim()
+        }.trimEnd()
+        val fileText = modifiedText.trimEnd()
 
-        val hint = CwtConfigGenerator.Hint(summary, details, fileText)
+        val hint = Hint(summary, details, fileText)
         hint.putUserData(Keys.missingPromotionNames, missingPromotions)
         hint.putUserData(Keys.unknownPromotionNames, unknownPromotions)
         hint.putUserData(Keys.missingCommandNames, missingCommands)
@@ -124,28 +127,23 @@ class CwtLocalisationConfigGenerator(
         return hint
     }
 
-    private data class LocalisationInfo(
-        var name: String = "",
-        val promotions: MutableSet<String> = mutableSetOf(),
-        val properties: MutableSet<String> = mutableSetOf(),
-    )
-
-    private enum class Position { ScopeName, Promotions, Properties }
-
-    private fun parseLogFile(): List<LocalisationInfo> {
+    private suspend fun parseLogFile(): List<LocalisationInfo> {
         val logFile = inputPath.toFile()
-        val allLines = runCatching { logFile.readLines() }.getOrElse { emptyList() }
+        val allLines = withContext(Dispatchers.IO) { logFile.readLines() }
         val infos = mutableListOf<LocalisationInfo>()
-        var info = LocalisationInfo()
         var position = Position.ScopeName
+        var name = ""
+        val promotions = mutableSetOf<String>()
+        val properties = mutableSetOf<String>()
         for (raw in allLines) {
             val line = raw.trim()
             if (line.startsWith("--") && line.endsWith("--")) {
-                if (info.name.isNotEmpty()) {
-                    infos += info
-                    info = LocalisationInfo()
+                if (name.isNotEmpty()) {
+                    infos += LocalisationInfo(name, promotions.toSet(), properties.toSet())
+                    promotions.clear()
+                    properties.clear()
                 }
-                info.name = line.removePrefix("--").removeSuffix("--").trim()
+                name = line.removePrefix("--").removeSuffix("--").trim()
                 position = Position.ScopeName
                 continue
             }
@@ -160,27 +158,24 @@ class CwtLocalisationConfigGenerator(
             when (position) {
                 Position.Promotions -> {
                     val v = line.takeIf { it.isNotEmpty() && '=' !in it }
-                    if (v != null) info.promotions += v
+                    if (v != null) promotions += v
                 }
                 Position.Properties -> {
                     val v = line.takeIf { it.isNotEmpty() && '=' !in it }
-                    if (v != null) info.properties += v
+                    if (v != null) properties += v
                 }
                 else -> {}
             }
         }
-        if (info.name.isNotEmpty()) infos += info
+        if (name.isNotEmpty()) {
+            infos += LocalisationInfo(name, promotions.toSet(), properties.toSet())
+        }
         return infos
     }
 
-    private data class LocalisationConfigInfo(
-        val promotions: Set<String>,
-        val commands: Set<String>,
-    )
-
     private suspend fun parseConfigFile(project: Project): LocalisationConfigInfo {
         val file = java.io.File(outputPath)
-        val text = withContext(Dispatchers.IO) { runCatching { file.readText() }.getOrElse { "" } }
+        val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
             val rootBlock = psiFile.block
@@ -214,12 +209,7 @@ class CwtLocalisationConfigGenerator(
         return result
     }
 
-    private suspend fun insertIntoContainer(
-        project: Project,
-        fileText: String,
-        containerPropertyName: String,
-        insertBlock: String,
-    ): String {
+    private suspend fun insertIntoContainer(project: Project, fileText: String, containerPropertyName: String, insertBlock: String): String {
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, fileText) }
         val container = readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
@@ -267,6 +257,19 @@ class CwtLocalisationConfigGenerator(
         "Ship (and Starbase)" -> setOf("ship", "starbase")
         else -> setOf(text.lowercase().replace(" ", "_"))
     }
+
+    private enum class Position { ScopeName, Promotions, Properties }
+
+    data class LocalisationInfo(
+        var name: String,
+        val promotions: Set<String>,
+        val properties: Set<String>,
+    )
+
+    data class LocalisationConfigInfo(
+        val promotions: Set<String>,
+        val commands: Set<String>,
+    )
 
     object Keys : KeyRegistry() {
         val missingPromotionNames by createKey<Set<String>>(Keys)

@@ -43,6 +43,8 @@ class CwtEffectConfigGenerator(
         // nothing
     }
 
+    override fun getDefaultGeneratedFileName() = "effects.cwt"
+
     override suspend fun generate(project: Project): Hint {
         val infos = parseLogFile()
         val configInfos = parseConfigFile(project)

@@ -43,6 +43,8 @@ class CwtTriggerConfigGenerator(
         ignoredNames += setOf("and", "or", "not", "nand", "nor", "hidden_trigger")
     }
 
+    override fun getDefaultGeneratedFileName() = "triggers.cwt"
+
     override suspend fun generate(project: Project): Hint {
         val infos = parseLogFile()
         val configInfos = parseConfigFile(project)
