@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterIsInstance
@@ -22,14 +23,28 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * 从 `localizations.log` 生成 `localisations.cwt`。
+ * 从 `localizations.log` 生成 `localisation.cwt`。
+ *
+ * @property ignoredPromotionNames 需要忽略的提升的名字（忽略大小写）。
+ * @property ignoredCommandNames 需要忽略的命令的名字（忽略大小写）。
  */
 class CwtLocalisationConfigGenerator(
     override val gameType: ParadoxGameType,
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
-    override fun getDefaultGeneratedFileName() = "localisations.cwt"
+    val ignoredPromotionNames = caseInsensitiveStringSet()
+    val ignoredCommandNames = caseInsensitiveStringSet()
+
+    init {
+        configureDefaults()
+    }
+
+    private fun configureDefaults() {
+        ignoredPromotionNames += setOf("This", "Root", "Prev", "From")
+    }
+
+    override fun getDefaultGeneratedFileName() = "localisation.cwt"
 
     override suspend fun generate(project: Project): Hint {
         // 1) 解析日志文件，汇总 promotions/commands -> scopes
@@ -40,12 +55,14 @@ class CwtLocalisationConfigGenerator(
         val configInfo = parseConfigFile(project)
 
         // 3) 计算差异
-        val promotionNamesInLog = promotionScopesFromLog.keys
-        val commandNamesInLog = commandScopesFromLog.keys
-        val missingPromotions = promotionNamesInLog - configInfo.promotions
-        val unknownPromotions = configInfo.promotions - promotionNamesInLog
-        val missingCommands = commandNamesInLog - configInfo.commands
-        val unknownCommands = configInfo.commands - commandNamesInLog
+        val oldPromotions = configInfo.promotions.filter { it !in ignoredPromotionNames }.toSet()
+        val newPromotions = promotionScopesFromLog.keys.filter { it !in ignoredPromotionNames }.toSet()
+        val oldCommands = configInfo.commands.filter { it !in ignoredCommandNames }.toSet()
+        val newCommands = commandScopesFromLog.keys.filter { it !in ignoredCommandNames }.toSet()
+        val missingPromotions = newPromotions - oldPromotions
+        val unknownPromotions = oldPromotions - newPromotions
+        val missingCommands = newCommands - oldCommands
+        val unknownCommands = oldCommands - newCommands
 
         // 4) 基于 PSI 生成“删除未知项后”的文件文本
         val file = outputPath.toFile()
@@ -59,9 +76,11 @@ class CwtLocalisationConfigGenerator(
         }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
-        // 5) 将缺失项直接插入到现有容器末尾（空行 + TODO 注释 + 条目）
+        // 5) 将缺失项直接插入到现有容器末尾（空行 + 注释 + 条目）
         if (missingPromotions.isNotEmpty()) {
             val insertBlock = buildString {
+                appendLine(NOTE_UNKNOWN_PROMOTIONS)
+                appendLine()
                 appendLine(TODO_MISSING_PROMOTIONS)
                 for (name in missingPromotions.sorted()) {
                     val scopes = promotionScopesFromLog[name].orEmpty()
@@ -75,6 +94,8 @@ class CwtLocalisationConfigGenerator(
         }
         if (missingCommands.isNotEmpty()) {
             val insertBlock = buildString {
+                appendLine(NOTE_UNKNOWN_COMMANDS)
+                appendLine()
                 appendLine(TODO_MOSSING_COMMANDS)
                 for (name in missingCommands.sorted()) {
                     val scopes = commandScopesFromLog[name].orEmpty()
@@ -195,13 +216,13 @@ class CwtLocalisationConfigGenerator(
         }
     }
 
-    private fun getElementsToDelete(psiFile: CwtFile, containerPropertyName: String, propertyNamesToDelete: Set<String>): MutableList<PsiElement> {
+    private fun getElementsToDelete(psiFile: CwtFile, containerPropertyName: String, namesToDelete: Set<String>): MutableList<PsiElement> {
         val result = mutableListOf<PsiElement>()
         val rootBlock = psiFile.block
         val rootProps = rootBlock?.children()?.filterIsInstance<CwtProperty>()?.toList()
         val container = rootProps?.find { it.name == containerPropertyName }
         val propsToDelete = container?.propertyValue?.castOrNull<CwtBlock>()?.children()
-            ?.filterIsInstance<CwtProperty> { it.name in propertyNamesToDelete }
+            ?.filterIsInstance<CwtProperty> { it.name in namesToDelete }
         propsToDelete?.forEach { p ->
             result += p
             p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
@@ -261,7 +282,7 @@ class CwtLocalisationConfigGenerator(
     private enum class Position { ScopeName, Promotions, Properties }
 
     data class LocalisationInfo(
-        var name: String,
+        val name: String,
         val promotions: Set<String>,
         val properties: Set<String>,
     )
@@ -285,7 +306,9 @@ class CwtLocalisationConfigGenerator(
         private const val CONTAINER_COMMANDS = "localisation_commands"
         private const val INDENT = "    "
 
-        private const val TODO_MISSING_PROMOTIONS = "# TODO missing localisation promotions (in actual, key is the link name, value is the scope types)"
-        private const val TODO_MOSSING_COMMANDS = "# TODO missing localisation commands (in actual, key is the command name, value is the scope types)"
+        private const val NOTE_UNKNOWN_PROMOTIONS = "# NOTE unknown localisation promotions are deleted"
+        private const val TODO_MISSING_PROMOTIONS = "# TODO missing localisation promotions (key is the link name, value is the scope types)"
+        private const val NOTE_UNKNOWN_COMMANDS = "# NOTE unknown localisation commands are deleted"
+        private const val TODO_MOSSING_COMMANDS = "# TODO missing localisation commands (key is the command name, value is the scope types)"
     }
 }

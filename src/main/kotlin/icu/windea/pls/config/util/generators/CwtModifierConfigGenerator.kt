@@ -4,10 +4,13 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
@@ -16,45 +19,76 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
  * 从 `modifiers.log` 生成 `modifiers.cwt`。
+ *
+ * 注意：可能的经济修正（由经济类型生成的修正）会被忽略。
+ *
+ * @property ignoredNames 需要忽略的修正的名字（忽略大小写）。
+ * @property ignoredCategories 需要忽略的修正的分类（忽略大小写）。
  */
 class CwtModifierConfigGenerator(
     override val gameType: ParadoxGameType,
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
+    val ignoredNames = caseInsensitiveStringSet()
+    val ignoredCategories = caseInsensitiveStringSet()
+
+    init {
+        configureDefaults()
+    }
+
+    private fun configureDefaults() {
+        // nothing
+    }
+
     override fun getDefaultGeneratedFileName() = "modifiers.cwt"
 
     override suspend fun generate(project: Project): Hint {
         // 1) 解析日志：modifier -> categories
-        val modifierCategoriesFromLog = parseLogFile()
+        val infos = parseLogFile()
 
-        // 2) 解析现有 CWT 配置（PSI）：已存在的 modifier 键集合
-        val modifierNamesInConfig = parseConfigFile(project)
+        // 2) 解析现有 CWT 配置（PSI）：静态键集合 + 模板正则
+        val configInfo = parseConfigFile(project)
 
-        // 3) 差异
-        val missingNames = modifierCategoriesFromLog.keys - modifierNamesInConfig
-        val unknownNames = modifierNamesInConfig - modifierCategoriesFromLog.keys
+        // 3) 过滤日志（忽略名单/分类）并计算差异（缺失用模板匹配，未知仅针对静态名）
+        val filteredInfos = infos
+            .filterValues { info -> info.name !in ignoredNames }
+            .filterValues { info -> info.categories.none { it in ignoredCategories } }
+            .filterValues { info -> !isPossibleEconomicModifier(info) }
+        val missingNames = filteredInfos.keys
+            .filter { name -> name !in configInfo.names }
+            .filter { name -> configInfo.templates.none { CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .toSet()
+        val unknownNames = configInfo.names
+            .filter { name -> name !in filteredInfos.keys }
+            .toSet()
+        val unmatchedTemplates = configInfo.templates
+            .filter { filteredInfos.keys.none { name -> CwtTemplateExpressionManager.toRegex(it).matches(name) } }
+            .toSet()
 
-        // 4) 删除未知项并生成文本
+        // 4) 删除未知项并生成文本（不删除通过模板匹配的项）
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         val elementsToDelete = readAction { getElementsToDelete(psiFile, CONTAINER_MODIFIERS, unknownNames) }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
-        // 5) 在容器末尾插入缺失项（空行 + TODO 注释 + 条目）
+        // 5) 在容器末尾插入缺失项（空行 + 注释 + 条目）
         if (missingNames.isNotEmpty()) {
             val insertBlock = buildString {
+                appendLine(NOTE_UNKNOWN_PREDEFINED_MODIFIERS)
+                appendLine(NOTE_ECONOMIC_MODIFIERS)
                 appendLine()
                 appendLine(TODO_MISSING_MODIFIERS)
                 for (name in missingNames.sorted()) {
-                    val categories = modifierCategoriesFromLog[name].orEmpty().sorted()
+                    val categories = filteredInfos[name]?.categories.orEmpty().sorted()
                     val valueText = when {
                         categories.isEmpty() -> "{}"
                         categories.size == 1 -> categories.first().quoteIfNecessary()
@@ -73,6 +107,7 @@ class CwtModifierConfigGenerator(
             if (isEmpty()) appendLine("No missing or unknown modifiers.")
         }.trimEnd()
         val details = buildString {
+            appendLine("Note that possible economic modifiers are ignored.")
             if (missingNames.isNotEmpty()) {
                 appendLine("Missing modifiers:")
                 missingNames.sorted().forEach { appendLine("- $it") }
@@ -81,43 +116,64 @@ class CwtModifierConfigGenerator(
                 appendLine("Unknown modifiers:")
                 unknownNames.sorted().forEach { appendLine("- $it") }
             }
+            if (unmatchedTemplates.isNotEmpty()) {
+                appendLine("Unmatched templates:")
+                unmatchedTemplates.forEach { appendLine("- $it") }
+            }
         }.trimEnd()
+        val fileText = modifiedText.trimEnd()
 
-        val hint = Hint(summary, details, modifiedText.trimEnd())
-        hint.putUserData(Keys.missingModifierNames, missingNames)
-        hint.putUserData(Keys.unknownModifierNames, unknownNames)
-        hint.putUserData(Keys.modifierCategoriesFromLog, modifierCategoriesFromLog)
+        val hint = Hint(summary, details, fileText)
+        hint.putUserData(Keys.missingNames, missingNames)
+        hint.putUserData(Keys.unknownNames, unknownNames)
+        hint.putUserData(Keys.unmatchedTemplates, unmatchedTemplates)
+        hint.putUserData(Keys.infos, infos)
+        hint.putUserData(Keys.configInfo, configInfo)
         return hint
     }
 
-    private suspend fun parseLogFile(): Map<String, Set<String>> {
+    private suspend fun parseLogFile(): Map<String, ModifierInfo> {
         val file = inputPath.toFile()
         val regex = when (gameType) {
             ParadoxGameType.Stellaris -> """- (.*),\s*Category:\s*(.*)""".toRegex()
             else -> """Tag:(.*),\s*Categories:\s*(.*)""".toRegex()
         }
         val lines = withContext(Dispatchers.IO) { file.readLines() }
-        val result = linkedMapOf<String, Set<String>>()
+        val result = mutableMapOf<String, ModifierInfo>()
         for (line in lines) {
             val m = regex.matchEntire(line) ?: continue
-            val name = m.groupValues[1].trim()
+            val name = m.groupValues[1].trim().lowercase()
             val categories = m.groupValues[2].split(',')
                 .mapNotNullTo(mutableSetOf()) { it.trim().takeIf { s -> s.isNotEmpty() } }
                 .toSet()
-            result[name] = categories
+            result[name] = ModifierInfo(name, categories)
         }
         return result
     }
 
-    private suspend fun parseConfigFile(project: Project): Set<String> {
+    private suspend fun parseConfigFile(project: Project): ModifierConfigInfo {
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
             val container = rootProps.find { it.name == CONTAINER_MODIFIERS }
-            container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()?.mapTo(mutableSetOf()) { it.name }
-                ?: emptySet()
+            val names = caseInsensitiveStringSet()
+            val templates = mutableSetOf<CwtTemplateExpression>()
+            container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()?.forEach { p ->
+                val name = p.name.lowercase()
+                val templateExpression = CwtTemplateExpression.resolve(name)
+                when {
+                    templateExpression.expressionString.isEmpty() -> names += name
+                    else -> templates += templateExpression
+                }
+            }
+            // put xxx_<xxx>_xxx before xxx_<xxx>
+            // see icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider.process
+            val sortedTemplates = templates
+                .sortedByDescending { it.snippetExpressions.size }
+                .toSet()
+            ModifierConfigInfo(names, sortedTemplates)
         }
     }
 
@@ -130,7 +186,7 @@ class CwtModifierConfigGenerator(
         val result = mutableListOf<PsiElement>()
         val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
         val container = rootProps.find { it.name == containerPropertyName } ?: return result
-        val propsToDelete = container.propertyValue?.children()?.filterIsInstance<CwtProperty> { it.name in namesToDelete }
+        val propsToDelete = container.propertyValue?.children()?.filterIsInstance<CwtProperty> { it.name.lowercase() in namesToDelete }
         propsToDelete?.forEach { p ->
             result += p
             p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
@@ -174,15 +230,45 @@ class CwtModifierConfigGenerator(
         }
     }
 
+    data class ModifierInfo(
+        val name: String,
+        val categories: Set<String>,
+    )
+
+    data class ModifierConfigInfo(
+        val names: Set<String>,
+        val templates: Set<CwtTemplateExpression>,
+    )
+
     object Keys : KeyRegistry() {
-        val missingModifierNames by createKey<Set<String>>(Keys)
-        val unknownModifierNames by createKey<Set<String>>(Keys)
-        val modifierCategoriesFromLog by createKey<Map<String, Set<String>>>(Keys)
+        val missingNames by createKey<Set<String>>(Keys)
+        val unknownNames by createKey<Set<String>>(Keys)
+        val unmatchedTemplates by createKey<Set<CwtTemplateExpression>>(Keys)
+        val infos by createKey<Map<String, ModifierInfo>>(Keys)
+        val configInfo by createKey<ModifierConfigInfo>(Keys)
     }
 
     private companion object {
         private const val CONTAINER_MODIFIERS = "modifiers"
         private const val INDENT = "    "
-        private const val TODO_MISSING_MODIFIERS = "# TODO missing modifiers (in actual, key is the modifier name, value is the categories)"
+        private const val NOTE_UNKNOWN_PREDEFINED_MODIFIERS = "# NOTE unknown predefined modifiers are deleted"
+        private const val NOTE_ECONOMIC_MODIFIERS = "# NOTE possible economic modifiers are ignored"
+        private const val TODO_MISSING_MODIFIERS = "# TODO missing modifiers (key is the modifier name, value is the modifier categories)"
+
+        // see cwt/cwtools-stellaris-config/config/common/economic_categories.cwt
+        private const val CATEGORY_AI_ECONOMY = "AI Economy"
+        private val economicModifierCategories = setOf("produces", "cost", "upkeep", "logistics")
+        private val economicModifierTypes = setOf("mult", "add")
+
+        private fun isPossibleEconomicModifier(info: ModifierInfo): Boolean {
+            // NOTE 这里并不能访问运行时数据，也就是游戏文件，因为规则生成器应当随时可用
+            if (CATEGORY_AI_ECONOMY !in info.categories) return false
+            if (info.categories.size < 2) return false
+            var s = info.name
+            s = economicModifierTypes.firstNotNullOfOrNull { s.removeSuffixOrNull("_$it") } ?: return false
+            s = economicModifierCategories.firstNotNullOfOrNull { s.removeSuffixOrNull("_$it") } ?: return false
+            if (s.isEmpty()) return false
+            return true
+        }
     }
 }

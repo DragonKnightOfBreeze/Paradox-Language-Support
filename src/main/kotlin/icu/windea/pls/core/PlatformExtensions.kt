@@ -94,15 +94,17 @@ object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     }
 }
 
+// com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
+
 /** 创建忽略大小写的字符串集合。*/
 fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
-    // com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
     return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
 }
 
+// com.intellij.util.containers.createCaseInsensitiveStringMap()
+
 /** 创建键为忽略大小写字符串的映射。*/
 fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
-    // com.intellij.util.containers.createCaseInsensitiveStringMap()
     return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 

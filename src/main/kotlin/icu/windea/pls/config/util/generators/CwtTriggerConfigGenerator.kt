@@ -9,9 +9,11 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.chunkedBy
 import icu.windea.pls.core.collections.filterIsInstance
+import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
@@ -27,13 +29,15 @@ import kotlinx.coroutines.withContext
 
 /**
  * 从 `triggers.log` 生成 `triggers.cwt`。
+ *
+ * @property ignoredNames 需要忽略的修正的名字（忽略大小写）。
  */
 class CwtTriggerConfigGenerator(
     override val gameType: ParadoxGameType,
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
-    val ignoredNames = mutableSetOf<String>()
+    val ignoredNames = caseInsensitiveStringSet()
 
     init {
         configureDefaults()
@@ -65,7 +69,7 @@ class CwtTriggerConfigGenerator(
     }
 
     private fun parseTriggerInfo(chunkLines: List<String>): TriggerInfo {
-        val name = CwtConfigGeneratorUtil.parseName(chunkLines.first()).lowercase()
+        val name = CwtConfigGeneratorUtil.parseName(chunkLines.first())
         val description = CwtConfigGeneratorUtil.parseDescription(chunkLines.first())
         val supportedScopes = if (chunkLines.size >= 2) CwtConfigGeneratorUtil.parseSupportedScopes(chunkLines.last()) else emptySet()
         val declaration = if (chunkLines.size >= 2) chunkLines.subList(1, chunkLines.size - 1).joinToString("\n") else ""
@@ -85,19 +89,17 @@ class CwtTriggerConfigGenerator(
     }
 
     private fun parseTriggerConfigInfo(configs: List<CwtAliasConfig>): TriggerConfigInfo {
-        val name = configs.first().subName.lowercase()
+        val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
         return TriggerConfigInfo(name, description, supportedScopes)
     }
 
-    private suspend fun generateHint(
-        project: Project,
-        infos: Map<String, TriggerInfo>,
-        configInfos: Map<String, TriggerConfigInfo>
-    ): Hint {
-        val missingNames = infos.keys - configInfos.keys - ignoredNames
-        val unknownNames = configInfos.keys - infos.keys - ignoredNames
+    private suspend fun generateHint(project: Project, infos: Map<String, TriggerInfo>, configInfos: Map<String, TriggerConfigInfo>): Hint {
+        val oldNames = configInfos.keys.filter { it !in ignoredNames }.toSet()
+        val newNames = infos.keys.filter { it !in ignoredNames }.toSet()
+        val missingNames = newNames - oldNames
+        val unknownNames = oldNames - newNames
 
         val summary = buildString {
             if (missingNames.isNotEmpty()) {
@@ -124,10 +126,11 @@ class CwtTriggerConfigGenerator(
             val file = outputPath.toFile()
             val text = withContext(Dispatchers.IO) { file.readText() }
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-            val propertyNamesToDelete = unknownNames.map { "alias[trigger:$it]" }
-            val elementsToDelete = readAction { getElementsToDelete(psiFile, propertyNamesToDelete) }
+            val elementsToDelete = readAction { getElementsToDelete(psiFile, unknownNames) }
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)
+            appendLine()
+            appendLine(NOTE_UNKNOWN_TRIGGERS)
             appendLine()
             appendLine(TODO_MISSING_TRIGGERS)
             for (name in missingNames) {
@@ -153,10 +156,10 @@ class CwtTriggerConfigGenerator(
         return hint
     }
 
-    private fun getElementsToDelete(psiFile: CwtFile, propertyNamesToDelete: List<String>): MutableList<PsiElement> {
+    private fun getElementsToDelete(psiFile: CwtFile, namesToDelete: Set<String>): MutableList<PsiElement> {
         val result = mutableListOf<PsiElement>()
         val propsToDelete = psiFile.block?.children(forward = false)
-            ?.filterIsInstance<CwtProperty> { p -> p.name in propertyNamesToDelete }
+            ?.filterIsInstance<CwtProperty> { p -> p.name.removeSurroundingOrNull("alias[trigger:", "]") in namesToDelete }
         propsToDelete?.forEach { p ->
             result += p
             p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
@@ -187,7 +190,7 @@ class CwtTriggerConfigGenerator(
     companion object {
         private const val START_MARKER = "== TRIGGER DOCUMENTATION =="
         private const val END_MARKER = "================="
-
+        private const val NOTE_UNKNOWN_TRIGGERS = "# NOTE unknown effects are deleted"
         private const val TODO_MISSING_TRIGGERS = "# TODO missing triggers"
     }
 }

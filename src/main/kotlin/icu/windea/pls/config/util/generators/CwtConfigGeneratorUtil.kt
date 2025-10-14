@@ -2,6 +2,7 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.collections.toSetOrThis
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.splitByBlank

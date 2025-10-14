@@ -3,6 +3,7 @@ package icu.windea.pls.config.util.generators
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.toFile
@@ -19,12 +20,24 @@ import kotlinx.coroutines.withContext
 
 /**
  * 从 `modifiers.log` 生成 `modifier_categories.cwt`。
+ *
+ * @property ignoredNames 需要忽略的修正分类的名字（忽略大小写）。
  */
 class CwtModifierCategoriesConfigGenerator(
     override val gameType: ParadoxGameType,
     override val inputPath: String,
     override val outputPath: String,
 ) : CwtConfigGenerator {
+    val ignoredNames = caseInsensitiveStringSet()
+
+    init {
+        configureDefaults()
+    }
+
+    private fun configureDefaults() {
+        // nothing
+    }
+
     override fun getDefaultGeneratedFileName() = "modifier_categories.cwt"
 
     override suspend fun generate(project: Project): Hint {
@@ -35,22 +48,24 @@ class CwtModifierCategoriesConfigGenerator(
         val categoriesInConfig = parseConfigFile(project)
 
         // 3) 差异识别（不删除未知类别，仅提示）
-        val missingCategories = categoriesFromLog - categoriesInConfig
-        val unknownCategories = categoriesInConfig - categoriesFromLog
+        val oldNames = categoriesInConfig.filter { it !in ignoredNames }.toSet()
+        val newNames = categoriesFromLog.filter { it !in ignoredNames }.toSet()
+        val missingNames = newNames - oldNames
+        val unknownNames = oldNames - newNames
 
-        // 4) 读取原文件文本，并在容器末尾插入缺失类别的空块（空行 + TODO 注释 + 条目）
+        // 4) 读取原文件文本，并在容器末尾插入缺失类别的空块（空行 + 注释 + 条目）
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         var modifiedText = readAction { psiFile.text } // 不做删除，仅做插入
-        if (missingCategories.isNotEmpty()) {
+        if (missingNames.isNotEmpty()) {
             val insertBlock = buildString {
                 appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
-                for (name in missingCategories.sorted()) {
+                for (name in missingNames.sorted()) {
                     val key = name.quoteIfNecessary()
                     appendLine("${key} = {")
-                    appendLine("${INDENT}# TODO choose supported_scopes")
-                    appendLine("${INDENT}supported_scopes = { }")
+                    appendLine("${INDENT}# TODO choose supported scopes")
+                    appendLine("${INDENT}supported_scopes = {}")
                     appendLine("}")
                 }
             }.trimEnd()
@@ -59,24 +74,24 @@ class CwtModifierCategoriesConfigGenerator(
 
         // 5) 汇总
         val summary = buildString {
-            if (missingCategories.isNotEmpty()) appendLine("${missingCategories.size} missing modifier categories.")
-            if (unknownCategories.isNotEmpty()) appendLine("${unknownCategories.size} unknown modifier categories.")
+            if (missingNames.isNotEmpty()) appendLine("${missingNames.size} missing modifier categories.")
+            if (unknownNames.isNotEmpty()) appendLine("${unknownNames.size} unknown modifier categories.")
             if (isEmpty()) appendLine("No missing or unknown modifier categories.")
         }.trimEnd()
         val details = buildString {
-            if (missingCategories.isNotEmpty()) {
+            if (missingNames.isNotEmpty()) {
                 appendLine("Missing modifier categories:")
-                missingCategories.sorted().forEach { appendLine("- $it") }
+                missingNames.sorted().forEach { appendLine("- $it") }
             }
-            if (unknownCategories.isNotEmpty()) {
+            if (unknownNames.isNotEmpty()) {
                 appendLine("Unknown modifier categories:")
-                unknownCategories.sorted().forEach { appendLine("- $it") }
+                unknownNames.sorted().forEach { appendLine("- $it") }
             }
         }.trimEnd()
 
         val hint = Hint(summary, details, modifiedText.trimEnd())
-        hint.putUserData(Keys.missingCategoryNames, missingCategories)
-        hint.putUserData(Keys.unknownCategoryNames, unknownCategories)
+        hint.putUserData(Keys.missingNames, missingNames)
+        hint.putUserData(Keys.unknownNames, unknownNames)
         hint.putUserData(Keys.categoriesFromLog, categoriesFromLog)
         return hint
     }
@@ -145,8 +160,8 @@ class CwtModifierCategoriesConfigGenerator(
     }
 
     object Keys : KeyRegistry() {
-        val missingCategoryNames by createKey<Set<String>>(Keys)
-        val unknownCategoryNames by createKey<Set<String>>(Keys)
+        val missingNames by createKey<Set<String>>(Keys)
+        val unknownNames by createKey<Set<String>>(Keys)
         val categoriesFromLog by createKey<Set<String>>(Keys)
     }
 
