@@ -2,6 +2,7 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
@@ -22,6 +23,8 @@ import kotlinx.coroutines.withContext
  * 从 `modifiers.log` 生成 `modifier_categories.cwt`。
  *
  * @property ignoredNames 需要忽略的修正分类的名字（忽略大小写）。
+ *
+ * @see CwtModifierCategoryConfig
  */
 class CwtModifierCategoriesConfigGenerator(
     override val gameType: ParadoxGameType,
@@ -69,7 +72,8 @@ class CwtModifierCategoriesConfigGenerator(
                     appendLine("}")
                 }
             }.trimEnd()
-            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
         }
 
         // 5) 汇总
@@ -120,42 +124,6 @@ class CwtModifierCategoriesConfigGenerator(
             val container = rootProps.find { it.name == CONTAINER_MODIFIER_CATEGORIES }
             container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()
                 ?.mapTo(mutableSetOf()) { it.name.unquote() } ?: emptySet()
-        }
-    }
-
-    private suspend fun insertIntoContainer(
-        project: Project,
-        fileText: String,
-        containerPropertyName: String,
-        insertBlock: String,
-    ): String {
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, fileText) }
-        val container = readAction {
-            val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-            rootProps.firstOrNull { it.name == containerPropertyName }
-        }
-        if (container != null) {
-            val insertionOffset = readAction {
-                val containerText = container.text
-                val relIndex = containerText.lastIndexOf('}')
-                val rel = if (relIndex == -1) containerText.length else relIndex
-                container.textRange.startOffset + rel
-            }
-            return buildString(fileText.length + insertBlock.length + 64) {
-                appendLine(fileText.substring(0, insertionOffset))
-                appendLine(insertBlock.prependIndent(INDENT))
-                append(fileText.substring(insertionOffset))
-            }
-        }
-        val containerPatch = buildString {
-            appendLine("${containerPropertyName} = {")
-            appendLine(insertBlock.prependIndent(INDENT))
-            append("}")
-        }
-        return buildString(fileText.length + containerPatch.length + 64) {
-            append(fileText.trimEnd())
-            appendLine()
-            append(containerPatch)
         }
     }
 

@@ -2,17 +2,13 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.siblings
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.chunkedBy
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -20,7 +16,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
-import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.model.ParadoxGameType
@@ -31,6 +27,8 @@ import kotlinx.coroutines.withContext
  * 从 `effects.log` 生成 `effects.cwt`。
  *
  * @property ignoredNames 需要忽略的效应的名字（忽略大小写）。
+ *
+ * @see CwtAliasConfig
  */
 class CwtEffectConfigGenerator(
     override val gameType: ParadoxGameType,
@@ -64,11 +62,11 @@ class CwtEffectConfigGenerator(
         val endIndex = if (endMarkerIndex == -1) allLines.size else endMarkerIndex - 1
         val lines = allLines.subList(startIndex, endIndex)
         val chunks = lines.map { it.trim() }.chunkedBy { it.isEmpty() }.filter { it.isNotEmpty() }
-        val infos = chunks.map { parseEffectInfo(it) }
+        val infos = chunks.map { parseInfo(it) }
         return infos.associateBy { it.name }
     }
 
-    private fun parseEffectInfo(chunkLines: List<String>): EffectInfo {
+    private fun parseInfo(chunkLines: List<String>): EffectInfo {
         val name = CwtConfigGeneratorUtil.parseName(chunkLines.first())
         val description = CwtConfigGeneratorUtil.parseDescription(chunkLines.first())
         val supportedScopes = if (chunkLines.size >= 2) CwtConfigGeneratorUtil.parseSupportedScopes(chunkLines.last()) else emptySet()
@@ -84,11 +82,11 @@ class CwtEffectConfigGenerator(
             val fileConfig = CwtFileConfig.resolve(psiFile, file.name, CwtConfigGroup(project, gameType))
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
                 .filter { it.name == "effect" && it.subName.isIdentifier() }
-            configs.groupBy { it.subName }.mapValues { (_, v) -> parseEffectConfigInfo(v) }
+            configs.groupBy { it.subName }.mapValues { (_, v) -> parseConfigInfo(v) }
         }
     }
 
-    private fun parseEffectConfigInfo(configs: List<CwtAliasConfig>): EffectConfigInfo {
+    private fun parseConfigInfo(configs: List<CwtAliasConfig>): EffectConfigInfo {
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
@@ -126,7 +124,7 @@ class CwtEffectConfigGenerator(
             val file = outputPath.toFile()
             val text = withContext(Dispatchers.IO) { file.readText() }
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-            val elementsToDelete = readAction { getElementsToDelete(psiFile, unknownNames) }
+            val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile) { toDelete(it, unknownNames) } }
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)
             appendLine()
@@ -156,15 +154,8 @@ class CwtEffectConfigGenerator(
         return hint
     }
 
-    private fun getElementsToDelete(psiFile: CwtFile, namesToDelete: Set<String>): MutableList<PsiElement> {
-        val result = mutableListOf<PsiElement>()
-        val propsToDelete = psiFile.block?.children(forward = false)
-            ?.filterIsInstance<CwtProperty> { p -> p.name.removeSurroundingOrNull("alias[effect:", "]") in namesToDelete }
-        propsToDelete?.forEach { p ->
-            result += p
-            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
-        }
-        return result
+    private fun toDelete(member: CwtMember, unknownNames: Set<String>): Boolean {
+        return member is CwtProperty && member.name.removeSurroundingOrNull("alias[effect:", "]") in unknownNames
     }
 
     data class EffectInfo(

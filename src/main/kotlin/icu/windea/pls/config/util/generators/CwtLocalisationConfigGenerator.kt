@@ -3,12 +3,12 @@ package icu.windea.pls.config.util.generators
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.siblings
+import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
+import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtBlock
 import icu.windea.pls.cwt.psi.CwtElementFactory
-import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +27,9 @@ import kotlinx.coroutines.withContext
  *
  * @property ignoredPromotionNames 需要忽略的提升的名字（忽略大小写）。
  * @property ignoredCommandNames 需要忽略的命令的名字（忽略大小写）。
+ *
+ * @see CwtLocalisationPromotionConfig
+ * @see CwtLocalisationCommandConfig
  */
 class CwtLocalisationConfigGenerator(
     override val gameType: ParadoxGameType,
@@ -70,8 +73,8 @@ class CwtLocalisationConfigGenerator(
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         val elementsToDelete = readAction {
             val list = mutableListOf<PsiElement>()
-            list += getElementsToDelete(psiFile, CONTAINER_PROMOTIONS, unknownPromotions)
-            list += getElementsToDelete(psiFile, CONTAINER_COMMANDS, unknownCommands)
+            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_PROMOTIONS) { toDelete(it, unknownPromotions) }
+            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_COMMANDS) { toDelete(it, unknownCommands) }
             list
         }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
@@ -90,7 +93,8 @@ class CwtLocalisationConfigGenerator(
                     appendLine("${name} = ${valueText}")
                 }
             }.trimEnd()
-            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_PROMOTIONS, insertBlock)
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlock)
         }
         if (missingCommands.isNotEmpty()) {
             val insertBlock = buildString {
@@ -107,7 +111,8 @@ class CwtLocalisationConfigGenerator(
                     appendLine("${name} = ${valueText}")
                 }
             }.trimEnd()
-            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_COMMANDS, insertBlock)
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlock)
         }
 
         // 6) 汇总摘要与详情
@@ -216,52 +221,6 @@ class CwtLocalisationConfigGenerator(
         }
     }
 
-    private fun getElementsToDelete(psiFile: CwtFile, containerPropertyName: String, namesToDelete: Set<String>): MutableList<PsiElement> {
-        val result = mutableListOf<PsiElement>()
-        val rootBlock = psiFile.block
-        val rootProps = rootBlock?.children()?.filterIsInstance<CwtProperty>()?.toList()
-        val container = rootProps?.find { it.name == containerPropertyName }
-        val propsToDelete = container?.propertyValue?.castOrNull<CwtBlock>()?.children()
-            ?.filterIsInstance<CwtProperty> { it.name in namesToDelete }
-        propsToDelete?.forEach { p ->
-            result += p
-            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
-        }
-        return result
-    }
-
-    private suspend fun insertIntoContainer(project: Project, fileText: String, containerPropertyName: String, insertBlock: String): String {
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, fileText) }
-        val container = readAction {
-            val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-            rootProps.firstOrNull { it.name == containerPropertyName }
-        }
-        if (container != null) {
-            val insertionOffset = readAction {
-                val containerText = container.text
-                val relIndex = containerText.lastIndexOf('}')
-                val rel = if (relIndex == -1) containerText.length else relIndex
-                container.textRange.startOffset + rel
-            }
-            return buildString(fileText.length + insertBlock.length + 64) {
-                appendLine(fileText.substring(0, insertionOffset))
-                appendLine(insertBlock.prependIndent(INDENT))
-                append(fileText.substring(insertionOffset))
-            }
-        }
-        // fallback：容器缺失，直接在文件末尾追加完整容器
-        val containerPatch = buildString {
-            appendLine("${containerPropertyName} = {")
-            appendLine(insertBlock.prependIndent(INDENT))
-            append("}")
-        }
-        return buildString(fileText.length + containerPatch.length + 64) {
-            append(fileText.trimEnd())
-            appendLine()
-            append(containerPatch)
-        }
-    }
-
     private fun aggregateScopes(infos: List<LocalisationInfo>): Pair<Map<String, Set<String>>, Map<String, Set<String>>> {
         val promotionScopes = mutableMapOf<String, MutableSet<String>>()
         val commandScopes = mutableMapOf<String, MutableSet<String>>()
@@ -277,6 +236,10 @@ class CwtLocalisationConfigGenerator(
         "Base Scope" -> setOf("any")
         "Ship (and Starbase)" -> setOf("ship", "starbase")
         else -> setOf(text.lowercase().replace(" ", "_"))
+    }
+
+    private fun toDelete(member: CwtMember, unknownNames: Set<String>): Boolean {
+        return member is CwtProperty && member.name in unknownNames
     }
 
     private enum class Position { ScopeName, Promotions, Properties }
@@ -304,7 +267,6 @@ class CwtLocalisationConfigGenerator(
     private companion object {
         private const val CONTAINER_PROMOTIONS = "localisation_promotions"
         private const val CONTAINER_COMMANDS = "localisation_commands"
-        private const val INDENT = "    "
 
         private const val NOTE_UNKNOWN_PROMOTIONS = "# NOTE unknown localisation promotions are deleted"
         private const val TODO_MISSING_PROMOTIONS = "# TODO missing localisation promotions (key is the link name, value is the scope types)"

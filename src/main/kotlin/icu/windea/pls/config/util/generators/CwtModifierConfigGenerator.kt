@@ -2,13 +2,12 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.siblings
+import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
-import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toFile
@@ -17,7 +16,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
-import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
@@ -31,6 +30,9 @@ import kotlinx.coroutines.withContext
  *
  * @property ignoredNames 需要忽略的修正的名字（忽略大小写）。
  * @property ignoredCategories 需要忽略的修正的分类（忽略大小写）。
+ *
+ * @see CwtModifierConfig
+ * @see CwtModifierCategoryConfig
  */
 class CwtModifierConfigGenerator(
     override val gameType: ParadoxGameType,
@@ -77,7 +79,7 @@ class CwtModifierConfigGenerator(
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-        val elementsToDelete = readAction { getElementsToDelete(psiFile, CONTAINER_MODIFIERS, unknownNames) }
+        val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_MODIFIERS) { toDelete(it, unknownNames) } }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
         // 5) 在容器末尾插入缺失项（空行 + 注释 + 条目）
@@ -97,7 +99,8 @@ class CwtModifierConfigGenerator(
                     appendLine("${name} = ${valueText}")
                 }
             }.trimEnd()
-            modifiedText = insertIntoContainer(project, modifiedText, CONTAINER_MODIFIERS, insertBlock)
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIERS, insertBlock)
         }
 
         // 6) 汇总
@@ -155,11 +158,11 @@ class CwtModifierConfigGenerator(
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-        return readAction {
+        val names = caseInsensitiveStringSet()
+        val templates = mutableSetOf<CwtTemplateExpression>()
+        readAction {
             val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
             val container = rootProps.find { it.name == CONTAINER_MODIFIERS }
-            val names = caseInsensitiveStringSet()
-            val templates = mutableSetOf<CwtTemplateExpression>()
             container?.propertyValue?.children()?.filterIsInstance<CwtProperty>()?.forEach { p ->
                 val name = p.name.lowercase()
                 val templateExpression = CwtTemplateExpression.resolve(name)
@@ -168,66 +171,17 @@ class CwtModifierConfigGenerator(
                     else -> templates += templateExpression
                 }
             }
-            // put xxx_<xxx>_xxx before xxx_<xxx>
-            // see icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider.process
-            val sortedTemplates = templates
-                .sortedByDescending { it.snippetExpressions.size }
-                .toSet()
-            ModifierConfigInfo(names, sortedTemplates)
         }
+        // put xxx_<xxx>_xxx before xxx_<xxx>
+        // see icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider.process
+        val sortedTemplates = templates
+            .sortedByDescending { it.snippetExpressions.size }
+            .toSet()
+        return ModifierConfigInfo(names, sortedTemplates)
     }
 
-    @Suppress("SameParameterValue")
-    private fun getElementsToDelete(
-        psiFile: CwtFile,
-        containerPropertyName: String,
-        namesToDelete: Set<String>
-    ): MutableList<PsiElement> {
-        val result = mutableListOf<PsiElement>()
-        val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-        val container = rootProps.find { it.name == containerPropertyName } ?: return result
-        val propsToDelete = container.propertyValue?.children()?.filterIsInstance<CwtProperty> { it.name.lowercase() in namesToDelete }
-        propsToDelete?.forEach { p ->
-            result += p
-            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
-        }
-        return result
-    }
-
-    private suspend fun insertIntoContainer(
-        project: Project,
-        fileText: String,
-        containerPropertyName: String,
-        insertBlock: String,
-    ): String {
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, fileText) }
-        val container = readAction {
-            val rootProps = psiFile.block?.children()?.filterIsInstance<CwtProperty>()?.toList().orEmpty()
-            rootProps.firstOrNull { it.name == containerPropertyName }
-        }
-        if (container != null) {
-            val insertionOffset = readAction {
-                val containerText = container.text
-                val relIndex = containerText.lastIndexOf('}')
-                val rel = if (relIndex == -1) containerText.length else relIndex
-                container.textRange.startOffset + rel
-            }
-            return buildString(fileText.length + insertBlock.length + 64) {
-                appendLine(fileText.substring(0, insertionOffset))
-                appendLine(insertBlock.prependIndent(INDENT))
-                append(fileText.substring(insertionOffset))
-            }
-        }
-        val containerPatch = buildString {
-            appendLine("${containerPropertyName} = {")
-            appendLine(insertBlock.prependIndent(INDENT))
-            append("}")
-        }
-        return buildString(fileText.length + containerPatch.length + 64) {
-            append(fileText.trimEnd())
-            appendLine()
-            append(containerPatch)
-        }
+    private fun toDelete(member: CwtMember, unknownNames: Set<String>): Boolean {
+        return member is CwtProperty && member.name.lowercase() in unknownNames
     }
 
     data class ModifierInfo(
@@ -250,7 +204,6 @@ class CwtModifierConfigGenerator(
 
     private companion object {
         private const val CONTAINER_MODIFIERS = "modifiers"
-        private const val INDENT = "    "
         private const val NOTE_UNKNOWN_PREDEFINED_MODIFIERS = "# NOTE unknown predefined modifiers are deleted"
         private const val NOTE_ECONOMIC_MODIFIERS = "# NOTE possible economic modifiers are ignored"
         private const val TODO_MISSING_MODIFIERS = "# TODO missing modifiers (key is the modifier name, value is the modifier categories)"
