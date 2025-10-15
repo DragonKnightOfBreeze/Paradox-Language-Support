@@ -30,11 +30,8 @@ import kotlinx.coroutines.withContext
  *
  * @see CwtAliasConfig
  */
-class CwtEffectConfigGenerator(
-    override val gameType: ParadoxGameType,
-    override val inputPath: String,
-    override val outputPath: String,
-) : CwtConfigGenerator {
+class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerator {
+
     val ignoredNames = caseInsensitiveStringSet()
 
     init {
@@ -45,15 +42,17 @@ class CwtEffectConfigGenerator(
         // nothing
     }
 
-    override fun getDefaultGeneratedFileName() = "effects.cwt"
+    override fun getName() = "EffectConfigGenerator"
 
-    override suspend fun generate(project: Project): Hint {
-        val infos = parseLogFile()
-        val configInfos = parseConfigFile(project)
-        return generateHint(project, infos, configInfos)
+    override fun getGeneratedFileName() = "effects.cwt"
+
+    override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
+        val infos = parseLogFile(inputPath)
+        val configInfos = parseConfigFile(outputPath, gameType)
+        return generateHint(outputPath, infos, configInfos)
     }
 
-    private suspend fun parseLogFile(): Map<String, EffectInfo> {
+    private suspend fun parseLogFile(inputPath: String): Map<String, EffectInfo> {
         val file = inputPath.toFile()
         val allLines = withContext(Dispatchers.IO) { file.readLines() }
         val startMarkerIndex = allLines.indexOf(START_MARKER)
@@ -74,7 +73,7 @@ class CwtEffectConfigGenerator(
         return EffectInfo(name, description, supportedScopes, declaration)
     }
 
-    private suspend fun parseConfigFile(project: Project): Map<String, EffectConfigInfo> {
+    private suspend fun parseConfigFile(outputPath: String, gameType: ParadoxGameType): Map<String, EffectConfigInfo> {
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
@@ -93,7 +92,7 @@ class CwtEffectConfigGenerator(
         return EffectConfigInfo(name, description, supportedScopes)
     }
 
-    private suspend fun generateHint(project: Project, infos: Map<String, EffectInfo>, configInfos: Map<String, EffectConfigInfo>): Hint {
+    private suspend fun generateHint(outputPath: String, infos: Map<String, EffectInfo>, configInfos: Map<String, EffectConfigInfo>): Hint {
         val oldNames = configInfos.keys.filter { it !in ignoredNames }.toSet()
         val newNames = infos.keys.filter { it !in ignoredNames }.toSet()
         val missingNames = newNames - oldNames

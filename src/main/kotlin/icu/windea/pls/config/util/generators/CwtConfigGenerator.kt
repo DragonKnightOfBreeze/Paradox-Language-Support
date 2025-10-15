@@ -9,24 +9,25 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * 用于从日志或脚本文件生成规则文件的维护提示。
  *
- * @property gameType 指定的游戏类型。
- * @property inputPath 输入的日志文件的路径，或者输入的脚本文件所在目录的路径。
- * @property outputPath 输出的规则文件的路径。
+ * @property project 指定的项目。
  */
 interface CwtConfigGenerator {
-    val gameType: ParadoxGameType
-    val inputPath: String
-    val outputPath: String
+    val project: Project
 
-    /**
-     * 得到生成的规则文件的默认文件名。
-     */
-    fun getDefaultGeneratedFileName(): String
+    /** 得到生成器的名字。 */
+    fun getName(): String
+
+    /** 得到默认要生成的文件名。*/
+    fun getGeneratedFileName(): String
 
     /**
      * 生成规则文件的维护提示。
+     *
+     * @param gameType 指定的游戏类型。
+     * @param inputPath 输入的日志文件的路径，或者输入的脚本文件所在目录的路径。
+     * @param outputPath 输出的规则文件的路径。
      */
-    suspend fun generate(project: Project): Hint
+    suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint
 
     /**
      * 规则文件的维护提示。

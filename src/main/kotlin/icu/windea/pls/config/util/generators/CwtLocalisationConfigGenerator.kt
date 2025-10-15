@@ -31,11 +31,7 @@ import kotlinx.coroutines.withContext
  * @see CwtLocalisationPromotionConfig
  * @see CwtLocalisationCommandConfig
  */
-class CwtLocalisationConfigGenerator(
-    override val gameType: ParadoxGameType,
-    override val inputPath: String,
-    override val outputPath: String,
-) : CwtConfigGenerator {
+class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigGenerator {
     val ignoredPromotionNames = caseInsensitiveStringSet()
     val ignoredCommandNames = caseInsensitiveStringSet()
 
@@ -47,15 +43,17 @@ class CwtLocalisationConfigGenerator(
         ignoredPromotionNames += setOf("This", "Root", "Prev", "From")
     }
 
-    override fun getDefaultGeneratedFileName() = "localisation.cwt"
+    override fun getName() = "LocalisationConfigGenerator"
 
-    override suspend fun generate(project: Project): Hint {
+    override fun getGeneratedFileName() = "localisation.cwt"
+
+    override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         // 1) 解析日志文件，汇总 promotions/commands -> scopes
-        val infos = parseLogFile()
+        val infos = parseLogFile(inputPath)
         val (promotionScopesFromLog, commandScopesFromLog) = aggregateScopes(infos)
 
         // 2) 解析现有 CWT 配置（PSI）以获取已存在的键集合
-        val configInfo = parseConfigFile(project)
+        val configInfo = parseConfigFile(outputPath)
 
         // 3) 计算差异
         val oldPromotions = configInfo.promotions.filter { it !in ignoredPromotionNames }.toSet()
@@ -153,7 +151,7 @@ class CwtLocalisationConfigGenerator(
         return hint
     }
 
-    private suspend fun parseLogFile(): List<LocalisationInfo> {
+    private suspend fun parseLogFile(inputPath: String): List<LocalisationInfo> {
         val logFile = inputPath.toFile()
         val allLines = withContext(Dispatchers.IO) { logFile.readLines() }
         val infos = mutableListOf<LocalisationInfo>()
@@ -199,7 +197,7 @@ class CwtLocalisationConfigGenerator(
         return infos
     }
 
-    private suspend fun parseConfigFile(project: Project): LocalisationConfigInfo {
+    private suspend fun parseConfigFile(outputPath: String): LocalisationConfigInfo {
         val file = java.io.File(outputPath)
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }

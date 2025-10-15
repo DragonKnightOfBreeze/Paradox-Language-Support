@@ -548,6 +548,8 @@
       </group>
       <group id="Pls.Tools.Generation" popup="true">
         <reference ref="Pls.LocalisationGeneration"/>
+      </group>
+      <group id="Pls.Tools.ConfigGeneration" popup="true">
         <reference ref="Pls.ConfigGeneration"/>
       </group>
 

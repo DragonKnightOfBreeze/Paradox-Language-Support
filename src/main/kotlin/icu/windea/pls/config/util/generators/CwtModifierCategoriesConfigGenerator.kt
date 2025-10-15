@@ -26,11 +26,7 @@ import kotlinx.coroutines.withContext
  *
  * @see CwtModifierCategoryConfig
  */
-class CwtModifierCategoriesConfigGenerator(
-    override val gameType: ParadoxGameType,
-    override val inputPath: String,
-    override val outputPath: String,
-) : CwtConfigGenerator {
+class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtConfigGenerator {
     val ignoredNames = caseInsensitiveStringSet()
 
     init {
@@ -41,14 +37,16 @@ class CwtModifierCategoriesConfigGenerator(
         // nothing
     }
 
-    override fun getDefaultGeneratedFileName() = "modifier_categories.cwt"
+    override fun getName() = "ModifierCategoriesConfigGenerator"
 
-    override suspend fun generate(project: Project): Hint {
+    override fun getGeneratedFileName() = "modifier_categories.cwt"
+
+    override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         // 1) 解析日志：聚合所有出现过的类别
-        val categoriesFromLog = parseLogFile()
+        val categoriesFromLog = parseLogFile(inputPath, gameType)
 
         // 2) 解析现有 CWT 配置（PSI）：已存在的类别
-        val categoriesInConfig = parseConfigFile(project)
+        val categoriesInConfig = parseConfigFile(outputPath)
 
         // 3) 差异识别（不删除未知类别，仅提示）
         val oldNames = categoriesInConfig.filter { it !in ignoredNames }.toSet()
@@ -100,7 +98,7 @@ class CwtModifierCategoriesConfigGenerator(
         return hint
     }
 
-    private suspend fun parseLogFile(): Set<String> {
+    private suspend fun parseLogFile(inputPath: String, gameType: ParadoxGameType): Set<String> {
         val file = inputPath.toFile()
         val regex = when (gameType) {
             ParadoxGameType.Stellaris -> """- (.*),\s*Category:\s*(.*)""".toRegex()
@@ -115,7 +113,7 @@ class CwtModifierCategoriesConfigGenerator(
         return categories
     }
 
-    private suspend fun parseConfigFile(project: Project): Set<String> {
+    private suspend fun parseConfigFile(outputPath: String): Set<String> {
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }

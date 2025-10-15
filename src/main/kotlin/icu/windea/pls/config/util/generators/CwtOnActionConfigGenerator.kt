@@ -27,19 +27,17 @@ import kotlinx.coroutines.withContext
  *
  * @see CwtExtendedOnActionConfig
  */
-class CwtOnActionConfigGenerator(
-    override val gameType: ParadoxGameType,
-    override val inputPath: String,
-    override val outputPath: String,
-) : CwtConfigGenerator {
-    override fun getDefaultGeneratedFileName() = "on_actions.cwt"
+class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGenerator {
+    override fun getName() = "OnActionConfigGenerator"
 
-    override suspend fun generate(project: Project): Hint {
+    override fun getGeneratedFileName() = "on_actions.cwt"
+
+    override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         // 1) 解析脚本目录，收集名称集合
-        val namesFromScripts = parseScriptFiles(project)
+        val namesFromScripts = parseScriptFiles(inputPath, gameType)
 
         // 2) 解析现有 CWT 配置（PSI）：静态名集合 + 模板正则列表
-        val configInfo = parseConfigFile(project)
+        val configInfo = parseConfigFile(outputPath, gameType)
 
         // 3) 差异：缺失（考虑模板匹配），未知（仅静态名）
         val addedNames = namesFromScripts
@@ -105,7 +103,7 @@ class CwtOnActionConfigGenerator(
         return hint
     }
 
-    private suspend fun parseScriptFiles(project: Project): Set<String> {
+    private suspend fun parseScriptFiles(inputPath: String, gameType: ParadoxGameType): Set<String> {
         val dir = CwtConfigGeneratorUtil.getFileInGameDirectory(inputPath, gameType)
         if (dir == null) throw IllegalArgumentException()
         if (!dir.isDirectory) throw IllegalStateException()
@@ -119,7 +117,7 @@ class CwtOnActionConfigGenerator(
         return names
     }
 
-    private suspend fun parseConfigFile(project: Project): OnActionConfigInfo {
+    private suspend fun parseConfigFile(outputPath: String, gameType: ParadoxGameType): OnActionConfigInfo {
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
