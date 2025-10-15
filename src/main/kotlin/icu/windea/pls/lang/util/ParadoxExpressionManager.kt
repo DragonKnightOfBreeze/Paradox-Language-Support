@@ -152,7 +152,7 @@ object ParadoxExpressionManager {
         // a_$PARAM$_b - 高级插值语法 A
         if (text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         // a_[[PARAM]b]_c - 高级插值语法 B
-        if (conditionBlock && text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        if (conditionBlock && text.indexOf("[[").let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         return false
     }
 
