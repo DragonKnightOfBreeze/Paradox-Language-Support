@@ -12,16 +12,16 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.extendedInlineScripts
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
@@ -116,15 +116,13 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             // ignoredByConfigs
             row {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
-                    .bindSelected(::ignoredByConfigs)
-                    .actionListener { _, component -> ignoredByConfigs = component.isSelected }
+                    .bindSelected(::ignoredByConfigs.toAtomicProperty())
             }
             row {
                 label(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames"))
                     .applyToComponent { toolTipText = PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.tooltip") }
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-                    .bindText(::ignoredFileNames)
-                    .bindTextWhenChanged(::ignoredFileNames)
+                    .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
@@ -132,14 +130,12 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
             // ignoredInInlineScriptFiles
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
-                    .bindSelected(::ignoredInInlineScriptFiles)
-                    .actionListener { _, component -> ignoredInInlineScriptFiles = component.isSelected }
+                    .bindSelected(::ignoredInInlineScriptFiles.toAtomicProperty())
             }
         }
     }

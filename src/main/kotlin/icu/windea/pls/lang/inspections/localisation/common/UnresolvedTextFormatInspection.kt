@@ -9,9 +9,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.annotations.WithGameType
-import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.PlsVfsManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
@@ -68,8 +68,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
             }
             row {
                 textField()
-                    .bindText(::ignoredNames)
-                    .bindTextWhenChanged(::ignoredNames)
+                    .bindText(::ignoredNames.toAtomicProperty())
                     .comment(PlsBundle.message("inspection.localisation.unresolvedTextFormat.option.ignoredNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
@@ -77,8 +76,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
             // ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
-                    .bindSelected(::ignoredInInjectedFiles)
-                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+                    .bindSelected(::ignoredInInjectedFiles.toAtomicProperty())
             }
         }
     }

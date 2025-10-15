@@ -7,9 +7,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.lang.util.PlsVfsManager
@@ -51,8 +51,7 @@ class MissingLocaleInspection : LocalInspectionTool() {
             }
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-                    .bindText(::ignoredFileNames)
-                    .bindTextWhenChanged(::ignoredFileNames)
+                    .bindText(::ignoredFileNames.toAtomicProperty())
                     .comment(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()

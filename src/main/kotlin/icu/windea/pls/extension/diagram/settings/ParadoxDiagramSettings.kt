@@ -10,8 +10,8 @@ import com.intellij.util.ui.ThreeStateCheckBox
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.smaller
-import icu.windea.pls.core.threeStateCheckBox
 import icu.windea.pls.core.toMutableProperty
+import icu.windea.pls.core.ui.threeStateCheckBox
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 

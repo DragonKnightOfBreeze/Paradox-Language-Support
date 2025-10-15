@@ -9,18 +9,19 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.splitByBlank
-import icu.windea.pls.core.toFile
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxGameType
-import java.io.File
+import java.nio.file.Path
 
 object CwtConfigGeneratorUtil {
-    fun getFileInGameDirectory(path: String, gameType: ParadoxGameType): File? {
-        if (path.startsWith('/')) return path.toFile()
+    fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
+        val absPath = path.toPathOrNull()?.takeIf { it.isAbsolute }
+        if (absPath != null) return absPath
         val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: return null
-        return gamePath.resolve(path).toFile()
+        return gamePath.resolve(path)
     }
 
     fun parseName(line: String): String {

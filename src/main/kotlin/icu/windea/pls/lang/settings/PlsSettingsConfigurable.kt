@@ -638,6 +638,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPreferredLocaleChanged(oldPreferredLocale: String?, newPreferredLocale: String?) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 

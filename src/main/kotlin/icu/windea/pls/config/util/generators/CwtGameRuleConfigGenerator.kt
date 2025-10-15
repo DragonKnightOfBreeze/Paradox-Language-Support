@@ -28,6 +28,8 @@ import kotlinx.coroutines.withContext
  * @see CwtExtendedGameRuleConfig
  */
 class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGenerator {
+    override val fromScripts get() = true
+
     override fun getName() = "GameRuleConfigGenerator"
 
     override fun getGeneratedFileName() = "game_rules.cwt"
@@ -104,7 +106,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
     }
 
     private suspend fun parseScriptFiles(inputPath: String, gameType: ParadoxGameType): Set<String> {
-        val dir = CwtConfigGeneratorUtil.getFileInGameDirectory(inputPath, gameType)
+        val dir = CwtConfigGeneratorUtil.getPathInGameDirectory(inputPath, gameType)?.toFile()
         if (dir == null) throw IllegalArgumentException()
         if (!dir.isDirectory) throw IllegalStateException()
         val files = dir.walk().filter { it.isFile && it.extension.equals("txt", true) }

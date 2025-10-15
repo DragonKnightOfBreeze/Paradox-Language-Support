@@ -203,11 +203,11 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent? {
         // 创建临时文件
-        // val file = localisation.containingFile ?: return null
-        val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
+        val file = documentContent.highlightFile ?: return null
+        val fileInfo = file.fileInfo ?: return null
         val localeConfig = selectLocale(localisation) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
         val text = localisation.text
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         tempFile.putUserData(PlsKeys.injectedLocaleConfig, localeConfig)
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, localisation.textRange, tempFile)

@@ -1,104 +1,121 @@
 package icu.windea.pls.lang.actions.cwt
 
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.trim
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.ui.components.JBTextField
+import com.intellij.ui.RecentsManager
+import com.intellij.ui.components.textFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.listCellRenderer.*
+import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.ui.bindText
+import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
 import icu.windea.pls.model.ParadoxGameType
-import java.nio.file.Paths
 import javax.swing.JComponent
+import kotlin.io.path.extension
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.notExists
 
 class GenerateConfigDialog(
-    project: Project,
+    private val project: Project,
     private val generator: CwtConfigGenerator,
 ) : DialogWrapper(project) {
+    private val defaultGameType = PlsFacade.getSettings().defaultGameType
+    private val gameTypes = ParadoxGameType.getAll()
+
+    private val gameTypeProperty = AtomicProperty(defaultGameType)
+    private val inputPathProperty = AtomicProperty("")
+    private val outputPathProperty = AtomicProperty("")
+
+    val gameType by gameTypeProperty
+    val inputPath by inputPathProperty
+    val outputPath by outputPathProperty
+
     init {
         title = PlsBundle.message("config.generation.dialog.title", generator.getName())
         init()
     }
 
-    var gameType: ParadoxGameType? = null
-    var inputPath: String? = null
-    var outputPath: String? = null
-
-    private lateinit var gameTypeCell: Cell<ComboBox<ParadoxGameType>>
-    private lateinit var inputPathCell: Cell<JBTextField>
-    private lateinit var outputPathCell: Cell<JBTextField>
-
     override fun createCenterPanel(): JComponent = panel {
-        val allGameTypes = ParadoxGameType.getAll()
-        val defaultGameType = allGameTypes.firstOrNull()
-
+        // gameType
         row(PlsBundle.message("config.generation.dialog.field.gameType")) {
-            gameTypeCell = comboBox(allGameTypes)
-                .applyToComponent {
-                    selectedItem = defaultGameType
-                }
+            comboBox(gameTypes, textListCellRenderer { it?.title })
+                .bindItem(gameTypeProperty)
         }
 
+        // inputPath
         row(PlsBundle.message("config.generation.dialog.field.inputPath")) {
-            inputPathCell = textField()
-                .comment(PlsBundle.message("config.generation.dialog.field.inputPath.comment"))
-                .applyToComponent {
-                    toolTipText = PlsBundle.message("config.generation.dialog.field.inputPath.tip")
-                }
-                .align(AlignX.FILL)
+            val descriptor0 = when {
+                generator.fromScripts -> FileChooserDescriptorFactory.singleDir()
+                else -> FileChooserDescriptorFactory.singleFile().withExtensionFilter("log")
+            }
+            val descriptor = descriptor0
+                .withTitle(PlsBundle.message("config.generation.dialog.field.inputPath.title"))
+            cell(textFieldWithHistoryWithBrowseButton(project, descriptor, { getInputPathHistories() }))
+                .bindText(inputPathProperty.trim())
+                .validationOnApply { validateInputPath() }
+                .align(Align.FILL)
+            when {
+                generator.fromScripts -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.comment"))
+                else -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
+            }
         }
 
+        // outputPath
         row(PlsBundle.message("config.generation.dialog.field.outputPath")) {
-            outputPathCell = textField()
-                .applyToComponent {
-                    text = generator.getGeneratedFileName()
-                }
-                .align(AlignX.FILL)
+            val descriptor = FileChooserDescriptorFactory.singleFile()
+                .withExtensionFilter("cwt")
+                .withTitle(PlsBundle.message("config.generation.dialog.field.outputPath.title"))
+            textFieldWithHistoryWithBrowseButton(descriptor, project, { getOutputPathHistories() })
+                .bindText(outputPathProperty.trim())
+                .validationOnApply { validateOutputPath() }
+                .align(Align.FILL)
+            comment(PlsBundle.message("config.generation.dialog.field.outputPath.comment"))
+            comment(PlsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getGeneratedFileName()))
         }
     }
 
-    override fun doValidateAll(): MutableList<ValidationInfo> {
-        val errors = mutableListOf<ValidationInfo>()
+    private fun getInputPathHistories() = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS_INPUT_PATH).orEmpty()
 
-        val gt = (gameTypeCell.component.selectedItem as? ParadoxGameType)
-        if (gt == null) {
-            errors += ValidationInfo(PlsBundle.message("config.generation.dialog.validation.gameType"))
+    private fun getOutputPathHistories() = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS_OUTPUT_PATH).orEmpty()
+
+    private fun ValidationInfoBuilder.validateInputPath(): ValidationInfo? {
+        val v = inputPath
+        if (v.isEmpty()) return error(PlsBundle.message("config.generation.dialog.validation.path.empty"))
+        val p = v.toPathOrNull()
+        when {
+            p == null -> return error(PlsBundle.message("config.generation.dialog.validation.path.invalid"))
+            generator.fromScripts && !p.isDirectory() -> return error(PlsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !generator.fromScripts && !p.extension.equals("log", true) -> return error(PlsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !generator.fromScripts && !p.isAbsolute -> return error(PlsBundle.message("config.generation.dialog.validation.path.absolute"))
+            p.notExists() -> return error(PlsBundle.message("config.generation.dialog.validation.path.notExists"))
         }
-
-        val inPath = inputPathCell.component.text.trim()
-        if (inPath.isEmpty()) {
-            errors += ValidationInfo(PlsBundle.message("config.generation.dialog.validation.inputPath.empty"), inputPathCell.component)
-        } else {
-            // 允许：绝对路径的文件/目录；或相对路径（视为脚本目录的相对路径）
-            val p = runCatching { Paths.get(inPath) }.getOrNull()
-            if (p != null && p.isAbsolute) {
-                val vf = VfsUtil.findFile(p, false)
-                if (vf == null || !vf.exists()) {
-                    errors += ValidationInfo(PlsBundle.message("config.generation.dialog.validation.inputPath.notExists"), inputPathCell.component)
-                }
-            }
-        }
-
-        val outPath = outputPathCell.component.text.trim()
-        if (outPath.isEmpty()) {
-            errors += ValidationInfo(PlsBundle.message("config.generation.dialog.validation.outputPath.empty"), outputPathCell.component)
-        } else {
-            val p = runCatching { Paths.get(outPath) }.getOrNull()
-            if (p == null || !p.isAbsolute) {
-                errors += ValidationInfo(PlsBundle.message("config.generation.dialog.validation.outputPath.absolute"), outputPathCell.component)
-            }
-        }
-
-        return errors
+        return null
     }
 
-    override fun doOKAction() {
-        // 回填参数
-        gameType = gameTypeCell.component.selectedItem as? ParadoxGameType
-        inputPath = inputPathCell.component.text.trim()
-        outputPath = outputPathCell.component.text.trim()
-        super.doOKAction()
+    private fun ValidationInfoBuilder.validateOutputPath(): ValidationInfo? {
+        val v = outputPath
+        if (v.isEmpty()) return error(PlsBundle.message("config.generation.dialog.validation.path.empty"))
+        val p = v.toPathOrNull()
+        when {
+            p == null -> return error(PlsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !p.isRegularFile() || !p.extension.equals("cwt", true) -> return error(PlsBundle.message("config.generation.dialog.validation.path.invalid"))
+            !p.isAbsolute -> return error(PlsBundle.message("config.generation.dialog.validation.path.absolute"))
+            p.notExists() -> return error(PlsBundle.message("config.generation.dialog.validation.path.notExists"))
+        }
+        return null
+    }
+
+    companion object {
+        private const val RECENT_KEYS_INPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.inputPath"
+        private const val RECENT_KEYS_OUTPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.outputPath"
     }
 }

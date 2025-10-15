@@ -6,7 +6,11 @@ import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.execution.filters.Filter
 import com.intellij.execution.filters.HyperlinkInfo
 import com.intellij.execution.filters.OpenFileHyperlinkInfo
+import com.intellij.execution.filters.TextConsoleBuilderFactory
+import com.intellij.execution.impl.ConsoleViewImpl
+import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleView
+import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionManager
@@ -18,28 +22,24 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.unscramble.AnalyzeStacktraceUtil
+import com.intellij.unscramble.AnalyzeStacktraceUtil.Companion.EP_NAME
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.errorDetails
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.awt.BorderLayout
-import javax.swing.JComponent
 import javax.swing.JPanel
 
 abstract class GenerateConfigActionBase : DumbAwareAction() {
-    companion object {
-        private val logger = logger<GenerateConfigActionBase>()
-        private const val SHOW_DIFF_MARK = "[Show DIFF]"
-    }
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
@@ -59,9 +59,9 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     private fun createParams(project: Project, generator: CwtConfigGenerator): Params? {
         val dialog = GenerateConfigDialog(project, generator)
         if (!dialog.showAndGet()) return null
-        val gameType = dialog.gameType ?: return null
-        val inputPath = dialog.inputPath?.orNull() ?: return null
-        val outputPath = dialog.outputPath?.orNull() ?: return null
+        val gameType = dialog.gameType
+        val inputPath = dialog.inputPath.orNull() ?: return null
+        val outputPath = dialog.outputPath.orNull() ?: return null
         return Params(gameType, inputPath, outputPath)
     }
 
@@ -78,7 +78,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         if (hint == null) return
 
         // 打开工具窗口，显示维护提示
-        showConsole(project, generator, params, hint)
+        showHintInConsoleView(project, generator, params, hint)
     }
 
     private suspend fun executeGenerator(project: Project, generator: CwtConfigGenerator, params: Params): CwtConfigGenerator.Hint? {
@@ -96,42 +96,99 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
-    private fun showConsole(project: Project, generator: CwtConfigGenerator, params: Params, hint: CwtConfigGenerator.Hint): RunContentDescriptor {
-        val tabTitle = PlsBundle.message("config.generation.console.title", generator.getName())
-        val text = buildConsoleText(project, params, hint)
-        // 使用 ConsoleFactory 以插入自定义过滤器和自定义打印流程
-        val consoleFactory = object : AnalyzeStacktraceUtil.ConsoleFactory {
-            override fun createConsoleComponent(consoleView: ConsoleView?, toolbarActions: DefaultActionGroup?): JComponent? {
-                if (consoleView == null || toolbarActions == null) return null
-                // 1) 添加文件/目录超链接过滤器与自定义“Show DIFF”过滤器
-                consoleView.addMessageFilter(filePathFilter(project))
-                consoleView.addMessageFilter(showDiffFilter(project, params.outputPath, hint.fileText))
-                // 2) 打印文本
-                consoleView.print(text, com.intellij.execution.ui.ConsoleViewContentType.NORMAL_OUTPUT)
-                // 返回默认控制台面板
-                return JPanel(BorderLayout()).apply {
-                    val toolbar = ActionManager.getInstance().createActionToolbar(
-                        ActionPlaces.ANALYZE_STACKTRACE_PANEL_TOOLBAR, toolbarActions, false
-                    )
-                    toolbar.targetComponent = consoleView.component
-                    add(toolbar.component, BorderLayout.WEST)
-                    add(consoleView.component, BorderLayout.CENTER)
-                }
-            }
+    private fun showHintInConsoleView(
+        project: Project,
+        generator: CwtConfigGenerator,
+        params: Params,
+        hint: CwtConfigGenerator.Hint
+    ): RunContentDescriptor {
+        val builder = TextConsoleBuilderFactory.getInstance().createBuilder(project)
+        builder.filters(EP_NAME.getExtensions(project))
+
+        val consoleView = builder.console
+        val toolbarActions = DefaultActionGroup()
+
+        for (action in consoleView.createConsoleActions()) {
+            toolbarActions.add(action)
         }
-        return AnalyzeStacktraceUtil.addConsole(project, consoleFactory, tabTitle, text, null)
+        val console = consoleView as ConsoleViewImpl
+        ConsoleViewUtil.enableReplaceActionForConsoleViewEditor(console.editor!!)
+        console.editor!!.settings.isCaretRowShown = true
+
+        val consoleComponent = createConsoleComponent(consoleView, project, params, hint, toolbarActions)
+        val tabTitle = PlsBundle.message("config.generation.console.title", generator.getName())
+        val descriptor: RunContentDescriptor = object : RunContentDescriptor(consoleView, null, consoleComponent, tabTitle) {
+            override fun isContentReuseProhibited() = true
+        }
+        return descriptor
     }
 
-    private fun buildConsoleText(project: Project, params: Params, hint: CwtConfigGenerator.Hint): String {
-        val header = buildString {
-            appendLine(PlsBundle.message("config.generation.console.header.gameType", params.gameType.title))
-            appendLine("Input: ${params.inputPath}")
-            appendLine("Output: ${params.outputPath}")
+    private fun createConsoleComponent(
+        consoleView: ConsoleView,
+        project: Project,
+        params: Params,
+        hint: CwtConfigGenerator.Hint,
+        toolbarActions: DefaultActionGroup
+    ): JPanel {
+        // 添加需要的过滤器
+        consoleView.addMessageFilter(filePathFilter(project, params))
+        consoleView.addMessageFilter(showDiffFilter(project, params, hint))
+        // 打印文本
+        val consoleText = buildConsoleText(params, hint)
+        consoleView.clear()
+        consoleView.print(consoleText, ConsoleViewContentType.NORMAL_OUTPUT)
+        consoleView.scrollTo(0)
+        // 返回默认控制台面板
+        return JPanel(BorderLayout()).apply {
+            val toolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.RUN_TOOLBAR_LEFT_SIDE, toolbarActions, false)
+            toolbar.targetComponent = consoleView.component
+            add(toolbar.component, BorderLayout.WEST)
+            add(consoleView.component, BorderLayout.CENTER)
+        }
+    }
+
+    private fun filePathFilter(project: Project, params: Params) = Filter { line, entireLength ->
+        val m = PATH_REGEX.find(line) ?: return@Filter null
+        val path = m.groupValues[2].trim()
+        if (path != params.inputPath && path != params.outputPath) return@Filter null
+        val vFile = path.toPathOrNull()?.toVirtualFile() ?: return@Filter null
+        val start = entireLength - line.length + m.range.first + m.value.indexOf(path)
+        val end = start + path.length
+        val info = OpenFileHyperlinkInfo(project, vFile, 0, 0)
+        Filter.Result(start, end, info)
+    }
+
+    private fun showDiffFilter(project: Project, params: Params, hint: CwtConfigGenerator.Hint) = Filter { line, entireLength ->
+        if (line.trim() != SHOW_DIFF_MARK) return@Filter null
+        val i = line.indexOf(SHOW_DIFF_MARK)
+        if (i < 0) return@Filter null
+        val start = entireLength - line.length + i
+        val end = start + SHOW_DIFF_MARK.length
+        val info = HyperlinkInfo { openDiff(project, params.outputPath, hint.fileText) }
+        Filter.Result(start, end, info)
+    }
+
+    private fun openDiff(project: Project, outputPath: String, newText: String) {
+        val vFile = outputPath.toPathOrNull()?.toVirtualFile()
+        val contentFactory = DiffContentFactory.getInstance()
+        val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
+        val right = contentFactory.create(project, newText, CwtFileType)
+        val title = PlsBundle.message("config.generation.console.diff.title")
+        val request = SimpleDiffRequest(title, left, right, "Current", "Generated")
+        DiffManager.getInstance().showDiff(project, request)
+    }
+
+    private fun buildConsoleText(params: Params, hint: CwtConfigGenerator.Hint): String {
+        return buildString {
+            // header
+            append(GAME_TYPE_PREFIX).appendLine(params.gameType.title)
+            append(INPUT_PREFIX).appendLine(params.inputPath)
+            append(OUTPUT_PREFIX).appendLine(params.outputPath)
             appendLine()
             appendLine(SHOW_DIFF_MARK)
             appendLine()
-        }
-        val body = buildString {
+
+            // body
             if (hint.summary.isNotBlank()) {
                 appendLine(hint.summary.trimEnd())
                 appendLine()
@@ -140,39 +197,6 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
                 appendLine(hint.details.trimEnd())
             }
         }
-        return header + body
-    }
-
-    private fun filePathFilter(project: Project): Filter = Filter { line, entireLength ->
-        val m = Regex("^(Input|Output):\\s+(.+)$").find(line) ?: return@Filter null
-        val path = m.groupValues[2].trim()
-        val vFile = LocalFileSystem.getInstance().findFileByPath(path) ?: return@Filter null
-        val lineStart = entireLength - line.length
-        val start = lineStart + m.range.first + m.value.indexOf(path)
-        val end = start + path.length
-        val info: HyperlinkInfo = if (vFile.isDirectory) HyperlinkInfo {
-            // 暂不处理目录导航
-        } else OpenFileHyperlinkInfo(project, vFile, 0, 0)
-        Filter.Result(start, end, info)
-    }
-
-    private fun showDiffFilter(project: Project, outputPath: String, newText: String): Filter = Filter { line, entireLength ->
-        val idx = line.indexOf(SHOW_DIFF_MARK)
-        if (idx < 0) return@Filter null
-        val start = entireLength - line.length + idx
-        val end = start + SHOW_DIFF_MARK.length
-        val info = HyperlinkInfo { openDiff(project, outputPath, newText) }
-        Filter.Result(start, end, info)
-    }
-
-    private fun openDiff(project: Project, outputPath: String, newText: String) {
-        val vFile = LocalFileSystem.getInstance().findFileByPath(outputPath)
-        val contentFactory = DiffContentFactory.getInstance()
-        val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
-        val right = contentFactory.create(newText)
-        val title = PlsBundle.message("config.generation.console.diff.title")
-        val request = SimpleDiffRequest(title, left, right, "Current", "Generated")
-        DiffManager.getInstance().showDiff(project, request)
     }
 
     data class Params(
@@ -180,4 +204,15 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val inputPath: String,
         val outputPath: String,
     )
+
+    companion object {
+        private val logger = logger<GenerateConfigActionBase>()
+
+        private const val GAME_TYPE_PREFIX = "Game type: "
+        private const val INPUT_PREFIX = "Input path: "
+        private const val OUTPUT_PREFIX = "Output path: "
+        private const val SHOW_DIFF_MARK = "[Show DIFF]"
+
+        private val PATH_REGEX = "^(Input|Output) path:\\s+(.+)$".toRegex()
+    }
 }

@@ -4,11 +4,9 @@ import com.intellij.diff.DiffDialogHints
 import com.intellij.diff.DiffManager
 import com.intellij.diff.chains.DiffRequestChain
 import com.intellij.diff.chains.DiffRequestProducer
-import com.intellij.diff.util.DiffUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
@@ -28,9 +26,9 @@ abstract class ParadoxShowDiffAction : AnAction() {
         DiffManager.getInstance().showDiff(project, chain, DiffDialogHints.DEFAULT)
     }
 
-    protected fun hasContent(file: VirtualFile): Boolean {
-        return !DiffUtil.isFileWithoutContent(file)
-    }
+    // protected fun hasContent(file: VirtualFile): Boolean {
+    //     return !DiffUtil.isFileWithoutContent(file)
+    // }
 
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
 

@@ -11,7 +11,7 @@ import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.bindTextWhenChanged
+import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
@@ -127,7 +127,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.localisation.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
-                val cb = textField().bindText(::locales).bindTextWhenChanged(::locales).visible(false).component
+                val cb = textField().bindText(::locales.toAtomicProperty()).visible(false).component
                 cell(ActionLink(PlsBundle.message("configure")) {
                     val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
                     val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }

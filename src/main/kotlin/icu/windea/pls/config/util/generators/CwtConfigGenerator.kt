@@ -10,9 +10,11 @@ import icu.windea.pls.model.ParadoxGameType
  * 用于从日志或脚本文件生成规则文件的维护提示。
  *
  * @property project 指定的项目。
+ * @property fromScripts 是否从脚本文件生成。
  */
 interface CwtConfigGenerator {
     val project: Project
+    val fromScripts: Boolean get() = false
 
     /** 得到生成器的名字。 */
     fun getName(): String

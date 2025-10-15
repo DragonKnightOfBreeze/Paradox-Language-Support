@@ -10,7 +10,7 @@ import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.bindIntTextWhenChanged
+import icu.windea.pls.core.toAtomicProperty
 import kotlin.reflect.KMutableProperty0
 
 abstract class ParadoxHintsProvider<T : Any> : InlayHintsProvider<T> {
@@ -42,23 +42,23 @@ abstract class ParadoxHintsProvider<T : Any> : InlayHintsProvider<T> {
     }
 
     protected fun Panel.createTextLengthLimitRow(property: KMutableProperty0<Int>) {
+        // 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
         row {
             label(PlsBundle.message("hints.settings.textLengthLimit")).widthGroup("left")
                 .applyToComponent { toolTipText = PlsBundle.message("hints.settings.textLengthLimit.tooltip") }
             textField()
-                .bindIntText(property)
-                .bindIntTextWhenChanged(property)
+                .bindIntText(property.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
         }
     }
 
     protected fun Panel.createIconHeightLimitRow(property: KMutableProperty0<Int>) {
+        // 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
         row {
             label(PlsBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
                 .applyToComponent { toolTipText = PlsBundle.message("hints.settings.iconHeightLimit.tooltip") }
             textField()
-                .bindIntText(property)
-                .bindIntTextWhenChanged(property)
+                .bindIntText(property.toAtomicProperty())
                 .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
         }
     }

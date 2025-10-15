@@ -206,9 +206,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
         // 创建临时文件
-        val fileInfo = documentContent.highlightFile?.fileInfo ?: return null
+        val file = documentContent.highlightFile ?: return null
+        val fileInfo = file.fileInfo ?: return null
         val text = definition.text
-        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
+        val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
         if (elementPath != null && elementPath.length > 1) {
             val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
