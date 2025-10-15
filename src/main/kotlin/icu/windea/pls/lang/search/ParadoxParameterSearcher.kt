@@ -1,23 +1,17 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.processAllElements
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxParameterSearch.SearchParameters, consumer: Processor<in ParadoxParameterIndexInfo>) {
@@ -31,19 +25,8 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         val selector = queryParameters.selector
         val gameType = selector.gameType
 
-        // 2.0.6 优化：对于内联脚本的传入参数，可以改为通过存根索引查询
-        run {
-            val inlineScriptExpression = contextKey.removePrefixOrNull("inline_script@") ?: return@run
-            processQueryForInlineScriptArguments(name, inlineScriptExpression, project, scope) p@{ p ->
-                val name = p.name
-                val gameType = selectGameType(p) ?: return@p true
-                val info = ParadoxParameterIndexInfo(name, contextKey, ReadWriteAccessDetector.Access.Write, p.textOffset, gameType)
-                val file = p.containingFile.virtualFile ?: return@p true
-                info.virtualFile = file
-                consumer.process(info)
-            }
-            return
-        }
+        // 尽管新增了内联脚本传参的索引（ParadoxInlineScriptArgumentIndex），这里仍然统一通过合并索引（ParadoxMergedIndex）进行查询
+        // 因为这里需要查询所有上下文的所有访问级别（读/写）的参数
 
         processFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
@@ -66,19 +49,5 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
 
     private fun processFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
         return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
-    }
-
-    private fun processQueryForInlineScriptArguments(
-        name: String?,
-        inlineScriptExpression: String,
-        project: Project,
-        scope: GlobalSearchScope,
-        processor: Processor<ParadoxScriptProperty>
-    ): Boolean {
-        val indexKey = ParadoxIndexKeys.InlineScriptArgument
-        return indexKey.processAllElements(inlineScriptExpression, project, scope) p@{ element ->
-            if (name != null && name != element.name) return@p true
-            processor.process(element)
-        }
     }
 }
