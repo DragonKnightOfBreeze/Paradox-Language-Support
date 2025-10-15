@@ -19,12 +19,9 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
 
     @Suppress("SameParameterValue")
     private fun generate_forStellaris(version: String) {
-        val generator = CwtEffectConfigGenerator(
-            ParadoxGameType.Stellaris,
-            "cwt/cwtools-stellaris-config/script-docs/$version/effects.log",
-            "cwt/cwtools-stellaris-config/config/effects.cwt",
-        )
-        generate(generator, version)
+        val generator = CwtEffectConfigGenerator(project)
+        val inputPath = "cwt/cwtools-stellaris-config/script-docs/$version/effects.log"
+        val outputPath = "cwt/cwtools-stellaris-config/config/effects.cwt"
+        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
     }
 }
-

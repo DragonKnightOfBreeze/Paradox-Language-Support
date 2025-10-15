@@ -19,11 +19,9 @@ class CwtModifierCategoriesConfigGeneratorTest : CwtConfigGeneratorTest() {
 
     @Suppress("SameParameterValue")
     private fun generate_forStellaris(version: String) {
-        val generator = CwtModifierCategoriesConfigGenerator(
-            ParadoxGameType.Stellaris,
-            "cwt/cwtools-stellaris-config/script-docs/$version/modifiers.log",
-            "cwt/cwtools-stellaris-config/config/modifier_categories.cwt",
-        )
-        generate(generator, version)
+        val generator = CwtModifierCategoriesConfigGenerator(project)
+        val inputPath = "cwt/cwtools-stellaris-config/script-docs/$version/modifiers.log"
+        val outputPath = "cwt/cwtools-stellaris-config/config/modifier_categories.cwt"
+        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
     }
 }

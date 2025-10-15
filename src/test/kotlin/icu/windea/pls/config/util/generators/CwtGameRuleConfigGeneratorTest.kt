@@ -19,11 +19,9 @@ class CwtGameRuleConfigGeneratorTest : CwtConfigGeneratorTest() {
 
     @Suppress("SameParameterValue")
     private fun generate_forStellaris(version: String) {
-        val generator = CwtGameRuleConfigGenerator(
-            ParadoxGameType.Stellaris,
-            "common/game_rules",
-            "cwt/cwtools-stellaris-config/config/game_rules.cwt",
-        )
-        generate(generator, version)
+        val generator = CwtGameRuleConfigGenerator(project)
+        val inputPath = "common/game_rules"
+        val outputPath = "cwt/cwtools-stellaris-config/config/game_rules.cwt"
+        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
     }
 }

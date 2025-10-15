@@ -19,11 +19,9 @@ class CwtLocalisationConfigGeneratorTest : CwtConfigGeneratorTest() {
 
     @Suppress("SameParameterValue")
     private fun generate_forStellaris(version: String) {
-        val generator = CwtLocalisationConfigGenerator(
-            ParadoxGameType.Stellaris,
-            "cwt/cwtools-stellaris-config/script-docs/$version/localizations.log",
-            "cwt/cwtools-stellaris-config/config/localisation.cwt",
-        )
-        generate(generator, version)
+        val generator = CwtLocalisationConfigGenerator(project)
+        val inputPath = "cwt/cwtools-stellaris-config/script-docs/$version/localizations.log"
+        val outputPath = "cwt/cwtools-stellaris-config/config/localisation.cwt"
+        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
     }
 }

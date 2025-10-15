@@ -19,11 +19,9 @@ class CwtOnActionConfigGeneratorTest : CwtConfigGeneratorTest() {
 
     @Suppress("SameParameterValue")
     private fun generate_forStellaris(version: String) {
-        val generator = CwtOnActionConfigGenerator(
-            ParadoxGameType.Stellaris,
-            "common/on_actions",
-            "cwt/cwtools-stellaris-config/config/on_actions.cwt",
-        )
-        generate(generator, version)
+        val generator = CwtOnActionConfigGenerator(project)
+        val inputPath = "common/on_actions"
+        val outputPath = "cwt/cwtools-stellaris-config/config/on_actions.cwt"
+        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
     }
 }
