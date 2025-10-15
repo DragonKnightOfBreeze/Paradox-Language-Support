@@ -34,8 +34,8 @@ object ParadoxMetadataManager {
 
     fun getLauncherSettingsFile(rootFile: VirtualFile): VirtualFile? {
         // relative paths:
-        // * launcher-settings.json
-        // * launcher/launcher-settings.json
+        // - launcher-settings.json
+        // - launcher/launcher-settings.json
 
         if (rootFile.name == "launcher") return null
         rootFile.findChild("launcher-settings.json")
@@ -61,7 +61,7 @@ object ParadoxMetadataManager {
 
     fun getModDescriptorFile(rootFile: VirtualFile): VirtualFile? {
         // relative paths:
-        // * descriptor.mod
+        // - descriptor.mod
 
         rootFile.findChild("descriptor.mod")
             ?.takeIf { it.isFile }?.let { return it }
@@ -94,7 +94,7 @@ object ParadoxMetadataManager {
 
     fun getModMetadataFile(rootFile: VirtualFile): VirtualFile? {
         // relative paths:
-        // * .metadata/metadata.json
+        // - .metadata/metadata.json
 
         rootFile.findFileByRelativePath(".metadata/metadata.json")
             ?.takeIf { it.isFile }?.let { return it }

@@ -185,11 +185,11 @@ private block_value ::= scripted_variable_reference | boolean | int | float | st
 // parameter rules
 
 // Currently, parameters can be used in:
-// * scripted variable names
-// * scripted variable reference names
-// * keys (can be quoted)
-// * values (can be quoted)
-// * inline math expressions
+// - scripted variable names
+// - scripted variable reference names
+// - keys (can be quoted)
+// - values (can be quoted)
+// - inline math expressions
 
 parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
   pin=1

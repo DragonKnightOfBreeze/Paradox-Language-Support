@@ -235,9 +235,9 @@ object ParadoxCoreManager {
 
     fun validateGameDirectory(builder: ValidationInfoBuilder, gameType: ParadoxGameType, gameDirectory: String?): ValidationInfo? {
         // 验证游戏目录是否合法
-        // * 路径合法
-        // * 路径对应的目录存在
-        // * 路径是游戏目录（基于 ParadoxMetadataProvider）
+        // - 路径合法
+        // - 路径对应的目录存在
+        // - 路径是游戏目录（基于 ParadoxMetadataProvider）
         val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))

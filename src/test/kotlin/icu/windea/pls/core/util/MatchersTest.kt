@@ -146,7 +146,7 @@ class MatchersTest {
         Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/nam", false))
         Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/names", false))
 
-        // ** 匹配
+        // -* 匹配
         Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/**", false))
         Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "**/name", false))
         Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "**/bar/**", false))

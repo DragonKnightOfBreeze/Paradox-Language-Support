@@ -21,9 +21,9 @@ import icu.windea.pls.cwt.psi.stringValue
  * 规则的使用的查询。
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
-    // * CWT规则的属性名为"alias[x:y]"时，其在脚本文件中匹配的属性名会是"y"，需要特殊处理。
-    // * CWT规则的属性名为"inline[x]"时，其在脚本文件中匹配的属性名会是"x"，需要特殊处理。
-    // * 对于CWT连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理。
+    // - 规则的属性名为 `alias[x:y]` 时，其在脚本文件中匹配的属性名会是 `y`，需要特殊处理
+    // - 规则的属性名为 `inline[x]` 时，其在脚本文件中匹配的属性名会是 `x`，需要特殊处理
+    // - 对于连接规则，其在脚本文件中可能匹配其前缀，需要特殊处理
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch

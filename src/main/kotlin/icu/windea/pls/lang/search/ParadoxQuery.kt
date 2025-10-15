@@ -57,9 +57,9 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 
     override fun findAll(): Set<T> {
         // 性能优化：
-        // * 尽可能少地调用MutableSet.add
-        // * 懒加载真正的finalComparator
-        // * 尽可能少地调用排序逻辑（当result中的元素小于等于1个时，不需要调用）
+        // - 尽可能少地调用MutableSet.add
+        // - 懒加载真正的finalComparator
+        // - 尽可能少地调用排序逻辑（当result中的元素小于等于1个时，不需要调用）
 
         // 首先遍历并进行必要的过滤和排序，得到排序结果后再进行最后的去重
 
