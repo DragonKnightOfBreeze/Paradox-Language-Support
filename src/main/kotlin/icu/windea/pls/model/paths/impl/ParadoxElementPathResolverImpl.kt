@@ -1,6 +1,5 @@
 package icu.windea.pls.model.paths.impl
 
-import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 internal class ParadoxElementPathResolverImpl : ParadoxElementPath.Resolver {
@@ -42,7 +41,7 @@ private class ParadoxElementPathImpl : ParadoxElementPath {
         return subPaths.joinToString("/") { it.replace("/", "\\/") }
     }
 
-    override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
+    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }
