@@ -26,6 +26,12 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.notExists
 
+/**
+ * 用于生成规则文件（的维护提示）的对话框。
+ *
+ * @see CwtConfigGenerator
+ * @see GenerateConfigActionBase
+ */
 class GenerateConfigDialog(
     private val project: Project,
     private val generator: CwtConfigGenerator,

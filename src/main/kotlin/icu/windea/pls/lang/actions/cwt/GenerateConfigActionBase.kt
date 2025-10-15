@@ -44,6 +44,12 @@ import kotlinx.coroutines.withContext
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
+/**
+ * 用于生成规则文件（的维护提示）的一类动作。
+ *
+ * @see CwtConfigGenerator
+ * @see GenerateConfigDialog
+ */
 abstract class GenerateConfigActionBase : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

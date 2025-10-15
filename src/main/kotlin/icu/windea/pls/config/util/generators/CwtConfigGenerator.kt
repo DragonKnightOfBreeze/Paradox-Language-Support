@@ -51,4 +51,3 @@ interface CwtConfigGenerator {
         val fileText: String,
     ) : UserDataHolderBase()
 }
-

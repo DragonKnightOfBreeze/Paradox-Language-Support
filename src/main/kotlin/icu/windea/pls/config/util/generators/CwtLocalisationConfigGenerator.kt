@@ -46,7 +46,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
     override fun getName() = "LocalisationConfigGenerator"
 
     override fun getDefaultInputName() = "localizations.log"
-    
+
     override fun getDefaultOutputName() = "localisation.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
