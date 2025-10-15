@@ -60,9 +60,12 @@ class GenerateConfigDialog(
             val descriptor = descriptor0
                 .withTitle(PlsBundle.message("config.generation.dialog.field.inputPath.title"))
             cell(textFieldWithHistoryWithBrowseButton(project, descriptor, { getInputPathHistories() }))
+                // .applyToComponent { setTextFieldPreferredWidth(MAX_PATH_LENGTH) }
+                .align(Align.FILL)
                 .bindText(inputPathProperty.trim())
                 .validationOnApply { validateInputPath() }
-                .align(Align.FILL)
+        }
+        row {
             when {
                 generator.fromScripts -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.comment"))
                 else -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
@@ -75,10 +78,15 @@ class GenerateConfigDialog(
                 .withExtensionFilter("cwt")
                 .withTitle(PlsBundle.message("config.generation.dialog.field.outputPath.title"))
             textFieldWithHistoryWithBrowseButton(descriptor, project, { getOutputPathHistories() })
+                // .applyToComponent { setTextFieldPreferredWidth(MAX_PATH_LENGTH) }
+                .align(Align.FILL)
                 .bindText(outputPathProperty.trim())
                 .validationOnApply { validateOutputPath() }
-                .align(Align.FILL)
+        }
+        row {
             comment(PlsBundle.message("config.generation.dialog.field.outputPath.comment"))
+        }
+        row {
             comment(PlsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getGeneratedFileName()))
         }
     }
@@ -115,6 +123,7 @@ class GenerateConfigDialog(
     }
 
     companion object {
+        private const val MAX_PATH_LENGTH = 70
         private const val RECENT_KEYS_INPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.inputPath"
         private const val RECENT_KEYS_OUTPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.outputPath"
     }

@@ -34,7 +34,6 @@ class ConvertImageFormatDialog(
     private val defaultNewFileName: String?,
     private val targetFormatName: String,
 ) : DialogWrapper(project, true) {
-    private val maxPathLength = 70
     private val recentKeys = "Pls.ConvertImageFormat.RECENT_KEYS.$targetFormatName"
 
     private val defaultTargetDirectory = files.first().parent
@@ -106,7 +105,7 @@ class ConvertImageFormatDialog(
 
     private fun initTargetDirectoryField(): TextFieldWithHistoryWithBrowseButton {
         val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
-        targetDirectoryField.setTextFieldPreferredWidth(maxPathLength)
+        targetDirectoryField.setTextFieldPreferredWidth(MAX_PATH_LENGTH)
         val recentEntries = RecentsManager.getInstance(project).getRecentEntries(recentKeys)
         val targetDirectoryComponent = targetDirectoryField.childComponent
         val targetPath = defaultTargetDirectory?.virtualFile?.presentableUrl
@@ -120,7 +119,7 @@ class ConvertImageFormatDialog(
     }
 
     private fun shortenPath(file: VirtualFile): String {
-        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, maxPathLength)
+        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, MAX_PATH_LENGTH)
     }
 
     override fun doOKAction() {
@@ -145,7 +144,7 @@ class ConvertImageFormatDialog(
                     try {
                         val path = FileUtil.toSystemIndependentName(targetDirectoryName)
                         targetDirectory = DirectoryUtil.mkdirs(PsiManager.getInstance(project), path)
-                    } catch (e: IncorrectOperationException) {
+                    } catch (_: IncorrectOperationException) {
                         targetDirectory = null
                     }
                 }
@@ -160,5 +159,9 @@ class ConvertImageFormatDialog(
         }
 
         super.doOKAction()
+    }
+
+    companion object {
+        private const val MAX_PATH_LENGTH = 70
     }
 }
