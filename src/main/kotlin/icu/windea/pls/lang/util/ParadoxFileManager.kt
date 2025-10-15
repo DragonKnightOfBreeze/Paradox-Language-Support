@@ -13,8 +13,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.optionData
+import icu.windea.pls.core.formatted
+import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
@@ -44,9 +44,15 @@ object ParadoxFileManager {
         return entryFile.findFileByRelativePath(path)
     }
 
-    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>): Set<String> {
-        // 统一走 CwtOptionDataAccessors 的缓存
-        return config.optionData { fileExtensions }
+    /**
+     * 将输入路径视为相对于游戏目录（或者主要入口目录）的路径，得到规范化后的绝对路径。
+     */
+    fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
+        val path0 = path.normalizePath().removePrefix("game/")
+        val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: return null
+        val mainEntryPath = if (gameType.mainEntry.isEmpty()) gamePath else gamePath.resolve(gameType.mainEntry)
+        val resultPath = mainEntryPath.resolve(path0)
+        return resultPath.formatted()
     }
 
     /**

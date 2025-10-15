@@ -8,10 +8,10 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 class IncorrectPathReferenceInspection : LocalInspectionTool() {
@@ -35,7 +35,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val dataType = configExpression.type
                 if (dataType == CwtDataTypes.AbsoluteFilePath) return
                 if (dataType !in CwtDataTypeGroups.PathReference) return
-                val fileExtensions = ParadoxFileManager.getFileExtensionOptionValues(config)
+                val fileExtensions = config.optionData { fileExtensions }
                 if (fileExtensions.isEmpty()) return
                 val value = element.value
                 if (fileExtensions.any { value.endsWith(it, true) }) return

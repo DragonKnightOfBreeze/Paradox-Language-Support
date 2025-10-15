@@ -3,6 +3,7 @@ package icu.windea.pls.lang.actions.cwt
 import com.intellij.diff.DiffContentFactory
 import com.intellij.diff.DiffManager
 import com.intellij.diff.requests.SimpleDiffRequest
+import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.filters.Filter
 import com.intellij.execution.filters.HyperlinkInfo
 import com.intellij.execution.filters.OpenFileHyperlinkInfo
@@ -12,12 +13,14 @@ import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.execution.ui.RunContentDescriptor
+import com.intellij.execution.ui.RunContentManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbAwareAction
@@ -35,7 +38,9 @@ import icu.windea.pls.lang.errorDetails
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -73,12 +78,14 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     }
 
     private suspend fun doExecute(project: Project, generator: CwtConfigGenerator, params: Params) {
-        // 在后台异步且可取消地执行生成器，生成维护提示
+        // 执行生成器，生成维护提示
         val hint = executeGenerator(project, generator, params)
         if (hint == null) return
 
         // 打开工具窗口，显示维护提示
-        showHintInConsoleView(project, generator, params, hint)
+        withContext(Dispatchers.EDT) {
+            showHintInToolWindow(project, generator, params, hint)
+        }
     }
 
     private suspend fun executeGenerator(project: Project, generator: CwtConfigGenerator, params: Params): CwtConfigGenerator.Hint? {
@@ -96,17 +103,19 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
-    private fun showHintInConsoleView(
+    private fun showHintInToolWindow(
         project: Project,
         generator: CwtConfigGenerator,
         params: Params,
         hint: CwtConfigGenerator.Hint
-    ): RunContentDescriptor {
+    ) {
         val builder = TextConsoleBuilderFactory.getInstance().createBuilder(project)
         builder.filters(EP_NAME.getExtensions(project))
 
         val consoleView = builder.console
         val toolbarActions = DefaultActionGroup()
+        // 必须先创建 consoleComponent ，之后再获取 console.editor
+        val consoleComponent = createConsoleComponent(consoleView, project, params, hint, toolbarActions)
 
         for (action in consoleView.createConsoleActions()) {
             toolbarActions.add(action)
@@ -115,12 +124,13 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         ConsoleViewUtil.enableReplaceActionForConsoleViewEditor(console.editor!!)
         console.editor!!.settings.isCaretRowShown = true
 
-        val consoleComponent = createConsoleComponent(consoleView, project, params, hint, toolbarActions)
         val tabTitle = PlsBundle.message("config.generation.console.title", generator.getName())
-        val descriptor: RunContentDescriptor = object : RunContentDescriptor(consoleView, null, consoleComponent, tabTitle) {
+        val descriptor = object : RunContentDescriptor(consoleView, null, consoleComponent, tabTitle) {
             override fun isContentReuseProhibited() = true
         }
-        return descriptor
+        val runContentManager = RunContentManager.getInstance(project)
+        val executor = DefaultRunExecutor.getRunExecutorInstance()
+        runContentManager.showRunContent(executor, descriptor)
     }
 
     private fun createConsoleComponent(
@@ -174,7 +184,9 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
         val right = contentFactory.create(project, newText, CwtFileType)
         val title = PlsBundle.message("config.generation.console.diff.title")
-        val request = SimpleDiffRequest(title, left, right, "Current", "Generated")
+        val title1 = PlsBundle.message("config.generation.console.diff.current")
+        val title2 = PlsBundle.message("config.generation.console.diff.generated")
+        val request = SimpleDiffRequest(title, left, right, title1, title2)
         DiffManager.getInstance().showDiff(project, request)
     }
 
@@ -190,10 +202,12 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
 
             // body
             if (hint.summary.isNotBlank()) {
+                appendLine(SUMMARY_MARK)
                 appendLine(hint.summary.trimEnd())
                 appendLine()
             }
             if (hint.details.isNotBlank()) {
+                appendLine(DETAILS_MARK)
                 appendLine(hint.details.trimEnd())
             }
         }
@@ -208,10 +222,13 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     companion object {
         private val logger = logger<GenerateConfigActionBase>()
 
+        private const val SHOW_DIFF_MARK = "[Show DIFF]"
+        private const val SUMMARY_MARK = "[Summary]"
+        private const val DETAILS_MARK = "[Details]"
+
         private const val GAME_TYPE_PREFIX = "Game type: "
         private const val INPUT_PREFIX = "Input path: "
         private const val OUTPUT_PREFIX = "Output path: "
-        private const val SHOW_DIFF_MARK = "[Show DIFF]"
 
         private val PATH_REGEX = "^(Input|Output) path:\\s+(.+)$".toRegex()
     }

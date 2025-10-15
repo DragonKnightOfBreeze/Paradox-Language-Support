@@ -1,24 +1,26 @@
 package icu.windea.pls.lang.actions.cwt
 
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.trim
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.RecentsManager
-import com.intellij.ui.components.textFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
+import icu.windea.pls.config.util.generators.CwtConfigGeneratorUtil
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
 import icu.windea.pls.model.ParadoxGameType
-import javax.swing.JComponent
 import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
@@ -28,12 +30,17 @@ class GenerateConfigDialog(
     private val project: Project,
     private val generator: CwtConfigGenerator,
 ) : DialogWrapper(project) {
-    private val defaultGameType = PlsFacade.getSettings().defaultGameType
-    private val gameTypes = ParadoxGameType.getAll()
+    private val propertiesComponent = PropertiesComponent.getInstance(project)
+    private val inputPathKey = "Pls.ConfigGeneration.inputPath.${generator.getName()}"
+    private val outputPathKey = "Pls.ConfigGeneration.outputPath.${generator.getName()}"
 
-    private val gameTypeProperty = AtomicProperty(defaultGameType)
-    private val inputPathProperty = AtomicProperty("")
-    private val outputPathProperty = AtomicProperty("")
+    private val recentsManager = RecentsManager.getInstance(project)
+    private val inputPathRecentKeys = "Pls.ConfigGeneration.inputPath.RECENT_KEYS.${generator.getName()}"
+    private val outputPathRecentKeys = "Pls.ConfigGeneration.outputPath.RECENT_KEYS.${generator.getName()}"
+
+    private val gameTypeProperty = AtomicProperty(PlsFacade.getSettings().defaultGameType)
+    private val inputPathProperty = AtomicProperty(getDefaultInputPath())
+    private val outputPathProperty = AtomicProperty(getDefaultOutputPath())
 
     val gameType by gameTypeProperty
     val inputPath by inputPathProperty
@@ -44,56 +51,93 @@ class GenerateConfigDialog(
         init()
     }
 
-    override fun createCenterPanel(): JComponent = panel {
-        // gameType
-        row(PlsBundle.message("config.generation.dialog.field.gameType")) {
-            comboBox(gameTypes, textListCellRenderer { it?.title })
-                .bindItem(gameTypeProperty)
-        }
-
-        // inputPath
-        row(PlsBundle.message("config.generation.dialog.field.inputPath")) {
-            val descriptor0 = when {
-                generator.fromScripts -> FileChooserDescriptorFactory.singleDir()
-                else -> FileChooserDescriptorFactory.singleFile().withExtensionFilter("log")
+    override fun createCenterPanel(): DialogPanel {
+        return panel {
+            // gameType
+            row(PlsBundle.message("config.generation.dialog.field.gameType")) {
+                comboBox(ParadoxGameType.getAll(), textListCellRenderer { it?.title })
+                    .bindItem(gameTypeProperty)
             }
-            val descriptor = descriptor0
-                .withTitle(PlsBundle.message("config.generation.dialog.field.inputPath.title"))
-            cell(textFieldWithHistoryWithBrowseButton(project, descriptor, { getInputPathHistories() }))
-                // .applyToComponent { setTextFieldPreferredWidth(MAX_PATH_LENGTH) }
-                .align(Align.FILL)
-                .bindText(inputPathProperty.trim())
-                .validationOnApply { validateInputPath() }
-        }
-        row {
-            when {
-                generator.fromScripts -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.comment"))
-                else -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
-            }
-        }
 
-        // outputPath
-        row(PlsBundle.message("config.generation.dialog.field.outputPath")) {
-            val descriptor = FileChooserDescriptorFactory.singleFile()
-                .withExtensionFilter("cwt")
-                .withTitle(PlsBundle.message("config.generation.dialog.field.outputPath.title"))
-            textFieldWithHistoryWithBrowseButton(descriptor, project, { getOutputPathHistories() })
-                // .applyToComponent { setTextFieldPreferredWidth(MAX_PATH_LENGTH) }
-                .align(Align.FILL)
-                .bindText(outputPathProperty.trim())
-                .validationOnApply { validateOutputPath() }
-        }
-        row {
-            comment(PlsBundle.message("config.generation.dialog.field.outputPath.comment"))
-        }
-        row {
-            comment(PlsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getGeneratedFileName()))
-        }
+            // inputPath
+            row(PlsBundle.message("config.generation.dialog.field.inputPath")) {
+                val descriptor0 = when {
+                    generator.fromScripts -> FileChooserDescriptorFactory.singleDir()
+                    else -> FileChooserDescriptorFactory.singleFile().withExtensionFilter("log")
+                }
+                val descriptor = descriptor0
+                    .withTitle(PlsBundle.message("config.generation.dialog.field.inputPath.title"))
+                textFieldWithHistoryWithBrowseButton(descriptor, project, { getInputPathHistories() })
+                    .align(Align.FILL)
+                    .bindText(inputPathProperty.trim())
+                    .validationOnApply { validateInputPath() }
+            }
+            row {
+                when {
+                    generator.fromScripts -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.commentFromScripts"))
+                    else -> comment(PlsBundle.message("config.generation.dialog.field.inputPath.comment"))
+                }
+            }
+            row {
+                comment(PlsBundle.message("config.generation.dialog.field.inputPath.commentForName", generator.getDefaultInputName()))
+            }
+
+            // outputPath
+            row(PlsBundle.message("config.generation.dialog.field.outputPath")) {
+                val descriptor = FileChooserDescriptorFactory.singleFile()
+                    .withExtensionFilter("cwt")
+                    .withTitle(PlsBundle.message("config.generation.dialog.field.outputPath.title"))
+                textFieldWithHistoryWithBrowseButton(descriptor, project, { getOutputPathHistories() })
+                    .align(Align.FILL)
+                    .bindText(outputPathProperty.trim())
+                    .validationOnApply { validateOutputPath() }
+            }
+            row {
+                comment(PlsBundle.message("config.generation.dialog.field.outputPath.comment"))
+            }
+            row {
+                comment(PlsBundle.message("config.generation.dialog.field.outputPath.commentForName", generator.getDefaultOutputName()))
+            }
+
+            // quickSelect
+            row {
+                link(PlsBundle.message("config.generation.dialog.quickSelect.inputPath")) f@{
+                    val quickInputPath = CwtConfigGeneratorUtil.getQuickInputPath(gameType, generator)?.toString()?.orNull() ?: return@f
+                    inputPathProperty.set(quickInputPath)
+                }
+                when {
+                    generator.fromScripts -> contextHelp(PlsBundle.message("config.generation.dialog.quickSelect.inputPath.tipFromScripts"))
+                    else -> contextHelp(PlsBundle.message("config.generation.dialog.quickSelect.inputPath.tip"))
+                }
+            }
+        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
     }
 
-    private fun getInputPathHistories() = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS_INPUT_PATH).orEmpty()
+    override fun doOKAction() {
+        saveDefaults()
+        registerHistories()
+        super.doOKAction()
+    }
 
-    private fun getOutputPathHistories() = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS_OUTPUT_PATH).orEmpty()
+    override fun getDimensionServiceKey() = "Pls.GenerateConfigDialog" // 持久化对话框的位置
+
+    private fun getDefaultInputPath() = propertiesComponent.getValue(inputPathKey, "")
+
+    private fun getDefaultOutputPath() = propertiesComponent.getValue(outputPathKey, "")
+
+    private fun saveDefaults() {
+        propertiesComponent.setValue(inputPathKey, inputPath)
+        propertiesComponent.setValue(outputPathKey, outputPath)
+    }
+
+    private fun getInputPathHistories() = recentsManager.getRecentEntries(inputPathRecentKeys).orEmpty()
+
+    private fun getOutputPathHistories() = recentsManager.getRecentEntries(outputPathRecentKeys).orEmpty()
+
+    private fun registerHistories() {
+        if (inputPath.isNotEmpty()) recentsManager.registerRecentEntry(inputPathRecentKeys, inputPath)
+        if (outputPath.isNotEmpty()) recentsManager.registerRecentEntry(outputPathRecentKeys, outputPath)
+    }
 
     private fun ValidationInfoBuilder.validateInputPath(): ValidationInfo? {
         val v = inputPath
@@ -123,8 +167,6 @@ class GenerateConfigDialog(
     }
 
     companion object {
-        private const val MAX_PATH_LENGTH = 70
-        private const val RECENT_KEYS_INPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.inputPath"
-        private const val RECENT_KEYS_OUTPUT_PATH = "GenerateConfigDialog.RECENT_KEYS.outputPath"
+        private const val PREFERRED_DIALOG_WIDTH = 600
     }
 }

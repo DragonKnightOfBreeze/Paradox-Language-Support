@@ -44,7 +44,9 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
 
     override fun getName() = "EffectConfigGenerator"
 
-    override fun getGeneratedFileName() = "effects.cwt"
+    override fun getDefaultInputName() = "effects.log"
+
+    override fun getDefaultOutputName() = "effects.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         val infos = parseLogFile(inputPath)

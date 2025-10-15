@@ -9,6 +9,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.fileChooser.impl.FileChooserUtil
 import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.TextComponentAccessors
@@ -53,38 +54,40 @@ class ConvertImageFormatDialog(
     // （输入框）文件名
     // （文件路径输入框）目标目录
 
-    override fun createCenterPanel() = panel {
-        row {
-            val text = when {
-                files.size == 1 -> {
-                    val virtualFile = files.first().virtualFile
-                    PlsBundle.message("convertImageFormat.dialog.info.0", shortenPath(virtualFile), targetFormatName)
+    override fun createCenterPanel(): DialogPanel {
+        return panel {
+            row {
+                val text = when {
+                    files.size == 1 -> {
+                        val virtualFile = files.first().virtualFile
+                        PlsBundle.message("convertImageFormat.dialog.info.0", shortenPath(virtualFile), targetFormatName)
+                    }
+                    else -> {
+                        PlsBundle.message("convertImageFormat.dialog.info.1", targetFormatName)
+                    }
                 }
-                else -> {
-                    PlsBundle.message("convertImageFormat.dialog.info.1", targetFormatName)
+                label(text).bold()
+            }
+            if (files.size == 1) {
+                row {
+                    label(PlsBundle.message("convertImageFormat.dialog.newFileName")).widthGroup("left")
+                    cell(initNewFileNameField())
+                        .align(Align.FILL)
+                        .resizableColumn()
+                        .focused()
                 }
             }
-            label(text).bold()
-        }
-        if (files.size == 1) {
             row {
-                label(PlsBundle.message("convertImageFormat.dialog.newFileName")).widthGroup("left")
-                cell(initNewFileNameField())
+                label(PlsBundle.message("convertImageFormat.dialog.targetDirectory")).widthGroup("left")
+                cell(initTargetDirectoryField())
                     .align(Align.FILL)
                     .resizableColumn()
-                    .focused()
             }
-        }
-        row {
-            label(PlsBundle.message("convertImageFormat.dialog.targetDirectory")).widthGroup("left")
-            cell(initTargetDirectoryField())
-                .align(Align.FILL)
-                .resizableColumn()
-        }
-        row {
-            val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
-            comment(message("path.completion.shortcut", shortcutText))
-        }
+            row {
+                val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+                comment(message("path.completion.shortcut", shortcutText))
+            }
+        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
     }
 
     private fun initNewFileNameField(): EditorTextField {
@@ -105,7 +108,7 @@ class ConvertImageFormatDialog(
 
     private fun initTargetDirectoryField(): TextFieldWithHistoryWithBrowseButton {
         val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
-        targetDirectoryField.setTextFieldPreferredWidth(MAX_PATH_LENGTH)
+        targetDirectoryField.setTextFieldPreferredWidth(PREFERRED_PATH_WIDTH)
         val recentEntries = RecentsManager.getInstance(project).getRecentEntries(recentKeys)
         val targetDirectoryComponent = targetDirectoryField.childComponent
         val targetPath = defaultTargetDirectory?.virtualFile?.presentableUrl
@@ -119,7 +122,7 @@ class ConvertImageFormatDialog(
     }
 
     private fun shortenPath(file: VirtualFile): String {
-        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, MAX_PATH_LENGTH)
+        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, PREFERRED_PATH_WIDTH)
     }
 
     override fun doOKAction() {
@@ -162,6 +165,7 @@ class ConvertImageFormatDialog(
     }
 
     companion object {
-        private const val MAX_PATH_LENGTH = 70
+        private const val PREFERRED_DIALOG_WIDTH = 600
+        private const val PREFERRED_PATH_WIDTH = 70
     }
 }

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SeparatorFactory
 import com.intellij.ui.TableViewSpeedSearch
@@ -43,24 +44,26 @@ class ExpandClauseTemplateDialog(
         return ElementsTableModel(context)
     }
 
-    override fun createNorthPanel() = panel {
-        // (textField) propertyName
-        row {
-            val propertyName = context.propertyName
-                ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
-            textField()
-                .text(propertyName)
-                .label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
-                .align(Align.FILL)
-                .columns(COLUMNS_LARGE)
-                .enabled(false)
-        }
-        if (multipleGroup) {
+    override fun createNorthPanel(): DialogPanel {
+        return panel {
+            // (textField) propertyName
             row {
-                comment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
+                val propertyName = context.propertyName
+                    ?: PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName.none")
+                textField()
+                    .text(propertyName)
+                    .label(PlsBundle.message("ui.dialog.expandClauseTemplate.propertyName"), LabelPosition.LEFT)
+                    .align(Align.FILL)
+                    .columns(COLUMNS_LARGE)
+                    .enabled(false)
             }
-        }
-    }.withPreferredWidth(600)
+            if (multipleGroup) {
+                row {
+                    comment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
+                }
+            }
+        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+    }
 
     override fun createCenterPanel(): JComponent {
         val panel = JPanel(BorderLayout())
@@ -105,8 +108,13 @@ class ExpandClauseTemplateDialog(
                 it.addExtraAction(ElementsToolbarActions.SwitchToNextAction(listTable))
             }
             .createPanel()
-        panel.preferredSize = Dimension(panel.preferredSize.width, 540)
+        panel.preferredSize = Dimension(panel.preferredSize.width, PREFERRED_ELEMENTS_WIDTH)
         return panel
+    }
+
+    companion object {
+        private const val PREFERRED_DIALOG_WIDTH = 600
+        private const val PREFERRED_ELEMENTS_WIDTH = 540
     }
 }
 

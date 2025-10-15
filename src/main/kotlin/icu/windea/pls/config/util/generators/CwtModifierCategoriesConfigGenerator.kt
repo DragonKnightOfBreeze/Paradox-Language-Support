@@ -39,7 +39,9 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
 
     override fun getName() = "ModifierCategoriesConfigGenerator"
 
-    override fun getGeneratedFileName() = "modifier_categories.cwt"
+    override fun getDefaultInputName() = "modifiers.log"
+
+    override fun getDefaultOutputName() = "modifier_categories.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         // 1) 解析日志：聚合所有出现过的类别

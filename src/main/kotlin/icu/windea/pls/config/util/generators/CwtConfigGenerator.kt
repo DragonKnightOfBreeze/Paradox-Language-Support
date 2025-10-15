@@ -9,6 +9,8 @@ import icu.windea.pls.model.ParadoxGameType
  *
  * 用于从日志或脚本文件生成规则文件的维护提示。
  *
+ * NOTE 2.0.6+ 仅会检查已存在项的名字，不会检查文档注释与选项注释（目前保持设计如此）。
+ *
  * @property project 指定的项目。
  * @property fromScripts 是否从脚本文件生成。
  */
@@ -19,8 +21,11 @@ interface CwtConfigGenerator {
     /** 得到生成器的名字。 */
     fun getName(): String
 
-    /** 得到默认要生成的文件名。*/
-    fun getGeneratedFileName(): String
+    /** 得到输入的日志文件的默认文件名，或者输入的脚本文件所在目录的相对于游戏目录的默认路径。 */
+    fun getDefaultInputName(): String
+
+    /** 得到输出的规则文件的默认文件名。 */
+    fun getDefaultOutputName(): String
 
     /**
      * 生成规则文件的维护提示。

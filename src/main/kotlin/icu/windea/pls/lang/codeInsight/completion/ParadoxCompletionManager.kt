@@ -80,7 +80,6 @@ import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -593,7 +592,7 @@ object ParadoxCompletionManager {
         if (pathReferenceExpressionSupport != null) {
             val tailText = getExpressionTailText(context, config)
             val fileExtensions = when (config) {
-                is CwtMemberConfig<*> -> ParadoxFileManager.getFileExtensionOptionValues(config)
+                is CwtMemberConfig<*> -> config.optionData { fileExtensions }
                 else -> emptySet()
             }
             // 仅提示匹配file_extensions选项指定的扩展名的，如果存在

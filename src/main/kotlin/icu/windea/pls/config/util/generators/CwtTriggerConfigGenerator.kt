@@ -43,7 +43,9 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
 
     override fun getName() = "TriggerConfigGenerator"
 
-    override fun getGeneratedFileName() = "triggers.cwt"
+    override fun getDefaultInputName() = "triggers.log"
+
+    override fun getDefaultOutputName() = "triggers.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         val infos = parseLogFile(inputPath)

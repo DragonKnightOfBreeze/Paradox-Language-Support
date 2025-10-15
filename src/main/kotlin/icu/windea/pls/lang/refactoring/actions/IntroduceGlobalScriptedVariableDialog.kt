@@ -7,6 +7,7 @@ import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.whenTextChanged
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.TextComponentAccessors
 import com.intellij.openapi.ui.ValidationInfo
@@ -31,10 +32,8 @@ class IntroduceGlobalScriptedVariableDialog(
     variableName: String,
     variableValue: String? = null
 ) : DialogWrapper(project, true) {
-    companion object {
-        private const val MAX_PATH_LENGTH = 70
-        private const val RECENT_KEYS = "Pls.IntroduceGlobalScriptedVariable.RECENT_KEYS"
-    }
+    private val recentsManager = RecentsManager.getInstance(project)
+    private val recentKeys = "Pls.IntroduceGlobalScriptedVariable.RECENT_KEYS"
 
     private val setVariableValue = variableValue != null
 
@@ -58,55 +57,66 @@ class IntroduceGlobalScriptedVariableDialog(
     // （输入框）输入变量值
     // （文件选择框）选择目标文件
 
-    override fun createCenterPanel() = panel {
-        row {
-            // 输入变量名
-            label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
-            textField()
-                .bindText(variableNameProperty)
-                .align(Align.FILL)
-                .resizableColumn()
-                .focused()
-                .validationOnApply { validateScriptedVariableName() }
-        }
-        if (setVariableValue) {
+    override fun createCenterPanel(): DialogPanel {
+        return panel {
             row {
-                // 输入变量值
-                label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
+                // 输入变量名
+                label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName")).widthGroup("left")
                 textField()
-                    .bindText(variableValueProperty)
+                    .bindText(variableNameProperty)
                     .align(Align.FILL)
                     .resizableColumn()
                     .focused()
-                    .validationOnApply { validateScriptedVariableValue() }
+                    .validationOnApply { validateScriptedVariableName() }
             }
-        }
-        row {
-            // 选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
-            label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
-            val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
-                .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
-                .withRoots(scriptedVariablesFile)
-                .withTreeRootVisible(true)
-            val fileField = fileField.apply {
-                setTextFieldPreferredWidth(MAX_PATH_LENGTH)
-                val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
-                if (recentEntries != null) childComponent.history = recentEntries
-                childComponent.text = recentEntries?.firstOrNull() ?: filePath
-                addBrowseFolderListener(project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT)
+            if (setVariableValue) {
+                row {
+                    // 输入变量值
+                    label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue")).widthGroup("left")
+                    textField()
+                        .bindText(variableValueProperty)
+                        .align(Align.FILL)
+                        .resizableColumn()
+                        .focused()
+                        .validationOnApply { validateScriptedVariableValue() }
+                }
             }
-            cell(fileField)
-                .align(Align.FILL)
-                .resizableColumn()
-                .validationRequestor { validator -> fileField.childComponent.textEditor.whenTextChanged { validator() } }
-                .validationOnApply { validateScriptedVariableFilePath() }
-        }
-        row {
-            val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
-            comment(message("path.completion.shortcut", shortcutText))
-        }
-    }.apply {
-        withPreferredWidth(width * 2) // 2倍宽度 - 基于调试结果
+            row {
+                // 选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
+                label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
+                val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
+                    .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
+                    .withRoots(scriptedVariablesFile)
+                    .withTreeRootVisible(true)
+                val fileField = fileField.apply {
+                    setTextFieldPreferredWidth(PREFERRED_PATH_WIDTH)
+                    val recentEntries = getFilePathHistories()
+                    if (recentEntries.isNotEmpty()) childComponent.history = recentEntries
+                    childComponent.text = recentEntries.firstOrNull() ?: filePath
+                    addBrowseFolderListener(project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT)
+                }
+                cell(fileField)
+                    .align(Align.FILL)
+                    .resizableColumn()
+                    .validationRequestor { validator -> fileField.childComponent.textEditor.whenTextChanged { validator() } }
+                    .validationOnApply { validateScriptedVariableFilePath() }
+            }
+            row {
+                val shortcutText = getFirstKeyboardShortcutText(getInstance().getAction(ACTION_CODE_COMPLETION))
+                comment(message("path.completion.shortcut", shortcutText))
+            }
+        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
+    }
+
+    override fun doOKAction() {
+        registerHistories()
+        super.doOKAction()
+    }
+
+    private fun getFilePathHistories() = recentsManager.getRecentEntries(recentKeys).orEmpty()
+
+    private fun registerHistories() {
+        if (filePath.isNotEmpty()) RecentsManager.getInstance(project).registerRecentEntry(recentKeys, filePath)
     }
 
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
@@ -145,8 +155,8 @@ class IntroduceGlobalScriptedVariableDialog(
         return null
     }
 
-    override fun doOKAction() {
-        RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, filePath)
-        super.doOKAction()
+    companion object {
+        private const val PREFERRED_DIALOG_WIDTH = 600
+        private const val PREFERRED_PATH_WIDTH = 70
     }
 }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * 从 `on_actions.txt` 生成 `on_actions.cwt`。
+ * 从 `common/on_actions` 中的脚本文件生成 `on_actions.cwt`。
  *
  * @see CwtExtendedOnActionConfig
  */
@@ -32,7 +32,9 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
 
     override fun getName() = "OnActionConfigGenerator"
 
-    override fun getGeneratedFileName() = "on_actions.cwt"
+    override fun getDefaultInputName() = "common/on_actions"
+
+    override fun getDefaultOutputName() = "on_actions.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
         // 1) 解析脚本目录，收集名称集合
@@ -107,8 +109,8 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
 
     private suspend fun parseScriptFiles(inputPath: String, gameType: ParadoxGameType): Set<String> {
         val dir = CwtConfigGeneratorUtil.getPathInGameDirectory(inputPath, gameType)?.toFile()
-        if (dir == null) throw IllegalArgumentException()
-        if (!dir.isDirectory) throw IllegalStateException()
+        if (dir == null) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} not exist")
+        if (!dir.isDirectory) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} is not a directory")
         val files = dir.walk().filter { it.isFile && it.extension.equals("txt", true) }
         val names = linkedSetOf<String>()
         for (file in files) {

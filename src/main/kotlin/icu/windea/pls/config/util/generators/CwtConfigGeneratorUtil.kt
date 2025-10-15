@@ -6,6 +6,7 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.filterIsInstance
+import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.splitByBlank
@@ -13,15 +14,30 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 object CwtConfigGeneratorUtil {
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val absPath = path.toPathOrNull()?.takeIf { it.isAbsolute }
         if (absPath != null) return absPath
-        val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: return null
-        return gamePath.resolve(path)
+        val resultPath = ParadoxFileManager.getPathInGameDirectory(path, gameType)
+        return resultPath?.takeIf { it.exists() }
+    }
+
+    fun getQuickInputPath(gameType: ParadoxGameType, generator: CwtConfigGenerator): Path? {
+        val resultPath = if (generator.fromScripts) {
+            val path = generator.getDefaultInputName()
+            ParadoxFileManager.getPathInGameDirectory(path, gameType)
+        } else {
+            // TODO 2.0.6+ 需要确定对于群星以外的游戏，这里的相对路径是否固定是 `logs/script_documentation`
+            val fileName = generator.getDefaultInputName()
+            val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
+            gameDataPath?.resolve("logs/script_documentation")?.resolve(fileName)?.formatted()
+        }
+        return resultPath?.takeIf { it.exists() }
     }
 
     fun parseName(line: String): String {
