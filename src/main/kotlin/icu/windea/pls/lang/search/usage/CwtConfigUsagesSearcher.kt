@@ -51,7 +51,7 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
                 val inlineName = target.name.removeSurroundingOrNull("inline[", "]")?.orNull()
                 if (inlineName != null) extraWords.add(inlineName)
             }
-            CwtConfigTypes.Link -> {
+            CwtConfigTypes.Link, CwtConfigTypes.LocalisationLink -> {
                 val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }
                 val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue?.orNull()
                 if (prefix != null) extraWords.add(prefix)

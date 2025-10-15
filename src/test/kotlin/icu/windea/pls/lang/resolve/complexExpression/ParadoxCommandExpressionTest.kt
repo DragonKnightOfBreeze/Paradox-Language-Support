@@ -5,7 +5,9 @@ import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxBlankNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandScopeLinkPrefixNode
@@ -15,9 +17,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandSuffixN
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDataSourceNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicCommandScopeLinkNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
@@ -159,6 +163,210 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
                 node<ParadoxCommandFieldValueNode>("", 0..0) {
                     node<ParadoxDataSourceNode>("", 0..0)
                 }
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArguments() {
+        val s = "Root.TestScope(root, some_building).TestCommand(some_flag, some_job)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building).TestCommand(some_flag, some_job)", 0..68) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, some_building)", 5..35) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestScope", 5..14)
+                node<ParadoxMarkerNode>("(", 14..15)
+                node<ParadoxCommandScopeLinkValueNode>("root, some_building", 15..34) {
+                    node<ParadoxDataSourceNode>("root", 15..19)
+                    node<ParadoxMarkerNode>(",", 19..20)
+                    node<ParadoxBlankNode>(" ", 20..21)
+                    node<ParadoxDataSourceNode>("some_building", 21..34)
+                }
+                node<ParadoxMarkerNode>(")", 34..35)
+            }
+            node<ParadoxOperatorNode>(".", 35..36)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(some_flag, some_job)", 36..68) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 36..47)
+                node<ParadoxMarkerNode>("(", 47..48)
+                node<ParadoxCommandFieldValueNode>("some_flag, some_job", 48..67) {
+                    node<ParadoxDataSourceNode>("some_flag", 48..57)
+                    node<ParadoxMarkerNode>(",", 57..58)
+                    node<ParadoxBlankNode>(" ", 58..59)
+                    node<ParadoxDataSourceNode>("some_job", 59..67)
+                }
+                node<ParadoxMarkerNode>(")", 67..68)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArguments_withTrailComma() {
+        val s = "Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, some_building,).TestCommand(some_flag, some_job,)", 0..70) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, some_building,)", 5..36) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestScope", 5..14)
+                node<ParadoxMarkerNode>("(", 14..15)
+                node<ParadoxCommandScopeLinkValueNode>("root, some_building,", 15..35) {
+                    node<ParadoxDataSourceNode>("root", 15..19)
+                    node<ParadoxMarkerNode>(",", 19..20)
+                    node<ParadoxBlankNode>(" ", 20..21)
+                    node<ParadoxDataSourceNode>("some_building", 21..34)
+                    node<ParadoxMarkerNode>(",", 34..35)
+                }
+                node<ParadoxMarkerNode>(")", 35..36)
+            }
+            node<ParadoxOperatorNode>(".", 36..37)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(some_flag, some_job,)", 37..70) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 37..48)
+                node<ParadoxMarkerNode>("(", 48..49)
+                node<ParadoxCommandFieldValueNode>("some_flag, some_job,", 49..69) {
+                    node<ParadoxDataSourceNode>("some_flag", 49..58)
+                    node<ParadoxMarkerNode>(",", 58..59)
+                    node<ParadoxBlankNode>(" ", 59..60)
+                    node<ParadoxDataSourceNode>("some_job", 60..68)
+                    node<ParadoxMarkerNode>(",", 68..69)
+                }
+                node<ParadoxMarkerNode>(")", 69..70)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArguments_missingArgument_1() {
+        val s = "Root.TestScope(some_building).TestCommand(some_job)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(some_building).TestCommand(some_job)", 0..51) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestScope(some_building)", 5..29) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestScope", 5..14)
+                node<ParadoxMarkerNode>("(", 14..15)
+                node<ParadoxCommandScopeLinkValueNode>("some_building", 15..28) {
+                    node<ParadoxDataSourceNode>("some_building", 15..28)
+                }
+                node<ParadoxMarkerNode>(")", 28..29)
+            }
+            node<ParadoxOperatorNode>(".", 29..30)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(some_job)", 30..51) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 30..41)
+                node<ParadoxMarkerNode>("(", 41..42)
+                node<ParadoxCommandFieldValueNode>("some_job", 42..50) {
+                    node<ParadoxDataSourceNode>("some_job", 42..50)
+                }
+                node<ParadoxMarkerNode>(")", 50..51)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArguments_missingArgument_2() {
+        val s = "Root.TestScope(root, ).TestCommand(some_flag, )"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(root, ).TestCommand(some_flag, )", 0..47) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestScope(root, )", 5..22) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestScope", 5..14)
+                node<ParadoxMarkerNode>("(", 14..15)
+                node<ParadoxCommandScopeLinkValueNode>("root, ", 15..21) {
+                    node<ParadoxDataSourceNode>("root", 15..19)
+                    node<ParadoxMarkerNode>(",", 19..20)
+                    node<ParadoxBlankNode>(" ", 20..21)
+                }
+                node<ParadoxMarkerNode>(")", 21..22)
+            }
+            node<ParadoxOperatorNode>(".", 22..23)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(some_flag, )", 23..47) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 23..34)
+                node<ParadoxMarkerNode>("(", 34..35)
+                node<ParadoxCommandFieldValueNode>("some_flag, ", 35..46) {
+                    node<ParadoxDataSourceNode>("some_flag", 35..44)
+                    node<ParadoxMarkerNode>(",", 44..45)
+                    node<ParadoxBlankNode>(" ", 45..46)
+                }
+                node<ParadoxMarkerNode>(")", 46..47)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_forArguments_missingArgument_3() {
+        val s = "Root.TestScope(, some_building).TestCommand(, some_job)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestScope(, some_building).TestCommand(, some_job)", 0..55) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestScope(, some_building)", 5..31) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestScope", 5..14)
+                node<ParadoxMarkerNode>("(", 14..15)
+                node<ParadoxCommandScopeLinkValueNode>(", some_building", 15..30) {
+                    node<ParadoxErrorTokenNode>("", 15..15)
+                    node<ParadoxMarkerNode>(",", 15..16)
+                    node<ParadoxBlankNode>(" ", 16..17)
+                    node<ParadoxDataSourceNode>("some_building", 17..30)
+                }
+                node<ParadoxMarkerNode>(")", 30..31)
+            }
+            node<ParadoxOperatorNode>(".", 31..32)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(, some_job)", 32..55) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 32..43)
+                node<ParadoxMarkerNode>("(", 43..44)
+                node<ParadoxCommandFieldValueNode>(", some_job", 44..54) {
+                    node<ParadoxErrorTokenNode>("", 44..44)
+                    node<ParadoxMarkerNode>(",", 44..45)
+                    node<ParadoxBlankNode>(" ", 45..46)
+                    node<ParadoxDataSourceNode>("some_job", 46..54)
+                }
+                node<ParadoxMarkerNode>(")", 54..55)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_for_Arguments_withLiteral() {
+        val s = "Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxCommandExpression>("Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)", 0..80) {
+            node<ParadoxSystemCommandScopeNode>("Root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicCommandScopeLinkNode>("TestLiteralScope('foo bar', some_variable)", 5..47) {
+                node<ParadoxCommandScopeLinkPrefixNode>("TestLiteralScope", 5..21)
+                node<ParadoxMarkerNode>("(", 21..22)
+                node<ParadoxCommandScopeLinkValueNode>("'foo bar', some_variable", 22..46) {
+                    node<ParadoxStringLiteralNode>("'foo bar'", 22..31)
+                    node<ParadoxMarkerNode>(",", 31..32)
+                    node<ParadoxBlankNode>(" ", 32..33)
+                    node<ParadoxDataSourceNode>("some_variable", 33..46)
+                }
+                node<ParadoxMarkerNode>(")", 46..47)
+            }
+            node<ParadoxOperatorNode>(".", 47..48)
+            node<ParadoxDynamicCommandFieldNode>("TestCommand(some_flag, some_job)", 48..80) {
+                node<ParadoxCommandFieldPrefixNode>("TestCommand", 48..59)
+                node<ParadoxMarkerNode>("(", 59..60)
+                node<ParadoxCommandFieldValueNode>("some_flag, some_job", 60..79) {
+                    node<ParadoxDataSourceNode>("some_flag", 60..69)
+                    node<ParadoxMarkerNode>(",", 69..70)
+                    node<ParadoxBlankNode>(" ", 70..71)
+                    node<ParadoxDataSourceNode>("some_job", 71..79)
+                }
+                node<ParadoxMarkerNode>(")", 79..80)
             }
         }
         exp.check(dsl)

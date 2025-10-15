@@ -1,7 +1,8 @@
-# Test CWT config for multi data_source links
+# Test CWT config for multi-arguments links
 
 # Examples in script files:
 # - root.test_literal_scope('foo bar', some_variable)
+# - root.test_literal_scope('foo bar', some_variable).test_value(some_flag, some_job)
 # - root.test_scope(root, some_building)
 # - root.test_scope(root, some_building).test_value(some_flag, some_job)
 

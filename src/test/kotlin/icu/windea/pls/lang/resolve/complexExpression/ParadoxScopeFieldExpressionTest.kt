@@ -17,6 +17,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkValueNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
@@ -132,18 +133,18 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building)", 0..36) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
-    node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building)", 5..36) {
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building)", 5..36) {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxMarkerNode>("(", 15..16)
-        node<ParadoxScopeLinkValueNode>("root, some_building", 16..35) {
+                node<ParadoxScopeLinkValueNode>("root, some_building", 16..35) {
                     expression<ParadoxScopeFieldExpression>("root", 16..20) {
                         node<ParadoxSystemScopeNode>("root", 16..20)
                     }
                     node<ParadoxMarkerNode>(",", 20..21)
                     node<ParadoxBlankNode>(" ", 21..22)
-            node<ParadoxDataSourceNode>("some_building", 22..35)
+                    node<ParadoxDataSourceNode>("some_building", 22..35)
                 }
-        node<ParadoxMarkerNode>(")", 35..36)
+                node<ParadoxMarkerNode>(")", 35..36)
             }
         }
         exp.check(dsl)
@@ -154,22 +155,22 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val s = "root.test_scope(root, some_building,)"
         val exp = parse(s)!!
         println(exp.render())
-        val dsl =buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building,)", 0..37) {
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(root, some_building,)", 0..37) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
-    node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building,)", 5..37) {
+            node<ParadoxDynamicScopeLinkNode>("test_scope(root, some_building,)", 5..37) {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxMarkerNode>("(", 15..16)
-        node<ParadoxScopeLinkValueNode>("root, some_building,", 16..36) {
+                node<ParadoxScopeLinkValueNode>("root, some_building,", 16..36) {
                     expression<ParadoxScopeFieldExpression>("root", 16..20) {
                         node<ParadoxSystemScopeNode>("root", 16..20)
                     }
                     node<ParadoxMarkerNode>(",", 20..21)
                     node<ParadoxBlankNode>(" ", 21..22)
-            node<ParadoxDataSourceNode>("some_building", 22..35)
-            node<ParadoxMarkerNode>(",", 35..36)
+                    node<ParadoxDataSourceNode>("some_building", 22..35)
+                    node<ParadoxMarkerNode>(",", 35..36)
                 }
-        node<ParadoxMarkerNode>(")", 36..37)
+                node<ParadoxMarkerNode>(")", 36..37)
             }
         }
         exp.check(dsl)
@@ -228,16 +229,41 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_scope(, some_building)", 0..32) {
             node<ParadoxSystemScopeNode>("root", 0..4)
             node<ParadoxOperatorNode>(".", 4..5)
-    node<ParadoxDynamicScopeLinkNode>("test_scope(, some_building)", 5..32) {
+            node<ParadoxDynamicScopeLinkNode>("test_scope(, some_building)", 5..32) {
                 node<ParadoxScopeLinkPrefixNode>("test_scope", 5..15)
                 node<ParadoxMarkerNode>("(", 15..16)
-        node<ParadoxScopeLinkValueNode>(", some_building", 16..31) {
+                node<ParadoxScopeLinkValueNode>(", some_building", 16..31) {
                     node<ParadoxErrorTokenNode>("", 16..16)
                     node<ParadoxMarkerNode>(",", 16..17)
                     node<ParadoxBlankNode>(" ", 17..18)
-            node<ParadoxDataSourceNode>("some_building", 18..31)
+                    node<ParadoxDataSourceNode>("some_building", 18..31)
                 }
-        node<ParadoxMarkerNode>(")", 31..32)
+                node<ParadoxMarkerNode>(")", 31..32)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
+    fun test_for_Arguments_withLiteral() {
+        val s = "root.test_literal_scope('foo bar', some_variable)"
+        val exp = parse(s)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("root.test_literal_scope('foo bar', some_variable)", 0..49) {
+            node<ParadoxSystemScopeNode>("root", 0..4)
+            node<ParadoxOperatorNode>(".", 4..5)
+            node<ParadoxDynamicScopeLinkNode>("test_literal_scope('foo bar', some_variable)", 5..49) {
+                node<ParadoxScopeLinkPrefixNode>("test_literal_scope", 5..23)
+                node<ParadoxMarkerNode>("(", 23..24)
+                node<ParadoxScopeLinkValueNode>("'foo bar', some_variable", 24..48) {
+                    node<ParadoxStringLiteralNode>("'foo bar'", 24..33)
+                    node<ParadoxMarkerNode>(",", 33..34)
+                    node<ParadoxBlankNode>(" ", 34..35)
+                    expression<ParadoxDynamicValueExpression>("some_variable", 35..48) {
+                        node<ParadoxDynamicValueNode>("some_variable", 35..48)
+                    }
+                }
+                node<ParadoxMarkerNode>(")", 48..49)
             }
         }
         exp.check(dsl)

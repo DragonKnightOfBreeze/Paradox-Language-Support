@@ -1,0 +1,37 @@
+# Test CWT config for multi-arguments localisation links
+
+# Examples in localisation files:
+# - Root.TestLiteralScope('foo bar', some_variable).TestCommand(some_flag, some_job)
+# - Root.TestScope(root, some_building).TestCommand(some_flag, some_job)
+
+localisation_links = {
+    TestLiteralScopeLink = {
+        type = scope
+        from_argument = yes
+        prefix = TestLiteralScope
+        data_source = scalar # 'xxx' or any other valid literal
+        data_source = value[test_variable]
+        input_scopes = { any }
+        output_scope = any
+    }
+
+    TestScopeLink = {
+        type = scope
+        from_argument = yes
+        prefix = TestScope
+        data_source = scope_field
+        data_source = <building>
+        input_scopes = { any }
+        output_scope = any
+    }
+
+    TestCommand = {
+        type = value
+        from_argument = yes
+        prefix = TestCommand
+        data_source = value[test_flag]
+        data_source = <job>
+        input_scopes = { any }
+        output_scope = any
+    }
+}
