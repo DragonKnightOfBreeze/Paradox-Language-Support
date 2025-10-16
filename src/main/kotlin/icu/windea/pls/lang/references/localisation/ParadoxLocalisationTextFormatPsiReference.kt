@@ -24,7 +24,7 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
  *
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider
  */
-@WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
+@WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class ParadoxLocalisationTextFormatPsiReference(
     element: ParadoxLocalisationTextFormat,
     rangeInElement: TextRange

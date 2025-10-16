@@ -39,7 +39,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         callbackLock.reset()
         val settings = PlsFacade.getSettings()
         val gameTypes = ParadoxGameType.getAll()
-            .filter { it != ParadoxGameType.Eu5 } // TODO hidden in plugin settings page until eu5 is released
         return panel {
             // general
             group(PlsBundle.message("settings.general")) {

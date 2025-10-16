@@ -87,7 +87,8 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetInferredGameTypeFromInfo(): ParadoxGameType? {
             return when (info.gameId) {
-                "victoria3" -> ParadoxGameType.Vic3
+                ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
+                ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
                 else -> ParadoxGameType.Vic3 // #134 by default vic3
             }
         }

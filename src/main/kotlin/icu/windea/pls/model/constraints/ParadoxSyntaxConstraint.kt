@@ -8,6 +8,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.lexer._ParadoxLocalisationTextLexer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxGameType.Ck3
+import icu.windea.pls.model.ParadoxGameType.Eu5
 import icu.windea.pls.model.ParadoxGameType.Stellaris
 import icu.windea.pls.model.ParadoxGameType.Vic3
 
@@ -21,11 +22,11 @@ enum class ParadoxSyntaxConstraint(
     /**
      * `#{tag_name} {text}#!`
      */
-    LocalisationTextFormat(Ck3, Vic3), // see #137
+    LocalisationTextFormat(Ck3, Vic3, Eu5), // see #137
     /**
      * `@{text_icon_name}!`
      */
-    LocalisationTextIcon(Ck3, Vic3),  // see #137
+    LocalisationTextIcon(Ck3, Vic3, Eu5),  // see #137
     ;
 
     fun supports(target: Any): Boolean {

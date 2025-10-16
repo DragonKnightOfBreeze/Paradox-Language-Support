@@ -90,9 +90,9 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
-
     override fun getItemPropertyKeysInDetail() = Constants.ITEM_PROPERTY_KEYS_IN_DETAIL
+
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {

@@ -27,9 +27,9 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
-
     override fun getDiagramSettings(project: Project) = project.service<Vic3EventTreeDiagramSettings>()
+
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
     class DataModel(
         project: Project,

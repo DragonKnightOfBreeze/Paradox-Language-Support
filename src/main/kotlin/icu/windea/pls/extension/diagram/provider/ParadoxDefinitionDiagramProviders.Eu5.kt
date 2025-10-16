@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class Eu5EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu5) {
     object Constants {
         const val ID = "Eu5.EventTree"
-        val ITEM_PROPERTY_KEYS = listOf("picture")
+        val ITEM_PROPERTY_KEYS = listOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
     }
 
     override fun getID() = Constants.ID

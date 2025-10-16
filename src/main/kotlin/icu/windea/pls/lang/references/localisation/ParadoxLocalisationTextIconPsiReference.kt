@@ -22,7 +22,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
  *
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider
  */
-@WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
+@WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3, ParadoxGameType.Eu5)
 class ParadoxLocalisationTextIconPsiReference(
     element: ParadoxLocalisationTextIcon,
     rangeInElement: TextRange

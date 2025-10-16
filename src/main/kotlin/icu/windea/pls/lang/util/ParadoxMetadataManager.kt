@@ -119,7 +119,7 @@ object ParadoxMetadataManager {
 
     fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
         // TODO 2.0.5+ 提取 ModDescriptorType，避免硬编码
-        return gameType != ParadoxGameType.Vic3
+        return gameType != ParadoxGameType.Vic3 && gameType != ParadoxGameType.Eu5
     }
 
     fun getModDirectoryFromSteamId(steamId: String?, workshopDirPath: Path): String? {
