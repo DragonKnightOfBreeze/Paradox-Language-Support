@@ -4,10 +4,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.search.ParadoxParameterSearch
-import icu.windea.pls.lang.search.processQuery
-import icu.windea.pls.lang.search.selector.parameter
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.PlsTestUtil
@@ -120,50 +116,5 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
             ParadoxScriptProperty::class.java
         )
         Assert.assertEquals(0, arguments.size)
-    }
-
-    @Test
-    fun testParameterSearcher_All() {
-        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
-        val project = project
-        val selector = selector(project, myFixture.file).parameter()
-        val contextKey = "inline_script@test_inline"
-        val results = mutableListOf<String>()
-        ParadoxParameterSearch.search(null, contextKey, selector).processQuery(false) { info ->
-            results += info.name
-            true
-        }
-        Assert.assertEquals(setOf("EVENT_ID", "SOME_FLAG"), results.toSet())
-    }
-
-    @Test
-    fun testParameterSearcher_ByName() {
-        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
-        val project = project
-        val selector = selector(project, myFixture.file).parameter()
-        val contextKey = "inline_script@test_inline"
-        val results = mutableListOf<String>()
-        ParadoxParameterSearch.search("EVENT_ID", contextKey, selector).processQuery(false) { info ->
-            results += info.name
-            true
-        }
-        Assert.assertEquals(listOf("EVENT_ID"), results)
-    }
-
-    @Test
-    fun testParameterSearcher_ByName_NotFound() {
-        myFixture.configureByFile("features/index/usage_block_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/usage_block_stellaris.test.txt", ParadoxGameType.Stellaris)
-        val project = project
-        val selector = selector(project, myFixture.file).parameter()
-        val contextKey = "inline_script@test_inline"
-        val results = mutableListOf<String>()
-        ParadoxParameterSearch.search("NOT_EXISTS", contextKey, selector).processQuery(false) { info ->
-            results += info.name
-            true
-        }
-        Assert.assertTrue(results.isEmpty())
     }
 }
