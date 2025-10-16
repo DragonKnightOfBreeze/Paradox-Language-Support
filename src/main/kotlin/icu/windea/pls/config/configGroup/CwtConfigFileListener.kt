@@ -61,9 +61,9 @@ class CwtConfigFileListener : AsyncFileListener {
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
                         if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f2
-                        val rootDirectories = contextFiles.mapNotNullTo(mutableSetOf()) { fileProvider.getRootDirectory(project) }
-                        rootDirectories.forEach f3@{ rootDirectory ->
-                            val configGroup = fileProvider.getContainingConfigGroup(rootDirectory, project) ?: return@f3
+                        val contextDirectories = contextFiles.mapNotNullTo(mutableSetOf()) { it.parent }
+                        contextDirectories.forEach f3@{ contextDirectory ->
+                            val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3
                             configGroups.add(configGroup)
                             if (configGroup.gameType == ParadoxGameType.Core) {
                                 ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(project, gameType)) }
