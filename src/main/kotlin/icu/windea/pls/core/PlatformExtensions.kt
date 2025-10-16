@@ -228,10 +228,10 @@ fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, 
 }
 
 /**
- * 在文本中查找关键字列表 [keywords] 的出现位置，返回 (关键字，文本范围) 列表（按起始位置排序）。
+ * 在输入的文本中查找关键字的出现位置，返回关键字与文本范围组成的元组的列表，按起始位置排序。
  */
 fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2<String, TextRange>> {
-    val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
+    val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }.toSet()
     val result = mutableListOf<Tuple2<String, TextRange>>()
     var startIndex = 0
     while (startIndex < this.length) {
@@ -240,6 +240,38 @@ fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2
         startIndex = index + keyword.length
     }
     return result.sortedBy { it.second.startOffset }
+}
+
+/**
+ * 合并一组文本范围，返回其并集后的最小区间集，按起始位置排序。
+ *
+ * 语义说明：
+ * - 合并所有**重叠**或**相邻**的区间。
+ * - 不相交的区间保持分离；结果区间为半开区间 `[startOffset, endOffset)`。
+ * - 时间复杂度为 O(n log n)（按起始位置排序后线性合并）。
+ */
+fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
+    val ranges = this.toList()
+    if (ranges.size <= 1) return ranges
+    val sorted = ranges.sortedBy { it.startOffset }
+    val result = ArrayList<TextRange>(sorted.size)
+    for (range in sorted) {
+        if (result.isEmpty()) {
+            result.add(range)
+            continue
+        }
+        val last = result.last()
+        // 若重叠或相邻，则合并；否则开启新区间
+        if (range.startOffset <= last.endOffset) {
+            val mergedStart = last.startOffset
+            val mergedEnd = maxOf(last.endOffset, range.endOffset)
+            // 替换为合并后的新区间
+            result[result.lastIndex] = TextRange.create(mergedStart, mergedEnd)
+        } else {
+            result.add(range)
+        }
+    }
+    return result
 }
 
 // endregion
