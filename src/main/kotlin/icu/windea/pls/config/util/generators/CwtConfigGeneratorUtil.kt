@@ -8,6 +8,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.chunkedBy
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.formatted
+import icu.windea.pls.core.mergeTextRanges
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
@@ -118,9 +119,7 @@ object CwtConfigGeneratorUtil {
         val text = readAction { file.text }
         if (elementsToDelete.isEmpty()) return text
         val textRangesToDelete = readAction { elementsToDelete.map { it.textRange } }
-        val finalText = textRangesToDelete
-            .sortedByDescending { it.startOffset }
-            .fold(text) { a, b -> b.replace(a, "") }
+        val finalText = textRangesToDelete.mergeTextRanges().reversed().fold(text) { a, b -> b.replace(a, "") }
         return finalText.trimEnd()
     }
 
