@@ -14,9 +14,11 @@ import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.merge
+import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -28,7 +30,6 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
 
-@Suppress("unused")
 object CwtConfigManipulator {
     // region Core Methods
 
@@ -73,6 +74,8 @@ object CwtConfigManipulator {
     // endregion
 
     // region Deep Copy Methods
+
+    // TODO 2.0.6 这里的深拷贝得到的规则的 parentConfig 似乎不太对
 
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
@@ -122,6 +125,15 @@ object CwtConfigManipulator {
 
     // region Inline Methods
 
+    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+        val configGroup = config.configGroup
+        val valueExpression = config.valueExpression
+        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
+        val singleAliasName = valueExpression.value ?: return null
+        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
+        return inlineSingleAlias(config, singleAliasConfig)
+    }
+
     fun inlineSingleAlias(config: CwtPropertyConfig, singleAliasConfig: CwtSingleAliasConfig): CwtPropertyConfig {
         // inline all value and configs
         val other = singleAliasConfig.config
@@ -140,13 +152,27 @@ object CwtConfigManipulator {
         return inlined
     }
 
-    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+    fun inlineAlias(config: CwtPropertyConfig, subNamesProvider: (aliasName: String) -> Set<String>): List<CwtMemberConfig<*>>? {
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
-        if (valueExpression.type != CwtDataTypes.SingleAliasRight) return null
-        val singleAliasName = valueExpression.value ?: return null
-        val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        return inlineSingleAlias(config, singleAliasConfig)
+        val aliasName = valueExpression.value ?: return null
+        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
+        val aliasSubNames = subNamesProvider(aliasName)
+        val result = mutableListOf<CwtMemberConfig<*>>()
+        aliasSubNames.forEach f1@{ aliasSubName ->
+            val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
+            aliasConfigs.forEach f2@{ aliasConfig ->
+                val inlinedConfig = inlineAlias(config, aliasConfig)
+                val finalInlinedConfig = when (inlinedConfig.valueExpression.type) {
+                    CwtDataTypes.SingleAliasRight -> inlineSingleAlias(inlinedConfig) ?: return@f2
+                    else -> inlinedConfig
+                }
+                result += finalInlinedConfig
+            }
+        }
+        val parentConfig = config.parentConfig
+        if (parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        return result.optimized()
     }
 
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig {
@@ -261,6 +287,7 @@ object CwtConfigManipulator {
         return sameConfigs
     }
 
+    @Suppress("unused")
     fun mergeConfig(config1: CwtMemberConfig<*>, config2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
         if (config1 === config2) return config1 // reference equality
         if (config1.pointer == config2.pointer) return config1 // value equality (should be)

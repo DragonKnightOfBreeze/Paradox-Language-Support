@@ -76,7 +76,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.configContext.CwtConfigContextProvider
 import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
@@ -393,7 +392,7 @@ object ParadoxExpressionManager {
                                 if (!matchResult.get(matchOptions)) return@f3
                             }
                             val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
-                            if (inlinedConfigs.isEmpty()) {
+                            if (inlinedConfigs == null) {
                                 addToMatchedConfigs(config)
                             } else {
                                 inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
@@ -429,7 +428,7 @@ object ParadoxExpressionManager {
             result = result.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
-        return result
+        return result.optimized()
     }
 
     private fun doInlineConfigForConfigContext(
@@ -437,33 +436,20 @@ object ParadoxExpressionManager {
         key: String,
         config: CwtPropertyConfig,
         matchOptions: Int
-    ): List<CwtMemberConfig<*>> {
+    ): List<CwtMemberConfig<*>>? {
         val configGroup = config.configGroup
-        val result = mutableListOf<CwtMemberConfig<*>>()
-        run {
-            val configValueExpression = config.valueExpression
-            if (configValueExpression.type == CwtDataTypes.SingleAliasRight) {
-                result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@run
-            } else if (configValueExpression.type == CwtDataTypes.AliasMatchLeft) {
-                val aliasName = configValueExpression.value ?: return@run
-                val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
-                val aliasSubNames = getAliasSubNames(element, key, false, aliasName, configGroup, matchOptions)
-                aliasSubNames.forEach f1@{ aliasSubName ->
-                    val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
-                    aliasConfigs.forEach f2@{ aliasConfig ->
-                        val inlinedConfig = CwtConfigManipulator.inlineAlias(config, aliasConfig)
-                        val finalInlinedConfig = when (inlinedConfig.valueExpression.type) {
-                            CwtDataTypes.SingleAliasRight -> CwtConfigManipulator.inlineSingleAlias(inlinedConfig) ?: return@f2
-                            else -> inlinedConfig
-                        }
-                        result += finalInlinedConfig
-                    }
-                }
+        val valueExpression = config.valueExpression
+        val result = when (valueExpression.type) {
+            CwtDataTypes.SingleAliasRight -> {
+                val inlined = CwtConfigManipulator.inlineSingleAlias(config)
+                inlined?.singleton?.list()
             }
+            CwtDataTypes.AliasMatchLeft -> {
+                val inlined = CwtConfigManipulator.inlineAlias(config) { aliasName -> getAliasSubNames(element, key, false, aliasName, configGroup, matchOptions) }
+                inlined
+            }
+            else -> null
         }
-        if (result.isEmpty()) return emptyList()
-        val parentConfig = config.parentConfig
-        if (parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
 
@@ -1094,12 +1080,12 @@ object ParadoxExpressionManager {
         return keys.find { ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 
-    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
+    fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): Set<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
-        if (constKey != null) return listOf(constKey)
-        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
+        if (constKey != null) return setOf(constKey)
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.filter { ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.filterTo(mutableSetOf()) { ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 
     fun getEntryName(config: CwtConfig<*>): String? {
