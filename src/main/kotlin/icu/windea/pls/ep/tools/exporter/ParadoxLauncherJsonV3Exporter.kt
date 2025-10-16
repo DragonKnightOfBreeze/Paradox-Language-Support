@@ -56,7 +56,8 @@ class ParadoxLauncherJsonV3Exporter : ParadoxJsonBasedModExporter() {
             game = gameType.gameId,
             name = playlistName,
             mods = valid.mapIndexed { index, (displayName, steamId, pdxId) ->
-                LauncherJsonV3.Mod(
+                LauncherJsonV3.
+                Mod(
                     displayName = displayName,
                     enabled = true,
                     position = index,

@@ -17,6 +17,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.or
 import org.ktorm.entity.add
@@ -73,7 +74,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
         // 向目标播放集插入不重复的模组信息
         val modsSeq = db.sequenceOf(Mods)
         val mappings = db.sequenceOf(PlaysetsMods)
-        var inserted = 0
+        var count = 0
         mods.forEachIndexed f@{ index, m ->
             val modInfo = ParadoxMetadataManager.getModInfoFromModDirectory(m.modDirectory) ?: return@f
             val displayName = m.name?.orNull() ?: modInfo.name
@@ -99,20 +100,23 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
                 modsSeq.add(mod)
             }
 
-            val positionValue = ParadoxMetadataManager.formatLauncherPosition(index, isV4Plus)
-
-            mappings.add(PlaysetsModEntity {
-                this.playsetId = playset.id
-                this.modId = mod.id
-                this.position = positionValue
-            })
-            inserted++
+            // 查找或创建映射
+            var mapping = mappings.find { (it.playsetId eq playset.id) and (it.modId eq mod.id) }
+            if (mapping == null) {
+                mapping = PlaysetsModEntity {
+                    this.playsetId = playset.id
+                    this.modId = mod.id
+                    this.position = ParadoxMetadataManager.formatLauncherPosition(index, isV4Plus)
+                }
+                mappings.add(mapping)
+            }
+            count++
         }
 
         playset.updatedOn = LocalDateTime.now()
         playset.flushChanges()
 
-        return ParadoxModExporter.Result(total = mods.size, actualTotal = inserted)
+        return ParadoxModExporter.Result(total = mods.size, actualTotal = count)
     }
 
     override fun createFileSaverDescriptor(gameType: ParadoxGameType): FileSaverDescriptor {

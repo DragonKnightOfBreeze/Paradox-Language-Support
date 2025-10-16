@@ -41,18 +41,4 @@ CREATE TABLE IF NOT EXISTS playsets_mods (
   PRIMARY KEY (playsetId, modId)
 );
 
--- init data
-
-INSERT INTO knex_migrations(name, batch, migration_time) VALUES ('modifyPositionToInteger', 1, '2024-01-01 00:00:00');
-
-INSERT INTO playsets(id, name, isActive, createdOn) VALUES ('ps1', 'Test Playset', 1, datetime('now'));
-
-INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_uiod', '1623423360', 'UI Overhaul Dynamic', 'steam');
-INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_pd',   '819148835',  'Planetary Diversity', 'steam');
-INSERT INTO mods(id, steamId, displayName, source) VALUES ('mod_rs4',  '937289339', 'Real Space 4.0', 'steam');
-
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_uiod', 1, '0');
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_pd',   1, '1');
-INSERT INTO playsets_mods(playsetId, modId, enabled, position) VALUES ('ps1', 'mod_rs4',  1, '2');
-
 COMMIT;

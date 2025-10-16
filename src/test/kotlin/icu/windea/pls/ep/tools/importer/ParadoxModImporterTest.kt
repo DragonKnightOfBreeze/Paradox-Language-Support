@@ -3,6 +3,7 @@ package icu.windea.pls.ep.tools.importer
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.PlsDataProvider
+import icu.windea.pls.lang.util.PlsSqliteManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.AssumePredicates
@@ -12,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
-import java.nio.charset.StandardCharsets
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -45,8 +46,8 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     @Test
     fun importLauncherJsonV2() {
         // 将资源文件拷贝到临时位置
-        val ins = javaClass.getResourceAsStream("/tools/playlist_v2.json")
-        requireNotNull(ins) { "Missing resource: /tools/playlist_v2.json" }
+        val ins = getResource("/tools/playlist_v2.json")
+
         val outDir = Path.of("build", "tmp", "import-in").also { if (!it.exists()) it.createDirectories() }
         val jsonFile = outDir.resolve("playlist_v2_import_${UUID.randomUUID()}.json")
         Files.copy(ins, jsonFile)
@@ -60,26 +61,31 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun importLauncherJsonV3() {
+        // 将资源文件拷贝到临时位置
+        val ins = getResource("/tools/playlist_v3.json")
+
+        val outDir = Path.of("build", "tmp", "import-in").also { if (!it.exists()) it.createDirectories() }
+        val jsonFile = outDir.resolve("playlist_v3_import_${UUID.randomUUID()}.json")
+        Files.copy(ins, jsonFile)
+
+        val importer = ParadoxLauncherJsonImporter()
+        val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
+        val result = runBlocking { importer.execute(jsonFile, modSet) }
+
+        assertEquals(3, result.total)
+        assertActualTotal(result.actualTotal)
+    }
+
+    @Test
     fun importLauncherDbV2() {
         // 用 V2 脚本初始化临时 DB
-        val sqlIns = javaClass.getResourceAsStream("/tools/sqlite_v2.sql")
-        requireNotNull(sqlIns) { "Missing resource: /tools/sqlite_v2.sql" }
-        val sql = sqlIns.reader(StandardCharsets.UTF_8).readText()
+        val sqlIns = getResource("/tools/sqlite_v2.sql")
+        val sql = sqlIns.reader().readText()
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_import_${UUID.randomUUID()}.sqlite")
-
-        val conn = java.sql.DriverManager.getConnection("jdbc:sqlite:${dbFile.toAbsolutePath()}")
-        conn.autoCommit = false
-        conn.createStatement().use { st ->
-            sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }.forEach { stmt ->
-                val up = stmt.uppercase(Locale.ROOT)
-                if (up == "BEGIN" || up == "BEGIN TRANSACTION" || up == "COMMIT") return@forEach
-                st.execute(stmt)
-            }
-        }
-        conn.commit()
-        conn.close()
+        PlsSqliteManager.executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
@@ -87,6 +93,30 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         assertEquals(3, result.total)
         assertActualTotal(result.actualTotal)
+    }
+
+    @Test
+    fun importLauncherDbV4() {
+        // 用 V4 脚本初始化临时 DB
+        val sqlIns = getResource("/tools/sqlite_v4.sql")
+        val sql = sqlIns.reader().readText()
+
+        val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
+        val dbFile = outDir.resolve("launcher_v4_import_${UUID.randomUUID()}.sqlite")
+        PlsSqliteManager.executeSql(dbFile, sql)
+
+        val importer = ParadoxLauncherDbImporter()
+        val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
+        val result = runBlocking { importer.execute(dbFile, modSet) }
+
+        assertEquals(3, result.total)
+        assertActualTotal(result.actualTotal)
+    }
+
+    private fun getResource(jsonPath: String): InputStream {
+        val ins = javaClass.getResourceAsStream(jsonPath)
+        requireNotNull(ins) { "Missing resource: $jsonPath" }
+        return ins
     }
 
     private fun assertActualTotal(actualTotal: Int) {

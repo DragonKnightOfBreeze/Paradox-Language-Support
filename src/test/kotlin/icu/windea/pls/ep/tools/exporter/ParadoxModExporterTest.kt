@@ -5,10 +5,12 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
+import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.PlsDataProvider
 import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.lang.util.PlsSqliteManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -26,7 +28,7 @@ import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import java.io.File
-import java.nio.charset.StandardCharsets
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -88,26 +90,34 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun exportLauncherDb_v2PositionsOnNewDb() {
+    fun exportLauncherJsonV3() {
+        val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
+        val outFile = outDir.resolve("playlist_v3_out.json")
+
+        val exporter = ParadoxLauncherJsonV3Exporter()
+        val modSet = buildModSetInfoFromWorkshop()
+        val result = runBlocking { exporter.execute(outFile, modSet) }
+        assertActualTotal(result.actualTotal)
+
+        // 验证 JSON 内容
+        val json = ObjectMappers.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
+        assertEquals(modSet.gameType.gameId, json.game)
+        assertTrue(json.mods.size == result.actualTotal)
+        assertTrue(json.mods.all { it.enabled })
+        // V3 position：从0开始
+        assertTrue(json.mods.all { it.position >= 0 })
+    }
+
+    @Test
+    fun exportLauncherDbV2_onNewDb() {
         // 用 V2 脚本初始化临时 DB
-        val sqlIns = javaClass.getResourceAsStream("/tools/sqlite_v2.sql")
-        requireNotNull(sqlIns) { "Missing resource: /tools/sqlite_v2.sql" }
-        val sql = sqlIns.reader(StandardCharsets.UTF_8).readText()
+        val sqlIns = getResource("/tools/sqlite_v2_new_db.sql")
+        val sql = sqlIns.reader().readText()
 
         val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
-        val dbFile = outDir.resolve("launcher_test_${UUID.randomUUID()}.sqlite")
+        val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
 
-        val conn = java.sql.DriverManager.getConnection("jdbc:sqlite:${dbFile.toAbsolutePath()}")
-        conn.autoCommit = false
-        conn.createStatement().use { st ->
-            sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }.forEach { stmt ->
-                val up = stmt.uppercase(Locale.ROOT)
-                if (up == "BEGIN" || up == "BEGIN TRANSACTION" || up == "COMMIT") return@forEach
-                st.execute(stmt)
-            }
-        }
-        conn.commit()
-        conn.close()
+        PlsSqliteManager.executeSql(dbFile, sql)
 
         val exporter = ParadoxLauncherDbExporter()
         val modSet = buildModSetInfoFromWorkshop()
@@ -115,12 +125,43 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
-        assertNotNull(playset)
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq false }
+        assertNotNull(playset) // 没有则创建，默认不激活
         val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
         assertTrue(mappings.isNotEmpty())
         // 新建 DB 没有 V4 迁移标记，应按 V2 写出，position 为 10 位数字字符串
         assertTrue(mappings.all { it.position != null && it.position!!.length == 10 && it.position!!.all(Char::isDigit) })
+    }
+
+    @Test
+    fun exportLauncherDbV4_onNewDb() {
+        // 用 V4 脚本初始化临时 DB
+        val sqlIns = getResource("/tools/sqlite_v4_new_db.sql")
+        val sql = sqlIns.reader().readText()
+
+        val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
+        val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
+
+        PlsSqliteManager.executeSql(dbFile, sql)
+
+        val exporter = ParadoxLauncherDbExporter()
+        val modSet = buildModSetInfoFromWorkshop()
+        val result = runBlocking { exporter.execute(dbFile, modSet) }
+        assertActualTotal(result.actualTotal)
+
+        val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq false }
+        assertNotNull(playset) // 没有则创建，默认不激活
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
+        assertTrue(mappings.isNotEmpty())
+
+        assertTrue(mappings.all { it.position?.toIntOrNull() != null })
+    }
+
+    private fun getResource(jsonPath: String): InputStream {
+        val ins = javaClass.getResourceAsStream(jsonPath)
+        requireNotNull(ins) { "Missing resource: $jsonPath" }
+        return ins
     }
 
     private fun assertActualTotal(actualTotal: Int) {

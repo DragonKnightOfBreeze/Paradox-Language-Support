@@ -4,9 +4,10 @@ import org.junit.Assume
 
 @Suppress("unused")
 object AssumePredicates {
-    fun includeAi() = assumeInclude("ai", "AI tests are not included")
     fun includeBenchmark() = assumeInclude("benchmark", "Benchmarks are not included")
     fun includeLocalEnv() = assumeInclude("local.env", "Local environment only tests are not included")
+    fun includeAi() = assumeInclude("ai", "AI tests are not included")
+    fun includeConfigGenerator() = assumeInclude("config.generator", "Config generator tests are not included")
 
     private fun includeAll() = System.getProperty("pls.test.include.all")
 

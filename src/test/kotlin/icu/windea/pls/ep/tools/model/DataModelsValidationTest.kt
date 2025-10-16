@@ -2,6 +2,7 @@ package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.lang.util.PlsSqliteManager
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -10,7 +11,7 @@ import org.ktorm.entity.find
 import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
-import java.nio.charset.StandardCharsets
+import java.io.InputStream
 import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.createDirectories
@@ -27,8 +28,7 @@ class DataModelsValidationTest {
 
     @Test
     fun parsePlaylistV2_fromResources() {
-        val ins = javaClass.getResourceAsStream("/tools/playlist_v2.json")
-        requireNotNull(ins) { "Missing resource: /tools/playlist_v2.json" }
+        val ins = getResource("/tools/playlist_v2.json")
         val model = ObjectMappers.jsonMapper.readValue(ins, LauncherJsonV2::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
@@ -42,8 +42,7 @@ class DataModelsValidationTest {
 
     @Test
     fun parsePlaylistV3_fromResources() {
-        val ins = javaClass.getResourceAsStream("/tools/playlist_v3.json")
-        requireNotNull(ins) { "Missing resource: /tools/playlist_v3.json" }
+        val ins = getResource("/tools/playlist_v3.json")
         val model = ObjectMappers.jsonMapper.readValue(ins, LauncherJsonV3::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
@@ -53,81 +52,16 @@ class DataModelsValidationTest {
     }
 
     @Test
-    fun sqliteV4_fromResources() {
-        // 将 SQL 脚本加载并在临时 DB 中执行
-        val sqlIns = javaClass.getResourceAsStream("/tools/sqlite_v4.sql")
-        requireNotNull(sqlIns) { "Missing resource: /tools/sqlite_v4.sql" }
-        val sql = sqlIns.reader(StandardCharsets.UTF_8).readText()
-
-        val tmpDir = Path.of("build", "tmp", "test-db").also { if (!it.exists()) it.createDirectories() }
-        val dbFile = tmpDir.resolve("launcher_v4_test_${UUID.randomUUID()}.sqlite")
-
-        val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        // 简单按 ';' 分割执行；自行管理事务，忽略脚本中的 BEGIN/COMMIT 语句
-        val stmts = sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }
-        db.useConnection { conn ->
-            conn.autoCommit = false
-            conn.createStatement().use { s ->
-                for (stmt in stmts) {
-                    val upper = stmt.uppercase(Locale.ROOT)
-                    if (upper == "BEGIN TRANSACTION" || upper == "BEGIN") continue
-                    if (upper == "COMMIT") continue
-                    s.execute(stmt)
-                }
-            }
-            conn.commit()
-            conn.autoCommit = true
-        }
-
-        // V4+ 判定
-        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
-        assert(isV4Plus)
-
-        // 读取一个激活的播放集
-        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
-        assert(playset != null)
-
-        // 读取映射与关联的模组，校验 position 与引用有效
-        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
-        assert(mappings.size == 3)
-
-        val mods = db.sequenceOf(Mods).toList()
-        assert(mods.size == 3)
-
-        // position 为整数（在表中为 INTEGER，但通过我们的映射可作为字符串读取并再解析）
-        mappings.forEachIndexed { idx, m ->
-            val mod = db.sequenceOf(Mods).firstOrNull { it.id eq m.modId }
-            assert(mod != null)
-            val p = m.position?.trim()
-            assert(!p.isNullOrEmpty() && p.all { it.isDigit() })
-        }
-    }
-
-    @Test
     fun sqliteV2_fromResources() {
         // 将 SQL 脚本加载并在临时 DB 中执行
-        val sqlIns = javaClass.getResourceAsStream("/tools/sqlite_v2.sql")
-        requireNotNull(sqlIns) { "Missing resource: /tools/sqlite_v2.sql" }
-        val sql = sqlIns.reader(StandardCharsets.UTF_8).readText()
+        val sqlIns = getResource("/tools/sqlite_v2.sql")
+        val sql = sqlIns.reader().readText()
 
         val tmpDir = Path.of("build", "tmp", "test-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = tmpDir.resolve("launcher_v2_test_${UUID.randomUUID()}.sqlite")
 
         val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
-        val stmts = sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }
-        db.useConnection { conn ->
-            conn.autoCommit = false
-            conn.createStatement().use { s ->
-                for (stmt in stmts) {
-                    val upper = stmt.uppercase(Locale.ROOT)
-                    if (upper == "BEGIN TRANSACTION" || upper == "BEGIN") continue
-                    if (upper == "COMMIT") continue
-                    s.execute(stmt)
-                }
-            }
-            conn.commit()
-            conn.autoCommit = true
-        }
+        PlsSqliteManager.executeSql(db, sql)
 
         // V4+ 判定应为 false
         val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
@@ -148,5 +82,47 @@ class DataModelsValidationTest {
             val p = m.position ?: ""
             assert(p.length == 10 && p.all { it.isDigit() || it in 'a'..'f' })
         }
+    }
+
+    @Test
+    fun sqliteV4_fromResources() {
+        // 将 SQL 脚本加载并在临时 DB 中执行
+        val sqlIns = getResource("/tools/sqlite_v4.sql")
+        val sql = sqlIns.reader().readText()
+
+        val tmpDir = Path.of("build", "tmp", "test-db").also { if (!it.exists()) it.createDirectories() }
+        val dbFile = tmpDir.resolve("launcher_v4_test_${UUID.randomUUID()}.sqlite")
+
+        val db = Database.connect("jdbc:sqlite:${dbFile.toAbsolutePath()}", driver = "org.sqlite.JDBC")
+        PlsSqliteManager.executeSql(db, sql)
+
+        // V4+ 判定
+        val isV4Plus = runCatching { db.sequenceOf(KnexMigrations).find { it.name eq Constants.sqlV4Id } != null }.getOrDefault(false)
+        assert(isV4Plus)
+
+        // 读取一个激活的播放集
+        val playset = db.sequenceOf(Playsets).firstOrNull { it.isActive eq true }
+        assert(playset != null)
+
+        // 读取映射与关联的模组，校验 position 与引用有效
+        val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq playset!!.id }.toList()
+        assert(mappings.size == 3)
+
+        val mods = db.sequenceOf(Mods).toList()
+        assert(mods.size == 3)
+
+        // position 为整数（在表中为 INTEGER，但通过我们的映射可作为字符串读取并再解析）
+        mappings.forEach { m ->
+            val mod = db.sequenceOf(Mods).firstOrNull { it.id eq m.modId }
+            assert(mod != null)
+            val p = m.position?.trim()
+            assert(!p.isNullOrEmpty() && p.all { it.isDigit() })
+        }
+    }
+
+    private fun getResource(jsonPath: String): InputStream {
+        val ins = javaClass.getResourceAsStream(jsonPath)
+        requireNotNull(ins) { "Missing resource: $jsonPath" }
+        return ins
     }
 }

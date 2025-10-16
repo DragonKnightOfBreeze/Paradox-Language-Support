@@ -13,8 +13,8 @@ class RunTigerTest {
 
     @Test
     fun runTiger() {
-        val wd = "D:\\Documents\\Projects\\_Tests\\vic3-tiger-windows-v1.8.0".toFile()
-        val command = "./vic3-tiger.exe --json 'D:/Documents/Projects/_Tests/gate-mod/mod' > result.json"
+        val wd = "D:\\Program Files\\vic3-tiger-windows-v1.8.0".toFile()
+        val command = "./vic3-tiger.exe --json 'D:/Documents/Projects/_Mods/gate-mod/mod' > result.json"
         val cost = measureTime {
             executeCommand(command, workDirectory = wd)
         }
