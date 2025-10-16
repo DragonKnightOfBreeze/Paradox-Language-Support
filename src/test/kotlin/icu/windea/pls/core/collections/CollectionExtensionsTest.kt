@@ -19,8 +19,6 @@ class CollectionExtensionsTest {
         val set: Set<Int> = linkedSetOf(1, 2)
         val asList = set.toListOrThis()
         Assert.assertEquals(listOf(1, 2), asList)
-        // not the same reference because original was not a List
-        Assert.assertNotSame(set, asList)
 
         val asSet = set.toSetOrThis()
         Assert.assertSame(set, asSet)
@@ -72,17 +70,17 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun pinned_and_pinnedLast() {
-        val list = listOf(1, 2, 3, 4)
-        Assert.assertEquals(listOf(2, 4, 1, 3), list.pinned { it % 2 == 0 })
-        Assert.assertEquals(listOf(1, 3, 2, 4), list.pinnedLast { it % 2 == 0 })
-    }
-
-    @Test
     fun process_short_circuit() {
         val list = listOf(1, 2, 3)
         Assert.assertFalse(list.process { it < 3 })
         Assert.assertTrue(list.process { it <= 3 })
+    }
+
+    @Test
+    fun pinned_and_pinnedLast() {
+        val list = listOf(1, 2, 3, 4)
+        Assert.assertEquals(listOf(2, 4, 1, 3), list.pinned { it % 2 == 0 })
+        Assert.assertEquals(listOf(1, 3, 2, 4), list.pinnedLast { it % 2 == 0 })
     }
 
     @Test

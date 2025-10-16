@@ -44,61 +44,12 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
     override fun getDefaultOutputName() = "modifier_categories.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
-        // 1) 解析日志：聚合所有出现过的类别
+        // 解析日志：聚合所有出现过的类别
         val categoriesFromLog = parseLogFile(inputPath, gameType)
-
-        // 2) 解析现有 CWT 配置（PSI）：已存在的类别
+        // 解析现有 CWT 配置（PSI）：已存在的类别
         val categoriesInConfig = parseConfigFile(outputPath)
-
-        // 3) 差异识别（不删除未知类别，仅提示）
-        val oldNames = categoriesInConfig.filter { it !in ignoredNames }.toSet()
-        val newNames = categoriesFromLog.filter { it !in ignoredNames }.toSet()
-        val missingNames = newNames - oldNames
-        val unknownNames = oldNames - newNames
-
-        // 4) 读取原文件文本，并在容器末尾插入缺失类别的空块（空行 + 注释 + 条目）
-        val file = outputPath.toFile()
-        val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-        var modifiedText = readAction { psiFile.text } // 不做删除，仅做插入
-        if (missingNames.isNotEmpty()) {
-            val insertBlock = buildString {
-                appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
-                for (name in missingNames.sorted()) {
-                    val key = name.quoteIfNecessary()
-                    appendLine("${key} = {")
-                    appendLine("${INDENT}# TODO choose supported scopes")
-                    appendLine("${INDENT}supported_scopes = {}")
-                    appendLine("}")
-                }
-            }.trimEnd()
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
-            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
-        }
-
-        // 5) 汇总
-        val summary = buildString {
-            if (missingNames.isNotEmpty()) appendLine("${missingNames.size} missing modifier categories.")
-            if (unknownNames.isNotEmpty()) appendLine("${unknownNames.size} unknown modifier categories.")
-            if (isEmpty()) appendLine("No missing or unknown modifier categories.")
-        }.trimEnd()
-        val details = buildString {
-            if (missingNames.isNotEmpty()) {
-                appendLine("Missing modifier categories:")
-                missingNames.sorted().forEach { appendLine("- $it") }
-            }
-            if (unknownNames.isNotEmpty()) {
-                appendLine("Unknown modifier categories:")
-                unknownNames.sorted().forEach { appendLine("- $it") }
-            }
-        }.trimEnd()
-        val fileText = modifiedText.trimEnd()  + "\n" // ensure ends with a line break
-
-        val hint = Hint(summary, details, fileText)
-        hint.putUserData(Keys.missingNames, missingNames)
-        hint.putUserData(Keys.unknownNames, unknownNames)
-        hint.putUserData(Keys.categoriesFromLog, categoriesFromLog)
-        return hint
+        // 差异识别（不删除未知类别，仅提示）
+        return generateHint(outputPath, categoriesFromLog, categoriesInConfig)
     }
 
     private suspend fun parseLogFile(inputPath: String, gameType: ParadoxGameType): Set<String> {
@@ -118,6 +69,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
 
     private suspend fun parseConfigFile(outputPath: String): Set<String> {
         val file = outputPath.toFile()
+        if (!file.exists()) return emptySet() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
@@ -128,6 +80,57 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
         }
     }
 
+    private suspend fun generateHint(outputPath: String, categoriesFromLog: Set<String>, categoriesInConfig: Set<String>): Hint {
+        val oldNames = categoriesInConfig.filter { it !in ignoredNames }.toSet()
+        val newNames = categoriesFromLog.filter { it !in ignoredNames }.toSet()
+        val missingNames = newNames - oldNames
+        val unknownNames = oldNames - newNames
+
+        // 读取原文件文本，并在容器末尾插入缺失类别的空块（空行 + 注释 + 条目）
+        val file = outputPath.toFile()
+        val text = withContext(Dispatchers.IO) { file.readText() }
+        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        var modifiedText = readAction { psiFile.text } // 不做删除，仅做插入
+        if (missingNames.isNotEmpty()) {
+            val insertBlock = buildString {
+                appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
+                for (name in missingNames.sorted()) {
+                    val key = name.quoteIfNecessary()
+                    appendLine("${key} = {")
+                    appendLine("# TODO choose supported scopes".prependIndent())
+                    appendLine("supported_scopes = {}".prependIndent())
+                    appendLine("}")
+                }
+            }.trimEnd()
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
+        }
+
+        // 汇总
+        val summary = buildString {
+            if (missingNames.isNotEmpty()) appendLine("${missingNames.size} missing modifier categories.")
+            if (unknownNames.isNotEmpty()) appendLine("${unknownNames.size} unknown modifier categories.")
+            if (isEmpty()) appendLine("No missing or unknown modifier categories.")
+        }.trimEnd()
+        val details = buildString {
+            if (missingNames.isNotEmpty()) {
+                appendLine("Missing modifier categories:")
+                missingNames.sorted().forEach { appendLine("- $it") }
+            }
+            if (unknownNames.isNotEmpty()) {
+                appendLine("Unknown modifier categories:")
+                unknownNames.sorted().forEach { appendLine("- $it") }
+            }
+        }.trimEnd()
+        val fileText = modifiedText.trimEnd() + "\n" // ensure ends with a line break
+
+        val hint = Hint(summary, details, fileText)
+        hint.putUserData(Keys.missingNames, missingNames)
+        hint.putUserData(Keys.unknownNames, unknownNames)
+        hint.putUserData(Keys.categoriesFromLog, categoriesFromLog)
+        return hint
+    }
+
     object Keys : KeyRegistry() {
         val missingNames by createKey<Set<String>>(Keys)
         val unknownNames by createKey<Set<String>>(Keys)
@@ -136,7 +139,7 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
 
     private companion object {
         private const val CONTAINER_MODIFIER_CATEGORIES = "modifier_categories"
-        private const val INDENT = "    "
+
         private const val TODO_MISSING_MODIFIER_CATEGORIES = "# TODO missing modifier categories"
     }
 }

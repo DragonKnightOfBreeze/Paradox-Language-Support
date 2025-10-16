@@ -27,7 +27,7 @@ class CwtModifierConfigGeneratorTest : CwtConfigGeneratorTest() {
         val generator = CwtModifierConfigGenerator(project)
         val gameType = ParadoxGameType.Ck3
         val inputPath = "cwt/cwtools-ck3-config/script-docs/modifiers.log"
-        val outputPath = "cwt/cwtools-ck3-config/config/modifiers.gen.cwt"
+        val outputPath = "cwt/cwtools-ck3-config/config/modifiers.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
 

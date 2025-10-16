@@ -37,13 +37,61 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
     override fun getDefaultOutputName() = "on_actions.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
-        // 1) 解析脚本目录，收集名称集合
+        // 解析脚本目录，收集名称集合
         val namesFromScripts = parseScriptFiles(inputPath, gameType)
-
-        // 2) 解析现有 CWT 配置（PSI）：静态名集合 + 模板正则列表
+        // 解析现有 CWT 配置（PSI）：静态名集合 + 模板正则列表
         val configInfo = parseConfigFile(outputPath, gameType)
+        // 差异：缺失（考虑模板匹配），未知（仅静态名）
+        return generateHint(outputPath, namesFromScripts, configInfo)
+    }
 
-        // 3) 差异：缺失（考虑模板匹配），未知（仅静态名）
+    private suspend fun parseScriptFiles(inputPath: String, gameType: ParadoxGameType): Set<String> {
+        val dir = CwtConfigGeneratorUtil.getPathInGameDirectory(inputPath, gameType)?.toFile()
+        if (dir == null) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} not exist")
+        if (!dir.isDirectory) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} is not a directory")
+        val files = dir.walk().filter { it.isFile && it.extension.equals("txt", true) }
+        val names = linkedSetOf<String>()
+        for (file in files) {
+            val text = withContext(Dispatchers.IO) { file.readText() }
+            val psiFile = readAction { ParadoxScriptElementFactory.createDummyFile(project, text) }
+            readAction { psiFile.properties().forEach { names += it.name } }
+        }
+        return names
+    }
+
+    private suspend fun parseConfigFile(outputPath: String, gameType: ParadoxGameType): OnActionConfigInfo {
+        val file = outputPath.toFile()
+        if (!file.exists()) return OnActionConfigInfo() // file not exist -> return empty
+        val text = withContext(Dispatchers.IO) { file.readText() }
+        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        return readAction {
+            val fileConfig = CwtFileConfig.resolve(psiFile, file.name, CwtConfigGroup(project, gameType))
+            val rootConfig = fileConfig.properties.find { it.key == CONTAINER_ON_ACTIONS }
+            val configs = rootConfig?.configs.orEmpty().mapNotNull { CwtExtendedOnActionConfig.resolve(it) }
+            parseConfigInfo(configs)
+        }
+    }
+
+    private fun parseConfigInfo(configs: List<CwtExtendedOnActionConfig>): OnActionConfigInfo {
+        val names = caseInsensitiveStringSet()
+        val templates = mutableSetOf<CwtTemplateExpression>()
+        configs.forEach {
+            val name = it.name
+            val templateExpression = CwtTemplateExpression.resolve(name)
+            when {
+                templateExpression.expressionString.isEmpty() -> names += name
+                else -> templates += templateExpression
+            }
+        }
+        // put xxx_<xxx>_xxx before xxx_<xxx>
+        // see icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider.process
+        val sortedTemplates = templates
+            .sortedByDescending { it.snippetExpressions.size }
+            .toSet()
+        return OnActionConfigInfo(names, sortedTemplates)
+    }
+
+    private suspend fun generateHint(outputPath: String, namesFromScripts: Set<String>, configInfo: OnActionConfigInfo): Hint {
         val addedNames = namesFromScripts
             .filter { name -> name !in configInfo.names }
             .filter { name -> configInfo.templates.none { CwtTemplateExpressionManager.toRegex(it).matches(name) } }
@@ -55,14 +103,14 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
             .filter { namesFromScripts.none { name -> CwtTemplateExpressionManager.toRegex(it).matches(name) } }
             .toSet()
 
-        // 4) 删除未知静态名并生成文本
+        // 删除未知静态名并生成文本
         val file = outputPath.toFile()
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_ON_ACTIONS) { toDelete(it, removedNames) } }
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
-        // 5) 在容器末尾插入缺失名（空行 + 注释 + 条目）
+        // 在容器末尾插入缺失名（空行 + 注释 + 条目）
         if (addedNames.isNotEmpty()) {
             val insertBlock = buildString {
                 appendLine(NOTE_REMOVED_ON_ACTIONS)
@@ -76,7 +124,7 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_ON_ACTIONS, insertBlock)
         }
 
-        // 6) 汇总
+        // 汇总
         val summary = buildString {
             if (addedNames.isNotEmpty()) appendLine("${addedNames.size} added on actions.")
             if (removedNames.isNotEmpty()) appendLine("${removedNames.size} removed on actions.")
@@ -107,58 +155,13 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
         return hint
     }
 
-    private suspend fun parseScriptFiles(inputPath: String, gameType: ParadoxGameType): Set<String> {
-        val dir = CwtConfigGeneratorUtil.getPathInGameDirectory(inputPath, gameType)?.toFile()
-        if (dir == null) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} not exist")
-        if (!dir.isDirectory) throw IllegalStateException("Path `${inputPath}` in game directory of ${gameType.title} is not a directory")
-        val files = dir.walk().filter { it.isFile && it.extension.equals("txt", true) }
-        val names = linkedSetOf<String>()
-        for (file in files) {
-            val text = withContext(Dispatchers.IO) { file.readText() }
-            val psiFile = readAction { ParadoxScriptElementFactory.createDummyFile(project, text) }
-            readAction { psiFile.properties().forEach { names += it.name } }
-        }
-        return names
-    }
-
-    private suspend fun parseConfigFile(outputPath: String, gameType: ParadoxGameType): OnActionConfigInfo {
-        val file = outputPath.toFile()
-        val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-        return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, file.name, CwtConfigGroup(project, gameType))
-            val rootConfig = fileConfig.properties.find { it.key == CONTAINER_ON_ACTIONS }
-            val configs = rootConfig?.configs.orEmpty().mapNotNull { CwtExtendedOnActionConfig.resolve(it) }
-            parseConfigInfo(configs)
-        }
-    }
-
-    private fun parseConfigInfo(configs: List<CwtExtendedOnActionConfig>): OnActionConfigInfo {
-        val names = caseInsensitiveStringSet()
-        val templates = mutableSetOf<CwtTemplateExpression>()
-        configs.forEach {
-            val name = it.name
-            val templateExpression = CwtTemplateExpression.resolve(name)
-            when {
-                templateExpression.expressionString.isEmpty() -> names += name
-                else -> templates += templateExpression
-            }
-        }
-        // put xxx_<xxx>_xxx before xxx_<xxx>
-        // see icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider.process
-        val sortedTemplates = templates
-            .sortedByDescending { it.snippetExpressions.size }
-            .toSet()
-        return OnActionConfigInfo(names, sortedTemplates)
-    }
-
     private fun toDelete(member: CwtMember, removedNames: Set<String>): Boolean {
         return member.name in removedNames
     }
 
     data class OnActionConfigInfo(
-        val names: Set<String>,
-        val templates: Set<CwtTemplateExpression>,
+        val names: Set<String> = emptySet(),
+        val templates: Set<CwtTemplateExpression> = emptySet(),
     )
 
     object Keys : KeyRegistry() {
@@ -171,6 +174,7 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
 
     private companion object {
         private const val CONTAINER_ON_ACTIONS = "on_actions"
+
         private const val NOTE_REMOVED_ON_ACTIONS = "# NOTE removed on actions are deleted"
         private const val TODO_ADDED_ON_ACTIONS = "# TODO added on actions"
     }

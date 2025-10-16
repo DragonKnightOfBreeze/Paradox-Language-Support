@@ -50,118 +50,23 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
     override fun getDefaultOutputName() = "localisation.cwt"
 
     override suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint {
-        // 1) 解析日志文件，汇总 promotions/commands -> scopes
+        // 解析日志文件，汇总 promotions/commands -> scopes
         val infos = parseLogFile(inputPath)
-        val (promotionScopesFromLog, commandScopesFromLog) = aggregateScopes(infos)
-
-        // 2) 解析现有 CWT 配置（PSI）以获取已存在的键集合
+        // 解析现有 CWT 配置（PSI）以获取已存在的键集合
         val configInfo = parseConfigFile(outputPath)
-
-        // 3) 计算差异
-        val oldPromotions = configInfo.promotions.filter { it !in ignoredPromotionNames }.toSet()
-        val newPromotions = promotionScopesFromLog.keys.filter { it !in ignoredPromotionNames }.toSet()
-        val oldCommands = configInfo.commands.filter { it !in ignoredCommandNames }.toSet()
-        val newCommands = commandScopesFromLog.keys.filter { it !in ignoredCommandNames }.toSet()
-        val missingPromotions = newPromotions - oldPromotions
-        val unknownPromotions = oldPromotions - newPromotions
-        val missingCommands = newCommands - oldCommands
-        val unknownCommands = oldCommands - newCommands
-
-        // 4) 基于 PSI 生成“删除未知项后”的文件文本
-        val file = outputPath.toFile()
-        val text = withContext(Dispatchers.IO) { file.readText() }
-        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
-        val elementsToDelete = readAction {
-            val list = mutableListOf<PsiElement>()
-            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_PROMOTIONS) { toDelete(it, unknownPromotions) }
-            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_COMMANDS) { toDelete(it, unknownCommands) }
-            list
-        }
-        var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
-
-        // 5) 将缺失项直接插入到现有容器末尾（空行 + 注释 + 条目）
-        if (missingPromotions.isNotEmpty()) {
-            val insertBlock = buildString {
-                appendLine(NOTE_UNKNOWN_PROMOTIONS)
-                appendLine()
-                appendLine(TODO_MISSING_PROMOTIONS)
-                for (name in missingPromotions.sorted()) {
-                    val scopes = promotionScopesFromLog[name].orEmpty()
-                    // 跳过 any（不需要生成项）
-                    if ("any" in scopes) continue
-                    val valueText = scopes.sorted().joinToString(" ", prefix = "{ ", postfix = " }").ifEmpty { "{}" }
-                    appendLine("${name} = ${valueText}")
-                }
-            }.trimEnd()
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
-            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlock)
-        }
-        if (missingCommands.isNotEmpty()) {
-            val insertBlock = buildString {
-                appendLine(NOTE_UNKNOWN_COMMANDS)
-                appendLine()
-                appendLine(TODO_MOSSING_COMMANDS)
-                for (name in missingCommands.sorted()) {
-                    val scopes = commandScopesFromLog[name].orEmpty()
-                    val valueText = when {
-                        scopes.isEmpty() -> "{}"
-                        "any" in scopes -> "{ any }"
-                        else -> scopes.sorted().joinToString(" ", prefix = "{ ", postfix = " }")
-                    }
-                    appendLine("${name} = ${valueText}")
-                }
-            }.trimEnd()
-            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
-            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlock)
-        }
-
-        // 6) 汇总摘要与详情
-        val summary = buildString {
-            if (missingPromotions.isNotEmpty()) appendLine("${missingPromotions.size} missing localisation promotions.")
-            if (unknownPromotions.isNotEmpty()) appendLine("${unknownPromotions.size} unknown localisation promotions.")
-            if (missingCommands.isNotEmpty()) appendLine("${missingCommands.size} missing localisation commands.")
-            if (unknownCommands.isNotEmpty()) appendLine("${unknownCommands.size} unknown localisation commands.")
-            if (isEmpty()) appendLine("No missing or unknown localisation promotions or commands.")
-        }.trimEnd()
-        val details = buildString {
-            if (missingPromotions.isNotEmpty()) {
-                appendLine("Missing localisation promotions:")
-                missingPromotions.sorted().forEach { appendLine("- ${it}") }
-            }
-            if (unknownPromotions.isNotEmpty()) {
-                appendLine("Unknown localisation promotions:")
-                unknownPromotions.sorted().forEach { appendLine("- ${it}") }
-            }
-            if (missingCommands.isNotEmpty()) {
-                appendLine("Missing localisation commands:")
-                missingCommands.sorted().forEach { appendLine("- ${it}") }
-            }
-            if (unknownCommands.isNotEmpty()) {
-                appendLine("Unknown localisation commands:")
-                unknownCommands.sorted().forEach { appendLine("- ${it}") }
-            }
-        }.trimEnd()
-        val fileText = modifiedText.trimEnd() + "\n" // ensure ends with a line break
-
-        val hint = Hint(summary, details, fileText)
-        hint.putUserData(Keys.missingPromotionNames, missingPromotions)
-        hint.putUserData(Keys.unknownPromotionNames, unknownPromotions)
-        hint.putUserData(Keys.missingCommandNames, missingCommands)
-        hint.putUserData(Keys.unknownCommandNames, unknownCommands)
-        hint.putUserData(Keys.promotionScopesFromLog, promotionScopesFromLog)
-        hint.putUserData(Keys.commandScopesFromLog, commandScopesFromLog)
-        return hint
+        // 计算差异
+        return generateHint(outputPath, infos, configInfo)
     }
 
     private suspend fun parseLogFile(inputPath: String): List<LocalisationInfo> {
-        val logFile = inputPath.toFile()
-        val allLines = withContext(Dispatchers.IO) { logFile.readLines() }
+        val file = inputPath.toFile()
+        val lines = withContext(Dispatchers.IO) { file.readLines() }
         val infos = mutableListOf<LocalisationInfo>()
         var position = Position.ScopeName
         var name = ""
         val promotions = mutableSetOf<String>()
         val properties = mutableSetOf<String>()
-        for (raw in allLines) {
+        for (raw in lines) {
             val line = raw.trim()
             if (line.startsWith("--") && line.endsWith("--")) {
                 if (name.isNotEmpty()) {
@@ -201,6 +106,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
 
     private suspend fun parseConfigFile(outputPath: String): LocalisationConfigInfo {
         val file = java.io.File(outputPath)
+        if (!file.exists()) return LocalisationConfigInfo() // file not exist -> return empty
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
@@ -219,6 +125,103 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
                 .orEmpty()
             LocalisationConfigInfo(promotionNames, commandNames)
         }
+    }
+
+    private suspend fun generateHint(outputPath: String, infos: List<LocalisationInfo>, configInfo: LocalisationConfigInfo): Hint {
+        val (promotionScopesFromLog, commandScopesFromLog) = aggregateScopes(infos)
+        val oldPromotions = configInfo.promotions.filter { it !in ignoredPromotionNames }.toSet()
+        val newPromotions = promotionScopesFromLog.keys.filter { it !in ignoredPromotionNames }.toSet()
+        val oldCommands = configInfo.commands.filter { it !in ignoredCommandNames }.toSet()
+        val newCommands = commandScopesFromLog.keys.filter { it !in ignoredCommandNames }.toSet()
+        val missingPromotions = newPromotions - oldPromotions
+        val unknownPromotions = oldPromotions - newPromotions
+        val missingCommands = newCommands - oldCommands
+        val unknownCommands = oldCommands - newCommands
+
+        // 基于 PSI 生成“删除未知项后”的文件文本
+        val file = outputPath.toFile()
+        val text = withContext(Dispatchers.IO) { file.readText() }
+        val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
+        val elementsToDelete = readAction {
+            val list = mutableListOf<PsiElement>()
+            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_PROMOTIONS) { toDelete(it, unknownPromotions) }
+            list += CwtConfigGeneratorUtil.getElementsToDelete(psiFile, CONTAINER_COMMANDS) { toDelete(it, unknownCommands) }
+            list
+        }
+        var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
+
+        // 将缺失项直接插入到现有容器末尾（空行 + 注释 + 条目）
+        if (missingPromotions.isNotEmpty()) {
+            val insertBlock = buildString {
+                appendLine(NOTE_UNKNOWN_PROMOTIONS)
+                appendLine()
+                appendLine(TODO_MISSING_PROMOTIONS)
+                for (name in missingPromotions.sorted()) {
+                    val scopes = promotionScopesFromLog[name].orEmpty()
+                    // 跳过 any（不需要生成项）
+                    if ("any" in scopes) continue
+                    val valueText = scopes.sorted().joinToString(" ", "{ ", " }").ifEmpty { "{}" }
+                    appendLine("${name} = ${valueText}")
+                }
+            }.trimEnd()
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlock)
+        }
+        if (missingCommands.isNotEmpty()) {
+            val insertBlock = buildString {
+                appendLine(NOTE_UNKNOWN_COMMANDS)
+                appendLine()
+                appendLine(TODO_MOSSING_COMMANDS)
+                for (name in missingCommands.sorted()) {
+                    val scopes = commandScopesFromLog[name].orEmpty()
+                    val valueText = when {
+                        scopes.isEmpty() -> "{}"
+                        "any" in scopes -> "{ any }"
+                        else -> scopes.sorted().joinToString(" ", "{ ", " }")
+                    }
+                    appendLine("${name} = ${valueText}")
+                }
+            }.trimEnd()
+            val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlock)
+        }
+
+        // 汇总摘要与详情
+        val summary = buildString {
+            if (missingPromotions.isNotEmpty()) appendLine("${missingPromotions.size} missing localisation promotions.")
+            if (unknownPromotions.isNotEmpty()) appendLine("${unknownPromotions.size} unknown localisation promotions.")
+            if (missingCommands.isNotEmpty()) appendLine("${missingCommands.size} missing localisation commands.")
+            if (unknownCommands.isNotEmpty()) appendLine("${unknownCommands.size} unknown localisation commands.")
+            if (isEmpty()) appendLine("No missing or unknown localisation promotions or commands.")
+        }.trimEnd()
+        val details = buildString {
+            if (missingPromotions.isNotEmpty()) {
+                appendLine("Missing localisation promotions:")
+                missingPromotions.sorted().forEach { appendLine("- ${it}") }
+            }
+            if (unknownPromotions.isNotEmpty()) {
+                appendLine("Unknown localisation promotions:")
+                unknownPromotions.sorted().forEach { appendLine("- ${it}") }
+            }
+            if (missingCommands.isNotEmpty()) {
+                appendLine("Missing localisation commands:")
+                missingCommands.sorted().forEach { appendLine("- ${it}") }
+            }
+            if (unknownCommands.isNotEmpty()) {
+                appendLine("Unknown localisation commands:")
+                unknownCommands.sorted().forEach { appendLine("- ${it}") }
+            }
+        }.trimEnd()
+        val fileText = modifiedText.trimEnd() + "\n" // ensure ends with a line break
+
+        val hint = Hint(summary, details, fileText)
+        hint.putUserData(Keys.missingPromotionNames, missingPromotions)
+        hint.putUserData(Keys.unknownPromotionNames, unknownPromotions)
+        hint.putUserData(Keys.missingCommandNames, missingCommands)
+        hint.putUserData(Keys.unknownCommandNames, unknownCommands)
+        hint.putUserData(Keys.promotionScopesFromLog, promotionScopesFromLog)
+        hint.putUserData(Keys.commandScopesFromLog, commandScopesFromLog)
+        return hint
     }
 
     private fun aggregateScopes(infos: List<LocalisationInfo>): Pair<Map<String, Set<String>>, Map<String, Set<String>>> {
@@ -251,8 +254,8 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
     )
 
     data class LocalisationConfigInfo(
-        val promotions: Set<String>,
-        val commands: Set<String>,
+        val promotions: Set<String> = emptySet(),
+        val commands: Set<String> = emptySet(),
     )
 
     object Keys : KeyRegistry() {

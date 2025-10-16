@@ -32,7 +32,7 @@ interface CwtConfigGenerator {
      *
      * @param gameType 指定的游戏类型。
      * @param inputPath 输入的日志文件的路径，或者输入的脚本文件所在目录的路径。
-     * @param outputPath 输出的规则文件的路径。
+     * @param outputPath 输出的规则文件的路径。可以不存在。
      */
     suspend fun generate(gameType: ParadoxGameType, inputPath: String, outputPath: String): Hint
 

@@ -84,9 +84,20 @@ inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R
     return result.cast()
 }
 
-/** 将满足 [predicate] 的元素“置顶”（保持相对顺序）。*/
+/** 逐个处理元素，若处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
+fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
+    for (e in this) {
+        val result = processor(e)
+        if (!result) return false
+    }
+    return true
+}
+
+/**
+ * 将满足指定条件（[predicate]）的元素置顶（保持相对顺序），返回处理后的新列表。
+ */
 inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
-    if (this is Collection && this.size <= 1) return this.toListOrThis()
+    if (this is Collection && this.size <= 1) return this.toList()
     if (this.none()) return emptyList()
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
@@ -100,9 +111,11 @@ inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
     return elementsToPin + result
 }
 
-/** 将满足 [predicate] 的元素“置底”（保持相对顺序）。*/
+/**
+ * 将满足指定条件（[predicate]）的元素置底（保持相对顺序），返回处理后的新列表。
+ */
 inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
-    if (this is Collection && this.size <= 1) return this.toListOrThis()
+    if (this is Collection && this.size <= 1) return this.toList()
     if (this.none()) return emptyList()
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
@@ -116,28 +129,27 @@ inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
     return result + elementsToPin
 }
 
-/** 逐个处理元素，若处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
-fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
-    for (e in this) {
-        val result = processor(e)
-        if (!result) return false
-    }
-    return true
-}
-
-/** 将满足 [predicate] 的元素作为分隔符，分块输入的集合。 */
-fun <T> Iterable<T>.chunkedBy(predicate: (T) -> Boolean): List<List<T>> {
+/**
+ * 将满足指定条件（[predicate]）的元素作为分隔符，分块输入的集合。
+ *
+ * @param keepEmpty 是否在输出中保留空的分块。
+ */
+fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -> Boolean): List<List<T>> {
     val result = mutableListOf<List<T>>()
     val list = mutableListOf<T>()
     for (e in this) {
         if (predicate(e)) {
-            result += list.toList()
-            list.clear()
+            if(keepEmpty || list.isNotEmpty()) {
+                result += list.toList()
+                list.clear()
+            }
         } else {
             list += e
         }
     }
-    result += list.toList()
+    if(keepEmpty || list.isNotEmpty()) {
+        result += list.toList()
+    }
     return result
 }
 

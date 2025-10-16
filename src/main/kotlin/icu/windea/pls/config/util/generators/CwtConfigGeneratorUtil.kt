@@ -5,15 +5,15 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.chunkedBy
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.formatted
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
@@ -40,17 +40,26 @@ object CwtConfigGeneratorUtil {
         return resultPath?.takeIf { it.exists() }
     }
 
-    fun parseName(line: String): String {
-        return line.substringBefore('-').trimEnd()
+    fun splitChunks(lines: List<String>, predicate: (String) -> Boolean): List<List<String>> {
+        return lines.map { it.trimEnd() }.chunkedBy(false, predicate)
+    }
+
+    fun parseName(line: String): String? {
+        return line.substringBefore('-', "").trim().takeIf { it.isNotEmpty() && it.isIdentifier() }
     }
 
     fun parseDescription(line: String): String {
-        return line.substringAfter('-').trimStart()
+        return line.substringAfter('-', "").trim()
     }
 
-    fun parseSupportedScopes(line: String): Set<String> {
-        val text = line.removePrefixOrNull("Supported Scopes:")?.trimStart()?.orNull() ?: return emptySet()
-        return text.splitByBlank().toSet()
+    fun parseValue(lines: List<String>, prefix: String): String? {
+        val line = lines.find { it.startsWith(prefix) } ?: return null
+        return line.drop(prefix.length).trim()
+    }
+
+    fun parseValues(lines: List<String>, prefix: String): Set<String> {
+        val line = lines.find { it.startsWith(prefix) } ?: return emptySet()
+        return line.drop(prefix.length).trim().toCommaDelimitedStringSet()
     }
 
     fun getScopesOptionText(supportedScopes: Set<String>): String {

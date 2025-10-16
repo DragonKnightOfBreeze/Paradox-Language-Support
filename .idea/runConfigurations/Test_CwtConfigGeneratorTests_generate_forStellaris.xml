@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Test.CwtConfigGeneratorTests.generate_forStellaris_v_latest" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Test.CwtConfigGeneratorTests.generate_forStellaris" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -12,7 +12,7 @@
         <list>
           <option value=":test" />
           <option value="--tests" />
-          <option value="&quot;icu.windea.pls.config.util.generators.Cwt*ConfigGeneratorTest.generate_forStellaris_v_latest&quot;" />
+          <option value="&quot;icu.windea.pls.config.util.generators.Cwt*ConfigGeneratorTest.generate_forStellaris&quot;" />
         </list>
       </option>
       <option name="vmOptions" value="-Dpls.test.include.all=true" />
