@@ -6,6 +6,7 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -58,6 +59,7 @@ import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxPath
+import kotlin.io.path.name
 
 object CwtConfigManager {
     object Keys : KeyRegistry() {
@@ -78,7 +80,7 @@ object CwtConfigManager {
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
         doGetContainingConfigGroupFromFileProviders(file, project)?.let { return it }
 
-        // 兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）
+        // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
         doGetContainingConfigGroupForRepo(file, project)?.let { return it }
 
         return null
@@ -93,17 +95,16 @@ object CwtConfigManager {
     }
 
     private fun doGetContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
-        val gameTypeId = doGetGameTypeIdFromRepoFile(file, project)
-        if (gameTypeId.isNullOrEmpty()) return null
-        val gameType = ParadoxGameType.get(gameTypeId, withCore = true) ?: return null
+        val gameType = getGameTypeFromRepoFile(file, project)
+        if (gameType == null) return null
         return PlsFacade.getConfigGroup(project, gameType)
     }
 
-    private fun doGetGameTypeIdFromRepoFile(file: VirtualFile, project: Project): String? {
+    fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {
         // 使用缓存以优化性能
         val parent = file.parent ?: return null
         val parentPsi = parent.toPsiDirectory(project) ?: return null
-        return parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
+        val gameTypeId = parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
             runCatching {
                 val command = "git remote -v"
                 val workDirectory = parent.toNioPath().toFile()
@@ -119,6 +120,8 @@ object CwtConfigManager {
                 gameTypeId
             }.getOrNull()
         }
+        if (gameTypeId.isNullOrEmpty()) return null
+        return ParadoxGameType.get(gameTypeId, withCore = true)
     }
 
     fun getBuiltInConfigRootDirectories(project: Project): List<VirtualFile> {
@@ -127,8 +130,23 @@ object CwtConfigManager {
             .mapNotNull { it.getRootDirectory(project) }
     }
 
-    fun getFilePath(element: PsiElement): String? {
-        val file = runReadAction { element.containingFile } ?: return null
+    fun isInternalFile(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return isInternalFile(vFile, file.project)
+    }
+
+    fun isInternalFile(file: VirtualFile, project: Project): Boolean {
+        val filePath = getFilePath(file, project)
+        if (filePath == null) {
+            // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
+            val gameType = getGameTypeFromRepoFile(file, project)
+            if (gameType == null) return false
+            return file.parent.toNioPathOrNull()?.any { it.name == "internal" } ?: false
+        }
+        return filePath.startsWith("internal/")
+    }
+
+    fun getFilePath(file: PsiFile): String? {
         val vFile = file.virtualFile ?: return null
         return getFilePath(vFile, file.project)
     }
@@ -208,8 +226,7 @@ object CwtConfigManager {
 
     private fun doGetConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
-        val filePath = getFilePath(file) ?: return null
-        if (filePath.startsWith("internal/")) return null // 排除内部规则文件
+        if (isInternalFile(file)) return null // 排除内部规则文件
         val configPath = getConfigPath(element)
         if (configPath == null || configPath.isEmpty()) return null
 
@@ -508,8 +525,7 @@ object CwtConfigManager {
     // }
 
     fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
-        val filePath = getFilePath(file) ?: return emptyList()
-        if (filePath.startsWith("internal/")) return emptyList() // 排除内部规则文件
+        if (isInternalFile(file)) return emptyList() // 排除内部规则文件
         val configPath = getConfigPath(containerElement)
         if (configPath == null) return emptyList()
 

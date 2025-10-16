@@ -76,9 +76,6 @@ val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String
 
 // region Core Accessors
 
-// val CwtConfigGroup.files: MutableMap<String, CwtFileConfig>
-//     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-
 val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>

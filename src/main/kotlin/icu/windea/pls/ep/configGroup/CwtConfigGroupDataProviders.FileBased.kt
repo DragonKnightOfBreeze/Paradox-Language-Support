@@ -103,7 +103,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             fileProviders.forEach f@{ fileProvider ->
                 currentCoroutineContext.ensureActive()
                 val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@f
-                fileProvidersAndRootDirectories.put(fileProvider, rootDirectory)
+                fileProvidersAndRootDirectories[fileProvider] = rootDirectory
             }
         }
 
@@ -119,7 +119,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         allInternalFiles.putIfAbsent(filePath, file)
                         return@p true
                     }
-                    allFiles.put(filePath, file)
+                    allFiles[filePath] = file
                     true
                 }
             }
@@ -154,7 +154,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
         val fileConfig = CwtFileConfig.resolve(psiFile, filePath, configGroup)
         processFile(fileConfig, configGroup)
-        // configGroup.files[filePath] = fileConfig // TODO 2.0.0-dev+ 目前并不需要缓存文件规则
     }
 
     private fun processInternalFile(filePath: String, fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
