@@ -8,7 +8,6 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.chunkedBy
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.formatted
-import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
@@ -20,6 +19,8 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 
 object CwtConfigGeneratorUtil {
+    private val splitValuesRegex = """[\s,]+""".toRegex()
+
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val absPath = path.toPathOrNull()?.takeIf { it.isAbsolute }
         if (absPath != null) return absPath
@@ -59,7 +60,7 @@ object CwtConfigGeneratorUtil {
 
     fun parseValues(lines: List<String>, prefix: String): Set<String> {
         val line = lines.find { it.startsWith(prefix) } ?: return emptySet()
-        return line.drop(prefix.length).trim().toCommaDelimitedStringSet()
+        return line.drop(prefix.length).trim().split(splitValuesRegex).toSet() // 按逗号或空白分割
     }
 
     fun getScopesOptionText(supportedScopes: Set<String>): String {
@@ -95,7 +96,7 @@ object CwtConfigGeneratorUtil {
         val result = mutableListOf<PsiElement>()
         membersToDelete.forEach { p ->
             result += p
-            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtProperty }.forEach { e -> result += e }
+            p.siblings(forward = false, withSelf = false).takeWhile { e -> e !is CwtMember }.forEach { e -> result += e }
         }
         return result
     }
@@ -114,13 +115,13 @@ object CwtConfigGeneratorUtil {
     // }
 
     private suspend fun getFileTextWithRangeDelete(file: CwtFile, elementsToDelete: List<PsiElement>): String {
-        val text = readAction { file.text.trimEnd() }
+        val text = readAction { file.text }
         if (elementsToDelete.isEmpty()) return text
         val textRangesToDelete = readAction { elementsToDelete.map { it.textRange } }
         val finalText = textRangesToDelete
             .sortedByDescending { it.startOffset }
             .fold(text) { a, b -> b.replace(a, "") }
-        return finalText
+        return finalText.trimEnd()
     }
 
     suspend fun insertIntoContainer(

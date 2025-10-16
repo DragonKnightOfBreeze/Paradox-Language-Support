@@ -9,7 +9,6 @@ import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNecessary
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.toFile
@@ -76,10 +75,10 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                 // Use areas: character, province, and county
                 val chunks = CwtConfigGeneratorUtil.splitChunks(definitionLines) { it.isEmpty() }
                 chunks.mapNotNull f@{ chunkLines ->
-                    val name = chunkLines.firstOrNull()?.removePrefixOrNull("Tag:")
-                        ?.trim()?.takeIf { it.isNotEmpty() && it.isIdentifier() }?.lowercase() ?: return@f null
-                    val categories = chunkLines.firstNotNullOfOrNull { line -> line.removePrefixOrNull("Use areas:") }
-                        ?.trim()?.toCommaDelimitedStringSet().orEmpty()
+                    val name = CwtConfigGeneratorUtil.parseValue(chunkLines, "Tag:")
+                        ?.takeIf { it.isNotEmpty() && it.isIdentifier() }?.lowercase() ?: return@f null
+                    val categories = CwtConfigGeneratorUtil.parseValue(chunkLines, "Use areas:")
+                        ?.toCommaDelimitedStringSet().orEmpty()
                     ModifierInfo(name, categories)
                 }
             }

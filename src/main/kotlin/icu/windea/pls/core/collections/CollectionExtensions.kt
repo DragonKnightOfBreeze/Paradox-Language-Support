@@ -98,7 +98,6 @@ fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
  */
 inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
     if (this is Collection && this.size <= 1) return this.toList()
-    if (this.none()) return emptyList()
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
     for (e in this) {
@@ -116,7 +115,6 @@ inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
  */
 inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
     if (this is Collection && this.size <= 1) return this.toList()
-    if (this.none()) return emptyList()
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
     for (e in this) {
