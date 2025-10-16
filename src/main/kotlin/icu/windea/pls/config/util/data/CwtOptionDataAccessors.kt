@@ -63,9 +63,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     /**
      * API 状态。
      *
-     * 部分规则（尤其是可从日志文件生成的规则）需要特殊处理，用这个来标记。
+     * 部分规则（尤其是可从日志文件生成的规则）需要特殊处理，例如跳过解析，用这个来标记。
      *
-     * 适用对象：目前仅限单别名规则（[CwtSingleAliasConfig]）和别名规则（[CwtAliasConfig]）。
+     * 适用对象：需要特殊处理的规则（目前支持 [CwtSingleAliasConfig] 和 [CwtAliasConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      *
@@ -277,10 +277,10 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     /**
      * 上下文键（context key）。
      *
-     * 指定参数或内联脚本的“所属上下文”，常见形式：`definitionType@definitionName` 或 `inline_script@path`。
+     * 指定参数的上下文，常见形式：`definitionType@definitionName` 或 `inline_script@path`。
      * PLS 也支持模板/正则等灵活匹配（详见 [config.md](https://windea.icu/Paradox-Language-Support/config.md)）。
      *
-     * 适用对象：部分扩展规则。
+     * 适用对象：参数的扩展规则（[CwtExtendedParameterConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      */
@@ -294,14 +294,11 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      * 指定 `x = {...}` 根下的“上下文配置”是单个（`single`）还是多个（`multiple`）。
      * 未指定时默认 `single`。
      *
-     * 适用对象：部分可指定规则上下文的扩展规则（如 [CwtExtendedInlineScriptConfig]）。
+     * 适用对象：可指定规则上下文的扩展规则（[CwtExtendedInlineScriptConfig] 和 [CwtExtendedParameterConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。见 `inline_scripts`、`parameters` 章节。
      *
      * 示例：`## context_configs_type = multiple`
-     *
-     * @see CwtExtendedInlineScriptConfig
-     * @see CwtExtendedParameterConfig
      */
     val contextConfigsType: CwtOptionDataAccessor<String> by create {
         findOption("context_configs_type")?.stringValue ?: "single"
