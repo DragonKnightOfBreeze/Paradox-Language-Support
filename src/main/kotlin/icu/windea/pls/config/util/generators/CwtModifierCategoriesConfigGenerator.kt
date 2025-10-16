@@ -92,8 +92,9 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
                 unknownNames.sorted().forEach { appendLine("- $it") }
             }
         }.trimEnd()
+        val fileText = modifiedText.trimEnd()  + "\n" // ensure ends with a line break
 
-        val hint = Hint(summary, details, modifiedText.trimEnd())
+        val hint = Hint(summary, details, fileText)
         hint.putUserData(Keys.missingNames, missingNames)
         hint.putUserData(Keys.unknownNames, unknownNames)
         hint.putUserData(Keys.categoriesFromLog, categoriesFromLog)

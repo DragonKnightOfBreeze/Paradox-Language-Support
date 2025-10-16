@@ -13,15 +13,12 @@ class CwtOnActionConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun setup() = AssumePredicates.includeLocalEnv()
 
     @Test
-    fun generate_forStellaris_v_latest() {
-        generate_forStellaris(latestStellarisVersion)
-    }
-
-    @Suppress("SameParameterValue")
-    private fun generate_forStellaris(version: String) {
+    fun generate_forStellaris() {
+        val version = latestStellarisVersion
         val generator = CwtOnActionConfigGenerator(project)
+        val gameType = ParadoxGameType.Stellaris
         val inputPath = "common/on_actions"
         val outputPath = "cwt/cwtools-stellaris-config/config/on_actions.cwt"
-        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
+        generate(generator, gameType, inputPath, outputPath, "${gameType.id}_$version")
     }
 }

@@ -141,7 +141,7 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
                 unknownCommands.sorted().forEach { appendLine("- ${it}") }
             }
         }.trimEnd()
-        val fileText = modifiedText.trimEnd()
+        val fileText = modifiedText.trimEnd() + "\n" // ensure ends with a line break
 
         val hint = Hint(summary, details, fileText)
         hint.putUserData(Keys.missingPromotionNames, missingPromotions)

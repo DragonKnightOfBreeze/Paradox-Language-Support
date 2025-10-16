@@ -10,7 +10,13 @@ import kotlin.io.path.writeText
 abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
     val latestStellarisVersion = "v4.1"
 
-    protected fun execute(generator: CwtConfigGenerator, gameType: ParadoxGameType, inputPath: String, outputPath: String, version: String) {
+    protected fun generate(
+        generator: CwtConfigGenerator,
+        gameType: ParadoxGameType,
+        inputPath: String,
+        outputPath: String,
+        generatedFileDirectory: String = gameType.id,
+    ) {
         val title = generator.javaClass.name
         val hint = runWithModalProgressBlocking(project, title) {
             generator.generate(gameType, inputPath, outputPath)
@@ -20,9 +26,9 @@ abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
         println(hint.details)
 
         val fileName = outputPath.substringAfterLast('/')
-        val path = Path.of("build", "generated", "config", gameType.id + "_" + version, fileName)
+        val path = Path.of("build", "generated", "config", generatedFileDirectory, fileName)
         path.createParentDirectories()
-        path.writeText(hint.fileText + "\n") // 在文件末尾添加一个换行符
+        path.writeText(hint.fileText)
         println()
         println("Generated file at: ${path}")
     }

@@ -13,15 +13,12 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun setup() = AssumePredicates.includeLocalEnv()
 
     @Test
-    fun generate_forStellaris_v_latest() {
-        generate_forStellaris(latestStellarisVersion)
-    }
-
-    @Suppress("SameParameterValue")
-    private fun generate_forStellaris(version: String) {
+    fun generate_forStellaris() {
+        val version = latestStellarisVersion
         val generator = CwtEffectConfigGenerator(project)
+        val gameType = ParadoxGameType.Stellaris
         val inputPath = "cwt/cwtools-stellaris-config/script-docs/$version/effects.log"
         val outputPath = "cwt/cwtools-stellaris-config/config/effects.cwt"
-        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
+        generate(generator, gameType, inputPath, outputPath, "${gameType.id}_$version")
     }
 }

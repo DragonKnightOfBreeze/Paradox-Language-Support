@@ -144,7 +144,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
                     info.declaration.lines().forEach { appendLine("# $it") }
                 }
             }
-        }.trimEnd()
+        }.trimEnd() + "\n" // ensure ends with a line break
 
         val hint = Hint(summary, details, fileText)
         hint.putUserData(Keys.missingNames, missingNames)

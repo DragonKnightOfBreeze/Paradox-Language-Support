@@ -13,15 +13,12 @@ class CwtLocalisationConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun setup() = AssumePredicates.includeLocalEnv()
 
     @Test
-    fun generate_forStellaris_v_latest() {
-        generate_forStellaris(latestStellarisVersion)
-    }
-
-    @Suppress("SameParameterValue")
-    private fun generate_forStellaris(version: String) {
+    fun generate_forStellaris() {
+        val version = latestStellarisVersion
         val generator = CwtLocalisationConfigGenerator(project)
+        val gameType = ParadoxGameType.Stellaris
         val inputPath = "cwt/cwtools-stellaris-config/script-docs/$version/localizations.log"
         val outputPath = "cwt/cwtools-stellaris-config/config/localisation.cwt"
-        execute(generator, ParadoxGameType.Stellaris, inputPath, outputPath, version)
+        generate(generator, gameType, inputPath, outputPath, "${gameType.id}_$version")
     }
 }
