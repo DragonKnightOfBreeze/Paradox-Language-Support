@@ -1,5 +1,6 @@
 package icu.windea.pls.config.util.data
 
+import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -10,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
@@ -56,6 +58,21 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      */
     val flags: CwtOptionDataAccessor<CwtOptionFlags> by create {
         CwtOptionFlags.from(this)
+    }
+
+    /**
+     * API 状态。
+     *
+     * 部分规则（尤其是可从日志文件生成的规则）需要特殊处理，用这个来标记。
+     *
+     * 适用对象：目前仅限单别名规则（[CwtSingleAliasConfig]）和别名规则（[CwtAliasConfig]）。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     *
+     * 示例：`## api_status = obsolete`
+     */
+    val apiStatus: CwtOptionDataAccessor<CwtApiStatus?> by create {
+        findOption("api_status")?.stringValue?.let { CwtApiStatus.get(it) }
     }
 
     /**
@@ -215,9 +232,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     /**
      * 类型标识。
      *
-     * 用于在扩展的定义规则中声明定义的类型。
+     * 用于在定义的扩展规则中声明定义的类型。
      *
-     * 适用对象：扩展的定义规则（[CwtExtendedDefinitionConfig]）。
+     * 适用对象：定义的扩展规则（[CwtExtendedDefinitionConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。
      *
@@ -245,9 +262,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     /**
      * 事件类型。
      *
-     * 用于在扩展的 on_action 规则中指示事件类型（如 `country`、`system`）。
+     * 用于在 on action 的扩展规则中指示事件类型（如 `country`、`system`）。
      *
-     * 适用对象：扩展的 on_action 规则（[CwtExtendedOnActionConfig]）。
+     * 适用对象：on action 的扩展规则（[CwtExtendedOnActionConfig]）。
      *
      * CWTools 兼容性：PLS 扩展。用于 on_action 相关的解析与显示。
      *

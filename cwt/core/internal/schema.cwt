@@ -230,8 +230,10 @@ dynamic_values = {
     }
 }
 
+## api_status = $enum:api_status$
 single_alias[$single_alias$] = $declaration
 
+## api_status = $enum:api_status$
 alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 inline[$inline$] = $declaration
@@ -307,3 +309,4 @@ $enum:priority$ = { fios lios ordered }
 $enum:severity$ = { error warning info hint }
 $enum:link_type$ = { scope value both }
 $enum:context_configs_type$ = { single multiple }
+$enum:api_status$ = { obsolete removed kept }

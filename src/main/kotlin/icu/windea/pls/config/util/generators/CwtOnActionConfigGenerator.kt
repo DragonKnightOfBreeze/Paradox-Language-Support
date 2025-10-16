@@ -116,7 +116,7 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
                 appendLine(NOTE_REMOVED_ON_ACTIONS)
                 appendLine()
                 appendLine(TODO_ADDED_ON_ACTIONS)
-                for (name in addedNames.sorted()) {
+                for (name in addedNames) {
                     appendLine(name)
                 }
             }.trimEnd()
@@ -133,11 +133,11 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
         val details = buildString {
             if (addedNames.isNotEmpty()) {
                 appendLine("Added on actions:")
-                addedNames.sorted().forEach { appendLine("- $it") }
+                addedNames.forEach { appendLine("- $it") }
             }
             if (removedNames.isNotEmpty()) {
                 appendLine("Removed on actions:")
-                removedNames.sorted().forEach { appendLine("- $it") }
+                removedNames.forEach { appendLine("- $it") }
             }
             if (unmatchedTemplates.isNotEmpty()) {
                 appendLine("Unmatched templates:")

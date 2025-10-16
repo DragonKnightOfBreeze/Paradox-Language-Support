@@ -2,7 +2,9 @@ package icu.windea.pls.ep.configGroup
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -35,6 +37,7 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.value
@@ -367,10 +370,12 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 else -> {
                     run {
                         val singleAliasConfig = CwtSingleAliasConfig.resolve(property) ?: return@run
+                        if (isRemovedConfig(singleAliasConfig)) return@run
                         configGroup.singleAliases[singleAliasConfig.name] = singleAliasConfig
                     }
                     run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
+                        if (isRemovedConfig(aliasConfig)) return@run
                         CwtConfigCollector.processConfigWithConfigExpression(aliasConfig, aliasConfig.configExpression)
                         configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
@@ -385,5 +390,10 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
+    }
+
+    private fun isRemovedConfig(config: CwtConfig<*>): Boolean {
+        if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
+        return config.config.optionData { apiStatus } == CwtApiStatus.Removed
     }
 }

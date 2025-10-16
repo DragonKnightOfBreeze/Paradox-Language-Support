@@ -8,7 +8,7 @@ import java.nio.file.Path
 import kotlin.io.path.writeText
 
 abstract class CwtConfigGeneratorTest : BasePlatformTestCase() {
-    val latestStellarisVersion = "v4.1"
+    val latestStellarisVersion = "v4.1.5"
 
     protected fun generate(
         generator: CwtConfigGenerator,

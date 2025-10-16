@@ -167,7 +167,6 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                     val categories = filteredInfos[name]?.categories.orEmpty().sorted()
                     val valueText = when {
                         categories.isEmpty() -> "{}"
-                        categories.size == 1 -> categories.first().quoteIfNecessary()
                         else -> categories.joinToString(" ", "{ ", " }") { it.quoteIfNecessary() }
                     }
                     appendLine("${name} = ${valueText}")

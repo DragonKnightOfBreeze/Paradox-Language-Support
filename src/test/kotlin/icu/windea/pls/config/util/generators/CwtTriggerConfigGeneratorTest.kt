@@ -35,8 +35,8 @@ class CwtTriggerConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun generate_forIr() {
         val generator = CwtTriggerConfigGenerator(project)
         val gameType = ParadoxGameType.Ir
-        val inputPath = "cwt/cwtools-ir-config/script-docs/triggers.log"
-        val outputPath = "cwt/cwtools-ir-config/config/triggers.cwt"
+        val inputPath = "cwt/cwtools-ir-config/triggers.log"
+        val outputPath = "cwt/cwtools-ir-config/triggers.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
 

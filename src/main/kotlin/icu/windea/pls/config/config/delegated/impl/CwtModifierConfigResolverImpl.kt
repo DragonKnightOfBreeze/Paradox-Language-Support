@@ -38,14 +38,13 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver {
 
     private fun doResolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? {
         // string | string[]
-        val modifierName = name.replace("$", "<$typeExpression>").intern()
-        val categories = config.stringValue?.let { setOf(it) }
-            ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
+        val categories = config.stringValue?.let { setOf(it) } ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }?.optimized()
         if (categories == null) {
             logger.debug { "Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config) }
             return null
         }
-        logger.debug { "Resolved modifier config from definition modifier (name: $name).".withLocationPrefix(config) }
+        val modifierName = name.replace("$", "<$typeExpression>").intern()
+        logger.debug { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression).".withLocationPrefix(config) }
         return CwtModifierConfigImpl(config, modifierName, categories)
     }
 }

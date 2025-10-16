@@ -35,8 +35,8 @@ class CwtEffectConfigGeneratorTest : CwtConfigGeneratorTest() {
     fun generate_forIr() {
         val generator = CwtEffectConfigGenerator(project)
         val gameType = ParadoxGameType.Ir
-        val inputPath = "cwt/cwtools-ir-config/script-docs/effects.log"
-        val outputPath = "cwt/cwtools-ir-config/config/effects.cwt"
+        val inputPath = "cwt/cwtools-ir-config/effects.log"
+        val outputPath = "cwt/cwtools-ir-config/effects.cwt"
         generate(generator, gameType, inputPath, outputPath)
     }
 

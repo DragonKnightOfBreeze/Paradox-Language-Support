@@ -2,8 +2,10 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
@@ -37,7 +39,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
     }
 
     private fun configureDefaults() {
-        ignoredNames += setOf("and", "or", "not", "nand", "nor", "hidden_trigger")
+        ignoredNames += setOf("and", "or", "not", "nand", "nor", "hidden_trigger", "text")
     }
 
     override fun getName() = "TriggerConfigGenerator"
@@ -92,12 +94,14 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
-        return TriggerConfigInfo(name, description, supportedScopes)
+        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData { apiStatus } }
+        return TriggerConfigInfo(name, description, supportedScopes, apiStatus)
     }
 
     private suspend fun generateHint(outputPath: String, infos: Map<String, TriggerInfo>, configInfos: Map<String, TriggerConfigInfo>): Hint {
-        val oldNames = configInfos.keys.filter { it !in ignoredNames }.toSet()
-        val newNames = infos.keys.filter { it !in ignoredNames }.toSet()
+        val keptNames = configInfos.filterValues { it.apiStatus == CwtApiStatus.Kept }.keys
+        val oldNames = configInfos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
+        val newNames = infos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
         val missingNames = newNames - oldNames
         val unknownNames = oldNames - newNames
 
@@ -172,6 +176,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val name: String,
         val description: String,
         val supportedScopes: Set<String>,
+        val apiStatus: CwtApiStatus?,
     )
 
     object Keys : KeyRegistry() {

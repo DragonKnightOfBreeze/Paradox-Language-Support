@@ -116,7 +116,7 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
                 appendLine(NOTE_REMOVED_GAME_RULES)
                 appendLine()
                 appendLine(TODO_ADDED_GAME_RULES)
-                for (name in addedNames.sorted()) {
+                for (name in addedNames) {
                     appendLine(name)
                 }
             }.trimEnd()
@@ -133,11 +133,11 @@ class CwtGameRuleConfigGenerator(override val project: Project) : CwtConfigGener
         val details = buildString {
             if (addedNames.isNotEmpty()) {
                 appendLine("Added game rules:")
-                addedNames.sorted().forEach { appendLine("- $it") }
+                addedNames.forEach { appendLine("- $it") }
             }
             if (removedNames.isNotEmpty()) {
                 appendLine("Removed game rules:")
-                removedNames.sorted().forEach { appendLine("- $it") }
+                removedNames.forEach { appendLine("- $it") }
             }
             if (unmatchedTemplates.isNotEmpty()) {
                 appendLine("Unmatched templates:")

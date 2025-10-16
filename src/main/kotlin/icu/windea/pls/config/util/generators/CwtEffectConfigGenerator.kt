@@ -2,8 +2,10 @@ package icu.windea.pls.config.util.generators
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
@@ -30,7 +32,6 @@ import kotlinx.coroutines.withContext
  * @see CwtAliasConfig
  */
 class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerator {
-
     val ignoredNames = caseInsensitiveStringSet()
 
     init {
@@ -38,7 +39,7 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
     }
 
     private fun configureDefaults() {
-        // nothing
+        ignoredNames += setOf("if", "else_if", "else", "switch", "inverted_switch", "while", "hidden_effect", "tooltip")
     }
 
     override fun getName() = "EffectConfigGenerator"
@@ -93,12 +94,14 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
         val name = configs.first().subName
         val description = configs.firstNotNullOfOrNull { it.config.documentation }.orEmpty()
         val supportedScopes = configs.first().supportedScopes
-        return EffectConfigInfo(name, description, supportedScopes)
+        val apiStatus = configs.firstNotNullOfOrNull { it.config.optionData { apiStatus } }
+        return EffectConfigInfo(name, description, supportedScopes, apiStatus)
     }
 
     private suspend fun generateHint(outputPath: String, infos: Map<String, EffectInfo>, configInfos: Map<String, EffectConfigInfo>): Hint {
-        val oldNames = configInfos.keys.filter { it !in ignoredNames }.toSet()
-        val newNames = infos.keys.filter { it !in ignoredNames }.toSet()
+        val keptNames = configInfos.filterValues { it.apiStatus == CwtApiStatus.Kept }.keys
+        val oldNames = configInfos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
+        val newNames = infos.keys.filter { it !in ignoredNames && it !in keptNames }.toSet()
         val missingNames = newNames - oldNames
         val unknownNames = oldNames - newNames
 
@@ -173,6 +176,7 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
         val name: String,
         val description: String,
         val supportedScopes: Set<String>,
+        val apiStatus: CwtApiStatus?,
     )
 
     object Keys : KeyRegistry() {
