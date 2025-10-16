@@ -56,9 +56,9 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
         parentConfig: CwtMemberConfig<*>?,
     ): CwtValueConfig {
         return if (configs != null) {
-            CwtValueConfigDelegate1(targetConfig, configs).apply { targetConfig.parentConfig = parentConfig }
+            CwtValueConfigDelegate1(targetConfig, configs).also { it.parentConfig = parentConfig }
         } else {
-            CwtValueConfigDelegate2(targetConfig).apply { targetConfig.parentConfig = parentConfig }
+            CwtValueConfigDelegate2(targetConfig).also { it.parentConfig = parentConfig }
         }
     }
 
