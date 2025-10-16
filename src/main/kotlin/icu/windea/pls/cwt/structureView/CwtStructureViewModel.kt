@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.cwt.navigation.CwtNavigationManager
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.lang.util.PlsPsiManager
 
 class CwtStructureViewModel(
     editor: Editor?,

@@ -9,7 +9,7 @@ import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.lang.util.PlsPsiManager
 import icu.windea.pls.model.*
 
 class ParadoxCsvFile(

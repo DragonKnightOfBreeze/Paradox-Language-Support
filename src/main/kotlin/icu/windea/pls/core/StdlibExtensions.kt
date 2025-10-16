@@ -324,7 +324,7 @@ fun String.quote(quote: Char = '"'): String {
     }
 }
 
-/** 去除包裹引号，并对内部已转义的引号进行反转义。*/
+/** 去除文本首尾的引号，并对内部已转义的引号进行反转义。*/
 fun String.unquote(quote: Char = '"'): String {
     val s = this
     if (s.isEmpty() || s == quote.toString()) return ""

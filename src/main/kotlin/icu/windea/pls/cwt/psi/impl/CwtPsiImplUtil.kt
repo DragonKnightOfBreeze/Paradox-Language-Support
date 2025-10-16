@@ -16,7 +16,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.lang.util.PlsPsiManager
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import javax.swing.*

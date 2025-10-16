@@ -15,7 +15,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.findKeywordsWithRanges
+import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -142,9 +142,9 @@ object CwtConfigSymbolManager {
         val keywords = mutableSetOf<String>()
         keywords += expression.type
         keywords += expression.subtypes
-        val tuples = text.findKeywordsWithRanges(keywords)
+        val tuples = text.findKeywordsWithTextRanges(keywords)
         if (tuples.isEmpty()) return
-        tuples.mapTo(infos) { (rangeInElement, keyword) ->
+        tuples.mapTo(infos) { (keyword, rangeInElement) ->
             val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
             val nextOffset = offset + prefix.length + rangeInElement.startOffset
             CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
@@ -160,9 +160,9 @@ object CwtConfigSymbolManager {
         val keywords = mutableSetOf<String>()
         keywords += expression.type
         keywords += expression.subtypes
-        val tuples = text.findKeywordsWithRanges(keywords)
+        val tuples = text.findKeywordsWithTextRanges(keywords)
         if (tuples.isEmpty()) return
-        tuples.mapTo(infos) { (rangeInElement, keyword) ->
+        tuples.mapTo(infos) { (keyword, rangeInElement) ->
             val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
             val nextOffset = offset + prefix.length + rangeInElement.startOffset
             CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)

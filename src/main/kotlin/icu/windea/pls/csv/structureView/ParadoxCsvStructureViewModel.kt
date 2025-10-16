@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.csv.navigation.ParadoxCsvNavigationManager
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.lang.util.PlsPsiManager
 
 class ParadoxCsvStructureViewModel(
     editor: Editor?,

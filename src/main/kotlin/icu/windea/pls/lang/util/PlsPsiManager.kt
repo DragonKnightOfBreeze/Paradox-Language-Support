@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.psi
+package icu.windea.pls.lang.util
 
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.NavigatablePsiElement

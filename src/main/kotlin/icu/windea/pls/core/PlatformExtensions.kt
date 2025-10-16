@@ -24,7 +24,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -61,7 +60,6 @@ import com.intellij.psi.util.isAncestor
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ArrayUtil
-import com.intellij.util.DocumentUtil
 import com.intellij.util.Processor
 import com.intellij.util.Query
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -69,6 +67,7 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.tupleOf
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
@@ -154,48 +153,6 @@ inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
-fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
-    val leftQuoted = text.isLeftQuoted(quote)
-    val rightQuoted = text.isRightQuoted(quote)
-    val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
-    val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
-    return TextRange.create(startOffset, endOffset)
-}
-
-/**
- * 将 [original] 中 [this] 范围替换为 [replacement]，必要时自动加引号。
- *
- * 当替换段长度与整体长度关系满足条件时，避免重复包裹引号并保留必要的转义。
- */
-fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
-    if (this.length >= original.length - 1) {
-        return replacement.quoteIfNecessary(quote, extraChars, blank)
-    } else {
-        var replacement0 = replacement.quoteIfNecessary(quote, extraChars, blank)
-        if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
-            replacement0 = replacement0.substring(1, replacement0.length - 1)
-        }
-        val prefix = original.substring(0, startOffset)
-        val suffix = original.substring(endOffset)
-        return prefix + replacement0 + suffix
-    }
-}
-
-/**
- * 在文本中查找关键字列表 [keywords] 的出现位置，返回 (范围, 关键字) 列表（按起始位置排序）。
- */
-fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<TextRange, String>> {
-    val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
-    val result = mutableListOf<Tuple2<TextRange, String>>()
-    var startIndex = 0
-    while (startIndex < this.length) {
-        val (keyword, index) = sortedKeywords.map { it to indexOf(it, startIndex) }.filter { it.second != -1 }.minByOrNull { it.second } ?: break
-        result += TextRange.from(index, keyword.length) to keyword
-        startIndex = index + keyword.length
-    }
-    return result.sortedBy { it.first.startOffset }
-}
-
 fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
@@ -238,58 +195,51 @@ fun getCurrentProject(): Project? {
 
 // endregion
 
-// region Code Insight Extensions
-
-/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。*/
-fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
-
-/** 构建行内模板。*/
-fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
+// region Text Related Extensions
 
 /**
- * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
+ * 去除文本范围首尾的引号。返回处理后的新的文本范围。
  */
-fun PsiElement.getKeyword(offsetInParent: Int): String {
-    return text.substring(0, offsetInParent).unquote()
+fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
+    val leftQuoted = text.isLeftQuoted(quote)
+    val rightQuoted = text.isRightQuoted(quote)
+    val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
+    val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
+    return TextRange.create(startOffset, endOffset)
 }
 
 /**
- * 获取包含当前位置（[offsetInParent]）之前与之后的文本的完整关键字。用于代码补全。
+ * 将 [original] 中 [this] 范围替换为 [replacement]，必要时自动加引号。
+ *
+ * 当替换段长度与整体长度关系满足条件时，避免重复包裹引号并保留必要的转义。
  */
-fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
-    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
-}
-
-// endregion
-
-// region Editor & Document Extensions
-
-// fun Document.isAtLineStart(offset: Int, skipWhitespaces: Boolean = false): Boolean {
-//     if (!skipWhitespaces) return DocumentUtil.isAtLineStart(offset, this)
-//     val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
-//     val charsSequence = charsSequence
-//     for (i in offset..lineStartOffset) {
-//         val c = charsSequence[i]
-//         if (!c.isWhitespace()) {
-//             return false
-//         }
-//     }
-//     return true
-// }
-
-/** 判断偏移是否位于行尾；可选择忽略空白。*/
-fun Document.isAtLineEnd(offset: Int, skipWhitespaces: Boolean = false): Boolean {
-    if (!skipWhitespaces) return DocumentUtil.isAtLineEnd(offset, this)
-    val lineEndOffset = DocumentUtil.getLineEndOffset(offset, this)
-    val charsSequence = charsSequence
-    for (i in offset..lineEndOffset) {
-        if (i >= charsSequence.length) return true
-        val c = charsSequence[i]
-        if (!c.isWhitespace()) {
-            return false
+fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
+    if (this.length >= original.length - 1) {
+        return replacement.quoteIfNecessary(quote, extraChars, blank)
+    } else {
+        var replacement0 = replacement.quoteIfNecessary(quote, extraChars, blank)
+        if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
+            replacement0 = replacement0.substring(1, replacement0.length - 1)
         }
+        val prefix = original.substring(0, startOffset)
+        val suffix = original.substring(endOffset)
+        return prefix + replacement0 + suffix
     }
-    return true
+}
+
+/**
+ * 在文本中查找关键字列表 [keywords] 的出现位置，返回 (关键字，文本范围) 列表（按起始位置排序）。
+ */
+fun String.findKeywordsWithTextRanges(keywords: Collection<String>): List<Tuple2<String, TextRange>> {
+    val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
+    val result = mutableListOf<Tuple2<String, TextRange>>()
+    var startIndex = 0
+    while (startIndex < this.length) {
+        val (keyword, index) = sortedKeywords.map { it to indexOf(it, startIndex) }.filter { it.second != -1 }.minByOrNull { it.second } ?: break
+        result += tupleOf(keyword, TextRange.from(index, keyword.length))
+        startIndex = index + keyword.length
+    }
+    return result.sortedBy { it.second.startOffset }
 }
 
 // endregion
@@ -795,6 +745,30 @@ fun PsiFile.getShreds(): Place? {
     // return InjectedLanguageUtilBase.getShreds(this)
 
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
+}
+
+// endregion
+
+// region Code Insight Extensions
+
+/** 构建模板（等价于强转为 [TemplateBuilderImpl] 后调用）。*/
+fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
+
+/** 构建行内模板。*/
+fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
+
+/**
+ * 获取包含当前位置（[offsetInParent]）之前的文本的关键字。用于代码补全。
+ */
+fun PsiElement.getKeyword(offsetInParent: Int): String {
+    return text.substring(0, offsetInParent).unquote()
+}
+
+/**
+ * 获取包含当前位置（[offsetInParent]）之前与之后的文本的完整关键字。用于代码补全。
+ */
+fun PsiElement.getFullKeyword(offsetInParent: Int, dummyIdentifier: String): String {
+    return (text.substring(0, offsetInParent) + text.substring(offsetInParent + dummyIdentifier.length)).unquote()
 }
 
 // endregion

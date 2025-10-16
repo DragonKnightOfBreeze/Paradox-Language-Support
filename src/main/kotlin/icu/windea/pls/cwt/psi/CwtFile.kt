@@ -7,7 +7,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.navigation.CwtItemPresentation
-import icu.windea.pls.lang.util.psi.PlsPsiManager
+import icu.windea.pls.lang.util.PlsPsiManager
 
 class CwtFile(
     viewProvider: FileViewProvider
