@@ -126,13 +126,6 @@ dependencies {
     testImplementation("io.pebbletemplates:pebble:3.2.4") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-
-    // 用于工具代码（src/test/tool）
-
-    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0") {
-        exclude(group = "com.fasterxml.jackson.core")
-    }
 }
 
 sourceSets {
@@ -142,7 +135,6 @@ sourceSets {
     }
     test {
         java.srcDirs("src/test/java", "src/test/kotlin")
-        java.srcDirs("src/test/tool") // tool codes (e.g., CwtConfigGenerator) (NOTE: cannot move to another source set)
         java.srcDirs("src/test/unused") // unused codes (NOTE: cannot move to another source set)
         resources.srcDirs("src/test/resources")
     }
