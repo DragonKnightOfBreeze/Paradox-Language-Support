@@ -224,8 +224,9 @@ private class CwtValueConfigDelegateWith(
 ) : CwtValueConfigDelegate(delegate) {
     override val value = value.intern() // intern to optimize memory
 
-    // do not use cache here, since value is overridden
+    // must override all following expression related properties, since value is overridden
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val configExpression: CwtDataExpression get() = valueExpression
 }
 
 // 12 + 4 * 4 = 28 -> 32

@@ -32,11 +32,11 @@ val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float
 /** 将值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。*/
 val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 
-/** 过滤并返回当前块下的值规则（[CwtValueConfig]）列表。*/
-val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
-
 /** 过滤并返回当前块下的属性规则（[CwtPropertyConfig]）列表。*/
 val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
+
+/** 过滤并返回当前块下的值规则（[CwtValueConfig]）列表。*/
+val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
 
 /** 通过 [CwtOptionDataAccessor] 获取选项数据。 */
 fun <T> CwtMemberConfig<*>.optionData(accessor: CwtOptionDataAccessor<T>): T = accessor.get(this)

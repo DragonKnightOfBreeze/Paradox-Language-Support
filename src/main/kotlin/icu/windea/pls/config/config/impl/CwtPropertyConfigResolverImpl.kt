@@ -255,9 +255,10 @@ private class CwtPropertyConfigDelegateWith(
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
 
-    // do not use cache here, since key and value are overridden
-    override val keyExpression get() = CwtDataExpression.resolve(value, true)
+    // must override all following expression related properties, since key and value are overridden
+    override val keyExpression get() = CwtDataExpression.resolve(key, true)
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
+    override val configExpression: CwtDataExpression get() = keyExpression
 }
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {

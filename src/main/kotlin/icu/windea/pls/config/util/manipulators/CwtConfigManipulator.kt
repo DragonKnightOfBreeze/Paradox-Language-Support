@@ -75,43 +75,43 @@ object CwtConfigManipulator {
 
     // region Deep Copy Methods
 
-    fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
-        val childConfigs = config.configs
-        if (childConfigs.isNullOrEmpty()) return childConfigs
+    fun deepCopyConfigs(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig): List<CwtMemberConfig<*>>? {
+        val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
+        if (configs.isEmpty()) return configs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        for (childConfig in childConfigs) {
-            val deepChildConfigs = if (childConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-            val delegatedChildConfig = getDelegatedConfig(childConfig, deepChildConfigs).also { it.parentConfig = parentConfig }
-            if (deepChildConfigs != null) deepChildConfigs += deepCopyConfigs(childConfig, delegatedChildConfig).orEmpty()
-            result += delegatedChildConfig
+        for (config in configs) {
+            val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val delegatedConfig = getDelegatedConfig(config, childConfigs).also { it.parentConfig = parentConfig }
+            if (childConfigs != null) childConfigs += deepCopyConfigs(config, delegatedConfig).orEmpty()
+            result += delegatedConfig
         }
-        CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
         result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
-        return result
+        return result // 这里需要直接返回可变列表
     }
 
-    fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
-        val childConfigs = config.configs
-        if (childConfigs.isNullOrEmpty()) return childConfigs
+    fun deepCopyConfigsInDeclarationConfig(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
+        val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
+        if (configs.isEmpty()) return configs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        for (childConfig in childConfigs) {
-            val matched = isSubtypeMatchedInDeclarationConfig(childConfig, context)
+        for (config in configs) {
+            val matched = isSubtypeMatchedInDeclarationConfig(config, context)
             if (matched != null) {
                 // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
                 if (matched) {
-                    result += deepCopyConfigsInDeclarationConfig(childConfig, parentConfig, context).orEmpty()
+                    result += deepCopyConfigsInDeclarationConfig(config, parentConfig, context).orEmpty()
                 }
                 continue
             }
 
-            val deepChildConfigs = if (childConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-            val delegatedChildConfig = getDelegatedConfig(childConfig, deepChildConfigs).also { it.parentConfig = parentConfig }
-            if (deepChildConfigs != null) deepChildConfigs += deepCopyConfigs(childConfig, delegatedChildConfig).orEmpty()
-            result += delegatedChildConfig
+            val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val delegatedConfig = getDelegatedConfig(config, childConfigs).also { it.parentConfig = parentConfig }
+            if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
+            result += delegatedConfig
         }
-        CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
         result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
-        return result
+        return result // 这里需要直接返回可变列表
     }
 
     private fun getDelegatedConfig(childConfig: CwtMemberConfig<*>, deepChildConfigs: MutableList<CwtMemberConfig<*>>?): CwtMemberConfig<*> {

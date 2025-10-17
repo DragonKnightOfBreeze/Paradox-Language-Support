@@ -48,9 +48,7 @@ class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEach { it.parentConfig = finalRootConfig }
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         return finalRootConfig
     }
 }
@@ -81,9 +79,7 @@ class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEach { it.parentConfig = finalRootConfig }
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         return finalRootConfig
     }
 }
@@ -114,9 +110,7 @@ class OnActionCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
-        if (configs == null) return finalRootConfig
-        configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        configs.forEach { it.parentConfig = finalRootConfig }
+        if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
         return finalRootConfig
     }
 }
