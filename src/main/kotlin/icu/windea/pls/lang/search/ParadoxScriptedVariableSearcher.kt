@@ -27,7 +27,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

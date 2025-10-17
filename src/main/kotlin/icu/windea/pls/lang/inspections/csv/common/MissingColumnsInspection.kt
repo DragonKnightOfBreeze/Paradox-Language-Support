@@ -9,7 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import javax.swing.JComponent
 
 /**

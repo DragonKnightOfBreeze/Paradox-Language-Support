@@ -14,7 +14,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.paths.ParadoxPathMatcher

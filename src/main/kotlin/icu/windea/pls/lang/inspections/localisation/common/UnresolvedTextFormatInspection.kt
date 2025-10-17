@@ -13,7 +13,7 @@ import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint

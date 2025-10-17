@@ -30,7 +30,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer

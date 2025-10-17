@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxRootInfo
 

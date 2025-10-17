@@ -11,7 +11,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.editor
 
 import com.intellij.openapi.editor.Document
 import com.intellij.util.DocumentUtil

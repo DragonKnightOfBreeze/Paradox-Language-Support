@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.LightLanguageStubDefinition
 import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile

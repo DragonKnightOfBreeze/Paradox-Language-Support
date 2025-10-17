@@ -34,6 +34,7 @@ import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType

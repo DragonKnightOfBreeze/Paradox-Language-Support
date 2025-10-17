@@ -22,7 +22,7 @@ import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxScopeContext

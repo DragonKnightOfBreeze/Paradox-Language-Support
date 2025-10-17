@@ -14,7 +14,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import javax.swing.JComponent
 
 /**

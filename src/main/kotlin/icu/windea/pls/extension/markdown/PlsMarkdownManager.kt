@@ -19,7 +19,7 @@ import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType

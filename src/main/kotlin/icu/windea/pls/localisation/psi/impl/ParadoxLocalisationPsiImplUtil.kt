@@ -19,7 +19,7 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*

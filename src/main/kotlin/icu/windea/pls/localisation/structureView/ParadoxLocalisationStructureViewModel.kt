@@ -7,7 +7,7 @@ import com.intellij.ide.util.treeView.smartTree.Sorter
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 

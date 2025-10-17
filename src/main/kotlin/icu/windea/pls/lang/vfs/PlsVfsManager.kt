@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.vfs
 
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.actionSystem.AnActionEvent

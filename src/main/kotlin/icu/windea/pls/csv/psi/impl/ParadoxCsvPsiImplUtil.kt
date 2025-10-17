@@ -19,7 +19,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.psi.PlsPsiManager
 import javax.swing.Icon
 
 @Suppress("UNUSED_PARAMETER")

@@ -15,7 +15,7 @@ import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.PlsVfsManager
+import icu.windea.pls.lang.vfs.PlsVfsManager
 import javax.swing.JComponent
 
 /**
