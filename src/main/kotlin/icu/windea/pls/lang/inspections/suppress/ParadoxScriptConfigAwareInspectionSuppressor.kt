@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections
+package icu.windea.pls.lang.inspections.suppress
 
 import com.intellij.codeInspection.InspectionSuppressor
 import com.intellij.codeInspection.SuppressQuickFix

@@ -97,7 +97,7 @@ object CwtConfigManipulator {
             val matched = isSubtypeMatchedInDeclarationConfig(childConfig, context)
             if (matched != null) {
                 if (matched) {
-                    deepCopyConfigsInDeclarationConfig(childConfig, parentConfig, context)
+                    result += deepCopyConfigsInDeclarationConfig(childConfig, parentConfig, context).orEmpty()
                 }
                 continue
             }

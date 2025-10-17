@@ -26,7 +26,7 @@ import icu.windea.pls.model.ParadoxRootInfo
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         if (selectRootFile(file) == null) return false
         if (!inProject(file)) return false // only for project files
         return true

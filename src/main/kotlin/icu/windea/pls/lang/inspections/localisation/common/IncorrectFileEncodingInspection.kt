@@ -7,12 +7,10 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 
 // com.intellij.openapi.editor.actions.AddBomAction
 // com.intellij.openapi.editor.actions.RemoveBomAction
@@ -27,9 +25,8 @@ import icu.windea.pls.model.paths.matches
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {

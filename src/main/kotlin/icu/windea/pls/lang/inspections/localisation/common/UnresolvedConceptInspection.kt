@@ -10,15 +10,12 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.extendedDefinitions
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 import javax.swing.JComponent
 
 /**
@@ -34,9 +31,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsVfsManager.isInjectedFile(file.virtualFile)) return false
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

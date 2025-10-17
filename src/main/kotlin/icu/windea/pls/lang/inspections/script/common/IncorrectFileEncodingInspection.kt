@@ -28,7 +28,7 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // 不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         if (selectRootFile(file) == null) return false
         return true
     }

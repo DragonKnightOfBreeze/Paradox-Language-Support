@@ -28,7 +28,7 @@ class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
         if (PlsVfsManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
-        if (fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)) return false
+        if (!fileInfo.path.matches(ParadoxPathMatcher.ScriptFile)) return false
         return true
     }
 

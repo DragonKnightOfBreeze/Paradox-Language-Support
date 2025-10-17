@@ -38,7 +38,6 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Matchers

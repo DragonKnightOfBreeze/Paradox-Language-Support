@@ -7,19 +7,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 
 /**
  * 不支持的语言环境的检查。
  */
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

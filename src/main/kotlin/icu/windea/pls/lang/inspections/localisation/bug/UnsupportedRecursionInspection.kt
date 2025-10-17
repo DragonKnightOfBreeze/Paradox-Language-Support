@@ -7,12 +7,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.NavigateToFix
 import icu.windea.pls.lang.util.ParadoxRecursionManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。
@@ -22,8 +20,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     // 目前仅做检查即可，不需要显示递归的装订线图标
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

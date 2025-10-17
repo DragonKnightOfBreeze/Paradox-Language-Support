@@ -12,13 +12,10 @@ import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 import javax.swing.JComponent
 
 /**
@@ -35,10 +32,8 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsVfsManager.isInjectedFile(file.virtualFile)) return false
-        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)) return false
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
+            && ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

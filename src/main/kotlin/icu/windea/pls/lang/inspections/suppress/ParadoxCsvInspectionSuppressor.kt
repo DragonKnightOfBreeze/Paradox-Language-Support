@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections
+package icu.windea.pls.lang.inspections.suppress
 
 import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix
 import com.intellij.codeInspection.InspectionSuppressor
@@ -12,16 +12,13 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.constants.PlsStringConstants
 
-// com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
-// org.intellij.grammar.inspection.BnfInspectionSuppressor
-
 /**
  * 基于特定条件，禁用适用于CSV文件的代码检查。
  */
 class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val file = element.containingFile
-        if (file != null && ParadoxInspectionManager.isSuppressedInComment(file, toolId)) return true
+        if (file != null && PlsInspectionSuppressManager.isSuppressedInComment(file, toolId)) return true
         return false
     }
 
@@ -49,7 +46,7 @@ class ParadoxCsvInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
+            return PlsInspectionSuppressManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections
+package icu.windea.pls.lang.inspections.suppress
 
 import com.intellij.codeInspection.SuppressionUtil
 import com.intellij.psi.PsiComment
@@ -11,7 +11,10 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.regex.Pattern
 
-object ParadoxInspectionManager {
+object PlsInspectionSuppressManager {
+    // com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
+    // org.intellij.grammar.inspection.BnfInspectionSuppressor
+
     private val SUPPRESS_IN_LINE_COMMENT_PATTERN = Pattern.compile("#" + SuppressionUtil.COMMON_SUPPRESS_REGEXP + ".*")
 
     fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {

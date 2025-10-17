@@ -11,11 +11,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
-import icu.windea.pls.model.paths.ParadoxPathMatcher
-import icu.windea.pls.model.paths.matches
 import javax.swing.JComponent
 
 /**
@@ -31,9 +28,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsVfsManager.isInjectedFile(file.virtualFile)) return false
-        val fileInfo = file.fileInfo ?: return false
-        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
+        return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = !ignoredInInjectedFiles)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

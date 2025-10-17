@@ -7,7 +7,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * @see icu.windea.pls.lang.inspections.ParadoxScriptInspectionSuppressor
+ * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInspectionSuppressionProvider {

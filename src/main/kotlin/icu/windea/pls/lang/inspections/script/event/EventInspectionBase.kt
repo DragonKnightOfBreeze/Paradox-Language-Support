@@ -7,6 +7,9 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
+/**
+ * 事件的检查的基类。
+ */
 abstract class EventInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 要求索引就绪

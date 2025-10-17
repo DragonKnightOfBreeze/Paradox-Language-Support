@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections
+package icu.windea.pls.lang.inspections.suppress
 
 import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix
 import com.intellij.codeInspection.InspectionSuppressor
@@ -23,9 +23,9 @@ import icu.windea.pls.model.constants.PlsStringConstants
 class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val propertyElement = element.parentOfType<ParadoxLocalisationProperty>()
-        if (propertyElement != null && ParadoxInspectionManager.isSuppressedInComment(propertyElement, toolId)) return true
+        if (propertyElement != null && PlsInspectionSuppressManager.isSuppressedInComment(propertyElement, toolId)) return true
         val file = (propertyElement ?: element).containingFile
-        if (file != null && ParadoxInspectionManager.isSuppressedInComment(file, toolId)) return true
+        if (file != null && PlsInspectionSuppressManager.isSuppressedInComment(file, toolId)) return true
         return false
     }
 
@@ -54,7 +54,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
+            return PlsInspectionSuppressManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
@@ -73,7 +73,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
+            return PlsInspectionSuppressManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {

@@ -476,7 +476,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
      *
      * 示例：`## suppress = ParadoxScriptUnresolvedExpression`
      *
-     * @see icu.windea.pls.lang.inspections.ParadoxScriptConfigAwareInspectionSuppressor
+     * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor
      */
     val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
         findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }
