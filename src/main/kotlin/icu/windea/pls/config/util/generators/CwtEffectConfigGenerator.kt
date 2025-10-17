@@ -133,10 +133,14 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
             val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile) { toDelete(it, unknownNames) } }
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)
-            appendLine()
-            appendLine(NOTE_UNKNOWN_EFFECTS)
-            appendLine()
-            appendLine(TODO_MISSING_EFFECTS)
+            if (unknownNames.isNotEmpty()) {
+                appendLine()
+                appendLine(NOTE_UNKNOWN_EFFECTS)
+            }
+            if (missingNames.isNotEmpty()) {
+                appendLine()
+                appendLine(TODO_MISSING_EFFECTS)
+            }
             for (name in missingNames) {
                 val info = infos[name] ?: continue
                 appendLine()

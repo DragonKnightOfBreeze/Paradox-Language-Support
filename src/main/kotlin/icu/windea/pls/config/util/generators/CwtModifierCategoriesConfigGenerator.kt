@@ -91,8 +91,9 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         var modifiedText = readAction { psiFile.text } // 不做删除，仅做插入
-        if (missingNames.isNotEmpty()) {
-            val insertBlock = buildString {
+
+        val insertBlock = buildString {
+            if (missingNames.isNotEmpty()) {
                 appendLine(TODO_MISSING_MODIFIER_CATEGORIES)
                 for (name in missingNames.sorted()) {
                     val key = name.quoteIfNecessary()
@@ -101,7 +102,9 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
                     appendLine("supported_scopes = {}".prependIndent())
                     appendLine("}")
                 }
-            }.trimEnd()
+            }
+        }.trimEnd()
+        if (insertBlock.isNotEmpty()) {
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIER_CATEGORIES, insertBlock)
         }

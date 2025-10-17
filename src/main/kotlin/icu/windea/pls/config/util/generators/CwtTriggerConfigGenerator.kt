@@ -133,10 +133,14 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
             val elementsToDelete = readAction { CwtConfigGeneratorUtil.getElementsToDelete(psiFile) { toDelete(it, unknownNames) } }
             val modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
             appendLine(modifiedText)
-            appendLine()
-            appendLine(NOTE_UNKNOWN_TRIGGERS)
-            appendLine()
-            appendLine(TODO_MISSING_TRIGGERS)
+            if (unknownNames.isNotEmpty()) {
+                appendLine()
+                appendLine(NOTE_UNKNOWN_TRIGGERS)
+            }
+            if (missingNames.isNotEmpty()) {
+                appendLine()
+                appendLine(TODO_MISSING_TRIGGERS)
+            }
             for (name in missingNames) {
                 val info = infos[name] ?: continue
                 appendLine()

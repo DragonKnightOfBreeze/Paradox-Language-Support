@@ -157,11 +157,14 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
         // 在容器末尾插入缺失项（空行 + 注释 + 条目）
-        if (missingNames.isNotEmpty()) {
-            val insertBlock = buildString {
+        val insertBlock = buildString {
+            appendLine(NOTE_ECONOMIC_MODIFIERS)
+            appendLine()
+            if (unknownNames.isNotEmpty()) {
                 appendLine(NOTE_UNKNOWN_PREDEFINED_MODIFIERS)
-                appendLine(NOTE_ECONOMIC_MODIFIERS)
                 appendLine()
+            }
+            if (missingNames.isNotEmpty()) {
                 appendLine(TODO_MISSING_MODIFIERS)
                 for (name in missingNames.sorted()) {
                     val categories = filteredInfos[name]?.categories.orEmpty().sorted()
@@ -171,7 +174,9 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
                     }
                     appendLine("${name} = ${valueText}")
                 }
-            }.trimEnd()
+            }
+        }.trimEnd()
+        if (insertBlock.isNotEmpty()) {
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_MODIFIERS, insertBlock)
         }
@@ -233,8 +238,8 @@ class CwtModifierConfigGenerator(override val project: Project) : CwtConfigGener
     private companion object {
         private const val CONTAINER_MODIFIERS = "modifiers"
 
-        private const val NOTE_UNKNOWN_PREDEFINED_MODIFIERS = "# NOTE unknown predefined modifiers are deleted"
         private const val NOTE_ECONOMIC_MODIFIERS = "# NOTE possible economic modifiers are ignored"
+        private const val NOTE_UNKNOWN_PREDEFINED_MODIFIERS = "# NOTE unknown predefined modifiers are deleted"
         private const val TODO_MISSING_MODIFIERS = "# TODO missing modifiers (key is the modifier name, value is the modifier categories)"
 
         private fun isForceIgnoredModifier(info: ModifierInfo, gameType: ParadoxGameType): Boolean {

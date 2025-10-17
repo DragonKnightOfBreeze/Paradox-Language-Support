@@ -111,15 +111,19 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
         // 在容器末尾插入缺失名（空行 + 注释 + 条目）
-        if (addedNames.isNotEmpty()) {
-            val insertBlock = buildString {
+        val insertBlock = buildString {
+            if (removedNames.isNotEmpty()) {
                 appendLine(NOTE_REMOVED_ON_ACTIONS)
                 appendLine()
+            }
+            if (addedNames.isNotEmpty()) {
                 appendLine(TODO_ADDED_ON_ACTIONS)
                 for (name in addedNames) {
                     appendLine(name)
                 }
-            }.trimEnd()
+            }
+        }.trimEnd()
+        if (insertBlock.isNotEmpty()) {
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
             modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_ON_ACTIONS, insertBlock)
         }

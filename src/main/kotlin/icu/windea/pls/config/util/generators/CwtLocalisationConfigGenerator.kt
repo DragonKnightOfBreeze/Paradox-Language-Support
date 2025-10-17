@@ -151,10 +151,12 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
         var modifiedText = CwtConfigGeneratorUtil.getFileText(psiFile, elementsToDelete)
 
         // 将缺失项直接插入到现有容器末尾（空行 + 注释 + 条目）
-        if (missingPromotions.isNotEmpty()) {
-            val insertBlock = buildString {
+        val insertBlockForPromotions = buildString {
+            if (unknownPromotions.isNotEmpty()) {
                 appendLine(NOTE_UNKNOWN_PROMOTIONS)
                 appendLine()
+            }
+            if (missingPromotions.isNotEmpty()) {
                 appendLine(TODO_MISSING_PROMOTIONS)
                 for (name in missingPromotions.sorted()) {
                     val scopes = promotionScopesFromLog[name].orEmpty()
@@ -163,14 +165,18 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
                     val valueText = scopes.sorted().joinToString(" ", "{ ", " }").ifEmpty { "{}" }
                     appendLine("${name} = ${valueText}")
                 }
-            }.trimEnd()
+            }
+        }.trimEnd()
+        if (insertBlockForPromotions.isNotEmpty()) {
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
-            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlock)
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_PROMOTIONS, insertBlockForPromotions)
         }
-        if (missingCommands.isNotEmpty()) {
-            val insertBlock = buildString {
+        val insertBlockForCommands = buildString {
+            if (unknownCommands.isNotEmpty()) {
                 appendLine(NOTE_UNKNOWN_COMMANDS)
                 appendLine()
+            }
+            if (missingCommands.isNotEmpty()) {
                 appendLine(TODO_MOSSING_COMMANDS)
                 for (name in missingCommands.sorted()) {
                     val scopes = commandScopesFromLog[name].orEmpty()
@@ -181,9 +187,11 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
                     }
                     appendLine("${name} = ${valueText}")
                 }
-            }.trimEnd()
+            }
+        }
+        if (insertBlockForPromotions.isNotEmpty()) {
             val psiFile = readAction { CwtElementFactory.createDummyFile(project, modifiedText) }
-            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlock)
+            modifiedText = CwtConfigGeneratorUtil.insertIntoContainer(psiFile, CONTAINER_COMMANDS, insertBlockForCommands)
         }
 
         // 汇总摘要与详情
