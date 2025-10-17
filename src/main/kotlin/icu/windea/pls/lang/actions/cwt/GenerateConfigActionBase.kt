@@ -211,6 +211,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     private fun buildConsoleText(params: Params, hint: CwtConfigGenerator.Hint): String {
         return buildString {
             // header
+            appendLine(PARAMS_MARK)
             append(GAME_TYPE_PREFIX).appendLine(params.gameType.title)
             append(INPUT_PREFIX).appendLine(params.inputPath)
             append(OUTPUT_PREFIX).appendLine(params.outputPath)
@@ -219,16 +220,16 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
             appendLine()
 
             // body
-            if (hint.summary.isNotBlank()) {
+            if (hint.summary.isNotEmpty()) {
                 appendLine(SUMMARY_MARK)
                 appendLine(hint.summary.trimEnd())
                 appendLine()
             }
-            if (hint.details.isNotBlank()) {
+            if (hint.details.isNotEmpty()) {
                 appendLine(DETAILS_MARK)
                 appendLine(hint.details.trimEnd())
             }
-        }
+        }.trimEnd()
     }
 
     data class Params(
@@ -240,6 +241,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     companion object {
         private val logger = logger<GenerateConfigActionBase>()
 
+        private const val PARAMS_MARK = "[Params]"
         private const val SHOW_DIFF_MARK = "[Show DIFF]"
         private const val SUMMARY_MARK = "[Summary]"
         private const val DETAILS_MARK = "[Details]"
