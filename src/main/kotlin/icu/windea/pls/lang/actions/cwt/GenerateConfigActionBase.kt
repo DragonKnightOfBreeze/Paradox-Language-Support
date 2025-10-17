@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.actions.cwt
 
-import com.intellij.diff.DiffContentFactory
-import com.intellij.diff.DiffManager
+import com.intellij.diff.DiffContentFactory.getInstance
+import com.intellij.diff.chains.SimpleDiffRequestChain
 import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.filters.Filter
-import com.intellij.execution.filters.HyperlinkInfo
 import com.intellij.execution.filters.OpenFileHyperlinkInfo
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.impl.ConsoleViewImpl
@@ -25,6 +24,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.unscramble.AnalyzeStacktraceUtil.Companion.EP_NAME
 import icu.windea.pls.PlsBundle
@@ -35,6 +35,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.errorDetails
+import icu.windea.pls.lang.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
@@ -121,7 +122,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val consoleView = builder.console
         val toolbarActions = DefaultActionGroup()
         // 必须先创建 consoleComponent ，之后再获取 console.editor
-        val consoleComponent = createConsoleComponent(consoleView, project, params, hint, toolbarActions)
+        val consoleComponent = createConsoleComponent(consoleView, project, generator, params, hint, toolbarActions)
 
         for (action in consoleView.createConsoleActions()) {
             toolbarActions.add(action)
@@ -142,13 +143,14 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
     private fun createConsoleComponent(
         consoleView: ConsoleView,
         project: Project,
+        generator: CwtConfigGenerator,
         params: Params,
         hint: CwtConfigGenerator.Hint,
         toolbarActions: DefaultActionGroup
     ): JPanel {
         // 添加需要的过滤器
         consoleView.addMessageFilter(filePathFilter(project, params))
-        consoleView.addMessageFilter(showDiffFilter(project, params, hint))
+        consoleView.addMessageFilter(showDiffFilter(consoleView, project, generator, params, hint))
         // 打印文本
         val consoleText = buildConsoleText(params, hint)
         consoleView.clear()
@@ -163,37 +165,47 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
-    private fun filePathFilter(project: Project, params: Params) = Filter { line, entireLength ->
+    private fun filePathFilter(
+        project: Project,
+        params: Params
+    ) = Filter { line, entireLength ->
         val m = PATH_REGEX.find(line) ?: return@Filter null
         val path = m.groupValues[2].trim()
         if (path != params.inputPath && path != params.outputPath) return@Filter null
         val vFile = path.toPathOrNull()?.toVirtualFile() ?: return@Filter null
         val start = entireLength - line.length + m.range.first + m.value.indexOf(path)
         val end = start + path.length
+
         val info = OpenFileHyperlinkInfo(project, vFile, 0, 0)
         Filter.Result(start, end, info)
     }
 
-    private fun showDiffFilter(project: Project, params: Params, hint: CwtConfigGenerator.Hint) = Filter { line, entireLength ->
+    private fun showDiffFilter(
+        consoleView: ConsoleView,
+        project: Project,
+        generator: CwtConfigGenerator,
+        params: Params,
+        hint: CwtConfigGenerator.Hint
+    ) = Filter { line, entireLength ->
         if (line.trim() != SHOW_DIFF_MARK) return@Filter null
         val i = line.indexOf(SHOW_DIFF_MARK)
         if (i < 0) return@Filter null
         val start = entireLength - line.length + i
         val end = start + SHOW_DIFF_MARK.length
-        val info = HyperlinkInfo { openDiff(project, params.outputPath, hint.fileText) }
-        Filter.Result(start, end, info)
-    }
 
-    private fun openDiff(project: Project, outputPath: String, newText: String) {
-        val vFile = outputPath.toPathOrNull()?.toVirtualFile()
-        val contentFactory = DiffContentFactory.getInstance()
+        val vFile = params.outputPath.toPathOrNull()?.toVirtualFile()
+        val contentFactory = getInstance()
         val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
-        val right = contentFactory.create(project, newText, CwtFileType)
-        val title = PlsBundle.message("config.generation.console.diff.title")
+        val right = contentFactory.create(project, hint.fileText, CwtFileType)
+        val title = PlsBundle.message("config.generation.console.diff.title", generator.getName())
         val title1 = PlsBundle.message("config.generation.console.diff.current")
         val title2 = PlsBundle.message("config.generation.console.diff.generated")
         val request = SimpleDiffRequest(title, left, right, title1, title2)
-        DiffManager.getInstance().showDiff(project, request)
+        val requests = SimpleDiffRequestChain(request)
+
+        val info = ShowDiffWindowHyperlinkInfo(project, requests)
+        Disposer.register(consoleView, info) // 自动清理 info 中绑定的 DiffWindow
+        Filter.Result(start, end, info)
     }
 
     private fun buildConsoleText(params: Params, hint: CwtConfigGenerator.Hint): String {
