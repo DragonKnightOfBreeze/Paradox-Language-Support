@@ -2,7 +2,6 @@ package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
@@ -12,9 +11,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -23,16 +20,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.properties
 
-class NonTriggeredEventInspection : LocalInspectionTool() {
+class NonTriggeredEventInspection : EventInspectionBase() {
     // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
-
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 仅检查事件脚本文件
-        if (file !is ParadoxScriptFile) return false
-        val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
-    }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
@@ -41,7 +30,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
         file.properties().options(inline = true).forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
-            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no "triggered" subtype declared, skip
+            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no `triggered` subtype declared, skip
             if ("inherited" in definitionInfo.subtypes) return@f  // ignore inherited events
             if ("triggered" in definitionInfo.subtypes) return@f
             val fixes = buildList {
@@ -56,7 +45,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
     private class Fix1(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        // add "is_triggered_only = yes" into declaration (after "id" field or at start)
+        // add `is_triggered_only = yes` into declaration (after `id` field or at start)
 
         override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1")
 

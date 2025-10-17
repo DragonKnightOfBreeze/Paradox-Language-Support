@@ -1,16 +1,13 @@
 package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.codeInspection.InspectionManager
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -27,14 +24,7 @@ import icu.windea.pls.script.psi.stringValue
  *
  * 注意：这项代码检查不是强制性的，未通过这项代码检查并不意味着脚本文件中存在错误，以至于导致游戏运行时的异常。
  */
-class MismatchedEventIdInspection : LocalInspectionTool() {
-    override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 仅检查事件脚本文件
-        val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
-    }
-
+class MismatchedEventIdInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
         val properties = file.properties().options(inline = true)
