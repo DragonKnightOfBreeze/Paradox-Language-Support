@@ -10,13 +10,20 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.supportsByAnnotation
 
 /**
- * 用于基于上下文提供相关的CWT规则。
+ * 用于提供相关的规则。
  *
  * @see GotoRelatedConfigsAction
  * @see GotoRelatedConfigsHandler
  */
 @WithGameTypeEP
 interface CwtRelatedConfigProvider {
+    /**
+     * 得到相关规则列表。
+     *
+     * @param file 指定的 PSI 文件。
+     * @param offset 指定的偏移。
+     * @return 相关规则列表。
+     */
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>>
 
     companion object INSTANCE {

@@ -1,120 +1,64 @@
 package icu.windea.pls.ep.config
 
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.memberConfig
-import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.ep.configContext.onActionConfig
+import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxGameType
 
-abstract class ExpressionStringBasedCwtInjectedConfigProvider : CwtInjectedConfigProvider {
-    override fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
-        var r = false
-        for (i in configs.lastIndex downTo 0) {
-            val config = configs[i]
-            when (config) {
-                is CwtPropertyConfig -> {
-                    val key = config.key
-                    val value = config.value
-                    val injectedKeys = doInjectKey(config, key)
-                    val injectedValues = doInjectValue(config, value)
-                    r = r || (injectedKeys != null || injectedValues != null)
-                    if (injectedKeys == null && injectedValues == null) continue
-                    var i0 = i + 1
-                    (injectedKeys ?: listOf(key)).forEach { injectedKey ->
-                        (injectedValues ?: listOf(value)).forEach { injectedValue ->
-                            configs.add(i0, CwtPropertyConfig.delegatedWith(config, injectedKey, injectedValue))
-                            i0++
-                        }
-                    }
-                    if (!keepOrigin(config)) configs.removeAt(i)
-                }
-                is CwtValueConfig -> {
-                    val value = config.value
-                    val injectedValues = doInjectValue(config, value)
-                    r = r || injectedValues != null
-                    if (injectedValues == null) continue
-                    var i0 = i + 1
-                    injectedValues.forEach { injectedValue ->
-                        configs.add(i0, CwtValueConfig.delegatedWith(config, injectedValue))
-                        i0++
-                    }
-                    if (!keepOrigin(config)) configs.removeAt(i)
-                }
-            }
-        }
-        return r
-    }
+class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
+    // 如果可以确定 on_action 的事件类型，直接位于其中的 `<event>` 需要替换为 `<event.scopeless>` 和 `<event.{eventType}>`
+    // `{eventType}` 为该事件类型
 
-    /**
-     * @return 注入后得到的表达式字符串列表。如果为null，则表示不进行注入。
-     */
-    protected open fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        return null
-    }
-
-    /**
-     * @return 注入后得到的表达式字符串列表。如果为null，则表示不进行注入。
-     */
-    protected open fun doInjectKey(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        return doInject(config, expressionString)
-    }
-
-    /**
-     * @return 注入后得到的表达式字符串列表。如果为null，则表示不进行注入。
-     */
-    protected open fun doInjectValue(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        return doInject(config, expressionString)
-    }
-
-    /**
-     * @return 是否需要保留原始的CWT规则。
-     */
-    protected open fun keepOrigin(config: CwtMemberConfig<*>): Boolean {
-        return true
-    }
-}
-
-@WithGameType(ParadoxGameType.Stellaris)
-class CwtTechnologyWithLevelInjectedConfigProvider : ExpressionStringBasedCwtInjectedConfigProvider() {
-    private val expressions = listOf("<technology>", "<technology.repeatable>")
-    private val injectedExpressions = listOf("<technology_with_level>")
+    private val logger = thisLogger()
+    private val expression = "<event>"
+    private fun expression(eventType: String) = "<event.$eventType>"
+    private val expressionScopeless = "<event.scopeless>"
 
     override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        // 如果Stellaris中的脚本表达式至少匹配"<technology.repeatable>"，它也可以匹配"<technology_with_level>"
-        // https://github.com/cwtools/cwtools-vscode/issues/58
-
-        if (expressionString !in expressions) return null
-        return injectedExpressions
-    }
-}
-
-class CwtInOnActionInjectedConfigProvider : ExpressionStringBasedCwtInjectedConfigProvider() {
-    override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
-        // 如果预定义的on_action可以确定事件类型，直接位于其中的"<event>"需要替换为此事件类型对应的规则
-
-        if (expressionString != "<event>") return null
+        if (expressionString != expression) return null
         var currentConfig = config.memberConfig
         while (true) {
             currentConfig = currentConfig.parentConfig ?: break
         }
         val declarationConfigContext = currentConfig.declarationConfigContext ?: return null
         val onActionConfig = declarationConfigContext.onActionConfig ?: return null
-        if (onActionConfig.eventType == ParadoxScopeManager.anyScopeId) return null // ignore
-        val configGroup = declarationConfigContext.configGroup
-        return buildList {
-            if (configGroup.types.get("event")?.subtypes?.containsKey("scopeless") == true) {
-                this += "<event.scopeless>"
-            }
-            this += "<event.${onActionConfig.eventType}>"
+        val eventType = onActionConfig.eventType
+        if (eventType == ParadoxScopeManager.anyScopeId) return null // ignore
+        val allEventTypes = ParadoxEventManager.getAllTypes(config.configGroup.gameType)
+        if (eventType !in allEventTypes) {
+            logger.warn("Applied config injection in declaration of on action `${onActionConfig.name}` failed: unknown event type `$eventType`")
+            return null
         }
+        val result = buildList {
+            if ("scopeless" in allEventTypes) this += expressionScopeless
+            this += expression(eventType)
+        }
+        logger.debug { "Applied config injection in declaration of on action `${onActionConfig.name}`: replace `$expression` with ${result.joinToString()}" }
+        return result
     }
 
-    override fun keepOrigin(config: CwtMemberConfig<*>): Boolean {
-        return false
+    override fun keepOrigin(config: CwtMemberConfig<*>) = false
+}
+
+@WithGameType(ParadoxGameType.Stellaris)
+class CwtTechnologyWithLevelInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
+    // 如果 Stellaris 中的脚本表达式至少匹配 `<technology.repeatable>`，则它也可以匹配 `<technology_with_level`
+    // https://github.com/cwtools/cwtools-vscode/issues/58
+
+    private val logger = thisLogger()
+    private val expressions = listOf("<technology>", "<technology.repeatable>")
+    private val injectedExpressions = listOf("<technology_with_level>")
+
+    override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
+        if (expressionString !in expressions) return null
+        val result = injectedExpressions
+        logger.debug { "Applied config injection: replace `${expressionString}` with ${result.joinToString()}`" }
+        return result
     }
 }

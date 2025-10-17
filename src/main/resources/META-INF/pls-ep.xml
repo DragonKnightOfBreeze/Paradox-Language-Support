@@ -80,8 +80,8 @@
     <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxFilePathLinkProvider"/>
     <referenceLinkProvider implementation="icu.windea.pls.ep.codeInsight.navigation.ParadoxModifierLinkProvider"/>
 
-    <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtInOnActionInjectedConfigProvider"/>
+    <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
 
     <overriddenConfigProvider implementation="icu.windea.pls.ep.config.CwtSwitchOverriddenConfigProvider"/>
     <overriddenConfigProvider implementation="icu.windea.pls.ep.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>

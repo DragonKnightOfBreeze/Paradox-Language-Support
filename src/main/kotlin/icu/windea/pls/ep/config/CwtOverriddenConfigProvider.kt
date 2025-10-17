@@ -12,25 +12,41 @@ import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
- * 用于基于上下文为某些特定的脚本表达式提供重载后的CWT规则。
+ * 用于提供重载后的规则。
  *
- * 这里获取的CWT规则会覆盖原始的CWT规则。
+ * 说明：
+ * - 根据上下文，有时需要重载特定的脚本表达式对应的规则。
+ * - 这里得到的规则会覆盖原始规则。
  */
 @WithGameTypeEP
 interface CwtOverriddenConfigProvider {
     /**
-     * 基于指定的上下文PSI元素[contextElement]和原始的CWT规则[config]获取重载后的CWT规则。
+     * 得到重载后的规则列表。
+     *
+     * @param contextElement  上下文 PSI 元素。
+     * @param config 原始规则。
+     * @return 重载后的规则列表。如果为空，则表示未进行重载。
      */
-    fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>?
+    fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>
 
+    /**
+     * 是否跳过缺失的表达式的检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
+     */
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
+    /**
+     * 是否跳过过多的表达式的检查。
+     *
+     * @see icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
+     */
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
 
-        fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
+        fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
             val gameType = config.configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
@@ -40,8 +56,7 @@ interface CwtOverriddenConfigProvider {
                         it.overriddenProvider = ep
                     }
                     ?.also { PlsCoreManager.dynamicContextConfigs.set(true) }
-            }
+            }.orEmpty()
         }
     }
 }
-

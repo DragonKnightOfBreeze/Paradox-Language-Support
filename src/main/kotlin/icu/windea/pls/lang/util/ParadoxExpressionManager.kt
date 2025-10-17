@@ -662,7 +662,7 @@ object ParadoxExpressionManager {
             val result1 = mutableListOf<CwtMemberConfig<*>>()
             newResult.forEach f1@{ config ->
                 val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, config)
-                if (overriddenConfigs.isNullOrEmpty()) {
+                if (overriddenConfigs.isEmpty()) {
                     result1 += config
                     return@f1
                 }

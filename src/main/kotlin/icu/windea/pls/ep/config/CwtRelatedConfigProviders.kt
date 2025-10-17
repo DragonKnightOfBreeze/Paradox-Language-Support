@@ -62,7 +62,7 @@ import icu.windea.pls.script.psi.isExpression
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
         // 适用于脚本文件中的表达式
-        // 获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
+        // 获取所有匹配的规则，不存在匹配的规则时，选用所有默认的规则（对于 propertyConfig 来说是匹配 key 的，对于 valueConfig 来说是所有）
         // 包括内联规则以及内联后的规则
         // 包括其他一些相关的规则
 
@@ -249,7 +249,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
 
 class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
-        // 适用于CSV文件中的某一列对应的表达式
+        // 适用于 CSV 文件中的某一列对应的表达式
 
         val element = ParadoxPsiFinder.findCsvExpression(file, offset) ?: return emptySet()
         if (element !is ParadoxCsvColumn) return emptySet()

@@ -25,13 +25,12 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
@@ -194,7 +193,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                             val c = c1 as? CwtPropertyConfig ?: return@f1
                             // 优先使用重载后的规则
                             val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
-                            if (overriddenConfigs.isNotNullOrEmpty()) {
+                            if (overriddenConfigs.isNotEmpty()) {
                                 addAll(overriddenConfigs)
                             } else {
                                 add(c)
@@ -210,7 +209,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     contextConfigs.forEach f@{ contextConfig ->
                         val c = contextConfig as? CwtValueConfig ?: return@f
                         val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
-                        if (overriddenConfigs.isNotNullOrEmpty()) {
+                        if (overriddenConfigs.isNotEmpty()) {
                             addAll(overriddenConfigs)
                         } else {
                             add(c)

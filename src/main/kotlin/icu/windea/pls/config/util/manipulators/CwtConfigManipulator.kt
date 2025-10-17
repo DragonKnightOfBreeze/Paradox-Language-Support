@@ -75,66 +75,55 @@ object CwtConfigManipulator {
 
     // region Deep Copy Methods
 
-    // TODO 2.0.6 这里的深拷贝得到的规则的 parentConfig 似乎不太对
-
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
-        val cs1 = config.configs
-        if (cs1.isNullOrEmpty()) return cs1
+        val childConfigs = config.configs
+        if (childConfigs.isNullOrEmpty()) return childConfigs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        for (c1 in cs1) {
-            val configs = deepCopyConfigs(c1)
-            val c1Delegated = when (c1) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs)
-                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs)
-            }.also { it.parentConfig = parentConfig }
-            result += c1Delegated
+        for (childConfig in childConfigs) {
+            val deepChildConfigs = if (childConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val delegatedChildConfig = getDelegatedConfig(childConfig, deepChildConfigs).also { it.parentConfig = parentConfig }
+            if (deepChildConfigs != null) deepChildConfigs += deepCopyConfigs(childConfig, delegatedChildConfig).orEmpty()
+            result += delegatedChildConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
-        return result.optimized()
+        return result
     }
 
     fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
-        val cs1 = config.configs
-        if (cs1.isNullOrEmpty()) return cs1
+        val childConfigs = config.configs
+        if (childConfigs.isNullOrEmpty()) return childConfigs
         val result = mutableListOf<CwtMemberConfig<*>>()
-        for (c1 in cs1) {
-            if (c1 is CwtPropertyConfig) {
-                val subtypeExpression = c1.key.removeSurroundingOrNull("subtype[", "]")
-                if (subtypeExpression != null) {
-                    val subtypes = context.definitionSubtypes
-                    if (subtypes != null && !ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) continue
-                    // flatten: copy children of this subtype block directly under current parent
-                    val cs2 = deepCopyConfigsInDeclarationConfig(c1, parentConfig, context)
-                    if (cs2.isNullOrEmpty()) continue
-                    result += cs2
-                    continue
+        for (childConfig in childConfigs) {
+            val matched = isSubtypeMatchedInDeclarationConfig(childConfig, context)
+            if (matched != null) {
+                if (matched) {
+                    deepCopyConfigsInDeclarationConfig(childConfig, parentConfig, context)
                 }
+                continue
             }
 
-            // prepare a delegated node bound to current parent; hold a mutable child list if needed
-            val needChildren = c1.configs != null
-            val childList = if (needChildren) mutableListOf<CwtMemberConfig<*>>() else null
-            val delegatedNode = when (c1) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, childList)
-                is CwtValueConfig -> CwtValueConfig.delegated(c1, childList)
-            }.also { it.parentConfig = parentConfig }
-
-            // recurse to build children using the newly created delegated parent
-            if (needChildren) {
-                val copiedChildren = deepCopyConfigsInDeclarationConfig(c1, delegatedNode, context)
-                if (!copiedChildren.isNullOrEmpty()) {
-                    childList!!.addAll(copiedChildren)
-                    // ensure parent pointers of children are the new delegated parent
-                    childList.forEach { it.parentConfig = delegatedNode }
-                }
-            }
-
-            result += delegatedNode
+            val deepChildConfigs = if (childConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val delegatedChildConfig = getDelegatedConfig(childConfig, deepChildConfigs).also { it.parentConfig = parentConfig }
+            if (deepChildConfigs != null) deepChildConfigs += deepCopyConfigs(childConfig, delegatedChildConfig).orEmpty()
+            result += delegatedChildConfig
         }
-        // inject at this level using the correct parent; then fix parent pointers for injected nodes
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
-        result.forEach { it.parentConfig = parentConfig }
-        return result.optimized()
+        return result
+    }
+
+    private fun getDelegatedConfig(childConfig: CwtMemberConfig<*>, deepChildConfigs: MutableList<CwtMemberConfig<*>>?): CwtMemberConfig<*> {
+        return when (childConfig) {
+            is CwtPropertyConfig -> CwtPropertyConfig.delegated(childConfig, deepChildConfigs)
+            is CwtValueConfig -> CwtValueConfig.delegated(childConfig, deepChildConfigs)
+        }
+    }
+
+    private fun isSubtypeMatchedInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): Boolean? {
+        if (config !is CwtPropertyConfig) return null
+        val subtypeString = config.key.removeSurroundingOrNull("subtype[", "]") ?: return null
+        val subtypeExpression = ParadoxDefinitionSubtypeExpression.resolve(subtypeString)
+        val subtypes = context.definitionSubtypes ?: return null
+        return subtypeExpression.matches(subtypes)
     }
 
     // endregion

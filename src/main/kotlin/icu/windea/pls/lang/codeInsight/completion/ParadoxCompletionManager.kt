@@ -170,7 +170,7 @@ object ParadoxCompletionManager {
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrenceMap)) {
                     val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
-                    if (overriddenConfigs.isNotNullOrEmpty()) {
+                    if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
                             completeScriptExpression(context, result)
@@ -211,7 +211,7 @@ object ParadoxCompletionManager {
         for (config in configs) {
             if (shouldComplete(config, occurrenceMap)) {
                 val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
-                if (overriddenConfigs.isNotNullOrEmpty()) {
+                if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig
                         completeScriptExpression(context, result)
