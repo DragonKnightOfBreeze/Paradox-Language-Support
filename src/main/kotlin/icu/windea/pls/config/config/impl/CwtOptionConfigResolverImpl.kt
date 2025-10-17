@@ -1,7 +1,12 @@
 package icu.windea.pls.config.config.impl
 
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
+import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
@@ -9,17 +14,32 @@ import icu.windea.pls.model.optimizeValue
 import java.util.concurrent.ConcurrentHashMap
 
 internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver {
+    private val logger = thisLogger()
     private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
 
-    override fun resolve(
+     override fun resolve(element: CwtOption): CwtOptionConfig? {
+        val optionValueElement = element.optionValue
+        if (optionValueElement == null) {
+            logger.warn("Missing option value, skipped.".withLocationPrefix(element))
+            return null
+        }
+        val key = element.name
+        val value = optionValueElement.value
+        val valueType: CwtType = optionValueElement.type
+        val separatorType = element.separatorType
+         val optionConfigs = CwtConfigResolverUtil.getOptionConfigsInOption(optionValueElement)
+        return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
+    }
+
+    override fun create(
         key: String,
         value: String,
         valueType: CwtType,
         separatorType: CwtSeparatorType,
         optionConfigs: List<CwtOptionMemberConfig<*>>?,
-    ): CwtOptionConfig = doResolve(key, value, valueType, separatorType, optionConfigs)
+    ): CwtOptionConfig = doCreate(key, value, valueType, separatorType, optionConfigs)
 
-    private fun doResolve(
+    private fun doCreate(
         key: String,
         value: String,
         valueType: CwtType,

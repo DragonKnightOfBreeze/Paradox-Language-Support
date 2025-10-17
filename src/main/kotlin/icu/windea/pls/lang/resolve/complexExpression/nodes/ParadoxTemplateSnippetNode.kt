@@ -39,7 +39,7 @@ class ParadoxTemplateSnippetNode(
     override val configGroup: CwtConfigGroup,
     val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNodeBase(), ParadoxIdentifierNode {
-    val config = CwtValueConfig.resolve(emptyPointer(), configGroup, configExpression.expressionString)
+    val config = CwtValueConfig.create(emptyPointer(), configGroup, configExpression.expressionString)
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null

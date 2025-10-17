@@ -4,6 +4,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.impl.CwtValueConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtType
 
@@ -23,11 +24,9 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     override val configExpression: CwtDataExpression get() = valueExpression
 
     interface Resolver {
-        /**
-         * 依据 [pointer]/[configGroup]/[value] 等解析生成规则；
-         * [valueType] 默认为字符串，可携带下级 [configs]/[optionConfigs]，若来源为属性值侧可指定 [propertyConfig]。
-         */
-        fun resolve(
+        fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
+
+        fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
             configGroup: CwtConfigGroup,
             value: String,
@@ -35,6 +34,16 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             configs: List<CwtMemberConfig<*>>? = null,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
             propertyConfig: CwtPropertyConfig? = null
+        ): CwtValueConfig
+
+        fun copy(
+            targetConfig: CwtValueConfig,
+            pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
+            value: String = targetConfig.value,
+            valueType: CwtType = targetConfig.valueType,
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
+            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs,
+            propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,
         ): CwtValueConfig
 
         /**
@@ -60,19 +69,6 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
         fun delegatedWith(
             targetConfig: CwtValueConfig,
             value: String
-        ): CwtValueConfig
-
-        /**
-         * 拷贝一个新的值型成员规则，可选择性修改若干字段。
-         */
-        fun copy(
-            targetConfig: CwtValueConfig,
-            pointer: SmartPsiElementPointer<out CwtValue> = targetConfig.pointer,
-            value: String = targetConfig.value,
-            valueType: CwtType = targetConfig.valueType,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs,
-            propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,
         ): CwtValueConfig
     }
 

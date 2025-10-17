@@ -53,15 +53,15 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val parentElement = parameterInfo.parentElement ?: return null
         when {
             element is ParadoxConditionParameter -> {
-                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") // bool-like
+                return CwtValueConfig.create(emptyPointer(), configGroup, "scalar") // bool-like
             }
             element is ParadoxScriptParameter -> {
                 if (parentElement.text.isParameterized(full = true)) return null
-                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
+                return CwtValueConfig.create(emptyPointer(), configGroup, "scalar")
             }
             element is ParadoxScriptInlineMathParameter -> {
-                if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
-                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
+                if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.create(emptyPointer(), configGroup, "float")
+                return CwtValueConfig.create(emptyPointer(), configGroup, "scalar")
             }
             else -> return null
         }
@@ -108,7 +108,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         }
         val finalConfigs = inlinedContextConfigs.map { config ->
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
-                return@map CwtValueConfig.resolve(emptyPointer(), configGroup, config.key)
+                return@map CwtValueConfig.create(emptyPointer(), configGroup, config.key)
             }
             when (config) {
                 is CwtPropertyConfig -> CwtPropertyConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
@@ -170,19 +170,19 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val configGroup = expressionConfig.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
-                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.create(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxDynamicValueNode -> {
-                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.create(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.singleton.list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.config.singleton.list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.create(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScopeLinkNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").singleton.list()
+                CwtValueConfig.create(emptyPointer(), configGroup, "scope_field").singleton.list()
             }
             node is ParadoxValueFieldNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field").singleton.list()
+                CwtValueConfig.create(emptyPointer(), configGroup, "value_field").singleton.list()
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()

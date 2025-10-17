@@ -4,6 +4,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.impl.CwtPropertyConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
@@ -37,11 +38,9 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     override val configExpression: CwtDataExpression get() = keyExpression
 
     interface Resolver {
-        /**
-         * 依据 [pointer]/[configGroup]/[key]/[value] 等解析生成规则；
-         * [valueType] 默认为字符串，[separatorType] 默认为 `=`，可携带下级 [configs]/[optionConfigs]。
-         */
-        fun resolve(
+        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
+
+        fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
             configGroup: CwtConfigGroup,
             key: String,
@@ -50,6 +49,17 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null
+        ): CwtPropertyConfig
+
+        fun copy(
+            targetConfig: CwtPropertyConfig,
+            pointer: SmartPsiElementPointer<out CwtProperty> = targetConfig.pointer,
+            key: String = targetConfig.key,
+            value: String = targetConfig.value,
+            valueType: CwtType = targetConfig.valueType,
+            separatorType: CwtSeparatorType = targetConfig.separatorType,
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
+            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs
         ): CwtPropertyConfig
 
         /**
@@ -68,20 +78,6 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             targetConfig: CwtPropertyConfig,
             key: String,
             value: String
-        ): CwtPropertyConfig
-
-        /**
-         * 拷贝一个新的属性规则，可选择性修改若干字段。
-         */
-        fun copy(
-            targetConfig: CwtPropertyConfig,
-            pointer: SmartPsiElementPointer<out CwtProperty> = targetConfig.pointer,
-            key: String = targetConfig.key,
-            value: String = targetConfig.value,
-            valueType: CwtType = targetConfig.valueType,
-            separatorType: CwtSeparatorType = targetConfig.separatorType,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs
         ): CwtPropertyConfig
     }
 

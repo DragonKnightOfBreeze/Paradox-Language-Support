@@ -32,10 +32,9 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     override val valueType: CwtType
 
     interface Resolver {
-        /**
-         * 从 [key]/[value] 等信息解析生成规则；[separatorType] 默认 `=`，可携带下级 [optionConfigs]。
-         */
-        fun resolve(
+        fun resolve(element: CwtOption): CwtOptionConfig?
+
+        fun create(
             key: String,
             value: String,
             valueType: CwtType = CwtType.String,

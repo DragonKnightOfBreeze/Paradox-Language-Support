@@ -65,7 +65,7 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, file.name, CwtConfigGroup(project, gameType))
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
             val rootConfig = fileConfig.properties.find { it.key == CONTAINER_ON_ACTIONS }
             val configs = rootConfig?.configs.orEmpty().mapNotNull { CwtExtendedOnActionConfig.resolve(it) }
             parseConfigInfo(configs)

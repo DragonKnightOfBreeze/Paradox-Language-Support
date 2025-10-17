@@ -22,10 +22,9 @@ import icu.windea.pls.model.CwtType
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {
-        /**
-         * 从 [value] 等信息解析生成规则；[valueType] 默认按字符串处理，可携带下级 [optionConfigs]。
-         */
-        fun resolve(
+        fun resolve(element: CwtValue): CwtOptionValueConfig
+
+        fun create(
             value: String,
             valueType: CwtType = CwtType.String,
             optionConfigs: List<CwtOptionMemberConfig<*>>? = null,

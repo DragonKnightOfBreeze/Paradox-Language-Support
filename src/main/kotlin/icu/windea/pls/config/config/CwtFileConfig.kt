@@ -18,7 +18,7 @@ interface CwtFileConfig : CwtConfig<CwtFile> {
     val values: List<CwtValueConfig>
 
     interface Resolver {
-        fun resolve(file: CwtFile, filePath: String, configGroup: CwtConfigGroup): CwtFileConfig
+        fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
     }
 
     companion object : Resolver by CwtFileConfigResolverImpl()

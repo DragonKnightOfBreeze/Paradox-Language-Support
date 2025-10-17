@@ -131,7 +131,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    context.config = CwtValueConfig.resolve(emptyPointer(), configGroup, node.text)
+                    context.config = CwtValueConfig.create(emptyPointer(), configGroup, node.text)
                     context.configs = emptyList()
                     ParadoxCompletionManager.completeConstant(context, resultToUse)
                     break
@@ -628,7 +628,7 @@ object ParadoxComplexExpressionCompletionManager {
             if (leftAngle >= 0) {
                 val innerStart = leftAngle + 1
                 val keywordToUse = exprText.substring(innerStart, caret)
-                val cfg = CwtValueConfig.resolve(emptyPointer(), config.configGroup, "<${defType}>")
+                val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "<${defType}>")
                 val bakConfig = context.config
                 val bakKeyword = context.keyword
                 val bakKeywordOffset = context.keywordOffset
@@ -656,7 +656,7 @@ object ParadoxComplexExpressionCompletionManager {
             var start = caret
             while (start > 0 && isLocChar(exprText[start - 1])) start--
             val keywordToUse = exprText.substring(start, caret)
-            val cfg = CwtValueConfig.resolve(emptyPointer(), config.configGroup, "localisation")
+            val cfg = CwtValueConfig.create(emptyPointer(), config.configGroup, "localisation")
             val bakConfig = context.config
             val bakKeyword = context.keyword
             val bakKeywordOffset = context.keywordOffset

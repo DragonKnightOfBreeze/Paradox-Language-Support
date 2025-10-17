@@ -103,21 +103,37 @@ object CwtConfigManipulator {
                 if (subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
                     if (subtypes != null && !ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) continue
-                    val cs2 = deepCopyConfigsInDeclarationConfig(c1, c1, context)
+                    // flatten: copy children of this subtype block directly under current parent
+                    val cs2 = deepCopyConfigsInDeclarationConfig(c1, parentConfig, context)
                     if (cs2.isNullOrEmpty()) continue
                     result += cs2
                     continue
                 }
             }
 
-            val configs = deepCopyConfigsInDeclarationConfig(c1, c1, context)
-            val c1Delegated = when (c1) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs, parentConfig)
-                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs, parentConfig)
+            // prepare a delegated node bound to current parent; hold a mutable child list if needed
+            val needChildren = c1.configs != null
+            val childList = if (needChildren) mutableListOf<CwtMemberConfig<*>>() else null
+            val delegatedNode = when (c1) {
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, childList, parentConfig)
+                is CwtValueConfig -> CwtValueConfig.delegated(c1, childList, parentConfig)
             }
-            result += c1Delegated
+
+            // recurse to build children using the newly created delegated parent
+            if (needChildren) {
+                val copiedChildren = deepCopyConfigsInDeclarationConfig(c1, delegatedNode, context)
+                if (!copiedChildren.isNullOrEmpty()) {
+                    childList!!.addAll(copiedChildren)
+                    // ensure parent pointers of children are the new delegated parent
+                    childList.forEach { it.parentConfig = delegatedNode }
+                }
+            }
+
+            result += delegatedNode
         }
+        // inject at this level using the correct parent; then fix parent pointers for injected nodes
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        result.forEach { it.parentConfig = parentConfig }
         return result
     }
 
@@ -226,7 +242,7 @@ object CwtConfigManipulator {
     }
 
     fun inlineWithConfigs(config: CwtMemberConfig<*>?, configs: List<CwtMemberConfig<*>>?, configGroup: CwtConfigGroup): CwtValueConfig {
-        return CwtValueConfig.resolve(
+        return CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = configGroup,
             value = PlsStringConstants.blockFolder,
@@ -301,7 +317,7 @@ object CwtConfigManipulator {
         if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
         val expressionString = CwtDataExpressionMerger.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null
-        return CwtValueConfig.resolve(
+        return CwtValueConfig.create(
             pointer = emptyPointer(),
             configGroup = config1.configGroup,
             value = expressionString,

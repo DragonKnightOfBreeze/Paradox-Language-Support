@@ -47,7 +47,7 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     ): StellarisNameFormatExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
-        val cfg = CwtValueConfig.resolve(emptyPointer(), configGroup, "stellaris_name_format[$formatName]")
+        val cfg = CwtValueConfig.create(emptyPointer(), configGroup, "stellaris_name_format[$formatName]")
         return StellarisNameFormatExpression.resolve(text, TextRange(0, text.length), configGroup, cfg)
     }
 

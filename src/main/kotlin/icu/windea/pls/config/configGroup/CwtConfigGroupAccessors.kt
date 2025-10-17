@@ -245,7 +245,7 @@ val CwtConfigGroup.parameterConfigs: MutableSet<CwtMemberConfig<*>>
 @Tags(Tag.Computed)
 val CwtConfigGroup.mockVariableConfig: CwtValueConfig
     by createKey(CwtConfigGroup.Keys) {
-        CwtValueConfig.resolve(emptyPointer(), this, "value[variable]")
+        CwtValueConfig.create(emptyPointer(), this, "value[variable]")
     }
 
 // endregion

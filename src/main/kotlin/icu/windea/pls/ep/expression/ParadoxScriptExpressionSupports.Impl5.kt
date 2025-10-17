@@ -75,7 +75,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val offset = separatorIndex
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
         if (range1.isEmpty) return PsiReference.EMPTY_ARRAY
-        val config1 = CwtValueConfig.resolve(emptyPointer(), config.configGroup, typeExpression)
+        val config1 = CwtValueConfig.create(emptyPointer(), config.configGroup, typeExpression)
         val reference = ParadoxScriptExpressionPsiReference(element, range1, config1, null)
         return arrayOf(reference)
     }
@@ -92,7 +92,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         val configs = context.configs
         val isKey = context.isKey
 
-        val config1 = CwtValueConfig.resolve(emptyPointer(), config.configGroup, typeExpression)
+        val config1 = CwtValueConfig.create(emptyPointer(), config.configGroup, typeExpression)
         context.config = config1
         context.configs = emptySet()
         context.isKey = null

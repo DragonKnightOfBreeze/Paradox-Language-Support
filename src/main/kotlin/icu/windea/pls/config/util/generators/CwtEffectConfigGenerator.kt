@@ -83,7 +83,7 @@ class CwtEffectConfigGenerator(override val project: Project) : CwtConfigGenerat
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, file.name, CwtConfigGroup(project, gameType))
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
                 .filter { it.name == "effect" && it.subName.isIdentifier() }
             configs.groupBy { it.subName }.mapValues { (_, v) -> parseConfigInfo(v) }

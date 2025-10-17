@@ -146,13 +146,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
     private fun resolveAndProcessInternalFile(filePath: String, file: VirtualFile, configGroup: CwtConfigGroup) {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
-        val fileConfig = CwtFileConfig.resolve(psiFile, filePath, configGroup)
+        val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
         processInternalFile(filePath, fileConfig, configGroup)
     }
 
     private fun resolveAndProcessFile(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String) {
         val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
-        val fileConfig = CwtFileConfig.resolve(psiFile, filePath, configGroup)
+        val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
         processFile(fileConfig, configGroup)
     }
 

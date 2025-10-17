@@ -1,5 +1,7 @@
 package icu.windea.pls.config.config.impl
 
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.SmartPsiElementPointer
@@ -9,17 +11,45 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigCollector
+import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getUserDataOrDefault
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.deoptimizeValue
 import icu.windea.pls.model.optimizeValue
 
 class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
-    override fun resolve(
+    private val logger = thisLogger()
+
+    override fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {
+        // 1. use EmptyPointer for default project to optimize memory
+
+        val pointer = when {
+            configGroup.project.isDefault -> emptyPointer()
+            else -> element.createPointer(file)
+        }
+        val value: String = element.value
+        val valueType = element.type
+        val configs = CwtConfigResolverUtil.getConfigs(element, file, configGroup)
+        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
+        val config = create(pointer, configGroup, value, valueType, configs, optionConfigs)
+        CwtConfigCollector.postHandleConfig(config)
+        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
+        configs?.forEach { it.parentConfig = config }
+        logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
+        return config
+    }
+
+    override fun create(
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
         value: String,
@@ -41,6 +71,18 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
                 CwtValueConfigImpl4(pointer, configGroup, value, valueType, propertyConfig)
             }
         }
+    }
+
+    override fun copy(
+        targetConfig: CwtValueConfig,
+        pointer: SmartPsiElementPointer<out CwtValue>,
+        value: String,
+        valueType: CwtType,
+        configs: List<CwtMemberConfig<*>>?,
+        optionConfigs: List<CwtOptionMemberConfig<*>>?,
+        propertyConfig: CwtPropertyConfig?,
+    ): CwtValueConfig {
+        return create(pointer, targetConfig.configGroup, value, valueType, configs, optionConfigs, propertyConfig)
     }
 
     override fun resolveFromPropertyConfig(
@@ -67,18 +109,6 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
         value: String
     ): CwtValueConfig {
         return CwtValueConfigDelegateWith(targetConfig, value)
-    }
-
-    override fun copy(
-        targetConfig: CwtValueConfig,
-        pointer: SmartPsiElementPointer<out CwtValue>,
-        value: String,
-        valueType: CwtType,
-        configs: List<CwtMemberConfig<*>>?,
-        optionConfigs: List<CwtOptionMemberConfig<*>>?,
-        propertyConfig: CwtPropertyConfig?,
-    ): CwtValueConfig {
-        return resolve(pointer, targetConfig.configGroup, value, valueType, configs, optionConfigs, propertyConfig)
     }
 }
 

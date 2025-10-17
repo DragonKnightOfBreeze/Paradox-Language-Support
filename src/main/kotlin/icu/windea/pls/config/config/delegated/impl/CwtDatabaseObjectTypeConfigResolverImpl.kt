@@ -51,7 +51,7 @@ private class CwtDatabaseObjectTypeConfigImpl(
             else -> swapType?.let { "<$it>" }
         }
         if (configExpression == null) return null
-        return CwtValueConfig.resolve(emptyPointer(), this.configGroup, configExpression)
+        return CwtValueConfig.create(emptyPointer(), this.configGroup, configExpression)
     }
 
     override fun toString() = "CwtDatabaseObjectTypeConfigImpl(name='$name')"
