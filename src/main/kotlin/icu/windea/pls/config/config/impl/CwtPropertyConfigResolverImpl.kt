@@ -103,13 +103,12 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver {
 
     override fun delegated(
         targetConfig: CwtPropertyConfig,
-        configs: List<CwtMemberConfig<*>>?,
-        parentConfig: CwtMemberConfig<*>?
+        configs: List<CwtMemberConfig<*>>?
     ): CwtPropertyConfig {
         return if (configs != null) {
-            CwtPropertyConfigDelegate1(targetConfig, configs).also { it.parentConfig = parentConfig }
+            CwtPropertyConfigDelegate1(targetConfig, configs)
         } else {
-            CwtPropertyConfigDelegate2(targetConfig).also { it.parentConfig = parentConfig }
+            CwtPropertyConfigDelegate2(targetConfig)
         }
     }
 

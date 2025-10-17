@@ -111,9 +111,9 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 return@map CwtValueConfig.create(emptyPointer(), configGroup, config.key)
             }
             when (config) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
-                is CwtValueConfig -> CwtValueConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
-            }
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config))
+                is CwtValueConfig -> CwtValueConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config))
+            }.also { it.parentConfig = config.parentConfig }
         }
         if (finalConfigs.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)

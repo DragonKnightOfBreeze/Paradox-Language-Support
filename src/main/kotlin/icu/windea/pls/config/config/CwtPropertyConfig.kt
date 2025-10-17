@@ -63,16 +63,15 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         ): CwtPropertyConfig
 
         /**
-         * 构造一个委托版本（wrapper），共享来源与上下文，仅按需覆盖部分字段。
+         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 null。
          */
         fun delegated(
             targetConfig: CwtPropertyConfig,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            parentConfig: CwtMemberConfig<*>? = targetConfig.parentConfig
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs
         ): CwtPropertyConfig
 
         /**
-         * 基于现有规则，快速替换 `key` 与 `value`，用于生成变体。
+         * 创建 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 null。
          */
         fun delegatedWith(
             targetConfig: CwtPropertyConfig,

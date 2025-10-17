@@ -84,13 +84,13 @@ object CwtConfigManipulator {
         for (c1 in cs1) {
             val configs = deepCopyConfigs(c1)
             val c1Delegated = when (c1) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs, parentConfig)
-                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs, parentConfig)
-            }
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, configs)
+                is CwtValueConfig -> CwtValueConfig.delegated(c1, configs)
+            }.also { it.parentConfig = parentConfig }
             result += c1Delegated
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
-        return result
+        return result.optimized()
     }
 
     fun deepCopyConfigsInDeclarationConfig(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
@@ -115,9 +115,9 @@ object CwtConfigManipulator {
             val needChildren = c1.configs != null
             val childList = if (needChildren) mutableListOf<CwtMemberConfig<*>>() else null
             val delegatedNode = when (c1) {
-                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, childList, parentConfig)
-                is CwtValueConfig -> CwtValueConfig.delegated(c1, childList, parentConfig)
-            }
+                is CwtPropertyConfig -> CwtPropertyConfig.delegated(c1, childList)
+                is CwtValueConfig -> CwtValueConfig.delegated(c1, childList)
+            }.also { it.parentConfig = parentConfig }
 
             // recurse to build children using the newly created delegated parent
             if (needChildren) {
@@ -134,7 +134,7 @@ object CwtConfigManipulator {
         // inject at this level using the correct parent; then fix parent pointers for injected nodes
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         result.forEach { it.parentConfig = parentConfig }
-        return result
+        return result.optimized()
     }
 
     // endregion

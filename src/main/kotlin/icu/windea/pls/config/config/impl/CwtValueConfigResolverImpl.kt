@@ -95,12 +95,11 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
     override fun delegated(
         targetConfig: CwtValueConfig,
         configs: List<CwtMemberConfig<*>>?,
-        parentConfig: CwtMemberConfig<*>?,
     ): CwtValueConfig {
         return if (configs != null) {
-            CwtValueConfigDelegate1(targetConfig, configs).also { it.parentConfig = parentConfig }
+            CwtValueConfigDelegate1(targetConfig, configs)
         } else {
-            CwtValueConfigDelegate2(targetConfig).also { it.parentConfig = parentConfig }
+            CwtValueConfigDelegate2(targetConfig)
         }
     }
 
