@@ -24,7 +24,8 @@ abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfi
                     var i0 = i + 1
                     (injectedKeys ?: listOf(key)).forEach { injectedKey ->
                         (injectedValues ?: listOf(value)).forEach { injectedValue ->
-                            configs.add(i0, CwtPropertyConfig.delegatedWith(config, injectedKey, injectedValue))
+                            val delegatedConfig = CwtPropertyConfig.delegatedWith(config, injectedKey, injectedValue).also { it.parentConfig = parentConfig }
+                            configs.add(i0, delegatedConfig)
                             i0++
                         }
                     }
@@ -38,7 +39,8 @@ abstract class CwtExpressionStringBasedInjectedConfigProvider : CwtInjectedConfi
                     if (!injected) continue
                     var i0 = i + 1
                     injectedValues.forEach { injectedValue ->
-                        configs.add(i0, CwtValueConfig.delegatedWith(config, injectedValue))
+                        val delegatedConfig = CwtValueConfig.delegatedWith(config, injectedValue).also { it.parentConfig = parentConfig }
+                        configs.add(i0, delegatedConfig)
                         i0++
                     }
                     if (!keepOrigin(config)) configs.removeAt(i)

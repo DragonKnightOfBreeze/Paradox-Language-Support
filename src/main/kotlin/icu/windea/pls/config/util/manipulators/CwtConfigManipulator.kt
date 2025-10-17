@@ -86,6 +86,7 @@ object CwtConfigManipulator {
             result += delegatedChildConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result
     }
 
@@ -96,6 +97,7 @@ object CwtConfigManipulator {
         for (childConfig in childConfigs) {
             val matched = isSubtypeMatchedInDeclarationConfig(childConfig, context)
             if (matched != null) {
+                // 如果匹配子类型表达式，打平其中的子规则并加入结果，否则直接跳过
                 if (matched) {
                     result += deepCopyConfigsInDeclarationConfig(childConfig, parentConfig, context).orEmpty()
                 }
@@ -108,6 +110,7 @@ object CwtConfigManipulator {
             result += delegatedChildConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result
     }
 
@@ -122,8 +125,8 @@ object CwtConfigManipulator {
         if (config !is CwtPropertyConfig) return null
         val subtypeString = config.key.removeSurroundingOrNull("subtype[", "]") ?: return null
         val subtypeExpression = ParadoxDefinitionSubtypeExpression.resolve(subtypeString)
-        val subtypes = context.definitionSubtypes ?: return null
-        return subtypeExpression.matches(subtypes)
+        val subtypes = context.definitionSubtypes
+        return subtypes != null && subtypeExpression.matches(subtypes)
     }
 
     // endregion

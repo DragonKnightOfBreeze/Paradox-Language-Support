@@ -143,6 +143,7 @@ private abstract class CwtPropertyConfigImpl(
     private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
 
+    @Volatile
     override var parentConfig: CwtMemberConfig<*>? = null
 
     // cached into user data to optimize performance and memory
@@ -216,6 +217,7 @@ private abstract class CwtPropertyConfigDelegate(
     private var _valueConfig: Any? = EMPTY_OBJECT
     override val valueConfig @Synchronized get() = if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else getValueConfig().also { _valueConfig = it }
 
+    @Volatile
     override var parentConfig: CwtMemberConfig<*>? = null
 
     // cached into user data to optimize performance and memory
@@ -225,7 +227,7 @@ private abstract class CwtPropertyConfigDelegate(
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
 
-    override fun toString() = "$key $separatorType $value"
+    override fun toString() = "(property) $key $separatorType $value"
 }
 
 // 12 + 5 * 4 = 32 -> 32

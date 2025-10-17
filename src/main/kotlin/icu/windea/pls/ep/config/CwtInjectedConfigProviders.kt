@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.ep.configContext.onActionConfig
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxGameType
 
 class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConfigProvider() {
@@ -29,7 +28,7 @@ class CwtInOnActionInjectedConfigProvider : CwtExpressionStringBasedInjectedConf
         val declarationConfigContext = currentConfig.declarationConfigContext ?: return null
         val onActionConfig = declarationConfigContext.onActionConfig ?: return null
         val eventType = onActionConfig.eventType
-        if (eventType == ParadoxScopeManager.anyScopeId) return null // ignore
+        if (eventType.isEmpty() || eventType == "scopeless") return null // ignore
         val allEventTypes = ParadoxEventManager.getAllTypes(config.configGroup.gameType)
         if (eventType !in allEventTypes) {
             logger.warn("Applied config injection in declaration of on action `${onActionConfig.name}` failed: unknown event type `$eventType`")

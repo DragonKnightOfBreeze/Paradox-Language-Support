@@ -125,6 +125,7 @@ private abstract class CwtValueConfigImpl(
 
     override val propertyConfig = propertyConfig
 
+    @Volatile
     override var parentConfig: CwtMemberConfig<*>? = null
 
     // cached into user data to optimize performance and memory
@@ -188,6 +189,7 @@ private class CwtValueConfigImpl4(
 private abstract class CwtValueConfigDelegate(
     private val delegate: CwtValueConfig,
 ) : UserDataHolderBase(), CwtValueConfig by delegate {
+    @Volatile
     override var parentConfig: CwtMemberConfig<*>? = null
 
     // cached into user data to optimize performance and memory
@@ -196,7 +198,7 @@ private abstract class CwtValueConfigDelegate(
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
 
-    override fun toString() = value
+    override fun toString() = "(value) $value"
 }
 
 // 12 + 4 * 4 = 28 -> 32
@@ -237,6 +239,7 @@ private class CwtValueConfigFromPropertyConfig(
     override val configs get() = propertyConfig.configs
     override val optionConfigs get() = propertyConfig.optionConfigs
 
+    @Volatile
     override var parentConfig: CwtMemberConfig<*>? = null
 
     // cached into user data to optimize performance and memory
