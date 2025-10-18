@@ -1,0 +1,6 @@
+top = {
+  mid = {
+    leaf_prop = 1
+    leaf_val
+  }
+}

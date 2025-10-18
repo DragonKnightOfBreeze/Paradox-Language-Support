@@ -1,0 +1,6 @@
+container = {
+  p1 = 0
+  ## required
+  ## severity = info
+  p2 = 1
+}

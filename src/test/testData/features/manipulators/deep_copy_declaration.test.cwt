@@ -1,0 +1,10 @@
+decl = {
+  a = 1
+  subtype[foo] = {
+    b = 2
+    v1
+  }
+  subtype[bar] = {
+    c = 3
+  }
+}

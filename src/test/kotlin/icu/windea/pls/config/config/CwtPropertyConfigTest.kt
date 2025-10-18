@@ -1,8 +1,10 @@
 package icu.windea.pls.config.config
+import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.CwtSeparatorType
@@ -169,5 +171,96 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Float, c.valueType)
             assertEquals("-0.75", c.value)
         }
+    }
+
+    // region Resolver: create/copy/delegated/delegatedWith + userData
+
+    private val EXTRA_KEY: Key<String> = createKey("test.extra.property")
+
+    @Test
+    fun testResolver_create_copy_delegated_forProperty() {
+        val (file, group) = prepare().let { it.first to it.second }
+        val root = file.block!!
+
+        // base property (block)
+        val baseProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val baseCfg = CwtPropertyConfig.resolve(baseProp, file, group)!!
+        baseCfg.putUserData(EXTRA_KEY, "v1")
+
+        // create from scratch (configs = null but valueType = Block => configs should be emptyList, not null)
+        run {
+            val created = CwtPropertyConfig.create(
+                baseCfg.pointer, baseCfg.configGroup,
+                baseCfg.key, baseCfg.value, baseCfg.valueType, baseCfg.separatorType,
+                null, baseCfg.optionConfigs
+            )
+            assertEquals(baseCfg.key, created.key)
+            assertEquals(baseCfg.value, created.value)
+            assertEquals(CwtType.Block, created.valueType)
+            assertNotNull(created.configs)
+            assertTrue(created.configs!!.isEmpty())
+            // userData is not auto-filled on create
+            assertNull(created.getUserData(EXTRA_KEY))
+        }
+
+        // copy with overrides (should NOT copy arbitrary userData)
+        run {
+            val copied = CwtPropertyConfig.copy(
+                baseCfg,
+                key = baseCfg.key + "_c",
+                value = baseCfg.value,
+                valueType = baseCfg.valueType,
+                separatorType = CwtSeparatorType.EQUAL,
+                configs = baseCfg.configs,
+                optionConfigs = baseCfg.optionConfigs
+            )
+            assertEquals(baseCfg.key + "_c", copied.key)
+            assertEquals(baseCfg.value, copied.value)
+            assertEquals(baseCfg.valueType, copied.valueType)
+            assertEquals(CwtSeparatorType.EQUAL, copied.separatorType)
+            assertEquals(baseCfg.configs?.size, copied.configs?.size)
+            assertEquals(baseCfg.optionConfigs?.size, copied.optionConfigs?.size)
+            assertNull(copied.getUserData(EXTRA_KEY))
+        }
+
+        // delegated (inherit read of userData; parentConfig should be reset; configs can be replaced)
+        run {
+            val delegated = CwtPropertyConfig.delegated(baseCfg, configs = emptyList())
+            assertNull(delegated.parentConfig)
+            assertNotNull(delegated.configs)
+            assertTrue(delegated.configs!!.isEmpty())
+            // inherit read from target (wrapper defers to delegate if present)
+            assertEquals("v1", delegated.getUserData(EXTRA_KEY))
+            // write wrapper-only data using another key
+            val EXTRA_KEY_2: Key<String> = createKey("test.extra.property.2")
+            delegated.putUserData(EXTRA_KEY_2, "v2")
+            assertEquals("v2", delegated.getUserData(EXTRA_KEY_2))
+            assertNull(baseCfg.getUserData(EXTRA_KEY_2))
+        }
+
+        // delegatedWith (override key/value; expressions recomputed)
+        run {
+            val delegated = CwtPropertyConfig.delegatedWith(baseCfg, key = baseCfg.key + "_d", value = "42")
+            assertEquals(baseCfg.key + "_d", delegated.key)
+            assertEquals("42", delegated.value)
+            // expressions exist; for block value (configs != null), valueExpression is blockExpression with isKey=true
+            assertTrue(delegated.keyExpression.isKey)
+            assertTrue(delegated.valueExpression.isKey)
+        }
+    }
+
+    // endregion
+
+    @Test
+    fun testResolver_delegatedWith_nonBlock_expressions_and_parent() {
+        val (file, group) = prepare().let { it.first to it.second }
+        val root = file.block!!
+        val p = root.findChild<CwtProperty> { it.name == "str_prop" }!!
+        val c = CwtPropertyConfig.resolve(p, file, group)!!
+        assertEquals(CwtType.String, c.valueType)
+        val d = CwtPropertyConfig.delegatedWith(c, key = c.key + "_d", value = "x")
+        assertNull(d.parentConfig)
+        assertTrue(d.keyExpression.isKey)
+        assertFalse(d.valueExpression.isKey)
     }
 }
