@@ -1,0 +1,15 @@
+"quoted key" = 1
+
+not_equal1 != 2
+not_equal2 <> 3
+
+str_prop = "s v"
+
+block_prop = {
+  a = 1
+  val1
+}
+
+## required
+## severity = info
+opt_prop = 1

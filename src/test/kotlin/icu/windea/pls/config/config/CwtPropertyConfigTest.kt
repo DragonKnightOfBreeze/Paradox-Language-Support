@@ -1,0 +1,95 @@
+package icu.windea.pls.config.config
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.findChild
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.ParadoxGameType
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+
+@RunWith(JUnit4::class)
+@TestDataPath("\$CONTENT_ROOT/testData")
+class CwtPropertyConfigTest : BasePlatformTestCase() {
+    override fun getTestDataPath() = "src/test/testData"
+
+    private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
+        myFixture.configureByFile("features/config/property_config_cases.test.cwt")
+        val file = myFixture.file as CwtFile
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val path = "common/test/property_config_cases.cwt"
+        return Triple(file, group, path)
+    }
+
+    @Test
+    fun testKeyValueTypes_and_Separators() {
+        val (file, group) = prepare().let { it.first to it.second }
+        val root = file.block!!
+
+        // quoted key
+        val pQuoted = root.findChild<CwtProperty> { it.name == "quoted key" }!!
+        val cQuoted = CwtPropertyConfig.resolve(pQuoted, file, group)!!
+        assertEquals("quoted key", cQuoted.key)
+        assertEquals("1", cQuoted.value)
+        assertEquals(CwtType.Int, cQuoted.valueType)
+        assertEquals(CwtSeparatorType.EQUAL, cQuoted.separatorType)
+
+        // not equals variants
+        val pNe1 = root.findChild<CwtProperty> { it.name == "not_equal1" }!!
+        val cNe1 = CwtPropertyConfig.resolve(pNe1, file, group)!!
+        assertEquals(CwtSeparatorType.NOT_EQUAL, cNe1.separatorType)
+        assertEquals("2", cNe1.value)
+        assertEquals(CwtType.Int, cNe1.valueType)
+
+        val pNe2 = root.findChild<CwtProperty> { it.name == "not_equal2" }!!
+        val cNe2 = CwtPropertyConfig.resolve(pNe2, file, group)!!
+        assertEquals(CwtSeparatorType.NOT_EQUAL, cNe2.separatorType)
+        assertEquals("3", cNe2.value)
+        assertEquals(CwtType.Int, cNe2.valueType)
+
+        // string value unquotes
+        val pStr = root.findChild<CwtProperty> { it.name == "str_prop" }!!
+        val cStr = CwtPropertyConfig.resolve(pStr, file, group)!!
+        assertEquals("s v", cStr.value)
+        assertEquals(CwtType.String, cStr.valueType)
+    }
+
+    @Test
+    fun testBlockProperty_and_ValueConfig() {
+        val (file, group) = prepare().let { it.first to it.second }
+        val root = file.block!!
+        val p = root.findChild<CwtProperty> { it.name == "block_prop" }!!
+        val c = CwtPropertyConfig.resolve(p, file, group)!!
+        assertEquals(CwtType.Block, c.valueType)
+        assertNotNull(c.configs)
+        // block has 2 members: a(property) and val1(value)
+        assertEquals(2, c.configs!!.size)
+
+        val v = c.valueConfig
+        assertNotNull(v)
+        assertSame(c, v!!.propertyConfig)
+        assertEquals(CwtType.Block, v.valueType)
+        assertNotNull(v.configs)
+        assertEquals(c.configs!!.size, v.configs!!.size)
+    }
+
+    @Test
+    fun testOptionConfigs_onProperty() {
+        val (file, group) = prepare().let { it.first to it.second }
+        val root = file.block!!
+        val p = root.findChild<CwtProperty> { it.name == "opt_prop" }!!
+        val c = CwtPropertyConfig.resolve(p, file, group)!!
+        val opts = c.optionConfigs
+        assertNotNull(opts)
+        // ## required ; ## severity = info
+        assertEquals(2, opts!!.size)
+        val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
+        val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "info" }
+        assertTrue(hasRequired)
+        assertTrue(hasSeverity)
+    }
+}
