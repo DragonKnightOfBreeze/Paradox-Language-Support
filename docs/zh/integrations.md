@@ -92,10 +92,10 @@ PLS 集成了以下翻译工具，可用于批量翻译本地化文本。
 <ArtPlayer src="/videos/integrations/translate_and_replace_1.mp4" poster="../images/translate_and_replace_1.png" />
 
 > [!info]
-> * 对于基于 [Translation 插件](https://github.com/yiiguxing/TranslationPlugin) 的操作任务，会在文件级别以及文件中的每个本地化条目级别并发执行。
-> * 对于基于 AI 的操作任务，会在文件级别并发执行，在文件中的每个本地化条目级别流式执行。
-> * 完成任务后，会弹出通知，提示任务的执行状态，并提供回退与重新应用操作的入口。
-> * 随时可以取消当前正在执行的任务。
+> - 对于基于 [Translation 插件](https://github.com/yiiguxing/TranslationPlugin) 的操作任务，会在文件级别以及文件中的每个本地化条目级别并发执行。
+> - 对于基于 AI 的操作任务，会在文件级别并发执行，在文件中的每个本地化条目级别流式执行。
+> - 完成任务后，会弹出通知，提示任务的执行状态，并提供回退与重新应用操作的入口。
+> - 随时可以取消当前正在执行的任务。
 
 ## 检查工具 {#linting-tools}
 

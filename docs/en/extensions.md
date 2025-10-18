@@ -174,9 +174,9 @@ Currently, only event trees and technology trees are provided.
 > [!tip]
 > You can also use the type hierarchy view to examine event trees and technology trees.
 > 
-> * With the cursor on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
-> * In the hierarchy tool window, view information for all definitions of the same type through a collapsible tree view.
-> * If the definition type is event or technology, the hierarchy view can be displayed as an event tree or technology tree.
+> - With the cursor on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
+> - In the hierarchy tool window, view information for all definitions of the same type through a collapsible tree view.
+> - If the definition type is event or technology, the hierarchy view can be displayed as an event tree or technology tree.
 > 
 > ![](../images/extensions/diagram_hierarchy_1.png)
 

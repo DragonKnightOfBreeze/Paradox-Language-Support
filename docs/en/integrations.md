@@ -92,10 +92,10 @@ Here is a demonstration of using AI to batch translate localization texts:
 <ArtPlayer src="/videos/integrations/translate_and_replace_1.mp4" poster="../images/translate_and_replace_1.png" />
 
 > [!info]
-> * For manipulation tasks based on the [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), they are executed concurrently at the file level and at each localization entry level within the file.
-> * For AI-based manipulation tasks, they are executed concurrently at the file level and streamed at each localization entry level within the file.
-> * After completing the task, a notification will pop up to indicate the task's execution status and provide options to revert or reapply the manipulations.
-> * You can cancel the currently executing task at any time.
+> - For manipulation tasks based on the [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), they are executed concurrently at the file level and at each localization entry level within the file.
+> - For AI-based manipulation tasks, they are executed concurrently at the file level and streamed at each localization entry level within the file.
+> - After completing the task, a notification will pop up to indicate the task's execution status and provide options to revert or reapply the manipulations.
+> - You can cancel the currently executing task at any time.
 
 ## Linting Tools {#linting-tools}
 
