@@ -14,7 +14,7 @@ import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 基于本地化文本片段的目标（封装变量/定义/本地化）查询器的基类。
@@ -93,8 +93,9 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
     class Context(
         val queryParameters: ParadoxTextBasedTargetSearch.SearchParameters,
     ) {
-        val processedLocalisations = ObjectOpenHashSet<ParadoxLocalisationProperty>()
-        val processedTargets = ObjectOpenHashSet<ParadoxTargetInfo>()
+        // 使用并发集合，避免在 IntelliJ 并发检索过程中发生非线程安全的 rehash 异常
+        val processedLocalisations: MutableSet<ParadoxLocalisationProperty> = ConcurrentHashMap.newKeySet()
+        val processedTargets: MutableSet<ParadoxTargetInfo> = ConcurrentHashMap.newKeySet()
 
         val types = queryParameters.types
         val settings = PlsFacade.getSettings().navigation
