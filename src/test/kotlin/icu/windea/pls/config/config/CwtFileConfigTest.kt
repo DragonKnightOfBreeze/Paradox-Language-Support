@@ -4,6 +4,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
@@ -46,6 +47,85 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertNotNull(p.valueConfig)
             assertEquals(CwtType.Int, p.valueConfig!!.valueType)
         }
+    }
+
+    @Test
+    fun testResolve_file_boundaries() {
+        myFixture.configureByFile("features/config/file_config_boundaries.test.cwt")
+        val file = myFixture.file as CwtFile
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val filePath = "common/test/file_config_boundaries.cwt"
+        val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
+
+        val props = fileConfig.properties.associateBy { it.key }
+
+        // label option with space should be picked even with normal comment between
+        run {
+            val p = props.getValue("space_prop")
+            val opts = p.optionConfigs
+            assertNotNull(opts)
+            val hasLabel = opts!!.any { it is CwtOptionValueConfig && it.value == "label with space" }
+            assertTrue(hasLabel)
+        }
+
+        // multiple options with different separators
+        run {
+            val p = props.getValue("mode_prop")
+            val opts = p.optionConfigs!!.filterIsInstance<CwtOptionConfig>()
+            assertEquals(2, opts.size)
+            val eq = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.EQUAL.name && it.value == "strict" }
+            val ne = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.NOT_EQUAL.name && it.value == "relax" }
+            assertTrue(eq)
+            assertTrue(ne)
+        }
+
+        // option with block value, containing nested option members
+        run {
+            val p = props.getValue("opt_block_prop")
+            val meta = p.optionConfigs!!.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
+            assertEquals(CwtType.Block, meta.valueType)
+            val nested = meta.optionConfigs
+            assertNotNull(nested)
+            val inner = nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
+            val foo = nested.any { it is CwtOptionValueConfig && it.value == "inner_val" }
+            assertTrue(inner)
+            assertTrue(foo)
+        }
+
+        // empty block property -> configs should be non-null and empty for both property and its valueConfig
+        run {
+            val p = props.getValue("empty_block_prop")
+            assertEquals(CwtType.Block, p.valueType)
+            assertNotNull(p.configs)
+            assertTrue(p.configs!!.isEmpty())
+            val v = p.valueConfig
+            assertNotNull(v)
+            assertNotNull(v!!.configs)
+            assertTrue(v.configs!!.isEmpty())
+        }
+
+        // number formats
+        assertEquals(CwtType.Float, props.getValue("prop_float_no_leading_zero").valueType)
+        assertEquals(".5", props.getValue("prop_float_no_leading_zero").value)
+        assertEquals(CwtType.Int, props.getValue("prop_int_leading_zero").valueType)
+        assertEquals("007", props.getValue("prop_int_leading_zero").value)
+        assertEquals(CwtType.Int, props.getValue("prop_int_negative").valueType)
+        assertEquals("-3", props.getValue("prop_int_negative").value)
+        assertEquals(CwtType.Float, props.getValue("prop_float_negative").valueType)
+        assertEquals("-0.75", props.getValue("prop_float_negative").value)
+    }
+    @Test
+    fun testResolve_file_basic_rest() {
+        myFixture.configureByFile("features/config/file_config_basic.test.cwt")
+        val file = myFixture.file as CwtFile
+        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val filePath = "common/test/file_config_basic.cwt"
+        val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
+
+        val props = fileConfig.properties.associateBy { it.key }
+
         run {
             val p = props.getValue("prop_float")
             assertEquals("1.5", p.value)
@@ -55,13 +135,11 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         }
         run {
             val p = props.getValue("prop_string")
-            // value removes quotes
             assertEquals("abc", p.value)
             assertEquals(CwtType.String, p.valueType)
         }
         run {
             val p = props.getValue("prop_ident")
-            // bare identifier is a String at PSI/type level
             assertEquals("int", p.value)
             assertEquals(CwtType.String, p.valueType)
         }
@@ -78,12 +156,9 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         run {
             val p = props.getValue("prop_block")
             assertEquals(CwtType.Block, p.valueType)
-            // when valueType == Block and no explicit nested members collected, resolver guarantees non-null (possibly empty) list
             assertNotNull(p.configs)
-            // from test data it contains 3 members: inner_prop(property), inner_val(value), nested_opt_target(property)
             assertEquals(3, p.configs!!.size)
 
-            // valueConfig is backed by property config (wrapper)
             val v = p.valueConfig
             assertNotNull(v)
             assertSame(p, v!!.propertyConfig)
@@ -91,10 +166,8 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertNotNull(v.configs)
             assertEquals(p.configs!!.size, v.configs!!.size)
 
-            // option configs attached before prop_block
             val opts = p.optionConfigs
             assertNotNull(opts)
-            // required (value only) + severity = warning
             assertEquals(2, opts!!.size)
             val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
             val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "warning" }
@@ -102,16 +175,13 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertTrue(hasSeverity)
         }
 
-        // top-level values
         val values = fileConfig.values
-        // we expect 2: top_value1 and "top quoted"
         assertEquals(2, values.size)
 
         val vMap = values.groupBy { it.value }
         run {
             val v = vMap.getValue("top_value1").single()
             assertEquals(CwtType.String, v.valueType)
-            // option attached before top_value1
             val opts = v.optionConfigs
             assertNotNull(opts)
             val hasTag = opts!!.any { it is CwtOptionValueConfig && it.value == "tag" }

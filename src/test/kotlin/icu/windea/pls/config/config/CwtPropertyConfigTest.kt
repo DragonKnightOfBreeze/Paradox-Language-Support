@@ -92,4 +92,82 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         assertTrue(hasRequired)
         assertTrue(hasSeverity)
     }
+
+    @Test
+    fun testBoundaries_propertyOptions_and_NumberFormats() {
+        myFixture.configureByFile("features/config/property_config_boundaries.test.cwt")
+        val file = myFixture.file as CwtFile
+        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val root = file.block!!
+
+        // option value with space, with normal comment between option and property
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "space_prop" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            val opts = c.optionConfigs
+            assertNotNull(opts)
+            assertTrue(opts!!.any { it is CwtOptionValueConfig && it.value == "label with space" })
+        }
+
+        // two options with different separators for same key
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "mode_prop" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            val opts = c.optionConfigs!!.filterIsInstance<CwtOptionConfig>()
+            assertEquals(2, opts.size)
+            assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.EQUAL && it.value == "strict" })
+            assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.NOT_EQUAL && it.value == "relax" })
+        }
+
+        // option with block value having nested option members
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "opt_block_prop" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            val meta = c.optionConfigs!!.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
+            assertEquals(CwtType.Block, meta.valueType)
+            val nested = meta.optionConfigs
+            assertNotNull(nested)
+            assertTrue(nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" })
+            assertTrue(nested.any { it is CwtOptionValueConfig && it.value == "inner_val" })
+        }
+
+        // empty block property -> configs should be non-null and empty
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "empty_block_prop" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            assertEquals(CwtType.Block, c.valueType)
+            assertNotNull(c.configs)
+            assertTrue(c.configs!!.isEmpty())
+            val v = c.valueConfig
+            assertNotNull(v)
+            assertNotNull(v!!.configs)
+            assertTrue(v.configs!!.isEmpty())
+        }
+
+        // number formats
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "prop_float_no_leading_zero" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            assertEquals(CwtType.Float, c.valueType)
+            assertEquals(".5", c.value)
+        }
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "prop_int_leading_zero" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            assertEquals(CwtType.Int, c.valueType)
+            assertEquals("007", c.value)
+        }
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "prop_int_negative" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            assertEquals(CwtType.Int, c.valueType)
+            assertEquals("-3", c.value)
+        }
+        run {
+            val p = root.findChild<CwtProperty> { it.name == "prop_float_negative" }!!
+            val c = CwtPropertyConfig.resolve(p, file, group)!!
+            assertEquals(CwtType.Float, c.valueType)
+            assertEquals("-0.75", c.value)
+        }
+    }
 }

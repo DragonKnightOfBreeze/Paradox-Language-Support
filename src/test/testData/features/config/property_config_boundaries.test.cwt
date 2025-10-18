@@ -1,0 +1,17 @@
+"empty_block_prop" = { }
+
+# plain comment should be ignored by option parser
+## label with space
+space_prop = 1
+
+## mode == strict
+## mode <> relax
+mode_prop = 0
+
+## meta = { inner = 1 inner_val }
+opt_block_prop = 0
+
+prop_float_no_leading_zero = .5
+prop_int_leading_zero = 007
+prop_int_negative = -3
+prop_float_negative = -0.75

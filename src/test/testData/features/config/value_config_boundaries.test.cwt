@@ -1,0 +1,12 @@
+## note with space
+ident_val
+
+-7
+-.25
+.5
+007
+" spaced "
+{ }
+
+## meta = { inner = 1 foo }
+{ a = 1 }
