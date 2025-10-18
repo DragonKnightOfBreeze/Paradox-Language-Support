@@ -75,7 +75,10 @@ object CwtConfigManipulator {
 
     // region Deep Copy Methods
 
-    fun deepCopyConfigs(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig): List<CwtMemberConfig<*>>? {
+    fun deepCopyConfigs(
+        containerConfig: CwtMemberConfig<*>,
+        parentConfig: CwtMemberConfig<*> = containerConfig
+    ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = mutableListOf<CwtMemberConfig<*>>()
@@ -90,7 +93,11 @@ object CwtConfigManipulator {
         return result // 这里需要直接返回可变列表
     }
 
-    fun deepCopyConfigsInDeclarationConfig(containerConfig: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = containerConfig, context: CwtDeclarationConfigContext): List<CwtMemberConfig<*>>? {
+    fun deepCopyConfigsInDeclarationConfig(
+        containerConfig: CwtMemberConfig<*>,
+        parentConfig: CwtMemberConfig<*> = containerConfig,
+        context: CwtDeclarationConfigContext
+    ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = mutableListOf<CwtMemberConfig<*>>()
