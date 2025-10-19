@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
@@ -29,7 +28,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                val complexExpression = resolveComplexExpression(element, configGroup) ?: return
+                val complexExpression = ParadoxComplexExpression.resolve(element, configGroup) ?: return
                 val errors = complexExpression.getAllErrors(element)
                 if (errors.isEmpty()) return
                 val fixes = getFixes(element, complexExpression)
@@ -37,8 +36,6 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
             }
         }
     }
-
-    protected abstract fun resolveComplexExpression(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression?
 
     protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
         return LocalQuickFix.EMPTY_ARRAY

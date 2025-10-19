@@ -15,7 +15,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
@@ -81,7 +80,8 @@ class ParadoxScriptExpressionPsiReference(
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
-        return result.orNull()
+        if(result.isNullOrEmpty()) return EMPTY_ARRAY
+        return result
     }
 
     // 缓存解析结果以优化性能

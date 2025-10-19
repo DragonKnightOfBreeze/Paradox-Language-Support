@@ -5,29 +5,20 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
-import icu.windea.pls.localisation.psi.isCommandExpression
 
 /**
  * 不正确的 [ParadoxCommandExpression] 的代码检查。
  */
 class IncorrectCommandExpressionInspection : IncorrectComplexExpressionBase() {
-    override fun resolveComplexExpression(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
-        if (!element.isCommandExpression()) return null
-        val value = element.value
-        val textRange = TextRange.create(0, value.length)
-        return ParadoxCommandExpression.resolve(value, textRange, configGroup)
-    }
 
     override fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
         return arrayOf(EscapeCommandFix(element))

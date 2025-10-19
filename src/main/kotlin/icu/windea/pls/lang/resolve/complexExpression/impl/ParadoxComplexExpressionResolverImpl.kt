@@ -35,11 +35,17 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
             }
             is ParadoxLocalisationExpressionElement -> {
                 if (!element.isComplexExpression()) return null
-                val value = element.value
-                val textRange = TextRange.create(0, value.length)
                 when {
-                    element.isCommandExpression() -> ParadoxCommandExpression.resolve(value, textRange, configGroup)
-                    element.isDatabaseObjectExpression() -> ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup)
+                    element.isCommandExpression() -> {
+                        val value = element.value
+                        val textRange = TextRange.create(0, value.length)
+                        ParadoxCommandExpression.resolve(value, textRange, configGroup)
+                    }
+                    element.isDatabaseObjectExpression(strict = true) -> {
+                        val value = element.value
+                        val textRange = TextRange.create(0, value.length)
+                        ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup)
+                    }
                     else -> null
                 }
             }

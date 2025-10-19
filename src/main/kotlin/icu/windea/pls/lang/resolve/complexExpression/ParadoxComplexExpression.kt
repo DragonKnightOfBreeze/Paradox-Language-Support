@@ -34,4 +34,3 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
 
     companion object : Resolver by ParadoxComplexExpressionResolverImpl()
 }
-

@@ -54,7 +54,9 @@ object CwtConfigSymbolManager {
         ProgressManager.checkCanceled()
         val infos = doGetInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
-        return infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }.toTypedArray()
+        val references = infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
+        if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
+        return references.toTypedArray()
     }
 
     private fun doGetInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {

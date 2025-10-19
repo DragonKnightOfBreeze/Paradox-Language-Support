@@ -68,13 +68,13 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
-        if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        if (element !is ParadoxScriptStringExpressionElement) return null
         val separatorIndex = expressionText.indexOf('@')
-        if (separatorIndex == -1) return PsiReference.EMPTY_ARRAY
+        if (separatorIndex == -1) return null
         val range = rangeInElement ?: TextRange.create(0, expressionText.length).unquote(expressionText)
         val offset = separatorIndex
         val range1 = range.let { TextRange.create(it.startOffset, it.startOffset + offset) }
-        if (range1.isEmpty) return PsiReference.EMPTY_ARRAY
+        if (range1.isEmpty) return null
         val config1 = CwtValueConfig.create(emptyPointer(), config.configGroup, typeExpression)
         val reference = ParadoxScriptExpressionPsiReference(element, range1, config1, null)
         return arrayOf(reference)
