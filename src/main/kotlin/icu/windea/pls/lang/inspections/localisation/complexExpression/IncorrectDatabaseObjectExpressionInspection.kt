@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 
 /**
- * 不正确的 [ParadoxDatabaseObjectExpression] 的检查。
+ * 不正确的 [ParadoxDatabaseObjectExpression] 的代码检查。
  */
 class IncorrectDatabaseObjectExpressionInspection : IncorrectComplexExpressionBase() {
     override fun resolveComplexExpression(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {

@@ -53,7 +53,7 @@ import icu.windea.pls.script.psi.tagType
 import javax.swing.JComponent
 
 /**
- * 无法解析的表达式的检查。
+ * 无法解析的表达式的代码检查。
  *
  * @property ignoredByConfigs （配置项）如果对应的扩展的CWT规则存在，是否需要忽略此代码检查。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
@@ -108,28 +108,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if (configContext.getConfigs().isEmpty()) return true
 
                 val configs = ParadoxExpressionManager.getConfigs(element)
-                if (configs.isEmpty()) {
-                    val expectedConfigs = getExpectedConfigs(element)
-                    if (expectedConfigs.isNotEmpty()) {
-                        // 判断是否需要排除
-                        if (isExcluded(expectedConfigs)) return true
-                        // 判断是否需要忽略
-                        if (isIgnoredByConfigs(propertyKey, expectedConfigs)) return true
-                    }
-                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsFacade.getInternalSettings().itemLimit).joinToString() else null
-                    val message = when {
-                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", propertyKey.expression)
-                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", propertyKey.expression, expect)
-                        else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.3", propertyKey.expression)
-                    }
-                    val highlightType = getHighlightType(propertyKey, expectedConfigs)
-                    val fixes = getFixes(propertyKey, expectedConfigs)
-                    holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
-                    // skip checking children
-                    return false
-                }
-                return continueCheck(configs)
+                if (configs.isNotEmpty()) return continueCheck(configs)
+
+                val expectedConfigs = getExpectedConfigs(element)
+                if (isSkipped(propertyKey, expectedConfigs)) return true
+                val message = getMessage(propertyKey, expectedConfigs)
+                val highlightType = getHighlightType(propertyKey, expectedConfigs)
+                val fixes = getFixes(propertyKey, expectedConfigs)
+                holder.registerProblem(element, message, highlightType, *fixes)
+
+                // skip checking children if parent has problems
+                return false
             }
 
             private fun visitValue(element: ParadoxScriptValue): Boolean {
@@ -152,31 +141,25 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if (configContext.getConfigs().isEmpty()) return true
 
                 val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
-                if (configs.isEmpty()) {
-                    // skip check value if it is a special tag and there are no matched configs
-                    if (element.tagType() != null) return false
+                if (configs.isNotEmpty()) return continueCheck(configs)
+                // skip check value if it is a special tag and there are no matched configs
+                if (element.tagType() != null) return false
 
-                    val expectedConfigs = getExpectedConfigs(element, configContext)
-                    if (expectedConfigs.isNotEmpty()) {
-                        // 判断是否需要排除
-                        if (isExcluded(expectedConfigs)) return true
-                        // 判断是否需要忽略
-                        if (isIgnoredByConfigs(element, expectedConfigs)) return true
-                    }
-                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsFacade.getInternalSettings().itemLimit).joinToString() else null
-                    val message = when {
-                        expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
-                        expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
-                        else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
-                    }
-                    val highlightType = getHighlightType(element, expectedConfigs)
-                    val fixes = getFixes(element, expectedConfigs)
-                    holder.registerProblem(element, message, highlightType, *fixes.toTypedArray())
-                    // skip checking children
-                    return false
-                }
-                return continueCheck(configs)
+                val expectedConfigs = getExpectedConfigs(element, configContext)
+                if (isSkipped(element, expectedConfigs)) return true
+                val message = getMessage(element, expectedConfigs)
+                val highlightType = getHighlightType(element, expectedConfigs)
+                val fixes = getFixes(element, expectedConfigs)
+                holder.registerProblem(element, message, highlightType, *fixes)
+
+                // skip checking children if parent has problems
+                return false
+            }
+
+            private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
+                // any 规则不需要再向下检查
+                if (configs.any { it.configExpression.type == CwtDataTypes.Any }) return false
+                return true
             }
 
             private fun getExpectedConfigs(element: ParadoxScriptProperty): List<CwtPropertyConfig> {
@@ -215,14 +198,23 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 }
             }
 
+            private fun isSkipped(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
+                if (expectedConfigs.isEmpty()) return false
+                return when {
+                    isExcluded(expectedConfigs) -> true
+                    isIgnoredByConfigs(element, expectedConfigs) -> true
+                    else -> false
+                }
+            }
+
             private fun isExcluded(memberConfigs: List<CwtMemberConfig<*>>): Boolean {
                 return memberConfigs.all { it.configExpression.type in CwtDataTypeGroups.PathReference }
             }
 
-            private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, memberConfigs: List<CwtMemberConfig<*>>): Boolean {
+            private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
                 if (!ignoredByConfigs) return false
                 val value = element.value
-                for (memberConfig in memberConfigs) {
+                for (memberConfig in expectedConfigs) {
                     val configExpression = memberConfig.configExpression
                     if (configExpression.type in CwtDataTypeGroups.DefinitionAware) {
                         val definitionType = configExpression.value ?: continue
@@ -241,35 +233,57 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 }
                 return false
             }
+        }
+    }
 
-            private fun getHighlightType(expressionElement: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType {
-                if (expressionElement !is ParadoxScriptStringExpressionElement) return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                return when {
-                    expectedConfigs.any { it.configExpression.type in CwtDataTypeGroups.TextReference } -> ProblemHighlightType.WEAK_WARNING // use weak warning (wave lines) instead
-                    else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                }
+    private fun getMessage(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
+        val expect = when {
+            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
+                .truncate(PlsFacade.getInternalSettings().itemLimit).joinToString()
+            else -> null
+        }
+        val message = when (element) {
+            is ParadoxScriptValue -> when {
+                expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
+                expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
+                else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.3", element.expression)
             }
-
-            private fun getFixes(expressionElement: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): List<LocalQuickFix> {
-                if (expressionElement !is ParadoxScriptStringExpressionElement) return emptyList()
-                return buildList {
-                    val locales = ParadoxLocaleManager.getLocaleConfigs()
-                    val context = expectedConfigs.firstNotNullOfOrNull {
-                        ParadoxLocalisationCodeInsightContextBuilder.fromReference(expressionElement, it, locales, fromInspection = true)
-                    }
-                    if (context != null) {
-                        this += GenerateLocalisationsFix(expressionElement, context)
-                        this += GenerateLocalisationsInFileFix(expressionElement)
-                    }
-                }
-            }
-
-            private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
-                // any规则不需要再向下检查
-                if (configs.any { it.configExpression.type == CwtDataTypes.Any }) return false
-                return true
+            else -> when {
+                expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", element.expression)
+                expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", element.expression, expect)
+                else -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.3", element.expression)
             }
         }
+        return message
+    }
+
+    private fun getHighlightType(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): ProblemHighlightType {
+        run {
+            // localisation reference -> expression can be a string literal instead  -> use weak warning (wave lines) instead
+            if (element !is ParadoxScriptStringExpressionElement) return@run
+            val r = expectedConfigs.any { it.configExpression.type in CwtDataTypeGroups.LocalisationReference }
+            if (r) return ProblemHighlightType.WEAK_WARNING
+        }
+        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+    }
+
+    private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
+        // TODO 2.0.6 新增基于相似项的快速修复
+        val result = mutableListOf<LocalQuickFix>()
+        run {
+            // localisation reference & can get codeInsightContext -> add generate localisations fix
+            if (element !is ParadoxScriptStringExpressionElement) return@run
+            val locales = ParadoxLocaleManager.getLocaleConfigs()
+            val context = expectedConfigs.firstNotNullOfOrNull {
+                ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, locales, fromInspection = true)
+            }
+            if (context != null) {
+                result += GenerateLocalisationsFix(element, context)
+                result += GenerateLocalisationsInFileFix(element)
+            }
+        }
+        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
+        return result.toTypedArray()
     }
 
     override fun createOptionsPanel(): JComponent {

@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -9,6 +11,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -49,16 +53,36 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if (ParadoxCsvFileManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
-                val description = PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
-                if (element.isEmptyColumn()) { // special handle for empty columns
-                    val isFirst = element.getColumnIndex() == 0
-                    val locationElement = element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR } ?: return
-                    holder.registerProblem(locationElement, description)
-                    return
+                val locationElement = when {
+                    // special handle for empty columns
+                    element.isEmptyColumn() -> {
+                        val isFirst = element.getColumnIndex() == 0
+                        element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR } ?: return
+                    }
+                    else -> element
                 }
-                holder.registerProblem(element, description)
+
+                val description = getMessage(element, columnConfig, config)
+                val highlightType = getHighlightType(element, columnConfig, config)
+                val fixes = getFixes(element, columnConfig, config)
+                holder.registerProblem(locationElement, description, highlightType, *fixes)
             }
         }
+    }
+
+    private fun getMessage(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): String {
+        return PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
+    }
+
+    @Suppress("unused")
+    private fun getHighlightType(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): ProblemHighlightType {
+        return ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+    }
+
+    @Suppress("unused")
+    private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<LocalQuickFix> {
+        // TODO 2.0.6 新增基于相似项的快速修复
+        return LocalQuickFix.EMPTY_ARRAY
     }
 
     override fun createOptionsPanel(): JComponent {

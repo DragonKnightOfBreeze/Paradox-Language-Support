@@ -40,7 +40,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
 
     protected abstract fun resolveComplexExpression(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression?
 
-    protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<out LocalQuickFix> {
+    protected open fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
         return LocalQuickFix.EMPTY_ARRAY
     }
 }

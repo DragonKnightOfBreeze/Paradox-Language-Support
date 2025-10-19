@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 /**
- * 缺少的参数的检查。
+ * 缺失的参数的代码检查。
  */
 class MissingParameterInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

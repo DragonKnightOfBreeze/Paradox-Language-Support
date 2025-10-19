@@ -33,7 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.JComponent
 
 /**
- * 无法解析的路径引用的检查。
+ * 无法解析的路径引用的代码检查。
  *
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。

@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
- * 不正确的文件名的检查。
+ * 不正确的文件名的代码检查。
  *
  * 提供快速修复：
  * - 改为正确的文件名

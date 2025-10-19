@@ -2,7 +2,6 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -27,7 +26,7 @@ import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
 import javax.swing.JComponent
 
 /**
- * 缺失的本地化的检查
+ * 缺失的本地化的代码检查。
  */
 class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField
@@ -69,10 +68,9 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
                 val messages = getMessages(context)
                 if (messages.isEmpty()) return
-                val fixes = getFixes(element, context).toTypedArray()
+                val fixes = getFixes(element, context)
                 for (message in messages) {
-                    // 显示为WEAK_WARNING
-                    holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING, *fixes)
+                    holder.registerProblem(location, message, *fixes)
                 }
             }
 
@@ -99,14 +97,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 val localeId = codeInsightInfo.locale.id
                 return PlsBundle.message("inspection.localisation.missingLocalisation.desc", from, localeId)
             }
-
-            private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): List<LocalQuickFix> {
-                return buildList {
-                    this += GenerateLocalisationsFix(element, context)
-                    this += GenerateLocalisationsInFileFix(element)
-                }
-            }
         }
+    }
+
+    private fun getFixes(element: PsiElement, context: ParadoxLocalisationCodeInsightContext): Array<LocalQuickFix> {
+        return arrayOf(
+            GenerateLocalisationsFix(element, context),
+            GenerateLocalisationsInFileFix(element),
+        )
     }
 
     override fun createOptionsPanel(): JComponent {

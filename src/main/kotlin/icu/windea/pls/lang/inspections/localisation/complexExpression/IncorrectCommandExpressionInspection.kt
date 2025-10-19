@@ -19,7 +19,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.isCommandExpression
 
 /**
- * 不正确的 [ParadoxCommandExpression] 的检查。
+ * 不正确的 [ParadoxCommandExpression] 的代码检查。
  */
 class IncorrectCommandExpressionInspection : IncorrectComplexExpressionBase() {
     override fun resolveComplexExpression(element: ParadoxLocalisationExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
@@ -29,7 +29,7 @@ class IncorrectCommandExpressionInspection : IncorrectComplexExpressionBase() {
         return ParadoxCommandExpression.resolve(value, textRange, configGroup)
     }
 
-    override fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<out LocalQuickFix> {
+    override fun getFixes(element: ParadoxLocalisationExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
         return arrayOf(EscapeCommandFix(element))
     }
 

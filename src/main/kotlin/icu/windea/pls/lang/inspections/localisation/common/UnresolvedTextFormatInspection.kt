@@ -19,7 +19,7 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
 import javax.swing.JComponent
 
 /**
- * 无法解析的文本格式的检查。
+ * 无法解析的文本格式的代码检查。
  *
  * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。

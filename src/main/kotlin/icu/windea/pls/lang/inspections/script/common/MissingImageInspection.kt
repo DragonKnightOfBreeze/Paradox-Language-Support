@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
@@ -10,7 +10,6 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContextBuilder
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightInfo
@@ -21,7 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.JComponent
 
 /**
- * 缺失的图片的检查。
+ * 缺失的图片的代码检查。
  */
 class MissingImageInspection : LocalInspectionTool() {
     @JvmField
@@ -72,9 +71,9 @@ class MissingImageInspection : LocalInspectionTool() {
                 }
                 val messages = getMessages(context)
                 if (messages.isEmpty()) return
+                val fixes = getFixes(element, context)
                 for (message in messages) {
-                    // 显示为WEAK_WARNING
-                    holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
+                    holder.registerProblem(location, message, *fixes)
                 }
             }
 
@@ -166,8 +165,9 @@ class MissingImageInspection : LocalInspectionTool() {
         }
     }
 
-    data class Context(
-        val info: ParadoxDefinitionInfo.RelatedImageInfo,
-        val key: String?
-    )
+    @Suppress("unused")
+    private fun getFixes(element: PsiElement, context: ParadoxImageCodeInsightContext): Array<LocalQuickFix> {
+        // nothing now
+        return LocalQuickFix.EMPTY_ARRAY
+    }
 }

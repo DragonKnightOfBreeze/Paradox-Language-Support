@@ -25,7 +25,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 动态值值被使用但未被设置的检查。
+ * 动态值值被使用但未被设置的代码检查。
  *
  * 例如，有`has_flag = xxx`但没有`set_flag = xxx`。
  *

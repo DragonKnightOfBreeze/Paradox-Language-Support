@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 不正确的语法的检查。
+ * 不正确的语法的代码检查。
  */
 class IncorrectSyntaxInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

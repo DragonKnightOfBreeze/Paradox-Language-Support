@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.isExpression
 
 /**
- * 对应的CWT规则有多个且存在冲突的表达式的检查。
+ * 对应的CWT规则有多个且存在冲突的表达式的代码检查。
  */
 @Suppress("UNUSED_PARAMETER")
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {

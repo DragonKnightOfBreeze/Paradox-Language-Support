@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import javax.swing.JComponent
 
 /**
- * 无法解析的封装变量引用的检查。
+ * 无法解析的封装变量引用的代码检查。
  *
  * 提供快速修复：
  * - 声明全局封装变量（在`common/scripted_variables`目录下的某一文件中）
@@ -55,14 +55,18 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
                 if (name.isParameterized()) return // skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
-                val quickFixes = listOf<LocalQuickFix>(
-                    IntroduceLocalVariableFix(name, element),
-                    IntroduceGlobalVariableFix(name, element)
-                )
                 val message = PlsBundle.message("inspection.localisation.unresolvedScriptedVariable.desc", name)
-                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
+                val quickFixes = getFixes(element, name)
+                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes)
             }
         }
+    }
+
+    private fun getFixes(element: ParadoxLocalisationScriptedVariableReference, name: String): Array<LocalQuickFix> {
+        return arrayOf(
+            IntroduceLocalVariableFix(name, element),
+            IntroduceGlobalVariableFix(name, element)
+        )
     }
 
     override fun createOptionsPanel(): JComponent {

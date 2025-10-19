@@ -19,7 +19,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.JComponent
 
 /**
- * 无法解析的概念的检查。
+ * 无法解析的概念的代码检查。
  *
  * @property ignoredByConfigs （配置项）如果对应的扩展的CWT规则存在，是否需要忽略此代码检查。
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。

@@ -20,7 +20,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
     )
-    val TextReference = arrayOf(
+    val LocalisationReference = arrayOf(
         CwtDataTypes.Localisation,
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,

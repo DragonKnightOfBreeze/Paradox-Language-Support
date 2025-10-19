@@ -14,7 +14,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
- * 未使用的内联脚本的检查。
+ * 未使用的内联脚本的代码检查。
  */
 class UnusedInlineScriptInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

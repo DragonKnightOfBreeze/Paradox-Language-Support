@@ -33,7 +33,7 @@ import icu.windea.pls.script.psi.members
 import javax.swing.JComponent
 
 /**
- * 缺失的表达式的检查。
+ * 缺失的表达式的代码检查。
  * @property firstOnly 是否仅标出第一个错误。
  * @property firstOnlyOnFile 在文件级别上，是否仅标出第一个错误。
  */

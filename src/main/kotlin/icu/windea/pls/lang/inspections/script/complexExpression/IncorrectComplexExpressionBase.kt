@@ -51,7 +51,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean
 
-    protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression): Array<out LocalQuickFix> {
+    protected open fun getFixes(element: ParadoxScriptStringExpressionElement, complexExpression: ParadoxComplexExpression): Array<LocalQuickFix> {
         return LocalQuickFix.EMPTY_ARRAY
     }
 }

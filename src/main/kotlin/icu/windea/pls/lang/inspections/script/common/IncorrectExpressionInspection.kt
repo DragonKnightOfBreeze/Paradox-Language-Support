@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isExpression
 
 /**
- * 不正确的表达式的检查。
+ * 不正确的表达式的代码检查。
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

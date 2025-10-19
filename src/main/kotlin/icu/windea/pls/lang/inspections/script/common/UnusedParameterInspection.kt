@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 参数被设置/引用但未被使用的检查。
+ * 参数被设置/引用但未被使用的代码检查。
  *
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */

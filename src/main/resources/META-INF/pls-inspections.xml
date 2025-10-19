@@ -62,12 +62,12 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
                      bundle="messages.PlsBundle"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="true" level="WEAK WARNING"
                      key="inspection.script.missingLocalisation" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingImage"
                      bundle="messages.PlsBundle"
-                     enabledByDefault="true" level="WARNING"
+                     enabledByDefault="true" level="WEAK WARNING"
                      key="inspection.script.missingImage" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingImageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedScriptedVariable"
@@ -235,7 +235,7 @@
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocalisation"
                      key="inspection.localisation.missingLocalisation" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
-                     enabledByDefault="true" level="ERROR"
+                     enabledByDefault="true" level="WEAK WARNING"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
                      key="inspection.localisation.unsupportedLocale" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
