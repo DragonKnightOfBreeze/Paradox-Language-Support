@@ -36,16 +36,14 @@ object PlsInspectionManager {
 
         val fixes = mutableListOf<LocalQuickFix>()
 
-        // 最匹配的项单独提供快速修复（直接替换）
-        // 余下的项如果不大于3个，则为所有匹配项提供快速修复（弹出列表），否则每个单独提供快速修复（直接替换）
+        // 为最匹配的项提供单独的快速修复（直接替换）
+        // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
         val values = matches.map { it.value }
         val first = values.first()
-        fixes += ReplaceWithSimilarExpressionFix(element, first, true)
+        fixes += ReplaceWithSimilarExpressionFix(element, first)
         val remain = values.drop(1)
-        if(remain.size > 3) {
+        if(remain.isNotEmpty()) {
             fixes += ReplaceWithSimilarExpressionInListFix(element, values)
-        } else {
-            remain.forEach { v -> fixes += ReplaceWithSimilarExpressionFix(element, v, false) }
         }
 
         return fixes

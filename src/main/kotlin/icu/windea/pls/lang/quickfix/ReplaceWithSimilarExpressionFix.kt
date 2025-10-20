@@ -15,13 +15,12 @@ import kotlinx.coroutines.launch
 class ReplaceWithSimilarExpressionFix(
     element: ParadoxExpressionElement,
     private val replacement: String,
-    private val mostSimilar: Boolean,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.HIGH
+    override fun getPriority() = PriorityAction.Priority.TOP
 
     override fun getText() = PlsBundle.message("fix.replaceWithSimilarExpression.name", replacement)
 
-    override fun getFamilyName() = if (mostSimilar) PlsBundle.message("fix.replaceWithSimilarExpression.familyName") else text
+    override fun getFamilyName() = PlsBundle.message("fix.replaceWithSimilarExpression.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (startElement !is ParadoxExpressionElement) return
@@ -38,7 +37,7 @@ class ReplaceWithSimilarExpressionFix(
         }
     }
 
-    override fun availableInBatchMode() = mostSimilar
+    override fun availableInBatchMode() = true
 
     override fun startInWriteAction() = false
 }
