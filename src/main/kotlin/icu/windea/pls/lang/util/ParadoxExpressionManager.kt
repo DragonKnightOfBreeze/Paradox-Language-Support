@@ -335,13 +335,12 @@ object ParadoxExpressionManager {
         subPaths.forEachIndexed f1@{ i, subPath ->
             ProgressManager.checkCanceled()
 
-            // 如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
-            // 如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
+            // 如果整个过程中得到的某个 propertyConfig 的 valueExpressionType 是 `single_alias_right` 或 `alias_matches_left` ，则需要内联子规则
+            // 如果整个过程中的某个 key 匹配内联规则的名字（如，`inline_script`），则需要内联此内联规则
 
             val isParameterized = subPath.isParameterized()
             val isFullParameterized = subPath.isParameterized(full = true)
-            val shift = subPaths.lastIndex - i
-            val matchesKey = isPropertyValue || shift > 0
+            val matchesKey = isPropertyValue || subPaths.lastIndex - i > 0
             val expression = ParadoxScriptExpression.resolve(subPath, quoted = false, isKey = true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
@@ -387,12 +386,8 @@ object ParadoxExpressionManager {
                     configs.forEach f3@{ config ->
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
-                            if (matchesKey) {
-                                val matchResult = ParadoxScriptExpressionMatcher.matches(elementToMatch, expression, config.keyExpression, config, configGroup, matchOptions)
-                                if (!matchResult.get(matchOptions)) return@f3
-                            }
                             val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
-                            if (inlinedConfigs == null) {
+                            if (inlinedConfigs.isNullOrEmpty()) { // null (cannot or failed) or empty
                                 addToMatchedConfigs(config)
                             } else {
                                 inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
@@ -458,7 +453,6 @@ object ParadoxExpressionManager {
         orDefault: Boolean = true,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
-
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)
