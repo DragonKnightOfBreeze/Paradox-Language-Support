@@ -34,7 +34,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 **使用步骤：**
 
 1. 在 IDE 中打开你的模组根目录。
-2. 打开模组描述符文件（`descriptor.mod`，VIC3 中为 `.metadata/metadata.json`）。
+2. 打开模组描述符文件（`descriptor.mod`，VIC3  和 EU5 中为 `.metadata/metadata.json`）。
 3. 点击编辑器右上角的悬浮工具栏中的 *模组配置* 按钮。
 4. 配置模组的游戏类型、游戏目录及所需的模组依赖。
 5. 确认配置，等待 IDE 完成索引。

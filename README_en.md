@@ -33,7 +33,7 @@ PLS implements its core language features based on its own [config system](https
 **Usage Steps:**
 
 1. Open your mod's root directory in the IDE.
-2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3).
+2. Open the mod descriptor file (`descriptor.mod`, or `.metadata/metadata.json` for VIC3 and EU5).
 3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
