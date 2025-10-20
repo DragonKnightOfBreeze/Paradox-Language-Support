@@ -100,7 +100,7 @@ class SimilarityMatchServiceTest {
         )
         val results = SimilarityMatchService.findBestMatches(input, candidates, options)
         val values = results.map { it.value }
-        Assert.assertEquals(listOf("abcx", "abcy"), values) // lex ascending after same score
+        Assert.assertEquals(listOf("abcx", "abcy"), values) // should keep order (index in candidates)
     }
 
     @Test
@@ -109,7 +109,7 @@ class SimilarityMatchServiceTest {
         val candidates = listOf("foob", "fooa")
         val options = SimilarityMatchOptions(ignoreCase = false, enableSnippetMatch = false, enableTypoMatch = false)
         val results = SimilarityMatchService.findBestMatches(input, candidates, options)
-        Assert.assertEquals(listOf("fooa", "foob"), results.map { it.value })
+        Assert.assertEquals(listOf("foob", "fooa"), results.map { it.value }) // should keep order (index in candidates)
         Assert.assertTrue(results.all { it.strategy == SimilarityMatchStrategy.PREFIX })
     }
 
@@ -182,5 +182,28 @@ class SimilarityMatchServiceTest {
         Assert.assertTrue(rOff.isEmpty())
         Assert.assertEquals(listOf("abcd", "AbcE"), rOn.map { it.value })
     }
-}
 
+    @Test
+    fun service_extra_1() {
+        val input = "planet_modifer"
+        val candidates = listOf("planet_army", "planet_modifier")
+        val results = SimilarityMatchService.findBestMatches(input, candidates)
+        Assert.assertEquals("planet_modifier", results.firstOrNull()?.value)
+    }
+
+    @Test
+    fun service_extra_2() {
+        val input = "triggerred_planet_modifer"
+        val candidates = listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier")
+        val results = SimilarityMatchService.findBestMatches(input, candidates)
+        Assert.assertEquals("triggerred_planet_modifier", results.firstOrNull()?.value)
+    }
+
+    @Test
+    fun service_extra_3() {
+        val input = "triggerred_modifier"
+        val candidates = listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier")
+        val results = SimilarityMatchService.findBestMatches(input, candidates)
+        Assert.assertEquals(listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier"), results.map { it.value })
+    }
+}
