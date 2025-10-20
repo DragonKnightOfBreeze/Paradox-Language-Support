@@ -20,5 +20,6 @@ data class SimilarityMatchOptions(
 ) {
     companion object {
         val DEFAULT = SimilarityMatchOptions()
+        val IGNORE_CASE = SimilarityMatchOptions(ignoreCase = true)
     }
 }

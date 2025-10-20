@@ -24,7 +24,7 @@ class ParadoxModDependenciesImportPopup(
     private val project: Project,
     private val table: ParadoxModDependenciesTable,
     modImporters: List<ParadoxModImporter> = ParadoxModImporter.getAll(table.model.settings.finalGameType),
-) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *modImporters.toTypedArray()) {
+) : BaseListPopupStep<ParadoxModImporter>(getTitle(), modImporters) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
 

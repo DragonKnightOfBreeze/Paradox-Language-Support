@@ -1,30 +1,64 @@
 package icu.windea.pls.lang.quickfix
 
 import com.intellij.codeInsight.intention.PriorityAction
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
-import com.intellij.codeInspection.util.IntentionFamilyName
-import com.intellij.codeInspection.util.IntentionName
+import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import kotlinx.coroutines.launch
 
 class ReplaceWithSimilarExpressionInListFix(
     element: PsiElement,
+    private val replacements: Collection<String>,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText(): @IntentionName String {
-        TODO("Not yet implemented")
-    }
+    override fun getText() = PlsBundle.message("fix.replaceWithSimilarExpressionInList.name")
 
-    override fun getFamilyName(): @IntentionFamilyName String {
-        TODO("Not yet implemented")
-    }
+    override fun getFamilyName() = text
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-        TODO("Not yet implemented")
+        if (startElement !is ParadoxExpressionElement) return
+        val items = replacements.distinct()
+        if (items.isEmpty()) return
+        if (items.size == 1) {
+            startElement.setValue(items.first())
+            return
+        }
+        if (editor == null) return
+        val step = object : BaseListPopupStep<String>(PlsBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
+            override fun getDefaultOptionIndex(): Int = 0
+
+            override fun isSpeedSearchEnabled(): Boolean = true
+
+            override fun onChosen(selectedValue: String, finalChoice: Boolean) = doFinalStep {
+                doReplace(project, startElement, selectedValue)
+            }
+        }
+        JBPopupFactory.getInstance().createListPopup(step).showInBestPositionFor(editor)
     }
 
+    @Suppress("UnstableApiUsage")
+    private fun doReplace(project: Project, element: ParadoxExpressionElement, replacement: String) {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            writeCommandAction(project, PlsBundle.message("fix.replaceWithSimilarExpression.command")) {
+                element.setValue(replacement)
+            }
+        }
+    }
+
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+
     override fun availableInBatchMode() = false
+
+    override fun startInWriteAction() = false
 }

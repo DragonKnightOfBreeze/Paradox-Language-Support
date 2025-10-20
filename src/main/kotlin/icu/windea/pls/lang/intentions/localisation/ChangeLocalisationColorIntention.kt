@@ -37,7 +37,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val colorConfigs = ParadoxTextColorManager.getInfos(project, file)
-        val popup = Popup(project, element, colorConfigs.toTypedArray())
+        val popup = Popup(project, element, colorConfigs)
         JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
     }
 
@@ -51,9 +51,9 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 
     private class Popup(
         private val project: Project,
-        private val value: ParadoxLocalisationColorfulText,
-        values: Array<ParadoxTextColorInfo>
-    ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("intention.changeLocalisationColor.title"), *values) {
+        private val element: ParadoxLocalisationColorfulText,
+        items: List<ParadoxTextColorInfo>
+    ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("intention.changeLocalisationColor.title"), items) {
         override fun getIconFor(value: ParadoxTextColorInfo) = value.icon
 
         override fun getTextFor(value: ParadoxTextColorInfo) = value.text
@@ -67,7 +67,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
             val coroutineScope = PlsFacade.getCoroutineScope(project)
             coroutineScope.launch {
                 writeCommandAction(project, PlsBundle.message("intention.changeLocalisationColor.command")) {
-                    value.setName(selectedValue.name)
+                    element.setName(selectedValue.name)
                 }
             }
         }

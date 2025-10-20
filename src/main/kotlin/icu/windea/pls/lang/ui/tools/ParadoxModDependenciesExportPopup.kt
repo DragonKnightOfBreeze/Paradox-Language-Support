@@ -22,7 +22,7 @@ class ParadoxModDependenciesExportPopup(
     private val project: Project,
     private val table: ParadoxModDependenciesTable,
     modExporters: List<ParadoxModExporter> = ParadoxModExporter.getAll(table.model.settings.finalGameType),
-) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *modExporters.toTypedArray()) {
+) : BaseListPopupStep<ParadoxModExporter>(getTitle(), modExporters) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
 

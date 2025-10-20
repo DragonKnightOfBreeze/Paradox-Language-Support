@@ -10,6 +10,7 @@
 - [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
 - [X] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris #193
 - [X] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files
+- [X] 新功能：提供快速修复，将无法解析的表达式替换为合法且相似的字面量 / NEW: Provide quick fix to replace unresolved expressions with valid similar literals
 - [ ] 新功能：支持在 IDE 中启动游戏 / NEW: Support to launch game in IDE
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 

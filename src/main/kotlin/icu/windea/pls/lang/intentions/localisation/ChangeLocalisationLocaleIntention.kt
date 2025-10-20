@@ -37,8 +37,8 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values
-        val popup = Popup(project, element, localeConfigs.toTypedArray())
+        val localeConfigs = PlsFacade.getConfigGroup(project).localisationLocalesById.values.toList()
+        val popup = Popup(project, element, localeConfigs)
         JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
     }
 
@@ -52,9 +52,9 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
     private class Popup(
         private val project: Project,
-        private val value: ParadoxLocalisationLocale,
-        values: Array<CwtLocaleConfig>
-    ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
+        private val element: ParadoxLocalisationLocale,
+        items: List<CwtLocaleConfig>
+    ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), items) {
         override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
 
         override fun getTextFor(value: CwtLocaleConfig) = value.idWithText
@@ -68,7 +68,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
             val coroutineScope = PlsFacade.getCoroutineScope(project)
             coroutineScope.launch {
                 writeCommandAction(project, PlsBundle.message("intention.changeLocalisationLocale.command")) {
-                    value.setName(selectedValue.id)
+                    element.setName(selectedValue.id)
                 }
             }
         }
