@@ -20,22 +20,22 @@ class GenerateLocalisationsFix(
     element: PsiElement,
     private val context: ParadoxLocalisationCodeInsightContext,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    private val contextName = context.name.or.anonymous()
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 
     override fun getText(): String {
+        val contextName = context.name.or.anonymous()
         return when (context.type) {
-            Type.Definition -> PlsBundle.message("fix.generateLocalisations.1", contextName)
-            Type.Modifier -> PlsBundle.message("fix.generateLocalisations.2", contextName)
-            Type.LocalisationReference -> PlsBundle.message("fix.generateLocalisations.3", contextName)
-            Type.SyncedLocalisationReference -> PlsBundle.message("fix.generateLocalisations.4", contextName)
-            Type.Localisation -> PlsBundle.message("fix.generateLocalisations.5", contextName)
+            Type.Definition -> PlsBundle.message("fix.generateLocalisations.name.1", contextName)
+            Type.Modifier -> PlsBundle.message("fix.generateLocalisations.name.2", contextName)
+            Type.LocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.3", contextName)
+            Type.SyncedLocalisationReference -> PlsBundle.message("fix.generateLocalisations.name.4", contextName)
+            Type.Localisation -> PlsBundle.message("fix.generateLocalisations.name.5", contextName)
             else -> throw IllegalStateException()
         }
     }
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisations.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return

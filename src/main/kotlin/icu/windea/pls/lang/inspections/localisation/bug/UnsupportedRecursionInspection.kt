@@ -44,7 +44,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
 
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
-        override fun getText() = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1")
+        override fun getText() = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.name")
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.title", key)
 

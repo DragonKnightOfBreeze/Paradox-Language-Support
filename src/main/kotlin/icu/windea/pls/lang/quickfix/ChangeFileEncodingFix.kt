@@ -25,7 +25,7 @@ class ChangeFileEncodingFix(
     private val charset: Charset,
     private val addBom: Boolean?
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = PlsBundle.message("fix.changeFileEncoding")
+    override fun getText() = PlsBundle.message("fix.changeFileEncoding.name")
 
     override fun getFamilyName() = text
 

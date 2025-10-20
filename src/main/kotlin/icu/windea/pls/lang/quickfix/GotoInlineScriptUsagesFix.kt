@@ -12,13 +12,9 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class GotoInlineScriptUsagesFix : IntentionAndQuickFixAction() {
-    override fun getName(): String {
-        return PlsBundle.message("goto.usages")
-    }
+    override fun getName() = PlsBundle.message("goto.usages")
 
-    override fun getFamilyName(): String {
-        return name
-    }
+    override fun getFamilyName() = name
 
     override fun applyFix(project: Project, file: PsiFile?, editor: Editor?) {
         if (file == null || editor == null) return

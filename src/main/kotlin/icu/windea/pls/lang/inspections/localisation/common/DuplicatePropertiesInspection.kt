@@ -40,7 +40,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
     }
 
     private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
-        override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1")
+        override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.name")
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.popup.title", key)
 

@@ -17,13 +17,14 @@ import icu.windea.pls.lang.codeInsight.generation.ParadoxGenerateLocalisationsHa
 class GenerateLocalisationsInFileFix(
     element: PsiElement,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    private val fileName = element.containingFile?.name.or.anonymous()
-
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("fix.generateLocalisations.0", fileName)
+    override fun getText(): String {
+        val fileName = startElement.containingFile?.name.or.anonymous()
+        return PlsBundle.message("fix.generateLocalisationsInFile.name", fileName)
+    }
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = PlsBundle.message("fix.generateLocalisationsInFile.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return

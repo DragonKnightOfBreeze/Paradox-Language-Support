@@ -69,7 +69,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
     }
 
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
-        override fun getText() = PlsBundle.message("inspection.overriddenForDefinition.fix.1")
+        override fun getText() = PlsBundle.message("inspection.overriddenForDefinition.fix.1.name")
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.overriddenForDefinition.fix.1.popup.title", key)
 

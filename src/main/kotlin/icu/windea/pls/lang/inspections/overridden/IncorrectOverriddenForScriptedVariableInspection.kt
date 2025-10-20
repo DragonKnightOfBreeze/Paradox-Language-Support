@@ -85,7 +85,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
 
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {
-        override fun getText() = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1")
+        override fun getText() = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1.name")
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
 

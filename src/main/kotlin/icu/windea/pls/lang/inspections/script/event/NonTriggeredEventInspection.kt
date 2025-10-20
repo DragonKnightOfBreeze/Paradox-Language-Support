@@ -47,7 +47,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
         // add `is_triggered_only = yes` into declaration (after `id` field or at start)
 
-        override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1")
+        override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1.name")
 
         override fun getFamilyName() = text
 

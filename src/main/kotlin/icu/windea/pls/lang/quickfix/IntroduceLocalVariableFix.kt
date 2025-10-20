@@ -23,9 +23,9 @@ class IntroduceLocalVariableFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.TOP
 
-    override fun getText() = PlsBundle.message("fix.introduceScriptedVariable.local", variableName)
+    override fun getText() = PlsBundle.message("fix.introduceLocalScriptedVariable.name", variableName)
 
-    override fun getFamilyName() = text
+    override fun getFamilyName() = PlsBundle.message("fix.introduceLocalScriptedVariable.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val command = Runnable {

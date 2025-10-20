@@ -48,7 +48,7 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
     }
 
     private fun getDeleteDefaultValueFix(element: PsiElement): DeleteStringByElementTypeFix {
-        val name = PlsBundle.message("inspection.script.unsupportedParameterUsage.fix.1")
+        val name = PlsBundle.message("inspection.script.unsupportedParameterUsage.fix.1.name")
         return DeleteStringByElementTypeFix(element, name, ParadoxScriptElementTypes.PIPE, ParadoxScriptElementTypes.PARAMETER_END)
     }
 }

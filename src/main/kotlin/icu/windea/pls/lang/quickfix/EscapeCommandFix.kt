@@ -14,7 +14,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 class EscapeCommandFix(
     element: PsiElement
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-    override fun getText() = PlsBundle.message("fix.escapeCommand")
+    override fun getText() = PlsBundle.message("fix.escapeCommand.name")
 
     override fun getFamilyName() = text
 

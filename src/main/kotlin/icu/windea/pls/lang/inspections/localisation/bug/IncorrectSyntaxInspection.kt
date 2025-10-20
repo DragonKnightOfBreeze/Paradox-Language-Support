@@ -31,7 +31,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                 if (element.elementType != COLORFUL_TEXT_END) return
                 if (element.nextSibling == null && element.parent?.elementType == COLORFUL_TEXT) return
                 val message = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.1")
-                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1", element.text))
+                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1.name", element.text))
                 holder.registerProblem(element, message, fix)
             }
 
@@ -39,7 +39,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                 if (element.elementType != TEXT_FORMAT_END) return
                 if (element.nextSibling == null && element.parent?.elementType == TEXT_FORMAT) return
                 val message = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.2")
-                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1", element.text))
+                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1.name", element.text))
                 holder.registerProblem(element, message, fix)
             }
         }

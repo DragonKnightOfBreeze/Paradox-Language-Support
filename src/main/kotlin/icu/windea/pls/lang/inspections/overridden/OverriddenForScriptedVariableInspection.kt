@@ -70,7 +70,7 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
 
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
-        override fun getText() = PlsBundle.message("inspection.overriddenForScriptedVariable.fix.1")
+        override fun getText() = PlsBundle.message("inspection.overriddenForScriptedVariable.fix.1.name")
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.overriddenForScriptedVariable.fix.1.popup.title", key)
 
