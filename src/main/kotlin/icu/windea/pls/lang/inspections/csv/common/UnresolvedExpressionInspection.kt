@@ -19,6 +19,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.lang.inspections.PlsInspectionManager
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import javax.swing.JComponent
@@ -81,8 +82,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     @Suppress("unused")
     private fun getFixes(element: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, config: CwtValueConfig): Array<LocalQuickFix> {
-        // TODO 2.0.6 新增基于相似项的快速修复
-        return LocalQuickFix.EMPTY_ARRAY
+        val expectedConfigs = listOf(config)
+        val result = mutableListOf<LocalQuickFix>()
+        result += PlsInspectionManager.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
+        return result.toTypedArray()
     }
 
     override fun createOptionsPanel(): JComponent {

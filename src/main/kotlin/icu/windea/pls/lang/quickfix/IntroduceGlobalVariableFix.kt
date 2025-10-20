@@ -22,7 +22,7 @@ class IntroduceGlobalVariableFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("inspection.script.unresolvedScriptedVariable.fix.2", variableName)
+    override fun getText() = PlsBundle.message("fix.introduceScriptedVariable.global", variableName)
 
     override fun getFamilyName() = text
 

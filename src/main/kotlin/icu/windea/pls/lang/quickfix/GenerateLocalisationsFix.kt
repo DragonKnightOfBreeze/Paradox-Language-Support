@@ -26,11 +26,11 @@ class GenerateLocalisationsFix(
 
     override fun getText(): String {
         return when (context.type) {
-            Type.Definition -> PlsBundle.message("inspection.script.missingLocalisation.fix.1", contextName)
-            Type.Modifier -> PlsBundle.message("inspection.script.missingLocalisation.fix.2", contextName)
-            Type.LocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.3", contextName)
-            Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.4", contextName)
-            Type.Localisation -> PlsBundle.message("inspection.script.missingLocalisation.fix.5", contextName)
+            Type.Definition -> PlsBundle.message("fix.generateLocalisations.1", contextName)
+            Type.Modifier -> PlsBundle.message("fix.generateLocalisations.2", contextName)
+            Type.LocalisationReference -> PlsBundle.message("fix.generateLocalisations.3", contextName)
+            Type.SyncedLocalisationReference -> PlsBundle.message("fix.generateLocalisations.4", contextName)
+            Type.Localisation -> PlsBundle.message("fix.generateLocalisations.5", contextName)
             else -> throw IllegalStateException()
         }
     }

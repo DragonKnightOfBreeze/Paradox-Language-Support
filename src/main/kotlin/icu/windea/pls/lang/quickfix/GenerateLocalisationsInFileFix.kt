@@ -21,7 +21,7 @@ class GenerateLocalisationsInFileFix(
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("inspection.script.missingLocalisation.fix.0", fileName)
+    override fun getText() = PlsBundle.message("fix.generateLocalisations.0", fileName)
 
     override fun getFamilyName() = text
 

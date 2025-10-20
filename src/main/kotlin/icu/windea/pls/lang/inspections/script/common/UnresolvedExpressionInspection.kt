@@ -28,18 +28,15 @@ import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
+import icu.windea.pls.lang.inspections.PlsInspectionManager
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
-import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -268,20 +265,9 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
-        // TODO 2.0.6 新增基于相似项的快速修复
         val result = mutableListOf<LocalQuickFix>()
-        run {
-            // localisation reference & can get codeInsightContext -> add generate localisations fix
-            if (element !is ParadoxScriptStringExpressionElement) return@run
-            val locales = ParadoxLocaleManager.getLocaleConfigs()
-            val context = expectedConfigs.firstNotNullOfOrNull {
-                ParadoxLocalisationCodeInsightContextBuilder.fromReference(element, it, locales, fromInspection = true)
-            }
-            if (context != null) {
-                result += GenerateLocalisationsFix(element, context)
-                result += GenerateLocalisationsInFileFix(element)
-            }
-        }
+        result += PlsInspectionManager.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionManager.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }
