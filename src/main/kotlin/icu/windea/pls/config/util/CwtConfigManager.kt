@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.config.util
 
 import com.intellij.openapi.application.runReadAction
@@ -15,21 +13,20 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
-import icu.windea.pls.config.config.internal.CwtSchemaConfig
-import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
-import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
-import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.splitByBlank
@@ -43,6 +40,7 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtElementTypes
@@ -50,10 +48,8 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtRootBlock
-import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
-import icu.windea.pls.cwt.psi.isPropertyValue
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
 import icu.windea.pls.model.ParadoxGameType
@@ -524,47 +520,51 @@ object CwtConfigManager {
     //     return r
     // }
 
-    fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
-        if (isInternalFile(file)) return emptyList() // 排除内部规则文件
-        val configPath = getConfigPath(containerElement)
-        if (configPath == null) return emptyList()
+    fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
+        val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
+        val result = mutableSetOf<String>()
+        for (config in configs) {
+            val configExpression = config.configExpression
+            findLiterals(configExpression, configGroup, result)
+        }
+        return result
+    }
 
-        var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
-        contextConfigs += schema.properties
-        configPath.forEachIndexed f1@{ i, path ->
-            val flatten = i != configPath.length - 1 || !(element is CwtString && element.isPropertyValue())
-            val nextContextConfigs = mutableListOf<CwtMemberConfig<*>>()
-            contextConfigs.forEach f2@{ config ->
-                when (config) {
-                    is CwtPropertyConfig -> {
-                        val schemaExpression = CwtSchemaExpression.resolve(config.key)
-                        if (!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
-                        nextContextConfigs += config
-                    }
-                    is CwtValueConfig -> {
-                        if (path != "-") return@f2
-                        nextContextConfigs += config
+    private fun findLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
+        val dataType = configExpression.type
+        when (dataType) {
+            CwtDataTypes.Constant -> {
+                val v = configExpression.value ?: return
+                result += v
+            }
+            CwtDataTypes.EnumValue -> {
+                val name = configExpression.value ?: return
+                val nextConfig = configGroup.enums[name] ?: return
+                val values = nextConfig.values
+                result += values
+            }
+            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> {
+                val name = configExpression.value ?: return
+                val aliasConfigGroup = configGroup.aliasGroups[name] ?: return
+                withRecursionGuard { // 这里需要防止递归
+                    for (aliasConfigs in aliasConfigGroup.values) {
+                        val e = aliasConfigs.firstOrNull()?.configExpression ?: continue
+                        withRecursionCheck(e) {
+                            findLiterals(e, configGroup, result)
+                        }
                     }
                 }
             }
-            contextConfigs = nextContextConfigs
-            if (flatten) contextConfigs = contextConfigs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
-        }
-        return contextConfigs
-    }
-
-    fun matchesSchemaExpression(value: String, schemaExpression: CwtSchemaExpression, schema: CwtSchemaConfig): Boolean {
-        return when (schemaExpression) {
-            is CwtSchemaExpression.Constant -> {
-                schemaExpression.expressionString == value
+            CwtDataTypes.SingleAliasRight -> {
+                val name = configExpression.value ?: return
+                val singleAliasConfig = configGroup.singleAliases[name] ?: return
+                withRecursionGuard { // 这里需要防止递归
+                    val e = singleAliasConfig.config.valueExpression
+                    withRecursionCheck(e) {
+                        findLiterals(e, configGroup, result)
+                    }
+                }
             }
-            is CwtSchemaExpression.Enum -> {
-                schema.enums[schemaExpression.name]?.values?.any { it.stringValue == value } ?: false
-            }
-            is CwtSchemaExpression.Template -> {
-                value.matchesPattern(schemaExpression.pattern)
-            }
-            else -> true // fast check
         }
     }
 }

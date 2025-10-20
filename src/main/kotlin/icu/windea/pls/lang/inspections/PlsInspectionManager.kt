@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
@@ -14,6 +15,7 @@ object PlsInspectionManager {
         element: ParadoxExpressionElement,
         expectedConfigs: List<CwtMemberConfig<*>>
     ): List<LocalQuickFix> {
+        val literals = CwtConfigManager.findLiterals(expectedConfigs)
         TODO()
     }
 

@@ -64,6 +64,7 @@ import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.CwtConfigSchemaManager
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
@@ -183,7 +184,7 @@ object CwtConfigCompletionManager {
         val optionContainerIdToMatch = getOptionContainerIdToMatch(expressionElement)
 
         val schema = configGroup.schemas.firstOrNull() ?: return false
-        val contextConfigs = CwtConfigManager.getContextConfigs(expressionElement, containerElement, file, schema)
+        val contextConfigs = CwtConfigSchemaManager.getContextConfigs(expressionElement, containerElement, file, schema)
 
         val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionBlockValue())
         val isOptionBlockValue = contextElement is CwtString && contextElement.isOptionBlockValue()
