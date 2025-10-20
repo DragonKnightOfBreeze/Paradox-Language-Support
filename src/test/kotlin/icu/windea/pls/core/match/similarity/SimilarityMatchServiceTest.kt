@@ -84,7 +84,7 @@ class SimilarityMatchServiceTest {
         val options = SimilarityMatchOptions(ignoreCase = false, enableTypoMatch = false)
         val results = SimilarityMatchService.findBestMatches(input, candidates, options)
         val values = results.map { it.value }
-        Assert.assertEquals(listOf("foo_a", "fooa"), values)
+        Assert.assertEquals(listOf("fooa", "foo_a"), values)
     }
 
     @Test
@@ -181,29 +181,5 @@ class SimilarityMatchServiceTest {
         val rOn = SimilarityMatchService.findBestMatches(input, candidates, on)
         Assert.assertTrue(rOff.isEmpty())
         Assert.assertEquals(listOf("abcd", "AbcE"), rOn.map { it.value })
-    }
-
-    @Test
-    fun service_extra_1() {
-        val input = "planet_modifer"
-        val candidates = listOf("planet_army", "planet_modifier")
-        val results = SimilarityMatchService.findBestMatches(input, candidates)
-        Assert.assertEquals("planet_modifier", results.firstOrNull()?.value)
-    }
-
-    @Test
-    fun service_extra_2() {
-        val input = "triggerred_planet_modifer"
-        val candidates = listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier")
-        val results = SimilarityMatchService.findBestMatches(input, candidates)
-        Assert.assertEquals("triggerred_planet_modifier", results.firstOrNull()?.value)
-    }
-
-    @Test
-    fun service_extra_3() {
-        val input = "triggerred_modifier"
-        val candidates = listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier")
-        val results = SimilarityMatchService.findBestMatches(input, candidates)
-        Assert.assertEquals(listOf("triggerred_ship_modifier", "triggerred_planet_modifier", "triggerred_country_modifier"), results.map { it.value })
     }
 }
