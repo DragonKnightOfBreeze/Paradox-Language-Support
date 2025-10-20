@@ -533,6 +533,10 @@ object CwtConfigManager {
     private fun findLiterals(configExpression: CwtDataExpression, configGroup: CwtConfigGroup, result: MutableSet<String>) {
         val dataType = configExpression.type
         when (dataType) {
+            CwtDataTypes.Bool -> {
+                result += "yes"
+                result += "no"
+            }
             CwtDataTypes.Constant -> {
                 val v = configExpression.value ?: return
                 result += v
