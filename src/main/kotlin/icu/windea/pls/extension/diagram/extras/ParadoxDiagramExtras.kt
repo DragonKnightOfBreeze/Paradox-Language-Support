@@ -10,9 +10,9 @@ import com.intellij.openapi.graph.layout.LayoutOrientation
 import com.intellij.openapi.graph.layout.Layouter
 import com.intellij.openapi.graph.settings.GraphSettings
 import com.intellij.openapi.project.Project
-import icu.windea.pls.core.children
 import icu.windea.pls.extension.diagram.actions.ParadoxDiagramScopeTypesActionGroup
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
+import icu.windea.pls.lang.children
 
 open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider

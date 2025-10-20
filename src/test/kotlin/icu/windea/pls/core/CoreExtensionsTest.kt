@@ -5,19 +5,6 @@ import org.junit.Test
 
 class CoreExtensionsTest {
     @Test
-    fun matchesGlobPatternTest() {
-        Assert.assertTrue("abc".matchesPattern("abc"))
-        Assert.assertTrue("abc".matchesPattern("*"))
-        Assert.assertTrue("abc".matchesPattern("ab?"))
-        Assert.assertTrue("abc".matchesPattern("ab*"))
-        Assert.assertTrue("abc".matchesPattern("a?c"))
-        Assert.assertFalse("ab".matchesPattern("a?c"))
-        Assert.assertFalse("abc".matchesPattern("a?"))
-        Assert.assertTrue("abc".matchesPattern("a*c"))
-        Assert.assertFalse("abc".matchesPattern("a*b"))
-    }
-
-    @Test
     fun escapeBlankTest() {
         Assert.assertEquals("abc", "abc".escapeBlank())
         Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())

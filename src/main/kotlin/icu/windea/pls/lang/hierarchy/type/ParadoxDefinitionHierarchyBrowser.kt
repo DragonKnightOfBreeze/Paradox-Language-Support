@@ -14,12 +14,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.PopupHandler
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.project
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
+import icu.windea.pls.lang.project
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.text.MessageFormat
 import java.util.function.Supplier

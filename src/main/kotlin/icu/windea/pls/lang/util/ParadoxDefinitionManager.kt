@@ -35,9 +35,9 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.Matchers
 import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -348,7 +348,7 @@ object ParadoxDefinitionManager {
             } else {
                 if (elementPath.isEmpty()) return false
                 val input = elementPath.subPaths.dropLast(1)
-                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
+                val result = skipRootKeyConfig.any { PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
                 if (!result) return false
             }
         }

@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty

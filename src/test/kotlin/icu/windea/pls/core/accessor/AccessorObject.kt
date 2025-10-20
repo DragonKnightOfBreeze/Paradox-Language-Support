@@ -1,6 +1,6 @@
 @file:Suppress("unused", "CanBeParameter")
 
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 class AccessorObject(
     val name: String,

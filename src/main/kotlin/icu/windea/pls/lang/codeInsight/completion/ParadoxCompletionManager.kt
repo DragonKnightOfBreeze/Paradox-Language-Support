@@ -38,9 +38,9 @@ import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.core.util.Matchers
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.takeWithOperator
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -349,7 +349,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
-                    val relative = Matchers.PathMatcher.relative(elementPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
+                    val relative = PathMatcher.relative(elementPath.subPaths, skipConfig, ignoreCase = true, useAny = true, usePattern = true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

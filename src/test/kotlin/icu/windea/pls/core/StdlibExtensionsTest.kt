@@ -79,17 +79,4 @@ class StdlibExtensionsTest {
         // char overload with limit
         Assert.assertEquals(listOf(0, 1), "aaaa".indicesOf('a', limit = 2))
     }
-
-    @Test
-    fun pattern_ant_and_regex() {
-        Assert.assertTrue("foo.txt".matchesPattern("*.txt"))
-        Assert.assertTrue("bar".matchesPattern("?ar"))
-
-        Assert.assertTrue("foo/bar/baz".matchesAntPattern("foo/**"))
-        Assert.assertTrue("foo/bar".matchesAntPattern("foo/*"))
-        Assert.assertFalse("foo/bar/baz".matchesAntPattern("foo/*"))
-
-        Assert.assertTrue("abc123".matchesRegex("[a-z]+\\d+"))
-        Assert.assertFalse("abc".matchesRegex("[0-9]+"))
-    }
 }

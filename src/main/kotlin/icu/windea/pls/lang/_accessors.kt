@@ -1,4 +1,4 @@
-package icu.windea.pls.core
+package icu.windea.pls.lang
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.injected.editor.*

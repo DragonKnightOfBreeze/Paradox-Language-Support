@@ -12,7 +12,6 @@ import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
-import icu.windea.pls.core.getDocumentationFontSize
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -23,6 +22,7 @@ import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.documentation.appendImgTag
 import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable

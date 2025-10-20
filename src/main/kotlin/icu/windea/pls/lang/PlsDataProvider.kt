@@ -2,13 +2,13 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.components.Service
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
-import icu.windea.pls.core.util.console.CommandType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsPathConstants
 import kotlinx.coroutines.launch

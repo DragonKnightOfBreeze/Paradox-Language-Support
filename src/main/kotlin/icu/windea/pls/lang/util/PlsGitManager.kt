@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.util
 
+import icu.windea.pls.core.console.CommandExecutionException
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.toPath
-import icu.windea.pls.core.util.console.CommandExecutionException
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.exists

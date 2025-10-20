@@ -25,8 +25,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.extendedParameters
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
@@ -66,6 +64,9 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
+import icu.windea.pls.lang.getShreds
+import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType

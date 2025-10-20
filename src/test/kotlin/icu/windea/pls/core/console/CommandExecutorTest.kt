@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util.console
+package icu.windea.pls.core.console
 
 import org.jdesktop.swingx.util.OS
 import org.junit.Assert

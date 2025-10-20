@@ -22,6 +22,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.integrations.translation.PlsTranslationManager
+import icu.windea.pls.lang.children
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.locale

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 /**
  * 不支持的访问器异常。

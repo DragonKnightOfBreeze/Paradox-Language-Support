@@ -9,7 +9,6 @@ import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.wordRequests
 import icu.windea.pls.ep.data.StellarisGameConceptData
 import icu.windea.pls.ep.resolve.CompositeParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.DefinitionBasedParadoxLocalisationIconSupport
@@ -18,6 +17,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
+import icu.windea.pls.lang.wordRequests
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint

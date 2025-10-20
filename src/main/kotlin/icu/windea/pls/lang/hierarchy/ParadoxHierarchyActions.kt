@@ -13,10 +13,10 @@ import com.intellij.util.ui.JBUI
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.element
 import icu.windea.pls.core.function
-import icu.windea.pls.core.project
+import icu.windea.pls.lang.element
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser
+import icu.windea.pls.lang.project
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsStrategies

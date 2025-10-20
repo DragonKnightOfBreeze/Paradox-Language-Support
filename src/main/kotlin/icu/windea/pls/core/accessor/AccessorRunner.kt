@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 import com.intellij.openapi.progress.ProcessCanceledException
 import java.lang.reflect.InvocationTargetException

@@ -2,13 +2,13 @@
 
 package icu.windea.pls.core
 
-import icu.windea.pls.core.util.accessor.AccessorBuilder
-import icu.windea.pls.core.util.accessor.FunctionAccessor
-import icu.windea.pls.core.util.accessor.MemberFunctionAccessor
-import icu.windea.pls.core.util.accessor.MemberPropertyAccessor
-import icu.windea.pls.core.util.accessor.PropertyAccessor
-import icu.windea.pls.core.util.accessor.StaticFunctionAccessor
-import icu.windea.pls.core.util.accessor.StaticPropertyAccessor
+import icu.windea.pls.core.accessor.AccessorBuilder
+import icu.windea.pls.core.accessor.FunctionAccessor
+import icu.windea.pls.core.accessor.MemberFunctionAccessor
+import icu.windea.pls.core.accessor.MemberPropertyAccessor
+import icu.windea.pls.core.accessor.PropertyAccessor
+import icu.windea.pls.core.accessor.StaticFunctionAccessor
+import icu.windea.pls.core.accessor.StaticPropertyAccessor
 
 /** 基于运行时对象 [this] 构建属性访问器。*/
 inline fun <reified T : Any, V> T.property(propertyName: String): PropertyAccessor<T, V> {

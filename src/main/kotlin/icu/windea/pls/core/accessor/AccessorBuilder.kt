@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.toKClass

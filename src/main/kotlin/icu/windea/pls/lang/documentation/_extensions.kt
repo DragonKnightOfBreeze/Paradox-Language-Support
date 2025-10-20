@@ -18,11 +18,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiNamedElement
 import com.intellij.util.TextWithIcon
-import icu.windea.pls.core.psiDocumentationTargets
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.psiDocumentationTargets
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
     // similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications
@@ -68,7 +68,7 @@ private fun ItemPresentation.getContainerText(): String? {
 }
 
 fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
-    // delegate to [icu.windea.pls.core.psiDocumentationTargets] or use fallback logic
+    // delegate to [icu.windea.pls.lang.psiDocumentationTargets] or use fallback logic
 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets

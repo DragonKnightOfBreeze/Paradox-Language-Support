@@ -4,7 +4,6 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.text.StringUtil
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.util.Matchers
 import java.io.File
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -497,29 +496,6 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /** 若接收者非空则应用 [block]，否则返回接收者。*/
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if (this.isNotEmpty()) block(this) else this
-
-/**
- * 判断当前输入是否匹配指定的GLOB表达式。使用 "?" 匹配单个字符，"*" 匹配任意个字符。
- */
-fun String.matchesPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
-    return Matchers.GlobMatcher.matches(this, pattern, ignoreCase)
-}
-
-/**
- * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
- *
- * 这个实现的耗时约为基于正则时的一半。
- */
-fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    return Matchers.AntMatcher.matches(this, pattern, ignoreCase, trimSeparator)
-}
-
-/**
- * 判断当前输入是否匹配指定的正则表达式。
- */
-fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
-    return Matchers.RegexMatcher.matches(this, pattern, ignoreCase)
-}
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。

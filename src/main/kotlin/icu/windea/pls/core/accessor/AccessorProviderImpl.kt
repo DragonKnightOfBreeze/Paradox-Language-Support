@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util.accessor
+package icu.windea.pls.core.accessor
 
 import com.jetbrains.rd.util.ConcurrentHashMap
 import icu.windea.pls.core.isGetter

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.util.console
+package icu.windea.pls.core.console
 
 /**
  * 命令执行异常。

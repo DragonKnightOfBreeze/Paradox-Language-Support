@@ -1,8 +1,8 @@
 package icu.windea.pls.core
 
-import icu.windea.pls.core.util.console.CommandExecutionException
-import icu.windea.pls.core.util.console.CommandExecutor
-import icu.windea.pls.core.util.console.CommandType
+import icu.windea.pls.core.console.CommandExecutionException
+import icu.windea.pls.core.console.CommandExecutor
+import icu.windea.pls.core.console.CommandType
 import java.io.File
 import java.io.IOException
 
