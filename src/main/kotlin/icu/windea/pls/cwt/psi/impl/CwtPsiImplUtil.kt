@@ -152,7 +152,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtPropertyKey, value: String): CwtPropertyKey {
-        val newElement = CwtElementFactory.createPropertyKey(element.project, value.quoteIfNecessary())
+        val newValue = value.quoteIfNecessary()
+        val newElement = CwtElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -177,6 +178,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtValue, value: String): CwtValue {
+        if (element is CwtString) return setValue(element, value)
         val newElement = CwtElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
     }
@@ -207,7 +209,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: CwtString, value: String): CwtString {
-        val newElement = CwtElementFactory.createString(element.project, value.quoteIfNecessary())
+        val newValue = value.quoteIfNecessary()
+        val newElement = CwtElementFactory.createString(element.project, newValue)
         return element.replace(newElement).cast()
     }
 

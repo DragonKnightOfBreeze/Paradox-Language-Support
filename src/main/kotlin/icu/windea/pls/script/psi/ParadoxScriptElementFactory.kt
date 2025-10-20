@@ -38,20 +38,20 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createPropertyFromText(project: Project, text: String): ParadoxScriptProperty {
+    fun createProperty(project: Project, text: String): ParadoxScriptProperty {
         return createRootBlock(project, text)
             .findChild<ParadoxScriptProperty>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createPropertyKey(project: Project, key: String): ParadoxScriptPropertyKey {
-        return createPropertyFromText(project, "$key = v")
+    fun createPropertyKey(project: Project, text: String): ParadoxScriptPropertyKey {
+        return createProperty(project, "$text = v")
             .findChild<ParadoxScriptPropertyKey>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createValue(project: Project, text: String): ParadoxScriptValue {
-        return createPropertyFromText(project, "k = $text")
+        return createProperty(project, "k = $text")
             .findChild<ParadoxScriptValue>() ?: throw IncorrectOperationException()
     }
 

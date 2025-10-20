@@ -18,6 +18,7 @@ object ParadoxCsvElementFactory {
             .castOrNull<ParadoxCsvFile>() ?: throw IncorrectOperationException()
     }
 
+    @Suppress("unused")
     @JvmStatic
     fun createEmptyHeader(project: Project, length: Int): ParadoxCsvHeader {
         val fileText = "\n" + ParadoxCsvFileManager.getSeparator().toString().repeat(length) + "\n"

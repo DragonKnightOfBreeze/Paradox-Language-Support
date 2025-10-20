@@ -58,7 +58,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
             val nameField = definitionInfo.typeConfig.nameField
             val insertAfterElement = if (nameField == null) null else element.findProperty(nameField)
             val textToInsert = "is_triggered_only = yes"
-            block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, textToInsert), insertAfterElement)
+            block.addAfter(ParadoxScriptElementFactory.createProperty(project, textToInsert), insertAfterElement)
             block.addAfter(ParadoxScriptElementFactory.createLine(project), insertAfterElement)
         }
     }

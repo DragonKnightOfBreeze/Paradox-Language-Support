@@ -16,11 +16,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
@@ -223,7 +223,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptPropertyKey, value: String): ParadoxScriptPropertyKey {
-        val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, value)
+        val newValue = value.quoteIfNecessary()
+        val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -280,7 +281,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
-        val newElement = ParadoxScriptElementFactory.createString(element.project, value.quoteIfNecessary())
+        val newValue = value.quoteIfNecessary()
+        val newElement = ParadoxScriptElementFactory.createString(element.project, newValue)
         return element.replace(newElement).cast()
     }
 
@@ -348,6 +350,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
+        if (element is ParadoxScriptString) return setValue(element, value)
         val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
     }
