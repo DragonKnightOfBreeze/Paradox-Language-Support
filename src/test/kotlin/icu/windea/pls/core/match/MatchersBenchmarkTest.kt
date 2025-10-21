@@ -13,7 +13,6 @@ class MatchersBenchmarkTest {
     @Suppress("DEPRECATION")
     @Test
     fun antBenchmarkTest() {
-
         val patterns = listOf(
             "foo/bar/baz",
             "foo/*/baz",
