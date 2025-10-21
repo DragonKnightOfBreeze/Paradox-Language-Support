@@ -12,6 +12,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
  * 用于验证规则的格式与结构。事实上，基于这些规则，PLS 目前仅提供了适用于规则文件的初步的代码补全。
  *
  * @see icu.windea.pls.config.configExpression.CwtSchemaExpression
+ * @see icu.windea.pls.config.util.CwtConfigSchemaManager
  * @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager
  */
 data class CwtSchemaConfig(

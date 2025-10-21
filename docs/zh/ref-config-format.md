@@ -1109,21 +1109,135 @@ dynamic_values = {
 
 #### 架构（Schema）配置 {#config-internal-schema}
 
-- **用途**：验证规则文件的格式与结构，并为规则文件提供基础补全。
+- **用途**：为“规则文件（.cwt）本身”的右侧取值形态提供声明，用于基础级别的补全与（有限的）结构校验。
+  - 目前以“初步补全”为主，暂不提供严格的 Schema 校验。
+
+- **来源与加载**：
+  - 仅来源于内置文件：`internal/schema.cwt`（不可被外部文件覆盖）。
+  - 由 `FileBasedCwtConfigGroupDataProvider.processInternalFile()` 调用 `CwtSchemaConfig.resolveInFile(...)` 收集并注入到 `configGroup.schemas`。
+
+- **结构（`CwtSchemaConfig`）**：
+  - `file: CwtFileConfig`：对应的规则文件。
+  - `properties: CwtPropertyConfig[]`：普通键（其键解析为“常量/类型/模板”形态）。
+  - `enums: Map<String, CwtPropertyConfig>`：键解析为“枚举表达式”（`$enum:NAME$`）。
+  - `constraints: Map<String, CwtPropertyConfig>`：键解析为“约束表达式”（`$$NAME`）。
+
+- **键的解析规则（`CwtSchemaExpression`）概览**：
+  - 常量：不含 `$` 的原样字符串。
+  - 类型：以单个 `$` 起始，如 `$any`、`$int`。
+  - 约束：以 `$$` 起始，如 `$$custom`。
+  - 枚举：以 `$enum:` 起始并以 `$` 结尾，如 `$enum:ship_size$`。
+  - 模板：包含成对的 `$...$` 片段，其余部分按常量处理（详见“规则表达式 → 架构（schema）表达式”小节）。
+
+- **示例（仅示意，位于 `internal/schema.cwt`）**：
+
+```cwt
+$enum:my_enum$ = { ... }     # 进入 enums
+$$is_valid_key = { ... }     # 进入 constraints
+some_key = $any              # 进入 properties
+```
+
+- **注意事项**：
+  - 该内部规则不支持自定义或覆盖；仅内置文件参与。
+  - 与“规则表达式 → 架构（schema）表达式”协同工作，主要用于编辑器侧的提示与轻量级把关。
+
 <!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
+<!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
+<!-- @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager -->
+<!-- @see cwt/core/internal/schema.cwt -->
 
 #### 折叠设置（Folding Settings） {#config-internal-folding}
 
-- **用途**：定义编辑器代码折叠相关的内部配置。
+- **用途**：为编辑器提供额外的代码折叠规则（内部使用，不支持自定义）。
+
+- **来源与加载**：
+  - 仅来源于内置文件：`internal/folding_settings.cwt`。
+  - 由 `FileBasedCwtConfigGroupDataProvider.processInternalFile()` 调用 `CwtFoldingSettingsConfig.resolveInFile(...)` 收集并注入 `configGroup.foldingSettings[group]`。
+
+- **结构（`CwtFoldingSettingsConfig`）**：
+  - `id: string`：折叠项 ID（组内唯一）。
+  - `key: string?`：目标键名（可选）。
+  - `keys: string[]?`：目标键名集合（可选）。
+  - `placeholder: string`：折叠后占位文本（必填）。
+
+- **解析流程（实现摘要）**：
+  - 以组为单位读取每个组下的条目（`group -> id -> { key/keys/placeholder }`）。
+  - 若缺少 `placeholder` 或无子属性，将跳过并记录警告。
+  - 每个组最终形成大小写不敏感的映射：`configGroup.foldingSettings[group][id]`。
+
+- **示例（仅示意，位于 `internal/folding_settings.cwt`）**：
+
+```cwt
+folds = {
+  expression = {
+    fold_modifier = {
+      key = "modifier"
+      placeholder = "<modifier> ..."
+    }
+    fold_triggers = {
+      keys = { "AND" "OR" }
+      placeholder = "<triggers> ..."
+    }
+  }
+}
+```
+
+- **注意事项**：
+  - `key` 与 `keys` 可任选其一，`keys` 用于多键匹配；两者同时存在时由使用方决定取舍（目前实现会读取二者）。
+  - 最终行为由折叠构建器实现控制，参考 `ParadoxExpressionFoldingBuilder`。
+
 <!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
+<!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
+<!-- @see cwt/core/internal/folding_settings.cwt -->
 
 #### 后缀模板设置（Postfix Template Settings） {#config-internal-postfix}
 
-- **用途**：定义后缀模板相关的内部配置。
+- **用途**：为编辑器提供额外的“后缀模板”能力（内部使用，不支持自定义）。
+
+- **来源与加载**：
+  - 仅来源于内置文件：`internal/postfix_template_settings.cwt`。
+  - 由 `FileBasedCwtConfigGroupDataProvider.processInternalFile()` 调用 `CwtPostfixTemplateSettingsConfig.resolveInFile(...)` 收集并注入 `configGroup.postfixTemplateSettings[group]`。
+
+- **结构（`CwtPostfixTemplateSettingsConfig`）**：
+  - `id: string`：模板 ID（组内唯一）。
+  - `key: string`：触发键（必填），对应可应用后缀的位置关键字。
+  - `example: string?`：示例文本（可选），用于帮助理解模板用法。
+  - `variables: Map<string, string>`：变量名 → 默认值（用于可编辑模板变量）。
+  - `expression: string`：模板表达式（必填），由后缀模板实现解析与应用。
+
+- **解析流程（实现摘要）**：
+  - 以组为单位读取：`group -> id -> { key/example/variables/expression }`。
+  - 必填项校验：缺少 `key` 或 `expression` 将跳过并记录警告。
+  - `variables` 读取为子属性映射：`name = defaultValue`。
+  - 每个组最终形成大小写不敏感的映射：`configGroup.postfixTemplateSettings[group][id]`。
+
+- **示例（仅示意，位于 `internal/postfix_template_settings.cwt`）**：
+
+```cwt
+postfix = {
+  variable_ops = {
+    decr = {
+      key = "variable"
+      example = "$x.decr"
+      variables = { amount = 1 }
+      expression = "${x} = ${x} - ${amount}"
+    }
+  }
+}
+```
+
+- **注意事项**：
+  - `expression` 的具体语义由后缀模板实现解析与执行，常见实现见 `ParadoxExpressionEditablePostfixTemplate` 等。
+  - `variables` 仅提供默认值；实际提示/编辑行为由模板实现决定。
+
 <!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
+<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate -->
+<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate -->
+<!-- @see cwt/core/internal/postfix_template_settings.cwt -->
 ## 规则表达式 {#config-expressions}
 
 > 本章节介绍各种规则表达式的用途、格式与默认/边界行为，帮助读者正确理解与编写这类特殊的表达式。
