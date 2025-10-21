@@ -35,8 +35,8 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 术语约定：
 
-- “规则（config）”包含“普通规则（与 CWTools 对齐/兼容）”“扩展规则（PLS 扩展）”“内部规则（PLS 内部使用）”。
-- “基础规则”（如 `CwtPropertyConfig`）是语法树级别的通用节点，不在本章节逐一描述。
+- “规则（config）”包含“基础规则”、“普通规则”、“扩展规则”和“内部规则”。
+- “基础规则”（如 `CwtPropertyConfig`）是语法树级别的通用节点，不在本文档中逐一描述。
 
 <!-- @see icu.windea.pls.config.configGroup.CwtConfigGroup -->
 <!-- @see icu.windea.pls.config.config.CwtPropertyConfig -->
@@ -45,11 +45,51 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 ## 规则 {#configs}
 
-> 本节聚焦“委托型规则（普通/扩展）”与“内部规则”，并补充少量“无需规则对象”的条目。每个小节提供用途、格式要点与解析要点，细节将在后续版本补充示例。
+> 本章节介绍各种规则的用途、格式要点与解析要点，帮助读者正确理解与编写这类特殊结构。
 
 ### 普通规则 {#configs-normal}
 
 > 与 CWTools 语义一致或兼容，PLS 可能在选项与上下文方面有少量扩展。
+
+#### 优先级 {#config-priority}
+
+- **用途**：配置文件/目录的覆盖方式（FIOS/LIOS/ORDERED），影响同名对象的生效顺序与合并策略。
+- **格式要点**：
+
+```cwt
+priorities = {
+    # LHS - file path (relative to game or mod root directory)
+    # RHS - priority: fios | lios | ordered (ignore case)
+
+    "events" = fios
+    # ...
+}
+```
+
+- **解析要点**：应用于索引/查询阶段，影响结果排序与部分代码检查；路径按目录匹配。`DUPL`（重复覆盖）目前不支持；`ORDERED` 等同于“合并但不覆盖”。
+- **参阅**：见 `docs/zh/config.md#priorities`。
+<!-- @see cwt/core/priorities.core.cwt -->
+<!-- @see icu.windea.pls.ep.priority.ParadoxPriority -->
+<!-- @see icu.windea.pls.ep.priority.ParadoxPriorityProvider -->
+
+#### 声明（Declaration） {#config-declaration}
+
+- **用途**：承载“声明级”上下文（如定义/参数/内联脚本等）与注入逻辑；支持深拷贝与父指针注入。
+<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
+
+#### 系统作用域 {#config-system-scope}
+
+- **用途**：声明“系统级”作用域（如 this/root/from 等）与替换规则，影响整体作用域栈。
+<!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
+
+#### 内联规则 {#config-inline}
+
+- **用途**：在规则中声明可复用片段（当前用于内联脚本路径与上下文结构）；使用处会展开为普通属性规则以供解析与检查。
+<!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
 
 #### 类型与子类型 {#config-type}
 
@@ -150,6 +190,7 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
 
+
 ### 扩展规则 {#configs-extended}
 
 > PLS 扩展的规则家族，用于增强 IDE 功能（快速文档、内嵌提示、补全等）。
@@ -204,40 +245,28 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 ### 内部规则 {#configs-internal}
 
-> 由 PLS 内部使用，控制解析上下文或维护全局语义。
+> 由 PLS 内部使用，控制解析上下文或维护全局语义，不支持自定义。
 
-#### 声明（Declaration） {#config-declaration}
+#### 架构（Schema）配置 {#config-internal-schema}
 
-- **用途**：承载“声明级”上下文（如定义/参数/内联脚本等）与注入逻辑；支持深拷贝与父指针注入。
-<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
+- **用途**：验证规则文件的格式与结构，并为规则文件提供基础补全。
+<!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
 
-#### 系统作用域 {#config-system-scope}
+#### 折叠设置（Folding Settings） {#config-internal-folding}
 
-- **用途**：声明“系统级”作用域（如 this/root/from 等）与替换规则，影响整体作用域栈。
-<!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
+- **用途**：定义编辑器代码折叠相关的内部配置。
+<!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
 
-#### 优先级（Priorities）与语言环境（Locales） {#config-internal-priority-locale}
+#### 后缀模板设置（Postfix Template Settings） {#config-internal-postfix}
 
-- **用途**：配置文件/目录的覆盖方式，及全局语言环境能力。
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
-
-### 不基于规则对象的规则 {#configs-non-object}
-
-> 这些条目通常以“规则表达式”或“注释选项”的形式出现，不需要独立的规则对象。
-
-- **基础值类型**：`bool`、`int`（可区间/inf）、`float`、`scalar`、`percentage_field`、`localisation(_synced/_inline)`、`filepath[...]`、`icon[...]`、`date_field`、`variable_field`/`value_field` 等。
-- **值集合（value_set/value）**：配对声明“集合的定义点/使用点”。
-- **选项（Options）**：`## cardinality`、`## push_scope`、`## replace_scopes`、`## severity`、`## scope`。
-- **注释语义**：`#` 普通注释、`##` 选项、`###` 文档注释。
-
-进一步的格式与边界行为，见本页“规则表达式”章节与 CWTools 指南。
-
+- **用途**：定义后缀模板相关的内部配置。
+<!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
 ## 规则表达式 {#config-expressions}
 
-> 本节解释在 CWT 规则（.cwt，CWT config file）与扩展能力中使用到的“规则表达式”的用途、格式与默认/边界行为，帮助模组作者正确书写规则。
+> 本章节介绍各种规则表达式的用途、格式与默认/边界行为，帮助读者正确理解与编写这类特殊的表达式。
 
 <!-- @see icu.windea.pls.config.configExpression.CwtConfigExpression -->
 
