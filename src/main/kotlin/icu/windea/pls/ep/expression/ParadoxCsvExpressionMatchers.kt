@@ -70,7 +70,7 @@ class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             dataType == CwtDataTypes.EnumValue -> {
                 val value = expressionText.unquote()
-                val enumName = configExpression.value ?: return Result.NotMatch // invalid cwt config
+                val enumName = configExpression.value ?: return Result.NotMatch // null -> invalid config
                 run {
                     // match simple enums
                     val enumConfig = configGroup.enums[enumName] ?: return@run

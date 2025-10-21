@@ -181,7 +181,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (expression.type.isBlockLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val name = expression.value
-                val enumName = configExpression.value ?: return Result.NotMatch // invalid cwt config
+                val enumName = configExpression.value ?: return Result.NotMatch // null -> invalid config
                 // match simple enums
                 val enumConfig = configGroup.enums[enumName]
                 if (enumConfig != null) {

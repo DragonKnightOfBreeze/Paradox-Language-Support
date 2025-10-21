@@ -79,8 +79,9 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression?.value ?: return null
+        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = selector(project, element).definition().contextSensitive(exact)
-        return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
+        return ParadoxDefinitionSearch.search(name, type, selector).find()
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
@@ -88,9 +89,10 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression?.value ?: return emptySet()
+        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         return fullNames.flatMap { fullName ->
             val selector = selector(project, element).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(fullName, typeExpression, selector).findAll()
+            ParadoxDefinitionSearch.search(fullName, type, selector).findAll()
         }
     }
 

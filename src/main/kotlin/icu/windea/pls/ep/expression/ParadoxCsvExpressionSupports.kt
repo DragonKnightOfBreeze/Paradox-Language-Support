@@ -55,16 +55,18 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return null
+        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = selector(project, element).definition().contextSensitive()
-        return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).find()
+        return ParadoxDefinitionSearch.search(expressionText, type, selector).find()
     }
 
     override fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
         val typeExpression = config.configExpression.value ?: return emptySet()
+        val type = typeExpression.substringBefore('.') // 匹配和解析定义时忽略子类型
         val selector = selector(project, element).definition().contextSensitive()
-        return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).findAll()
+        return ParadoxDefinitionSearch.search(expressionText, type, selector).findAll()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
