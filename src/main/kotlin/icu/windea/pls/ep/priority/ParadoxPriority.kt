@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.priority
 
 /**
- * 覆盖顺序。
+ * 覆盖方式。
  */
 enum class ParadoxPriority {
     /** 只读一次（选用最先读取到的那个） */

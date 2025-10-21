@@ -221,7 +221,7 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 #### 优先级（Priorities）与语言环境（Locales） {#config-internal-priority-locale}
 
-- **用途**：配置文件/目录的覆盖顺序，及全局语言环境能力。
+- **用途**：配置文件/目录的覆盖方式，及全局语言环境能力。
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 
 ### 不基于规则对象的规则 {#configs-non-object}
