@@ -9,6 +9,7 @@ package icu.windea.pls.core.match.similarity
  * @property enablePrefixMatch 是否使用前缀匹配，参见 [PrefixSimilarityMatcher]。
  * @property enableSnippetMatch 是否使用片段匹配，参见 [SnippetSimilarityMatcher]。
  * @property enableTypoMatch 是否使用错字匹配，参见 [TypoSimilarityMatcher]。
+ * @property cached 是否使用结果缓存。
  */
 data class SimilarityMatchOptions(
     val ignoreCase: Boolean = false,
@@ -17,6 +18,7 @@ data class SimilarityMatchOptions(
     val enablePrefixMatch: Boolean = true,
     val enableSnippetMatch: Boolean = true,
     val enableTypoMatch: Boolean = true,
+    val cached: Boolean = true,
 ) {
     companion object {
         val DEFAULT = SimilarityMatchOptions()

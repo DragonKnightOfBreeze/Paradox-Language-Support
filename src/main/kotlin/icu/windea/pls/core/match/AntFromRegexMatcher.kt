@@ -28,7 +28,6 @@ object AntFromRegexMatcher {
 
     private val regexCache1 = CacheBuilder("maximumSize=10000")
         .build<String, Regex> { key -> key.toRegex() }
-
     private val regexCache2 = CacheBuilder("maximumSize=10000")
         .build<String, Regex> { key -> key.toRegex(RegexOption.IGNORE_CASE) }
 

@@ -110,6 +110,9 @@ object PlsFacade {
      * 用于检查插件的各种可选择的能力。
      */
     object Capacities {
+        /** 是否记录缓存状态。*/
+        fun recordCacheStats() = System.getProperty("pls.cache.recordStats").toBoolean()
+
         /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。*/
         fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
     }
