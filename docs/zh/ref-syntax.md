@@ -44,7 +44,9 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 CWT 语言是一种领域特定语言，用于编写 CWT 规则。
 CWT 语言的文件扩展名是 `.cwt`，其语法与 Paradox 脚本语言类似，但额外支持 *选项注释* 与 *文档注释*。
 
-CWT 规则用于为 CWT 语言自身以及各种 Paradox 语言提供高级语言功能，包括但不限于代码高亮、代码检查、代码补全等。
+CWT 规则是用 CWT 语言编写的一套规范，用于为自身以及游戏和模组文件（脚本文件、本地化文件和 CSV 文件）提供高级语言功能，包括但不限于代码高亮、代码检查、代码补全等。
+
+CWT 与 CWT 规则之间的关系类似 JSON 和 JSON SCHEMA。
 
 基础概念：
 
@@ -153,10 +155,10 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
 -->
 
-本章节说明 Paradox 脚本（Script）语言的基本语法。
+本章节说明 Paradox 脚本语言（Paradox Script）的基本语法。
 
 Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
-其文件扩展名通常是 `.txt`。某些特定位置的文件会使用其他扩展名，例如 `.gfx`、`.gui`。
+其文件扩展名通常是 `.txt`，但某些特定位置的文件会使用其他扩展名，例如 `.gfx`、`.gui`。
 
 基础概念：
 
@@ -242,7 +244,7 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 @see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex
 -->
 
-本章节说明 Paradox 本地化（Localisation）语言的基本语法。
+本章节说明 Paradox 本地化语言（Paradox Localisation）的基本语法。
 
 Paradox 本地化语言是一种领域特定语言，用于为游戏提供可国际化的、可包含动态内容的富文本。
 其文件扩展名是 `.yml`，但实际上并非合法的 YAML 文件，且需要使用 **UTF-8 WITH BOM** 作为文件编码。

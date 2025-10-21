@@ -41,10 +41,12 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 
 This chapter describes the syntax of the CWT language.
 
-The CWT language is a Domain-Specific Language used for writing CWT configs.
-CWT language files use the `.cwt` extension. Its syntax is similar to Paradox Script but additionally supports *option comments* and *documentation comments*.
+CWT language is a Domain-Specific Language used for writing CWT configs.
+CWT files use the `.cwt` extension. Its syntax is similar to Paradox Script, but additionally supports *option comments* and *documentation comments*.
 
-CWT configs are used to provide advanced language features for the CWT language itself and various Paradox languages, including but not limited to syntax highlighting, code inspection, code completion, etc.
+CWT configs are a set of specifications written in the CWT language, which is used to provide high-level language features for itself and game and and files (script files, localization files, and CSV files), including but not limited to code highlighting, code inspection, code completion, etc.
+
+The relationship between CWT and CWT configs is similar to JSON and JSON SCHEMA.
 
 Basic Concepts:
 
@@ -155,8 +157,8 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 
 This chapter describes the basic syntax of the Paradox Script language.
 
-Paradox Script is a Domain-Specific Language used for writing game scripts.
-Its file extension is typically `.txt`. Files in specific locations may use other extensions, such as `.gfx` or `.gui`.
+Paradox Script language is a Domain-Specific Language used for writing game scripts.
+Its file extension is typically `.txt`, but files in specific locations may use other extensions, such as `.gfx` or `.gui`.
 
 Basic Concepts:
 
@@ -244,7 +246,7 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 
 This chapter describes the basic syntax of the Paradox Localisation language.
 
-The Paradox Localisation language is a Domain-Specific Language used to provide internationalize rich text with dynamic content for the game.
+Paradox Localisation language is a Domain-Specific Language used to provide internationalize rich text with dynamic content for the game.
 Its file extension is `.yml`, but it is not actually valid YAML and must use **UTF-8 WITH BOM** encoding.
 
 > [!tip]
@@ -298,7 +300,7 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 -->
 
 This chapter describes the syntax of the Paradox CSV language.
-Paradox CSV language files use the `.csv` extension. Based on standard CSV, its conventions:
+Paradox CSV files use the `.csv` extension. Based on standard CSV, its conventions:
 
 - **Column Separator**: Semicolon `;` (common in early/tool-exported CSVs).
 - **Comments**: Whole-line comments starting with `#`.
