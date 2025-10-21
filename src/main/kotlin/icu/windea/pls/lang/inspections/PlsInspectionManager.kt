@@ -38,12 +38,11 @@ object PlsInspectionManager {
 
         // 为最匹配的项提供单独的快速修复（直接替换）
         // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
-        val values = matches.map { it.value }
-        val first = values.first()
+        val first = matches.first()
         fixes += ReplaceWithSimilarExpressionFix(element, first)
-        val remain = values.drop(1)
+        val remain = matches.drop(1)
         if(remain.isNotEmpty()) {
-            fixes += ReplaceWithSimilarExpressionInListFix(element, values)
+            fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
         }
 
         return fixes

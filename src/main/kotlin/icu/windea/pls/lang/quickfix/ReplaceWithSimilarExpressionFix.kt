@@ -9,12 +9,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.match.similarity.SimilarityMatchResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import kotlinx.coroutines.launch
 
 class ReplaceWithSimilarExpressionFix(
     element: ParadoxExpressionElement,
-    private val replacement: String,
+    private val replacement: SimilarityMatchResult,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.TOP
 
@@ -32,7 +33,7 @@ class ReplaceWithSimilarExpressionFix(
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             writeCommandAction(project, PlsBundle.message("fix.replaceWithSimilarExpression.command")) {
-                element.setValue(replacement)
+                element.setValue(replacement.value)
             }
         }
     }

@@ -8,7 +8,7 @@ import icu.windea.pls.core.component1
 import icu.windea.pls.core.component2
 import icu.windea.pls.core.component3
 import icu.windea.pls.core.component4
-import icu.windea.pls.core.format
+import icu.windea.pls.core.formatted
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -106,13 +106,13 @@ object ParadoxColorManager {
                 val useFloat = colorArgs.all { it.toFloat() in 0f..1f } && colorArgs.any { it.contains('.') }
                 val addAlpha = colorArgs.size == 4
                 val (r, g, b, a) = newColor
-                listOf(r, g, b, a).let { if (addAlpha) it else it.take(3) }.map { if (useFloat) (it / 255.0).format(precision) else it.toString() }
+                listOf(r, g, b, a).let { if (addAlpha) it else it.take(3) }.map { if (useFloat) (it / 255.0).formatted(precision) else it.toString() }
             }
             "hsv" -> {
                 if (colorArgs.size != 3) return null
                 val (r, g, b) = newColor
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
-                listOf(h, s, v).map { it.format(precision) }
+                listOf(h, s, v).map { it.formatted(precision) }
             }
             "hsv360" -> {
                 if (colorArgs.size != 3) return null

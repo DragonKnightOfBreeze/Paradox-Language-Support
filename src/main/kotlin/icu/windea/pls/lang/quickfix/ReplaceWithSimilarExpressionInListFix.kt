@@ -12,12 +12,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.match.similarity.SimilarityMatchResult
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import kotlinx.coroutines.launch
 
 class ReplaceWithSimilarExpressionInListFix(
     element: PsiElement,
-    private val replacements: Collection<String>,
+    private val replacements: Collection<SimilarityMatchResult>,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
@@ -30,16 +31,18 @@ class ReplaceWithSimilarExpressionInListFix(
         val items = replacements.distinct()
         if (items.isEmpty()) return
         if (items.size == 1) {
-            startElement.setValue(items.first())
+            doReplace(project, startElement, items.first())
             return
         }
         if (editor == null) return
-        val step = object : BaseListPopupStep<String>(PlsBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
-            override fun getDefaultOptionIndex(): Int = 0
+        val step = object : BaseListPopupStep<SimilarityMatchResult>(PlsBundle.message("fix.replaceWithSimilarExpressionInList.popup.title"), items) {
+            override fun getTextFor(value: SimilarityMatchResult) = value.render()
 
-            override fun isSpeedSearchEnabled(): Boolean = true
+            override fun getDefaultOptionIndex() = 0
 
-            override fun onChosen(selectedValue: String, finalChoice: Boolean) = doFinalStep {
+            override fun isSpeedSearchEnabled() = true
+
+            override fun onChosen(selectedValue: SimilarityMatchResult, finalChoice: Boolean) = doFinalStep {
                 doReplace(project, startElement, selectedValue)
             }
         }
@@ -47,11 +50,11 @@ class ReplaceWithSimilarExpressionInListFix(
     }
 
     @Suppress("UnstableApiUsage")
-    private fun doReplace(project: Project, element: ParadoxExpressionElement, replacement: String) {
+    private fun doReplace(project: Project, element: ParadoxExpressionElement, replacement: SimilarityMatchResult) {
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             writeCommandAction(project, PlsBundle.message("fix.replaceWithSimilarExpression.command")) {
-                element.setValue(replacement)
+                element.setValue(replacement.value)
             }
         }
     }

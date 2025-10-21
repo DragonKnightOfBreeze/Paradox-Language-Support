@@ -32,8 +32,8 @@ val EMPTY_OBJECT: Any = EmptyObject
 @Suppress("EmptyMethod")
 inline fun pass() {}
 
-@OptIn(ExperimentalContracts::class)
 /** 若 [condition] 为 `true`，对接收者执行 [block] 并返回结果，否则返回接收者本身。*/
+@OptIn(ExperimentalContracts::class)
 inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -42,8 +42,8 @@ inline fun <T : R, R> T.letIf(condition: Boolean, block: (T) -> R): R {
     return if (condition) block(this) else this
 }
 
-@OptIn(ExperimentalContracts::class)
 /** 若 [condition] 为 `false`，对接收者执行 [block] 并返回结果，否则返回接收者本身。*/
+@OptIn(ExperimentalContracts::class)
 inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -52,8 +52,8 @@ inline fun <T : R, R> T.letUnless(condition: Boolean, block: (T) -> R): R {
     return if (!condition) block(this) else this
 }
 
-@OptIn(ExperimentalContracts::class)
 /** 若 [condition] 为 `true`，对接收者执行 [block] 后返回接收者本身。*/
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.alsoIf(condition: Boolean, block: (T) -> Unit): T {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -63,8 +63,8 @@ inline fun <T> T.alsoIf(condition: Boolean, block: (T) -> Unit): T {
     return this
 }
 
-@OptIn(ExperimentalContracts::class)
 /** 若 [condition] 为 `false`，对接收者执行 [block] 后返回接收者本身。*/
+@OptIn(ExperimentalContracts::class)
 inline fun <T> T.alsoUnless(condition: Boolean, block: (T) -> Unit): T {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -74,9 +74,9 @@ inline fun <T> T.alsoUnless(condition: Boolean, block: (T) -> Unit): T {
     return this
 }
 
+/** 判断可空字符序列是否非空（同时判空与长度为 0）。*/
 @OptIn(ExperimentalContracts::class)
 @Suppress("ReplaceSizeCheckWithIsNotEmpty")
-/** 判断可空字符序列是否非空（同时判空与长度为 0）。*/
 inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -96,9 +96,9 @@ inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
     return this != null && this.size != 0
 }
 
+/** 判断可空集合是否非空。*/
 @OptIn(ExperimentalContracts::class)
 @Suppress("ReplaceSizeCheckWithIsNotEmpty")
-/** 判断可空集合是否非空。*/
 inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)
@@ -108,13 +108,13 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 }
 
 /**
- * 将数字按 [digits] 位进行格式化。
+ * 将数字按 [digits] 位进行格式化，返回格式化后的字符串。
  *
  * - [digits] > 0：向最接近的 10^digits 值取整（保留整数）；
  * - [digits] = 0：转为整数；
  * - [digits] < 0：按小数位四舍五入。
  */
-fun Number.format(digits: Int): String {
+fun Number.formatted(digits: Int): String {
     val power = 10.0.pow(abs(digits))
     return when {
         digits > 0 -> (round(this.toLong() / power) * power).toLong().toString()
@@ -495,7 +495,7 @@ inline fun <reified T> Any?.cast(): T = this as T
 inline fun <reified T> Any?.castOrNull(): T? = this as? T
 
 /** 若接收者非空则应用 [block]，否则返回接收者。*/
-fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if (this.isNotEmpty()) block(this) else this
+inline fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if (this.isNotEmpty()) block(this) else this
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
@@ -547,8 +547,10 @@ fun String.normalizePath(): String {
     return s.trimEnd('/')
 }
 
-/** 返回规范化后的绝对路径（absolute + normalize）。*/
-inline fun Path.formatted(): Path = absolute().normalize()
+/**
+ * 返回规范化后的绝对路径（absolute + normalize）。
+ */
+fun Path.formatted(): Path = absolute().normalize()
 
 /** 若路径为目录则确保存在；若为文件则确保父目录存在并创建空文件（忽略已存在）。*/
 fun Path.create(): Path {
