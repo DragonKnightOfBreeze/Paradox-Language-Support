@@ -53,49 +53,242 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 #### 优先级 {#config-priority}
 
-- **用途**：配置文件/目录的覆盖方式（FIOS/LIOS/ORDERED），影响同名对象的生效顺序与合并策略。
-- **格式要点**：
+- **用途**：为“目标”的覆盖与合并提供统一策略，影响生效顺序与查询结果排序（流式查询除外）。
+- **适用目标**：文件、封装变量、定义、本地化、复杂枚举等。
+- **默认值**：未命中任何目录映射时，使用 `LIOS`（后读覆盖）。
+
+- **声明与匹配**：
 
 ```cwt
 priorities = {
-    # LHS - file path (relative to game or mod root directory)
-    # RHS - priority: fios | lios | ordered (ignore case)
-
+    # LHS - 相对游戏或模组根目录的“目录路径”
+    # RHS - 覆盖方式：fios | lios | ordered（忽略大小写）
     "events" = fios
-    # ...
+    "common/on_actions" = ordered
 }
 ```
 
-- **解析要点**：应用于索引/查询阶段，影响结果排序与部分代码检查；路径按目录匹配。`DUPL`（重复覆盖）目前不支持；`ORDERED` 等同于“合并但不覆盖”。
-- **参阅**：见 `docs/zh/config.md#priorities`。
-<!-- @see cwt/core/priorities.core.cwt -->
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriority -->
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriorityProvider -->
+- **覆盖方式与行为**：
+  - `LIOS`（Last In, Only Served）：后加载者覆盖先加载者（多数内容的默认规则）。
+  - `FIOS`（First In, Only Served）：先加载者生效，后面的被忽略（少数“特别敏感”的目录，如 `events/`、`scripted_variables/`）。
+  - `ORDERED`（按序合并）：按加载顺序合并但不覆盖（典型：`common/on_actions`）。
+  - `DUPL`（重复定义报错/失效）：目前不支持，仅作为参考术语收录。
+
+- **排序与加载要点**：
+  - 查询（非流式）结果的排序由优先级驱动；同一路径下按加载顺序（游戏/依赖链）决定先后。
+  - 同一文件内，后出现的项会覆盖前面出现的项。
+  - 参见 `ParadoxPriorityProvider.getComparator()` 的排序实现与默认值。
+
+- **实践示例**：
+
+```cwt
+# 内置示例（节选）
+priorities = {
+    "common/event_chains" = fios
+    "common/on_actions" = ordered
+    "common/scripted_variables" = fios
+    "events" = fios
+}
+```
+
+  - 两个 MOD 都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的 MOD 生效，后者被忽略。
+  - 两个 MOD 都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
+
+- **参阅与源码映射**：
+  - 文档：`docs/zh/config.md#priorities`
+  - 规则文件：`cwt/core/priorities.core.cwt`
+  - 代码：`icu.windea.pls.ep.priority.ParadoxPriority`、`icu.windea.pls.ep.priority.ParadoxPriorityProvider`
 
 #### 声明（Declaration） {#config-declaration}
 
-- **用途**：承载“声明级”上下文（如定义/参数/内联脚本等）与注入逻辑；支持深拷贝与父指针注入。
-<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
+- **用途**：声明“定义（Definition）条目”的结构，用于补全、检查与快速文档等。
+- **路径定位**：`{name}`，其中 `{name}` 为规则名称（即“定义类型”）。顶级属性若键为合法标识符且未被其他规则匹配，回退尝试解析为声明规则。
+- **依赖上下文**：由 `CwtDeclarationConfigContextProvider` 构造声明上下文（含定义名、类型、子类型）。Game Rule/On Action 可通过扩展配置改写上下文。
+
+- **解析流程（实现摘要）**：
+  1. 解析名称：若键不是合法标识符则忽略（`CwtDeclarationConfigResolverImpl`）。
+  2. 根级内联：若 RHS 为 `single_alias_right[...]`，先展开为普通属性规则（`CwtConfigManipulator.inlineSingleAlias`）。
+  3. 生成最终规则树：
+     - 深拷贝并按子类型裁剪/扁平化（`deepCopyConfigsInDeclarationConfig`）。
+     - 若命中 `subtype[...]` 且与上下文子类型匹配：打平其子规则；不匹配则跳过；非 `subtype[...]` 正常递归。
+     - 注入派生规则（`CwtInjectedConfigProvider.injectConfigs`），并统一设置 `parentConfig` 以保持父链。
+  4. 子类型缓存键：扫描 `subtype[...]` 收集用到的子类型集合（`subtypesUsedInDeclaration`），结合当前上下文生成 cache key，避免无关子类型导致的缓存失效。
+
+- **与其他规则协作**：
+  - 可在声明内引用别名与单别名（`alias_name[...]`/`alias_match_left[...]`、`single_alias_right[...]`）。
+  - 切换类型（swapped type）的声明可直接嵌套在对应基础类型的声明中。
+
+- **示例**：
+
+```cwt
+event = {
+    id = scalar
+
+    # 按子类型细化声明结构，仅在匹配的子类型下生效
+    subtype[triggered] = {
+        ## cardinality = 0..1
+        weight_multiplier = {
+            factor = float
+            alias_name[modifier_rule] = alias_match_left[modifier_rule]
+        }
+    }
+
+    ## cardinality = 0..1
+    # 根级单别名将在解析前被内联
+    trigger = single_alias_right[trigger_clause]
+}
+```
+
+- **常见陷阱与建议**：
+  - `subtype[...]` 仅在与上下文子类型匹配时生效；不匹配将被忽略（不会报错）。
+  - 根级 `single_alias_right[...]` 会先被展开后再参与后续解析与检查。
+  - 为保证后续功能的“向上溯源”，新增节点均会注入 `parentConfig`（父指针）。
+
+- **参阅与源码映射**：
+  - 文档：`docs/zh/config.md#declarations`
+  - 接口与解析：`icu.windea.pls.config.config.delegated.CwtDeclarationConfig`、`...impl.CwtDeclarationConfigResolverImpl`
+  - 操作器：`icu.windea.pls.config.util.manipulators.CwtConfigManipulator`（`inlineSingleAlias`、`deepCopyConfigsInDeclarationConfig`）
+  - 上下文提供器：`icu.windea.pls.ep.configContext.BaseCwtDeclarationConfigContextProvider`、`GameRuleCwtDeclarationConfigContextProvider`、`OnActionCwtDeclarationConfigContextProvider`
+  - 注入扩展点：`icu.windea.pls.ep.config.CwtInjectedConfigProvider`
 
 #### 系统作用域 {#config-system-scope}
 
-- **用途**：声明“系统级”作用域（如 this/root/from 等）与替换规则，影响整体作用域栈。
+- **用途**：为内置的“系统级作用域”（This/Root/Prev/From 等）提供元信息，用于快速文档与作用域栈推导。
+- **路径定位**：`system_scopes/{id}`，其中 `{id}` 为系统作用域 ID。
+- **字段含义**：
+  - `id`：系统作用域 ID。
+  - `base_id`：基底作用域 ID；未指定时默认为 `id`。用于将同族系统作用域（如 `Prev*`、`From*`）归类，便于展示与文档说明。
+  - `: string`：可读名称；未指定时默认为 `id`。
+
+- **解析流程（实现摘要）**：
+  - 读取 `id = key`，`base_id = properties['base_id'] ?: id`，`name = stringValue ?: id`（`CwtSystemScopeConfigResolverImpl`）。
+  - 相等性以 `id` 比较（同 `id` 视为同一系统作用域）。
+
+- **与其他规则协作**：
+  - 与 `作用域与作用域组` 一起决定作用域检查与提示。
+  - 在部分扩展规则中可使用选项 `replace_scopes` 指定当前上下文下系统作用域对应的具体作用域类型（如将 `this/root/from` 映射为 `country` 等）。
+  - 注意：`replace_scopes` 不支持替换 `prev` 系列系统作用域（`prev/prevprev/...`），详见 `docs/zh/config.md` 中“如何在规则文件中指定作用域上下文”的说明。
+
+- **示例（内置）**：
+
+```cwt
+system_scopes = {
+    This = {}
+    Root = {}
+    Prev = { base_id = Prev }
+    From = { base_id = From }
+    # 省略 PrevPrev/FromFrom 等链式成员
+}
+```
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
+<!-- @see cwt/core/system_scopes.core.cwt -->
 
 #### 内联规则 {#config-inline}
 
-- **用途**：在规则中声明可复用片段（当前用于内联脚本路径与上下文结构）；使用处会展开为普通属性规则以供解析与检查。
+- **用途**：在规则中声明可复用的“内联逻辑”使用处结构，目前用于“内联脚本（inline script）”。
+- **路径定位**：`inline[{name}]`，`{name}` 为规则名称。
+
+- **解析流程（实现摘要）**：
+  - 解析名称：从键名中提取 `inline[...]` 的名称（`CwtInlineConfigResolverImpl`）。
+  - 展开为普通属性：调用 `CwtInlineConfig.inline()` 使用 `deepCopyConfigs` 复制其子规则，生成可被后续流程直接消费的 `CwtPropertyConfig`。
+
+- **示例**（Stellaris）：
+
+```cwt
+### 使用内联脚本
+inline[inline_script] = filepath[common/inline_scripts/,.txt]
+
+### 带参数的内联脚本
+### 参数接受字符串，可通过引号包裹以替换进一整段语句
+inline[inline_script] = {
+    ## cardinality = 1..1
+    script = filepath[common/inline_scripts/,.txt]
+    ## cardinality = 0..inf
+    $parameter = $parameter_value
+}
+```
+
+- **与其他规则协作**：
+  - 展开后的规则与普通属性规则一致，参与校验与补全。
+  - 若需为“内联脚本路径”提供上下文与多态配置，请参考扩展规则：`内联脚本（扩展）`。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
+<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 
 #### 类型与子类型 {#config-type}
 
-- **用途**：按“文件路径/键名”定位并命名“定义”，并可声明子类型、局部作用域与展示信息。
-- **格式要点**：`types/type[name] = { ... }`；子类型 `subtype[key] = { 规则… }`；可定义 `name_field`、`type_per_file`、`skip_root_key`、`type_key_filter/regex/starts_with` 等。
-- **解析要点**：文件扫描与键名匹配；子类型判定顺序敏感；可向下传递作用域上下文。
+- **用途**：按“文件路径/键名”定位并命名“定义（Definition）”，并可声明子类型、展示信息与图片。
+- **路径定位**：
+  - 类型：`types/type[{type}]`，`{type}` 为定义类型名。
+  - 子类型：`types/type[{type}]/subtype[{subtype}]`。
+
+- **文件匹配与来源**：
+  - `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` 组合决定参与扫描的文件集合。
+  - 路径会移除前缀 `game/` 并规范化分隔符；`path_extension` 不含点（例如 `.txt` → `txt`）。
+  - `type_per_file` 表示“一文件一类型实例”。
+
+- **类型键（definition key）约束**：
+  - `type_key_prefix` 指定键前缀；并提供对应的原始值规则（`typeKeyPrefixConfig`）用于渲染与提示。
+  - `type_key_filter`/`type_key_regex`/`starts_with` 用于约束“类型键”的取值；`skip_root_key` 允许跳过若干顶级键以继续匹配（忽略大小写，支持多组）。
+  - `possibleTypeKeys` 基于类型与子类型的 filter 汇总，便于补全与校验。
+
+- **名称与唯一性**：
+  - `name_field` 指定展示名称来源字段；`name_from_file` 表示从文件名推导名称；`unique` 用于冲突检查/导航提示；`severity` 用于标注展示严重级别。
+
+- **子类型（Subtype）**：
+  - 选项：`type_key_filter`、`type_key_regex`、`starts_with`、`only_if_not`、`group`。
+  - 匹配时按声明顺序裁剪；通常与声明规则中的 `subtype[...]` 一起使用以细化结构与校验。
+
+- **展示**：
+  - `localisation`/`images` 小节用于类型的本地化展示与图片展示设置。
+
+- **解析流程（实现摘要）**：
+  1. 解析 `type[...]` 名称与必要属性；缺失属性将跳过该类型（`CwtTypeConfigResolverImpl`）。
+  2. 收集文件来源与键约束、构造子类型映射、解析展示相关配置。
+  3. 合并 `modifiers`：若在类型规则内声明 `modifiers`，将派生对应的修正规则并写入 `configGroup.modifiers` 与 `type2ModifiersMap`（按 `type` 或 `type.subtype` 归档）。
+  4. 计算 `possibleTypeKeys`，并在需要时为 `type_key_prefix` 绑定标签类型（`CwtTagType.TypeKeyPrefix`）。
+
+- **与其他规则协作**：
+  - 与 `声明（Declaration）` 协作，用于为具体定义的声明提供上下文与结构约束。
+  - 与 `修正/修正类别` 协作，通过 `modifiers` 派生与类型强相关的修正规则。
+
+- **示例**：
+
+```cwt
+types = {
+  type[civic_or_origin] = {
+    # 文件来源
+    path = "game/common/governments/civics"   # 将自动去掉前缀 "game/"
+    path_extension = .txt
+
+    # 键约束与前缀
+    type_key_prefix = civic_
+    ## type_key_filter = { +civic_ -origin_ }  # 包含/排除集合
+    ## starts_with = civic_
+    ## skip_root_key = { potential }
+
+    # 子类型
+    subtype[origin] = {
+      ## type_key_filter = +origin_
+      ## group = lifecycle
+    }
+
+    # 展示
+    localisation = { name_field = name }
+    images = { main = icon }
+  }
+}
+```
+
+- **常见陷阱与建议**：
+  - 缺少任何必需属性会导致类型被跳过（日志中将有提示）。
+  - `path` 与 `path_pattern` 可并用；`path_strict` 会强制严格匹配。
+  - `skip_root_key` 为多组设置：若存在任意一组与文件顶级键序列匹配，则允许跳过继续匹配类型键。
+  - 子类型匹配“顺序敏感”，请将更具体的规则放在更前面。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl -->
@@ -103,19 +296,125 @@ priorities = {
 
 #### 别名与单别名 {#config-alias}
 
-- **用途**：复用一组规则；`alias[...]` 作为具名片段复用于多处；`single_alias[...]` 可在 RHS 直接展开。
-- **格式要点**：`alias[group:key] = { ... }`；引用 `alias_name[group] = alias_match_left[group]`；单别名右侧 `single_alias_right[key]`。
-- **解析要点**：分组与键名合并为唯一ID；单别名按上下文内联展开；校验基数/选项在展开后生效。
+- **用途**：将可复用的规则片段抽象成“具名别名”，在多处引用并展开；单别名用于“值侧”一对一复用。
+- **路径定位**：
+  - 别名：`alias[{name}:{subName}]`（`{subName}` 为受限的数据表达式）。
+  - 单别名：`single_alias[{name}]`。
+
+- **语法与引用**：
+  - 声明别名：`alias[effect:some_effect] = { ... }`
+  - 使用别名：在使用处编写 `alias_name[effect] = alias_match_left[effect]`
+  - 声明单别名：`single_alias[trigger_clause] = { alias_name[trigger] = alias_match_left[trigger] }`
+  - 使用单别名：`potential = single_alias_right[trigger_clause]`
+
+- **选项语义（别名）**：
+  - `scope/scopes`：允许的输入作用域集合（`supportedScopes`）。
+  - `push_scope`：输出作用域（`outputScope`）。
+  - `subName` 支持受限的数据表达式，并被解析为 `subNameExpression`，同时作为 `configExpression` 用于匹配与提示。
+
+- **解析与展开流程（实现摘要）**：
+  - 解析键名获得 `name`/`subName`（`CwtAliasConfigResolverImpl`）。
+  - 在使用处展开：`CwtConfigManipulator.inlineAlias` 将别名体复制为普通属性规则：
+    - 展开后键名=子名（`key = subName`），值/子规则深拷贝，保留选项。
+    - 若展开结果的 RHS 是 `single_alias_right[...]`，会继续触发单别名的内联展开（级联展开）。
+    - 展开后参与注入（`CwtInjectedConfigProvider.injectConfigs`）与父指针回填，随后进入常规校验/补全流程。
+  - 单别名在值侧展开：`CwtConfigManipulator.inlineSingleAlias` 将对应声明整体替换到使用处的值与子块内。
+
+- **与其他规则协作**：
+  - 常与“声明（Declaration）”规则结合，在定义声明中复用 trigger/effect 等片段。
+  - 与“类型与子类型”协作，作为修正规则或上下文约束的一部分。
+
+- **示例**：
+
+```cwt
+# 别名：定义 effect 片段
+alias[effect:apply_bonus] = {
+  add_modifier = {
+    modifier = enum[modifier_rule]
+    days = int
+  }
+}
+
+# 在脚本处使用别名
+scripted_effect = {
+  alias_name[effect] = alias_match_left[effect]
+}
+
+# 单别名：定义触发块片段
+single_alias[trigger_clause] = {
+  alias_name[trigger] = alias_match_left[trigger]
+}
+
+# 在声明中值侧使用单别名
+some_definition = {
+  ## cardinality = 0..1
+  potential = single_alias_right[trigger_clause]
+}
+```
+
+- **常见陷阱与建议**：
+  - 别名唯一键由 `name:subName` 组成；重复定义将按“覆盖策略/优先级”处理。
+  - 展开后才会进行基数与选项校验；请在展开位置而非声明处考虑最终语义。
+  - `subName` 为数据表达式（受限），可使用模板/枚举等提高复用度，但请避免过宽导致误匹配。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
 
 #### 枚举与复杂枚举 {#config-enum}
 
-- **用途**：提供可枚举值；复杂枚举可从脚本文件动态生成。
-- **格式要点**：`enums = { enum[key] = { v1 v2 ... } }`；`complex_enum[key] = { path = ... name = { ... } }`。
-- **解析要点**：复杂枚举在索引阶段按路径/模式收集；与 `<type>`/`enum[...]` 结合用于补全与校验。
+- **用途**：为数据表达式 `enum[...]` 提供取值集合。
+  - 简单枚举：固定值集合，全部在规则文件中声明。
+  - 复杂枚举：从脚本文件按路径/锚点动态收集枚举值。
+
+- **路径定位**：
+  - 简单枚举：`enums/enum[{name}]`
+  - 复杂枚举：`enums/complex_enum[{name}]`
+
+- **简单枚举（Enum）**：
+  - 声明：
+    ```cwt
+    enums = {
+      enum[weight_or_base] = { weight base }
+    }
+    ```
+  - 字段与实现：
+    - `name`：枚举名。
+    - `values`：可选项集合（忽略大小写）。当前实现仅支持“常量值”，不支持模板表达式（实现中留有 TODO）。
+    - `valueConfigMap`：可选项到其值规则的映射，用于渲染与提示。
+
+- **复杂枚举（Complex Enum）**：
+  - 声明（示例）：
+    ```cwt
+    enums = {
+      complex_enum[component_tag] = {
+        path = "game/common/component_tags"
+        name = {
+          enum_name
+        }
+        start_from_root = yes
+      }
+    }
+    ```
+  - 字段与实现（`CwtComplexEnumConfigResolverImpl`）：
+    - 文件来源：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`（路径会移除前缀 `game/`，扩展名不含点）。
+    - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
+    - `search_scope_type`（PLS 扩展）：查询作用域类型（目前仅支持 `definition`）。
+    - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
+
+- **解析流程（简要）**：
+  1. 简单枚举：解析 `enum[...]` 与其值列表，构建忽略大小写的值集合与映射（`CwtEnumConfigResolverImpl`）。
+  2. 复杂枚举：解析文件来源、`name` 小节与锚点；索引阶段在匹配文件中收集锚点对应的实际值（`enum_name`）。
+  3. 两者均服务于数据表达式 `enum[...]` 的补全与校验。
+
+- **常见陷阱与建议**：
+  - 简单枚举当前仅支持常量值；若填写模板表达式，将不会被按模板解析。
+  - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
+  - 路径字段支持组合使用；`path_strict` 会启用严格匹配；`path_extension` 请勿包含前导点（应写作 `txt`）。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtEnumConfigResolverImpl -->
@@ -123,24 +422,129 @@ priorities = {
 
 #### 动态值类型 {#config-dynamic-value}
 
-- **用途**：为 `value[...]` 与“值引用”系统提供集合与范围，用以替代固定字面量。
-- **格式要点**：声明动态值的名称、来源与作用域上下文（如仅接收 push scope）。
-- **解析要点**：结合模板/数据表达式执行宽匹配；在补全与校验中与当前作用域互相约束。
+- **用途**：为数据表达式 `value[...]` 提供“预定义（硬编码）”的动态值集合，替代固定字面量，便于补全与校验。
+- **路径定位**：`values/value[{name}]`，`{name}` 为动态值类型名。
+
+- **字段与限制**：
+  - `name`：动态值类型名。
+  - `values`：值集合（忽略大小写）。
+  - `valueConfigMap`：值到对应值规则的映射。
+  - 当前实现仅支持“常量值”，不支持模板表达式（实现留有 TODO）。
+
+- **示例**：
+
+```cwt
+values = {
+  value[event_target] = { owner capital }  # 忽略大小写
+}
+```
+
+- **解析流程（实现摘要）**：
+  - 解析 `value[...]` 名称与值列表，构建忽略大小写的值集合与映射（`CwtDynamicValueTypeConfigResolverImpl`）。
+  - 供数据表达式 `value[...]` 在补全与校验阶段使用。
+
+- **与扩展规则的关系**：
+  - 若需为动态值声明“作用域上下文”（如仅接收 push scope）或按上下文动态生成值，请参考“扩展规则”中的“动态值（扩展）”。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl -->
 
 #### 链接（Scope/Value 链）{#config-link}
 
-- **用途**：配置 `x.y` 链式访问的合法跳转（输入/输出作用域、可选前缀、数据源等）。
-- **格式要点**：`links = { foo = { input_scopes = { ... } output_scope = ... prefix = ... data_source = <...> } }`。
-- **解析要点**：前缀不带引号与括号；输入/输出作用域用于链路检查与补全；`data_source` 可混合多个。
+- **用途**：为复杂表达式中的“字段/函数样”节点提供语义与类型（作用域/值）约束，支撑链式访问与补全检查。
+- **路径定位**：
+  - 常规链接：`links/{name}`
+  - 本地化链接：`localisation_links/{name}`（若未显式声明，会自动复制静态的常规链接）
+
+- **静态 vs 动态**：
+  - 静态链接：未声明 `data_source`，仅代表一个固定的节点名（如 `owner`）。
+  - 动态链接：声明了 `data_source` 与/或 `prefix`/`from_*`，可携带动态数据（如 `modifier:x`、`relations(x)`、`var:x`）。
+
+- **字段与语义（实现）**：
+  - `type`：`scope`/`value`/`both`（默认 `scope`）。
+  - `from_data`：是否从“文本数据”读取动态数据（格式如 `prefix:data`）。
+  - `from_argument`：是否从“函数参数”读取动态数据（格式如 `func(arg)`）。
+  - `prefix`：动态链接的前缀；当 `from_argument = yes` 时，解析会移除尾随冒号（避免 `prefix:` 重复）。
+  - `data_source`（可多值）：每个数据源是一个“数据表达式”，用于约束动态数据的合法取值，支持多传参场景。
+  - `input_scopes`：输入作用域集合；可写单个或集合，解析器同时支持 `input_scope` 与 `input_scopes` 两种写法。
+  - `output_scope`：输出作用域；为空时表示“透传/基于数据源推导”。
+  - `for_definition_type`：仅在指定定义类型中可用。
+
+- **解析流程（实现摘要）**：
+  - 读取字段并标准化：作用域 ID 通过 `ParadoxScopeManager.getScopeId()` 归一化；
+  - 校验：当 `from_data` 或 `from_argument` 为 `yes` 时必须存在至少一个 `data_source`；
+  - 生成数据表达式：为每个 `data_source` 解析出 `CwtDataExpression`，支持多参数（可用委托 `delegatedWith(index)` 指定当前参数）。
+  - 本地化链接：可从常规链接复制（静态），也可单独解析。
+
+- **示例**：
+
+```cwt
+links = {
+  # 静态 scope 链接
+  owner = {
+    input_scopes = { any }
+    output_scope = any
+  }
+
+  # 动态 value 链接（带前缀）
+  modifier = {
+    type = value
+    from_data = yes
+    prefix = modifier
+    data_source = dynamic_value[test_flag]
+    input_scopes = { any }
+  }
+
+  # 动态 scope 链接（函数形）
+  relations = {
+    from_argument = yes
+    data_source = <country>           # 可混用多个数据源
+    data_source = dynamic_value[test_flag]
+    input_scopes = { country }
+    # output_scope 为空 -> 基于数据源与实现推导
+  }
+}
+```
+
+- **常见陷阱与建议**：
+  - `prefix` 不应带引号或括号；`input_scopes` 使用花括号集合语法（如 `{ country }`）。
+  - 可混合多个 `data_source`；对多参链接可使用 `delegatedWith(index)` 切换当前参数的表达式。
+  - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
+  - 建议在 `data_source` 中使用 `<type>` 简写（如 `<country>`），而非 `definition[country]`。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl -->
 
 #### 作用域与作用域组 {#config-scope}
 
-- **用途**：声明脚本中的作用域与分组，用于作用域检查、跳转与提示。
-- **解析要点**：与系统作用域/替换规则共同决定“当前作用域栈”。
+- **用途**：定义“作用域类型”及其别名（`scopes`），并对作用域进行分组（`scope_groups`），用于作用域检查、链路约束与提示。
+
+- **路径定位与字段**：
+  - 作用域：`scopes/{name}`
+    - `name`：作用域 ID。
+    - `aliases: string[]`：别名集合（忽略大小写）。
+  - 作用域组：`scope_groups/{name}`
+    - `name`：分组名。
+    - `: string[]`：分组内作用域 ID 集合（忽略大小写）。
+
+- **示例**：
+
+```cwt
+scopes = {
+  Country = { aliases = { country } }
+}
+
+scope_groups = {
+  target_species = {
+    country pop_group leader planet ship fleet army species first_contact
+  }
+}
+```
+
+- **与其他规则协作**：
+  - 与“系统作用域”共同决定作用域栈与含义；与“链接”共同约束链式访问的输入/输出作用域。
+  - 在扩展规则中可通过 `replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl -->
@@ -148,7 +552,67 @@ priorities = {
 
 #### 修正与修正类别 {#config-modifier}
 
-- **用途**：提供修正与修正分组的声明，用于图标渲染、校验与补全。
+- **用途**：声明修正（modifier）与其分类，用于图标渲染、补全与作用域校验。
+
+- **路径定位**：
+  - 修正：
+    - `modifiers/{name}`（`{name}` 可为常量或模板表达式）
+    - `types/type[{type}]/modifiers/{name}`（其中 `$` 会被替换为 `<{type}>`）
+    - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}`（`{type}.{subtype}` 作为类型表达式参与替换）
+  - 修正类别：`modifier_categories/{name}`
+
+- **字段与语义（修正）**：
+  - `name`：模板化名称（如 `job_<job>_add`），支持匹配动态生成的修正。
+  - `categories: string | string[]`：分类名集合；决定允许的作用域类型。
+  - `supportedScopes`：允许的作用域集合。
+    - 若已解析出 `categoryConfigMap`，则基于类别汇总作用域（`ParadoxScopeManager.getSupportedScopes(...)`）。
+    - 否则回退到修正自身的选项 `supported_scopes`（若存在）。
+
+- **字段与语义（修正类别）**：
+  - `name`：分类名（如 `Pops`）。
+  - `supported_scopes: string | string[]`：该分类允许的作用域集合。
+
+- **解析流程（实现摘要）**：
+  - 修正（`CwtModifierConfigResolverImpl`）：
+    1. 从值或值列表解析 `categories`；缺失则跳过该条目。
+    2. 若来自类型规则的 `modifiers`，将 `name` 中的 `$` 替换为 `<{typeExpression}>`，其中 `typeExpression` 为 `type` 或 `type.subtype`。
+    3. 解析模板表达式并计算 `supportedScopes`（基于类别或本地选项）。
+  - 修正类别（`CwtModifierCategoryConfigResolverImpl`）：
+    1. 解析 `name` 与 `supported_scopes`。
+
+- **与其他规则协作**：
+  - 与“类型与子类型”的 `modifiers` 小节联动，派生出与类型绑定的修正规则。
+  - 与“作用域/链接/系统作用域”联动进行作用域检查与提示。
+
+- **示例**：
+
+```cwt
+# 独立声明修正
+modifiers = {
+  pop_happiness = { Pops }
+  job_<job>_add = { Planets }
+}
+
+# 在类型规则中声明修正（会派生为模板名称）
+types = {
+  type[job] = {
+    modifiers = {
+      job_$_add = { Planets }   # -> job_<job>_add
+    }
+  }
+}
+
+# 修正分类
+modifier_categories = {
+  Pops = { supported_scopes = { species pop_group planet } }
+}
+```
+
+- **常见陷阱与建议**：
+  - 修正条目缺少 `categories` 会被跳过（不生效）。
+  - 类型规则中的修正名称使用 `$` 占位，请确保与类型/子类型表达式对应。
+  - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl -->
@@ -156,7 +620,45 @@ priorities = {
 
 #### 本地化命令与推广 {#config-localisation}
 
-- **用途**：约束可用的本地化命令、指定推广关系与展示细节。
+- **用途**：声明“本地化命令字段”（Get...）的可用性与允许作用域，并声明“本地化作用域提升”规则，支持在本地化链接切换作用域后仍能使用命令字段。
+
+- **路径定位**：
+  - 本地化命令：`localisation_commands/{name}`（`{name}` 忽略大小写）
+  - 本地化提升：`localisation_promotions/{name}`（`{name}` 忽略大小写，对应本地化链接名）
+
+- **字段与语义**：
+  - 命令：`supported_scopes: string | string[]`（允许的作用域类型集合）
+  - 提升：`supported_scopes: string | string[]`（提升后的允许作用域集合）
+
+- **解析流程（实现摘要）**：
+  - 命令（`CwtLocalisationCommandConfigResolverImpl`）：解析名称（忽略大小写）与 `supported_scopes`。
+  - 提升（`CwtLocalisationPromotionConfigResolverImpl`）：解析名称（忽略大小写，匹配本地化链接名）与 `supported_scopes`。
+  - 在本地化文本中，若通过本地化链接切换了作用域，则按“提升规则”确认可以使用的命令字段集合。
+
+- **示例**：
+
+```cwt
+localisation_commands = {
+  GetCountryType = { country }
+}
+
+localisation_promotions = {
+  Ruler = { country }
+}
+
+localisation_links = {
+  ruler = { ... }
+}
+
+# 本地化文本中：
+# [Ruler.GetCountryType] 在 Ruler 链接后的作用域提升下有效
+```
+
+- **常见陷阱与建议**：
+  - 名称大小写不敏感；请保持与实际使用的命令字段一致的拼写风格以便检索。
+  - 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
+  - 与“链接（本地化链接）”协作时，静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl -->
@@ -164,7 +666,37 @@ priorities = {
 
 #### 类型展示（本地化/图片）{#config-type-presentation}
 
-- **用途**：为某类型定义“展示名称/描述/必需本地化键”“主要图片/切分规则”等。
+- **用途**：为某定义类型配置“名称/描述/必需本地化键”“主要图片/切分规则”等，以便在 UI、导航与提示中展示。
+- **路径定位**：
+  - 本地化：`types/type[{type}]/localisation`
+  - 图片：`types/type[{type}]/images`
+
+- **字段与语义**：
+  - 二者结构一致：由若干“子类型表达式 + 位置规则”的配对组成（`locationConfigs`）。
+  - 在运行时根据实际“定义的子类型集合”过滤并合并得到最终的规则列表（`getConfigs(subtypes)`）。
+  - 位置规则参见“位置与行匹配”的 `CwtLocationConfig`，常用选项：
+    - `required`：是否必需项（缺失时报错/提示）。
+    - `primary`：是否主要项（例如用于主展示图标/主名称）。
+  - 位置表达式参见“规则表达式 → 位置表达式”。
+
+- **示例**：
+
+```cwt
+types = {
+  type[ship_design] = {
+    localisation = {
+      ## primary
+      name = some_loc_key
+      subtype[corvette] = { name = some_corvette_loc_key }
+    }
+    images = {
+      ## primary ## required
+      icon = "icon|icon_frame"  # 图片位置表达式，支持帧数与名称路径参数
+    }
+  }
+}
+```
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl -->
@@ -172,13 +704,59 @@ priorities = {
 
 #### 数据库对象类型 {#config-db-type}
 
-- **用途**：面向具备“数据库对象”语义的实体，提供类型化建模能力。
+- **用途**：为本地化中的“数据库对象表达式”（如 `['civic:some_civic', ...]`）定义类型与格式，支持在 UI 与提示中解析为定义或本地化。
+- **路径定位**：`database_object_types/{name}`，`{name}` 为前缀（如 `civic`）。
+
+- **字段与语义**：
+  - `type`：若存在，将 `prefix:object` 的 `object` 作为该类型的“定义引用”。
+  - `swap_type`：若存在，将 `prefix:object:swap` 的 `swap` 作为该“切换类型”的定义引用。
+  - `localisation`：若存在，将 `prefix:object` 的 `object` 作为“本地化键”解析。
+
+- **示例**：
+
+```cwt
+database_object_types = {
+  civic = {
+    type = civic_or_origin
+    swap_type = swapped_civic
+  }
+}
+```
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl -->
 
 #### 位置与行匹配 {#config-location-row}
 
-- **用途**：位置匹配（如图标/本地化）与行规则（表格式内容）的通用声明。
+- **用途**：
+  - `位置规则（Location）`：声明图片/本地化等资源的定位键与位置表达式。
+  - `行规则（Row）`：为 CSV 行声明列名与取值形态，用于补全/检查。
+
+- **位置规则（CwtLocationConfig）**：
+  - 适用位置：`types/type[{type}]/localisation/{key}` 与 `types/type[{type}]/images/{key}`。
+  - 字段：`key`（资源名）、`value`（位置表达式字符串）、`required`、`primary`。
+  - 位置表达式详见“规则表达式 → 位置表达式”。
+
+- **行规则（CwtRowConfig）**：
+  - 路径定位：`rows/row[{name}]`。
+  - 继承文件匹配能力（与类型类似）：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`。
+  - 字段：`columns`（列名→列规则），`end_column`（终止列名，匹配到后视为可省略的尾列）。
+
+- **示例**：
+
+```cwt
+rows = {
+  row[component_template] = {
+    path = "game/common/component_templates"
+    file_extension = .csv
+    columns = {
+      key = <component_template>
+      # ... 其他列
+    }
+  }
+}
+```
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
@@ -186,7 +764,24 @@ priorities = {
 
 #### 语言环境 {#config-locale}
 
-- **用途**：声明可用语言环境及其属性，辅助本地化流程与格式校验。
+- **用途**：声明语言环境（locale）的基本信息，便于识别项目/用户偏好的语言环境，改进 UI 展示与本地化校验。
+- **路径定位**：`locales/{id}`，`{id}` 如 `l_english`。
+
+- **字段与语义**：
+  - `id`：语言环境 ID。
+  - `codes: string[]`：该语言环境包含的语言代码（如 `en`, `en-US`）。
+  - 派生字段：`shortId`（去除前缀 `l_`）、`idWithText`（带展示文本）。
+  - 解析器额外能力：可按 IDE/OS 自动解析或提供 fallback（内部使用）。
+
+- **示例**：
+
+```cwt
+locales = {
+  l_english = { codes = { "en" } }
+  l_simp_chinese = { codes = { "zh-CN" } }
+}
+```
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
 
