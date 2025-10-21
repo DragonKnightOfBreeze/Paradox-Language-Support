@@ -433,9 +433,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     }
 
     /**
-     * 修正类别键集合（modifier_categories）。
+     * 修正分类键集合（modifier_categories）。
      *
-     * 脚本化修正类别用到的类别键集合，驱动补全、分组与展示。
+     * 脚本化修正分类用到的类别键集合，驱动补全、分组与展示。
      *
      * CWTools 兼容性：PLS 扩展。主要供插件逻辑使用。
      *

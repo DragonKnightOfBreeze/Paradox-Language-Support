@@ -53,6 +53,10 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 #### 优先级 {#config-priority}
 
+<!-- @see icu.windea.pls.ep.priority.ParadoxPriority -->
+<!-- @see icu.windea.pls.ep.priority.ParadoxPriorityProvider -->
+<!-- @see cwt/core/priorities.core.cwt -->
+
 - **用途**：为“目标”的覆盖与合并提供统一策略，影响生效顺序与查询结果排序（流式查询除外）。
 - **适用目标**：文件、封装变量、定义、本地化、复杂枚举等。
 - **默认值**：未命中任何目录映射时，使用 `LIOS`（后读覆盖）。
@@ -94,12 +98,13 @@ priorities = {
   - 两个 MOD 都在 `events/` 中定义同名事件：由于 `events = fios`，先被读取（加载更早）的 MOD 生效，后者被忽略。
   - 两个 MOD 都在 `common/on_actions/` 添加条目：由于 `ordered`，会顺序合并执行，不发生覆盖。
 
-- **参阅与源码映射**：
-  - 文档：`docs/zh/config.md#priorities`
-  - 规则文件：`cwt/core/priorities.core.cwt`
-  - 代码：`icu.windea.pls.ep.priority.ParadoxPriority`、`icu.windea.pls.ep.priority.ParadoxPriorityProvider`
-
 #### 声明（Declaration） {#config-declaration}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator -->
+<!-- @see icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider -->
+<!-- @see icu.windea.pls.ep.config.CwtInjectedConfigProvider -->
 
 - **用途**：声明“定义（Definition）条目”的结构，用于补全、检查与快速文档等。
 - **路径定位**：`{name}`，其中 `{name}` 为规则名称（即“定义类型”）。顶级属性若键为合法标识符且未被其他规则匹配，回退尝试解析为声明规则。
@@ -144,14 +149,11 @@ event = {
   - 根级 `single_alias_right[...]` 会先被展开后再参与后续解析与检查。
   - 为保证后续功能的“向上溯源”，新增节点均会注入 `parentConfig`（父指针）。
 
-- **参阅与源码映射**：
-  - 文档：`docs/zh/config.md#declarations`
-  - 接口与解析：`icu.windea.pls.config.config.delegated.CwtDeclarationConfig`、`...impl.CwtDeclarationConfigResolverImpl`
-  - 操作器：`icu.windea.pls.config.util.manipulators.CwtConfigManipulator`（`inlineSingleAlias`、`deepCopyConfigsInDeclarationConfig`）
-  - 上下文提供器：`icu.windea.pls.ep.configContext.BaseCwtDeclarationConfigContextProvider`、`GameRuleCwtDeclarationConfigContextProvider`、`OnActionCwtDeclarationConfigContextProvider`
-  - 注入扩展点：`icu.windea.pls.ep.config.CwtInjectedConfigProvider`
-
 #### 系统作用域 {#config-system-scope}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
+<!-- @see cwt/core/system_scopes.core.cwt -->
 
 - **用途**：为内置的“系统级作用域”（This/Root/Prev/From 等）提供元信息，用于快速文档与作用域栈推导。
 - **路径定位**：`system_scopes/{id}`，其中 `{id}` 为系统作用域 ID。
@@ -181,11 +183,11 @@ system_scopes = {
 }
 ```
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
-<!-- @see cwt/core/system_scopes.core.cwt -->
-
 #### 内联规则 {#config-inline}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
+<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 
 - **用途**：在规则中声明可复用的“内联逻辑”使用处结构，目前用于“内联脚本（inline script）”。
 - **路径定位**：`inline[{name}]`，`{name}` 为规则名称。
@@ -214,11 +216,12 @@ inline[inline_script] = {
   - 展开后的规则与普通属性规则一致，参与校验与补全。
   - 若需为“内联脚本路径”提供上下文与多态配置，请参考扩展规则：`内联脚本（扩展）`。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
-<!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
-
 #### 类型与子类型 {#config-type}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl -->
 
 - **用途**：按“文件路径/键名”定位并命名“定义（Definition）”，并可声明子类型、展示信息与图片。
 - **路径定位**：
@@ -253,7 +256,7 @@ inline[inline_script] = {
 
 - **与其他规则协作**：
   - 与 `声明（Declaration）` 协作，用于为具体定义的声明提供上下文与结构约束。
-  - 与 `修正/修正类别` 协作，通过 `modifiers` 派生与类型强相关的修正规则。
+  - 与 `修正/修正分类` 协作，通过 `modifiers` 派生与类型强相关的修正规则。
 
 - **示例**：
 
@@ -289,12 +292,14 @@ types = {
   - `skip_root_key` 为多组设置：若存在任意一组与文件顶级键序列匹配，则允许跳过继续匹配类型键。
   - 子类型匹配“顺序敏感”，请将更具体的规则放在更前面。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSubtypeConfigResolverImpl -->
-
 #### 别名与单别名 {#config-alias}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
+<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
 
 - **用途**：将可复用的规则片段抽象成“具名别名”，在多处引用并展开；单别名用于“值侧”一对一复用。
 - **路径定位**：
@@ -357,14 +362,12 @@ some_definition = {
   - 展开后才会进行基数与选项校验；请在展开位置而非声明处考虑最终语义。
   - `subName` 为数据表达式（受限），可使用模板/枚举等提高复用度，但请避免过宽导致误匹配。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtAliasConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtSingleAliasConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineAlias -->
-<!-- @see icu.windea.pls.config.util.manipulators.CwtConfigManipulator.inlineSingleAlias -->
-
 #### 枚举与复杂枚举 {#config-enum}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtEnumConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverImpl -->
 
 - **用途**：为数据表达式 `enum[...]` 提供取值集合。
   - 简单枚举：固定值集合，全部在规则文件中声明。
@@ -415,12 +418,10 @@ some_definition = {
   - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
   - 路径字段支持组合使用；`path_strict` 会启用严格匹配；`path_extension` 请勿包含前导点（应写作 `txt`）。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtEnumConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverImpl -->
-
 #### 动态值类型 {#config-dynamic-value}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl -->
 
 - **用途**：为数据表达式 `value[...]` 提供“预定义（硬编码）”的动态值集合，替代固定字面量，便于补全与校验。
 - **路径定位**：`values/value[{name}]`，`{name}` 为动态值类型名。
@@ -446,10 +447,10 @@ values = {
 - **与扩展规则的关系**：
   - 若需为动态值声明“作用域上下文”（如仅接收 push scope）或按上下文动态生成值，请参考“扩展规则”中的“动态值（扩展）”。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl -->
-
 #### 链接（Scope/Value 链）{#config-link}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl -->
 
 - **用途**：为复杂表达式中的“字段/函数样”节点提供语义与类型（作用域/值）约束，支撑链式访问与补全检查。
 - **路径定位**：
@@ -512,10 +513,12 @@ links = {
   - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
   - 建议在 `data_source` 中使用 `<type>` 简写（如 `<country>`），而非 `definition[country]`。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl -->
-
 #### 作用域与作用域组 {#config-scope}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeGroupConfigResolverImpl -->
 
 - **用途**：定义“作用域类型”及其别名（`scopes`），并对作用域进行分组（`scope_groups`），用于作用域检查、链路约束与提示。
 
@@ -545,12 +548,12 @@ scope_groups = {
   - 与“系统作用域”共同决定作用域栈与含义；与“链接”共同约束链式访问的输入/输出作用域。
   - 在扩展规则中可通过 `replace_scopes` 指定在特定上下文下系统作用域映射到的具体作用域类型。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtScopeGroupConfigResolverImpl -->
+#### 修正与修正分类 {#config-modifier}
 
-#### 修正与修正类别 {#config-modifier}
+<!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierCategoryConfigResolverImpl -->
 
 - **用途**：声明修正（modifier）与其分类，用于图标渲染、补全与作用域校验。
 
@@ -559,7 +562,7 @@ scope_groups = {
     - `modifiers/{name}`（`{name}` 可为常量或模板表达式）
     - `types/type[{type}]/modifiers/{name}`（其中 `$` 会被替换为 `<{type}>`）
     - `types/type[{type}]/modifiers/subtype[{subtype}]/{name}`（`{type}.{subtype}` 作为类型表达式参与替换）
-  - 修正类别：`modifier_categories/{name}`
+  - 修正分类：`modifier_categories/{name}`
 
 - **字段与语义（修正）**：
   - `name`：模板化名称（如 `job_<job>_add`），支持匹配动态生成的修正。
@@ -568,7 +571,7 @@ scope_groups = {
     - 若已解析出 `categoryConfigMap`，则基于类别汇总作用域（`ParadoxScopeManager.getSupportedScopes(...)`）。
     - 否则回退到修正自身的选项 `supported_scopes`（若存在）。
 
-- **字段与语义（修正类别）**：
+- **字段与语义（修正分类）**：
   - `name`：分类名（如 `Pops`）。
   - `supported_scopes: string | string[]`：该分类允许的作用域集合。
 
@@ -577,7 +580,7 @@ scope_groups = {
     1. 从值或值列表解析 `categories`；缺失则跳过该条目。
     2. 若来自类型规则的 `modifiers`，将 `name` 中的 `$` 替换为 `<{typeExpression}>`，其中 `typeExpression` 为 `type` 或 `type.subtype`。
     3. 解析模板表达式并计算 `supportedScopes`（基于类别或本地选项）。
-  - 修正类别（`CwtModifierCategoryConfigResolverImpl`）：
+  - 修正分类（`CwtModifierCategoryConfigResolverImpl`）：
     1. 解析 `name` 与 `supported_scopes`。
 
 - **与其他规则协作**：
@@ -613,12 +616,12 @@ modifier_categories = {
   - 类型规则中的修正名称使用 `$` 占位，请确保与类型/子类型表达式对应。
   - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtModifierCategoryConfigResolverImpl -->
+#### 本地化命令与提升 {#config-localisation}
 
-#### 本地化命令与推广 {#config-localisation}
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationPromotionConfigResolverImpl -->
 
 - **用途**：声明“本地化命令字段”（Get...）的可用性与允许作用域，并声明“本地化作用域提升”规则，支持在本地化链接切换作用域后仍能使用命令字段。
 
@@ -659,12 +662,12 @@ localisation_links = {
   - 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
   - 与“链接（本地化链接）”协作时，静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationCommandConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocalisationPromotionConfigResolverImpl -->
-
 #### 类型展示（本地化/图片）{#config-type-presentation}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl -->
 
 - **用途**：为某定义类型配置“名称/描述/必需本地化键”“主要图片/切分规则”等，以便在 UI、导航与提示中展示。
 - **路径定位**：
@@ -697,12 +700,10 @@ types = {
 }
 ```
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeLocalisationConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtTypeImagesConfigResolverImpl -->
-
 #### 数据库对象类型 {#config-db-type}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl -->
 
 - **用途**：为本地化中的“数据库对象表达式”（如 `['civic:some_civic', ...]`）定义类型与格式，支持在 UI 与提示中解析为定义或本地化。
 - **路径定位**：`database_object_types/{name}`，`{name}` 为前缀（如 `civic`）。
@@ -723,10 +724,12 @@ database_object_types = {
 }
 ```
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl -->
-
 #### 位置与行匹配 {#config-location-row}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl -->
 
 - **用途**：
   - `位置规则（Location）`：声明图片/本地化等资源的定位键与位置表达式。
@@ -757,12 +760,10 @@ rows = {
 }
 ```
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocationConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtRowConfigResolverImpl -->
-
 #### 语言环境 {#config-locale}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
 
 - **用途**：声明语言环境（locale）的基本信息，便于识别项目/用户偏好的语言环境，改进 UI 展示与本地化校验。
 - **路径定位**：`locales/{id}`，`{id}` 如 `l_english`。
@@ -782,15 +783,14 @@ locales = {
 }
 ```
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
-
-
 ### 扩展规则 {#configs-extended}
 
 > PLS 扩展的规则家族，用于增强 IDE 功能（快速文档、内嵌提示、补全等）。
 
-#### 封装变量（Scripted Variables） {#config-extended-scripted-variable}
+#### 封装变量（扩展） {#config-extended-scripted-variable}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl -->
 
 - **用途**：为脚本中的“封装变量（scripted variable）”提供额外提示（快速文档、内嵌提示等）。
 - **路径定位**：`scripted_variables/{name}`。
@@ -819,10 +819,10 @@ scripted_variables = {
   - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
   - 本条目仅提供“提示增强”，不负责声明或校验封装变量的取值与类型。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl -->
-
 #### 定义（扩展） {#config-extended-definition}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl -->
 
 - **用途**：为具体“定义（Definition）”提供额外上下文与提示信息。
   - 用途包括：文档/提示（`hint`）、绑定定义类型（`type` 必填）、按需要指定作用域上下文（通过选项 `replace_scopes`/`push_scope`）。
@@ -859,10 +859,10 @@ definitions = {
   - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
   - 此扩展用于“提示与上下文增强”，并不直接改变“声明（Declaration）”的结构；与声明的协作发生在使用侧的上下文构建与检查/文档阶段。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl -->
-
 #### 游戏规则（扩展） {#config-extended-game-rule}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
 
 - **用途**：为“游戏规则（game rule）”（类型为 `game_rule` 的定义）提供文档/提示增强，并可“重载声明规则”。
 - **路径定位**：`game_rules/{name}`。
@@ -895,10 +895,10 @@ game_rules = {
   - 若值为 `single_alias_right[...]`，会先被内联，再作为重载规则生效。
   - 该扩展仅影响“声明规则的来源/结构”与“提示信息”，不改变整体优先级与覆盖策略。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
-
 #### On Actions（扩展） {#config-extended-on-action}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
 
 - **用途**：为具体的 `on_action` 定义提供文档/提示增强，并指定“事件类型”以影响声明上下文中与事件有关的引用。
 - **路径定位**：`on_actions/{name}`。
@@ -930,10 +930,10 @@ on_actions = {
   - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
   - 如需作用域替换，可结合通用选项（例如 `replace_scopes`）使用，但其是否参与具体检查取决于使用侧上下文与特性实现。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
-
 #### 内联脚本（扩展） {#config-extended-inline-script}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl -->
 
 - **用途**：为具体“内联脚本（inline script）”声明“上下文规则”和“作用域上下文”，用于在被调用处提供正确的补全/校验。
 - **路径定位**：`inline_scripts/{name}`。
@@ -976,10 +976,10 @@ inline_scripts = {
   - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
   - 本扩展仅提供上下文与作用域信息，不直接约束内联脚本的调用位置与次数。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl -->
-
 #### 参数（扩展） {#config-extended-parameter}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
 
 - **用途**：为触发/效应/内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：
   - 绑定“上下文键”（指向具体触发/效应/内联脚本的上下文）。
@@ -1030,10 +1030,10 @@ parameters = {
   - `inherit = yes` 时，上下文取自“使用处”，需注意其可为空或因位置不同而变化；PLS 会在该路径下开启“动态上下文”模式。
   - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
-
 #### 复杂枚举值（扩展） {#config-extended-complex-enum-value}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl -->
 
 - **用途**：为“复杂枚举（complex enum）”的具体条目提供文档/提示增强（快速文档、内嵌提示等）。
 - **路径定位**：`complex_enum_values/{type}/{name}`，其中 `{type}` 为复杂枚举名，`{name}` 为条目名或匹配模式。
@@ -1065,10 +1065,10 @@ complex_enum_values = {
   - 本扩展不改变复杂枚举“值来源”的收集逻辑，仅提供提示信息。
   - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl -->
-
 #### 动态值（扩展） {#config-extended-dynamic-value}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDynamicValueConfigResolverImpl -->
 
 - **用途**：为某种动态值类型下的具体“动态值”条目提供文档/提示增强。
 - **路径定位**：`dynamic_values/{type}/{name}`，其中 `{type}` 为动态值类型，`{name}` 为条目名或匹配模式。
@@ -1100,14 +1100,18 @@ dynamic_values = {
   - 本扩展不改变动态值类型与基础“值集合”的定义，仅提供提示信息。
   - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
 
-<!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
-<!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDynamicValueConfigResolverImpl -->
-
 ### 内部规则 {#configs-internal}
 
 > 由 PLS 内部使用，控制解析上下文或维护全局语义，不支持自定义。
 
 #### 架构（Schema）配置 {#config-internal-schema}
+
+<!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
+<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
+<!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
+<!-- @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager -->
+<!-- @see cwt/core/internal/schema.cwt -->
 
 - **用途**：为“规则文件（.cwt）本身”的右侧取值形态提供声明，用于基础级别的补全与（有限的）结构校验。
   - 目前以“初步补全”为主，暂不提供严格的 Schema 校验。
@@ -1138,19 +1142,16 @@ some_key = $any              # 进入 properties
 ```
 
 - **注意事项**：
-  - 该内部规则不支持自定义或覆盖；仅内置文件参与。
   - 与“规则表达式 → 架构（schema）表达式”协同工作，主要用于编辑器侧的提示与轻量级把关。
-
-<!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
-<!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
-<!-- @see icu.windea.pls.config.util.CwtConfigSchemaManager -->
-<!-- @see icu.windea.pls.lang.codeInsight.completion.CwtConfigCompletionManager -->
-<!-- @see cwt/core/internal/schema.cwt -->
 
 #### 折叠设置（Folding Settings） {#config-internal-folding}
 
-- **用途**：为编辑器提供额外的代码折叠规则（内部使用，不支持自定义）。
+<!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
+<!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
+<!-- @see cwt/core/internal/folding_settings.cwt -->
+
+- **用途**：为编辑器提供额外的代码折叠规则（内部使用，目前尚不支持自定义）。
 
 - **来源与加载**：
   - 仅来源于内置文件：`internal/folding_settings.cwt`。
@@ -1188,14 +1189,15 @@ folds = {
   - `key` 与 `keys` 可任选其一，`keys` 用于多键匹配；两者同时存在时由使用方决定取舍（目前实现会读取二者）。
   - 最终行为由折叠构建器实现控制，参考 `ParadoxExpressionFoldingBuilder`。
 
-<!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
-<!-- @see icu.windea.pls.lang.folding.ParadoxExpressionFoldingBuilder -->
-<!-- @see cwt/core/internal/folding_settings.cwt -->
-
 #### 后缀模板设置（Postfix Template Settings） {#config-internal-postfix}
 
-- **用途**：为编辑器提供额外的“后缀模板”能力（内部使用，不支持自定义）。
+<!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
+<!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
+<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate -->
+<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate -->
+<!-- @see cwt/core/internal/postfix_template_settings.cwt -->
+
+- **用途**：为编辑器提供额外的“后缀模板”能力（内部使用，目前尚不支持自定义）。
 
 - **来源与加载**：
   - 仅来源于内置文件：`internal/postfix_template_settings.cwt`。
@@ -1233,11 +1235,6 @@ postfix = {
   - `expression` 的具体语义由后缀模板实现解析与执行，常见实现见 `ParadoxExpressionEditablePostfixTemplate` 等。
   - `variables` 仅提供默认值；实际提示/编辑行为由模板实现决定。
 
-<!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
-<!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
-<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxExpressionEditablePostfixTemplate -->
-<!-- @see icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate -->
-<!-- @see cwt/core/internal/postfix_template_settings.cwt -->
 ## 规则表达式 {#config-expressions}
 
 > 本章节介绍各种规则表达式的用途、格式与默认/边界行为，帮助读者正确理解与编写这类特殊的表达式。
