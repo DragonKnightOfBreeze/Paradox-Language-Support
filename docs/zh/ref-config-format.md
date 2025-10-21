@@ -792,49 +792,314 @@ locales = {
 
 #### 封装变量（Scripted Variables） {#config-extended-scripted-variable}
 
-- **用途**：声明/提示脚本中的封装变量。
+- **用途**：为脚本中的“封装变量（scripted variable）”提供额外提示（快速文档、内嵌提示等）。
+- **路径定位**：`scripted_variables/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `name`：变量名或其匹配模式。
+  - `hint: string?`：可选的额外提示文本（用于内嵌提示或文档）。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedScriptedVariableConfigResolverImpl`）。
+  - 选项提取：从 `hint` 选项读取提示文本（若存在）。
+  - 应用场景：与实际脚本中的封装变量引用按名称/模式匹配，向 UI 注入文档与提示。
+
+- **示例**：
+
+```cwt
+scripted_variables = {
+  ### Some documentation
+  ## hint = §RSome hint text§!
+  x   # 或写作 `x = 1`
+}
+```
+
+- **常见陷阱与建议**：
+  - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
+  - 本条目仅提供“提示增强”，不负责声明或校验封装变量的取值与类型。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl -->
 
 #### 定义（扩展） {#config-extended-definition}
 
-- **用途**：为定义提供额外上下文（类型、作用域替换、模板等）。
+- **用途**：为具体“定义（Definition）”提供额外上下文与提示信息。
+  - 用途包括：文档/提示（`hint`）、绑定定义类型（`type` 必填）、按需要指定作用域上下文（通过选项 `replace_scopes`/`push_scope`）。
+- **路径定位**：`definitions/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `name`：定义名或其匹配模式。
+  - `type: string`（必填）：该扩展项对应的“定义类型”。缺失则忽略本条目。
+  - `hint: string?`：可选提示文本（用于快速文档/内嵌提示）。
+  - 作用域上下文（选项）：
+    - `replace_scopes`：重写系统作用域映射，如 `{ this = country root = country }`。
+    - `push_scope`：声明输出作用域，供链路/检查参考。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedDefinitionConfigResolverImpl`）。
+  - 必填项校验：`type` 缺失会跳过该条目并记录警告日志。
+  - 选项提取：从 `hint` 读取提示文本；`replace_scopes`/`push_scope` 由通用选项解析器提供，供后续上下文使用。
+
+- **示例**：
+
+```cwt
+definitions = {
+  ### Some documentation
+  ## hint = §RSome hint text§!
+  ## replace_scopes = { this = country root = country }
+  ## type = scripted_trigger
+  x   # 或写作 `x = ...`
+}
+```
+
+- **常见陷阱与建议**：
+  - `type` 为必填；缺失将被跳过（不会生效）。
+  - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
+  - 此扩展用于“提示与上下文增强”，并不直接改变“声明（Declaration）”的结构；与声明的协作发生在使用侧的上下文构建与检查/文档阶段。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl -->
 
 #### 游戏规则（扩展） {#config-extended-game-rule}
 
-- **用途**：为“游戏规则”条目提供声明与上下文增强。
+- **用途**：为“游戏规则（game rule）”（类型为 `game_rule` 的定义）提供文档/提示增强，并可“重载声明规则”。
+- **路径定位**：`game_rules/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `name`：游戏规则名或其匹配模式。
+  - `hint: string?`：可选提示文本（用于快速文档/内嵌提示）。
+  - `configForDeclaration: CwtPropertyConfig?`：若当前条目是“属性节点”，其值/子块将作为“声明规则重载”在使用处生效；值内若为 `single_alias_right[...]` 将被内联展开。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedGameRuleConfigResolverImpl`）。
+  - `configForDeclaration`：当且仅当为属性节点时有效；对其值调用 `inlineSingleAlias(...)`，否则使用原值。
+  - 使用侧协作：`GameRuleCwtDeclarationConfigContextProvider` 在构建声明上下文时，若命中该扩展并且其 `config` 含子规则，则以 `configForDeclaration` 重载“声明（Declaration）”规则。
+
+- **示例**：
+
+```cwt
+game_rules = {
+  ### Some documentation
+  ## hint = §RSome hint text§!
+  x                     # 仅提供提示增强
+
+  y = single_alias_right[trigger_clause]  # 通过单别名重载声明规则
+}
+```
+
+- **常见陷阱与建议**：
+  - 仅当为“属性节点”时才会产生 `configForDeclaration` 并参与重载；纯值节点不会重载声明。
+  - 若值为 `single_alias_right[...]`，会先被内联，再作为重载规则生效。
+  - 该扩展仅影响“声明规则的来源/结构”与“提示信息”，不改变整体优先级与覆盖策略。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
 
 #### On Actions（扩展） {#config-extended-on-action}
 
-- **用途**：声明 on_action 相关上下文（事件类型、作用域替换等）。
+- **用途**：为具体的 `on_action` 定义提供文档/提示增强，并指定“事件类型”以影响声明上下文中与事件有关的引用。
+- **路径定位**：`on_actions/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `name`：on_action 名称或其匹配模式。
+  - `event_type: string`（必填）：事件类型。用于在声明上下文中将与事件相关的数据表达式（例如 `<event>`）替换为该事件类型对应的表达式。
+  - `hint: string?`：可选提示文本（用于快速文档/内嵌提示）。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedOnActionConfigResolverImpl`）。
+  - 必填项校验：缺少 `event_type` 将跳过该条目并记录警告日志。
+  - 使用侧协作：`OnActionCwtDeclarationConfigContextProvider` 命中该扩展后，将把声明上下文中的事件占位替换为指定事件类型，以驱动补全/校验与快速文档。
+
+- **示例**：
+
+```cwt
+on_actions = {
+  ### Some documentation
+  ## hint = §RSome hint text§!
+  ## event_type = country
+  x
+}
+```
+
+- **常见陷阱与建议**：
+  - `event_type` 为必填；缺失将被跳过（不会生效）。
+  - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
+  - 如需作用域替换，可结合通用选项（例如 `replace_scopes`）使用，但其是否参与具体检查取决于使用侧上下文与特性实现。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
 
 #### 内联脚本（扩展） {#config-extended-inline-script}
 
-- **用途**：为内联脚本路径声明上下文配置（可多态），并支持在根级使用单别名。
+- **用途**：为具体“内联脚本（inline script）”声明“上下文规则”和“作用域上下文”，用于在被调用处提供正确的补全/校验。
+- **路径定位**：`inline_scripts/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+- **文件对应**：`name` 为 `x/y` 时，对应文件为 `common/inline_scripts/x/y.txt`。
+
+- **字段与语义**：
+  - `name`：内联脚本名或其匹配模式。
+  - `context_configs_type: string = single | multiple`（默认 `single`）：声明上下文规则的聚合形态。
+    - `single`：仅取值侧（`value`）作为上下文规则。
+    - `multiple`：取子规则列表（`configs`）作为上下文规则。
+  - 作用域上下文（选项）：
+    - `replace_scopes`：重写系统作用域映射。
+    - `push_scope`：声明输出作用域。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedInlineScriptConfigResolverImpl`）。
+  - 容器规则：若为属性节点，对其值先做 `inlineSingleAlias(...)`（支持根级单别名），得到“容器规则”（`getContainerConfig()`）。
+  - 上下文规则：
+    - `context_configs_type = multiple` 时，取容器规则的子规则列表；否则取容器规则的值规则。
+    - 将上述内容用 `inlineWithConfigs(...)` 包装为一个可被消费的“上下文规则容器”（`getContextConfigs()` 返回单元素列表）。
+
+- **示例**：
+
+```cwt
+inline_scripts = {
+  ## replace_scopes = { this = country root = country }
+  triggers/some_trigger_snippet
+
+  ## context_configs_type = multiple
+  triggers/some_trigger_snippet = { ... }
+
+  ## context_configs_type = multiple
+  triggers/some_trigger_snippet = single_alias_right[trigger_clause]
+}
+```
+
+- **常见陷阱与建议**：
+  - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
+  - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
+  - 本扩展仅提供上下文与作用域信息，不直接约束内联脚本的调用位置与次数。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl -->
 
 #### 参数（扩展） {#config-extended-parameter}
 
-- **用途**：为参数名绑定上下文键/继承策略/作用域替换等，并可在根级使用单别名。
+- **用途**：为触发/效应/内联脚本中的参数（`$PARAM$` 或 `$PARAM|DEFAULT$`）提供文档与上下文增强：
+  - 绑定“上下文键”（指向具体触发/效应/内联脚本的上下文）。
+  - 声明上下文规则与作用域上下文。
+  - 支持从使用处“继承”上下文。
+- **路径定位**：`parameters/{name}`。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `name`：参数名或其匹配模式。
+  - `context_key: string`（必填）：上下文键（如 `scripted_trigger@X`），用于定位参数的上下文规则来源。
+  - `context_configs_type: string = single | multiple`（默认 `single`）：声明上下文规则的聚合形态。
+    - `single`：仅取值侧（`value`）作为上下文规则。
+    - `multiple`：取子规则列表（`configs`）作为上下文规则。
+  - `inherit: boolean = no`：是否继承“使用处”的上下文（规则与作用域）。
+  - 作用域上下文（选项）：
+    - `replace_scopes`：重写系统作用域映射。
+    - `push_scope`：声明输出作用域。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedParameterConfigResolverImpl`）。
+  - 必填项校验：`context_key` 缺失将跳过该条目并记录警告日志。
+  - 容器规则：若为属性节点，对其值先做 `inlineSingleAlias(...)`，得到“容器规则”（`getContainerConfig(...)`）。
+  - 上下文规则：
+    - 若 `inherit = yes`：从参数的“使用处”上溯到包含的脚本成员，取其解析得到的上下文规则列表（动态上下文）。
+    - 否则：按 `context_configs_type` 从容器规则提取 `value` 或 `configs`，并用 `inlineWithConfigs(...)` 包装成可消费的“上下文规则容器”（`getContextConfigs(...)` 返回单元素列表）。
+
+- **示例**：
+
+```cwt
+parameters = {
+  ## replace_scopes = { this = country root = country }
+  ## context_key = some_trigger
+  PARAM
+
+  ## context_configs_type = multiple
+  ## context_key = some_trigger
+  PARAM = { ... }
+
+  ## context_configs_type = multiple
+  ## context_key = some_trigger
+  PARAM = single_alias_right[trigger_clause]
+}
+```
+
+- **常见陷阱与建议**：
+  - `context_key` 为必填；缺失将被跳过（不会生效）。
+  - `inherit = yes` 时，上下文取自“使用处”，需注意其可为空或因位置不同而变化；PLS 会在该路径下开启“动态上下文”模式。
+  - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
 
 #### 复杂枚举值（扩展） {#config-extended-complex-enum-value}
 
-- **用途**：为复杂枚举的条目提供扩展声明与提示能力。
+- **用途**：为“复杂枚举（complex enum）”的具体条目提供文档/提示增强（快速文档、内嵌提示等）。
+- **路径定位**：`complex_enum_values/{type}/{name}`，其中 `{type}` 为复杂枚举名，`{name}` 为条目名或匹配模式。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `type: string`：复杂枚举名（由路径段 `{type}` 提供）。
+  - `name`：条目名或其匹配模式（来自键或值）。
+  - `hint: string?`：可选提示文本。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedComplexEnumValueConfigResolverImpl`）。
+  - 类型来源：由上层遍历时提供（`resolve(config, type)`），对应路径中的 `{type}` 段。
+  - 选项提取：从 `hint` 读取提示文本。
+
+- **示例**：
+
+```cwt
+complex_enum_values = {
+  component_tag = {
+    ### Some documentation
+    ## hint = §GUseful note§!
+    x   # 或写作 `x = ...`
+  }
+}
+```
+
+- **常见陷阱与建议**：
+  - 本扩展不改变复杂枚举“值来源”的收集逻辑，仅提供提示信息。
+  - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl -->
 
 #### 动态值（扩展） {#config-extended-dynamic-value}
 
-- **用途**：为动态值提供扩展声明与提示能力（含作用域上下文）。
+- **用途**：为某种动态值类型下的具体“动态值”条目提供文档/提示增强。
+- **路径定位**：`dynamic_values/{type}/{name}`，其中 `{type}` 为动态值类型，`{name}` 为条目名或匹配模式。
+- **名称匹配**：支持常量、模板表达式、ANT 语法与正则（模式感知，见 `CwtDataTypeGroups.PatternAware`）。
+
+- **字段与语义**：
+  - `type: string`：动态值类型（由路径段 `{type}` 提供）。
+  - `name`：条目名或其匹配模式（来自键或值）。
+  - `hint: string?`：可选提示文本。
+
+- **解析流程（实现摘要）**：
+  - 名称来源：若为属性则取键名，否则取值（`CwtExtendedDynamicValueConfigResolverImpl`）。
+  - 类型来源：由上层遍历时提供（`resolve(config, type)`），对应路径中的 `{type}` 段。
+  - 选项提取：从 `hint` 读取提示文本。
+
+- **示例**：
+
+```cwt
+dynamic_values = {
+  event_target = {
+    ### Some documentation
+    ## hint = §RSome hint text§!
+    owner   # 或写作 `owner = ...`
+  }
+}
+```
+
+- **常见陷阱与建议**：
+  - 本扩展不改变动态值类型与基础“值集合”的定义，仅提供提示信息。
+  - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
+
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDynamicValueConfigResolverImpl -->
 
