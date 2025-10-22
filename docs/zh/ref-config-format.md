@@ -8,16 +8,12 @@
 
 - **统一术语与边界**：对齐 PLS 与 CWTools 的语义，明确 PLS 的扩展点与差异。
 - **建立从文档到实现的映射**：每个规则条目均标注对应接口/解析器，便于回溯源码与验证行为。
-- **指导实践**：概述用途、格式与常见陷阱，为后续细化示例与校验规则打基础。
+- **指导实践**：概述用途、格式与注意事项，为后续细化示例与校验规则打基础。
 
 参考关系：
 - 概念与示例以 CWTools 指南为基线：`references/cwt/guidance.md`。
 - PLS 的整体规则工作流与分组见：`docs/zh/config.md`。
 - 规则接口与解析逻辑主要位于：`icu.windea.pls.config.config`（含 `delegated/` 与 `delegated/impl/`）。
-
-<!-- @see icu.windea.pls.config.config -->
-<!-- @see icu.windea.pls.config.config.delegated -->
-<!-- @see icu.windea.pls.config.config.delegated.impl -->
 
 ## 总览 {#overview}
 
@@ -42,6 +38,8 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 <!-- @see icu.windea.pls.config.config.delegated.impl.* -->
 
 ## 规则 {#configs}
+
+<!-- @see icu.windea.pls.config.config -->
 
 > 本章节介绍各种规则的用途、格式要点与解析要点，帮助读者正确理解与编写这类特殊结构。
 
@@ -88,13 +86,13 @@ priorities = {
 priorities = {
     # LHS - file path (relative to game or mod root directory)
     # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-    
+
     # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation")
-    
+
     # fios - use the one that reads first, ignore all remaining items
     # lios - use the one that reads last (if not specified, use this as default)
     # ordered - reads by order, no overrides
-    
+
     "events" = fios
     # ...
 }
@@ -160,7 +158,7 @@ event = {
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - `subtype[...]` 仅在与上下文子类型匹配时生效；不匹配将被忽略（不会报错）。
 - 根级 `single_alias_right[...]` 会先被展开后再参与后续解析与检查。
 - 为保证后续功能的“向上溯源”，新增节点均会注入 `parentConfig`（父指针）。
@@ -278,31 +276,31 @@ inline[inline_script] = {
 
 ```cwt
 types = {
-  type[civic_or_origin] = {
-    # 文件来源
-    path = "game/common/governments/civics"   # 将自动去掉前缀 "game/"
-    path_extension = .txt
+    type[civic_or_origin] = {
+        # 文件来源
+        path = "game/common/governments/civics"   # 将自动去掉前缀 `game/`
+        path_extension = .txt
 
-    # 键约束与前缀
-    type_key_prefix = civic_
-    ## type_key_filter = { +civic_ -origin_ }  # 包含/排除集合
-    ## starts_with = civic_
-    ## skip_root_key = { potential }
+        # 键约束与前缀
+        type_key_prefix = civic_
+        ## type_key_filter = { +civic_ -origin_ }  # 包含/排除集合
+        ## starts_with = civic_
+        ## skip_root_key = { potential }
 
-    # 子类型
-    subtype[origin] = {
-      ## type_key_filter = +origin_
-      ## group = lifecycle
+        # 子类型
+        subtype[origin] = {
+            ## type_key_filter = +origin_
+            ## group = lifecycle
+        }
+
+        # 展示
+        localisation = { name_field = name }
+        images = { main = icon }
     }
-
-    # 展示
-    localisation = { name_field = name }
-    images = { main = icon }
-  }
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 缺少任何必需属性会导致类型被跳过（日志中将有提示）。
 - `path` 与 `path_pattern` 可并用；`path_strict` 会强制严格匹配。
 - `skip_root_key` 为多组设置：若存在任意一组与文件顶级键序列匹配，则允许跳过继续匹配类型键。
@@ -350,30 +348,30 @@ types = {
 ```cwt
 # 别名：定义 effect 片段
 alias[effect:apply_bonus] = {
-  add_modifier = {
-    modifier = enum[modifier_rule]
-    days = int
-  }
+    add_modifier = {
+        modifier = enum[modifier_rule]
+        days = int
+    }
 }
 
 # 在脚本处使用别名
 scripted_effect = {
-  alias_name[effect] = alias_match_left[effect]
+    alias_name[effect] = alias_match_left[effect]
 }
 
 # 单别名：定义触发块片段
 single_alias[trigger_clause] = {
-  alias_name[trigger] = alias_match_left[trigger]
+    alias_name[trigger] = alias_match_left[trigger]
 }
 
 # 在声明中值侧使用单别名
 some_definition = {
-  ## cardinality = 0..1
-  potential = single_alias_right[trigger_clause]
+    ## cardinality = 0..1
+    potential = single_alias_right[trigger_clause]
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 别名唯一键由 `name:subName` 组成；重复定义将按“覆盖策略/优先级”处理。
 - 展开后才会进行基数与选项校验；请在展开位置而非声明处考虑最终语义。
 - `subName` 为数据表达式（受限），可使用模板/枚举等提高复用度，但请避免过宽导致误匹配。
@@ -393,46 +391,57 @@ some_definition = {
   - 简单枚举：`enums/enum[{name}]`
   - 复杂枚举：`enums/complex_enum[{name}]`
 
-- **简单枚举（Enum）**：
-  - 声明：
-    ```cwt
-    enums = {
-      enum[weight_or_base] = { weight base }
-    }
-    ```
-  - 字段与实现：
-    - `name`：枚举名。
-    - `values`：可选项集合（忽略大小写）。当前实现仅支持“常量值”，不支持模板表达式（实现中留有 TODO）。
-    - `valueConfigMap`：可选项到其值规则的映射，用于渲染与提示。
+---
 
-- **复杂枚举（Complex Enum）**：
-  - 声明（示例）：
-    ```cwt
-    enums = {
-      complex_enum[component_tag] = {
+**简单枚举（Enum）**：
+
+字段与实现：
+- `name`：枚举名。
+- `values`：可选项集合（忽略大小写）。
+- `valueConfigMap`：可选项到其值规则的映射，用于渲染与提示。
+- 当前实现仅支持“常量值”，不支持模板表达式。
+
+声明：
+
+```cwt
+enums = {
+    enum[weight_or_base] = { weight base }
+}
+```
+
+---
+
+**复杂枚举（Complex Enum）**：
+
+字段与实现（`CwtComplexEnumConfigResolverImpl`）：
+- 文件来源：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`（路径会移除前缀 `game/`，扩展名不含点）。
+- `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
+- `search_scope_type`（PLS 扩展）：查询作用域类型（目前仅支持 `definition`）。
+- `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
+
+**解析流程（简要）**：
+1. 简单枚举：解析 `enum[...]` 与其值列表，构建忽略大小写的值集合与映射（`CwtEnumConfigResolverImpl`）。
+2. 复杂枚举：解析文件来源、`name` 小节与锚点；索引阶段在匹配文件中收集锚点对应的实际值（`enum_name`）。
+3. 两者均服务于数据表达式 `enum[...]` 的补全与校验。
+
+声明（示例）：
+
+```cwt
+enums = {
+    complex_enum[component_tag] = {
         path = "game/common/component_tags"
         name = {
-          enum_name
+            enum_name
         }
         start_from_root = yes
-      }
     }
-    ```
-  - 字段与实现（`CwtComplexEnumConfigResolverImpl`）：
-    - 文件来源：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`（路径会移除前缀 `game/`，扩展名不含点）。
-    - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
-    - `search_scope_type`（PLS 扩展）：查询作用域类型（目前仅支持 `definition`）。
-    - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
+}
+```
 
-- **解析流程（简要）**：
-  1. 简单枚举：解析 `enum[...]` 与其值列表，构建忽略大小写的值集合与映射（`CwtEnumConfigResolverImpl`）。
-  2. 复杂枚举：解析文件来源、`name` 小节与锚点；索引阶段在匹配文件中收集锚点对应的实际值（`enum_name`）。
-  3. 两者均服务于数据表达式 `enum[...]` 的补全与校验。
-
-- **常见陷阱与建议**：
-  - 简单枚举当前仅支持常量值；若填写模板表达式，将不会被按模板解析。
-  - 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
-  - 路径字段支持组合使用；`path_strict` 会启用严格匹配；`path_extension` 请勿包含前导点（应写作 `txt`）。
+**注意事项**：
+- 简单枚举当前仅支持常量值；若填写模板表达式，将不会被按模板解析。
+- 复杂枚举若缺少 `name` 小节或未能在匹配文件中找到任何 `enum_name` 锚点，将导致该枚举为空。
+- 路径字段支持组合使用；`path_strict` 会启用严格匹配；`path_extension` 请勿包含前导点（应写作 `txt`）。
 
 #### 动态值类型 {#config-dynamic-value}
 
@@ -446,7 +455,7 @@ some_definition = {
   - `name`：动态值类型名。
   - `values`：值集合（忽略大小写）。
   - `valueConfigMap`：值到对应值规则的映射。
-  - 当前实现仅支持“常量值”，不支持模板表达式（实现留有 TODO）。
+  - 当前实现仅支持“常量值”，不支持模板表达式。
 
 - **解析流程（实现摘要）**：
   - 解析 `value[...]` 名称与值列表，构建忽略大小写的值集合与映射（`CwtDynamicValueTypeConfigResolverImpl`）。
@@ -459,7 +468,7 @@ some_definition = {
 
 ```cwt
 values = {
-  value[event_target] = { owner capital }  # 忽略大小写
+    value[event_target] = { owner capital }  # 忽略大小写
 }
 ```
 
@@ -497,33 +506,33 @@ values = {
 
 ```cwt
 links = {
-  # 静态 scope 链接
-  owner = {
-    input_scopes = { any }
-    output_scope = any
-  }
+    # 静态 scope 链接
+    owner = {
+        input_scopes = { any }
+        output_scope = any
+    }
 
-  # 动态 value 链接（带前缀）
-  modifier = {
-    type = value
-    from_data = yes
-    prefix = modifier
-    data_source = dynamic_value[test_flag]
-    input_scopes = { any }
-  }
+    # 动态 value 链接（带前缀）
+    modifier = {
+        type = value
+        from_data = yes
+        prefix = modifier
+        data_source = dynamic_value[test_flag]
+        input_scopes = { any }
+    }
 
-  # 动态 scope 链接（函数形）
-  relations = {
-    from_argument = yes
-    data_source = <country>           # 可混用多个数据源
-    data_source = dynamic_value[test_flag]
-    input_scopes = { country }
-    # output_scope 为空 -> 基于数据源与实现推导
-  }
+    # 动态 scope 链接（函数形）
+    relations = {
+        from_argument = yes
+        data_source = <country>           # 可混用多个数据源
+        data_source = dynamic_value[test_flag]
+        input_scopes = { country }
+        # output_scope 为空 -> 基于数据源与实现推导
+    }
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - `prefix` 不应带引号或括号；`input_scopes` 使用花括号集合语法（如 `{ country }`）。
 - 可混合多个 `data_source`；对多参链接可使用 `delegatedWith(index)` 切换当前参数的表达式。
 - 若动态链接参数为单引号字面量，则按字面量处理，通常不提供补全。
@@ -550,13 +559,13 @@ links = {
 
 ```cwt
 scopes = {
-  Country = { aliases = { country } }
+    Country = { aliases = { country } }
 }
 
 scope_groups = {
-  target_species = {
-    country pop_group leader planet ship fleet army species first_contact
-  }
+    target_species = {
+        country pop_group leader planet ship fleet army species first_contact
+    }
 }
 ```
 
@@ -608,26 +617,26 @@ scope_groups = {
 ```cwt
 # 独立声明修正
 modifiers = {
-  pop_happiness = { Pops }
-  job_<job>_add = { Planets }
+    pop_happiness = { Pops }
+    job_<job>_add = { Planets }
 }
 
 # 在类型规则中声明修正（会派生为模板名称）
 types = {
-  type[job] = {
-    modifiers = {
-      job_$_add = { Planets }   # -> job_<job>_add
+    type[job] = {
+        modifiers = {
+            job_$_add = { Planets }   # -> job_<job>_add
+        }
     }
-  }
 }
 
 # 修正分类
 modifier_categories = {
-  Pops = { supported_scopes = { species pop_group planet } }
+    Pops = { supported_scopes = { species pop_group planet } }
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 修正条目缺少 `categories` 会被跳过（不生效）。
 - 类型规则中的修正名称使用 `$` 占位，请确保与类型/子类型表达式对应。
 - 类别中的 `supported_scopes` 应使用标准作用域 ID，解析时会自动归一化大小写。
@@ -658,22 +667,22 @@ modifier_categories = {
 
 ```cwt
 localisation_commands = {
-  GetCountryType = { country }
+    GetCountryType = { country }
 }
 
 localisation_promotions = {
-  Ruler = { country }
+    Ruler = { country }
 }
 
 localisation_links = {
-  ruler = { ... }
+    ruler = { ... }
 }
 
 # 本地化文本中：
 # [Ruler.GetCountryType] 在 Ruler 链接后的作用域提升下有效
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 名称大小写不敏感；请保持与实际使用的命令字段一致的拼写风格以便检索。
 - 提升规则的名称应与本地化链接名一致；否则无法正确匹配。
 - 与“链接（本地化链接）”协作时，静态常规链接会自动复制为本地化链接；如需动态行为，请单独声明本地化链接。
@@ -702,17 +711,17 @@ localisation_links = {
 
 ```cwt
 types = {
-  type[ship_design] = {
-    localisation = {
-      ## primary
-      name = some_loc_key
-      subtype[corvette] = { name = some_corvette_loc_key }
+    type[ship_design] = {
+        localisation = {
+            ## primary
+            name = some_loc_key
+            subtype[corvette] = { name = some_corvette_loc_key }
+        }
+        images = {
+            ## primary ## required
+            icon = "icon|icon_frame"  # 图片位置表达式，支持帧数与名称路径参数
+        }
     }
-    images = {
-      ## primary ## required
-      icon = "icon|icon_frame"  # 图片位置表达式，支持帧数与名称路径参数
-    }
-  }
 }
 ```
 
@@ -733,10 +742,10 @@ types = {
 
 ```cwt
 database_object_types = {
-  civic = {
-    type = civic_or_origin
-    swap_type = swapped_civic
-  }
+    civic = {
+        type = civic_or_origin
+        swap_type = swapped_civic
+    }
 }
 ```
 
@@ -765,14 +774,14 @@ database_object_types = {
 
 ```cwt
 rows = {
-  row[component_template] = {
-    path = "game/common/component_templates"
-    file_extension = .csv
-    columns = {
-      key = <component_template>
-      # ... 其他列
+    row[component_template] = {
+        path = "game/common/component_templates"
+        file_extension = .csv
+        columns = {
+            key = <component_template>
+            # ... 其他列
+        }
     }
-  }
 }
 ```
 
@@ -794,8 +803,8 @@ rows = {
 
 ```cwt
 locales = {
-  l_english = { codes = { "en" } }
-  l_simp_chinese = { codes = { "zh-CN" } }
+    l_english = { codes = { "en" } }
+    l_simp_chinese = { codes = { "zh-CN" } }
 }
 ```
 
@@ -827,7 +836,7 @@ locales = {
 scripted_variables = {
     # 'x' or 'x = xxx'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
+
     ### Some documentation
     ## hint = §RSome inlay hint text§!
     x
@@ -838,13 +847,13 @@ scripted_variables = {
 
 ```cwt
 scripted_variables = {
-  ### Some documentation
-  ## hint = §RSome hint text§!
-  x   # 或写作 `x = 1`
+    ### Some documentation
+    ## hint = §RSome hint text§!
+    x # 或写作 `x = 1`
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
 - 本条目仅提供“提示增强”，不负责声明或校验封装变量的取值与类型。
 
@@ -893,15 +902,15 @@ definitions = {
 
 ```cwt
 definitions = {
-  ### Some documentation
-  ## hint = §RSome hint text§!
-  ## replace_scopes = { this = country root = country }
-  ## type = scripted_trigger
-  x   # 或写作 `x = ...`
+    ### Some documentation
+    ## hint = §RSome hint text§!
+    ## replace_scopes = { this = country root = country }
+    ## type = scripted_trigger
+    x # 或写作 `x = ...`
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - `type` 为必填；缺失将被跳过（不会生效）。
 - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
 - 此扩展用于“提示与上下文增强”，并不直接改变“声明”的结构；与声明的协作发生在使用侧的上下文构建与检查/文档阶段。
@@ -943,15 +952,15 @@ game_rules = {
 
 ```cwt
 game_rules = {
-  ### Some documentation
-  ## hint = §RSome hint text§!
-  x                     # 仅提供提示增强
+    ### Some documentation
+    ## hint = §RSome hint text§!
+    x # 仅提供提示增强
 
-  y = single_alias_right[trigger_clause]  # 通过单别名重载声明规则
+    y = single_alias_right[trigger_clause] # 通过单别名重载声明规则
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 仅当为“属性节点”时才会产生 `configForDeclaration` 并参与重载；纯值节点不会重载声明。
 - 若值为 `single_alias_right[...]`，会先被内联，再作为重载规则生效。
 - 该扩展仅影响“声明规则的来源/结构”与“提示信息”，不改变整体优先级与覆盖策略。
@@ -981,7 +990,7 @@ game_rules = {
 on_actions = {
     # 'x' or 'x = xxx'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
-    
+
     ### Some documentation
     ## replace_scopes = { this = country root = country }
     ## event_type = country
@@ -1000,7 +1009,7 @@ on_actions = {
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - `event_type` 为必填；缺失将被跳过（不会生效）。
 - 名称可使用模板/ANT/正则匹配，避免过宽导致误匹配。
 - 如需作用域替换，可结合通用选项（例如 `replace_scopes`）使用，但其是否参与具体检查取决于使用侧上下文与特性实现。
@@ -1036,11 +1045,11 @@ on_actions = {
 ```cwt
 inline_scripts = {
     # 'x' or 'x = xxx'
-    # 'x' is a inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
+    # 'x' is an inline script expression, e.g., for 'inline_script = jobs/researchers_add', 'x' should be 'jobs/researchers_add'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
     # note extended documentation is unavailable for inline scripts
-    
+
     x
 
     # more detailed examples for declaring context config(s)
@@ -1057,9 +1066,9 @@ inline_scripts = {
 
     ## replace_scopes = { this = country root = country }
     x
-    
+
     # since 1.3.6, using single alias at root level is also available here
-    
+
     ## context_configs_type = multiple
     x = single_alias_right[trigger_clause]
 }
@@ -1069,20 +1078,20 @@ inline_scripts = {
 
 ```cwt
 inline_scripts = {
-  ## replace_scopes = { this = country root = country }
-  triggers/some_trigger_snippet
+    ## replace_scopes = { this = country root = country }
+    triggers/some_trigger_snippet
 
-  ## context_configs_type = multiple
-  triggers/some_trigger_snippet = { ... }
+    ## context_configs_type = multiple
+    triggers/some_trigger_snippet = { ... }
 
-  ## context_configs_type = multiple
-  triggers/some_trigger_snippet = single_alias_right[trigger_clause]
+    ## context_configs_type = multiple
+    triggers/some_trigger_snippet = single_alias_right[trigger_clause]
 }
 ```
 
 ![](../images/config/inline_scripts_1.png)
 
-**常见陷阱与建议**：
+**注意事项**：
 - 若仅需单条上下文规则，保持默认 `single` 即可；需要声明多条时使用 `multiple`。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
 - 本扩展仅提供上下文与作用域信息，不直接约束内联脚本的调用位置与次数。
@@ -1126,43 +1135,43 @@ parameters = {
     # 'x' is a parameter name, e.g., for '$JOB$', 'x' should be 'JOB'
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
-    
+
     # for value of option 'context_key',
     # before '@' is the containing definition type (e.g., 'scripted_trigger'), or 'inline_script' for inline script parameters
     # after '@' is the containing definition name, or the containing inline script path
     # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
-    
+
     ### Some documentation
     ## context_key = scripted_trigger@some_trigger
     x
-    
+
     # more detailed examples for declaring context config(s)
-    
+
     ## context_key = scripted_trigger@some_trigger
     x = localistion
-    
+
     ## context_key = scripted_trigger@some_trigger
     ## context_configs_type = multiple
     x = {
         localisation
         scalar
     }
-    
+
     # since 1.3.5, scope context related options are also available here
-    
+
     ## context_key = scripted_trigger@some_trigger
     ## replace_scopes = { this = country root = country }
     x
-    
+
     # since 1.3.6, using single alias at root level is also available here
-    
+
     ## context_key = scripted_trigger@some_trigger
     ## context_configs_type = multiple
     x = single_alias_right[trigger_clause]
-    
+
     # since 1.3.12, a parameter's config context and scope context can be specified to inherit from its context
     # e.g. for parameter 'x' with context key 'scripted_trigger@some_trigger', its context is scripted trigger 'some_trigger'
-    
+
     ## context_key = scripted_trigger@some_trigger
     ## inherit
     x
@@ -1173,23 +1182,23 @@ parameters = {
 
 ```cwt
 parameters = {
-  ## replace_scopes = { this = country root = country }
-  ## context_key = some_trigger
-  PARAM
+    ## replace_scopes = { this = country root = country }
+    ## context_key = some_trigger
+    PARAM
 
-  ## context_configs_type = multiple
-  ## context_key = some_trigger
-  PARAM = { ... }
+    ## context_configs_type = multiple
+    ## context_key = some_trigger
+    PARAM = { ... }
 
-  ## context_configs_type = multiple
-  ## context_key = some_trigger
-  PARAM = single_alias_right[trigger_clause]
+    ## context_configs_type = multiple
+    ## context_key = some_trigger
+    PARAM = single_alias_right[trigger_clause]
 }
 ```
 
 ![](../images/config/parameters_1.png)
 
-**常见陷阱与建议**：
+**注意事项**：
 - `context_key` 为必填；缺失将被跳过（不会生效）。
 - `inherit = yes` 时，上下文取自“使用处”，需注意其可为空或因位置不同而变化；PLS 会在该路径下开启“动态上下文”模式。
 - 根级 `single_alias_right[...]` 会被内联展开后再作为上下文规则使用。
@@ -1220,7 +1229,7 @@ complex_enum_values = {
     component_tag = {
         # 'x' or 'x = xxx'
         # 'x' can also be a pattern expression (template expression, ant expression or regex)
-        
+
         ### Some documentation
         ## hint = §RSome inlay hint text§!
         x
@@ -1232,15 +1241,15 @@ complex_enum_values = {
 
 ```cwt
 complex_enum_values = {
-  component_tag = {
-    ### Some documentation
-    ## hint = §GUseful note§!
-    x   # 或写作 `x = ...`
-  }
+    component_tag = {
+        ### Some documentation
+        ## hint = §GUseful note§!
+        x # 或写作 `x = ...`
+    }
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 本扩展不改变复杂枚举“值来源”的收集逻辑，仅提供提示信息。
 - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
 
@@ -1288,15 +1297,15 @@ dynamic_values = {
 
 ```cwt
 dynamic_values = {
-  event_target = {
-    ### Some documentation
-    ## hint = §RSome hint text§!
-    owner   # 或写作 `owner = ...`
-  }
+    event_target = {
+        ### Some documentation
+        ## hint = §RSome hint text§!
+        owner # 或写作 `owner = ...`
+    }
 }
 ```
 
-**常见陷阱与建议**：
+**注意事项**：
 - 本扩展不改变动态值类型与基础“值集合”的定义，仅提供提示信息。
 - 名称可使用模板/ANT/正则匹配，但请避免过宽导致误匹配。
 
@@ -1365,16 +1374,16 @@ some_key = $any              # 进入 properties
 
 ```cwt
 folds = {
-  expression = {
-    fold_modifier = {
-      key = "modifier"
-      placeholder = "<modifier> ..."
+    expression = {
+        fold_modifier = {
+            key = "modifier"
+            placeholder = "<modifier> ..."
+        }
+        fold_triggers = {
+            keys = { "AND" "OR" }
+            placeholder = "<triggers> ..."
+        }
     }
-    fold_triggers = {
-      keys = { "AND" "OR" }
-      placeholder = "<triggers> ..."
-    }
-  }
 }
 ```
 
@@ -1413,14 +1422,14 @@ folds = {
 
 ```cwt
 postfix = {
-  variable_ops = {
-    decr = {
-      key = "variable"
-      example = "$x.decr"
-      variables = { amount = 1 }
-      expression = "${x} = ${x} - ${amount}"
+    variable_ops = {
+        decr = {
+            key = "variable"
+            example = "$x.decr"
+            variables = { amount = 1 }
+            expression = "${x} = ${x} - ${amount}"
+        }
     }
-  }
 }
 ```
 
