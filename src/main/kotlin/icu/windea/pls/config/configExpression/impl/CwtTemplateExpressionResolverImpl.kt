@@ -12,13 +12,11 @@ import icu.windea.pls.lang.isIdentifierChar
 
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
     // 关键点：
-    // - 使用基于 `expressionString` 的缓存以复用解析结果。
-    // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）。
-    // - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）。
-    // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描。
-    // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式。
-    // - 常量片段中的特殊拆分：若常量尾部包含非标识符字符且其后紧跟可能的“常量规则名”，尝试按 `#129` 的方式拆分，
-    //   以避免把 `"<特殊符号> + 常量规则名"` 误读为一个整体常量，影响后续的规则识别与高亮。
+    // - 使用基于 `expressionString` 的缓存以复用解析结果
+    // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）
+    // - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）
+    // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描
+    // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式
 
     // 模板解析结果缓存：模板常用于复杂规则拼装，命中率较高
     // - maximumSize: 限制上界，避免内存膨胀
@@ -78,8 +76,8 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
     private fun addToSnippets(expressionString: String, snippets: MutableList<CwtDataExpression>, isConstant: Boolean) {
         if (expressionString.isEmpty()) return
         if (isConstant) {
-            // #129 常量片段可能是 "<特殊符号> + <常量规则名>"，此时尝试拆分为两段以避免误判
-            val i = expressionString.indexOfLast { !it.isIdentifierChar() }
+            // #129 如果常量片段包含特殊符号，应将之后的部分拆分出来，避免误判
+            val i = expressionString.indexOfFirst { !it.isIdentifierChar() }
             if (i != -1) {
                 addToSnippets(expressionString.substring(0, i + 1), snippets, false)
                 addToSnippets(expressionString.substring(i + 1), snippets, false)
@@ -87,8 +85,8 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
             }
         }
         // 委托给数据表达式解析器：
-        // - 若匹配到动态/常量规则则直接得到对应类型；
-        // - 否则降级为常量类型并记录原值。
+        // - 若匹配到动态/常量规则则直接得到对应类型
+        // - 否则降级为常量类型并记录原值
         snippets += CwtDataExpression.resolveTemplate(expressionString)
     }
 }

@@ -18,7 +18,6 @@ import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolver
  * - 不允许包含空白字符；包含空白将直接返回空表达式。
  * - 采用“最左最早匹配”的方式，基于所有动态规则（具有前后缀的规则）扫描字符串，拆分出常量/动态片段。
  * - 仅存在一个片段（纯常量或纯动态）时视为不构成模板，返回空表达式。
- * - 常量片段中若出现“非标识符字符 + 常量规则名”的组合，会进行一次拆分以规避误判（见实现中的注释：`#129`）。
  *
  * 适用对象：定义成员对应的规则的键或值。
  *
@@ -27,8 +26,10 @@ import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolver
  * 示例：
  *
  * ```cwt
- * 	<planet_class>_habitability # definition + constant
- * 	enum[ship_class]_armor_mult # complex enum + constant
+ * <planet_class>_habitability # <planet_class> + _habitability (constant)
+ * enum[ship_class]_armor_mult # enum[ship_class] + _armor_mult (constant)
+ * value[gui_element_name]:<sprite> # dynamic value + constant("_armor_mult") + definition
+ * value[gui_element_name]:localisation
  * ```
  *
  * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。常量片段类型为 `[Constant]`，
