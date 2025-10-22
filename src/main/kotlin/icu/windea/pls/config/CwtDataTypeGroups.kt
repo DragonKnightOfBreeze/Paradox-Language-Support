@@ -84,7 +84,7 @@ object CwtDataTypeGroups {
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
-        CwtDataTypes.AntExpression,
+        CwtDataTypes.Ant,
         CwtDataTypes.Regex,
     )
     @Suppress("unused")

@@ -66,7 +66,7 @@ object CwtDataTypes {
     val TemplateExpression = CwtDataType("TemplateExpression", isPatternAware = true)
     // e.g., /foo/bar?/*
     /** @since 1.3.6 */
-    val AntExpression = CwtDataType("AntExpression", isPatternAware = true)
+    val Ant = CwtDataType("Ant", isPatternAware = true)
     // e.g., foo.*bar
     /** @since 1.3.6 */
     val Regex = CwtDataType("Regex", isPatternAware = true)

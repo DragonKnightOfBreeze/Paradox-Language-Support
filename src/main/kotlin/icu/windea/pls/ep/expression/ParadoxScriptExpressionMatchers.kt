@@ -360,9 +360,9 @@ class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScri
     }
 }
 
-class AntExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class AntParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type != CwtDataTypes.AntExpression) return null
+        if (configExpression.type != CwtDataTypes.Ant) return null
         val pattern = configExpression.value ?: return Result.NotMatch
         val ignoreCase = configExpression.ignoreCase ?: false
         val r = expression.value.matchesAntPattern(pattern, ignoreCase)

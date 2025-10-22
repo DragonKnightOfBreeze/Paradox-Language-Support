@@ -115,16 +115,16 @@ class TemplateExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressio
     }
 }
 
-class AntExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+class AntCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val prefix = "ant:"
     private val prefixIgnoreCase = "ant.i:"
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         expressionString.removePrefixOrNull(prefix)?.let { v ->
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AntExpression).apply { value = v.orNull() }
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Ant).apply { value = v.orNull() }
         }
         expressionString.removePrefixOrNull(prefixIgnoreCase)?.let { v ->
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AntExpression).apply { value = v.orNull() }.apply { ignoreCase = true }
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Ant).apply { value = v.orNull() }.apply { ignoreCase = true }
         }
         return null
     }

@@ -120,7 +120,7 @@
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.ConstantCwtDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.AntExpressionCwtDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.AntCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.RegexCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareDefinitionCwtDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareLocalisationCwtDataExpressionResolver"/>
@@ -135,7 +135,7 @@
     <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.expression.CoreParadoxScriptExpressionMatcher"/>
     <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.expression.ConstantParadoxScriptExpressionMatcher" order="first"/>
     <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.expression.TemplateExpressionParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.AntExpressionParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.AntParadoxScriptExpressionMatcher"/>
     <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
 
     <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>

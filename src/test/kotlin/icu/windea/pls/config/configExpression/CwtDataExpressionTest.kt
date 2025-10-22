@@ -259,13 +259,13 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         if (!hasEp()) return
         run {
             val e = CwtDataExpression.resolve("ant:foo/*", false)
-            assertEquals(CwtDataTypes.AntExpression, e.type)
+            assertEquals(CwtDataTypes.Ant, e.type)
             assertEquals("foo/*", e.value)
             assertNull(e.ignoreCase)
         }
         run {
             val e = CwtDataExpression.resolve("ant.i:foo/*", false)
-            assertEquals(CwtDataTypes.AntExpression, e.type)
+            assertEquals(CwtDataTypes.Ant, e.type)
             assertEquals("foo/*", e.value)
             assertEquals(true, e.ignoreCase)
         }
