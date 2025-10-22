@@ -22,7 +22,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.singleAliases
-import icu.windea.pls.core.collections.generateFoldSequence
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -99,7 +98,7 @@ object CwtConfigManager {
 
     fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {
         // 使用缓存以优化性能
-        val parents = generateFoldSequence(file.parent) { it.parent }
+        val parents = generateSequence(file.parent) { it.parent }
         val root = parents.find { it.findChild(".git") != null } ?: return null
         val rootPsi = root.toPsiDirectory(project) ?: return null
         val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
