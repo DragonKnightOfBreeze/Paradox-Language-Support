@@ -22,6 +22,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.singleAliases
+import icu.windea.pls.core.collections.generateFoldSequence
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -98,20 +99,25 @@ object CwtConfigManager {
 
     fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {
         // 使用缓存以优化性能
-        val parent = file.parent ?: return null
-        val parentPsi = parent.toPsiDirectory(project) ?: return null
-        val gameTypeId = parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
+        val parents = generateFoldSequence(file.parent) { it.parent }
+        val root = parents.find { it.findChild(".git") != null } ?: return null
+        val rootPsi = root.toPsiDirectory(project) ?: return null
+        val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
             runCatching {
                 val command = "git remote -v"
-                val workDirectory = parent.toNioPath().toFile()
+                val workDirectory = root.toNioPath().toFile()
                 val commandResult = executeCommand(command, workDirectory = workDirectory)
                 val gameTypeId = commandResult.lines()
                     .mapNotNull { it.splitByBlank(3).getOrNull(1) }
                     .firstNotNullOfOrNull t@{
-                        if (it.contains("Paradox-Language-Support")) return@t "core"
-                        val s = it.substringInLast("cwtools-", "-config", "")
-                        if (s.isNotEmpty()) return@t s
-                        null
+                        when {
+                            it.contains("Paradox-Language-Support") -> {
+                                val coreRoot = VfsUtil.findRelativeFile(root, "cwt/core")
+                                val r = coreRoot != null && VfsUtil.isAncestor(coreRoot, file, true)
+                                if (r) "core" else null
+                            }
+                            else -> it.substringInLast("cwtools-", "-config", "").orNull()
+                        }
                     }
                 gameTypeId
             }.getOrNull()

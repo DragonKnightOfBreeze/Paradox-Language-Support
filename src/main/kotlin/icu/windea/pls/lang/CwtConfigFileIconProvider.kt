@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import javax.swing.Icon
 
@@ -26,6 +27,7 @@ class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
             return icon
         } else {
             // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
+            if (file.fileType != CwtFile) return null
             val configGroup = CwtConfigManager.getContainingConfigGroup(file, project)
             if (configGroup == null) return null
             val icon = PlsIcons.FileTypes.CwtConfig
