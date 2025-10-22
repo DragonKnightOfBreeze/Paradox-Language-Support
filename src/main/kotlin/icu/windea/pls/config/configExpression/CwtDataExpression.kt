@@ -7,7 +7,7 @@ import icu.windea.pls.config.configExpression.impl.CwtDataExpressionResolverImpl
 import icu.windea.pls.core.util.KeyRegistry
 
 /**
- * CWT 数据表达式。
+ * 数据表达式。
  *
  * 用于描述脚本文件中的键或值的取值形态，可为常量、基本数据类型、引用、解析为动态内容的表达式等情况。
  *
@@ -22,7 +22,7 @@ import icu.windea.pls.core.util.KeyRegistry
  * CWTools 兼容性：兼容，但存在较多的扩展与改进。
  *
  * @property isKey 是否来源于“键”（true）或“值”（false）。
- * @property type 解析得到的表达式类型（即 CWT 规则中的 dataType）。
+ * @property type 解析得到的表达式类型（即规则中的 dataType）。
  *
  * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
  */

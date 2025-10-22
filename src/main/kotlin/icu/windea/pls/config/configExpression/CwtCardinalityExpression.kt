@@ -3,10 +3,12 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResolverImpl
 
 /**
- * CWT 基数表达式。
+ * 基数表达式。
  *
  * 用于约束定义成员的出现次数，驱动代码检查、代码补全等功能。
- * `min..max` 表示允许的出现次数范围，`~` 为宽松标记，`inf` 表示无限。
+ * 支持宽松校验与无限上限。
+ *
+ * 用 `min..max` 表示允许的出现次数范围，`~` 为宽松标记，`inf` 表示无限。
  *
  * 适用对象：`## cardinality` 选项的值。
  *
@@ -14,9 +16,9 @@ import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResol
  *
  * 示例：
  * ```cwt
- *  * ## cardinality = 0..1
- *  * ## cardinality = 0..inf
- *  * ## cardinality = ~1..10
+ * ## cardinality = 0..1
+ * ## cardinality = 0..inf
+ * ## cardinality = ~1..10
  * ```
  *
  * @property min 最小值。

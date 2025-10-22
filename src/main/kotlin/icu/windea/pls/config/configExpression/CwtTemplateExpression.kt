@@ -1,15 +1,10 @@
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.CwtDataTypes.Constant
-import icu.windea.pls.config.CwtDataTypes.Definition
-import icu.windea.pls.config.CwtDataTypes.EnumValue
-import icu.windea.pls.config.CwtDataTypes.Icon
-import icu.windea.pls.config.CwtDataTypes.Scope
-import icu.windea.pls.config.CwtDataTypes.Value
 import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolverImpl
 
 /**
- * CWT 模板表达式。
+ * 模板表达式。
  *
  * 用于描述脚本文件中的键或值的更复杂的取值形态，可视为多个数据表达式的组合。
  * 由数个片段拼接而成：常量字段 + 动态片段（受限支持的数据表达式）。
@@ -26,15 +21,15 @@ import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolver
  * 示例：
  *
  * ```cwt
- * <planet_class>_habitability # <planet_class> + _habitability (constant)
- * enum[ship_class]_armor_mult # enum[ship_class] + _armor_mult (constant)
- * value[gui_element_name]:<sprite> # dynamic value + constant("_armor_mult") + definition
- * value[gui_element_name]:localisation
+ * job_<job>_add # "job" + <job> + "_add"
+ * xxx_value[anything]_xxx # "xxx_" + value[anything] + "_xxx"
+ * a_enum[weight_or_base]_b # "a_" + enum[weight_or_base] + "_b"
+ * value[gui_element_name]:<sprite> # value[gui_element_name] + ":" + sprite
+ * value[gui_element_name]:localisation # value[gui_element_name] + ":" + localisation
  * ```
  *
- * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。常量片段类型为 `[Constant]`，
- * 动态片段类型取决于匹配到的规则（如 [Value]、[EnumValue]、[Scope]、[Icon]、[Definition] 等）。
- * @property referenceExpressions 过滤后的“引用片段”（即非 [Constant] 片段），用于后续的引用解析、导航与高亮。
+ * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。
+ * @property referenceExpressions 过滤后的引用片段（即非 [Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
  * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver

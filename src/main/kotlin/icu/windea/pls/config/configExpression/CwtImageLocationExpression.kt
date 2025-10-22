@@ -5,7 +5,7 @@ import icu.windea.pls.config.configExpression.impl.CwtImageLocationExpressionRes
 import icu.windea.pls.model.ImageFrameInfo
 
 /**
- * CWT 图片位置表达式。
+ * 图片位置表达式。
  *
  * 用于定位定义的相关图片。
  *

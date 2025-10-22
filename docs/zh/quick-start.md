@@ -40,7 +40,7 @@
 - **问题排查**：
   - 确保 IDE 和插件均为最新版本。
   - 如果问题可能与索引有关，可尝试[清除缓存并重启 IDE](https://www.jetbrains.com/help/idea/invalidate-caches.html)。
-  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#write-cwt-config-files)。
+  - 如果问题可能与规则有关，可尝试[编写自定义的规则文件](https://windea.icu/Paradox-Language-Support/zh/config.html#write-config-files)。
   - 如果问题可能与插件配置有关，可尝试删除插件的配置文件（`paradox-language-support.xml`，推荐使用 [Everything](https://www.voidtools.com) 搜索定位）。
   - 欢迎通过 GitHub、Discord 等渠道反馈问题。
 
