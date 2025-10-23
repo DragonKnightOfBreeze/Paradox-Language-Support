@@ -27,7 +27,7 @@ object CwtConfigSchemaManager {
             contextConfigs.forEach f2@{ config ->
                 when (config) {
                     is CwtPropertyConfig -> {
-                        val schemaExpression = CwtSchemaExpression.Companion.resolve(config.key)
+                        val schemaExpression = CwtSchemaExpression.resolve(config.key)
                         if (!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
                         nextContextConfigs += config
                     }

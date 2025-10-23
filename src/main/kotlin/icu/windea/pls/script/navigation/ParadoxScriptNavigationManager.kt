@@ -38,7 +38,11 @@ object ParadoxScriptNavigationManager {
     }
 
     fun getIcon(element: PsiElement): Icon? {
-        return when (element) {
+        return getPatchedIcon(element) ?: element.icon
+    }
+
+    fun getPatchedIcon(element: PsiElement): Icon? {
+        when (element) {
             is ParadoxScriptFile -> {
                 run {
                     // 模组描述符文件使用特殊图标
@@ -50,7 +54,6 @@ object ParadoxScriptNavigationManager {
                     val definitionInfo = element.definitionInfo ?: return@run
                     return PlsIcons.Nodes.Definition(definitionInfo.type)
                 }
-                element.icon
             }
             is ParadoxScriptProperty -> {
                 run {
@@ -63,11 +66,9 @@ object ParadoxScriptNavigationManager {
                     val definitionInfo = element.definitionInfo ?: return@run
                     return PlsIcons.Nodes.Definition(definitionInfo.type)
                 }
-                PlsIcons.Nodes.Property
             }
-            // 直接复用 PSI 的图标
-            else -> element.icon
         }
+        return null
     }
 
     fun getLongPresentableText(element: PsiElement): String? {

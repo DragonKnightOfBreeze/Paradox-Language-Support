@@ -42,27 +42,29 @@ object ParadoxLocalisationManager {
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetInfo(element)
+            val value = runReadAction { doGetInfo(element) }
             value.withDependencyItems(element)
         }
     }
 
     private fun doGetInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        // 首先尝试直接基于stub进行解析
         doGetInfoFromStub(element)?.let { return it }
-
-        val name = element.name
-        val file = element.containingFile.originalFile.virtualFile ?: return null
-        val type = ParadoxLocalisationType.resolve(file) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        return ParadoxLocalisationInfo(name, type, gameType)
+        return doGetInfoFromPsi(element)
     }
 
     private fun doGetInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = runReadAction { element.greenStub } ?: return null
+        val stub = element.greenStub ?: return null
         val name = stub.name
         val type = stub.type
         val gameType = stub.gameType
+        return ParadoxLocalisationInfo(name, type, gameType)
+    }
+
+    private fun doGetInfoFromPsi(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
+        val file = element.containingFile.originalFile.virtualFile ?: return null
+        val name = element.name
+        val type = ParadoxLocalisationType.resolve(file) ?: return null
+        val gameType = selectGameType(file) ?: return null
         return ParadoxLocalisationInfo(name, type, gameType)
     }
 

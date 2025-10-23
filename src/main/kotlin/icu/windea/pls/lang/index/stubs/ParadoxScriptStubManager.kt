@@ -104,7 +104,7 @@ object ParadoxScriptStubManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
         val elementPath = ParadoxScriptFileManager.getElementPath(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
         if (elementPath == null) return null
         val typeKeyPrefix = lazy { ParadoxScriptFileManager.getKeyPrefixes(node, tree).firstOrNull() }

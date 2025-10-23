@@ -35,6 +35,7 @@
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.CwtConfigProjectViewDecorator"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.ParadoxProjectViewDecorator"/>
 
+    <iconProvider implementation="icu.windea.pls.lang.ParadoxIconProvider"/>
     <fileIconProvider implementation="icu.windea.pls.lang.CwtConfigFileIconProvider" order="first"/>
     <fileIconProvider implementation="icu.windea.pls.lang.ParadoxFileIconProvider" order="first"/>
     <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>

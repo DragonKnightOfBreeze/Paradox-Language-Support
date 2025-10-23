@@ -4,7 +4,6 @@ import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
@@ -112,41 +111,27 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = doGetInfo(element, file)
+            val value = runReadAction { doGetInfo(element, file) }
             value.withDependencyItems(file)
         }
     }
 
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
-        val typeKey = element.name.let { if (element is ParadoxScriptFile) it.substringBeforeLast('.') else it } // 如果是文件名，不要包含扩展名
+        val typeKey = getTypeKey(element)
         if (element is ParadoxScriptProperty) {
             if (typeKey.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
             if (typeKey.isParameterized()) return null // 排除可能带参数的情况
         }
-        val project = file.project
-
-        // 首先尝试直接基于stub进行解析
-        doGetInfoFromStub(element, project)?.let { return it }
-
-        val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
-        val elementPath = ParadoxScriptFileManager.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
-        if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
-        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() } else null
-        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath, gameType, configGroup)
+        doGetInfoFromStub(element, file)?.let { return it }
+        return doGetInfoFromPsi(element, file, typeKey)
     }
 
-
-    fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
-        if (stub == null) return null
+    fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
+        val stub = getStub(element) ?: return null
         val name = stub.definitionName
         val type = stub.definitionType
         val gameType = stub.gameType
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.definitionSubtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
@@ -155,21 +140,44 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath, gameType, configGroup)
     }
 
+    private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile, typeKey: String): ParadoxDefinitionInfo? {
+        val fileInfo = file.fileInfo ?: return null
+        val path = fileInfo.path
+        val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
+        val elementPath = ParadoxScriptFileManager.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
+        if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() } else null
+        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath, gameType, configGroup)
+    }
+
+    fun getTypeKey(element: ParadoxScriptDefinitionElement): String {
+        return when (element) {
+            is ParadoxScriptFile -> element.name.substringBeforeLast(".") // 如果是文件名，不要包含扩展名
+            else -> element.name // 否则直接使用 PSI 的名字
+        }
+    }
+
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
+        val stub = runReadAction { getStub(element) }
         stub?.let { return it.definitionName }
         return element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull<ParadoxScriptPropertyStub.Definition>() }
+        val stub = runReadAction { getStub(element) }
         stub?.let { return it.definitionType }
         return element.definitionInfo?.type
     }
 
     fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
-        // 定义的subtype可能需要通过访问索引获取，不能在索引时就获取
+        // 定义的子类型可能需要通过访问索引获取，不能在索引时就获取
         return element.definitionInfo?.subtypes
+    }
+
+    fun getStub(element: ParadoxScriptDefinitionElement): ParadoxScriptPropertyStub.Definition? {
+        return element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull()
     }
 
     fun getMatchedTypeConfig(
