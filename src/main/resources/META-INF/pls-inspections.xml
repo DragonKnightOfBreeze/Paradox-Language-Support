@@ -168,7 +168,7 @@
                      key="inspection.script.incorrectDefineReferenceExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectDefineReferenceExpressionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectStellarisNameFormatExpression"
+    <localInspection language="PARADOX_SCRIPT" shortName="StellarisScriptIncorrectNameFormatExpression"
                      key="inspection.script.incorrectStellarisNameFormatExpression" groupKey="inspection.script.complexExpression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.script.complexExpression.IncorrectStellarisNameFormatExpressionInspection"/>

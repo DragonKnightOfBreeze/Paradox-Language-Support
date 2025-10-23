@@ -163,7 +163,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpres
  * @see CwtDataTypes.StellarisNameFormat
  * @see StellarisNameFormatExpression
  */
-class ParadoxScriptStellarisNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
+class StellarisScriptNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
     override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.StellarisNameFormat
     }
