@@ -33,9 +33,9 @@ object PlsFacade {
     @Service(Service.Level.APP, Service.Level.PROJECT)
     private class CoroutineScopeService(val coroutineScope: CoroutineScope)
 
-    fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
-
     fun getCoroutineScope() = service<CoroutineScopeService>().coroutineScope
+
+    fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
 
     fun getDataProvider() = service<PlsDataProvider>()
 
