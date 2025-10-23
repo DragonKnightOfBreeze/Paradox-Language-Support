@@ -3,10 +3,10 @@ package icu.windea.pls.ep.presentation
 import javax.swing.JComponent
 
 /**
- * 定义的图形表示的数据。
+ * 定义的图形表示。
  */
-@Suppress("unused")
-interface ParadoxDefinitionPresentationData {
+interface ParadoxDefinitionPresentation {
+    @Suppress("unused")
     fun createHtml(): String? = null
 
     fun createComponent(): JComponent? = null

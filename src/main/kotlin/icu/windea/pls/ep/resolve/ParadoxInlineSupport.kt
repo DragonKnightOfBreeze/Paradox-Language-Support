@@ -1,10 +1,10 @@
 package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
@@ -27,7 +27,7 @@ interface ParadoxInlineSupport {
         fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember? {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getInlinedElement(element)
             }
         }

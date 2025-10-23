@@ -1,35 +1,25 @@
 package icu.windea.pls.ep.data
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.supportsByAnnotation
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 用于得到定义的数据。仅需在有必要时实现这个扩展点。
+ * 用于得到定义的数据。
  */
-@WithGameTypeEP
-interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
-    val type: Class<T>
+interface ParadoxDefinitionDataProvider {
+    fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>): Boolean
 
-    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
-
-    fun getData(definition: ParadoxScriptDefinitionElement): T?
+    fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")
+        val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider>("icu.windea.pls.definitionDataProvider")
 
-        @Suppress("UNCHECKED_CAST")
-        fun <T : ParadoxDefinitionData> getData(type: Class<T>, definition: ParadoxScriptDefinitionElement): T? {
-            val definitionInfo = definition.definitionInfo ?: return null
-            val gameType = definitionInfo.gameType
+        fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+            if (element.definitionInfo == null) return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
-                if (ep.type != type) return@f null
-                if (!ep.supports(definition, definitionInfo)) return@f null
-                ep.getData(definition) as? T?
+                if (!ep.supports(element, type)) return@f null
+                ep.get(element, type)
             }
         }
     }

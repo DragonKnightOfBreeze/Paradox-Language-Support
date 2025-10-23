@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
+abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
     abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxPriority>
 
     override fun getPriority(target: Any): ParadoxPriority? {

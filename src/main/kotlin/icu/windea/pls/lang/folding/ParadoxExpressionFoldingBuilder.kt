@@ -10,11 +10,11 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.configGroup.foldingSettings
-import icu.windea.pls.core.annotations.WithInternalConfig
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.annotations.WithInternalConfig
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.ParadoxScriptLanguage

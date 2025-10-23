@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -22,7 +22,7 @@ interface ParadoxDefinitionScopeContextProvider {
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             val gameType = definitionInfo.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 if (!ep.supports(definition, definitionInfo)) return@f null
                 ep.getScopeContext(definition, definitionInfo)
             }

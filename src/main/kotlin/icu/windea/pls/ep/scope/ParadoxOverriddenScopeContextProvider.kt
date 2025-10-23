@@ -3,8 +3,8 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.overriddenProvider
 
@@ -26,7 +26,7 @@ interface ParadoxOverriddenScopeContextProvider {
         fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
             val gameType = config.configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
                     ?.also { it.overriddenProvider = ep }
             }

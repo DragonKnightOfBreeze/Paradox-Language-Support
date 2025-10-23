@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processQuery
@@ -18,7 +17,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.data.StellarisEconomicCategoryData
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -62,7 +62,7 @@ object ParadoxEconomicCategoryManager {
         try {
             val name = definition.name.orNull() ?: return null
             val resources = getResources(definition).orNull() ?: return null // unexpected
-            val data = definition.getData<StellarisEconomicCategoryData>() ?: return null
+            val data = definition.getDefinitionData<StellarisEconomicCategoryData>() ?: return null
             val parentDataMap = collectParentData(definition, data)
 
             val useForAiBudget = data.useForAiBudget
@@ -130,7 +130,7 @@ object ParadoxEconomicCategoryManager {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.EconomicCategory, selector).processQuery p@{
                     ProgressManager.checkCanceled()
-                    val parentData = it.getData<StellarisEconomicCategoryData>() ?: return@p true
+                    val parentData = it.getDefinitionData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)
                     collectParentData(contextElement, parentData, map)
                     true

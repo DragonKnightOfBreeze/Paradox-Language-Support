@@ -69,6 +69,7 @@ class ParadoxDefinitionHintTextHintsProvider : ParadoxScriptHintsProvider<Settin
 
     private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
         val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(primaryLocalisation)
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(primaryLocalisation)
     }
 }

@@ -7,13 +7,13 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * 提供对CSV表达式（列）的支持。
@@ -49,7 +49,7 @@ interface ParadoxCsvExpressionSupport {
             val gameType = config.configGroup.gameType
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(config)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 ep.annotate(element, rangeInElement, expressionText, holder, config)
             }
         }
@@ -58,7 +58,7 @@ interface ParadoxCsvExpressionSupport {
             val gameType = config.configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(config)) return@f null
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 val r = ep.resolve(element, rangeInElement, expressionText, config)
                 r
             }
@@ -68,7 +68,7 @@ interface ParadoxCsvExpressionSupport {
             val gameType = config.configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(config)) return@f null
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 val r = ep.multiResolve(element, rangeInElement, expressionText, config).orNull()
                 r
             }.orEmpty()
@@ -80,7 +80,7 @@ interface ParadoxCsvExpressionSupport {
             val gameType = config.configGroup.gameType
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(config)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 ep.complete(context, result)
             }
         }

@@ -10,15 +10,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.data.StellarisTechnologyData
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettings
 import icu.windea.pls.extension.diagram.settings.StellarisTechTreeDiagramSettings
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.awt.Color
@@ -128,7 +128,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             if (provider !is StellarisTechTreeDiagramProvider) return true
             if (settings !is StellarisTechTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
-            val data = definition.getData<StellarisTechnologyData>() ?: return false
+            val data = definition.getDefinitionData<StellarisTechnologyData>() ?: return false
 
             // 对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {

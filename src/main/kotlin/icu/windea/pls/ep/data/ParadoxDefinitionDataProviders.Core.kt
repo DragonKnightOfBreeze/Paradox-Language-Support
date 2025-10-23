@@ -2,12 +2,13 @@
 
 package icu.windea.pls.ep.data
 
+import icu.windea.pls.lang.annotations.WithDefinitionType
 import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.get
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.ep.data.ParadoxDefinitionDataProviderDelegates as Delegates
 
-class ParadoxModDescriptorData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithDefinitionType(ParadoxDefinitionTypes.ModDescriptor)
+class ParadoxModDescriptorData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val name: String? by data.get("name")
     val version: String? by data.get("version")
     val picture: String? by data.get("picture")
@@ -17,11 +18,10 @@ class ParadoxModDescriptorData(data: ParadoxScriptData) : ParadoxDefinitionData 
     val path: String? by data.get("path")
 }
 
-class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithDefinitionType(ParadoxDefinitionTypes.Sprite)
+class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val textureFile: String? by data.get("textureFile")
     val spriteSheetSpriteType: String? by data.get("sprite_sheet_sprite_type")
     val noOfFrames: Int? by data.get("noOfFrames")
     val defaultFrame: Int? by data.get("default_frame")
-
-    class Provider : ParadoxDefinitionDataProvider<ParadoxSpriteData> by Delegates.create(ParadoxDefinitionTypes.Sprite)
 }

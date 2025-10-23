@@ -2,8 +2,8 @@ package icu.windea.pls.ep.config
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
  * 用于注入规则。
@@ -30,7 +30,7 @@ interface CwtInjectedConfigProvider {
             val gameType = parentConfig.configGroup.gameType
             var r = false
             EP_NAME.extensionList.forEach f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 r = r || ep.injectConfigs(parentConfig, configs)
             }
             return r

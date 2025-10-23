@@ -2,15 +2,17 @@
 
 package icu.windea.pls.ep.data
 
-import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.annotations.WithDefinitionType
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.data.ParadoxScriptData
 import icu.windea.pls.lang.util.data.get
 import icu.windea.pls.lang.util.data.getAll
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.ep.data.ParadoxDefinitionDataProviderDelegates as Delegates
 
-class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithGameType(ParadoxGameType.Stellaris)
+@WithDefinitionType(ParadoxDefinitionTypes.EconomicCategory)
+class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val parent: String? by data.get("parent")
     val useForAiBudget: Boolean by data.get("use_for_ai_budget", false)
     val modifierCategory: String? by data.get("modifier_category")
@@ -25,21 +27,19 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
         val useParentIcon: Boolean by data.get("use_parent_icon", false)
         val modifierTypes: Set<String> by data.get("modifier_types", emptySet())
     }
-
-    @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProvider<StellarisEconomicCategoryData> by Delegates.create(ParadoxDefinitionTypes.EconomicCategory)
 }
 
-class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithGameType(ParadoxGameType.Stellaris)
+@WithDefinitionType(ParadoxDefinitionTypes.GameConcept)
+class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tooltipOverride: String? by data.get("tooltip_override")
     val alias: Set<String>? by data.get("alias")
-
-    @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProvider<StellarisGameConceptData> by Delegates.create(ParadoxDefinitionTypes.GameConcept)
 }
 
-class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithGameType(ParadoxGameType.Stellaris)
+@WithDefinitionType(ParadoxDefinitionTypes.Technology)
+class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val icon: String? by data.get("icon")
     val tier: String? by data.get("tier")
     val area: String? by data.get("area")
@@ -56,18 +56,14 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
 
     val gateway: String? by data.get("gateway")
     val prerequisites: Set<String> by data.get("prerequisites", emptySet())
-
-    @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProvider<StellarisTechnologyData> by Delegates.create(ParadoxDefinitionTypes.Technology)
 }
 
-class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
+@WithGameType(ParadoxGameType.Stellaris)
+@WithDefinitionType(ParadoxDefinitionTypes.Event)
+class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(data) {
     val base: String? by data.get("base")
     val descClear: Boolean by data.get("desc_clear", false)
     val optionClear: Boolean by data.get("option_clear", false)
     val pictureClear: Boolean by data.get("picture_clear", false)
     val showSoundClear: Boolean by data.get("show_sound_clear", false)
-
-    @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProvider<StellarisEventData> by Delegates.create(ParadoxDefinitionTypes.Event)
 }

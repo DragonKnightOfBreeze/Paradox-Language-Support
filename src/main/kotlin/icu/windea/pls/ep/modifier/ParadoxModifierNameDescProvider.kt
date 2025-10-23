@@ -2,8 +2,8 @@ package icu.windea.pls.ep.modifier
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.annotations.WithGameTypeEP
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
 
 /**
@@ -26,7 +26,7 @@ interface ParadoxModifierNameDescProvider {
             val gameType = modifierInfo.gameType
             return buildSet {
                 EP_NAME.extensionList.forEach f@{ ep ->
-                    if (!gameType.supportsByAnnotation(ep)) return@f
+                    if (!PlsAnnotationManager.check(ep, gameType)) return@f
                     ep.addModifierNameKey(modifierInfo, element, this)
                 }
             }
@@ -36,7 +36,7 @@ interface ParadoxModifierNameDescProvider {
             val gameType = modifierInfo.gameType
             return buildSet {
                 EP_NAME.extensionList.forEach f@{ ep ->
-                    if (!gameType.supportsByAnnotation(ep)) return@f
+                    if (!PlsAnnotationManager.check(ep, gameType)) return@f
                     ep.addModifierDescKey(modifierInfo, element, this)
                 }
             }

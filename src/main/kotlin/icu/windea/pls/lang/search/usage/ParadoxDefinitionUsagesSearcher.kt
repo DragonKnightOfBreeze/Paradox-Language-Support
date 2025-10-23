@@ -14,7 +14,7 @@ import icu.windea.pls.ep.resolve.CompositeParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.DefinitionBasedParadoxLocalisationIconSupport
 import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.ParadoxFilteredRequestResultProcessor
 import icu.windea.pls.lang.wordRequests
@@ -59,7 +59,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 
         // for <game_concept>
         if (definitionInfo.type == ParadoxDefinitionTypes.GameConcept) {
-            val data = target.getData<StellarisGameConceptData>()
+            val data = target.getDefinitionData<StellarisGameConceptData>()
             data?.alias?.forEach {
                 val name = it.orNull()
                 if (name != null) words.add(name)

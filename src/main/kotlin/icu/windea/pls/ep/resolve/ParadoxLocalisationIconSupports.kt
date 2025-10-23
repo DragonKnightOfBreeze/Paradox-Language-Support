@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.resolve
 
 import icu.windea.pls.core.addPrefix
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 

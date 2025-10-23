@@ -14,7 +14,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.types
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry
@@ -23,8 +22,9 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
@@ -102,15 +102,15 @@ object ParadoxTechnologyManager {
         }
 
         fun getTier(element: ParadoxScriptDefinitionElement): String? {
-            return element.getData<StellarisTechnologyData>()?.tier
+            return element.getDefinitionData<StellarisTechnologyData>()?.tier
         }
 
         fun getArea(element: ParadoxScriptDefinitionElement): String? {
-            return element.getData<StellarisTechnologyData>()?.area
+            return element.getDefinitionData<StellarisTechnologyData>()?.area
         }
 
         fun getCategories(element: ParadoxScriptDefinitionElement): Set<String> {
-            return element.getData<StellarisTechnologyData>()?.category.orEmpty()
+            return element.getDefinitionData<StellarisTechnologyData>()?.category.orEmpty()
         }
 
         fun getAttributes(element: ParadoxScriptDefinitionElement): Set<String> {

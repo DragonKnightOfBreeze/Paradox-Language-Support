@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 
 object CwtDataTypes {

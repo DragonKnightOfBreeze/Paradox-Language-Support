@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
@@ -27,7 +27,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
             val gameType = dynamicValue.gameType
             var map: Map<String, String>? = null
             EP_NAME.extensionList.forEach f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 if (!ep.supports(dynamicValue)) return@f
                 val info = ep.getScopeContext(dynamicValue) ?: return@f
                 if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext

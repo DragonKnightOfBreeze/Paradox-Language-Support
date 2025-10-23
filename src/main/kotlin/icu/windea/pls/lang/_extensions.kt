@@ -9,14 +9,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
-import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationData
+import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
@@ -30,7 +29,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
@@ -71,15 +69,6 @@ fun String.isInlineScriptUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-/**
- * 基于注解 [WithGameType] 判断目标对象是否支持当前游戏类型。
- */
-fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
-    if (this == null || this == ParadoxGameType.Core) return true
-    val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
-    return targetGameType == null || this in targetGameType
-}
-
 val Project.paradoxLibrary: ParadoxLibrary
     get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
 
@@ -112,12 +101,12 @@ fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScripte
     return scriptedVariableReference?.reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
 }
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
-    return ParadoxDefinitionDataProvider.getData(T::class.java, this)
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(): T? {
+    return ParadoxDefinitionDataProvider.get(this, T::class.java)
 }
 
-inline fun <reified T : ParadoxDefinitionPresentationData> ParadoxScriptDefinitionElement.getPresentationData(): T? {
-    return ParadoxDefinitionPresentationProvider.getPresentationData(T::class.java, this)
+inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {
+    return ParadoxDefinitionPresentationProvider.get(this, T::class.java)
 }
 
 inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {

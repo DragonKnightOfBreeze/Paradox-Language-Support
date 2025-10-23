@@ -2,12 +2,12 @@ package icu.windea.pls.integrations.images.tools
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.annotations.WithOS
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.OS
+import icu.windea.pls.lang.annotations.WithOS
 import icu.windea.pls.model.constants.PlsPathConstants
 import java.nio.file.Files
 import java.nio.file.Path

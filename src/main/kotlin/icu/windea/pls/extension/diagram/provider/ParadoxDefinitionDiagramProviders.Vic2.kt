@@ -5,11 +5,11 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extension.diagram.settings.Vic2EventTreeDiagramSettings
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

@@ -7,7 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processQueryAsync

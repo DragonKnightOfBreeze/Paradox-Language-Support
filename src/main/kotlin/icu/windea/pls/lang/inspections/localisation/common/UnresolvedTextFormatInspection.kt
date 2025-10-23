@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.model.ParadoxGameType

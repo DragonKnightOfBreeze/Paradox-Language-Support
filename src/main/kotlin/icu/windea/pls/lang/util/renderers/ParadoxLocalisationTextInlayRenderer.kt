@@ -50,22 +50,15 @@ import javax.imageio.ImageIO
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
-    private val editor: Editor,
-    private val factory: PresentationFactory,
-    private var builder: MutableList<InlayPresentation> = mutableListOf(),
+    val editor: Editor,
+    val factory: PresentationFactory,
+    val textLengthLimit: Int = -1,
+    val iconHeightLimit: Int = -1,
 ) {
-    var textLengthLimit: Int = -1
-    var iconHeightLimit: Int = -1
-
+    private var builder = mutableListOf<InlayPresentation>()
     private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
-
-    fun withLimit(textLengthLimit: Int, iconHeightLimit: Int): ParadoxLocalisationTextInlayRenderer {
-        this.textLengthLimit = textLengthLimit
-        this.iconHeightLimit = iconHeightLimit
-        return this
-    }
 
     fun render(element: ParadoxLocalisationProperty): InlayPresentation? {
         // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白

@@ -1,9 +1,9 @@
 package icu.windea.pls.ep.resolve
 
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.ep.data.StellarisEventData
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -44,7 +44,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
 
         // 子事件应当有子类型"inherited"，并且父事件应当和子事件有相同的事件类型
         if (definitionInfo.type != tEvent || !definitionInfo.subtypes.contains("inherited")) return null
-        val data = definition.getData<StellarisEventData>() ?: return null
+        val data = definition.getDefinitionData<StellarisEventData>() ?: return null
         val parentDefinitionName = data.base ?: return null
         val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val parentDefinition = ParadoxDefinitionSearch.search(parentDefinitionName, tEvent, selector).find() ?: return null

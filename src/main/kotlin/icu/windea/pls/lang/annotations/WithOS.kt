@@ -1,9 +1,9 @@
-package icu.windea.pls.core.annotations
+package icu.windea.pls.lang.annotations
 
 import icu.windea.pls.core.util.OS
 
 /**
- * 注明此功能仅适用于特定的OS。
+ * 注明此功能仅适用于特定的 OS。
  */
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)

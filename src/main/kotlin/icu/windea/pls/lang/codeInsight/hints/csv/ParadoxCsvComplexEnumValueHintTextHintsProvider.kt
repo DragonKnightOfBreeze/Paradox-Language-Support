@@ -74,7 +74,7 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxCsvHintsProvider<
 
     private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: Settings): InlayPresentation? {
         val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)
     }
 }

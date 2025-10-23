@@ -1,35 +1,25 @@
 package icu.windea.pls.ep.presentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.supportsByAnnotation
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 用于绘制定义的图形表示。
+ * 用于得到定义的图形表示。
  */
-@WithGameTypeEP
-interface ParadoxDefinitionPresentationProvider<T : ParadoxDefinitionPresentationData> {
-    val type: Class<T>
+interface ParadoxDefinitionPresentationProvider {
+    fun <T : ParadoxDefinitionPresentation> supports(element: ParadoxScriptDefinitionElement, type: Class<T>): Boolean
 
-    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
-
-    fun getPresentationData(definition: ParadoxScriptDefinitionElement): T?
+    fun <T : ParadoxDefinitionPresentation> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxDefinitionPresentationProvider<*>>("icu.windea.pls.definitionPresentationProvider")
+        val EP_NAME = ExtensionPointName<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
 
-        @Suppress("UNCHECKED_CAST")
-        fun <T : ParadoxDefinitionPresentationData> getPresentationData(type: Class<T>, definition: ParadoxScriptDefinitionElement): T? {
-            val definitionInfo = definition.definitionInfo ?: return null
-            val gameType = definitionInfo.gameType
+        fun <T : ParadoxDefinitionPresentation> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+            if (element.definitionInfo == null) return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
-                if (ep.type != type) return@f null
-                if (!ep.supports(definition, definitionInfo)) return@f null
-                ep.getPresentationData(definition) as? T?
+                if (!ep.supports(element, type)) return@f null
+                ep.get(element, type)
             }
         }
     }

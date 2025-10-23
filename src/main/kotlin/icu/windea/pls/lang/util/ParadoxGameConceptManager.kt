@@ -2,11 +2,11 @@ package icu.windea.pls.lang.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.data.StellarisGameConceptData
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -26,7 +26,7 @@ object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptDefinitionElement? {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
-            .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
+            .filterBy { it.name == nameOrAlias || it.getDefinitionData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
     }
 
@@ -49,7 +49,7 @@ object ParadoxGameConceptManager {
                     override is ParadoxLocalisationProperty -> return resolved to override
                 }
             }
-            if(resolved !is ParadoxScriptDefinitionElement) return@r1
+            if (resolved !is ParadoxScriptDefinitionElement) return@r1
             return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
         }
         run r1@{

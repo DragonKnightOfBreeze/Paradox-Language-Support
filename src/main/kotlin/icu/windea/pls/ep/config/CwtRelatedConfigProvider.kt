@@ -3,11 +3,11 @@ package icu.windea.pls.ep.config
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction
 import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsHandler
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.supportsByAnnotation
 
 /**
  * 用于提供相关的规则。
@@ -33,7 +33,7 @@ interface CwtRelatedConfigProvider {
             val gameType = selectGameType(file) ?: return emptySet()
             val result = mutableSetOf<CwtConfig<*>>()
             EP_NAME.extensionList.forEach f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 val r = ep.getRelatedConfigs(file, offset)
                 result += r
             }

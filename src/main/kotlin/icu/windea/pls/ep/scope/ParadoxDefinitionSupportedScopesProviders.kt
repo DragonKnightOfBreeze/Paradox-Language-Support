@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.scope
 
-import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedModifierManager
 import icu.windea.pls.model.ParadoxDefinitionInfo

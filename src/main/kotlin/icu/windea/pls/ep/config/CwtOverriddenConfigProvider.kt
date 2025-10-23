@@ -6,9 +6,9 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.util.PlsCoreManager
 
 /**
@@ -49,7 +49,7 @@ interface CwtOverriddenConfigProvider {
         fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
             val gameType = config.configGroup.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getOverriddenConfigs(contextElement, config).orNull()
                     ?.onEach {
                         it.originalConfig = config

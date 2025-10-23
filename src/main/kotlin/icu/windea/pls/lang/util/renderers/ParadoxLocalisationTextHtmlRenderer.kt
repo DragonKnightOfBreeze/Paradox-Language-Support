@@ -52,12 +52,14 @@ import javax.swing.UIManager
 
 @Suppress("unused")
 class ParadoxLocalisationTextHtmlRenderer(
-    private var builder: DocumentationBuilder = DocumentationBuilder(),
     val color: Color? = null,
     val forDoc: Boolean = false,
 ) {
+    private var builder = DocumentationBuilder()
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
     private val colorStack = ArrayDeque<Color>()
+
+    fun builder(): DocumentationBuilder = builder
 
     fun render(element: ParadoxLocalisationProperty): String {
         renderTo(element)

@@ -2,10 +2,10 @@ package icu.windea.pls.ep.parameter
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxParameterContextInfo
 
 /**
@@ -31,7 +31,7 @@ interface ParadoxParameterInferredConfigProvider {
             val gameType = parameterContextInfo.gameType
             return withRecursionGuard {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                    if (!gameType.supportsByAnnotation(ep)) return@f null
+                    if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                     if (!ep.supports(parameterInfo, parameterContextInfo)) return@f null
                     ep.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
                 }

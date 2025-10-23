@@ -8,10 +8,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.PlsDocBundle
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.collections.provideDelegate
 import icu.windea.pls.core.collections.withDefault
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants

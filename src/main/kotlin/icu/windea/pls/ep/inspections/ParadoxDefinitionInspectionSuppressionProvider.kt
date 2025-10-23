@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.inspections
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.core.annotations.WithGameTypeEP
-import icu.windea.pls.lang.supportsByAnnotation
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
@@ -20,7 +20,7 @@ interface ParadoxDefinitionInspectionSuppressionProvider {
             val gameType = definitionInfo.gameType
             val result = mutableSetOf<String>()
             EP_NAME.extensionList.forEach { ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@forEach
+                if (!PlsAnnotationManager.check(ep, gameType)) return@forEach
                 result += ep.getSuppressedToolIds(definition, definitionInfo)
             }
             return result

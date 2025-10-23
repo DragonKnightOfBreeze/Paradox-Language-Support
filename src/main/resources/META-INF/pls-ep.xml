@@ -110,11 +110,7 @@
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.ProjectCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.TestCwtConfigGroupFileProvider"/>
 
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxSpriteData$Provider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEconomicCategoryData$Provider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisGameConceptData$Provider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisTechnologyData$Provider"/>
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEventData$Provider"/>
+    <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxBaseDefinitionDataProvider"/>
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.configExpression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionResolver"/>
@@ -251,7 +247,7 @@
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxSwitchOverriddenScopeContextProvider"/>
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
 
-    <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationData$Provider"/>
+    <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.ParadoxBaseDefinitionPresentationProvider"/>
 
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.ParadoxSwappedTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.StellarisEventInheritSupport"/>

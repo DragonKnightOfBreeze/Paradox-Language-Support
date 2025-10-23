@@ -2,7 +2,8 @@ package icu.windea.pls.ep.priority
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.annotations.WithGameTypeEP
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxSearchParameters
@@ -10,7 +11,6 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -33,7 +33,7 @@ interface ParadoxPriorityProvider {
         fun getPriority(target: Any): ParadoxPriority {
             val gameType by lazy { selectGameType(target) }
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (gameType != null && !gameType.supportsByAnnotation(ep)) return@f null
+                if (gameType != null && !PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getPriority(target)
             } ?: ParadoxPriority.LIOS
         }
@@ -41,7 +41,7 @@ interface ParadoxPriorityProvider {
         fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority {
             val gameType = searchParameters.selector.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (gameType != null && !gameType.supportsByAnnotation(ep)) return@f null
+                if (gameType != null && !PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getPriority(searchParameters)
             } ?: ParadoxPriority.LIOS
         }
@@ -91,7 +91,7 @@ interface ParadoxPriorityProvider {
 
         private fun getOrder(fileInfo: ParadoxFileInfo, settings: ParadoxGameOrModSettingsState): Int {
             val rootInfo = fileInfo.rootInfo
-            if(rootInfo !is ParadoxRootInfo.MetadataBased) return -1
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return -1
             val rootPath = rootInfo.rootFile.path
             if (rootPath == settings.gameDirectory) return 0
             val i = settings.modDependencies.indexOfFirst { it.modDirectory == rootPath }

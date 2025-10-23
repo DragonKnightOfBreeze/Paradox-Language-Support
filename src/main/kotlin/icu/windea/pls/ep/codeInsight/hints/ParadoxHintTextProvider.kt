@@ -3,13 +3,13 @@ package icu.windea.pls.ep.codeInsight.hints
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -64,7 +64,7 @@ interface ParadoxHintTextProvider {
         fun getHintText(element: PsiElement): String? {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getHintText(element)?.orNull()
             }
         }
@@ -72,7 +72,7 @@ interface ParadoxHintTextProvider {
         fun getHintLocalisation(element: PsiElement): ParadoxLocalisationProperty? {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 ep.getHintLocalisation(element)
             }
         }

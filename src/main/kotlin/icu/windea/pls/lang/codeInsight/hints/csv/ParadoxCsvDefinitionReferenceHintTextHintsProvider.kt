@@ -73,7 +73,7 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxCsvHintsProvid
 
     private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
         val primaryLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(primaryLocalisation)
     }
 }

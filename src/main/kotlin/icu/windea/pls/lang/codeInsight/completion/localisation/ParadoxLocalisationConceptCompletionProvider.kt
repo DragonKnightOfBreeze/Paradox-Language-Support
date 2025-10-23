@@ -13,7 +13,7 @@ import icu.windea.pls.ep.data.StellarisGameConceptData
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId
-import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -55,7 +55,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
                     .withCompletionId()
                 result.addElement(lookupElement, context)
             }
-            concept.getData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
+            concept.getDefinitionData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
                 if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)

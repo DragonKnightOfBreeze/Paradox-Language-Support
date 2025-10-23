@@ -9,10 +9,10 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.configs
 import icu.windea.pls.lang.codeInsight.completion.isKey

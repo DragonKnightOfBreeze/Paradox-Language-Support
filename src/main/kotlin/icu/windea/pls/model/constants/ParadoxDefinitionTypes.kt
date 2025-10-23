@@ -1,6 +1,8 @@
 package icu.windea.pls.model.constants
 
 object ParadoxDefinitionTypes {
+    const val ModDescriptor = "mod_descriptor"
+
     const val OnAction = "on_action"
     const val Sprite = "sprite"
     const val EconomicCategory = "economic_category"

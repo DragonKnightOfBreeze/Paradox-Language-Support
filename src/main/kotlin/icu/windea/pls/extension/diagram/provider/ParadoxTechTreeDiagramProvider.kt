@@ -28,14 +28,14 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.data.StellarisTechnologyData
-import icu.windea.pls.ep.presentation.StellarisTechnologyPresentationData
+import icu.windea.pls.ep.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extension.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxTechTreeDiagramSettings
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getData
-import icu.windea.pls.lang.getPresentationData
+import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.getDefinitionPresentation
 import icu.windea.pls.lang.util.ParadoxPresentationManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -160,7 +160,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     ParadoxPresentationManager.getLabel(nodeItem.text.or.anonymous())
                 }
                 is Items.Presentation -> runReadAction r@{
-                    val presentationData = nodeItem.definition.getPresentationData<StellarisTechnologyPresentationData>()
+                    val presentationData = nodeItem.definition.getDefinitionPresentation<StellarisTechnologyCardPresentation>()
                     presentationData?.createComponent()
                 }
                 else -> null
@@ -262,7 +262,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         private fun createNode(technology: ParadoxScriptDefinitionElement) {
             ProgressManager.checkCanceled()
             val node = Node(technology, provider)
-            val data = technology.getData<StellarisTechnologyData>()
+            val data = technology.getDefinitionData<StellarisTechnologyData>()
             node.putUserData(Keys.nodeData, data)
             nodeMap.put(technology, node)
             val name = technology.definitionInfo?.name.or.anonymous()
@@ -272,7 +272,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         private fun createEdges(technology: ParadoxScriptDefinitionElement) {
             ProgressManager.checkCanceled()
-            val data = technology.getData<StellarisTechnologyData>() ?: return
+            val data = technology.getDefinitionData<StellarisTechnologyData>() ?: return
             // 循环科技 ..> 循环科技
             val levels = data.levels
             if (levels != null) {

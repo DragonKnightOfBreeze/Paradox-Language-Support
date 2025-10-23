@@ -7,15 +7,15 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.annotations.WithGameTypeEP
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.supportsByAnnotation
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**
@@ -58,7 +58,7 @@ interface ParadoxLocalisationExpressionSupport {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 ep.annotate(element, rangeInElement, expressionText, holder)
             }
         }
@@ -67,7 +67,7 @@ interface ParadoxLocalisationExpressionSupport {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(element)) return@f null
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 val r = ep.resolve(element, rangeInElement, expressionText)
                 r
             }
@@ -77,7 +77,7 @@ interface ParadoxLocalisationExpressionSupport {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(element)) return@f null
-                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
                 val r = ep.multiResolve(element, rangeInElement, expressionText).orNull()
                 r
             }.orEmpty()
@@ -87,7 +87,7 @@ interface ParadoxLocalisationExpressionSupport {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 val r = ep.getReferences(element, rangeInElement, expressionText).orNull()
                 if (r != null) return r
             }
@@ -99,7 +99,7 @@ interface ParadoxLocalisationExpressionSupport {
             val gameType by lazy { selectGameType(element) }
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!PlsAnnotationManager.check(ep, gameType)) return@f
                 ep.complete(context, result)
             }
         }

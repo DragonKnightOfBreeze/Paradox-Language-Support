@@ -15,12 +15,12 @@ import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.core.annotations.WithGameType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.unquote
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression

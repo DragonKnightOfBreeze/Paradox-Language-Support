@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
