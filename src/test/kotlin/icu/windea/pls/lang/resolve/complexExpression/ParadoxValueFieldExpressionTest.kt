@@ -137,6 +137,33 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
+    fun testForArgument_nested() {
+        val s = "relations(scope:some_scope)"
+        val exp = parse(s, gameType = ParadoxGameType.Vic3)!!
+        println(exp.render())
+        val dsl = buildExpression<ParadoxValueFieldExpression>("relations(scope:some_scope)", 0..27) {
+            node<ParadoxDynamicValueFieldNode>("relations(scope:some_scope)", 0..27) {
+                node<ParadoxValueFieldPrefixNode>("relations", 0..9)
+                node<ParadoxMarkerNode>("(", 9..10)
+                node<ParadoxValueFieldValueNode>("scope:some_scope", 10..26) {
+                    expression<ParadoxScopeFieldExpression>("scope:some_scope", 10..26) {
+                        node<ParadoxDynamicScopeLinkNode>("scope:some_scope", 10..26) {
+                            node<ParadoxScopeLinkPrefixNode>("scope:", 10..16)
+                            node<ParadoxScopeLinkValueNode>("some_scope", 16..26) {
+                                expression<ParadoxDynamicValueExpression>("some_scope", 16..26) {
+                                    node<ParadoxDynamicValueNode>("some_scope", 16..26)
+                                }
+                            }
+                        }
+                    }
+                }
+                node<ParadoxMarkerNode>(")", 26..27)
+            }
+        }
+        exp.check(dsl)
+    }
+
+    @Test
     fun testVariable_inChain() {
         val s = "root.owner.some_variable"
         val exp = parse(s)!!
