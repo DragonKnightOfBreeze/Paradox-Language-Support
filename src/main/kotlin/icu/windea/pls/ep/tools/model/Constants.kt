@@ -3,6 +3,7 @@ package icu.windea.pls.ep.tools.model
 /**
  * 参见：[Constants.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Constants.cs)
  */
+@Suppress("unused")
 object Constants {
     const val contentLoadPath = "content_load.json"
     const val dlcLoadPath = "dlc_load.json"

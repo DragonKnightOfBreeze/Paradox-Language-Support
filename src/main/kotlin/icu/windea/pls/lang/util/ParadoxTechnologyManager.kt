@@ -134,7 +134,7 @@ object ParadoxTechnologyManager {
         }
 
         private fun doGetPrerequisites(definition: ParadoxScriptDefinitionElement): Set<String> {
-            val data = ParadoxScriptDataResolver.resolve(definition) ?: return emptySet()
+            val data = ParadoxScriptDataResolver.DEFAULT.resolve(definition) ?: return emptySet()
             val names: Set<String> by data.get("prerequisites", emptySet())
             return names
         }

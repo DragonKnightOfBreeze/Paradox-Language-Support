@@ -50,16 +50,16 @@ import javax.imageio.ImageIO
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
-    val editor: Editor,
-    val factory: PresentationFactory,
-    var builder: MutableList<InlayPresentation> = mutableListOf(),
+    private val editor: Editor,
+    private val factory: PresentationFactory,
+    private var builder: MutableList<InlayPresentation> = mutableListOf(),
 ) {
     var textLengthLimit: Int = -1
     var iconHeightLimit: Int = -1
 
     private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false
-    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
 
     fun withLimit(textLengthLimit: Int, iconHeightLimit: Int): ParadoxLocalisationTextInlayRenderer {
         this.textLengthLimit = textLengthLimit

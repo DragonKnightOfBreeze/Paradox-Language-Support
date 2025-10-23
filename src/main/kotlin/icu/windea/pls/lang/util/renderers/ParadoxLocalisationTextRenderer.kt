@@ -21,9 +21,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxLocalisationTextRenderer(
-    var builder: StringBuilder = StringBuilder()
+    private val builder: StringBuilder = StringBuilder()
 ) {
-    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
 
     fun render(element: ParadoxLocalisationProperty): String {
         renderTo(element)

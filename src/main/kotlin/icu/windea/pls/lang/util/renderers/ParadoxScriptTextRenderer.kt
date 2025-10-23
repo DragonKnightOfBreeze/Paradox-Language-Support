@@ -10,8 +10,8 @@ import icu.windea.pls.script.psi.members
 import icu.windea.pls.script.psi.value
 
 class ParadoxScriptTextRenderer(
-    val builder: StringBuilder = StringBuilder(),
-    var renderInBlock: Boolean = false
+    private val builder: StringBuilder = StringBuilder(),
+    val renderInBlock: Boolean = false
 ) {
     fun render(element: ParadoxScriptMember): String {
         renderTo(element)

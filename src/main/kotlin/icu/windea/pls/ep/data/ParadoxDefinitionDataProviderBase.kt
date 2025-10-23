@@ -32,8 +32,8 @@ abstract class ParadoxDefinitionDataProviderBase<T : ParadoxDefinitionData>() : 
 
     private fun doGetData(definition: ParadoxScriptDefinitionElement): T? {
         val data = when {
-            definition is ParadoxScriptFile -> ParadoxScriptDataResolver.resolve(definition, inline = true)
-            definition is ParadoxScriptProperty -> ParadoxScriptDataResolver.resolveProperty(definition, inline = true)
+            definition is ParadoxScriptFile -> ParadoxScriptDataResolver.INLINE.resolveFile(definition)
+            definition is ParadoxScriptProperty -> ParadoxScriptDataResolver.INLINE.resolveProperty(definition)
             else -> null
         }
         if (data == null) return null

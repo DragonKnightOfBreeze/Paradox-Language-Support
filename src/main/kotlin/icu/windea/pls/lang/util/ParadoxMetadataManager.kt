@@ -11,6 +11,7 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.ep.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
@@ -20,7 +21,6 @@ import icu.windea.pls.model.ParadoxModDescriptorInfo
 import icu.windea.pls.model.ParadoxModMetadataInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
-import icu.windea.pls.script.psi.stringValue
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -79,16 +79,17 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetModDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
-        // val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null // 会导致StackOverflowError
+        // 需要先创建 dummyFile 再解析（直接解析的话会导致 StackOverflowError）
+        // createDummyFile -> ParadoxScriptData -> ParadoxModDescriptorData -> ParadoxModDescriptorInfo
         val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
-        val data = ParadoxScriptDataResolver.resolve(psiFile)
-        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" // 如果没有name属性，则使用根目录名
-        val version = data?.getData("version")?.value?.stringValue()
-        val picture = data?.getData("picture")?.value?.stringValue()
-        val tags = data?.getAllData("tags")?.mapNotNull { it.value?.stringValue() }?.toSet().orEmpty()
-        val supportedVersion = data?.getData("supported_version")?.value?.stringValue()
-        val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
-        val path = data?.getData("path")?.value?.stringValue()
+        val data = ParadoxScriptDataResolver.DEFAULT.resolveFile(psiFile)?.let { ParadoxModDescriptorData(it) }
+        val name = data?.name ?: file.parent?.name ?: "" // 作为回退，使用模组目录名作为模组名
+        val version = data?.version
+        val picture = data?.picture
+        val tags = data?.tags.orEmpty()
+        val supportedVersion = data?.supportedVersion
+        val remoteFileId = data?.remoteFileId
+        val path = data?.path
         return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
 

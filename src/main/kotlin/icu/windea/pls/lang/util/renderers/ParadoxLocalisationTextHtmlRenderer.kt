@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.editor.colors.EditorColorsManager
@@ -52,12 +50,13 @@ import java.awt.Color
 import javax.imageio.ImageIO
 import javax.swing.UIManager
 
+@Suppress("unused")
 class ParadoxLocalisationTextHtmlRenderer(
-    var builder: DocumentationBuilder = DocumentationBuilder(),
-    var color: Color? = null,
-    var forDoc: Boolean = false,
+    private var builder: DocumentationBuilder = DocumentationBuilder(),
+    val color: Color? = null,
+    val forDoc: Boolean = false,
 ) {
-    private val guardStack = ArrayDeque<String>() // 防止StackOverflow
+    private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
     private val colorStack = ArrayDeque<Color>()
 
     fun render(element: ParadoxLocalisationProperty): String {

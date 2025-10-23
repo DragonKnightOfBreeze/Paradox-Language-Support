@@ -12,26 +12,28 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.members
 
-object ParadoxScriptDataResolver {
-    /**
-     * 解析脚本文件的数据。跳过不合法的[PsiElement]。
-     */
-    fun resolve(file: PsiFile, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
-        if (file !is ParadoxScriptFile) throw IllegalArgumentException("Invalid file type (expect: 'ParadoxScriptFile')")
-        val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return null
-        return resolveBlock(rootBlock, conditional, inline)
-    }
-
-    fun resolve(element: PsiElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
+class ParadoxScriptDataResolver(
+    val forward: Boolean = true,
+    val conditional: Boolean = false,
+    val inline: Boolean = false,
+) {
+    fun resolve(element: PsiElement): ParadoxScriptData? {
         return when (element) {
-            is ParadoxScriptBlock -> resolveBlock(element, conditional, inline)
-            is ParadoxScriptValue -> resolveValue(element, conditional, inline)
-            is ParadoxScriptProperty -> resolveProperty(element, conditional, inline)
+            is ParadoxScriptFile -> resolveFile(element)
+            is ParadoxScriptBlock -> resolveBlock(element)
+            is ParadoxScriptValue -> resolveValue(element)
+            is ParadoxScriptProperty -> resolveProperty(element)
             else -> null
         }
     }
 
-    fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
+    fun resolveFile(file: PsiFile): ParadoxScriptData? {
+        if (file !is ParadoxScriptFile) return null
+        val rootBlock = file.findChild<ParadoxScriptRootBlock>() ?: return null
+        return resolveBlock(rootBlock)
+    }
+
+    fun resolveBlock(element: ParadoxScriptBlockElement): ParadoxScriptData {
         val value = element as? ParadoxScriptBlock
         val children: MutableList<ParadoxScriptData> = mutableListOf()
         element.members().options(conditional, inline).forEach { e ->
@@ -43,20 +45,25 @@ object ParadoxScriptDataResolver {
         return ParadoxScriptDataImpl(null, value, children)
     }
 
-    fun resolveValue(element: ParadoxScriptValue, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
-        if (element is ParadoxScriptBlock) return resolveBlock(element, conditional, inline)
+    fun resolveValue(element: ParadoxScriptValue): ParadoxScriptData {
+        if (element is ParadoxScriptBlock) return resolveBlock(element)
         return ParadoxScriptDataImpl(null, element, null)
     }
 
-    fun resolveProperty(element: ParadoxScriptProperty, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
+    fun resolveProperty(element: ParadoxScriptProperty): ParadoxScriptData? {
         val propertyKey = element.propertyKey
         val propertyValue = element.propertyValue
         if (propertyValue == null) return null // ignore
 
         val children = when {
-            propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue, conditional, inline).children
+            propertyValue is ParadoxScriptBlock -> resolveBlock(propertyValue).children
             else -> null
         }
         return ParadoxScriptDataImpl(propertyKey, propertyValue, children)
+    }
+
+    companion object {
+        val DEFAULT = ParadoxScriptDataResolver()
+        val INLINE = ParadoxScriptDataResolver(inline = true)
     }
 }
