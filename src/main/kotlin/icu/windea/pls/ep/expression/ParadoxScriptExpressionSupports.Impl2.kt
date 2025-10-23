@@ -7,6 +7,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -56,9 +57,12 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 
 // Core
 
-class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        val dataType = config.configExpression?.type
+/**
+ * @see CwtDataTypes.Definition
+ * @see CwtDataTypes.SuffixAwareDefinition
+ */
+class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
         return dataType == CwtDataTypes.Definition || dataType == CwtDataTypes.SuffixAwareDefinition
     }
 
@@ -104,10 +108,13 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
     }
 }
 
-class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        val dataType = config.configExpression?.type
-        return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SyncedLocalisation
+/**
+ * @see CwtDataTypes.Localisation
+ * @see CwtDataTypes.SuffixAwareLocalisation
+ */
+class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Localisation || dataType == CwtDataTypes.SuffixAwareLocalisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -148,10 +155,13 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
     }
 }
 
-class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        val dataType = config.configExpression?.type
-        return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SyncedLocalisation
+/**
+ * @see CwtDataTypes.SyncedLocalisation
+ * @see CwtDataTypes.SuffixAwareSyncedLocalisation
+ */
+class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.SyncedLocalisation || dataType == CwtDataTypes.SuffixAwareSyncedLocalisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -192,9 +202,12 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.InlineLocalisation
+/**
+ * @see CwtDataTypes.InlineLocalisation
+ */
+class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.InlineLocalisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -228,9 +241,12 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
     }
 }
 
-class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type in CwtDataTypeGroups.PathReference
+/**
+ * @see CwtDataTypeGroups.PathReference
+ */
+class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeGroups.PathReference
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -275,9 +291,12 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 }
 
-class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.EnumValue
+/**
+ * @see CwtDataTypes.EnumValue
+ */
+class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.EnumValue
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -325,9 +344,12 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.Modifier
+/**
+ * @see CwtDataTypes.Modifier
+ */
+class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Modifier
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -349,10 +371,13 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        val type = config.configExpression?.type ?: return false
-        return type == CwtDataTypes.AliasName || type == CwtDataTypes.AliasKeysField
+/**
+ * @see CwtDataTypes.AliasName
+ * @see CwtDataTypes.AliasKeysField
+ */
+class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.AliasName || dataType == CwtDataTypes.AliasKeysField
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -392,9 +417,12 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.Constant
+/**
+ * @see CwtDataTypes.Constant
+ */
+class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Constant
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

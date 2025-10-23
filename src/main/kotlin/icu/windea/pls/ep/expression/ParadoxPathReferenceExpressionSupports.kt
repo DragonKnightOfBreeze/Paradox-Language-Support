@@ -21,8 +21,8 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return configExpression.type == CwtDataTypes.Icon
     }
 
-    // icon[] -  filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
-    // icon[foo/bar] - filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要位于目录foo/bar中
+    // `icon[]` -  `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
+    // `icon[foo/bar]` - `filePath` 需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要位于目录 `foo/bar` 中
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return false
@@ -66,8 +66,8 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         return configExpression.type == CwtDataTypes.FilePath
     }
 
-    // filepath - 匹配任意路径
-    // filepath[./] - 匹配相对于脚本文件所在目录的路径
+    // `filepath` - 匹配任意路径
+    // `filepath[./]` - 匹配相对于脚本文件所在目录的路径
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         var expression = configExpression.value ?: return true
@@ -76,7 +76,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
             val contextParentPath = element?.fileInfo?.path?.parent ?: return false
             expression = "$contextParentPath/$expressionRel"
         }
-        val index = expression.lastIndexOf(',') // ","应当最多出现一次
+        val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
         if (index == -1) {
             // 匹配父路径
             return expression.matchesPath(filePath, trim = true)
@@ -96,7 +96,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
             val contextParentPath = element?.fileInfo?.path?.parent ?: return null
             expression = "$contextParentPath/$expressionRel"
         }
-        val index = expression.lastIndexOf(',') // ","应当最多出现一次
+        val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
         if (index == -1) {
             return filePath.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
         } else {
@@ -118,7 +118,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         if (expressionRel != null) {
             return null // 信息不足
         }
-        val index = configExpression.expressionString.lastIndexOf(',') // ","应当最多出现一次
+        val index = configExpression.expressionString.lastIndexOf(',') // `,` 应当最多出现一次
         if (index == -1) {
             if (expression.endsWith('/')) {
                 return "$expression$pathReference".singleton.set()
@@ -132,7 +132,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         val expression = configExpression.value ?: return pathReference.substringAfterLast('/').singleton.set()
-        val index = expression.lastIndexOf(',') // ","应当最多出现一次
+        val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
         if (index == -1) {
             return pathReference.substringAfterLast('/').singleton.set()
         } else {
@@ -153,8 +153,8 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
         return configExpression.type == CwtDataTypes.FileName
     }
 
-    // filename - filePath需要是文件名
-    // filename[foo/bar] - filePath需要是文件名，且该文件需要位于目录foo/bar中
+    // `filename` - `filePath` 需要是文件名
+    // `filename[foo/bar]` - `filePath` 需要是文件名，且该文件需要位于目录 `foo/bar` 中
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val expression = configExpression.value ?: return true

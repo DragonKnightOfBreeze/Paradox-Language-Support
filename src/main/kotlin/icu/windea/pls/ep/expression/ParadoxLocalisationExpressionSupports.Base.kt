@@ -10,7 +10,12 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
-abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupport {
+abstract class ParadoxLocalisationExpressionSupportBase : ParadoxLocalisationExpressionSupport
+
+/**
+ * @see ParadoxComplexExpression
+ */
+abstract class ParadoxLocalisationComplexExpressionSupportBase : ParadoxLocalisationExpressionSupportBase() {
     // NOTE 2.0.6 - unnecessary to support for `ParadoxScriptExpressionElement` yet
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {

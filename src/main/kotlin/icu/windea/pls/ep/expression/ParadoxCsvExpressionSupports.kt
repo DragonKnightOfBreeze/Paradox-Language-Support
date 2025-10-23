@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.value
@@ -28,9 +29,12 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 // 目前仅提供有限的支持
 
-class ParadoxCsvBoolExpressionSupport: ParadoxCsvExpressionSupport {
-    override fun supports(config: CwtValueConfig): Boolean {
-        return config.configExpression.type == CwtDataTypes.Bool
+/**
+ * @see CwtDataTypes.Bool
+ */
+class ParadoxCsvBoolExpressionSupport : ParadoxCsvExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Bool
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -39,9 +43,12 @@ class ParadoxCsvBoolExpressionSupport: ParadoxCsvExpressionSupport {
     }
 }
 
-class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(config: CwtValueConfig): Boolean {
-        return config.configExpression.type == CwtDataTypes.Definition
+/**
+ * @see CwtDataTypes.Definition
+ */
+class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Definition
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
@@ -74,9 +81,12 @@ class ParadoxCsvDefinitionExpressionSupport : ParadoxCsvExpressionSupport {
     }
 }
 
-class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupport {
-    override fun supports(config: CwtValueConfig): Boolean {
-        return config.configExpression.type == CwtDataTypes.EnumValue
+/**
+ * @see CwtDataTypes.EnumValue
+ */
+class ParadoxCsvEnumValueExpressionSupport : ParadoxCsvExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.EnumValue
     }
 
     override fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {

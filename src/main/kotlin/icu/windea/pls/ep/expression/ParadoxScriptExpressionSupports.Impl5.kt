@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -27,14 +28,17 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Extra
 
+/**
+ * @see CwtDataTypes.TechnologyWithLevel
+ */
 @WithGameType(ParadoxGameType.Stellaris)
-class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupportBase() {
     // https://github.com/cwtools/cwtools-vscode/issues/58
 
     private val typeExpression = "<technology.repeatable>"
 
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.TechnologyWithLevel
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.TechnologyWithLevel
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

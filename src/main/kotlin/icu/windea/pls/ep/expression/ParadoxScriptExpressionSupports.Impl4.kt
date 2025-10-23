@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
@@ -20,9 +21,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 // Parameter
 
-class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.Parameter
+/**
+ * @see CwtDataTypes.Parameter
+ */
+class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.Parameter
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -45,9 +49,12 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.LocalisationParameter
+/**
+ * @see CwtDataTypes.LocalisationParameter
+ */
+class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupportBase() {
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.LocalisationParameter
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

@@ -2,21 +2,33 @@ package icu.windea.pls.ep.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.lang.codeInsight.completion.ParadoxComplexExpressionCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.isInt
 import icu.windea.pls.lang.codeInsight.completion.scopeGroupName
 import icu.windea.pls.lang.codeInsight.completion.scopeName
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxValueFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpression
+import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
 
 // Complex Expression
 
+/**
+ * @see CwtDataTypes.TemplateExpression
+ * @see ParadoxTemplateExpression
+ */
 class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.TemplateExpression
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.TemplateExpression
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -24,9 +36,13 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptComplexExpressionSup
     }
 }
 
+/**
+ * @see CwtDataTypeGroups.DynamicValue
+ * @see ParadoxDynamicValueExpression
+ */
 class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type in CwtDataTypeGroups.DynamicValue
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeGroups.DynamicValue
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -34,9 +50,13 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptComplexExpressio
     }
 }
 
+/**
+ * @see CwtDataTypeGroups.ScopeField
+ * @see ParadoxScopeFieldExpression
+ */
 class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type in CwtDataTypeGroups.ScopeField
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeGroups.ScopeField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -61,9 +81,13 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptComplexExpressionS
     }
 }
 
+/**
+ * @see CwtDataTypeGroups.ValueField
+ * @see ParadoxValueFieldExpression
+ */
 class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type in CwtDataTypeGroups.ValueField
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeGroups.ValueField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -82,9 +106,13 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptComplexExpressionS
     }
 }
 
+/**
+ * @see CwtDataTypeGroups.VariableField
+ * @see ParadoxVariableFieldExpression
+ */
 class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type in CwtDataTypeGroups.VariableField
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType in CwtDataTypeGroups.VariableField
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -103,9 +131,13 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptComplexExpressi
     }
 }
 
+/**
+ * @see CwtDataTypes.DatabaseObject
+ * @see ParadoxDatabaseObjectExpression
+ */
 class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.DatabaseObject
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.DatabaseObject
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -113,9 +145,13 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptComplexExpress
     }
 }
 
+/**
+ * @see CwtDataTypes.DefineReference
+ * @see ParadoxDefineReferenceExpression
+ */
 class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.DefineReference
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.DefineReference
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -123,9 +159,13 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptComplexExpres
     }
 }
 
+/**
+ * @see CwtDataTypes.StellarisNameFormat
+ * @see StellarisNameFormatExpression
+ */
 class ParadoxScriptStellarisNameFormatExpressionSupport : ParadoxScriptComplexExpressionSupportBase() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.configExpression?.type == CwtDataTypes.StellarisNameFormat
+    override fun supports(dataType: CwtDataType): Boolean {
+        return dataType == CwtDataTypes.StellarisNameFormat
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
