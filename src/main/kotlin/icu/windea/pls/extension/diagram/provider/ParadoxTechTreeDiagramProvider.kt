@@ -79,18 +79,14 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
     object Items {
         class Type(val text: String)
-
         class Property(val property: ParadoxScriptProperty, val detail: Boolean)
-
         class LocalizedName(val text: String)
-
         class Presentation(val definition: ParadoxScriptProperty)
     }
 
     object Keys : KeyRegistry() {
         val typeText by createKey<String>(Keys)
         val nameText by createKey<String>(Keys)
-
         val nodeData by createKey<StellarisTechnologyData>(Keys)
     }
 
@@ -147,6 +143,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
                     nodeElement.getUserData(Keys.nameText)?.let { result += Items.LocalizedName(it) }
+                    result += Items.Presentation(nodeElement)
                     result.toTypedArray()
                 }
                 else -> emptyArray()

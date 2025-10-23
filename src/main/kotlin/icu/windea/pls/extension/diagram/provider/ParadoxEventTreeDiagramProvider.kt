@@ -66,9 +66,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
     object Items {
         class Type(val text: String)
-
         class Property(val property: ParadoxScriptProperty, val detail: Boolean)
-
         class LocalizedName(val text: String)
     }
 
