@@ -30,15 +30,12 @@ import kotlinx.coroutines.CoroutineScope
 object PlsFacade {
     // from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
-    @Service(Service.Level.PROJECT)
-    private class ProjectService(val coroutineScope: CoroutineScope)
+    @Service(Service.Level.APP, Service.Level.PROJECT)
+    private class CoroutineScopeService(val coroutineScope: CoroutineScope)
 
-    @Service(Service.Level.APP)
-    private class ApplicationService(val coroutineScope: CoroutineScope)
+    fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
 
-    fun getCoroutineScope(project: Project) = project.service<ProjectService>().coroutineScope
-
-    fun getCoroutineScope() = service<ApplicationService>().coroutineScope
+    fun getCoroutineScope() = service<CoroutineScopeService>().coroutineScope
 
     fun getDataProvider() = service<PlsDataProvider>()
 
