@@ -12,8 +12,8 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.processParent
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -38,7 +38,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
         }
 
         if (element is ParadoxScriptProperty || (element is ParadoxScriptExpressionElement && element.isExpression())) {
-            val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+            val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
             if (configs.isNotEmpty()) {
                 for (config in configs) {
                     // 检查对应的规则

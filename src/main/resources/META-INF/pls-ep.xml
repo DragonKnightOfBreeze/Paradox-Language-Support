@@ -15,8 +15,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionMerger" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.expression.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport" dynamic="true"/>
@@ -24,6 +22,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.metadata.ParadoxInferredGameTypeProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.metadataProvider" interface="icu.windea.pls.ep.metadata.ParadoxMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.ep.modifier.ParadoxModifierSupport" dynamic="true"/>
@@ -127,18 +127,6 @@
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.BaseCwtDataExpressionPriorityProvider"/>
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionPriorityProvider"/>
 
-    <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.expression.BaseParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.expression.CoreParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.expression.ConstantParadoxScriptExpressionMatcher" order="first"/>
-    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.expression.TemplateExpressionParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.AntParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
-
-    <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.expression.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>
-
-    <csvExpressionMatcher implementation="icu.windea.pls.ep.expression.BaseParadoxCsvExpressionMatcher"/>
-    <csvExpressionMatcher implementation="icu.windea.pls.ep.expression.CoreParadoxCsvExpressionMatcher"/>
-
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
 
@@ -198,6 +186,17 @@
 
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseParadoxDefinitionInspectionSuppressionProvider"/>
     <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseStellarisDefinitionInspectionSuppressionProvider"/>
+
+    <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.BaseParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.CoreParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.ConstantParadoxScriptExpressionMatcher" order="first"/>
+    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.TemplateExpressionParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="ant" implementation="icu.windea.pls.ep.match.AntParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="regex" implementation="icu.windea.pls.ep.match.RegexParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.match.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>
+
+    <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.BaseParadoxCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.CoreParadoxCsvExpressionMatcher"/>
 
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>

@@ -28,8 +28,6 @@ import icu.windea.pls.config.configGroup.localisationPromotions
 import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.scopeGroups
 import icu.windea.pls.config.configGroup.scopes
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.resolvedOrNull
 import icu.windea.pls.core.castOrNull
@@ -52,6 +50,9 @@ import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -77,7 +78,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkPrefi
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.ParadoxScope
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.isExact
@@ -216,7 +216,7 @@ object ParadoxScopeManager {
 
         // child config can be "alias_name[X] = ..." and "alias[X:scope_field]" is valid
         // or root config in config tree is "alias[X:xxx] = ..." and "alias[X:scope_field]" is valid
-        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         configs.forEach { config ->
             val configGroup = config.configGroup
             if (config.configExpression.type == CwtDataTypes.AliasKeysField) return true
@@ -310,7 +310,7 @@ object ParadoxScopeManager {
 
         val parentMember = findParentMember(element, withSelf = false)
         val parentScopeContext = if (parentMember != null) getSwitchedScopeContext(parentMember) else null
-        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         val config = configs.firstOrNull() ?: return null
 
         val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)

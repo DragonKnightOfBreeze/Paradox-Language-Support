@@ -10,7 +10,8 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.cancelable
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object CwtTemplateExpressionManager {
@@ -77,7 +78,7 @@ object CwtTemplateExpressionManager {
         text: String,
         templateExpression: CwtTemplateExpression,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxExpressionMatcher.Options.Default
+        matchOptions: Int = ParadoxMatchOptions.Default
     ): Boolean {
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return false

@@ -22,10 +22,10 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.search.selector.localisationParameter
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -105,7 +105,7 @@ object ParadoxLocalisationParameterManager {
 
     private fun isMatchedProperty(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         if (element is ParadoxScriptProperty) {
-            val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+            val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
             if (configs.any { it.pointer == config.pointer }) {
                 return true
             }

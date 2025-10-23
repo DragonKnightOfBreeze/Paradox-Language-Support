@@ -19,9 +19,9 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
@@ -58,7 +58,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                 if (file !is ParadoxScriptFile) return
                 val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxExpressionManager.getConfigs(file, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxExpressionManager.getConfigs(file, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
                 doCheck(file, file, configs)
             }
 
@@ -75,7 +75,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     ?: return
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
                 if (configContext.skipMissingExpressionCheck()) return
-                val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
+                val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
                 doCheck(element, position, configs)
             }
 

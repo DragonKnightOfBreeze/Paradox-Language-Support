@@ -13,8 +13,8 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.match.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
 import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
@@ -36,7 +36,7 @@ class CwtConfigContext(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
-    fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
+    fun getConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()

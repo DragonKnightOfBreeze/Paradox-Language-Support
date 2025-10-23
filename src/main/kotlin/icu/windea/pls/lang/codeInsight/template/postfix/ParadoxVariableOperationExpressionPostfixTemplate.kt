@@ -10,10 +10,10 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentProperty
@@ -38,7 +38,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val stringElement = context.parent?.castOrNull<ParadoxScriptValue>() ?: return emptyList()
         if (!stringElement.isBlockMember()) return emptyList()
         val parentProperty = stringElement.findParentProperty() ?: return emptyList()
-        val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
+        val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, isKey = true)

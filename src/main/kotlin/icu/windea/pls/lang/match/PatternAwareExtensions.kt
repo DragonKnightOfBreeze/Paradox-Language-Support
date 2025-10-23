@@ -7,10 +7,9 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
-import icu.windea.pls.ep.expression.PatternAwareParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.PatternAwareParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 /**
  * 用当前键作为通配符来匹配指定的 [key]。
@@ -24,7 +23,7 @@ fun String.matchFromPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
+    matchOptions: Int = ParadoxMatchOptions.Default,
     fromIndex: Int = 0,
 ): Boolean {
     if (this == key) return true
@@ -59,7 +58,7 @@ fun <V> Map<String, V>.findFromPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
+    matchOptions: Int = ParadoxMatchOptions.Default,
     fromIndex: Int = 0,
 ): V? {
     val fastResult = get(key)
@@ -79,7 +78,7 @@ fun <V> Map<String, V>.filterByPattern(
     key: String,
     contextElement: PsiElement,
     configGroup: CwtConfigGroup,
-    matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
+    matchOptions: Int = ParadoxMatchOptions.Default,
     fromIndex: Int = 0,
 ): List<V> {
     val fastResult = get(key)

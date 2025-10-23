@@ -6,9 +6,9 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -80,7 +80,7 @@ private class ParadoxScriptExpressionLazyImpl(
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
         when {
-            BitUtil.isSet(matchOptions, ParadoxExpressionMatcher.Options.SkipIndex) -> null
+            BitUtil.isSet(matchOptions, ParadoxMatchOptions.SkipIndex) -> null
             else -> element.resolved()?.scriptedVariableValue
         }
     }

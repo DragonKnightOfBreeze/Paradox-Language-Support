@@ -16,9 +16,9 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
@@ -70,11 +70,11 @@ class ParadoxDefinitionInfo(
 
     val project get() = configGroup.project
 
-    fun getDeclaration(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): CwtPropertyConfig? {
+    fun getDeclaration(matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
         return doGetDeclarationFromCache(matchOptions)
     }
 
-    fun getSubtypeConfigs(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): List<CwtSubtypeConfig> {
+    fun getSubtypeConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
         return doGetSubtypeConfigsFromCache(matchOptions)
     }
 

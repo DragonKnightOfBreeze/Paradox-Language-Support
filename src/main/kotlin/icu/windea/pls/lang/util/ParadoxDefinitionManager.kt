@@ -43,13 +43,14 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.dataFlow.options
@@ -370,7 +371,7 @@ object ParadoxDefinitionManager {
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>,
         configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxExpressionMatcher.Options.Default
+        matchOptions: Int = ParadoxMatchOptions.Default
     ): Boolean {
         val fastResult = matchesSubtypeFast(typeKey, subtypeConfig, subtypeConfigs)
         if (fastResult != null) return fastResult

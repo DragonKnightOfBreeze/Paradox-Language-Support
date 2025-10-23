@@ -22,8 +22,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.expression.ParadoxCsvExpressionMatcher
+import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxCsvFileManager {
@@ -96,7 +97,7 @@ object ParadoxCsvFileManager {
         return rowConfig.columns[headerName]
     }
 
-    fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
+    fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxMatchOptions.Default): Boolean {
         if (column.isHeaderColumn()) {
             return column.value == columnConfig.key
         }

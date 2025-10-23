@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptString
@@ -134,7 +134,7 @@ object ParadoxColorManager {
      * 其他可选值适用于[element]是[ParadoxScriptBlock]或[ParadoxScriptColor]的场合。
      */
     fun getColorType(element: PsiElement): String? {
-        val configToGetOption = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition).firstOrNull()
+        val configToGetOption = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition).firstOrNull()
         if (configToGetOption == null) return null
         return configToGetOption.optionData { colorType }
     }

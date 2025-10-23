@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.resolve.expression
 
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.expression.impl.ParadoxScriptExpressionResolverImpl
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -30,7 +30,7 @@ interface ParadoxScriptExpression {
         fun resolveBlock(): ParadoxScriptExpression
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression
         fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression
-        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxScriptExpression
+        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxMatchOptions.Default): ParadoxScriptExpression
     }
 
     companion object : Resolver by ParadoxScriptExpressionResolverImpl()

@@ -31,6 +31,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.modifier.modifierConfig
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
@@ -43,7 +44,6 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -68,7 +68,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val element = ParadoxPsiFinder.findScriptExpression(file, offset) ?: return emptySet()
         val orDefault = element is ParadoxScriptPropertyKey
-        val matchOptions = Options.Default or Options.AcceptDefinition
+        val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition
         val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
         if (configs.isEmpty()) return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
@@ -232,7 +232,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             }
 
             val orDefault = element is ParadoxScriptPropertyKey
-            val matchOptions = Options.Default or Options.AcceptDefinition
+            val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition
             val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for (config in configs) {
                 val configExpression = config.configExpression

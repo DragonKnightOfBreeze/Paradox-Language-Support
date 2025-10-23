@@ -57,6 +57,7 @@ import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -78,7 +79,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -149,7 +149,7 @@ object ParadoxCompletionManager {
         }
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
@@ -191,7 +191,7 @@ object ParadoxCompletionManager {
         if (!configContext.isDefinitionOrMember()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
+        val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
