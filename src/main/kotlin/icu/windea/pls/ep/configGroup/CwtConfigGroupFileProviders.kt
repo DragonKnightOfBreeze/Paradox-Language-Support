@@ -97,7 +97,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  *
  * 注意：共享的内置规则分组总是会被启用。
  */
-class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
     override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
@@ -131,7 +131,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * @see CwtConfigRepositoryManager
  */
-class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Remote
 
     override val isEnabled get() = PlsFacade.getConfigSettings().enableRemoteConfigGroups
@@ -179,7 +179,7 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{localConfigDirectory}` 可以配置。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
-class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
 
     override val isEnabled get() = PlsFacade.getConfigSettings().enableLocalConfigGroups
@@ -207,7 +207,7 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{projectLocalConfigDirectoryName}` 位于项目根目录中，且可以配置。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
-class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
 
     override val isEnabled get() = PlsFacade.getConfigSettings().enableProjectLocalConfigGroups
@@ -234,7 +234,7 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - 位于特定的测试数据目录中，一般是 `src/test/testData`。
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
-class TestCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+class CwtTestConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
     override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn

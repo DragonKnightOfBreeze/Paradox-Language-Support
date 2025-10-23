@@ -134,30 +134,6 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
     }
 }
 
-@WithGameType(ParadoxGameType.Stellaris)
-class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
-    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        if (element !is ParadoxScriptStringExpressionElement) return
-
-        val configExpression = config.configExpression
-        if (configExpression.type != CwtDataTypes.TechnologyWithLevel) return
-        val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
-        val project = config.configGroup.project
-        val text = element.text
-        val separatorIndex = text.indexOf('@')
-        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", selector(project, element).definition()).findFirst() == null) {
-            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
-            holder.registerProblem(element, message, ProblemHighlightType.ERROR, range)
-        }
-        if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
-            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
-            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
-            holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR, range)
-        }
-    }
-}
-
 class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
     object Constants {
         val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
@@ -216,6 +192,30 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
             // if(resultTriggerConfigs.none { !it.config.isBlock }) {
             //    holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
             // }
+        }
+    }
+}
+
+@WithGameType(ParadoxGameType.Stellaris)
+class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
+    override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+
+        val configExpression = config.configExpression
+        if (configExpression.type != CwtDataTypes.TechnologyWithLevel) return
+        val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return
+        val project = config.configGroup.project
+        val text = element.text
+        val separatorIndex = text.indexOf('@')
+        if (technologyName.isEmpty() || ParadoxDefinitionSearch.search(technologyName, "technology.repeatable", selector(project, element).definition()).findFirst() == null) {
+            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(it.startOffset, separatorIndex) }
+            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyName", range.substring(text))
+            holder.registerProblem(element, message, ProblemHighlightType.ERROR, range)
+        }
+        if (technologyLevel.isEmpty() || !technologyLevel.all { c -> c.isExactDigit() } || technologyLevel.toInt() !in -1..100) {
+            val range = TextRange.create(0, text.length).unquote(text).let { TextRange.create(separatorIndex + 1, it.endOffset) }
+            val message = PlsBundle.message("incorrectExpressionChecker.expect.repeatableTechnologyLevel", range.substring(text))
+            holder.registerProblem(element, message, ProblemHighlightType.GENERIC_ERROR, range)
         }
     }
 }

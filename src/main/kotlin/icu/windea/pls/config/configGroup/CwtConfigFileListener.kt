@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
+import icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
@@ -60,7 +60,7 @@ class CwtConfigFileListener : AsyncFileListener {
                     val configGroupService = PlsFacade.getConfigGroupService()
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
-                        if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f2
+                        if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2
                         val contextDirectories = contextFiles.mapNotNullTo(mutableSetOf()) { it.parent }
                         contextDirectories.forEach f3@{ contextDirectory ->
                             val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3

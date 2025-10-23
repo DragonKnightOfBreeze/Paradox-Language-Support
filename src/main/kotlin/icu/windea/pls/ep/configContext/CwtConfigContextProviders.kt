@@ -48,7 +48,7 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContex
  *
  * - 直接基于文件信息（包括注入的文件信息）。
  */
-class BaseCwtConfigContextProvider : CwtConfigContextProvider {
+class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 
@@ -101,7 +101,7 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
  *
  * - 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  */
-class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
+class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     // 注意：内联脚本调用可以在定义声明之外
 
     override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
@@ -147,7 +147,7 @@ class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
  * - 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`、`TooManyExpressionInspection`。
  * - 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
-class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
+class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     // TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
 
     override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
@@ -218,7 +218,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
  *
  * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */
-class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
+class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 

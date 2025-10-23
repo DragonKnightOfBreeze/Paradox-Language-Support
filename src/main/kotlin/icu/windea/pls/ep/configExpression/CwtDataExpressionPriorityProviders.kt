@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.enums
 
-class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
+class CwtBaseDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         return when (configExpression.type) {
             CwtDataTypes.Block -> 100.0 // highest
@@ -21,7 +21,7 @@ class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
     }
 }
 
-class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
+class CwtCoreDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         return when (configExpression.type) {
             CwtDataTypes.Constant -> 100.0 // highest

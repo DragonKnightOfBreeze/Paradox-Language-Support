@@ -5,7 +5,7 @@ import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
+import icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.model.ParadoxGameType
 
@@ -25,7 +25,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val configGroups = mutableSetOf<CwtConfigGroup>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
-            if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f
+            if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f
             if (!fileProvider.isEnabled) return@f // 如果未启用则不要把规则分组标记为已更改
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             configGroups.add(configGroup)

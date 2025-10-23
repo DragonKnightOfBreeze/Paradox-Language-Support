@@ -12,7 +12,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始规则分组中预先定义的那些数据。
  */
-class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
+class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 

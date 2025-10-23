@@ -40,7 +40,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始规则分组中需要经过计算的那些数据。
  */
-class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
+class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 

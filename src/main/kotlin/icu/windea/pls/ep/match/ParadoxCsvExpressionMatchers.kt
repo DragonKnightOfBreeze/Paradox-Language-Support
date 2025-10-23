@@ -17,7 +17,7 @@ import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.model.ParadoxType
 
-class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+class ParadoxBaseCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun matches(element: PsiElement, expressionText: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxMatchResult? {
         return when {
             configExpression.type == CwtDataTypes.Bool -> {
@@ -55,7 +55,7 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     }
 }
 
-class CoreParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
+class ParadoxCoreCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
     override fun matches(element: PsiElement, expressionText: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxMatchResult? {
         val project = configGroup.project
         val dataType = configExpression.type

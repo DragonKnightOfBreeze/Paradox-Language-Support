@@ -42,7 +42,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.members
 import icu.windea.pls.script.psi.propertyValue
 
-class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         return when (configExpression.type) {
             CwtDataTypes.Block -> {
@@ -127,7 +127,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         val project = configGroup.project
         val dataType = configExpression.type
@@ -336,7 +336,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ConstantParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxConstantScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Constant) return null
         val value = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -351,7 +351,7 @@ class ConstantParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
     }
 }
 
-class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.TemplateExpression) return null
         if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
@@ -361,7 +361,7 @@ class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScri
     }
 }
 
-class AntParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxAntScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Ant) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -371,7 +371,7 @@ class AntParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMat
     }
 }
 
-class RegexParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxRegexScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Regex) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -381,7 +381,7 @@ class RegexParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionM
     }
 }
 
-class ParadoxScriptPredicateBasedExpressionMatcher : ParadoxScriptExpressionMatcher {
+class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
         // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig

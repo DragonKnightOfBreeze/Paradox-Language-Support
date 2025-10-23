@@ -88,7 +88,7 @@ import kotlinx.coroutines.ensureActive
 /**
  * 用于初始规则分组中基于文件内容的那些数据。
  */
-class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
+class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 

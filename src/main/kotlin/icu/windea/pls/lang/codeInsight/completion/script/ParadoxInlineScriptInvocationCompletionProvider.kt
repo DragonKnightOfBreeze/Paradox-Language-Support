@@ -11,7 +11,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
-import icu.windea.pls.ep.configContext.InlineScriptUsageCwtConfigContextProvider
+import icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.expressionOffset
@@ -54,7 +54,7 @@ class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<Compl
 
         // inline script invocation cannot be nested directly
         val configContext = ParadoxExpressionManager.getConfigContext(element)
-        if (configContext != null && configContext.provider is InlineScriptUsageCwtConfigContextProvider) return
+        if (configContext != null && configContext.provider is CwtInlineScriptUsageConfigContextProvider) return
 
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()

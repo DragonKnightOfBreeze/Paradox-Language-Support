@@ -14,7 +14,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
 
-class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
+class CwtBaseDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(
         rule(CwtDataTypes.Bool, "bool"),
 
@@ -37,7 +37,7 @@ class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     )
 }
 
-class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
+class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules: List<Rule> = listOf(
         rule(CwtDataTypes.PercentageField, "percentage_field"),
         rule(CwtDataTypes.DateField, "date_field"),
@@ -99,7 +99,7 @@ class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     )
 }
 
-class ConstantCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+class CwtConstantDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val excludeCharacters = ":.@[]<>".toCharArray()
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
@@ -108,14 +108,14 @@ class ConstantCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver(
     }
 }
 
-class TemplateExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+class CwtTemplateDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression).apply { value = expressionString }
     }
 }
 
-class AntCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+class CwtAntDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val prefix = "ant:"
     private val prefixIgnoreCase = "ant.i:"
 
@@ -130,7 +130,7 @@ class AntCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     }
 }
 
-class RegexCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
+class CwtRegexDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val prefix = "re:"
     private val prefixIgnoreCase = "re.i:"
 
@@ -145,7 +145,7 @@ class RegexCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     }
 }
 
-class SuffixAwareDefinitionCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+class CwtSuffixAwareDefinitionDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
     override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
         val t = text.removeSurroundingOrNull("<", ">") ?: return null
         if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition).apply { value = t.orNull() }
@@ -153,7 +153,7 @@ class SuffixAwareDefinitionCwtDataExpressionResolver : SuffixAwareCwtDataExpress
     }
 }
 
-class SuffixAwareLocalisationCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+class CwtSuffixAwareLocalisationDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
     override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
         if (text != "localisation") return null
         if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
@@ -161,7 +161,7 @@ class SuffixAwareLocalisationCwtDataExpressionResolver : SuffixAwareCwtDataExpre
     }
 }
 
-class SuffixAwareSyncedLocalisationCwtDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
+class CwtSuffixAwareSyncedLocalisationDataExpressionResolver : SuffixAwareCwtDataExpressionResolver() {
     override fun doResolve(expressionString: String, text: String, suffixes: Set<String>, isKey: Boolean): CwtDataExpression? {
         if (text != "localisation_synced") return null
         if (suffixes.isEmpty()) return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)

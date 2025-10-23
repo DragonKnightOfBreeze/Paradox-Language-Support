@@ -5,7 +5,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
-class BaseParadoxDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
+class ParadoxBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
     override fun getSuppressedToolIds(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 禁用继承自其他事件的事件的某些检查
         if (definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
@@ -16,7 +16,7 @@ class BaseParadoxDefinitionInspectionSuppressionProvider : ParadoxDefinitionInsp
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-class BaseStellarisDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
+class StellarisBaseDefinitionInspectionSuppressionProvider : ParadoxDefinitionInspectionSuppressionProvider {
     override fun getSuppressedToolIds(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String> {
         // 1.1.2 传统的采纳和完成不需要有对应的图片
         if ((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {

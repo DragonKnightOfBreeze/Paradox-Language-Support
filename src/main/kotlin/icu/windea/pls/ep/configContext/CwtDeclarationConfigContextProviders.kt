@@ -29,7 +29,7 @@ var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by cr
 /**
  * 提供基础的声明规则上下文。
  */
-class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
+class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext {
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
     }
@@ -58,7 +58,7 @@ class BaseCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
  *
  * 如果通过 [CwtExtendedGameRuleConfig] 重载了 game rule 的声明规则，则需使用重载后的声明规则上下文。
  */
-class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
+class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.GameRule) return null
         if (definitionName.isNullOrEmpty()) return null
@@ -90,7 +90,7 @@ class GameRuleCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextP
  * 如果通过 [CwtExtendedOnActionConfig] 可以确定 on action 的事件类型，则需使用修改后的声明规则上下文。
  * 将其中的数据表达式 `<event>`，替换为此事件类型对应的数据表达式。
  */
-class OnActionCwtDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
+class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextProvider {
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.OnAction) return null
         if (definitionName.isNullOrEmpty()) return null

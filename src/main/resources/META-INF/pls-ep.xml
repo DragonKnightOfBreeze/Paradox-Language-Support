@@ -91,41 +91,41 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtColumnRelatedConfigProvider"/>
 
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.BaseCwtConfigContextProvider" order="last"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.InlineScriptUsageCwtConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.InlineScriptCwtConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.ParameterValueCwtConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider"/>
 
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.BaseCwtDeclarationConfigContextProvider" order="last"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.GameRuleCwtDeclarationConfigContextProvider"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.OnActionCwtDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseDeclarationConfigContextProvider" order="last"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtGameRuleDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtOnActionDeclarationConfigContextProvider"/>
 
-    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.PredefinedCwtConfigGroupDataProvider" order="first"/>
-    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.FileBasedCwtConfigGroupDataProvider"/>
-    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider" order="last"/>
+    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.CwtPredefinedConfigGroupDataProvider" order="first"/>
+    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider"/>
+    <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.CwtComputedConfigGroupDataProvider" order="last"/>
 
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider" order="first"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.RemoteCwtConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.LocalCwtConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.ProjectCwtConfigGroupFileProvider"/>
-    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.TestCwtConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider" order="first"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtRemoteConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtLocalConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtProjectConfigGroupFileProvider"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtTestConfigGroupFileProvider"/>
 
     <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxBaseDefinitionDataProvider"/>
 
-    <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.configExpression.BaseCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.ConstantCwtDataExpressionResolver" order="last"/>
-    <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.AntCwtDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.RegexCwtDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareDefinitionCwtDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareLocalisationCwtDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.SuffixAwareSyncedLocalisationCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionResolver"/>
+    <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionResolver"/>
+    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.CwtConstantDataExpressionResolver" order="last"/>
+    <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.CwtTemplateDataExpressionResolver" order="last, after constant"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtAntDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtRegexDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareDefinitionDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareLocalisationDataExpressionResolver"/>
+    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareSyncedLocalisationDataExpressionResolver"/>
 
-    <dataExpressionMerger implementation="icu.windea.pls.ep.configExpression.DefaultCwtDataExpressionMerger"/>
+    <dataExpressionMerger implementation="icu.windea.pls.ep.configExpression.CwtDefaultDataExpressionMerger"/>
 
-    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.BaseCwtDataExpressionPriorityProvider"/>
-    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CoreCwtDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionPriorityProvider"/>
 
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
@@ -180,23 +180,23 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeBasedScopeFieldExpressionChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.StellarisTechnologyWithLevelChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.StellarisTechnologyWithLevelChecker"/>
 
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseParadoxDefinitionInspectionSuppressionProvider"/>
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseStellarisDefinitionInspectionSuppressionProvider"/>
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.ParadoxBaseDefinitionInspectionSuppressionProvider"/>
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.StellarisBaseDefinitionInspectionSuppressionProvider"/>
 
-    <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.BaseParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.CoreParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.ConstantParadoxScriptExpressionMatcher" order="first"/>
-    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.TemplateExpressionParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="ant" implementation="icu.windea.pls.ep.match.AntParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="regex" implementation="icu.windea.pls.ep.match.RegexParadoxScriptExpressionMatcher"/>
-    <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.match.ParadoxScriptPredicateBasedExpressionMatcher" order="first, before constant"/>
+    <scriptExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.ParadoxBaseScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="constant" implementation="icu.windea.pls.ep.match.ParadoxConstantScriptExpressionMatcher" order="first"/>
+    <scriptExpressionMatcher id="template" implementation="icu.windea.pls.ep.match.ParadoxTemplateScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="ant" implementation="icu.windea.pls.ep.match.ParadoxAntScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="regex" implementation="icu.windea.pls.ep.match.ParadoxRegexScriptExpressionMatcher"/>
+    <scriptExpressionMatcher id="predicate" implementation="icu.windea.pls.ep.match.ParadoxPredicateBasedScriptExpressionMatcher" order="first, before constant"/>
 
-    <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.BaseParadoxCsvExpressionMatcher"/>
-    <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.CoreParadoxCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.ParadoxBaseCsvExpressionMatcher"/>
+    <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreCsvExpressionMatcher"/>
 
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
