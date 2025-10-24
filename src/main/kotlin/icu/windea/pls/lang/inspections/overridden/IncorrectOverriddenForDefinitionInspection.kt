@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.priority.ParadoxPriority
 import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -22,6 +21,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -58,11 +58,11 @@ class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
             private fun visitDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
                 val priority = ParadoxPriorityProvider.getPriority(element)
                 if (priority == ParadoxPriority.ORDERED) return // only for FIOS and LIOS
-                val selector = selector(project, file).definition()
                 val name = definitionInfo.name
                 val type = definitionInfo.type
                 if (name.isEmpty()) return // anonymous -> skipped
                 if (name.isParameterized()) return // parameterized -> ignored
+                val selector = selector(project, file).definition()
                 val results = ParadoxDefinitionSearch.search(name, type, selector).findAll()
                 if (results.size < 2) return // no override -> skip
                 val firstResult = results.first()

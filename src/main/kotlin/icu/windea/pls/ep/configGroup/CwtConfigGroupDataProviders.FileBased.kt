@@ -81,7 +81,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.ep.priority.ParadoxPriority
+import icu.windea.pls.model.ParadoxPriority
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -172,7 +172,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val k = config.key.removePrefix("game/").normalizePath().orNull() ?: continue
-                        val v = config.stringValue?.orNull()?.let { ParadoxPriority.resolve(it) } ?: continue
+                        val v = config.stringValue?.orNull()?.let { ParadoxPriority.get(it.lowercase()) } ?: continue
                         configGroup.priorities[k] = v
                     }
                 }

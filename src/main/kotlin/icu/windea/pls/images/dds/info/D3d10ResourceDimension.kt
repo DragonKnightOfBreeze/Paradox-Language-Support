@@ -18,6 +18,6 @@ enum class D3d10ResourceDimension(val value: Int) {
         private val map = entries.associateBy { it.value }
 
         @JvmStatic
-        fun get(value: Int) = map.get(value) ?: throw NoSuchElementException("unknown resource dimension from value $value")
+        fun get(value: Int): D3d10ResourceDimension = map[value] ?: throw NoSuchElementException("unknown resource dimension from value $value")
     }
 }

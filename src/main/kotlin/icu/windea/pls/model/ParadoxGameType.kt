@@ -58,16 +58,19 @@ enum class ParadoxGameType(
     }
 
     companion object {
+        @JvmStatic
         private val values = entries.toList()
+        @JvmStatic
         private val valuesNoCore = values - Core
-        private val valueMap = entries.associateBy { it.id }
+        @JvmStatic
+        private val map = entries.associateBy { it.id }
 
         /**
          * 得到游戏类型。指定 [withCore] 为 `true` 以包含通用游戏类型。
          */
         @JvmStatic
         fun get(id: String, withCore: Boolean = false): ParadoxGameType? {
-            return valueMap[id]?.takeIf { withCore || it != Core }
+            return map[id]?.takeIf { withCore || it != Core }
         }
 
         /**

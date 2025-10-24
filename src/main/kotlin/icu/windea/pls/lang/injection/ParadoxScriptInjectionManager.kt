@@ -112,7 +112,7 @@ object ParadoxScriptInjectionManager {
 
     private fun shouldApplyParameterValueInjection(value: String): Boolean {
         val normalized = value.unquote().trim()
-        if (ParadoxSeparatorType.entries.any { it.id == normalized }) return true // 为一些狡猾人行方便
+        if (ParadoxSeparatorType.entries.any { it.text == normalized }) return true // 为一些狡猾人行方便
         return false
     }
 

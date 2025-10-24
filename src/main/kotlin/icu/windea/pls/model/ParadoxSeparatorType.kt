@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-enum class ParadoxSeparatorType(val id: String) {
+enum class ParadoxSeparatorType(val text: String) {
     EQUAL("="),
     NOT_EQUAL("!="),
     LT("<"),
@@ -10,7 +10,7 @@ enum class ParadoxSeparatorType(val id: String) {
     SAFE_EQUAL("?="), // supported in ck3 and vic3, see #102
     ;
 
-    override fun toString() = id
+    override fun toString() = text
 
     companion object {
         @JvmStatic

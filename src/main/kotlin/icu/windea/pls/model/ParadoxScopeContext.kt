@@ -107,27 +107,27 @@ fun ParadoxScopeContext.toScopeIdMap(showFrom: Boolean = true, showPrev: Boolean
 
 // val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
 
-fun ParadoxScopeContext.Resolver.resolve(thisScope: String): ParadoxScopeContext {
+fun ParadoxScopeContext.Resolver.get(thisScope: String): ParadoxScopeContext {
     return SimpleParadoxScopeContext(ParadoxScope.of(thisScope))
 }
 
-fun ParadoxScopeContext.Resolver.resolve(thisScope: String, rootScope: String? = null): ParadoxScopeContext {
+fun ParadoxScopeContext.Resolver.get(thisScope: String, rootScope: String? = null): ParadoxScopeContext {
     val scope = ParadoxScope.of(thisScope)
-    val root = rootScope?.let { ParadoxScopeContext.resolve(it) }
+    val root = rootScope?.let { ParadoxScopeContext.get(it) }
     return DefaultParadoxScopeContext(scope, root)
 }
 
-fun ParadoxScopeContext.Resolver.resolve(map: Map<String, String>): ParadoxScopeContext? {
+fun ParadoxScopeContext.Resolver.get(map: Map<String, String>): ParadoxScopeContext? {
     val scope = map.get("this")?.let { ParadoxScope.of(it) } ?: return null
-    val root = map.get("root")?.let { ParadoxScopeContext.resolve(it) }
-    val from = map.get("from")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFrom = map.get("fromfrom")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFromFrom = map.get("fromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
-    val fromFromFromFrom = map.get("fromfromfromfrom")?.let { ParadoxScopeContext.resolve(it) }
-    val prev = map.get("prev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrev = map.get("prevprev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.resolve(it) }
-    val prevPrevPrevPrev = map.get("prevprevprevprev")?.let { ParadoxScopeContext.resolve(it) }
+    val root = map.get("root")?.let { ParadoxScopeContext.get(it) }
+    val from = map.get("from")?.let { ParadoxScopeContext.get(it) }
+    val fromFrom = map.get("fromfrom")?.let { ParadoxScopeContext.get(it) }
+    val fromFromFrom = map.get("fromfromfrom")?.let { ParadoxScopeContext.get(it) }
+    val fromFromFromFrom = map.get("fromfromfromfrom")?.let { ParadoxScopeContext.get(it) }
+    val prev = map.get("prev")?.let { ParadoxScopeContext.get(it) }
+    val prevPrev = map.get("prevprev")?.let { ParadoxScopeContext.get(it) }
+    val prevPrevPrev = map.get("prevprevprev")?.let { ParadoxScopeContext.get(it) }
+    val prevPrevPrevPrev = map.get("prevprevprevprev")?.let { ParadoxScopeContext.get(it) }
     val prevStack = buildList b@{
         // break if previous-prev is null (but next-prev is null or not null)
         prev?.let { add(it) } ?: return@b

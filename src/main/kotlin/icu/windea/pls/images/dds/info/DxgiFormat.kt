@@ -136,6 +136,6 @@ enum class DxgiFormat(val value: Int) {
         private val map = entries.associateBy { it.value }
 
         @JvmStatic
-        fun get(value: Int) = map.get(value) ?: throw NoSuchElementException("unknown dxgi format from value $value")
+        fun get(value: Int): DxgiFormat = map[value] ?: throw NoSuchElementException("unknown dxgi format from value $value")
     }
 }

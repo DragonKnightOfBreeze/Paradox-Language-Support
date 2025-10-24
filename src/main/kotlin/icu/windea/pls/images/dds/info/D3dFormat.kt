@@ -78,9 +78,9 @@ enum class D3dFormat(val value: Int) {
 
     companion object {
         @JvmStatic
-        val map = entries.associateBy { it.value }
+        private val map = entries.associateBy { it.value }
 
         @JvmStatic
-        fun get(value: Int) = map.get(value) ?: throw NoSuchElementException("unknown d3d format from value $value")
+        fun get(value: Int): D3dFormat = map[value] ?: throw NoSuchElementException("unknown d3d format from value $value")
     }
 }

@@ -13,7 +13,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
-import icu.windea.pls.ep.priority.ParadoxPriority
 import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -23,6 +22,7 @@ import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -62,10 +62,10 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val priority = ParadoxPriorityProvider.getPriority(element)
                 if (priority == ParadoxPriority.ORDERED) return // only for FIOS and LIOS
-                val selector = selector(project, file).scriptedVariable()
                 val name = element.name
                 if (name.isNullOrEmpty()) return // anonymous -> skipped
                 if (name.isParameterized()) return // parameterized -> ignored
+                val selector = selector(project, file).scriptedVariable()
                 val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
                 if (results.size < 2) return // no override -> skip
                 val firstResult = results.first()

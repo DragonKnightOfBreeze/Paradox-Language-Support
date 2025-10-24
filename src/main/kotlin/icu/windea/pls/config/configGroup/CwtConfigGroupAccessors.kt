@@ -43,7 +43,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.ep.priority.ParadoxPriority
+import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.ep.scope.ParadoxBaseDefinitionInferredScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 

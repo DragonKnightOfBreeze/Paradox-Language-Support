@@ -26,7 +26,7 @@ import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.resolve
+import icu.windea.pls.model.get
 import icu.windea.pls.model.resolveNext
 
 /**
@@ -205,8 +205,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorExtensions {
     val scopeContext: CwtOptionDataAccessor<ParadoxScopeContext?> by create(cached = true) {
         val replaceScopes = optionData { replaceScopes }
         val pushScope = optionData { pushScope }
-        val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }
-        scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.resolve(it, it) }
+        val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) }
+        scopeContext?.resolveNext(pushScope) ?: pushScope?.let { ParadoxScopeContext.get(it, it) }
     }
 
     /**

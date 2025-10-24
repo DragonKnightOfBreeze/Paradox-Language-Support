@@ -83,7 +83,7 @@ import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.isExact
 import icu.windea.pls.model.overriddenProvider
 import icu.windea.pls.model.promotions
-import icu.windea.pls.model.resolve
+import icu.windea.pls.model.get
 import icu.windea.pls.model.resolveNext
 import icu.windea.pls.model.toScopeIdMap
 import icu.windea.pls.script.psi.ParadoxParameter
@@ -329,7 +329,7 @@ object ParadoxScopeManager {
             // 优先基于内联前的规则，如果没有，再基于内联后的规则
             val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
             val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
-            val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) } ?: parentScopeContext ?: return null
+            val scopeContext = replaceScopes?.let { ParadoxScopeContext.get(it) } ?: parentScopeContext ?: return null
             val result = scopeContext.resolveNext(pushScope)
             return result
         }
@@ -623,7 +623,7 @@ object ParadoxScopeManager {
         val replaceScopes = config.optionData { replaceScopes } ?: config.resolvedOrNull()?.optionData { replaceScopes }
         val pushScope = config.optionData { pushScope } ?: config.resolved().optionData { pushScope }
         if (replaceScopes != null) {
-            return ParadoxScopeContext.resolve(replaceScopes)
+            return ParadoxScopeContext.get(replaceScopes)
         } else if (pushScope != null) {
             return inputScopeContext.resolveNext(pushScope)
         }
@@ -631,11 +631,11 @@ object ParadoxScopeManager {
     }
 
     fun getAnyScopeContext(): ParadoxScopeContext {
-        return ParadoxScopeContext.resolve(anyScopeId, anyScopeId)
+        return ParadoxScopeContext.get(anyScopeId, anyScopeId)
     }
 
     fun getUnknownScopeContext(inputScopeContext: ParadoxScopeContext? = null, isFrom: Boolean = false): ParadoxScopeContext {
-        if (inputScopeContext == null) return ParadoxScopeContext.resolve(unknownScopeId)
+        if (inputScopeContext == null) return ParadoxScopeContext.get(unknownScopeId)
         return inputScopeContext.resolveNext(unknownScopeId, isFrom)
     }
 
@@ -661,7 +661,7 @@ object ParadoxScopeManager {
         val m1 = scopeContext?.toScopeIdMap(showPrev = false).orEmpty()
         val m2 = otherScopeContext?.toScopeIdMap(showPrev = false).orEmpty()
         val merged = mergeScopeContextMap(m1, m2, orUnknown) ?: return null
-        return ParadoxScopeContext.resolve(merged)
+        return ParadoxScopeContext.get(merged)
     }
 
     fun mergeScopeContextMap(map: Map<String, String>, otherMap: Map<String, String>, orUnknown: Boolean = false): Map<String, String>? {

@@ -7,7 +7,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
-import icu.windea.pls.model.resolve
+import icu.windea.pls.model.get
 
 /**
  * 用于为动态值提供（基于使用）推断的作用域上下文。
@@ -38,7 +38,7 @@ interface ParadoxDynamicValueInferredScopeContextProvider {
                 }
             }
             val resultMap = map ?: return null
-            val result = ParadoxScopeContext.resolve(resultMap)
+            val result = ParadoxScopeContext.get(resultMap)
             return result
         }
     }

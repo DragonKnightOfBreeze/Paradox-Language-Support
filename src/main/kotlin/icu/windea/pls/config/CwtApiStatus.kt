@@ -29,9 +29,10 @@ enum class CwtApiStatus(
     ;
 
     companion object {
-        private val valueMap = entries.associateBy { it.id }
+        @JvmStatic
+        private val map = entries.associateBy { it.id }
 
         @JvmStatic
-        fun get(id: String): CwtApiStatus? = valueMap[id]
+        fun get(id: String): CwtApiStatus? = map[id]
     }
 }

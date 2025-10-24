@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
-import icu.windea.pls.model.resolve
+import icu.windea.pls.model.get
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -48,7 +48,7 @@ interface ParadoxDefinitionInferredScopeContextProvider {
                 }
             }
             val resultMap = map ?: return null
-            val result = ParadoxScopeContext.resolve(resultMap)
+            val result = ParadoxScopeContext.get(resultMap)
             return result
         }
 

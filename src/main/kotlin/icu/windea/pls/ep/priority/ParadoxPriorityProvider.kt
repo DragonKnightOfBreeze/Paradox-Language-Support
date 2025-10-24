@@ -12,14 +12,15 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
  * 用于基于覆盖方式对文件、封装变量、定义、本地化等进行排序。
  *
- * 默认使用后读覆盖排序。（[ParadoxPriority.LIOS]）
+ * 默认使用后读覆盖排序。（[icu.windea.pls.model.ParadoxPriority.LIOS]）
  *
- * @see ParadoxPriority
+ * @see icu.windea.pls.model.ParadoxPriority
  */
 @WithGameTypeEP
 interface ParadoxPriorityProvider {

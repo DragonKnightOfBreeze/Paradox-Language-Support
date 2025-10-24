@@ -10,8 +10,9 @@ enum class ParadoxModSource(val id: String) {
 
     companion object {
         @JvmStatic
-        fun resolve(id: String): ParadoxModSource {
-            return entries.firstOrNull { it.id == id } ?: Local
-        }
+        private val map = entries.associateBy { it.id }
+
+        @JvmStatic
+        fun get(id: String): ParadoxModSource? = map[id]
     }
 }
