@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLanguageInjectionHost
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
@@ -55,6 +56,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForArgumentValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxScriptString) return
+        if (!PlsFacade.getSettings().inference.injectionForParameterValue) return
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!PlsPatternConstants.argumentName.matches(argumentName)) return  // 参数名必须合法
@@ -94,6 +96,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForParameterDefaultValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxParameter) return
+        if (!PlsFacade.getSettings().inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!PlsPatternConstants.parameterName.matches(parameterName)) return  // 参数名必须合法
@@ -124,6 +127,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyLocalisationTextInjection(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxLocalisationTextInjectionInfo>) {
         if (host !is ParadoxScriptString) return
+        if (!PlsFacade.getSettings().inference.injectionForLocalisationText) return
 
         val text = host.text
         if (!shouldApplyLocalisationTextInjection(text)) return

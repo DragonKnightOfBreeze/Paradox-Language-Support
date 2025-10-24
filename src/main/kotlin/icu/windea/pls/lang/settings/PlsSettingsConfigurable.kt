@@ -535,6 +535,20 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             collapsibleGroup(PlsBundle.message("settings.inference")) {
                 val inferenceSettings = settings.inference
 
+                // injectionForParameterValue
+                row {
+                    checkBox(PlsBundle.message("settings.inference.injectionForParameterValue"))
+                        .bindSelected(inferenceSettings::injectionForParameterValue)
+                        .onApply { refreshForOpenedFiles() }
+                    contextHelp(PlsBundle.message("settings.inference.injectionForParameterValue.tip"))
+                }
+                // injectionForLocalisationText
+                row {
+                    checkBox(PlsBundle.message("settings.inference.injectionForLocalisationText"))
+                        .bindSelected(inferenceSettings::injectionForLocalisationText)
+                        .onApply { refreshForOpenedFiles() }
+                    contextHelp(PlsBundle.message("settings.inference.injectionForLocalisationText.tip"))
+                }
                 // configContextForParameters & configContextForParametersFast
                 row {
                     lateinit var cb: JBCheckBox
@@ -654,7 +668,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     }
 
     private fun refreshForOpenedFiles() {
-        if (!callbackLock.check("refreshOnlyForOpenedFiles")) return
+        if (!callbackLock.check("refreshForOpenedFiles")) return
 
         val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsCoreManager.refreshFiles(openedFiles)
@@ -664,8 +678,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         if (!callbackLock.check("refreshForParameterInference")) return
 
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsCoreManager.reparseFiles(openedFiles)
+
+        refreshForOpenedFiles()
     }
 
     private fun refreshForInlineScriptInference() {
@@ -674,6 +688,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
+
+        // 这里只用刷新内联脚本文件
         val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
         PlsCoreManager.reparseFiles(openedFiles)
     }
@@ -682,7 +698,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         if (!callbackLock.check("refreshForScopeContextInference")) return
 
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsCoreManager.reparseFiles(openedFiles)
+
+        refreshForOpenedFiles()
     }
 }

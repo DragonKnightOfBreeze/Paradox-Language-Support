@@ -269,6 +269,8 @@ class PlsSettingsState : BaseState() {
     /**
      * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
      *
+     * @property injectionForParameterValue 是否在必要时为参数值进行自动语言注入（注入为脚本片段）。
+     * @property injectionForLocalisationText 是否在必要时为字符串字面量进行自动语言注入（注入为本地化文本）。
      * @property configContextForParameters 是否推断参数值的规则上下文。
      * @property configContextForParametersFast 推断参数的规则上下文时，是否进行快速推断。
      * @property configContextForInlineScripts 是否推断内联脚本的规则上下文。
@@ -279,6 +281,8 @@ class PlsSettingsState : BaseState() {
      */
     @Tag("inference")
     class InferenceState : BaseState() {
+        var injectionForParameterValue by property(true)
+        var injectionForLocalisationText by property(true)
         var configContextForParameters by property(true)
         var configContextForParametersFast by property(true)
         var configContextForInlineScripts by property(true)
