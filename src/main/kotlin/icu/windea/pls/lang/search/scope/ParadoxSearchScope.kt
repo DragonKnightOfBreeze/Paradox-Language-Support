@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.findTopHostFileOrThis
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
@@ -32,7 +32,7 @@ open class ParadoxSearchScope(
     }
 
     override fun contains(file: VirtualFile): Boolean {
-        val topFile = file.findTopHostFileOrThis()
+        val topFile = PlsInjectionManager.findTopHostFileOrThis(file)
         if (!ParadoxFileManager.canReference(contextFile, topFile)) return false // 判断上下文文件能否引用另一个文件中的内容
         return containsFromTop(topFile)
     }
@@ -53,7 +53,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun fromFile(project: Project, file: VirtualFile?): GlobalSearchScope? {
             if (file == null) return null
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo
             if (rootInfo == null) return null
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return null
@@ -90,7 +90,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun rootFileScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
             return ParadoxModSearchScope(project, contextFile, modDirectory)
@@ -99,7 +99,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun modScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE // use empty scope here
             val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.Mod>()?.rootFile
@@ -109,7 +109,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun gameScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE // use empty scope here
             val gameDirectory = rootInfo.castOrNull<ParadoxRootInfo.Game>()?.rootFile
@@ -119,7 +119,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun modAndGameScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE // use empty scope here
             when (rootInfo) {
@@ -138,7 +138,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun modWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE // use empty scope here
             val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.Mod>()?.rootFile
@@ -152,7 +152,7 @@ open class ParadoxSearchScope(
         @JvmStatic
         fun gameWithDependenciesScope(project: Project, context: Any?): GlobalSearchScope {
             val file = selectFile(context) ?: return EMPTY_SCOPE // use empty scope here
-            val contextFile = file.findTopHostFileOrThis()
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
             val rootInfo = selectRootFile(contextFile)?.fileInfo?.rootInfo ?: return EMPTY_SCOPE // use empty scope here
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE // use empty scope here
             val gameDirectory = rootInfo.castOrNull<ParadoxRootInfo.Game>()?.rootFile

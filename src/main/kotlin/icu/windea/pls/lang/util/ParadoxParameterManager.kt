@@ -3,13 +3,11 @@ package icu.windea.pls.lang.util
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -32,12 +30,10 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.getShreds
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.mergeValue
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
@@ -64,21 +60,17 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.getShreds
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.psi.ParadoxPsiManager
-import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
 import icu.windea.pls.model.elementInfo.toInfo
-import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -87,14 +79,12 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionExpression
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.util.*
 
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
         val cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
         val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(Keys)
-        val parameterValueInjectionInfos by createKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
     }
 
     // rootFile -> cacheKey -> parameterInfo
@@ -444,31 +434,5 @@ object ParadoxParameterManager {
             ?.filterNot { it !is CwtValueConfig || it.valueType == CwtType.Block }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
-    }
-
-    fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
-        val vFile = selectFile(injectedFile) ?: return null
-        if (!PlsVfsManager.isInjectedFile(vFile)) return null
-        val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
-        if (host == null) return null
-
-        val injectionInfos = host.getUserData(Keys.parameterValueInjectionInfos)
-        if (injectionInfos.isNullOrEmpty()) return null
-        val injectionInfo = when {
-            host is ParadoxScriptStringExpressionElement -> {
-                val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile // actual PsiFile of VirtualFileWindow
-                val shreds = file0.getShreds()
-                val shred = shreds?.singleOrNull()
-                val rangeInsideHost = shred?.rangeInsideHost ?: return null
-                // it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
-                injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
-            }
-            host is ParadoxParameter -> {
-                // just use the only one
-                injectionInfos.singleOrNull()
-            }
-            else -> null
-        }
-        return injectionInfo
     }
 }

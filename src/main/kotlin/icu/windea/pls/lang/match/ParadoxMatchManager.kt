@@ -1,13 +1,13 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
-import org.jetbrains.kotlin.analysis.utils.printer.parentOfType
 
 object ParadoxMatchManager {
     /**

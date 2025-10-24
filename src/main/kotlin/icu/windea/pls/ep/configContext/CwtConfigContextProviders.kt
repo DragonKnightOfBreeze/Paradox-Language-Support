@@ -18,6 +18,7 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
@@ -225,7 +226,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         // 兼容适用语言注入功能的 VirtualFileWindow
         // 兼容通过编辑代码碎片的意图操作打开的 LightVirtualFile
 
-        val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(file)
+        val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(file)
         if (injectionInfo == null) return null
 
         val gameType = selectGameType(file) ?: return null

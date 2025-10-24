@@ -4,12 +4,12 @@ package icu.windea.pls.inject.injectors
 
 import com.intellij.codeInspection.reference.RefElement
 import com.intellij.codeInspection.reference.RefFile
-import icu.windea.pls.core.findTopHostFileOrThis
 import icu.windea.pls.core.orNull
 import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectTarget
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.selectFile
 
 /**
@@ -22,13 +22,14 @@ class RefManagerImplCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {
-        if (entity is RefFile) {
+        run {
             // 按目录分组时显示相对于游戏或模组目录的路径
-            val element = entity.psiElement
-            val file = selectFile(element)
-            val contextFile = file?.findTopHostFileOrThis()
-            val fileInfo = contextFile?.fileInfo
-            if (fileInfo != null) return fileInfo.path.parent.orNull()
+            if (entity !is RefFile) return@run
+            val element = entity.psiElement ?: return@run
+            val file = selectFile(element) ?: return@run
+            val contextFile = PlsInjectionManager.findTopHostFileOrThis(file)
+            val fileInfo = contextFile.fileInfo ?: return@run
+            return fileInfo.path.parent.orNull()
         }
         continueInvocation()
     }

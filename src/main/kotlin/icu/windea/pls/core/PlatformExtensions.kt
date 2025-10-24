@@ -8,14 +8,11 @@ import com.intellij.codeInspection.InspectionProfileEntry
 import com.intellij.codeInspection.ex.ScopeToolState
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.injected.editor.DocumentWindow
-import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.lang.ASTNode
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.lang.LighterASTTokenNode
 import com.intellij.lang.PsiBuilder
-import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.lang.tree.util.siblings
 import com.intellij.model.Symbol
 import com.intellij.model.psi.PsiSymbolReference
@@ -49,7 +46,6 @@ import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LightTreeUtil
-import com.intellij.psi.impl.source.tree.injected.Place
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.CachedValue
@@ -68,7 +64,6 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.lang.getShreds
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
@@ -740,44 +735,6 @@ fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationB
     val virtualFile = file.containingFile.virtualFile ?: return this
     val fileType = virtualFile.fileType
     return locationText(virtualFile.name, fileType.icon)
-}
-
-// endregion
-
-// region Language Injection Extensions
-
-/**
- * 向上找到最顶层的作为语言注入宿主的虚拟文件，或者返回自身。
- */
-fun VirtualFile.findTopHostFileOrThis(): VirtualFile {
-    return doFindTopHostFileOrThis(this)
-}
-
-private tailrec fun doFindTopHostFileOrThis(file: VirtualFile): VirtualFile {
-    if (file is VirtualFileWindow) return doFindTopHostFileOrThis(file.delegate)
-    return file
-}
-
-/**
- * 向上找到最顶层的作为语言注入宿主的 PSI 元素，或者返回自身。
- */
-fun PsiElement.findTopHostElementOrThis(project: Project): PsiElement {
-    return doFindTopHostElementOrThis(this, project)
-}
-
-private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Project): PsiElement {
-    val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
-    if (host == null) return element
-    return doFindTopHostElementOrThis(host, project)
-}
-
-/** 获取语言注入的切片列表（shreds）。*/
-fun PsiFile.getShreds(): Place? {
-    // why it's deprecated and internal???
-    // @Suppress("UnstableApiUsage", "DEPRECATION")
-    // return InjectedLanguageUtilBase.getShreds(this)
-
-    return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
 
 // endregion

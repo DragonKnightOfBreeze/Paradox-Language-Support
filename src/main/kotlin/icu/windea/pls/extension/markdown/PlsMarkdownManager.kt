@@ -33,7 +33,7 @@ import org.intellij.plugins.markdown.lang.psi.impl.MarkdownCodeFence
 
 object PlsMarkdownManager {
     object Keys : KeyRegistry() {
-        val cachedPathInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
+        val cachedPathInjectionInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
     }
 
     fun getIdentifierFromInlineCode(element: PsiElement): String? {
@@ -46,18 +46,18 @@ object PlsMarkdownManager {
         return text
     }
 
-    fun getPathInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
-        return doGetPathInfoFromCache(element)
+    fun getPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
+        return doGetPathInjectionInfoFromCache(element)
     }
 
-    private fun doGetPathInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPathInfo) {
-            val value = doGetPathInfo(element)
+    private fun doGetPathInjectionInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedPathInjectionInfo) {
+            val value = doGetPathInjectionInfo(element)
             value.withDependencyItems(element)
         }
     }
 
-    private fun doGetPathInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
+    private fun doGetPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
         val fenceLanguage = element.fenceLanguage?.trim()
         if (fenceLanguage.isNullOrEmpty()) return null
         val infos = fenceLanguage.splitByBlank()
@@ -90,8 +90,8 @@ object PlsMarkdownManager {
     }
 
     fun getInjectFileInfoFromInjectedFile(element: MarkdownCodeFence): ParadoxFileInfo? {
-        val pathInfo = getPathInfo(element) ?: return null
-        val path = ParadoxPath.resolve(pathInfo.path)
+        val pathInjectionInfo = getPathInjectionInfo(element) ?: return null
+        val path = ParadoxPath.resolve(pathInjectionInfo.path)
         if (!canInject(path)) return null
 
         run {
@@ -102,9 +102,9 @@ object PlsMarkdownManager {
             return injectedFileInfo
         }
 
-        // 需要尽可能兼容markdown文件不在游戏或模组目录中的情况
+        // 需要尽可能兼容 markdown 文件不在游戏或模组目录中的情况
 
-        val rootInfo = ParadoxRootInfo.Injected(pathInfo.gameType)
+        val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
         val fileType = ParadoxFileType.resolve(path)
         val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
         return injectedFileInfo

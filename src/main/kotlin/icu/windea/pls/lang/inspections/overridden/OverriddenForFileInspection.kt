@@ -22,7 +22,7 @@ import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
- * 检查是否存在对文件的重载
+ * 检查是否存在对文件的重载。
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

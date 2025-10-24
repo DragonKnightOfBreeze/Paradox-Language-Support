@@ -19,12 +19,12 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.vfs.PlsVfsManager
@@ -92,7 +92,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (PlsVfsManager.isInjectedFile(file)) {
             run {
                 // input file is an injected file (from argument value)
-                val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
+                val injectionInfo = ParadoxScriptInjectionManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
                 val parameterElement = injectionInfo.parameterElement ?: return@run
                 if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run // must be argument value, rather than parameter default value
                 val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run
