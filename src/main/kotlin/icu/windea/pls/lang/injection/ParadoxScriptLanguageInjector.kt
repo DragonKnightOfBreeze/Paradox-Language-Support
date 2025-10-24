@@ -63,7 +63,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if (localisationTextInjectionInfos.isNotEmpty()) {
             for (injectionInfo in localisationTextInjectionInfos) {
                 registrar.startInjecting(ParadoxLocalisationLanguage)
-                registrar.addPlace("INJECTED: ", null, host, injectionInfo.rangeInsideHost)
+                registrar.addPlace("${injectionInfo.localisationName}: \"", "\"", host, injectionInfo.rangeInsideHost)
                 registrar.doneInjecting()
             }
         }

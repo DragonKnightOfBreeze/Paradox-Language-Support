@@ -292,13 +292,7 @@ fun String.isLeftQuoted(quote: Char = '"'): Boolean {
 
 /** 是否以 [quote] 结尾（考虑转义）。*/
 fun String.isRightQuoted(quote: Char = '"'): Boolean {
-    return length > 1 && endsWith(quote) && run {
-        var n = 0
-        for (i in (lastIndex - 1) downTo 0) {
-            if (this[i] == '\\') n++ else break
-        }
-        n % 2 == 0
-    }
+    return length > 1 && endsWith(quote) && !isEscapedCharAt(lastIndex)
 }
 
 /** 是否左右被 [quote] 包裹。*/

@@ -134,7 +134,7 @@ object ParadoxScriptInjectionManager {
         val configs = ParadoxExpressionManager.getConfigs(host)
         if (!shouldApplyLocalisationTextInjection(configs)) return
 
-        val rangeInsideHost = TextRange.from(0, text.length)
+        val rangeInsideHost = TextRange.from(1, text.length - 1) // 不包含括起的双引号
         val injectionInfo = ParadoxLocalisationTextInjectionInfo(rangeInsideHost)
         injectionInfos += injectionInfo
     }
