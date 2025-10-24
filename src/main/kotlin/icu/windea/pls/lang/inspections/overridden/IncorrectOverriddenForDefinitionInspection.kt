@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
@@ -30,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         if (selectRootFile(file) == null) return false
         if (!inProject(file)) return false // only for project files
         return true

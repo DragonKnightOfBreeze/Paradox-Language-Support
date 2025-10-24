@@ -22,11 +22,11 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxSeparatorType
 import icu.windea.pls.model.constants.PlsPatternConstants
@@ -157,7 +157,7 @@ object ParadoxScriptInjectionManager {
 
     fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
         val vFile = selectFile(injectedFile) ?: return null
-        if (!PlsVfsManager.isInjectedFile(vFile)) return null
+        if (!PlsFileManager.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 

@@ -21,7 +21,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys

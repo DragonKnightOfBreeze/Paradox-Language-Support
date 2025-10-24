@@ -10,7 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import javax.swing.JComponent
 
 /**

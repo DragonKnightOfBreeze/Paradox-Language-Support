@@ -1,10 +1,10 @@
-package icu.windea.pls.lang.util.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
@@ -25,7 +25,7 @@ object ParadoxPsiFileMatcher {
             returns(true) implies (file is ParadoxScriptFile)
         }
         if (file !is ParadoxScriptFile) return false
-        if (PlsVfsManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
+        if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
         if (smart && !checkFilePath(file, ParadoxPathMatcher.ScriptFile)) return false
         return true
     }
@@ -42,7 +42,7 @@ object ParadoxPsiFileMatcher {
             returns(true) implies (file is ParadoxLocalisationFile)
         }
         if (file !is ParadoxLocalisationFile) return false
-        if (PlsVfsManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
+        if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
         if (smart && !checkFilePath(file, ParadoxPathMatcher.LocalisationFile)) return false
         return true
     }
@@ -59,7 +59,7 @@ object ParadoxPsiFileMatcher {
             returns(true) implies (file is ParadoxCsvFile)
         }
         if (file !is ParadoxCsvFile) return false
-        if (PlsVfsManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
+        if (PlsFileManager.isInjectedFile(file.virtualFile)) return checkInjectedFile(file, smart, injectable)
         if (smart && !checkFilePath(file, ParadoxPathMatcher.CsvFile)) return false
         return true
     }

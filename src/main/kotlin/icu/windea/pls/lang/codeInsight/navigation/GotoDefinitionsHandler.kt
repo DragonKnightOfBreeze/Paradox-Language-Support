@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition

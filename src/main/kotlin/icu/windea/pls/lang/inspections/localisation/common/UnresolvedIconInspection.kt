@@ -11,7 +11,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import javax.swing.JComponent
 

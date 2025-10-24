@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -33,8 +33,6 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.lang.ParadoxBaseLanguage
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage

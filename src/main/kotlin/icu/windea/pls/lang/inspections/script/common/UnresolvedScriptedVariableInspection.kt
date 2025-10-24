@@ -14,7 +14,7 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import javax.swing.JComponent
 
 /**

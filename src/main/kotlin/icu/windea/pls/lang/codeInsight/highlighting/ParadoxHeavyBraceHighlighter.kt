@@ -15,7 +15,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 

@@ -18,7 +18,7 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -62,12 +62,12 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         if (!file.isFile) return false
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
-        if (PlsVfsManager.isLightFile(file)) return false
+        if (PlsFileManager.isLightFile(file)) return false
         return true
     }
 
     protected open fun findFiles(e: AnActionEvent, project: Project): Sequence<PsiFile> {
-        return PlsVfsManager.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
+        return PlsFileManager.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
     }
 
     protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): ParadoxLocalisationSequence {

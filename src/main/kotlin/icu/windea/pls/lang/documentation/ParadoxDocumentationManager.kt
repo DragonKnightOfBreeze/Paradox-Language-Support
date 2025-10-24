@@ -63,7 +63,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText

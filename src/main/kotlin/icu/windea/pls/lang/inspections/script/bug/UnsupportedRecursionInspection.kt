@@ -11,7 +11,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.quickfix.NavigateToFix
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxRecursionManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

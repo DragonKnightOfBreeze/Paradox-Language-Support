@@ -13,7 +13,7 @@ import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import javax.swing.JComponent
 
 /**

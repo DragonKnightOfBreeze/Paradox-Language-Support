@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.Language
@@ -29,8 +27,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
+@Suppress("unused")
 object ParadoxFileManager {
-
     private val logger = logger<ParadoxFileManager>()
 
     const val scriptedVariablesPath = "common/scripted_variables"

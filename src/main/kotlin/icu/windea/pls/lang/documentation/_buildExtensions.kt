@@ -22,7 +22,7 @@ import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxScopeContext
@@ -88,7 +88,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = runReadAction { selectFile(element) } ?: return this
-    if (PlsVfsManager.isInjectedFile(file)) return this // ignored for injected PSI
+    if (PlsFileManager.isInjectedFile(file)) return this // ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     if (rootInfo !is ParadoxRootInfo.MetadataBased) return this

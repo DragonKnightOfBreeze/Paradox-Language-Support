@@ -34,7 +34,6 @@ import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.vfs.PlsVfsManager
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
@@ -63,7 +62,7 @@ object ParadoxCoreManager {
             try {
                 val rootInfo = doGetRootInfo(rootFile)
                 rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
-                if (rootInfo != null && !PlsVfsManager.isLightFile(rootFile)) {
+                if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                     application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo
@@ -92,7 +91,7 @@ object ParadoxCoreManager {
         if (injectedFileInfo != null) return injectedFileInfo
 
         // no fileInfo for VirtualFileWindow (injected PSI)
-        if (PlsVfsManager.isInjectedFile(file)) return null
+        if (PlsFileManager.isInjectedFile(file)) return null
 
         val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
         if (cachedFileInfo != null) return cachedFileInfo.castOrNull()

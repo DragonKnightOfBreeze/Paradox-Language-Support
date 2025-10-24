@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.matchesPath

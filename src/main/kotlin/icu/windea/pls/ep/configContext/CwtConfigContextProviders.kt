@@ -26,7 +26,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.paths.relativeTo
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -155,7 +155,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
-        if (PlsVfsManager.isInjectedFile(vFile)) return null // ignored for injected psi
+        if (PlsFileManager.isInjectedFile(vFile)) return null // ignored for injected psi
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
         if (inlineScriptExpression == null) return null

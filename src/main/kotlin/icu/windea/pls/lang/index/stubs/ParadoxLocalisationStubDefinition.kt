@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.LightLanguageStubDefinition
 import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -25,7 +25,7 @@ class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
         // 不索引不在游戏或模组目录下的文件
         // 不索引不在本地化目录下的文件
 
-        if (PlsVfsManager.isLightFile(file)) return false
+        if (PlsFileManager.isLightFile(file)) return false
         val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
         if (!fileInfo.path.matches(ParadoxPathMatcher.LocalisationFile)) return false

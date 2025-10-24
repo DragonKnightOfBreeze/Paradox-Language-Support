@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiFile
@@ -14,7 +14,6 @@ import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes

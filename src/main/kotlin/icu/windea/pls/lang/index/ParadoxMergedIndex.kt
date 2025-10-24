@@ -17,7 +17,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.withState
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -173,7 +173,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsVfsManager.isInjectedFile(file)) return true
+        if (PlsFileManager.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
         // if (file.fileType is ParadoxLocalisationFileType) return true // to prevent recursion, see #127
         return false

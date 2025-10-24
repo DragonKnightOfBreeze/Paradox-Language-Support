@@ -8,8 +8,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.constants.PlsConstants
 
 // com.intellij.openapi.editor.actions.AddBomAction
@@ -25,7 +25,7 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 

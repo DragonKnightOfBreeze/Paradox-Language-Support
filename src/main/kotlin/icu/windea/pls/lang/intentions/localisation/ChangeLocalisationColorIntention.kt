@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.util.ParadoxTextColorManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.model.ParadoxTextColorInfo
 import kotlinx.coroutines.launch

@@ -18,10 +18,10 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
@@ -35,7 +35,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)
     }
 

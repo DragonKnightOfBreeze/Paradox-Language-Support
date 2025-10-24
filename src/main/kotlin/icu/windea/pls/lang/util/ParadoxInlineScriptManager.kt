@@ -39,7 +39,7 @@ import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil

@@ -12,7 +12,7 @@ import icu.windea.pls.core.splitOptimized
 import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import javax.swing.JComponent
 
@@ -26,7 +26,7 @@ class MissingLocaleInspection : LocalInspectionTool() {
     var ignoredFileNames = ""
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         return true
     }
 

@@ -23,8 +23,8 @@ import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxScriptedEffectInlineProcessor(

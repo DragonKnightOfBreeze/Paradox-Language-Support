@@ -11,7 +11,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.vfs.PlsVfsManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 
@@ -28,7 +28,7 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsVfsManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         if (selectRootFile(file) == null) return false
         return true
     }

@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter

@@ -12,7 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableReference
 import javax.swing.JComponent
 

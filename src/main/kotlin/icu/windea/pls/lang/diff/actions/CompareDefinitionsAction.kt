@@ -48,7 +48,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath

@@ -47,7 +47,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.isComplexExpression

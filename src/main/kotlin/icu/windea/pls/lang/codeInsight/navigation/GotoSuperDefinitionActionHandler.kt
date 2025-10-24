@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**

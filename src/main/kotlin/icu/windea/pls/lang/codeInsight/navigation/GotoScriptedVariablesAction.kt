@@ -7,8 +7,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

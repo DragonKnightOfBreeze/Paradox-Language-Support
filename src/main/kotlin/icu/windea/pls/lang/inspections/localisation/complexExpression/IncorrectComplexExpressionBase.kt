@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**

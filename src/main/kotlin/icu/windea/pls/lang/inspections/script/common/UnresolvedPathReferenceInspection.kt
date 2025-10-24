@@ -28,7 +28,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import javax.swing.JComponent
 

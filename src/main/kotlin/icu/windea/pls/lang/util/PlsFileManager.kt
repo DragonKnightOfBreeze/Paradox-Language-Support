@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.vfs
+package icu.windea.pls.lang.util
 
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -9,7 +9,7 @@ import com.intellij.testFramework.LightVirtualFileBase
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.editor
 
-object PlsVfsManager {
+object PlsFileManager {
     fun isLightFile(file: VirtualFile): Boolean {
         return file is LightVirtualFileBase
     }

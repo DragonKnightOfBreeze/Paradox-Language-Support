@@ -19,7 +19,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErr
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 class ParadoxDataSourceNode(
