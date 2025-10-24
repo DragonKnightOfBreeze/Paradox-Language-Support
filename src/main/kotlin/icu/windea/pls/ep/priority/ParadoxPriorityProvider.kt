@@ -18,9 +18,9 @@ import icu.windea.pls.model.ParadoxRootInfo
 /**
  * 用于基于覆盖方式对文件、封装变量、定义、本地化等进行排序。
  *
- * 默认使用后读覆盖排序。（[icu.windea.pls.model.ParadoxPriority.LIOS]）
+ * 默认使用后读覆盖排序（[ParadoxPriority.LIOS]）。
  *
- * @see icu.windea.pls.model.ParadoxPriority
+ * @see ParadoxPriority
  */
 @WithGameTypeEP
 interface ParadoxPriorityProvider {

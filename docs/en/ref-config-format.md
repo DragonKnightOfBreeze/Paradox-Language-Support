@@ -73,8 +73,8 @@ priorities = {
 **Override strategies and behavior**:
 - `LIOS` (Last In, Only Served): the later-loaded one overrides the earlier ones (default for most content).
 - `FIOS` (First In, Only Served): the first-loaded one takes effect, subsequent ones are ignored (used by some sensitive directories, e.g. `events/`, `scripted_variables/`).
-- `ORDERED` (merge by order): merge in load order without overriding (typical: `common/on_actions`).
 - `DUPL` (error/invalid on duplicates): currently unsupported, listed here for terminology reference only.
+- `ORDERED` (merge by order): merge in load order without overriding (typical: `common/on_actions`).
 
 **Sorting and loading notes**:
 - Sort order of non-stream query results is driven by priority; under the same path, load order (game/dependency chain) determines the precedence.
