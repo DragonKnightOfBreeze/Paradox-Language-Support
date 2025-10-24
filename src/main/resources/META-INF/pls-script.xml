@@ -37,15 +37,15 @@
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptValueManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptStringManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptStringManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptValueManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptParameter"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptParameterManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
-                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptInlineMathParameterManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>

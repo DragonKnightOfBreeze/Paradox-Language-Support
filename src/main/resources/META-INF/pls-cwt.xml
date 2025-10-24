@@ -32,12 +32,12 @@
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtOptionKeyManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtOptionKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtPropertyKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtValueManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtPropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
-                             implementationClass="icu.windea.pls.cwt.psi.CwtStringManipulator"/>
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtStringManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
+                             implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtValueManipulator"/>
   </extensions>
 </idea-plugin>
