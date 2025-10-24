@@ -19,15 +19,18 @@ import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxType
@@ -54,13 +57,15 @@ import icu.windea.pls.script.psi.isDefinitionName
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
         if (element.language !is ParadoxBaseLanguage) return false
-        return when {
-            element is ParadoxExpressionElement -> true
-            element is ParadoxScriptedVariableReference -> true
-            element is ParadoxParameter -> true
-            element is ParadoxConditionParameter -> true
-            element is ParadoxScriptScriptedVariable -> true
-            element is ParadoxScriptInlineMathNumber -> true
+        return when (element) {
+            is ParadoxScriptedVariableReference -> true
+            is ParadoxExpressionElement -> true
+            is ParadoxParameter -> true
+            is ParadoxConditionParameter -> true
+            is ParadoxScriptInlineMathNumber -> true
+            is ParadoxScriptScriptedVariable -> true
+            is ParadoxLocalisationProperty -> true
+            is ParadoxLocalisationParameter -> true
             else -> false
         }
     }
@@ -73,9 +78,43 @@ object ParadoxTypeManager {
     }
 
     /**
+     * 名字 - 如果 PSI 表示一个封装变量、定义、本地化或参数则可用。
+     */
+    fun getName(element: PsiElement): String? {
+        if (element.language !is ParadoxBaseLanguage) return null
+        return when (element) {
+            is ParadoxScriptScriptedVariable -> element.name
+            is ParadoxScriptPropertyKey -> {
+                val definitionInfo = element.parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo ?: return null
+                definitionInfo.name
+            }
+            is ParadoxLocalisationProperty -> element.name
+            is ParadoxParameter -> element.name
+            is ParadoxConditionParameter -> element.name
+            is ParadoxLocalisationParameter -> element.name
+            else -> null
+        }
+    }
+
+    /**
+     * 表达式 - 如果 PSI 表示一个表达式则可用。
+     */
+    fun getExpression(element: PsiElement): String? {
+        if (element.language !is ParadoxBaseLanguage) return null
+        return when (element) {
+            is ParadoxScriptBlock -> PlsStringConstants.blockFolder
+            is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder
+            is ParadoxScriptedVariableReference -> element.text
+            is ParadoxExpressionElement -> element.text
+            is ParadoxScriptInlineMathNumber -> element.text
+            else -> null
+        }
+    }
+
+    /**
      * 基本类型 - 基于 PSI 的类型。
      */
-    fun getType(element: PsiElement): ParadoxType {
+    fun getType(element: PsiElement): ParadoxType? {
         return when (element) {
             is ParadoxScriptPropertyKey -> ParadoxTypeResolver.resolve(element.value)
             is ParadoxScriptBoolean -> ParadoxType.Boolean
@@ -100,25 +139,34 @@ object ParadoxTypeManager {
             is ParadoxScriptedVariableReference -> {
                 element.reference?.resolve()?.let { getType(it) } ?: ParadoxType.Unknown
             }
+            is ParadoxExpressionElement -> ParadoxType.Unknown
             is ParadoxParameter -> ParadoxType.Parameter
             is ParadoxConditionParameter -> ParadoxType.Parameter
+            is ParadoxScriptInlineMathNumber -> ParadoxTypeResolver.resolve(element.text)
             is ParadoxScriptScriptedVariable -> {
                 element.scriptedVariableValue?.let { getType(it) } ?: ParadoxType.Unknown
             }
-            is ParadoxScriptInlineMathNumber -> ParadoxTypeResolver.resolve(element.text)
-            else -> ParadoxType.Unknown
+            else -> null
         }
     }
 
     /**
-     * 表达式 - 如果 PSI 表示一个表达式则可用。
+     * 定义类型 - 如果 PSI 是 [ParadoxScriptPropertyKey] 则可用。
      */
-    fun getExpression(element: PsiElement): String? {
-        if (!isTypedElement(element)) return null
+    fun getDefinitionType(element: PsiElement): String? {
+        if (element !is ParadoxScriptPropertyKey) return null
+        val definitionInfo = element.parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo ?: return null
+        return definitionInfo.typesText
+    }
+
+    /**
+     * 本地化类型 - 如果 PSI 是 [ParadoxLocalisationProperty] 或 [ParadoxLocalisationParameter] 则可用。
+     */
+    fun getLocalisationType(element: PsiElement): ParadoxLocalisationType? {
         return when (element) {
-            is ParadoxScriptBlock -> PlsStringConstants.blockFolder
-            is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder
-            else -> element.text
+            is ParadoxLocalisationProperty -> element.type
+            is ParadoxLocalisationParameter -> element.resolveLocalisation()?.type
+            else -> null
         }
     }
 
@@ -157,16 +205,6 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 定义类型 - 如果 PSI 是 [ParadoxScriptPropertyKey] 则可用。
-     */
-    fun getDefinitionType(element: PsiElement): String? {
-        if (element !is ParadoxScriptPropertyKey) return null
-        val definition = element.parent.castOrNull<ParadoxScriptProperty>() ?: return null
-        val definitionInfo = definition.definitionInfo ?: return null
-        return definitionInfo.typesText
-    }
-
-    /**
      * 作用域上下文信息 - 如果存在则可用。
      */
     fun getScopeContext(element: PsiElement): ParadoxScopeContext? {
@@ -186,9 +224,9 @@ object ParadoxTypeManager {
      */
     fun getPriority(element: PsiElement): ParadoxPriority? {
         val targetElement = when {
-            element is ParadoxScriptScriptedVariable -> ParadoxPsiMatcher.isGlobalScriptedVariable(element)
-            element is ParadoxScriptPropertyKey -> ParadoxPsiMatcher.isDefinition(element.parent)
-            element is ParadoxLocalisationProperty -> ParadoxPsiMatcher.isLocalisation(element)
+            element is ParadoxScriptScriptedVariable -> element.takeIf { ParadoxPsiMatcher.isGlobalScriptedVariable(it) }
+            element is ParadoxScriptPropertyKey -> element.parent?.takeIf { ParadoxPsiMatcher.isDefinition(it) }
+            element is ParadoxLocalisationProperty -> element.takeIf { ParadoxPsiMatcher.isLocalisation(it) }
             else -> null
         }
         if (targetElement == null) return null
