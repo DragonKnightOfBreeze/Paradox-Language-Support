@@ -13,6 +13,7 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
@@ -21,10 +22,13 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.lang.util.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
+import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStringConstants
@@ -69,7 +73,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 基本类型 - 基于PSI的类型
+     * 基本类型 - 基于 PSI 的类型。
      */
     fun getType(element: PsiElement): ParadoxType {
         return when (element) {
@@ -107,7 +111,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 表达式 - 如果PSI表示一个表达式则可用
+     * 表达式 - 如果 PSI 表示一个表达式则可用。
      */
     fun getExpression(element: PsiElement): String? {
         if (!isTypedElement(element)) return null
@@ -119,7 +123,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 规则表达式 - 如果存在对应的CWT规则表达式则可用
+     * 规则表达式 - 如果存在对应的规则表达式则可用。
      */
     fun getConfigExpression(element: PsiElement): String? {
         return when (element) {
@@ -153,7 +157,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 定义类型 - 如果PSI是[ParadoxScriptPropertyKey]则可用
+     * 定义类型 - 如果 PSI 是 [ParadoxScriptPropertyKey] 则可用。
      */
     fun getDefinitionType(element: PsiElement): String? {
         if (element !is ParadoxScriptPropertyKey) return null
@@ -163,7 +167,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 作用域上下文信息 - 如果存在则可用
+     * 作用域上下文信息 - 如果存在则可用。
      */
     fun getScopeContext(element: PsiElement): ParadoxScopeContext? {
         val memberElement = when {
@@ -178,12 +182,26 @@ object ParadoxTypeManager {
     }
 
     /**
+     * 覆盖方式 - 仅限全局封装变量、（作为脚本属性的）定义、本地化。
+     */
+    fun getPriority(element: PsiElement): ParadoxPriority? {
+        val targetElement = when {
+            element is ParadoxScriptScriptedVariable -> ParadoxPsiMatcher.isGlobalScriptedVariable(element)
+            element is ParadoxScriptPropertyKey -> ParadoxPsiMatcher.isDefinition(element.parent)
+            element is ParadoxLocalisationProperty -> ParadoxPsiMatcher.isLocalisation(element)
+            else -> null
+        }
+        if (targetElement == null) return null
+        return ParadoxPriorityProvider.getPriority(targetElement)
+    }
+
+    /**
      * 依次尝试导航到：
-     * - 定义的CWT类型规则
-     * - 定义名对应的定义的CWT类型规则
-     * - 对应的CWT枚举规则
-     * - 对应的CWT复杂枚举规则
-     * - 对应的预定义的CWT动态值规则
+     * - 定义的类型规则
+     * - 定义名对应的定义的类型规则
+     * - 对应的枚举规则
+     * - 对应的复杂枚举规则
+     * - 对应的预定义的动态值规则
      */
     fun findTypeDeclarations(element: PsiElement): List<PsiElement> {
         // 注意这里的element是解析引用后得到的PSI元素，因此无法定位到定义成员对应的规则声明

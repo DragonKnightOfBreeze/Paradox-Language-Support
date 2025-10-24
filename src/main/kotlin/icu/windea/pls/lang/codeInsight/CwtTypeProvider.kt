@@ -12,8 +12,8 @@ import icu.windea.pls.config.util.CwtConfigManager
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * - 基本类型 - 基于PSI的类型
- * - 规则类型 - 当PSI表示一个规则时可用，基于规则的位置
+ * - 基本类型 - 基于 PSI 的类型。
+ * - 规则类型 - 当 PSI 表示一个规则时可用，基于规则的位置。
  */
 class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {

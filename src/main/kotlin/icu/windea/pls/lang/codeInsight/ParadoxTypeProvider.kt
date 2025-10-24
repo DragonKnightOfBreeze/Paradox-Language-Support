@@ -15,11 +15,12 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 /**
  * 用于显示各种类型信息（`View > Type Info`）。
  *
- * - 基本类型 - 基于PSI的类型
- * - 表达式 - 如果PSI表示一个表达式则可用
- * - 规则表达式 - 如果存在对应的CWT规则表达式则可用
- * - 定义类型 - 如果PSI是[ParadoxScriptPropertyKey]则可用
- * - 作用域上下文信息 - 如果存在则可用
+ * - 基本类型 - 基于 PSI 的类型。
+ * - 表达式 - 如果 PSI 表示一个表达式则可用。
+ * - 规则表达式 - 如果存在对应的规则表达式则可用。
+ * - 定义类型 - 如果 PSI 是 [ParadoxScriptPropertyKey] 则可用。
+ * - 作用域上下文信息 - 如果存在则可用。
+ * - 覆盖方式 - 仅限全局封装变量、（作为脚本属性的）定义、本地化。
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
@@ -28,7 +29,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
     /**
      * 优先显示最相关的类型信息（定义类型，规则表达式，或者基本类型）。
-     * 显示定义的类型，或者对应的CWT规则表达式，或者基本类型。
+     * 显示定义的类型，或者对应的规则表达式，或者基本类型。
      */
     override fun getInformationHint(element: PsiElement): String {
         ParadoxTypeManager.getDefinitionType(element)?.let { return it.escapeXml() }
@@ -60,7 +61,10 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
 
             val scopeContext = ParadoxTypeManager.getScopeContext(element)
             val scopeContextString = scopeContext?.toScopeMap()?.entries?.joinToString("\n") { (key, value) -> "$key = $value" }
-            scopeContextString?.let { this[PlsBundle.message("title.scopeContext")] = scopeContextString }
+            scopeContextString?.let { this[PlsBundle.message("title.scopeContext")] = it }
+
+            val priority = ParadoxTypeManager.getPriority(element)
+            priority?.let { this[PlsBundle.message("title.priority")] = it.toString() }
         }
         return buildHtml(map)
     }

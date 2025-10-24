@@ -40,7 +40,7 @@ object CwtTypeManager {
     }
 
     /**
-     * 基本类型 - 基于PSI的类型
+     * 基本类型 - 基于 PSI 的类型。
      */
     fun getType(element: PsiElement): CwtType {
         return when (element) {
@@ -55,7 +55,7 @@ object CwtTypeManager {
     }
 
     /**
-     * 规则类型 - 当PSI表示一个规则时可用，基于规则的位置
+     * 规则类型 - 当 PSI 表示一个规则时可用，基于规则的位置。
      */
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (!isTypedElement(element)) return null
