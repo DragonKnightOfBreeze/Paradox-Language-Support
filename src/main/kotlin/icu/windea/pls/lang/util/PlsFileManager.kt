@@ -10,11 +10,11 @@ import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.editor
 
 object PlsFileManager {
-    fun isLightFile(file: VirtualFile): Boolean {
+    fun isLightFile(file: VirtualFile?): Boolean {
         return file is LightVirtualFileBase
     }
 
-    fun isInjectedFile(file: VirtualFile): Boolean {
+    fun isInjectedFile(file: VirtualFile?): Boolean {
         return file is VirtualFileWindow
     }
 

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 /**
- * 不正确的复杂表达式的检查的基类。
+ * 不正确的复杂表达式的代码检查的基类。
  */
 abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

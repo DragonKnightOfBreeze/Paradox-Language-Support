@@ -30,14 +30,14 @@ interface CwtOverriddenConfigProvider {
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>
 
     /**
-     * 是否跳过缺失的表达式的检查。
+     * 是否跳过缺失的表达式的代码检查。
      *
      * @see icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection
      */
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     /**
-     * 是否跳过过多的表达式的检查。
+     * 是否跳过过多的表达式的代码检查。
      *
      * @see icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection
      */

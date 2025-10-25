@@ -7,27 +7,27 @@
     <lang.inspectionSuppressor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxCsvInspectionSuppressor"/>
     <!--<lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor"/>-->
 
-    <!--region Overridden-->
-    <localInspection language="" shortName="ParadoxOverriddenForFile"
-                     key="inspection.overriddenForFile" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
+    <!--region Overrides-->
+    <localInspection language="" shortName="ParadoxOverrideForFile"
+                     key="inspection.overrideForFile" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForFileInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverriddenForScriptedVariable"
-                     key="inspection.overriddenForScriptedVariable" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.OverrideForFileInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverrideForScriptedVariable"
+                     key="inspection.overrideForScriptedVariable" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForScriptedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverriddenForDefinition"
-                     key="inspection.overriddenForDefinition" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.OverrideForScriptedVariableInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverrideForDefinition"
+                     key="inspection.overrideForDefinition" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForDefinitionInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverriddenForScriptedVariable"
-                     key="inspection.incorrectOverriddenForScriptedVariable" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.OverrideForDefinitionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverrideForScriptedVariable"
+                     key="inspection.incorrectOverrideForScriptedVariable" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.overridden.IncorrectOverriddenForScriptedVariableInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverriddenForDefinition"
-                     key="inspection.incorrectOverriddenForDefinition" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForScriptedVariableInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverrideForDefinition"
+                     key="inspection.incorrectOverrideForDefinition" groupKey="inspection.overrides.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     implementationClass="icu.windea.pls.lang.inspections.overridden.IncorrectOverriddenForDefinitionInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.overrides.IncorrectOverrideForDefinitionInspection"/>
     <!--endregion-->
 
     <!--region Paradox script-->

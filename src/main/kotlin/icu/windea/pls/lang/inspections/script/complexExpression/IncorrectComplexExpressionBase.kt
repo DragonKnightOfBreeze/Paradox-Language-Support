@@ -10,14 +10,14 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
- * 不正确的复杂表达式的检查的基类。
+ * 不正确的复杂表达式的代码检查的基类。
  */
 abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

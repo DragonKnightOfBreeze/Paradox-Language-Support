@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.quickfix
+package icu.windea.pls.lang.quickfix.navigation
 
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
@@ -16,10 +16,9 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
 
 abstract class NavigateToFix(
-    val key: String,
     target: PsiElement,
     elements: Collection<PsiElement>,
-    val excludeTargetInElements: Boolean = false,
+    private val excludeTargetInElements: Boolean = false
 ) : LocalQuickFixAndIntentionActionOnPsiElement(target) {
     private val pointers = elements.map { it.createPointer() }
 

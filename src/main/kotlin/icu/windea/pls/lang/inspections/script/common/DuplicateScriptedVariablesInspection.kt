@@ -4,13 +4,12 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.lang.quickfix.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
@@ -63,16 +62,5 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
             }
         }
         return holder.resultsArray
-    }
-
-    private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
-        override fun getText() = PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1.name")
-
-        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1.popup.title", key)
-
-        override fun getPopupText(editor: Editor, value: PsiElement): String {
-            val lineNumber = editor.document.getLineNumber(value.textOffset)
-            return PlsBundle.message("fix.navigate.popup.text.2", key, lineNumber)
-        }
     }
 }

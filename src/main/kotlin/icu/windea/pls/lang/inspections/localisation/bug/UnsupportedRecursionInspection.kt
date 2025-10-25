@@ -2,14 +2,13 @@ package icu.windea.pls.lang.inspections.localisation.bug
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.NavigateToFix
-import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.quickfix.navigation.NavigateToRecursionsFix
+import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -38,19 +37,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 if (recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.localisation.unsupportedRecursion.desc.1")
                 val location = element.propertyKey
-                holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
+                holder.registerProblem(location, message, NavigateToRecursionsFix(name, element, recursions))
             }
-        }
-    }
-
-    private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
-        override fun getText() = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.name")
-
-        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.title", key)
-
-        override fun getPopupText(editor: Editor, value: PsiElement): String {
-            val lineNumber = editor.document.getLineNumber(value.textOffset)
-            return PlsBundle.message("fix.navigate.popup.text.2", key, lineNumber)
         }
     }
 }

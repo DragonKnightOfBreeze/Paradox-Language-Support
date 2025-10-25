@@ -11,25 +11,25 @@
 - 分类维度：按语言域和主题分组（common/bug/scope/expression/event/inference），通过 `groupKey` 和 `groupPathKey` 组织到 IDE 检查树。
 - 抑制支持：为 Script/Localisation/CSV 注册 `lang.inspectionSuppressor`，允许基于代码/注释抑制。
 - 计数（不含抑制器）：
-  - Overridden：5
+  - Override：5
   - Paradox Script：40（Common 17 / Bug 6 / Scope 3 / Expression 6 / Events 5 / Inference 3）
   - Paradox Localisation：20（Common 13 / Bug 2 / Scope 3 / Expression 2）
   - Paradox CSV：6
   - Lints：1（Tiger）
 - 严重级别与默认开关：
   - 结构/解析类问题多为 ERROR；语义与风格多为 WARNING / WEAK WARNING。
-  - 若干高噪点项默认关闭：`UnusedDynamicValue`、`UnsetDynamicValue`、`ConflictingScopeContextInference`、以及部分 Overridden 提示。
+  - 若干高噪点项默认关闭：`UnusedDynamicValue`、`UnsetDynamicValue`、`ConflictingScopeContextInference`、以及部分 Override 提示。
 
 ---
 
-## Overridden（文件/脚本元素覆写）
+## Override（文件/脚本元素覆写）
 
-- `ParadoxOverriddenForFile`（WEAK WARNING，默认关）
-- `ParadoxOverriddenForScriptedVariable`（WEAK WARNING，默认关）
-- `ParadoxOverriddenForDefinition`（WEAK WARNING，默认关）
-- `ParadoxIncorrectOverriddenForScriptedVariable`（WARNING）
-- `ParadoxIncorrectOverriddenForDefinition`（WARNING）
-- 包：`icu.windea.pls.lang.inspections.overridden.*`
+- `ParadoxOverrideForFile`（WEAK WARNING，默认关）
+- `ParadoxOverrideForScriptedVariable`（WEAK WARNING，默认关）
+- `ParadoxOverrideForDefinition`（WEAK WARNING，默认关）
+- `ParadoxIncorrectOverrideForScriptedVariable`（WARNING）
+- `ParadoxIncorrectOverrideForDefinition`（WARNING）
+- 包：`icu.windea.pls.lang.inspections.overrides.*`
 
 ---
 
@@ -138,5 +138,5 @@
 - Script：`icu.windea.pls.lang.inspections.script.*`
 - Localisation：`icu.windea.pls.lang.inspections.localisation.*`
 - CSV：`icu.windea.pls.lang.inspections.csv.*`
-- Overridden：`icu.windea.pls.lang.inspections.overridden.*`
+- Override：`icu.windea.pls.lang.inspections.overrides.*`
 - Lints：`icu.windea.pls.lang.inspections.lints.*`

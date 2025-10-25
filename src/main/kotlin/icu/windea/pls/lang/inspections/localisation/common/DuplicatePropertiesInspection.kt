@@ -2,11 +2,10 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.quickfix.NavigateToFix
+import icu.windea.pls.lang.quickfix.navigation.NavigateToDuplicatesFix
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 
 /**
@@ -36,17 +35,6 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
                     }
                 }
             }
-        }
-    }
-
-    private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
-        override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.name")
-
-        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.popup.title", key)
-
-        override fun getPopupText(editor: Editor, value: PsiElement): String {
-            val lineNumber = editor.document.getLineNumber(value.textOffset)
-            return PlsBundle.message("fix.navigate.popup.text.2", key, lineNumber)
         }
     }
 }
