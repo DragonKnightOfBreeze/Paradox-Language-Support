@@ -192,14 +192,14 @@ Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
 - 语法：`$name$` 或 `$name|argument$`。
 - 位置：可用于脚本变量名、脚本变量引用名、键、字符串、内联数学表达式。
 
-参数条件（parameter condition）：
+参数条件块（parameter condition block）：
 
 - 语法（外层）：`[[<expression>] <members...> ]`。
 - 说明：用于定义声明上下文中的条件化成员（仅在特定定义中有效）。
 
-内联参数条件（inline parameter condition）：
+内联参数条件块（inline parameter condition block）：
 
-- 用于字符串内部的条件片段，形如：`"a[[cond]b]c"`。
+- 用于字符串内部的条件片段，形如 `"a[[cond]b]c"` 中的 `[[cond]b]`。
 
 示例：
 

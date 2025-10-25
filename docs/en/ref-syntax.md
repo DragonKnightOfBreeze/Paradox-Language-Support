@@ -192,14 +192,14 @@ Parameter:
 - Syntax: `$name$` or `$name|argument$`.
 - Location: Can be used in scripted variable names, scripted variable reference names, keys, strings, inline math expressions.
 
-Parameter Condition:
+Parameter Condition Block:
 
 - Syntax (outer): `[[!<expression>] <members...> ]`.
 - Description: Used to define conditional members within a declaration context (only valid in specific definitions).
 
-Inline Parameter Condition:
+Inline Parameter Condition Block:
 
-- Used for conditional fragments inside strings, formatted like: `"a[[cond]b]c"`.
+- Used for conditional fragments inside strings, formatted like: `[[cond]b]` in `"a[[cond]b]c"`.
 
 Example:
 
