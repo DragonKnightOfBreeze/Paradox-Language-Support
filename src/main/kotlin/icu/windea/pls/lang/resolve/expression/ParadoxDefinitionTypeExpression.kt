@@ -6,16 +6,16 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 /**
  * 定义类型表达式。
  *
+ * 用途：
+ * - 在查询定义时指定定义类型表达式，以进行过滤。
+ * - 在规则文件中，数据表达式 `<X>` 用于匹配一个定义引用，其中 `X` 即是一个定义类型表达式。
+ *
  * 示例：
  * ```
  * event
  * event.hidden
  * event.hidden.country_event
  * ```
- *
- * 用途：
- * - 查询定义时指定定义类型表达式，以进行过滤。
- * - 在 CWT 规则文件中，`<X>` 表示一个定义引用，其中 `X` 即是一个定义类型表达式。
  */
 interface ParadoxDefinitionTypeExpression {
     val text: String
