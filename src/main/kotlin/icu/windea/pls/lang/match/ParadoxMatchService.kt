@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
-object ParadoxMatchManager {
+object ParadoxMatchService {
     /**
      * 根据附加到 [config] 上的 `## predicate` 选项中的元数据，以及 [element] 所在的块（[icu.windea.pls.script.psi.ParadoxScriptBlockElement]）中的结构，进行简单的结构匹配。
      */

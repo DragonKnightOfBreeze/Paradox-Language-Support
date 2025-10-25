@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
@@ -44,6 +42,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.findParentByPath
 
+@Suppress("unused")
 object ParadoxTechnologyManager {
     object Keys : KeyRegistry() {
         val cachedPrerequisites by createKey<CachedValue<Set<String>>>(Keys)

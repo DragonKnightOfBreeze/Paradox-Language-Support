@@ -9,7 +9,7 @@ package icu.windea.pls.core
  */
 infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {
     if (this == null || comparator == null) return this ?: comparator
-    return this.then(comparator)
+    return this then comparator
 }
 
 /**

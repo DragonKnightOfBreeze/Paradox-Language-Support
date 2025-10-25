@@ -43,6 +43,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.findParentDefinition
 
+@Suppress("unused")
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
         val cachedEventInvocations by createKey<CachedValue<Set<String>>>(Keys)
@@ -84,7 +85,7 @@ object ParadoxEventManager {
     }
 
     fun getNamespace(element: ParadoxScriptDefinitionElement): String {
-        return getName(element).substringBefore(".") // enough
+        return getName(element).substringBefore('.') // enough
     }
 
     /**

@@ -58,7 +58,7 @@ class ParadoxDirectoryElementNode(
         val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         val directoryNames = mutableSetOf<String>()
         val query = ParadoxFilePathSearch.search(null, null, selector)
-        val files = sortedSetOf(query.getPriorityComparator()) // 按照覆盖方式进行排序
+        val files = sortedSetOf(query.getOverrideComparator()) // 按覆盖顺序进行排序
         query.processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
             if (fileInfo.path.parent != value.path.path) return@p true
@@ -100,7 +100,7 @@ class ParadoxDirectoryElementNode(
                 presentation.presentableText = value.path.fileName
                 return
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // ignored
         }
         value = null

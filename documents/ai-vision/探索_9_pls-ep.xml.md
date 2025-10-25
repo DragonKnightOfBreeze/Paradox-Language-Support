@@ -38,8 +38,8 @@
   - `definitionScopeContextProvider`、`definitionInferredScopeContextProvider`、`definitionSupportedScopesProvider`
   - `dynamicValueScopeContextProvider`、`dynamicValueInferredScopeContextProvider`
   - `overriddenScopeContextProvider`
-- 呈现/继承/内联/优先级
-  - `definitionPresentationProvider`、`definitionInheritSupport`、`inlineSupport`、`priorityProvider`
+- 呈现/继承/内联/覆盖方式
+  - `definitionPresentationProvider`、`definitionInheritSupport`、`inlineSupport`、`overrideStrategyProvider`
 - 工具（Import/Export）
   - `modImporter`、`modExporter`
 

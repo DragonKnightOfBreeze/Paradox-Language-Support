@@ -21,7 +21,7 @@ import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
-import icu.windea.pls.lang.match.ParadoxMatchManager
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
@@ -387,7 +387,7 @@ class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatc
         // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig
         val memberConfig = if (config is CwtMemberConfig<*>) config.memberConfig else null
         if (memberConfig == null) return null
-        if (!ParadoxMatchManager.matchesByPredicate(element, memberConfig)) return ParadoxMatchResult.NotMatch
+        if (!ParadoxMatchService.matchesByPredicate(element, memberConfig)) return ParadoxMatchResult.NotMatch
         return null
     }
 }

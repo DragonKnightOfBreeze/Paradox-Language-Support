@@ -4,15 +4,15 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -27,8 +27,8 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  *
  * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
  *
- * @see ParadoxPriority
- * @see ParadoxPriorityProvider
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 class IncorrectOverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -44,8 +44,8 @@ class IncorrectOverrideForScriptedVariableInspection : OverrideRelatedInspection
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
-                val priority = ParadoxPriorityProvider.getPriority(element)
-                if (priority == ParadoxPriority.ORDERED) return // skip for ORDERED
+                val priority = ParadoxOverrideService.getOverrideStrategy(element)
+                if (priority == ParadoxOverrideStrategy.ORDERED) return // skip for ORDERED
 
                 val name = element.name
                 if (name.isNullOrEmpty()) return // anonymous -> skipped

@@ -43,7 +43,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.model.ParadoxPriority
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.ep.scope.ParadoxBaseDefinitionInferredScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 
@@ -76,7 +76,7 @@ val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String
 
 // region Core Accessors
 
-val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
+val CwtConfigGroup.priorities: MutableMap<String, ParadoxOverrideStrategy>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }

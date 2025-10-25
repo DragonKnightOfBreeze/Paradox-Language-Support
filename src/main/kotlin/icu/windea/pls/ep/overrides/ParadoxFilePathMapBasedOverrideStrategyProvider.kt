@@ -1,7 +1,6 @@
-package icu.windea.pls.ep.priority
+package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.filePathPatternsForPriority
@@ -12,6 +11,7 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -23,62 +23,28 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
-    abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxPriority>
+abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverrideStrategyProvider {
+    abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxOverrideStrategy>
 
-    override fun getPriority(target: Any): ParadoxPriority? {
-        val forcedDefinitionPriority = getForcedDefinitionPriority(target)
-        if (forcedDefinitionPriority != null) return forcedDefinitionPriority
-
+    override fun get(target: Any): ParadoxOverrideStrategy? {
         val filePathPatterns = getFilePathPatterns(target)
         if (filePathPatterns.isEmpty()) return null
         val gameType = selectGameType(target) ?: return null
         val filePathMap = getFilePathMap(gameType)
-        val priority = doGetPriority(filePathPatterns, filePathMap)
-        return priority
+        val overrideStrategy = getOverrideStrategy(filePathPatterns, filePathMap)
+        return overrideStrategy
     }
 
-    override fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
-        val forcedDefinitionPriority = getForcedDefinitionPriority(searchParameters)
-        if (forcedDefinitionPriority != null) return forcedDefinitionPriority
-
+    override fun get(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
         val filePathPatterns = getFilePathPatterns(searchParameters)
         if (filePathPatterns.isEmpty()) return null
         val gameType = searchParameters.selector.gameType ?: return null
         val filePathMap = getFilePathMap(gameType)
-        val priority = doGetPriority(filePathPatterns, filePathMap)
-        return priority
-    }
-
-    private fun getForcedDefinitionPriority(target: Any): ParadoxPriority? {
-        if (target !is ParadoxScriptProperty) return null
-        val definitionInfo = target.definitionInfo ?: return null
-        val typeConfig = definitionInfo.typeConfig
-        return doGetForcedDefinitionPriority(typeConfig)
-    }
-
-    private fun getForcedDefinitionPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
-        if (searchParameters !is ParadoxDefinitionSearch.SearchParameters) return null
-        val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
-        val gameType = searchParameters.selector.gameType ?: return null
-        val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
-        val typeConfig = configGroup.types.get(definitionType) ?: return null
-        return doGetForcedDefinitionPriority(typeConfig)
-    }
-
-    private fun doGetForcedDefinitionPriority(typeConfig: CwtTypeConfig): ParadoxPriority? {
-        // event namespace -> ORDERED (don't care)
-        if (typeConfig.name == "event_namespace") return ParadoxPriority.ORDERED
-        // swapped type -> ORDERED (don't care)
-        if (typeConfig.baseType != null) return ParadoxPriority.ORDERED
-        // anonymous -> ORDERED (don't care)
-        if (typeConfig.typeKeyFilter != null && typeConfig.nameField == null) return ParadoxPriority.ORDERED
-        return null
+        val overrideStrategy = getOverrideStrategy(filePathPatterns, filePathMap)
+        return overrideStrategy
     }
 
     private fun getFilePathPatterns(target: Any): Set<String> {
@@ -147,7 +113,7 @@ abstract class ParadoxFilePathBasedPriorityProvider : ParadoxPriorityProvider {
         }
     }
 
-    private fun doGetPriority(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxPriority>): ParadoxPriority? {
+    private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxOverrideStrategy>): ParadoxOverrideStrategy? {
         // TODO 1.3.35+ check performance
 
         val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it] }

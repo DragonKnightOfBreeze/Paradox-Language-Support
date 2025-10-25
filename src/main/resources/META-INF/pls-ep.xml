@@ -30,6 +30,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.modifierNameDescProvider" interface="icu.windea.pls.ep.modifier.ParadoxModifierNameDescProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierIconProvider" interface="icu.windea.pls.ep.modifier.ParadoxModifierIconProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionModifierProvider" interface="icu.windea.pls.ep.modifier.ParadoxDefinitionModifierProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.overrideStrategyProvider" interface="icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterSupport" interface="icu.windea.pls.ep.parameter.ParadoxParameterSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.parameterInferredConfigProvider" interface="icu.windea.pls.ep.parameter.ParadoxParameterInferredConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationParameterSupport" interface="icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport" dynamic="true"/>
@@ -43,7 +44,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.ep.priority.ParadoxPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.exporter.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
@@ -116,8 +116,8 @@
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.CwtConstantDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.CwtTemplateDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtAntDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtRegexDataExpressionResolver"/>
+    <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.configExpression.CwtAntDataExpressionResolver"/>
+    <dataExpressionResolver id="regex" implementation="icu.windea.pls.ep.configExpression.CwtRegexDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareDefinitionDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareLocalisationDataExpressionResolver"/>
     <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareSyncedLocalisationDataExpressionResolver"/>
@@ -256,7 +256,8 @@
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport" order="last"/>
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport$Stellaris"/>
 
-    <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
+    <overrideStrategyProvider id="base" implementation="icu.windea.pls.ep.overrides.ParadoxBaseOverrideStrategyProvider"/>
+    <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider" order="first"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxGameJsonImporter"/>
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherJsonImporter"/>

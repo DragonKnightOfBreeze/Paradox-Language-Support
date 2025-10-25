@@ -7,7 +7,7 @@ import com.intellij.util.Processor
 import com.intellij.util.Query
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.thenPossible
-import icu.windea.pls.ep.priority.ParadoxPriorityProvider
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.lang.search.selector.ParadoxSelector
 
@@ -101,15 +101,15 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         // return result.process { consumer.process(it) }
     }
 
-    fun getPriorityComparator(): Comparator<T> {
-        return ParadoxPriorityProvider.getComparator(searchParameters)
+    fun getOverrideComparator(): Comparator<T> {
+        return ParadoxOverrideService.getOverrideComparator(searchParameters)
     }
 
     fun getFinalComparator(): Comparator<T> {
         // 注意：最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
 
         var comparator = searchParameters.selector.comparator()
-        comparator = comparator thenPossible getPriorityComparator()
+        comparator = comparator thenPossible getOverrideComparator()
         comparator = comparator thenPossible Comparator { o1, o2 -> if (o1 == o2) 0 else 1 }
         return comparator!!
     }

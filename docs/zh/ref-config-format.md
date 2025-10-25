@@ -49,8 +49,8 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 
 #### 优先级 {#config-priority}
 
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriority -->
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriorityProvider -->
+<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
+<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/priorities.core.cwt -->
 
 优先级规则可以用来配置目标（文件、封装变量，定义、本地化与复杂枚举）的覆盖方式。
@@ -58,17 +58,6 @@ PLS 通过读取 `.cwt` 文件，构建“规则分组”，并将规则解析�
 - **用途**：为“目标”的覆盖与合并提供统一策略，影响生效顺序与查询结果排序（流式查询除外）。
 - **适用目标**：文件、封装变量、定义、本地化、复杂枚举等。
 - **默认值**：未命中任何目录映射时，使用 `LIOS`（后读覆盖）。
-
-**声明与匹配**：
-
-```cwt
-priorities = {
-    # LHS - 相对游戏或模组根目录的“目录路径”
-    # RHS - 覆盖方式：fios | lios | ordered（忽略大小写）
-    "events" = fios
-    "common/on_actions" = ordered
-}
-```
 
 **覆盖方式与行为**：
 - `FIOS`（First In, Only Served）：只读一次。先加载者生效，后加载者会被直接忽略。
@@ -84,14 +73,10 @@ priorities = {
 **格式说明**：
 ```cwt
 priorities = {
-    # LHS - file path (relative to game or mod root directory)
-    # RHS - priority (available values: "fios", "lios", "ordered", default value: "lios", ignore case)
-
-    # file path - path of specific directory (e.g. ""common/on_actions", "common/scripted_variables", "localisation")
-
-    # fios - use the one that reads first, ignore all remaining items
-    # lios - use the one that reads last (if not specified, use this as default)
-    # ordered - reads by order, no overrides
+    # LHS - file path of containing directory, relative to entry directory
+    # RHS - used override strategy
+    # entry directory - normally game or mod directory, or `game` subdirectory of game directory
+    # override strategy - available values: `fios`, `lios`, `dupl`, `ordered`; default: `lios`; ignore case
 
     "events" = fios
     # ...

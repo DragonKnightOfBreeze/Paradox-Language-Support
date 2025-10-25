@@ -49,8 +49,8 @@ Terminology:
 
 #### Priority {#config-priority}
 
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriority -->
-<!-- @see icu.windea.pls.ep.priority.ParadoxPriorityProvider -->
+<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
+<!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/priorities.core.cwt -->
 
 Priority configs are used to configure how targets (files, scripted variables, definitions, localisations, complex enums) are overridden.
@@ -58,17 +58,6 @@ Priority configs are used to configure how targets (files, scripted variables, d
 - **Purpose**: provide a unified strategy for overriding/merging of "targets", affecting the order of effect and the sort order of non-stream queries.
 - **Applicable targets**: files, scripted variables, definitions, localisations, complex enums, etc.
 - **Default value**: when no directory mapping matches, `LIOS` (last-in wins) is used.
-
-**Declaration and matching**:
-
-```cwt
-priorities = {
-    # LHS - directory path relative to the game or mod root
-    # RHS - override strategy: fios | lios | ordered (case-insensitive)
-    "events" = fios
-    "common/on_actions" = ordered
-}
-```
 
 **Override strategies and behavior**:
 - `FIOS` (First In, Only Served): Read only once. The first-loaded one takes effect, and subsequent ones will be just ignored.
@@ -84,14 +73,10 @@ priorities = {
 **Format notes**:
 ```cwt
 priorities = {
-    # LHS - file path (relative to game or mod root directory)
-    # RHS - priority (available values: "fios", "lios", "ordered"; default: "lios"; case-insensitive)
-
-    # file path - path of specific directory (e.g. "common/on_actions", "common/scripted_variables", "localisation")
-
-    # fios - use the one that is read first, ignore remaining items
-    # lios - use the one that is read last (default if not specified)
-    # ordered - read in order, no overrides
+    # LHS - file path of containing directory, relative to entry directory
+    # RHS - used override strategy
+    # entry directory - normally game or mod directory, or `game` subdirectory of game directory
+    # override strategy - available values: `fios`, `lios`, `dupl`, `ordered`; default: `lios`; ignore case
 
     "events" = fios
     # ...

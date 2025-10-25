@@ -4,15 +4,15 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.priority.ParadoxPriorityProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingDefinitionsFix
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.model.ParadoxPriority
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -27,8 +27,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  *
  * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
  *
- * @see ParadoxPriority
- * @see ParadoxPriorityProvider
+ * @see ParadoxOverrideStrategy
+ * @see ParadoxOverrideService
  */
 class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -45,8 +45,8 @@ class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase()
             private fun visitDefinition(element: ParadoxScriptProperty) {
                 val definitionInfo = element.definitionInfo ?: return
 
-                val priority = ParadoxPriorityProvider.getPriority(element)
-                if (priority == ParadoxPriority.ORDERED) return // skip for ORDERED
+                val priority = ParadoxOverrideService.getOverrideStrategy(element)
+                if (priority == ParadoxOverrideStrategy.ORDERED) return // skip for ORDERED
 
                 val name = definitionInfo.name
                 val type = definitionInfo.type
