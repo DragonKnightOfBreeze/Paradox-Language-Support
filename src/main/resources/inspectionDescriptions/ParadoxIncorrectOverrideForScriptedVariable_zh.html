@@ -1,15 +1,29 @@
 <html>
 <body>
-  报告被错误重载的（全局）封装变量，基于对应的重载规则。
+  报告不正确的对（全局）封装变量的重载。
+  <p>说明：</p>
+  <ul>
+    <li>如果当前上下文中存在同名的封装变量，那么就说存在对此封装变量的重载。</li>
+    <li>仅适用于项目中的、作为游戏或模组文件的、非内存非注入的脚本文件。</li>
+    <li>仅适用于非参数化的全局封装变量。</li>
+    <li>基于其使用的覆盖方式进行检查。</li>
+  </ul>
+  <p>参见：<a href="https://windea.icu/Paradox-Language-Support/zh/ref-config-format.html#config-priority">优先级规则</a></p>
+  <!-- tooltip end -->
+  <p>覆盖方式与行为：</p>
+  <ul>
+    <li><code>FIOS</code>（First In, Only Served）：只读一次。先加载者生效，后加载者会被直接忽略。</li>
+    <li><code>LIOS</code>（Last In, Only Served）：后读覆盖。后加载者覆盖先加载者。</li>
+    <li><code>DUPL</code>（Duplicates）：整文件覆盖。必须用同路径文件进行整体覆盖。</li>
+    <li><code>ORDERED</code>（Ordered）：顺序读取。不能覆盖既有条目，后加载者会被按序新增或合并。</li>
+  </ul>
+  <p>示例：</p>
   <p>
-    示例：
+    原始封装变量名为 <code>@var</code>，声明于 <code>common/scripted_variables/test.txt</code>，
+    被重载的封装变量声明于 <code>common/scripted_variables/zzz_test.txt</code>。
   </p>
   <p>
-    原版封装变量为 <code>@var</code>，声明于 <code>common/scripted_variables/test.txt</code>，
-    被重载封装变量声明于 <code>common/scripted_variables/zzz_test.txt</code>。
-  </p>
-  <p>
-    此重载方式不正确，因为封装变量的重载规则为 <b>FIOS</b>。
+    此重载不正确，因为封装变量使用的覆盖方式为 <code>FIOS</code>。
   </p>
 </body>
 </html>

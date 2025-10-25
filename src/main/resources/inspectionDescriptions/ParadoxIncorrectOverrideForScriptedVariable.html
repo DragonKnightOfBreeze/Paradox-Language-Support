@@ -1,15 +1,29 @@
 <html>
 <body>
-  Reports (global) scripted variables that are overridden incorrectly according to their override rules.
+  Reports incorrect overrides of (global) scripted variables.
+  <p>Notes:</p>
+  <ul>
+    <li>If a scripted variable with the same name exists in the current context, an override of this scripted variable is considered present.</li>
+    <li>Applies only to project files that are game or mod files, excluding in-memory or injected script files.</li>
+    <li>Applies only to non-parameterized global scripted variables.</li>
+    <li>Checked based on its override strategy.</li>
+  </ul>
+  <p>See: <a href="https://windea.icu/Paradox-Language-Support/en/ref-config-format.html#config-priority">Priority Config</a></p>
+  <!-- tooltip end -->
+  <p>Override strategies and behaviors:</p>
+  <ul>
+    <li><code>FIOS</code> (First In, Only Served): Read only once. The first-loaded one takes effect, and subsequent ones will be just ignored.</li>
+    <li><code>LIOS</code> (Last In, Only Served): Later reads override. The last loaded overrides the first loaded.</li>
+    <li><code>DUPL</code> (Duplicates): Whole-file override. Must be overridden entirely by a file with the same path.</li>
+    <li><code>ORDERED</code> (Ordered): Sequential reading. Existing ones cannot be overwritten, and later loaded ones will be sequentially added or merged.</li>
+  </ul>
+  <p>Example:</p>
   <p>
-    Example:
+    The original scripted variable is named <code>@var</code>, declared in <code>common/scripted_variables/test.txt</code>,
+    and the overriding scripted variable is declared in <code>common/scripted_variables/zzz_test.txt</code>.
   </p>
   <p>
-    The vanilla scripted variable is <code>@var</code>, declared in file <code>common/scripted_variables/test.txt</code>,
-    and the overridden scripted variable is declared in file <code>common/scripted_variables/zzz_test.txt</code>.
-  </p>
-  <p>
-    This override is incorrect because the override rule for variables is <b>FIOS</b>.
+    This override is incorrect because scripted variables use the <code>FIOS</code> override strategy.
   </p>
 </body>
 </html>

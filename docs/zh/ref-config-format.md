@@ -71,10 +71,10 @@ priorities = {
 ```
 
 **覆盖方式与行为**：
-- `LIOS`（Last In, Only Served）：后加载者覆盖先加载者（多数内容的默认规则）。
-- `FIOS`（First In, Only Served）：先加载者生效，后面的被忽略（少数“特别敏感”的目录，如 `events/`、`scripted_variables/`）。
-- `DUPL`（重复定义报错/失效）：目前不支持，仅作为参考术语收录。
-- `ORDERED`（按序合并）：按加载顺序合并但不覆盖（典型：`common/on_actions`）。
+- `FIOS`（First In, Only Served）：只读一次。先加载者生效，后加载者会被直接忽略。
+- `LIOS`（Last In, Only Served）：后读覆盖。后加载者覆盖先加载者。
+- `DUPL`（Duplicates）：整文件覆盖。必须用同路径文件进行整体覆盖。
+- `ORDERED`（Ordered）：顺序读取。不能覆盖既有条目，后加载者会被按序新增或合并。
 
 **排序与加载要点**：
 - 查询（非流式）结果的排序由优先级驱动；同一路径下按加载顺序（游戏/依赖链）决定先后。

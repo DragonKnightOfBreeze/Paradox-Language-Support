@@ -89,7 +89,7 @@ prop = {
 
 关于更加详细的语法说明，可以参考：
 
-- [附录：语法参考](ref-syntax.md) 中的 [对应章节](ref-syntax.md#cwt)
+- [附录：语法参考](ref-syntax.md)中的[对应章节](ref-syntax.md#cwt)
 
 ## 自定义 {#customization}
 
@@ -99,7 +99,7 @@ prop = {
 
 - 插件内置的规则文件。它们分别位于插件仓库的 `cwt/core` 目录下，以及各个规则仓库中。
 - [附录：规则格式参考](ref-config-format.md)
-- CWTools 的 [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+- CWTools 的[指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
 ### 导入规则文件 {#import-config-files}
 

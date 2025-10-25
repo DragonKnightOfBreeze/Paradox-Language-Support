@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.quoteIdentifier")
 
-    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的的`\"v\"`）
+    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的`\"v\"`）
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.quote())
@@ -47,7 +47,7 @@ class QuoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>
 class UnquoteIdentifierIntention : PsiUpdateModCommandAction<CwtExpressionElement>(CwtExpressionElement::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.unquoteIdentifier")
 
-    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的的`\"v\"`）
+    // NOTE 1.3.0+ 目前不直接适用于用引号括起的参数值中的那些字面量（例如，`p = "\"v\""`中的`\"v\"`）
 
     override fun invoke(context: ActionContext, element: CwtExpressionElement, updater: ModPsiUpdater) {
         ElementManipulators.handleContentChange(element, element.text.unquote())

@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxScriptFileManager {
     /**
-     * 得到 [element] 对应的的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
+     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
      *
      * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
      */

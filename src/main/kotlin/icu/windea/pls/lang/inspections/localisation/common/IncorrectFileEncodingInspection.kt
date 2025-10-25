@@ -16,7 +16,7 @@ import icu.windea.pls.model.constants.PlsConstants
 // com.intellij.openapi.editor.actions.RemoveBomAction
 
 /**
- * 不正确的的文件编码的代码检查。
+ * 不正确的文件编码的代码检查。
  *
  * 提供快速修复：
  * - 改为正确的文件编码

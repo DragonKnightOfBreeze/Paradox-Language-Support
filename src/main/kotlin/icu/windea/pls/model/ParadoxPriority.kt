@@ -2,13 +2,19 @@ package icu.windea.pls.model
 
 /**
  * 覆盖方式。
+ *
+ * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
+ *
+ * @see icu.windea.pls.ep.priority.ParadoxPriorityProvider
  */
 enum class ParadoxPriority(val id: String) {
-    /** 只读一次（选用最先读取到的那个） */
+    /** 只读一次（First In, Only Served）。先加载者生效，后加载者会被直接忽略。 */
     FIOS("fios"),
-    /** 后读覆盖（选用最后读取到的那个） */
+    /** 后读覆盖（Last In, Only Served）。后加载者覆盖先加载者。 */
     LIOS("lios"),
-    /** 顺序读取 */
+    /** 整文件覆盖（Duplicates）。必须用同路径文件进行整体覆盖。 */
+    DUPL("dupl"),
+    /** 顺序读取（Ordered）。不能覆盖既有条目，后加载者会被按序新增或合并。 */
     ORDERED("ordered"),
     ;
 
