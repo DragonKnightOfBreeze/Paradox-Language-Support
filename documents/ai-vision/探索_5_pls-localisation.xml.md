@@ -17,7 +17,7 @@
 
 ## 二、编辑/导航/提示能力（核心）
 
-- 拼写检查：`spellchecker.support` → `...ParadoxLocalisationSpellchecker`
+- 拼写检查：`spellchecker.support` → `...ParadoxLocalisationSpellcheckerStrategy`
 - 语法高亮：`lang.syntaxHighlighterFactory` → `...ParadoxLocalisationSyntaxHighlighterFactory`
 - 配色页：`colorSettingsPage` → `...ParadoxLocalisationColorSettingsPage`
 - 括号匹配：`lang.braceMatcher` → `...ParadoxLocalisationBraceMatcher`

@@ -3,7 +3,7 @@
     <fileType language="PARADOX_CSV" name="Paradox Csv" fieldName="INSTANCE" implementationClass="icu.windea.pls.csv.ParadoxCsvFileType"/>
     <lang.parserDefinition language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.ParadoxCsvParserDefinition"/>
 
-    <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSpellchecker"/>
+    <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.csv.editor.ParadoxCsvColorSettingsPage"/>
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>

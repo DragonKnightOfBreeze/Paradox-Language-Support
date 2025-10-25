@@ -30,8 +30,8 @@ class ParadoxLocalisationPsiReferenceProvider : PsiReferenceProvider() {
             is ParadoxLocalisationParameter -> getReference(element)
             is ParadoxLocalisationIcon -> getReference(element)
             is ParadoxLocalisationConceptCommand -> getReference(element)
-            is ParadoxLocalisationTextFormat -> getReference(element)
             is ParadoxLocalisationTextIcon -> getReference(element)
+            is ParadoxLocalisationTextFormat -> getReference(element)
             is ParadoxLocalisationScriptedVariableReference -> getReference(element)
             else -> null
         }

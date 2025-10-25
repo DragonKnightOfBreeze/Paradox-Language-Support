@@ -262,8 +262,8 @@ Markup available inside the text (`"<text>"`):
 
 - **Color**: `§X ... §!` (`X` is a single-character ID).
 - **Parameter**: `$name$` or `$name|argument$`. `name` can be a localisation key, command, or scripted variable reference (e.g., `$@var$` is equivalent at the parsing level).
-- **Command**: `[text|argument]`, where `text` can be parameterized; commonly used for `Get...`/context calls.
 - **Icon**: `£icon|frame£` (`|frame` can be omitted), embeds a GFX icon when rendered.
+- **Command**: `[text|argument]`, where `text` can be parameterized; commonly used for `Get...`/context calls.
 - **Concept Command (Stellaris)**: `['concept' <rich text>]`, used to link concepts and display descriptive text.
 - **Text Format (CK3/Vic3)**: `#format ... #!`, used to style text blocks; and **Text Icons**: `@icon!` (starts with `@`, ends with `!`).
 

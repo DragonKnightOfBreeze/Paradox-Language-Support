@@ -373,6 +373,21 @@ TEXT_ICON_TOKEN=\w+
     [^] { yypushback(yylength()); setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); }
 }
 
+// [ck3, vic3] localisation text icon rules
+
+<CHECK_TEXT_ICON>{
+    {TEXT_ICON_CHECK} { return checkTextIcon(); }
+}
+<IN_TEXT_ICON>{
+    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextState(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
+    "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
+
+    "!" { beginNextState(); return TEXT_ICON_END; }
+    {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
+}
+
 // [ck3, vic3] localisation text format rules
 
 <CHECK_TEXT_FORMAT>{
@@ -391,21 +406,6 @@ TEXT_ICON_TOKEN=\w+
     {BLANK} { setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
     // Whitespace after TEXT_FORMAT_TOKEN may be absent; still enter text section
     [^] { yypushback(yylength()); setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); }
-}
-
-// [ck3, vic3] localisation text icon rules
-
-<CHECK_TEXT_ICON>{
-    {TEXT_ICON_CHECK} { return checkTextIcon(); }
-}
-<IN_TEXT_ICON>{
-    "§" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
-    "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_PARAMETER); }
-    "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
-
-    "!" { beginNextState(); return TEXT_ICON_END; }
-    {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
 }
 
 [^] { return BAD_CHARACTER; }

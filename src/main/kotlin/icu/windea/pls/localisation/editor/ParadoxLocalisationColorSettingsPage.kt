@@ -22,11 +22,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedVariable"), ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.command"), ParadoxLocalisationAttributesKeys.COMMAND_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.command"), ParadoxLocalisationAttributesKeys.COMMAND_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.concept"), ParadoxLocalisationAttributesKeys.CONCEPT_KEY), // #008080
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.textFormat"), ParadoxLocalisationAttributesKeys.TEXT_FORMAT_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.textIcon"), ParadoxLocalisationAttributesKeys.TEXT_ICON_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.textFormat"), ParadoxLocalisationAttributesKeys.TEXT_FORMAT_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.string"), ParadoxLocalisationAttributesKeys.STRING_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.validEscape"), ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),

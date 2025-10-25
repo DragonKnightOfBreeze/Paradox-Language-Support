@@ -36,13 +36,13 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
                 // ICON_END
                 builder.registerFix(InsertMissingTokenFix("£", errorElement.startOffset), null, null, null, null)
             }
-            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
-                // TEXT_FORMAT_END
-                builder.registerFix(InsertMissingTokenFix("#!", errorElement.startOffset), null, null, null, null)
-            }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextIcon -> {
                 // TEXT_ICON_END
                 builder.registerFix(InsertMissingTokenFix("!", errorElement.startOffset), null, null, null, null)
+            }
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
+                // TEXT_FORMAT_END
+                builder.registerFix(InsertMissingTokenFix("#!", errorElement.startOffset), null, null, null, null)
             }
         }
     }

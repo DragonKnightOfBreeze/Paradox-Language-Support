@@ -62,8 +62,8 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationIcon -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptCommand -> true // <game_concept>
                 is ParadoxLocalisationTextColorAwareElement -> true // <text_color>
-                is ParadoxLocalisationTextFormat -> true // <text_format>
                 is ParadoxLocalisationTextIcon -> true // <text_icon>
+                is ParadoxLocalisationTextFormat -> true // <text_format>
                 is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
@@ -77,11 +77,11 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 }
+                is ParadoxLocalisationTextColorPsiReference -> true // <text_color>
                 is ParadoxLocalisationIconPsiReference -> true // <sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true // <game_concept>
-                is ParadoxLocalisationTextColorPsiReference -> true // <text_color>
-                is ParadoxLocalisationTextFormatPsiReference -> true // <text_format>
                 is ParadoxLocalisationTextIconPsiReference -> true // <text_icon>
+                is ParadoxLocalisationTextFormatPsiReference -> true // <text_format>
                 is ParadoxCsvExpressionPsiReference -> {
                     val configExpression = reference.columnConfig.valueConfig?.configExpression ?: return false
                     val dataType = configExpression.type

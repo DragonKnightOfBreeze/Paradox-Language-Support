@@ -17,7 +17,7 @@
 
 ## 二、编辑/导航/提示能力（核心）
 
-- 拼写检查：`spellchecker.support` → `...csv.editor.ParadoxCsvSpellchecker`
+- 拼写检查：`spellchecker.support` → `...csv.editor.ParadoxCsvSpellcheckerStrategy`
 - 语法高亮：`lang.syntaxHighlighterFactory` → `...csv.editor.ParadoxCsvSyntaxHighlighterFactory`
 - 配色页：`colorSettingsPage` → `...csv.editor.ParadoxCsvColorSettingsPage`
 - 注释器：`lang.commenter` → `...csv.editor.ParadoxCsvCommenter`

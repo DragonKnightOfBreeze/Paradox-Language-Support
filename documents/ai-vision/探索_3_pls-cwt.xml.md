@@ -17,7 +17,7 @@
 
 ## 二、编辑/导航/提示能力（核心）
 
-- 拼写检查：`spellchecker.support` → `icu.windea.pls.cwt.editor.CwtSpellchecker`
+- 拼写检查：`spellchecker.support` → `icu.windea.pls.cwt.spellchecker.CwtSpellcheckerStrategy`
 - 语法高亮：`lang.syntaxHighlighterFactory` → `icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory`
 - 配色页：`colorSettingsPage` → `icu.windea.pls.cwt.editor.CwtColorSettingsPage`
 - 括号匹配：`lang.braceMatcher` → `icu.windea.pls.cwt.editor.CwtBraceMatcher`

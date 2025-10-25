@@ -121,11 +121,11 @@ class ParadoxLocalisationTextInlayRenderer(
             is ParadoxLocalisationString -> renderStringTo(element)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
             is ParadoxLocalisationParameter -> renderParameterTo(element)
-            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationIcon -> renderIconTo(element)
+            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
-            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
             else -> true
         }
     }
@@ -199,26 +199,6 @@ class ParadoxLocalisationTextInlayRenderer(
         }
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
-        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        return renderWithColorTo(color) r@{
-            // 直接显示命令文本，适用对应的颜色高亮
-            // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
-            val presentations = mutableListOf<InlayPresentation>()
-            element.forEachChild { c ->
-                if (c is ParadoxLocalisationCommandText) {
-                    getElementPresentation(c)?.let { presentations.add(it) }
-                } else {
-                    presentations.add(factory.smallText(c.text))
-                }
-            }
-            val mergedPresentation = mergePresentation(presentations)
-            if (mergedPresentation != null) builder.add(mergedPresentation)
-            continueProcess()
-        }
-    }
-
     private fun renderIconTo(element: ParadoxLocalisationIcon): Boolean {
         // 尝试渲染图标
         runCatchingCancelable r@{
@@ -252,6 +232,26 @@ class ParadoxLocalisationTextInlayRenderer(
         val presentation = getElementPresentation(element)
         if (presentation != null) builder.add(presentation)
         return continueProcess()
+    }
+
+    private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
+        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        return renderWithColorTo(color) r@{
+            // 直接显示命令文本，适用对应的颜色高亮
+            // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
+            val presentations = mutableListOf<InlayPresentation>()
+            element.forEachChild { c ->
+                if (c is ParadoxLocalisationCommandText) {
+                    getElementPresentation(c)?.let { presentations.add(it) }
+                } else {
+                    presentations.add(factory.smallText(c.text))
+                }
+            }
+            val mergedPresentation = mergePresentation(presentations)
+            if (mergedPresentation != null) builder.add(mergedPresentation)
+            continueProcess()
+        }
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand): Boolean {
@@ -301,6 +301,16 @@ class ParadoxLocalisationTextInlayRenderer(
         return continueProcess()
     }
 
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon): Boolean {
+        // TODO 1.4.1+ 更完善的支持（渲染文本图标）
+
+        // 直接显示原始文本
+        // 点击其中的相关文本也能跳转到相关声明
+        val presentation = getElementPresentation(element)
+        if (presentation != null) builder.add(presentation)
+        return continueProcess()
+    }
+
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat): Boolean {
         // TODO 1.4.1+ 更完善的支持（适用文本格式）
 
@@ -317,16 +327,6 @@ class ParadoxLocalisationTextInlayRenderer(
             }
         }
         return continueProcess
-    }
-
-    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon): Boolean {
-        // TODO 1.4.1+ 更完善的支持（渲染文本图标）
-
-        // 直接显示原始文本
-        // 点击其中的相关文本也能跳转到相关声明
-        val presentation = getElementPresentation(element)
-        if (presentation != null) builder.add(presentation)
-        return continueProcess()
     }
 
     private fun mergePresentation(presentations: MutableList<InlayPresentation>): InlayPresentation? {

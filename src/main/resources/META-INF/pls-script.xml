@@ -4,7 +4,7 @@
               fileNames="descriptor.mod"/>
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptParserDefinition"/>
 
-    <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellchecker"/>
+    <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.folding.ParadoxScriptFoldingBuilder"/>

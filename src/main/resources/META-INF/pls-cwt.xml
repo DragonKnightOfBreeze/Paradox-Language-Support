@@ -4,7 +4,7 @@
               extensions="cwt"/>
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.CwtParserDefinition"/>
 
-    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellchecker"/>
+    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellcheckerStrategy"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>

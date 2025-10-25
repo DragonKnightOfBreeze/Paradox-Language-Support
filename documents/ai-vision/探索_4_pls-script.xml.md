@@ -18,7 +18,7 @@
 
 ## 二、编辑/导航/提示能力（核心）
 
-- 拼写检查：`spellchecker.support` → `icu.windea.pls.script.editor.ParadoxScriptSpellchecker`
+- 拼写检查：`spellchecker.support` → `icu.windea.pls.script.editor.ParadoxScriptSpellcheckerStrategy`
 - 语法高亮：`lang.syntaxHighlighterFactory` → `icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory`
 - 配色页：`colorSettingsPage` → `icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage`
 - 括号匹配：`lang.braceMatcher` → `icu.windea.pls.script.editor.ParadoxScriptBraceMatcher`

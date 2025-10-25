@@ -44,15 +44,15 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val SCRIPTED_VARIABLE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SCRIPTED_VARIABLE", STATIC_FIELD)
     @JvmField
-    val COMMAND_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND", IDENTIFIER)
-    @JvmField
     val ICON_KEY = createTextAttributesKey("PARADOX_LOCALISATION.ICON", IDENTIFIER) // #5C8AE6
+    @JvmField
+    val COMMAND_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND", IDENTIFIER)
     @JvmField
     val CONCEPT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.CONCEPT", IDENTIFIER) // #008080
     @JvmField
-    val TEXT_FORMAT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_FORMAT", IDENTIFIER)
-    @JvmField
     val TEXT_ICON_KEY = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_ICON", IDENTIFIER)
+    @JvmField
+    val TEXT_FORMAT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.TEXT_FORMAT", IDENTIFIER)
     @JvmField
     val STRING_KEY = createTextAttributesKey("PARADOX_LOCALISATION.STRING", STRING)
     @JvmField

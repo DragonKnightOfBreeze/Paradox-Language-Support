@@ -650,7 +650,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string | colorful_text | parameter | icon | command | concept_command | text_format | text_icon
+  // string | colorful_text | parameter | icon | command | concept_command | text_icon | text_format
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
@@ -661,8 +661,8 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = icon(b, l + 1);
     if (!r) r = command(b, l + 1);
     if (!r) r = concept_command(b, l + 1);
-    if (!r) r = text_format(b, l + 1);
     if (!r) r = text_icon(b, l + 1);
+    if (!r) r = text_format(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

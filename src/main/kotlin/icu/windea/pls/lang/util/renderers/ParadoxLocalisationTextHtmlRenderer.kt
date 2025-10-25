@@ -100,8 +100,8 @@ class ParadoxLocalisationTextHtmlRenderer(
             is ParadoxLocalisationString -> renderStringTo(element)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
             is ParadoxLocalisationParameter -> renderParameterTo(element)
-            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationIcon -> renderIconTo(element)
+            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
@@ -170,26 +170,6 @@ class ParadoxLocalisationTextHtmlRenderer(
         }
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand) {
-        // 如果处理文本失败，则使用原始文本
-        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-
-        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        renderWithColorTo(color) r@{
-            // 直接显示命令文本，适用对应的颜色高亮
-            // （仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
-            builder.append("<code>")
-            element.forEachChild { c ->
-                if (c is ParadoxLocalisationCommandText) {
-                    renderElementText(c)
-                } else {
-                    builder.append(c.text.escapeXml())
-                }
-            }
-            builder.append("</code>")
-        }
-    }
-
     private fun renderIconTo(element: ParadoxLocalisationIcon) {
         // 尝试渲染图标
         runCatchingCancelable r@{
@@ -233,6 +213,26 @@ class ParadoxLocalisationTextHtmlRenderer(
         builder.append("<code>")
         renderElementText(element)
         builder.append("</code>")
+    }
+
+    private fun renderCommandTo(element: ParadoxLocalisationCommand) {
+        // 如果处理文本失败，则使用原始文本
+        // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
+
+        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        renderWithColorTo(color) r@{
+            // 直接显示命令文本，适用对应的颜色高亮
+            // （仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
+            builder.append("<code>")
+            element.forEachChild { c ->
+                if (c is ParadoxLocalisationCommandText) {
+                    renderElementText(c)
+                } else {
+                    builder.append(c.text.escapeXml())
+                }
+            }
+            builder.append("</code>")
+        }
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand) {

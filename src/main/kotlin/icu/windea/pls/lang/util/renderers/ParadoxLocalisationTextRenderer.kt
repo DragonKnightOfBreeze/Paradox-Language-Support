@@ -45,11 +45,11 @@ class ParadoxLocalisationTextRenderer {
             is ParadoxLocalisationString -> renderStringTo(element)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
             is ParadoxLocalisationParameter -> renderParameterTo(element)
-            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationIcon -> renderIconTo(element)
+            is ParadoxLocalisationCommand -> renderCommandTo(element)
             is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
-            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
             else -> throw UnsupportedOperationException()
         }
     }
@@ -99,14 +99,14 @@ class ParadoxLocalisationTextRenderer {
         }
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand) {
-        // 直接显示命令文本
-        builder.append(element.text)
-    }
-
     private fun renderIconTo(element: ParadoxLocalisationIcon) {
         // 忽略
         // builder.append(":${element.name}:")
+    }
+
+    private fun renderCommandTo(element: ParadoxLocalisationCommand) {
+        // 直接显示命令文本
+        builder.append(element.text)
     }
 
     private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand) {
@@ -129,6 +129,11 @@ class ParadoxLocalisationTextRenderer {
         return
     }
 
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon) {
+        // 忽略
+        // builder.append(":${element.name}:")
+    }
+
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat) {
         // 直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
@@ -136,10 +141,5 @@ class ParadoxLocalisationTextRenderer {
         for (richText in richTextList) {
             renderRichTextTo(richText)
         }
-    }
-
-    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon) {
-        // 忽略
-        // builder.append(":${element.name}:")
     }
 }

@@ -53,8 +53,8 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxScriptInlineMathParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
             is ParadoxScriptParameterConditionParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_3
             is ParadoxLocalisationParameter -> ParadoxUsageTypes.LOCALISATION_REFERENCE
-            is ParadoxLocalisationIcon -> ParadoxUsageTypes.LOCALISATION_ICON
             is ParadoxLocalisationColorfulText -> ParadoxUsageTypes.LOCALISATION_COLOR
+            is ParadoxLocalisationIcon -> ParadoxUsageTypes.LOCALISATION_ICON
             is ParadoxLocalisationCommandText -> ParadoxUsageTypes.LOCALISATION_COMMAND_TEXT
             is ParadoxLocalisationConceptName -> ParadoxUsageTypes.LOCALISATION_CONCEPT_NAME
             is ParadoxLocalisationTextIcon -> ParadoxUsageTypes.LOCALISATION_TEXT_ICON
