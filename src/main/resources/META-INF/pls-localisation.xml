@@ -40,8 +40,6 @@
 
     <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey"
                              implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationPropertyKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParameter"
-                             implementationClass="icu.windea.pls.localisation.psi.manipulators.ParadoxLocalisationParameterManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxLocalisationDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
