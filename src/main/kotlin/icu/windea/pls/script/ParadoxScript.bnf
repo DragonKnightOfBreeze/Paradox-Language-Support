@@ -329,5 +329,5 @@ inline_math_scripted_variable_reference ::= inline_math_scripted_variable_refere
     getIcon getName setName getValue getReference getReferences
   ]
 }
-private inline_math_scripted_variable_reference_part ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
+private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
 

@@ -494,7 +494,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathScriptedVariableReference): PsiElement? {
-        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
     }
 
     @JvmStatic

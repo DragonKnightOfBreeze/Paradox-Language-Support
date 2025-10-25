@@ -382,11 +382,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
+  // SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
   static boolean inline_math_scripted_variable_reference_part(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_scripted_variable_reference_part")) return false;
     boolean r;
-    r = consumeToken(b, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN);
+    r = consumeToken(b, SCRIPTED_VARIABLE_REFERENCE_TOKEN);
     if (!r) r = inline_math_parameter(b, l + 1);
     if (!r) r = inline_parameter_condition(b, l + 1);
     return r;

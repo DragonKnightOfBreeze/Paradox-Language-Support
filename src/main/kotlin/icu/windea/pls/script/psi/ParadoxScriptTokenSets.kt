@@ -2,36 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.AT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BOOLEAN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BOOLEAN_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COLOR
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.CONDITION_PARAMETER_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.EQUAL_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.FLOAT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.FLOAT_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.GE_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.GT_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INT_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LE_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LT_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.NOT_EQUAL_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PARAMETER_CONDITION
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PARAMETER_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.ROOT_BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SAFE_EQUAL_SIGN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE_NAME_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE_REFERENCE
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE_REFERENCE_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 object ParadoxScriptTokenSets {
     @JvmField
@@ -42,7 +13,7 @@ object ParadoxScriptTokenSets {
     val STRING_LITERALS = TokenSet.create(STRING_TOKEN)
 
     @JvmField
-    val IDENTIFIER_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN, CONDITION_PARAMETER_TOKEN, PARAMETER_TOKEN)
+    val IDENTIFIER_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN, CONDITION_PARAMETER_TOKEN, PARAMETER_TOKEN)
     @JvmField
     val COMMENT_TOKENS = TokenSet.create(COMMENT)
     @JvmField
@@ -58,7 +29,7 @@ object ParadoxScriptTokenSets {
     @JvmField
     val SCRIPTED_VARIABLE_NAME_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_NAME_TOKEN)
     @JvmField
-    val SCRIPTED_VARIABLE_REFERENCE_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_TOKEN, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN)
+    val SCRIPTED_VARIABLE_REFERENCE_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     @JvmField
     val STRING_TOKENS = TokenSet.create(STRING_TOKEN)
     @JvmField
@@ -70,7 +41,7 @@ object ParadoxScriptTokenSets {
     val VALUES = TokenSet.create(BOOLEAN, INT, FLOAT, STRING, COLOR, BLOCK, INLINE_MATH, SCRIPTED_VARIABLE_REFERENCE)
 
     @JvmField
-    val SNIPPET_TYPES = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN, INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN)
+    val SNIPPET_TYPES = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN, SCRIPTED_VARIABLE_NAME_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     @JvmField
     val LEFT_SNIPPET_TYPES = TokenSet.create(AT, SCRIPTED_VARIABLE_NAME_TOKEN, PROPERTY_KEY_TOKEN)
     @JvmField

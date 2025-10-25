@@ -591,7 +591,7 @@ public class _ParadoxScriptInlineMathLexer implements FlexLexer {
           // fall through
           case 30: break;
           case 12:
-            { return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN;
+            { return SCRIPTED_VARIABLE_REFERENCE_TOKEN;
             }
           // fall through
           case 31: break;
