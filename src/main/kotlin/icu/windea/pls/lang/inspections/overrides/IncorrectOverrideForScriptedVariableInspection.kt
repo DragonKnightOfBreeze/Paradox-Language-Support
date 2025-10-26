@@ -44,7 +44,7 @@ class IncorrectOverrideForScriptedVariableInspection : OverrideRelatedInspection
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
-                val priority = ParadoxOverrideService.getOverrideStrategy(element)
+                val priority = ParadoxOverrideService.getOverrideStrategy(element) ?: return
                 if (priority == ParadoxOverrideStrategy.ORDERED) return // skip for ORDERED
 
                 val name = element.name

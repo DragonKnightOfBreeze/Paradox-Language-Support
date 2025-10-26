@@ -1,43 +1,32 @@
 package icu.windea.pls.lang.overrides
 
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxSearchParameters
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.model.ParadoxRootInfo
 
 object ParadoxOverrideService {
     /**
-     * 从目标（文件、封装变量、定义、本地化、复杂枚举等）得到覆盖方式。
-     * 默认使用 [ParadoxOverrideStrategy.LIOS]。
+     * 得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
+     * 如果返回值为 `null`，则表示不适用覆盖策略。
      */
-    fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy {
-        return ParadoxOverrideStrategyProvider.get(target) ?: ParadoxOverrideStrategy.LIOS
+    fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
+        return ParadoxOverrideStrategyProvider.get(target)
     }
 
     /**
-     * 从目标（文件、封装变量、定义、本地化、复杂枚举等）的查询参数得到覆盖方式。
-     * 默认使用 [ParadoxOverrideStrategy.LIOS]。
+     * 从查询参数得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
+     * 如果返回值为 `null`，则表示不适用覆盖策略。
      */
-    fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy {
-        return ParadoxOverrideStrategyProvider.get(searchParameters) ?: ParadoxOverrideStrategy.LIOS
+    fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
+        return ParadoxOverrideStrategyProvider.get(searchParameters)
     }
 
     /**
      * 得到基于覆盖顺序的目标的排序器。
      */
     fun <T> getOverrideComparator(searchParameters: ParadoxSearchParameters<T>): ParadoxOverrideComparator<T> {
-        val overrideStrategy = getOverrideStrategy(searchParameters)
-        val rootFile = searchParameters.selector.rootFile
-        val rootInfo = rootFile?.fileInfo?.rootInfo
-        val settings = when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().gameSettings.get(rootFile.path)
-            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().modSettings.get(rootFile.path)
-            else -> null
-        }
-        return ParadoxOverrideComparator(searchParameters, overrideStrategy, settings)
+        return ParadoxOverrideComparator(searchParameters)
     }
 
     /**

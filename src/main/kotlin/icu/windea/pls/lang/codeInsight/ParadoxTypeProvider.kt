@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
  * - 本地化类型 - 如果 PSI 是 [ParadoxLocalisationProperty] 或 [ParadoxLocalisationParameter] 则可用。
  * - 规则表达式 - 如果存在对应的规则表达式则可用。
  * - 作用域上下文信息 - 如果存在则可用。
- * - 覆盖方式 - 仅限全局封装变量、（作为脚本属性的）定义、本地化。
+ * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {

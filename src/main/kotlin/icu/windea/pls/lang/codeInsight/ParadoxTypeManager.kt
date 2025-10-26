@@ -17,13 +17,14 @@ import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptName
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -31,7 +32,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.model.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStringConstants
@@ -220,7 +220,7 @@ object ParadoxTypeManager {
     }
 
     /**
-     * 覆盖方式 - 仅限全局封装变量、（作为脚本属性的）定义、本地化。
+     * 覆盖方式 - 仅限（全局）封装变量、（作为脚本属性的）定义、本地化。
      */
     fun getPriority(element: PsiElement): ParadoxOverrideStrategy? {
         val targetElement = when {

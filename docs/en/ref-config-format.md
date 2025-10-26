@@ -53,10 +53,10 @@ Terminology:
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
 <!-- @see cwt/core/priorities.core.cwt -->
 
-Priority configs are used to configure how targets (files, scripted variables, definitions, localisations, complex enums) are overridden.
+Priority configs are used to configure how targets are overridden.
 
 - **Purpose**: provide a unified strategy for overriding/merging of "targets", affecting the order of effect and the sort order of non-stream queries.
-- **Applicable targets**: files, scripted variables, definitions, localisations, complex enums, etc.
+- **Applicable targets**: files, scripted variables, definitions, localisations, etc.
 - **Default value**: when no directory mapping matches, `LIOS` (last-in wins) is used.
 
 **Override strategies and behavior**:

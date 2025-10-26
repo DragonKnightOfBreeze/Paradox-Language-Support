@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.overrides
 
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxSearchParameters
@@ -21,10 +22,21 @@ import icu.windea.pls.model.ParadoxRootInfo
  * @see icu.windea.pls.lang.search.ParadoxSearchParameters
  */
 class ParadoxOverrideComparator<T>(
-    private val searchParameters: ParadoxSearchParameters<T>,
-    private val overrideStrategy: ParadoxOverrideStrategy,
-    private val settings: ParadoxGameOrModSettingsState?,
+    val searchParameters: ParadoxSearchParameters<T>
 ) : Comparator<T> {
+    val overrideStrategy by lazy { ParadoxOverrideService.getOverrideStrategy(searchParameters) }
+    val settings by lazy { computeSettings() }
+
+    private fun computeSettings(): ParadoxGameOrModSettingsState? {
+        val rootFile = searchParameters.selector.rootFile
+        val rootInfo = rootFile?.fileInfo?.rootInfo
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().gameSettings.get(rootFile.path)
+            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().modSettings.get(rootFile.path)
+            else -> null
+        }
+    }
+
     override fun compare(o1: T?, o2: T?): Int {
         val file1 = selectFile(o1) ?: return 1
         val file2 = selectFile(o2) ?: return -1
@@ -39,7 +51,7 @@ class ParadoxOverrideComparator<T>(
         val path2 = fileInfo2.path.path
         val pathResult = path1.compareTo(path2)
         if (pathResult == 0) {
-            if (settings == null) return 1 // 后到者优先
+            val settings = settings ?: return 1 // 后到者优先
             val order1 = getOrderInContext(fileInfo1, settings)
             val order2 = getOrderInContext(fileInfo2, settings)
             val orderResult = order1.compareTo(order2)
@@ -49,6 +61,7 @@ class ParadoxOverrideComparator<T>(
         }
         // 文件路径不同时，基于覆盖方式进行排序（对于 `LIOS` 和 `DUPL`，后到者优先）
         return when (overrideStrategy) {
+            null -> pathResult
             ParadoxOverrideStrategy.FIOS -> pathResult
             ParadoxOverrideStrategy.LIOS -> -pathResult
             ParadoxOverrideStrategy.DUPL -> -pathResult

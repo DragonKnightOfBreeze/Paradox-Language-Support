@@ -43,11 +43,10 @@ class IncorrectOverrideForDefinitionInspection : OverrideRelatedInspectionBase()
             }
 
             private fun visitDefinition(element: ParadoxScriptProperty) {
-                val definitionInfo = element.definitionInfo ?: return
-
-                val priority = ParadoxOverrideService.getOverrideStrategy(element)
+                val priority = ParadoxOverrideService.getOverrideStrategy(element) ?: return
                 if (priority == ParadoxOverrideStrategy.ORDERED) return // skip for ORDERED
 
+                val definitionInfo = element.definitionInfo ?: return
                 val name = definitionInfo.name
                 val type = definitionInfo.type
                 if (name.isEmpty()) return // anonymous -> skipped

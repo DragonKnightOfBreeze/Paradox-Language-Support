@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.filePathPatternsForPriority
 import icu.windea.pls.core.matchesAntPattern
@@ -12,8 +11,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
+import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -31,7 +29,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
 
     override fun get(target: Any): ParadoxOverrideStrategy? {
         val filePathPatterns = getFilePathPatterns(target)
-        if (filePathPatterns.isEmpty()) return null
+        if (filePathPatterns == null) return null
         val gameType = selectGameType(target) ?: return null
         val filePathMap = getFilePathMap(gameType)
         val overrideStrategy = getOverrideStrategy(filePathPatterns, filePathMap)
@@ -40,65 +38,52 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
 
     override fun get(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
         val filePathPatterns = getFilePathPatterns(searchParameters)
-        if (filePathPatterns.isEmpty()) return null
+        if (filePathPatterns == null) return null
         val gameType = searchParameters.selector.gameType ?: return null
         val filePathMap = getFilePathMap(gameType)
         val overrideStrategy = getOverrideStrategy(filePathPatterns, filePathMap)
         return overrideStrategy
     }
 
-    private fun getFilePathPatterns(target: Any): Set<String> {
+    private fun getFilePathPatterns(target: Any): Set<String>? {
         return when {
             target is ParadoxScriptScriptedVariable -> {
-                val targetPath = target.fileInfo?.path?.path ?: return emptySet()
+                val targetPath = target.fileInfo?.path?.path ?: return null
                 val p = "common/scripted_variables"
                 p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
             }
             target is ParadoxScriptDefinitionElement -> {
-                val definitionInfo = target.definitionInfo ?: return emptySet()
+                val definitionInfo = target.definitionInfo ?: return null
                 val definitionType = definitionInfo.type
                 val configGroup = definitionInfo.configGroup
                 val config = configGroup.types[definitionType] ?: return emptySet()
                 config.filePathPatternsForPriority
             }
-            target is ParadoxComplexEnumValueElement -> {
-                val enumName = target.enumName
-                val configGroup = PlsFacade.getConfigGroup(target.project, target.gameType)
-                val config = configGroup.complexEnums[enumName] ?: return emptySet()
-                config.filePathPatternsForPriority
-            }
             target is ParadoxLocalisationProperty -> {
-                val localisationInfo = target.localisationInfo ?: return emptySet()
+                val localisationInfo = target.localisationInfo ?: return null
                 val localisationType = localisationInfo.type
-                val targetPath = target.fileInfo?.path?.path ?: return emptySet()
+                val targetPath = target.fileInfo?.path?.path ?: return null
                 val p = when (localisationType) {
                     ParadoxLocalisationType.Normal -> "localisation"
                     ParadoxLocalisationType.Synced -> "localisation_synced"
                 }
                 p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
             }
-            else -> emptySet()
+            else -> null
         }
     }
 
-    private fun getFilePathPatterns(searchParameters: ParadoxSearchParameters<*>): Set<String> {
+    private fun getFilePathPatterns(searchParameters: ParadoxSearchParameters<*>): Set<String>? {
         return when {
             searchParameters is ParadoxScriptedVariableSearch.SearchParameters -> {
                 val p = "common/scripted_variables"
                 p.singleton.set()
             }
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
-                val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return emptySet()
-                val gameType = searchParameters.selector.gameType ?: return emptySet()
+                val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
+                val gameType = searchParameters.selector.gameType ?: return null
                 val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
                 val config = configGroup.types.get(definitionType) ?: return emptySet()
-                config.filePathPatternsForPriority
-            }
-            searchParameters is ParadoxComplexEnumValueSearch.SearchParameters -> {
-                val enumName = searchParameters.enumName
-                val gameType = searchParameters.selector.gameType ?: return emptySet()
-                val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
-                val config = configGroup.complexEnums.get(enumName) ?: return emptySet()
                 config.filePathPatternsForPriority
             }
             searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
@@ -109,21 +94,28 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 val p = "localisation_synced"
                 p.singleton.set()
             }
-            else -> emptySet()
+            // 额外兼容
+            searchParameters is ParadoxDefineSearch.SearchParameters -> {
+                val p = "common/defines"
+                p.singleton.set()
+            }
+            else -> null
         }
     }
 
-    private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxOverrideStrategy>): ParadoxOverrideStrategy? {
+    private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxOverrideStrategy>): ParadoxOverrideStrategy {
         // TODO 1.3.35+ check performance
 
+        if (filePathPatterns.isEmpty()) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
         val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it] }
         if (fastResult != null) return fastResult
-        val result = filePathPatterns.firstNotNullOfOrNull {
-            if (it.none { c -> c == '*' || c == '?' }) return null
-            filePathMap.firstNotNullOfOrNull { (k, v) ->
-                if (k.matchesAntPattern(it)) v else null
+        val result = filePathPatterns.firstNotNullOfOrNull { p ->
+            if (p.none { c -> c == '*' || c == '?' }) null
+            else filePathMap.firstNotNullOfOrNull { (k, v) ->
+                if (k.matchesAntPattern(p)) v else null
             }
         }
+        if (result == null) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
         return result
     }
 }
