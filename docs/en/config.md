@@ -50,7 +50,7 @@ The config files inside are user-defined and apply to all projects. Changes requ
 
 The config files inside are user-defined and only apply to the current project. Changes require manual import.
 
-### Override Strategy {#config-group-overridden}
+### Override Strategy {#config-group-override}
 
 Configs are overridden in a later-wins manner based on file path and config ID.
 

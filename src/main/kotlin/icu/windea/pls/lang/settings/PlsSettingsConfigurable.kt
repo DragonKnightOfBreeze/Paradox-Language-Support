@@ -200,6 +200,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(documentationSettings::showGeneratedModifiers)
                     contextHelp(PlsBundle.message("settings.documentation.showGeneratedModifiers.tip"))
                 }
+                // showOverrideStrategies
+                row {
+                    checkBox(PlsBundle.message("settings.documentation.showOverrideStrategy"))
+                        .bindSelected(documentationSettings::showOverrideStrategy)
+                    contextHelp(PlsBundle.message("settings.documentation.showOverrideStrategy.tip"))
+                }
             }
             // completion
             collapsibleGroup(PlsBundle.message("settings.completion")) {

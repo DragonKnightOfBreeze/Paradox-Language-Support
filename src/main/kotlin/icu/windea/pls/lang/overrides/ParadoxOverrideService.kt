@@ -8,7 +8,7 @@ import icu.windea.pls.lang.settings.ParadoxModSettingsState
 object ParadoxOverrideService {
     /**
      * 得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
-     * 如果返回值为 `null`，则表示不适用覆盖策略。
+     * 如果返回值为 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
         return ParadoxOverrideStrategyProvider.get(target)
@@ -16,7 +16,7 @@ object ParadoxOverrideService {
 
     /**
      * 从查询参数得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
-     * 如果返回值为 `null`，则表示不适用覆盖策略。
+     * 如果返回值为 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
         return ParadoxOverrideStrategyProvider.get(searchParameters)

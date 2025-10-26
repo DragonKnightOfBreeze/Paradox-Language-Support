@@ -11,7 +11,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
@@ -20,8 +19,6 @@ import icu.windea.pls.core.documentation.content
 import icu.windea.pls.core.documentation.definition
 import icu.windea.pls.core.documentation.getSections
 import icu.windea.pls.core.documentation.initSections
-import icu.windea.pls.core.documentation.section
-import icu.windea.pls.core.documentation.sections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.anonymous
@@ -36,6 +33,9 @@ import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
@@ -63,7 +63,6 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
@@ -90,6 +89,7 @@ object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
     private const val SECTIONS_IMAGES = 1
     private const val SECTIONS_LOC = 2
+    private const val SECTIONS_EXTRA = 3
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {
@@ -126,7 +126,7 @@ object ParadoxDocumentationManager {
 
     private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            if (!hint) initSections(3)
+            if (!hint) initSections()
             buildComplexEnumValueDefinition(element)
             if (hint) return@buildDocumentation
             buildDocumentationContent(element)
@@ -136,7 +136,7 @@ object ParadoxDocumentationManager {
 
     private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            if (!hint) initSections(3)
+            if (!hint) initSections()
             buildDynamicValueDefinition(element)
             if (hint) return@buildDocumentation
             buildDocumentationContent(element)
@@ -146,7 +146,7 @@ object ParadoxDocumentationManager {
 
     private fun getModifierDoc(element: ParadoxModifierElement, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            if (!hint) initSections(3)
+            if (!hint) initSections()
             buildModifierDefinition(element)
             if (hint) return@buildDocumentation
             buildSections()
@@ -156,10 +156,13 @@ object ParadoxDocumentationManager {
     private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable, originalElement: PsiElement?, hint: Boolean): String? {
         val name = element.name ?: return null
         return buildDocumentation {
+            if (!hint) initSections()
             buildScriptedVariableDefinition(element, name)
             if (hint) return@buildDocumentation
             buildDocumentationContent(element)
             buildLineCommentContent(element)
+            addOverrideStrategy(element)
+            buildSections()
         }
     }
 
@@ -177,12 +180,13 @@ object ParadoxDocumentationManager {
 
     private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            // 对于相关图片信息，在definition部分显示在相关本地化信息之后，在sections部分则显示在之前
-            if (!hint) initSections(3)
+            // 对于相关图片信息，在 definition 部分显示在相关本地化信息之后，在 sections 部分则显示在之前
+            if (!hint) initSections()
             buildDefinitionDefinition(element, definitionInfo)
             if (hint) return@buildDocumentation
             buildDocumentationContent(element)
             buildLineCommentContent(element)
+            addOverrideStrategy(element)
             buildSections()
         }
     }
@@ -205,10 +209,13 @@ object ParadoxDocumentationManager {
 
     private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
+            if (!hint) initSections()
             buildLocalisationDefinition(element, localisationInfo)
             if (hint) return@buildDocumentation
             buildLineCommentContent(element)
-            buildLocalisationSections(element)
+            addTextForLocalisation(element)
+            addOverrideStrategy(element)
+            buildSections()
         }
     }
 
@@ -231,7 +238,7 @@ object ParadoxDocumentationManager {
         if (hint) return null
         if (element is ParadoxLocalisationIconArgument) return null
         return buildDocumentation {
-            initSections(1)
+            initSections()
             buildLocalisationArgumentInfo(element)
             buildSections()
         }
@@ -302,7 +309,7 @@ object ParadoxDocumentationManager {
             run {
                 if (nameLocalisation == null) return@run
                 val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
-                sections.put("name", richText)
+                sections["name"] = richText
             }
         }
     }
@@ -355,7 +362,7 @@ object ParadoxDocumentationManager {
             run {
                 if (nameLocalisation == null) return@run
                 val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
-                sections.put("name", richText)
+                sections["name"] = richText
             }
         }
     }
@@ -422,12 +429,12 @@ object ParadoxDocumentationManager {
             run {
                 if (nameLocalisation == null) return@run
                 val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
-                sections.put("name", richText)
+                sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
                 val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(descLocalisation)
-                sections.put("desc", richText)
+                sections["desc"] = richText
             }
         }
     }
@@ -458,13 +465,13 @@ object ParadoxDocumentationManager {
             run {
                 if (iconFile == null) return@run
                 val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-                sections.put("icon", buildDocumentation { appendImgTag(url) })
+                sections["icon"] = buildDocumentation { appendImgTag(url) }
             }
         }
     }
 
     private fun DocumentationBuilder.addModifierScope(element: ParadoxModifierElement, name: String, configGroup: CwtConfigGroup) {
-        // 即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
+        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
@@ -473,11 +480,11 @@ object ParadoxDocumentationManager {
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, contextElement))
+            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, contextElement)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, contextElement)
     }
 
     private fun DocumentationBuilder.addScopeContext(element: PsiElement, name: String, configGroup: CwtConfigGroup) {
@@ -494,8 +501,8 @@ object ParadoxDocumentationManager {
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
         if (scopeContext == null) return
         // TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
-        // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
-        sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
+        // 因为这里的 `referenceElement` 是整个 `stringExpression`，得到的作用域上下文会是脚本表达式最终的作用域上下文
+        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.buildScriptedVariableDefinition(element: ParadoxScriptScriptedVariable, name: String) {
@@ -534,7 +541,7 @@ object ParadoxDocumentationManager {
             run {
                 if (nameLocalisation == null) return@run
                 val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
-                sections.put("name", richText)
+                sections["name"] = richText
             }
         }
     }
@@ -572,7 +579,7 @@ object ParadoxDocumentationManager {
             // 加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo)
 
-            // 加上相关图片信息：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括可选且没有对应的图片的项，按解析顺序排序
+            // 加上相关图片信息：去重后的一组图片文件的 `filePath` ，或者 `sprite` 的 `definitionKey`，不包括可选且没有对应的图片的项，按解析顺序排序
             addRelatedImagesForDefinition(element, definitionInfo)
 
             // 加上生成的修正的信息
@@ -648,12 +655,12 @@ object ParadoxDocumentationManager {
             if (sectionKeys.contains(key)) continue
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
-                map.put(key, resolveResult.message)
+                map[key] = resolveResult.message
             } else if (resolveResult.element != null) {
-                map.put(key, buildDocumentation {
+                map[key] = buildDocumentation {
                     val link = ReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
                     appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
-                })
+                }
             } else if (required) {
                 map.putIfAbsent(key, resolveResult.name)
             }
@@ -663,7 +670,7 @@ object ParadoxDocumentationManager {
                 if (sections != null && PlsFacade.getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                     // 加上渲染后的相关本地化文本
                     val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(resolvedElement)
-                    sections.put(key, richText)
+                    sections[key] = richText
                 }
             }
         }
@@ -685,7 +692,7 @@ object ParadoxDocumentationManager {
             if (sectionKeys.contains(key)) continue
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
-                map.put(key, resolveResult.message)
+                map[key] = resolveResult.message
             } else if (resolveResult.element != null) {
                 val nameOrFilePath = resolveResult.nameOrFilePath
                 val gameType = definitionInfo.gameType
@@ -699,7 +706,7 @@ object ParadoxDocumentationManager {
                         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrFilePath.escapeXml(), context = element)
                     }
                 }
-                map.put(key, v)
+                map[key] = v
             } else if (required) {
                 map.putIfAbsent(key, resolveResult.nameOrFilePath)
             }
@@ -718,7 +725,7 @@ object ParadoxDocumentationManager {
                         else -> null
                     }
                     if (url != null) {
-                        sections.put(key, buildDocumentation { appendImgTag(url) })
+                        sections[key] = buildDocumentation { appendImgTag(url) }
                     }
                 }
             }
@@ -737,7 +744,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        // 即使是在CWT文件中，如果可以推断得到CWT规则分组，也显示作用域信息
+        // 即使是在 CWT 文件中，如果可以推断得到规则分组，也显示作用域信息
         if (!PlsFacade.getSettings().documentation.showScopes) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
@@ -745,11 +752,11 @@ object ParadoxDocumentationManager {
         val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
-            sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, element))
+            sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)
         }
 
         val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
-        sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, element))
+        sections[PlsBundle.message("sectionTitle.supportedScopes")] = getScopesText(supportedScopes, gameType, element)
     }
 
     private fun DocumentationBuilder.addScopeContextForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
@@ -764,7 +771,7 @@ object ParadoxDocumentationManager {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
         if (scopeContext == null) return
-        sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
+        sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
     private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
@@ -789,12 +796,12 @@ object ParadoxDocumentationManager {
             }
             append("</pre>")
         }
-        sections.put(PlsBundle.message("sectionTitle.parameters"), parametersText)
+        sections[PlsBundle.message("sectionTitle.parameters")] = parametersText
     }
 
     private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
-        // 有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
+        // 有些游戏类型直接通过 CWT 文件指定了事件类型，而非 CSV 文件，忽略这种情况
         val configGroup = definitionInfo.configGroup
         val gameType = configGroup.gameType
         val config = definitionInfo.configGroup.extendedOnActions.findFromPattern(definitionInfo.name, element, definitionInfo.configGroup)
@@ -854,9 +861,11 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocalisationProperty) {
+    private fun DocumentationBuilder.addTextForLocalisation(element: ParadoxLocalisationProperty) {
         // 加上渲染后的本地化文本
         if (!PlsFacade.getSettings().documentation.renderLocalisationForLocalisations) return
+
+        val sections = getSections(SECTIONS_LOC) ?: return
         val locale = selectLocale(element)
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element, locale)
         val usedElement = when {
@@ -872,11 +881,8 @@ object ParadoxDocumentationManager {
             }
         }
         val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(usedElement)
-        if (richText.isNotEmpty()) {
-            sections {
-                section(PlsBundle.message("sectionTitle.text"), richText)
-            }
-        }
+        if (richText.isEmpty()) return
+        sections[PlsBundle.message("sectionTitle.text")] = richText
     }
 
     private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
@@ -898,6 +904,14 @@ object ParadoxDocumentationManager {
         ParadoxLocalisationArgumentManager.getInfo(element).let {
             sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
         }
+    }
+
+    private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
+        if (!PlsFacade.getSettings().documentation.showOverrideStrategy) return
+
+        val sections = getSections(SECTIONS_EXTRA) ?: return
+        val overrideStrategy = ParadoxOverrideService.getOverrideStrategy(element) ?: return
+        sections[PlsBundle.message("sectionTitle.overrideStrategy")] = overrideStrategy.id
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {

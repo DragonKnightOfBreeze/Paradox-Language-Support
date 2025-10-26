@@ -10,10 +10,7 @@ import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.properties.fromCommandDelimitedString
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
-import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
-import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration
-import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -71,6 +68,7 @@ class PlsSettingsState : BaseState() {
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
      * @property showGeneratedModifiers 是否需要在文档中显示生成的修正的信息（如果支持且存在）。
+     * @property showOverrideStrategy 是否需要在文档中显示使用的覆盖方式（如果适用）。
      */
     @Tag("documentation")
     class DocumentationState : BaseState() {
@@ -87,6 +85,7 @@ class PlsSettingsState : BaseState() {
         var showScopeContext by property(true)
         var showParameters by property(true)
         var showGeneratedModifiers by property(true)
+        var showOverrideStrategy by property(true)
     }
 
     /**

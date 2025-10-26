@@ -106,7 +106,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
     private fun getOverrideStrategy(filePathPatterns: Set<String>, filePathMap: Map<String, ParadoxOverrideStrategy>): ParadoxOverrideStrategy {
         // TODO 1.3.35+ check performance
 
-        if (filePathPatterns.isEmpty()) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
+        if (filePathPatterns.isEmpty()) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖方式，默认使用 `LIOS`
         val fastResult = filePathPatterns.firstNotNullOfOrNull { filePathMap[it] }
         if (fastResult != null) return fastResult
         val result = filePathPatterns.firstNotNullOfOrNull { p ->
@@ -115,7 +115,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 if (k.matchesAntPattern(p)) v else null
             }
         }
-        if (result == null) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
+        if (result == null) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖方式，默认使用 `LIOS`
         return result
     }
 }
