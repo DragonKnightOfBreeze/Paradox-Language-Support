@@ -3,11 +3,13 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -16,6 +18,8 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -105,16 +109,34 @@ object ParadoxOverrideService {
 
     fun <T : PsiElement> isOverrideCorrect(overrideResult: ParadoxOverrideResult<T>): Boolean {
         val target = overrideResult.target
+        val results = overrideResult.results
+        val overrideStrategy = overrideResult.overrideStrategy
+
+        if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return true
         if (target is PsiFileSystemItem) return true
-        val fileInfo = target.fileInfo ?: return true
-        val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return true
-        val firstResult = overrideResult.results.first()
-        if (firstResult is PsiFileSystemItem) return true
-        val firstFileInfo = firstResult.fileInfo ?: return true
-        val firstRootInfo = firstFileInfo.rootInfo
-        if (firstRootInfo !is ParadoxRootInfo.MetadataBased) return true
-        // different root file -> incorrect override
-        return firstRootInfo.rootFile == rootInfo.rootFile
+
+        run {
+            // require same root VS first result (injected roots are ignored)
+            // incorrect overrides in same root are ignored
+            val rootInfo = selectRootFile(target)?.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()
+            if (rootInfo == null) return@run
+            val firstRootInfo = results.firstNotNullOfOrNull { r ->
+                selectRootFile(r)?.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()
+            }
+            if (firstRootInfo == null) return@run
+            if (rootInfo.rootFile != firstRootInfo.rootFile) return false
+        }
+        run {
+            // require same file path VS vanilla result (injected roots are ignored)
+            if (overrideStrategy != ParadoxOverrideStrategy.DUPL) return@run
+            val fileInfo = selectFile(overrideResult.target)?.fileInfo
+            if (fileInfo == null) return@run
+            val vanillaFileInfo = results.firstNotNullOfOrNull { r ->
+                selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.Game }
+            }
+            if (vanillaFileInfo == null) return@run
+            if (fileInfo.path != vanillaFileInfo.path) return false
+        }
+        return true
     }
 }
