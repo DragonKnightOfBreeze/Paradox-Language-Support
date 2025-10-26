@@ -21,6 +21,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -76,6 +77,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
     private fun getFilePathPatterns(searchParameters: ParadoxSearchParameters<*>): Set<String>? {
         return when {
             searchParameters is ParadoxScriptedVariableSearch.SearchParameters -> {
+                if (searchParameters.type == ParadoxScriptedVariableType.Local) return null // 排除本地封装变量
                 val p = "common/scripted_variables"
                 p.singleton.set()
             }

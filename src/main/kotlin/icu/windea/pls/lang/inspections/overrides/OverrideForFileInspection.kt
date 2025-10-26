@@ -4,12 +4,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingFilesFix
-import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.selector.file
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
 
 /**
@@ -22,21 +19,19 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 class OverrideForFileInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
-        val project = holder.project
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
         if (!ParadoxFileManager.canOverrideFile(file, fileInfo.fileType)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitFile(file: PsiFile) {
-                val path = fileInfo.path.path
-                val selector = selector(project, file).file()
-                val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
-                if (results.size < 2) return // no override -> skip
+                val overrideResult = ParadoxOverrideService.getOverrideResultForFile(file)
+                if (overrideResult == null) return
 
                 val locationElement = file
-                val message = PlsBundle.message("inspection.overrideForFile.desc", path)
-                val fix = NavigateToOverridingFilesFix(path, file, results)
+                val (key, target, results) = overrideResult
+                val message = PlsBundle.message("inspection.overrideForFile.desc", key)
+                val fix = NavigateToOverridingFilesFix(key, target, results)
                 holder.registerProblem(locationElement, message, fix)
             }
         }

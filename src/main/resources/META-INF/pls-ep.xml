@@ -256,8 +256,9 @@
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport" order="last"/>
     <localisationIconSupport implementation="icu.windea.pls.ep.resolve.ParadoxBaseLocalisationIconSupport$Stellaris"/>
 
+    <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>
+    <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider"/>
     <overrideStrategyProvider id="base" implementation="icu.windea.pls.ep.overrides.ParadoxBaseOverrideStrategyProvider"/>
-    <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider" order="first"/>
 
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxGameJsonImporter"/>
     <modImporter implementation="icu.windea.pls.ep.tools.importer.ParadoxLauncherJsonImporter"/>

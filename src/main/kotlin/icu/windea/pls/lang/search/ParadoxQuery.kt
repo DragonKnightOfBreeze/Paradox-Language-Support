@@ -20,7 +20,7 @@ import icu.windea.pls.lang.search.selector.ParadoxSelector
  */
 class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     private val original: Query<T>,
-    val searchParameters: P
+    private val searchParameters: P
 ) : AbstractQuery<T>() {
     val overrideComparator by lazy { ParadoxOverrideService.getOverrideComparator(searchParameters) }
     val finalComparator by lazy { computeFinalComparator() }
@@ -73,7 +73,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 
         val selector = searchParameters.selector
         val comparator = Comparator<T> { o1, o2 -> finalComparator.compare(o1, o2) }
-        val result = sortedSetOf(comparator)
+        val result = sortedSetOf(comparator).synced()
         delegateProcessResults(original) {
             ProgressManager.checkCanceled()
             if (selector.select(it)) {

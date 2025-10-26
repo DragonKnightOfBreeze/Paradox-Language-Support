@@ -5,15 +5,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
-import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.scriptedVariable
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -33,7 +28,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class IncorrectOverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
-        val project = holder.project
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
         if (!ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return PsiElementVisitor.EMPTY_VISITOR
@@ -44,26 +38,14 @@ class IncorrectOverrideForScriptedVariableInspection : OverrideRelatedInspection
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
-                val priority = ParadoxOverrideService.getOverrideStrategy(element) ?: return
-                if (priority == ParadoxOverrideStrategy.ORDERED) return // skip for ORDERED
+                val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, file)
+                if (overrideResult == null) return
+                if (ParadoxOverrideService.isOverrideCorrect(overrideResult)) return
 
-                val name = element.name
-                if (name.isNullOrEmpty()) return // anonymous -> skipped
-                if (name.isParameterized()) return // parameterized -> ignored
-                val selector = selector(project, file).scriptedVariable()
-                val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
-                if (results.size < 2) return // no override -> skip
-                val firstResult = results.first()
-                val firstRootInfo = firstResult.fileInfo?.rootInfo
-                if (firstRootInfo !is ParadoxRootInfo.MetadataBased) return
-                val rootInfo = fileInfo.rootInfo
-                if (rootInfo !is ParadoxRootInfo.MetadataBased) return
-                if (firstRootInfo.rootFile == rootInfo.rootFile) return
-
-                // different root file -> incorrect override
                 val locationElement = element.scriptedVariableName
-                val message = PlsBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", name, priority)
-                val fix = NavigateToOverridingScriptedVariablesFix(name, element, results)
+                val (key, target, results, overrideStrategy) = overrideResult
+                val message = PlsBundle.message("inspection.incorrectOverrideForScriptedVariable.desc", key, overrideStrategy)
+                val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
                 holder.registerProblem(locationElement, message, fix)
             }
         }

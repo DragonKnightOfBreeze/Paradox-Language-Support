@@ -5,11 +5,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.quickfix.navigation.NavigateToOverridingScriptedVariablesFix
-import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
-import icu.windea.pls.lang.search.selector.scriptedVariable
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -24,7 +21,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
-        val project = holder.project
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
         if (!ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return PsiElementVisitor.EMPTY_VISITOR
@@ -35,16 +31,13 @@ class OverrideForScriptedVariableInspection : OverrideRelatedInspectionBase() {
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
-                val name = element.name
-                if (name.isNullOrEmpty()) return // anonymous -> skipped
-                if (name.isParameterized()) return // parameterized -> ignored
-                val selector = selector(project, file).scriptedVariable()
-                val results = ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll()
-                if (results.size < 2) return // no override -> skip
+                val overrideResult = ParadoxOverrideService.getOverrideResultForGlobalScriptedVariable(element, file)
+                if (overrideResult == null) return
 
                 val locationElement = element.scriptedVariableName
-                val message = PlsBundle.message("inspection.overrideForScriptedVariable.desc", name)
-                val fix = NavigateToOverridingScriptedVariablesFix(name, element, results)
+                val (key, target, results) = overrideResult
+                val message = PlsBundle.message("inspection.overrideForScriptedVariable.desc", key)
+                val fix = NavigateToOverridingScriptedVariablesFix(key, target, results)
                 holder.registerProblem(locationElement, message, fix)
             }
         }

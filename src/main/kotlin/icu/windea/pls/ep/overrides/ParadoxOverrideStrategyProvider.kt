@@ -15,14 +15,14 @@ import icu.windea.pls.lang.selectGameType
 @WithGameTypeEP
 interface ParadoxOverrideStrategyProvider {
     /**
-     * 得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
-     * 如果返回值为 `null`，则表示不适用覆盖方式。
+     * 得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun get(target: Any): ParadoxOverrideStrategy?
 
     /**
-     * 从查询参数得到目标（文件、封装变量、定义、本地化等）使用的覆盖方式。
-     * 如果返回值为 `null`，则表示不适用覆盖方式。
+     * 从查询参数得到目标（文件、全局封装变量、定义、本地化等）使用的覆盖方式。
+     * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun get(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy?
 
