@@ -9,7 +9,6 @@ import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
@@ -19,10 +18,10 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -79,6 +78,10 @@ object ParadoxOverrideService {
         return ParadoxOverrideResult(path, file, results, overrideStrategy)
     }
 
+    /**
+     * 检查是否存在对（全局）封装变量的重载。
+     * 如果返回 `null`，则表示使用的覆盖方式为 `ORDERED`，或者不存在重载。
+     */
     fun getOverrideResultForGlobalScriptedVariable(element: ParadoxScriptScriptedVariable, file: PsiFile): ParadoxOverrideResult<ParadoxScriptScriptedVariable>? {
         val name = element.name
         if (name.isNullOrEmpty()) return null // anonymous -> skipped
@@ -92,6 +95,10 @@ object ParadoxOverrideService {
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
     }
 
+    /**
+     * 检查是否存在对定义的重载。
+     * 如果返回 `null`，则表示使用的覆盖方式为 `ORDERED`，或者不存在重载。
+     */
     fun getOverrideResultForDefinition(element: ParadoxScriptProperty, file: PsiFile): ParadoxOverrideResult<ParadoxScriptProperty>? {
         val definitionInfo = element.definitionInfo ?: return null
         val name = definitionInfo.name
@@ -107,36 +114,53 @@ object ParadoxOverrideService {
         return ParadoxOverrideResult(name, element, results, overrideStrategy)
     }
 
+    /**
+     * 检查对目标的重载是否正确。
+     * - `FIOS` `LIOS` - 目标必须与第一个重载项拥有相同的文件路径和根目录。
+     * - `DUPL` - 目标必须与第一个来自游戏文件的重载项拥有相同的文件路径。
+     * - `ORDERED` - 总是正确。
+     */
     fun <T : PsiElement> isOverrideCorrect(overrideResult: ParadoxOverrideResult<T>): Boolean {
         val target = overrideResult.target
         val results = overrideResult.results
         val overrideStrategy = overrideResult.overrideStrategy
 
-        if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return true
         if (target is PsiFileSystemItem) return true
+        when (overrideStrategy) {
+            ParadoxOverrideStrategy.FIOS, ParadoxOverrideStrategy.LIOS -> {
+                // require same file path VS first result (injected roots are ignored)
+                val fileInfo = selectFile(target)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
+                if (fileInfo == null) return true
+                val firstFileInfo = results.firstNotNullOfOrNull { r ->
+                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.MetadataBased }
+                }
+                if (firstFileInfo == null) return true
+                return isSameFilePath(fileInfo, firstFileInfo) && isSameRootDirectory(fileInfo, firstFileInfo)
+            }
+            ParadoxOverrideStrategy.DUPL -> {
+                // require same file path VS vanilla result (injected roots are ignored)
+                val fileInfo = selectFile(overrideResult.target)?.fileInfo
+                if (fileInfo == null) return true
+                val vanillaFileInfo = results.firstNotNullOfOrNull { r ->
+                    selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.Game }
+                }
+                if (vanillaFileInfo == null) return true
+                return isSameFilePath(fileInfo, vanillaFileInfo)
+            }
+            ParadoxOverrideStrategy.ORDERED -> {
+                // always true
+                return true
+            }
+        }
+    }
 
-        run {
-            // require same root VS first result (injected roots are ignored)
-            // incorrect overrides in same root are ignored
-            val rootInfo = selectRootFile(target)?.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()
-            if (rootInfo == null) return@run
-            val firstRootInfo = results.firstNotNullOfOrNull { r ->
-                selectRootFile(r)?.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>()
-            }
-            if (firstRootInfo == null) return@run
-            if (rootInfo.rootFile != firstRootInfo.rootFile) return false
-        }
-        run {
-            // require same file path VS vanilla result (injected roots are ignored)
-            if (overrideStrategy != ParadoxOverrideStrategy.DUPL) return@run
-            val fileInfo = selectFile(overrideResult.target)?.fileInfo
-            if (fileInfo == null) return@run
-            val vanillaFileInfo = results.firstNotNullOfOrNull { r ->
-                selectFile(r)?.fileInfo?.takeIf { it.rootInfo is ParadoxRootInfo.Game }
-            }
-            if (vanillaFileInfo == null) return@run
-            if (fileInfo.path != vanillaFileInfo.path) return false
-        }
-        return true
+    private fun isSameRootDirectory(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
+        val rootInfo1 = fileInfo1.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        val rootInfo2 = fileInfo2.rootInfo.castOrNull<ParadoxRootInfo.MetadataBased>() ?: return true
+        return rootInfo1.rootFile == rootInfo2.rootFile
+    }
+
+    private fun isSameFilePath(fileInfo1: ParadoxFileInfo, fileInfo2: ParadoxFileInfo): Boolean {
+        return fileInfo1.path == fileInfo2.path
     }
 }

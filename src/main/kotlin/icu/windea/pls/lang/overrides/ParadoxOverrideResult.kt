@@ -3,7 +3,7 @@ package icu.windea.pls.lang.overrides
 import com.intellij.psi.PsiElement
 
 /**
- * 覆盖结果。
+ * 重载结果。
  *
  * 用于检查是否存在对目标的重载以及重载是否正确。
  *

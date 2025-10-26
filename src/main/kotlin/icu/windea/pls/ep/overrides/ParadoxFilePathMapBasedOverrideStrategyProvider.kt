@@ -4,9 +4,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.filePathPatternsForPriority
 import icu.windea.pls.core.matchesAntPattern
-import icu.windea.pls.core.util.set
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
@@ -51,7 +49,8 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
             target is ParadoxScriptScriptedVariable -> {
                 val targetPath = target.fileInfo?.path?.path ?: return null
                 val p = "common/scripted_variables"
-                p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
+                if (!p.matchesPath(targetPath)) return null
+                setOf(p)
             }
             target is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = target.definitionInfo ?: return null
@@ -68,7 +67,8 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                     ParadoxLocalisationType.Normal -> "localisation"
                     ParadoxLocalisationType.Synced -> "localisation_synced"
                 }
-                p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
+                if (!p.matchesPath(targetPath)) return null
+                setOf(p)
             }
             else -> null
         }
@@ -79,7 +79,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
             searchParameters is ParadoxScriptedVariableSearch.SearchParameters -> {
                 if (searchParameters.type == ParadoxScriptedVariableType.Local) return null // 排除本地封装变量
                 val p = "common/scripted_variables"
-                p.singleton.set()
+                setOf(p)
             }
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
@@ -90,16 +90,16 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
             }
             searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
                 val p = "localisation"
-                p.singleton.set()
+                setOf(p)
             }
             searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
                 val p = "localisation_synced"
-                p.singleton.set()
+                setOf(p)
             }
             // 额外兼容
             searchParameters is ParadoxDefineSearch.SearchParameters -> {
                 val p = "common/defines"
-                p.singleton.set()
+                setOf(p)
             }
             else -> null
         }

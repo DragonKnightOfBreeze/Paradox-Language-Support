@@ -17,7 +17,7 @@ class NavigateToRecursionsFix(
     override fun getPopupTitle(editor: Editor) = PlsBundle.message("fix.navigateTo.recursions.popup.title", key)
 
     override fun getPopupText(editor: Editor, value: PsiElement): String {
-        val file = editor.virtualFile ?: return PlsBundle.message("fix.navigate.popup.text.0", key)
+        val file = value.containingFile ?: return PlsBundle.message("fix.navigate.popup.text.0", key)
         val fileInfo = file.fileInfo ?: return PlsBundle.message("fix.navigate.popup.text.0", key)
         val rootInfo = fileInfo.rootInfo
         if ((rootInfo !is ParadoxRootInfo.MetadataBased)) return PlsBundle.message("fix.navigate.popup.text.0", key)

@@ -1,0 +1,5 @@
+# expect dupl - vanilla declaration is in `01_ruler_jobs.txt`
+politician = {
+    category = ruler
+    # ...
+}

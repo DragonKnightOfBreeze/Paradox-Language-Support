@@ -1,0 +1,2 @@
+# expect fios - vanilla declaration is in `00_scripted_variables.txt`
+@discovery_weight = 3
