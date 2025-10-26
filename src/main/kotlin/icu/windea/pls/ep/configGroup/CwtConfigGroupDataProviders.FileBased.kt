@@ -172,7 +172,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val configs = property.properties ?: continue
                     for (config in configs) {
                         val k = config.key.removePrefix("game/").normalizePath().orNull() ?: continue
-                        val v = config.stringValue?.orNull()?.let { ParadoxOverrideStrategy.get(it.lowercase()) } ?: continue
+                        val v = config.stringValue?.orNull()?.let { ParadoxOverrideStrategy.get(it.uppercase()) } ?: continue
                         configGroup.priorities[k] = v
                     }
                 }
