@@ -3,7 +3,11 @@ package icu.windea.pls.lang.overrides
 /**
  * 覆盖方式。
  *
- * 用于进行查询排序，并提供相关的提示和代码检查。
+ * 说明：
+ * - 用于进行查询排序，并提供相关的提示和代码检查。
+ * - 全局封装变量的覆盖方式为 `FIOS`。
+ * - 定义默认使用的覆盖方式为 `LIOS`。
+ * - 本地化的覆盖方式为 `LIOS`。`replace` 目录下的拥有更高的优先级（尚不兼容这种情况）。
  *
  * 参见：[优先级规则](https://windea.icu/Paradox-Language-Support/ref-config-format.html#config-priority)
  *

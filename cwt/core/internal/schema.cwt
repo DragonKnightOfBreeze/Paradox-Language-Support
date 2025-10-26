@@ -1,5 +1,5 @@
 priorities = {
-    $path = $enum:priority$
+    $path = $enum:override_strategy$
 }
 
 sysstem_scopes = {
@@ -305,7 +305,7 @@ $$data_expression = {
     re.i:$re$
 }
 
-$enum:priority$ = { fios lios ordered }
+$enum:override_strategy$ = { fios lios dupl ordered }
 $enum:severity$ = { error warning info hint }
 $enum:link_type$ = { scope value both }
 $enum:context_configs_type$ = { single multiple }
