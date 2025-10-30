@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.index.ParadoxFilePathIndex
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 提供对路径引用表达式的支持。
@@ -36,7 +37,7 @@ interface ParadoxPathReferenceExpressionSupport {
      * @param configExpression 对应的规则表达式。拥有数种写法的文件路径表达式。
      * @param pathReference 作为值的字符串。即脚本文件中使用的路径表达式。
      */
-    fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>?
+    fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>?
 
     /**
      * 解析指定的文件路径表达式，得到文件名。
