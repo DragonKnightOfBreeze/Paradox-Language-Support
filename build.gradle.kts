@@ -57,7 +57,7 @@ dependencies {
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // Caffeine - https://github.com/ben-manes/caffeine
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2") {
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3") {
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
         exclude(group = "org.jspecify", module = "jspecify")
     }
