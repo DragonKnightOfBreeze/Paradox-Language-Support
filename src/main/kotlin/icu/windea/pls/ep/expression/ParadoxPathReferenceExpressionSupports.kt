@@ -11,7 +11,9 @@ import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
+import java.util.stream.Collectors
 
 /**
  * @see CwtDataTypes.Icon
@@ -36,7 +38,7 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return filePathWithoutExtension.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
         return null // 信息不足
     }
 
@@ -112,21 +114,31 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
         val expression = configExpression.value ?: return pathReference.singleton.set()
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             return null // 信息不足
         }
+        val resolvedPath: String
         val index = configExpression.expressionString.lastIndexOf(',') // `,` 应当最多出现一次
         if (index == -1) {
             if (expression.endsWith('/')) {
-                return "$expression$pathReference".singleton.set()
+                resolvedPath = "$expression$pathReference"
             } else {
-                return "$expression/$pathReference".singleton.set()
+                resolvedPath = "$expression/$pathReference"
             }
         } else {
-            return expression.replace(",", pathReference).singleton.set()
+            resolvedPath = expression.replace(",", pathReference)
+        }
+
+        if (gameType != null) {
+            return gameType.subDirectoryEntries.plus(resolvedPath)
+                .stream()
+                .map({ directory -> "$directory/$resolvedPath" })
+                .collect(Collectors.toSet())
+        } else {
+            return resolvedPath.singleton.set()
         }
     }
 
@@ -165,7 +177,7 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
         return filePath.substringAfterLast('/')
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
         return null // 信息不足
     }
 
