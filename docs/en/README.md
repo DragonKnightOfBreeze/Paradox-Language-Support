@@ -56,7 +56,7 @@ We welcome all forms of support and contribution, including but not limited to:
 
 - ⭐ Star the project on GitHub.
 - 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).
-- 🔧 Submit code or config file Pull Requests (can be submitted to the [plugin repository](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) (this project) or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
+- 🔧 Submit Pull Requests (to the [plugin repository](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) (this project), or to the [config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)).
 - 📢 Recommend this plugin to friends or in the community.
 - 💝 Sponsor the project via [Afdian](https://afdian.com/a/dk_breeze).
 

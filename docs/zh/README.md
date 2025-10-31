@@ -57,7 +57,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 - ⭐ 在 GitHub 上收藏项目。
 - 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
-- 🔧 提交代码或规则文件 Pull Request（可提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目）或[各规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)提交）。
+- 🔧 提交 Pull Request（提交至[插件仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)（即此项目），或者[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）。
 - 📢 向朋友或社区推荐本插件。
 - 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
 
