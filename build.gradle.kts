@@ -127,7 +127,7 @@ dependencies {
     // 用于工具代码（src/test/tool）
 
     // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0") {
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.1") {
         exclude(group = "com.fasterxml.jackson.core")
     }
 }
