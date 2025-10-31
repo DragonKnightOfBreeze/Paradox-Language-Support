@@ -25,6 +25,7 @@ import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -46,7 +47,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
         }
 
         val propGroup = propElements.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        var paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) {it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
@@ -69,6 +70,17 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
         val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
+
+        if (configGroup.gameType.subDirectoryEntries.isNotNullOrEmpty() && paths.isNotNullOrEmpty()) {
+            val temp = sortedSetOf<String>()
+            for (path in paths) {
+                temp += path
+                for (subDirectory in configGroup.gameType.subDirectoryEntries) {
+                    temp += "$subDirectory/$path"
+                }
+            }
+            paths = temp
+        }
 
         // merge all properties named 'modifiers'
         propGroup.getAll("modifiers").forEach { prop ->

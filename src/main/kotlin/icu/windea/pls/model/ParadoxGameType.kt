@@ -18,28 +18,29 @@ enum class ParadoxGameType(
     val gameId: String,
     val steamId: String,
     val mainEntry: String,
-    val entryNames: Set<String>
+    val entryNames: Set<String>,
+    val subDirectoryEntries: Set<String>,
 ) {
     /** 通用游戏类型。用于对应共享的规则分组。 */
-    Core("core", "Core", "", "", "", emptySet()),
+    Core("core", "Core", "", "", "", emptySet(), emptySet()),
     /** [Stellaris](https://store.steampowered.com/app/281990) */
-    Stellaris("stellaris", "Stellaris", "stellaris", "281990", "", EntryNames.stellaris),
+    Stellaris("stellaris", "Stellaris", "stellaris", "281990", "", EntryNames.stellaris, emptySet()),
     /** [Crusader Kings II](https://store.steampowered.com/app/203770) */
-    Ck2("ck2", "Crusader Kings II", "ck2", "203770", "game", EntryNames.other),
+    Ck2("ck2", "Crusader Kings II", "ck2", "203770", "game", EntryNames.other, emptySet()),
     /** [Crusader Kings III](https://store.steampowered.com/app/1158310) */
-    Ck3("ck3", "Crusader Kings III", "ck3", "1158310", "game", EntryNames.other),
+    Ck3("ck3", "Crusader Kings III", "ck3", "1158310", "game", EntryNames.other, emptySet()),
     /** [Europa Universalis IV](https://store.steampowered.com/app/236850) */
-    Eu4("eu4", "Europa Universalis IV", "eu4", "236850", "", EntryNames.other),
+    Eu4("eu4", "Europa Universalis IV", "eu4", "236850", "", EntryNames.other, emptySet()),
     /** [Europa Universalis V](https://store.steampowered.com/app/3450310) */
-    Eu5("eu5", "Europa Universalis V", "eu5", "3450310", "", EntryNames.other),
+    Eu5("eu5", "Europa Universalis V", "eu5", "3450310", "", EntryNames.other, DirectoryEntries.eu5),
     /** [Hearts of Iron IV](https://store.steampowered.com/app/394360) */
-    Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360", "", EntryNames.other),
+    Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360", "", EntryNames.other, emptySet()),
     /** [Imperator: Rome](https://store.steampowered.com/app/859580) */
-    Ir("ir", "Imperator Rome", "imperator_rome", "859580", "game", EntryNames.other),
+    Ir("ir", "Imperator Rome", "imperator_rome", "859580", "game", EntryNames.other, emptySet()),
     /** [Victoria 2](https://store.steampowered.com/app/42960) */
-    Vic2("vic2", "Victoria 2", "victoria2", "42960", "game", EntryNames.other),
+    Vic2("vic2", "Victoria 2", "victoria2", "42960", "game", EntryNames.other, emptySet()),
     /** [Victoria 3](https://store.steampowered.com/app/529340) */
-    Vic3("vic3", "Victoria 3", "victoria3", "529340", "game", EntryNames.other),
+    Vic3("vic3", "Victoria 3", "victoria3", "529340", "game", EntryNames.other, emptySet()),
     ;
 
     /**
@@ -55,6 +56,15 @@ enum class ParadoxGameType(
     object EntryNames {
         val stellaris = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")
         val other = setOf("jomini")
+    }
+
+    /**
+     * EU5 has subfolders in the "game" folder.
+     * "common" and other game content can be found there.
+     * This is a list of subfolders to include when resolving content paths.
+     */
+    object DirectoryEntries {
+        val eu5 = setOf("in_game", "main_menu", "loading_screen")
     }
 
     companion object {
