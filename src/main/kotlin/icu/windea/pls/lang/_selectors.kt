@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
@@ -13,6 +12,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
@@ -46,7 +46,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is VirtualFile -> from
         from is PsiDirectory -> selectFile(from.virtualFile)
         from is PsiFile -> selectFile(from.originalFile.virtualFile)
-        from is PsiElement -> selectFile(runReadAction { from.containingFile })
+        from is PsiElement -> selectFile(runReadActionSmartly { from.containingFile })
         else -> null
     }
 }
@@ -67,8 +67,8 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is ParadoxStub<*> -> from.gameType
         from is CwtConfigMockPsiElement -> from.gameType
         from is ParadoxMockPsiElement -> from.gameType
-        from is StubBasedPsiElementBase<*> -> selectGameType(runReadAction { getStubToSelectGameType(from) ?: from.containingFile })
-        from is PsiElement -> selectGameType(runReadAction { from.parent })
+        from is StubBasedPsiElementBase<*> -> selectGameType(runReadActionSmartly { getStubToSelectGameType(from) ?: from.containingFile })
+        from is PsiElement -> selectGameType(runReadActionSmartly { from.parent })
         else -> null
     }
 }
@@ -85,9 +85,9 @@ tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocaleAwareStub<*> -> toLocale(from.locale, from.containingFileStub?.psi)
-        from is ParadoxLocalisationLocale -> toLocale(from.name, from)
-        from is StubBasedPsiElementBase<*> -> selectLocale(runReadAction { getStubToSelectLocale(from) ?: from.parent })
-        from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(runReadAction { from.parent })
+        from is ParadoxLocalisationLocale -> toLocale(runReadActionSmartly { from.name }, from)
+        from is StubBasedPsiElementBase<*> -> selectLocale(runReadActionSmartly { getStubToSelectLocale(from) ?: from.parent })
+        from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(runReadActionSmartly { from.parent })
         else -> ParadoxLocaleManager.getPreferredLocaleConfig()
     }
 }

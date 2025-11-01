@@ -21,6 +21,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -58,6 +59,7 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ArrayUtil
 import com.intellij.util.Processor
 import com.intellij.util.Query
+import com.intellij.util.application
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
@@ -167,7 +169,6 @@ fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
     return this.forEach(consumer)
 }
 
-/** 允许并行地遍历查询结果并交给 [consumer] 处理。*/
 fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
@@ -176,17 +177,28 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KPro
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
 
+/**
+ * 得到默认项目。
+ */
 fun getDefaultProject(): Project {
     return ProjectManager.getInstance().defaultProject
 }
 
 /**
- * 获取当前聚焦窗口所属的项目，若无则返回第一个已初始化且未释放的打开项目。
+ * 得到当前项目（当前聚焦窗口对应的项目，或者第一个有效的已打开的项目）。
  */
 fun getCurrentProject(): Project? {
     val recentFocusedWindow = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
     if (recentFocusedWindow is IdeFrame) return recentFocusedWindow.project
     return ProjectManager.getInstance().openProjects.firstOrNull { o -> o.isInitialized && !o.isDisposed }
+}
+
+fun <T> runReadActionSmartly(runnable: () -> T): T {
+    return if (application.isReadAccessAllowed) {
+        runnable()
+    } else {
+        runReadAction(runnable)
+    }
 }
 
 // endregion

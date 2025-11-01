@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
@@ -9,6 +8,7 @@ import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.ep.data.ParadoxModDescriptorData
@@ -47,7 +47,7 @@ object ParadoxMetadataManager {
 
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         try {
-            return runReadAction { doGetLauncherSettingsInfo(file) }
+            return runReadActionSmartly { doGetLauncherSettingsInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -70,7 +70,7 @@ object ParadoxMetadataManager {
 
     fun getModDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
         try {
-            return runReadAction { doGetModDescriptorInfo(file) }
+            return runReadActionSmartly { doGetModDescriptorInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -104,7 +104,7 @@ object ParadoxMetadataManager {
 
     fun getModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo? {
         try {
-            return runReadAction { doGetModMetadataInfo(file) }
+            return runReadActionSmartly { doGetModMetadataInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)

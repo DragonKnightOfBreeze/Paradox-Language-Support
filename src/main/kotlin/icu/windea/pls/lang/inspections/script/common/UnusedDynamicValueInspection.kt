@@ -1,10 +1,9 @@
 package icu.windea.pls.lang.inspections.script.common
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -13,6 +12,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.resolveFirst
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -41,7 +41,7 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
         val project = holder.project
         val file = holder.file
         // compute once per file
-        val searchScope = runReadAction { ParadoxSearchScope.fromFile(project, file.virtualFile) }
+        val searchScope = runReadActionSmartly { ParadoxSearchScope.fromFile(project, file.virtualFile) }
         // it's unnecessary to make it synced
         val statusMap = mutableMapOf<PsiElement, Boolean>()
 

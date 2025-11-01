@@ -35,6 +35,7 @@ import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.PathMatcher
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.cancelable
@@ -110,7 +111,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
-            val value = runReadAction { doGetInfo(element, file) }
+            val value = runReadActionSmartly { doGetInfo(element, file) }
             value.withDependencyItems(file)
         }
     }
@@ -159,13 +160,13 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        val stub = runReadAction { getStub(element) }
+        val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.definitionName }
         return element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        val stub = runReadAction { getStub(element) }
+        val stub = runReadActionSmartly { getStub(element) }
         stub?.let { return it.definitionType }
         return element.definitionInfo?.type
     }

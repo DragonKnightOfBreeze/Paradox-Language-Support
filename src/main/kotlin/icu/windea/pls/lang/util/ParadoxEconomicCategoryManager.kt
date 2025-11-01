@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
@@ -10,6 +9,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processQuery
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -51,7 +51,7 @@ object ParadoxEconomicCategoryManager {
         if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
-            val value = runReadAction { doGetInfo(definition) }
+            val value = runReadActionSmartly { doGetInfo(definition) }
             value.withDependencyItems(definition)
         }
     }

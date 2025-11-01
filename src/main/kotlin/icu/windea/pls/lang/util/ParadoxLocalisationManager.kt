@@ -10,6 +10,7 @@ import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -44,7 +45,7 @@ object ParadoxLocalisationManager {
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
-            val value = runReadAction { doGetInfo(element) }
+            val value = runReadActionSmartly { doGetInfo(element) }
             value.withDependencyItems(element)
         }
     }

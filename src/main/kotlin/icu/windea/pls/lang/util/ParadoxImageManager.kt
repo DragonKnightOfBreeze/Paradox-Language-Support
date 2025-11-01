@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
@@ -12,6 +11,7 @@ import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.create
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
@@ -128,7 +128,7 @@ object ParadoxImageManager {
 
     private fun doResolveUrlByDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
         // 兼容definition不是sprite的情况
-        val resolved = runReadAction {
+        val resolved = runReadActionSmartly {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 CwtLocationExpressionManager.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
