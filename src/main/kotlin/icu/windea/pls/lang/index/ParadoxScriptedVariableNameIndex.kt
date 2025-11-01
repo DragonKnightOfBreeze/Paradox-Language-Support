@@ -8,6 +8,5 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptScriptedVariable>() {
     override fun getKey() = ParadoxIndexKeys.ScriptedVariableName
-
     override fun getVersion() = 76 // VERSION for 2.0.6
 }

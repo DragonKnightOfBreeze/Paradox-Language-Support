@@ -184,6 +184,9 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$TechIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$ResourceIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$EconomicCategoryIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextIconIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>

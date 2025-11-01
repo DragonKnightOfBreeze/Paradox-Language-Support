@@ -17,6 +17,15 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
+        Resource(ParadoxIndexKeys.DefinitionNameForResource) {
+            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.Resource
+        },
+        EconomicCategory(ParadoxIndexKeys.DefinitionNameForEconomicCategory) {
+            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.EconomicCategory
+        },
+        TextIcon(ParadoxIndexKeys.DefinitionNameForTextIcon) {
+            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextIcon
+        },
         TextFormat(ParadoxIndexKeys.DefinitionNameForTextFormat, ignoreCase = true) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextFormat
         },
