@@ -31,17 +31,18 @@ object PlsInspectionManager {
             else -> false
         }
         val options = if (ignoreCase) SimilarityMatchOptions.IGNORE_CASE else SimilarityMatchOptions.DEFAULT
-        val matches = SimilarityMatchService.findBestMatches(input, literals, options)
-        if (matches.isEmpty()) return emptyList()
 
-        val fixes = mutableListOf<LocalQuickFix>()
+        // 查询输入项的最佳匹配，但排除完全匹配的相似项
+        val matches = SimilarityMatchService.findBestMatches(input, literals, options).filter { it.score < 1.0 }
+        if (matches.isEmpty()) return emptyList()
 
         // 为最匹配的项提供单独的快速修复（直接替换）
         // 如果匹配项不唯一，再为所有匹配项提供一个快速修复（弹出列表） - 如果分别提供快速修复，这些快速修复最终会按名字正序排序（这不符合预期）
+        val fixes = mutableListOf<LocalQuickFix>()
         val first = matches.first()
         fixes += ReplaceWithSimilarExpressionFix(element, first)
         val remain = matches.drop(1)
-        if(remain.isNotEmpty()) {
+        if (remain.isNotEmpty()) {
             fixes += ReplaceWithSimilarExpressionInListFix(element, matches)
         }
 

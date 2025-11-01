@@ -19,7 +19,7 @@ class ReplaceWithSimilarExpressionFix(
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
     override fun getPriority() = PriorityAction.Priority.TOP
 
-    override fun getText() = PlsBundle.message("fix.replaceWithSimilarExpression.name", replacement)
+    override fun getText() = PlsBundle.message("fix.replaceWithSimilarExpression.name", replacement.value)
 
     override fun getFamilyName() = PlsBundle.message("fix.replaceWithSimilarExpression.familyName")
 

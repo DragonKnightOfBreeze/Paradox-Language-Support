@@ -1,6 +1,6 @@
 package icu.windea.pls.core.match.similarity
 
-import icu.windea.pls.core.formatted
+import java.text.DecimalFormat
 
 /**
  * 相似度匹配结果。
@@ -14,11 +14,13 @@ data class SimilarityMatchResult(
     val score: Double,
     val strategy: SimilarityMatchStrategy,
 ) {
+    private val df = DecimalFormat("#0.0%")
+
     fun render(): String {
         return buildString {
             append(value)
             append(" [")
-            append(strategy).append(", ").append(score.formatted(-3)).append("% similarity")
+            append(strategy).append(", ").append(df.format(score)).append(" similarity")
             append("]")
         }
     }
