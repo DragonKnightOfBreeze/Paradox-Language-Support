@@ -365,7 +365,7 @@ object ParadoxExpressionManager {
 
                     fun addToMatchedConfigs(config: CwtMemberConfig<*>) {
                         if (config is CwtPropertyConfig) {
-                            val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
+                            val m = matchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
                             when (m) {
                                 null -> nextResult += config
                                 true -> exactMatchedConfigs += config
@@ -544,7 +544,7 @@ object ParadoxExpressionManager {
         return optimizedResult
     }
 
-    private fun doMatchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
+    private fun matchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
         // 如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
         // 目前要求推断结果必须是唯一的
         // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
@@ -554,7 +554,7 @@ object ParadoxExpressionManager {
         return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
 
-    fun optimizeMatchedConfigs(
+    private fun optimizeMatchedConfigs(
         element: PsiElement,
         expression: ParadoxScriptExpression,
         resultValues: List<ParadoxMatchResultValue<CwtMemberConfig<*>>>,
@@ -568,9 +568,9 @@ object ParadoxExpressionManager {
         // 首先尝试直接的精确匹配，如果有结果，则直接返回
         // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         // 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        // 然后，尝试非回退的匹配，如果有结果，则直接返回
-        // 然后，尝试复杂表达式的回退的匹配（可以解析，但存在错误），如果有结果，则直接返回
-        // 然后，尝试回退的匹配，如果有结果，则直接返回
+        // 然后，尝试非部分非回退的匹配，如果有结果，则直接返回
+        // 然后，尝试部分匹配（可以部分解析为复杂表达式，但存在错误），如果有结果，则直接返回
+        // 然后，尝试回退匹配，如果有结果，则直接返回
         // 如果到这里仍然无法匹配，则直接返回空列表
 
         val result = run r1@{
