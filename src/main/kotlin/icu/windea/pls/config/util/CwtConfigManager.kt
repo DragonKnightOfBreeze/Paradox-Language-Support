@@ -20,6 +20,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
+import icu.windea.pls.config.configGroup.aliasKeysGroupConst
+import icu.windea.pls.config.configGroup.aliasKeysGroupNoConst
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.core.collections.optimized
@@ -575,5 +577,12 @@ object CwtConfigManager {
                 }
             }
         }
+    }
+
+    fun getAliasKeys(configGroup: CwtConfigGroup, aliasName: String, key: String): Set<String> {
+        val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) // 不区分大小写
+        if (constKey != null) return setOf(constKey)
+        val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
+        return keys
     }
 }

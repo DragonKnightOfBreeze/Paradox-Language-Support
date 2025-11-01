@@ -261,14 +261,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
                 if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
                 val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
-                val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
+                val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, expression.value, element, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
                 ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
             }
             CwtDataTypes.AliasName -> {
                 if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
                 if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
                 val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
-                val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
+                val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, expression.value, element, expression.quoted, options) ?: return ParadoxMatchResult.NotMatch
                 ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
             }
             CwtDataTypes.AliasMatchLeft -> {

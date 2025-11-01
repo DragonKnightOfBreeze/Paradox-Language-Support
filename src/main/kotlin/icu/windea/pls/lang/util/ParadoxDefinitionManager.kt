@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
@@ -571,7 +570,7 @@ object ParadoxDefinitionManager {
         val key = propertyElement.name
         val quoted = propertyElement.propertyKey.text.isLeftQuoted()
         val configGroup = propertyConfig.configGroup
-        val aliasSubName = ParadoxExpressionManager.getAliasSubName(propertyElement, key, quoted, aliasName, configGroup, matchOptions) ?: return false
+        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, key, propertyElement, quoted, matchOptions) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->
