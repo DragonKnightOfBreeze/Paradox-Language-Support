@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- [ ] 新功能：支持在 IDE 中启动游戏 / NEW: Support to launch game in IDE
+- [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:x = {...}`） / NEW: Support injection syntax in VIC3 and EU5 (e.g, `inject:x = {...}`)
+- [ ] 新功能：支持内联定义（即通过内联脚本声明的定义） / NEW: Support inline definitions (aka definitions declared by inline scripts) #194
+
 ## 2.0.6-dev
 
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
@@ -15,7 +19,6 @@
 - [X] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris #193
 - [X] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files
 - [X] 新功能：提供快速修复，将无法解析的表达式替换为合法且相似的字面量 / NEW: Provide quick fix to replace unresolved expressions with valid similar literals
-- [ ] 新功能：支持在 IDE 中启动游戏 / NEW: Support to launch game in IDE
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.5
