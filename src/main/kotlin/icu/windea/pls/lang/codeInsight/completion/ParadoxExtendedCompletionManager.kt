@@ -16,6 +16,8 @@ import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.extendedParameters
 import icu.windea.pls.config.configGroup.extendedScriptedVariables
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.match.matchFromPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -49,7 +51,6 @@ object ParadoxExtendedCompletionManager {
         val typeExpression = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
-
         run r1@{
             configGroup.extendedDefinitions.values.forEach { configs0 ->
                 configs0.forEach f@{ config0 ->
@@ -116,7 +117,6 @@ object ParadoxExtendedCompletionManager {
         val config = context.config ?: return
         val configGroup = config.configGroup
         val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
-
         configGroup.extendedInlineScripts.values.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -141,7 +141,6 @@ object ParadoxExtendedCompletionManager {
         val contextKey = context.contextKey ?: return
         val argumentNames = context.argumentNames
         val contextElement = context.contextElement ?: return
-
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
                 if (!config0.contextKey.matchFromPattern(contextKey, contextElement, configGroup)) return@f
@@ -168,7 +167,6 @@ object ParadoxExtendedCompletionManager {
         val enumName = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
-
         configGroup.extendedComplexEnumValues[enumName]?.values?.forEach f@{ config0 ->
             ProgressManager.checkCanceled()
             val name = config0.name
@@ -189,25 +187,30 @@ object ParadoxExtendedCompletionManager {
         if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
-        val config = context.config ?: return
-        val dynamicValueType = config.configExpression?.value ?: return
-        val configGroup = config.configGroup
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
+        val config = context.config
+        val configs = context.configs
+        val finalConfigs = configs.ifEmpty { config.singleton.listOrEmpty() }
+        if (finalConfigs.isEmpty()) return
+        for (config in finalConfigs) {
+            val dynamicValueType = config.configExpression?.value ?: continue
+            val configGroup = config.configGroup
+            val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
 
-        configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
-            ProgressManager.checkCanceled()
-            val name = config0.name
-            if (checkExtendedConfigName(name)) return@f
-            val type = config0.type
-            val element = config0.pointer.element
-            val typeFile = config0.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withItemTextUnderlined(true) // used for completions from extended configs
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue(type))
-                .withPatchableTailText(tailText)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
+            configGroup.extendedDynamicValues[dynamicValueType]?.values?.forEach f@{ config0 ->
+                ProgressManager.checkCanceled()
+                val name = config0.name
+                if (checkExtendedConfigName(name)) return@f
+                val type = config0.type
+                val element = config0.pointer.element
+                val typeFile = config0.pointer.containingFile
+                val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withItemTextUnderlined(true) // used for completions from extended configs
+                    .withPatchableIcon(PlsIcons.Nodes.DynamicValue(type))
+                    .withPatchableTailText(tailText)
+                    .forScriptExpression(context)
+                result.addElement(lookupElement, context)
+            }
         }
     }
 

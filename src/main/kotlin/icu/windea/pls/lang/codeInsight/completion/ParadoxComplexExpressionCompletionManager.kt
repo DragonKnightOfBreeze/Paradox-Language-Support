@@ -9,8 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configExpression.value
@@ -27,13 +25,11 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
@@ -68,13 +64,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByExpression
 import icu.windea.pls.lang.search.selector.distinctByName
-import icu.windea.pls.lang.search.selector.dynamicValue
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -180,7 +174,7 @@ object ParadoxComplexExpressionCompletionManager {
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
                     context.keywordOffset = node.rangeInExpression.startOffset
-                    completeDynamicValue(context, resultToUse)
+                    ParadoxCompletionManager.completeDynamicValue(context, resultToUse)
                     break
                 }
             } else if (node is ParadoxScopeFieldExpression) {
@@ -1260,81 +1254,6 @@ object ParadoxComplexExpressionCompletionManager {
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
             true
-        }
-    }
-
-    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val config = context.config
-        val configs = context.configs
-
-        fun doComplete(config: CwtConfig<*>) {
-            val keyword = context.keyword
-            val contextElement = context.contextElement!!
-            val configGroup = context.configGroup!!
-            val project = configGroup.project
-
-            val configExpression = config.configExpression ?: return
-            val dynamicValueType = configExpression.value ?: return
-            // 提示预定义的value
-            run {
-                ProgressManager.checkCanceled()
-                if (configExpression.type == CwtDataTypes.Value || configExpression.type == CwtDataTypes.DynamicValue) {
-                    completePredefinedDynamicValue(context, result, dynamicValueType)
-                }
-            }
-            // 提示来自脚本文件的value
-            run {
-                ProgressManager.checkCanceled()
-                val tailText = " by $configExpression"
-                val selector = selector(project, contextElement).dynamicValue().distinctByName()
-                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
-                    ProgressManager.checkCanceled()
-                    if (info.name == keyword) return@p true // 排除和当前输入的同名的
-                    val (name, _, readWriteAccess, _, gameType) = info
-                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
-                    // 去除后面的作用域信息
-                    val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
-                    // 不显示typeText
-                    val lookupElement = LookupElementBuilder.create(element, info.name)
-                        .withPatchableIcon(icon)
-                        .withPatchableTailText(tailText)
-                        .forScriptExpression(context)
-                    result.addElement(lookupElement, context)
-                    true
-                }
-            }
-
-            ParadoxExtendedCompletionManager.completeExtendedDynamicValue(context, result)
-        }
-
-        if (configs.isNotNullOrEmpty()) {
-            for (c in configs) {
-                doComplete(c)
-            }
-        } else if (config != null) {
-            doComplete(config)
-        }
-    }
-
-    fun completePredefinedDynamicValue(context: ProcessingContext, result: CompletionResultSet, dynamicValueType: String) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup!!
-        val config = context.config
-
-        val tailText = ParadoxCompletionManager.getExpressionTailText(context, config)
-        val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
-        val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-        for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
-            val name = dynamicValueTypeConfig.value
-            val element = dynamicValueTypeConfig.pointer.element ?: continue
-            val typeFile = valueConfig.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
-                .withPatchableTailText(tailText)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
         }
     }
 

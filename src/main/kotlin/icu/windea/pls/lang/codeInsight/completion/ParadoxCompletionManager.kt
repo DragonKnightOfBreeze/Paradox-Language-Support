@@ -27,6 +27,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.declarations
+import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.inlineConfigGroup
 import icu.windea.pls.config.configGroup.types
@@ -42,6 +43,8 @@ import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.util.takeWithOperator
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -59,8 +62,10 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
@@ -69,6 +74,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByFilePath
 import icu.windea.pls.lang.search.selector.distinctByName
+import icu.windea.pls.lang.search.selector.dynamicValue
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -560,7 +566,7 @@ object ParadoxCompletionManager {
             // apply extraFilter since it's necessary
             if (context.extraFilter?.invoke(definition) == false) return@p true
 
-            // 排除不匹配可能存在的supported_scopes的情况
+            // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return@p true
@@ -594,7 +600,7 @@ object ParadoxCompletionManager {
                 is CwtMemberConfig<*> -> config.optionData { fileExtensions }
                 else -> emptySet()
             }
-            // 仅提示匹配file_extensions选项指定的扩展名的，如果存在
+            // 仅提示匹配 `file_extensions` 选项指定的扩展名的，如果存在
             val selector = selector(project, contextElement).file().contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
@@ -630,8 +636,8 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement!!
         val tailText = getExpressionTailText(context, config)
         // 提示简单枚举
-        val enumConfig = configGroup.enums[enumName]
-        if (enumConfig != null) {
+        run {
+            val enumConfig = configGroup.enums[enumName] ?: return@run
             ProgressManager.checkCanceled()
             val enumValueConfigs = enumConfig.valueConfigMap.values
             if (enumValueConfigs.isEmpty()) return
@@ -650,8 +656,8 @@ object ParadoxCompletionManager {
             }
         }
         // 提示复杂枚举
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if (complexEnumConfig != null) {
+        run {
+            val complexEnumConfig = configGroup.complexEnums[enumName] ?: return@run
             ProgressManager.checkCanceled()
             val typeFile = complexEnumConfig.pointer.containingFile
             val searchScope = complexEnumConfig.searchScopeType
@@ -672,17 +678,72 @@ object ParadoxCompletionManager {
                 result.addElement(lookupElement, context)
                 true
             }
-
-            ParadoxExtendedCompletionManager.completeExtendedComplexEnumValue(context, result)
         }
+
+        ParadoxExtendedCompletionManager.completeExtendedComplexEnumValue(context, result)
     }
 
-    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
-        ParadoxModifierManager.completeModifier(context, result)
+    fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+
+        val config = context.config
+        val configs = context.configs
+        val finalConfigs = configs.ifEmpty { config.singleton.listOrEmpty() }
+        if (finalConfigs.isEmpty()) return
+        for (finalConfig in finalConfigs) {
+            val keyword = context.keyword
+            val contextElement = context.contextElement!!
+            val configGroup = context.configGroup!!
+            val project = configGroup.project
+            val configExpression = finalConfig.configExpression ?: return
+            val dynamicValueType = configExpression.value ?: return
+
+            // 提示预定义的动态值
+            run {
+                if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return@run
+                ProgressManager.checkCanceled()
+                val tailText = getExpressionTailText(context, finalConfig)
+                val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
+                val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
+                for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
+                    val name = dynamicValueTypeConfig.value
+                    val element = dynamicValueTypeConfig.pointer.element ?: continue
+                    val typeFile = valueConfig.pointer.containingFile
+                    val lookupElement = LookupElementBuilder.create(element, name)
+                        .withTypeText(typeFile?.name, typeFile?.icon, true)
+                        .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
+                        .withPatchableTailText(tailText)
+                        .forScriptExpression(context)
+                    result.addElement(lookupElement, context)
+                }
+            }
+            // 提示来自脚本文件和本地化文件的动态值
+            run {
+                ProgressManager.checkCanceled()
+                val tailText = " by $configExpression"
+                val selector = selector(project, contextElement).dynamicValue().distinctByName()
+                ParadoxDynamicValueSearch.search(null, dynamicValueType, selector).processQueryAsync p@{ info ->
+                    ProgressManager.checkCanceled()
+                    val name = info.name
+                    if (name == keyword) return@p true // 排除和当前输入的同名的
+                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, info.readWriteAccess, info.gameType, project)
+                    val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
+                    val lookupElement = LookupElementBuilder.create(element, name)
+                        .withPatchableIcon(icon)
+                        .withPatchableTailText(tailText)
+                        .forScriptExpression(context)
+                    result.addElement(lookupElement, context)
+                    true
+                }
+            }
+        }
+
+        ParadoxExtendedCompletionManager.completeExtendedDynamicValue(context, result)
     }
 
     fun completeAliasName(context: ProcessingContext, result: CompletionResultSet, aliasName: String) {
         ProgressManager.checkCanceled()
+
         val configGroup = context.configGroup ?: return
         val config = context.config ?: return
         val configs = context.configs
@@ -733,6 +794,12 @@ object ParadoxCompletionManager {
             .withScopeMatched(context.scopeMatched)
             .forScriptExpression(context)
         result.addElement(lookupElement, context)
+    }
+
+    fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+
+        ParadoxModifierManager.completeModifier(context, result)
     }
 
     fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
