@@ -71,15 +71,19 @@ object ParadoxLocaleManager {
         return locales
     }
 
+    fun getResolvedLocaleConfigInDocumentation(element: PsiElement, defaultLocale: CwtLocaleConfig? = null): CwtLocaleConfig {
+        val id = element.getUserData(PlsKeys.documentationLocale)
+        val locale = id?.let { getResolvedLocaleConfig(id) } ?: defaultLocale ?: getPreferredLocaleConfig()
+        return locale
+    }
+
     fun getLocaleConfigInDocumentation(element: PsiElement): CwtLocaleConfig? {
         val id = element.getUserData(PlsKeys.documentationLocale) ?: return null
         val locale = getLocaleConfig(id, withAuto = true)
         return locale
     }
 
-    fun getResolvedLocaleConfigInDocumentation(element: PsiElement, defaultLocale: CwtLocaleConfig? = null): CwtLocaleConfig {
-        val id = element.getUserData(PlsKeys.documentationLocale)
-        val locale = id?.let { getResolvedLocaleConfig(id) } ?: defaultLocale ?: getPreferredLocaleConfig()
-        return locale
+    fun getLocaleConfigById(element: PsiElement, id: String): CwtLocaleConfig? {
+        return PlsFacade.getConfigGroup(element.project).localisationLocalesById.get(id)
     }
 }
