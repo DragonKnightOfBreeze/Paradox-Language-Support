@@ -20,7 +20,6 @@ class ParadoxComplexEnumValuePsiReference(
     }
 
     override fun resolve(): PsiElement {
-        val (name, enumName, readWriteAccess, _, gameType) = info
-        return ParadoxComplexEnumValueElement(element, name, enumName, readWriteAccess, gameType, project)
+        return ParadoxComplexEnumValueElement(element, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
     }
 }

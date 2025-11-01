@@ -10,7 +10,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.findParentDefinition
 
 object ParadoxSearchScopeTypes {
@@ -61,7 +61,7 @@ object ParadoxSearchScopeTypes {
     val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { project, context ->
         val contextElement = when {
             context is PsiElement -> context
-            context is ParadoxIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)
+            context is ParadoxComplexEnumValueIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)
             else -> null
         }
         contextElement?.findParentDefinition()

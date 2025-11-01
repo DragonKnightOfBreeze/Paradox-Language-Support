@@ -8,7 +8,6 @@ data class ParadoxDynamicValueIndexInfo(
     val name: String,
     val dynamicValueType: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo {
     @Volatile

@@ -7,7 +7,6 @@ data class ParadoxEventInOnActionIndexInfo(
     val eventName: String,
     val typeExpression: String,
     val containingOnActionName: String,
-    val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo {
     @Volatile

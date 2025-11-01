@@ -667,8 +667,8 @@ object ParadoxCompletionManager {
                 .distinctByName()
             ParadoxComplexEnumValueSearch.search(null, enumName, selector).processQueryAsync { info ->
                 ProgressManager.checkCanceled()
-                val (name, _, readWriteAccess, _, gameType) = info
-                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
+                val name = info.name
+                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, info.readWriteAccess, info.gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPriority(ParadoxCompletionPriorities.complexEnumValue)

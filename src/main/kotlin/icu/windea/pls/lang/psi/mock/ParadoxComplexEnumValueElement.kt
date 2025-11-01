@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
@@ -24,8 +25,11 @@ class ParadoxComplexEnumValueElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
-    val searchScopeType: ParadoxSearchScopeType
-        get() = ParadoxSearchScopeTypes.get(PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
+    val config: CwtComplexEnumConfig? by lazy { PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName) }
+    val searchScopeType: ParadoxSearchScopeType by lazy {
+        val v = config?.searchScopeType
+        if (v == "definition") ParadoxSearchScopeTypes.Definition else ParadoxSearchScopeTypes.All
+    }
 
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.EnumValue
