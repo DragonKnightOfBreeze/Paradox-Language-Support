@@ -33,7 +33,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.CwtConfigTextPatternSets
 import icu.windea.pls.model.constants.CwtConfigTextPatterns
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 object CwtConfigSymbolManager {
     object Keys : KeyRegistry() {

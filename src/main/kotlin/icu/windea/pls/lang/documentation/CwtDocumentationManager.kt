@@ -67,7 +67,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
-import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptMember

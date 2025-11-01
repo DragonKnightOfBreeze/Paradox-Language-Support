@@ -14,7 +14,7 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.completion.gameType
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
+import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**

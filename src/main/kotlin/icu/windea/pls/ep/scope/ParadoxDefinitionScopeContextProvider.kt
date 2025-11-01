@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**

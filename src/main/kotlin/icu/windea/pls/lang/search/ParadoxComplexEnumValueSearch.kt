@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 
 /**
  * 复杂枚举的查询。

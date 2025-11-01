@@ -73,7 +73,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint

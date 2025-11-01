@@ -21,11 +21,11 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.indexInfo.ParadoxEventInEventIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxEventInOnActionIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxInferredScopeContextAwareDefinitionIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
+import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
+import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentProperty

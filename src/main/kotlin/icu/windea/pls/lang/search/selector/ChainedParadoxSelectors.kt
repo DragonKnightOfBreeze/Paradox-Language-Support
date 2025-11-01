@@ -3,11 +3,11 @@ package icu.windea.pls.lang.search.selector
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable

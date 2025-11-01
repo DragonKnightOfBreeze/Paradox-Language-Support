@@ -10,7 +10,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 // com.intellij.codeInsight.hint.JavaTypeProvider

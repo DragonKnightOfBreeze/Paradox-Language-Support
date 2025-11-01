@@ -8,7 +8,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolPsiReference(
     element: CwtStringExpressionElement,

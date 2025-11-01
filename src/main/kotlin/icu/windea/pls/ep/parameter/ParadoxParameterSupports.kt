@@ -51,9 +51,9 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.PlsStringConstants
-import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
+import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock

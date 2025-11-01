@@ -7,7 +7,7 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>(EP_NAME) {
     class SearchParameters(

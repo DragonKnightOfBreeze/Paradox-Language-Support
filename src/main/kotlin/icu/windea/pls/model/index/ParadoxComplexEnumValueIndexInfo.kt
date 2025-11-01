@@ -1,4 +1,4 @@
-package icu.windea.pls.model.indexInfo
+package icu.windea.pls.model.index
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.vfs.VirtualFile
@@ -8,7 +8,7 @@ data class ParadoxComplexEnumValueIndexInfo(
     val name: String,
     val enumName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    override val elementOffset: Int,
+    val elementOffset: Int,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo {
     @Volatile

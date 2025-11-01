@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
  * 用于为动态值提供作用域上下文。

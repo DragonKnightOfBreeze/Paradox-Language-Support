@@ -45,7 +45,7 @@ import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 

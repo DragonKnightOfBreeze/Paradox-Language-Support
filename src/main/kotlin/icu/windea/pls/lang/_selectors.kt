@@ -24,8 +24,8 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.indexInfo.CwtConfigIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.index.CwtConfigIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     if (from == null) return null

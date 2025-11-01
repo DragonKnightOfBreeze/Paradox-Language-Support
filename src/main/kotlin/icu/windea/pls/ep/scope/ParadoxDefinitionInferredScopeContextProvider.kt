@@ -6,9 +6,8 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
-import icu.windea.pls.model.get
+import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**

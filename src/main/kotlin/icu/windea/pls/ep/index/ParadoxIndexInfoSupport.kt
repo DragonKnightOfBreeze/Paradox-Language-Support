@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.io.DataInput
 import java.io.DataOutput

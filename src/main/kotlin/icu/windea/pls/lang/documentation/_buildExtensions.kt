@@ -25,11 +25,11 @@ import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.ReferenceLinkType
+import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.model.steamId
-import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.model.scope.toScopeMap
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
     append("<br>")

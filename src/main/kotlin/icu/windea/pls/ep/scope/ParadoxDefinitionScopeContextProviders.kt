@@ -7,10 +7,9 @@ import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.model.isExact
-import icu.windea.pls.model.resolveNext
+import icu.windea.pls.model.scope.isExact
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 class ParadoxDefaultDefinitionScopeContextProvider : ParadoxDefinitionScopeContextProvider {

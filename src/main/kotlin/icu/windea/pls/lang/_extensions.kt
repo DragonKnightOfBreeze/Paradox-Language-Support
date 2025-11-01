@@ -31,7 +31,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

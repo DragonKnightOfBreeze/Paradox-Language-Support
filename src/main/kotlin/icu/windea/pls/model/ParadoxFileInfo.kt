@@ -5,6 +5,7 @@ import java.util.*
 
 /**
  * 文件信息。
+ *
  * @property path 文件路径。相对于入口目录，参见 [ParadoxGameType.EntryNames]。
  * @property entryName 入口名称。参见 [ParadoxGameType.EntryNames]。
  * @property fileType 检测得到的文件类型。

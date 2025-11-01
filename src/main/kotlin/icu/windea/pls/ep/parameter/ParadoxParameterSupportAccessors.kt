@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport.Keys.synced
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
+import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()

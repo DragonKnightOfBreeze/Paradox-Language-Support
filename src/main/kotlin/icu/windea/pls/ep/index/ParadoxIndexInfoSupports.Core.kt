@@ -23,11 +23,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.model.optimizeValue
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression

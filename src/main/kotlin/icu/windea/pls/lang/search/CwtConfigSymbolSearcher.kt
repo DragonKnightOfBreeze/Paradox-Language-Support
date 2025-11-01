@@ -12,7 +12,7 @@ import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.CwtConfigSymbolIndex
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.SearchParameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {

@@ -6,7 +6,7 @@ import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.splitToPair
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 
 /**
  * 预定义的命名空间与变量的查询。

@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.scope
 
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
+import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 
 class ParadoxBaseDynamicValueInferredScopeContextProvider : ParadoxDynamicValueInferredScopeContextProvider {
     override fun supports(element: ParadoxDynamicValueElement): Boolean {

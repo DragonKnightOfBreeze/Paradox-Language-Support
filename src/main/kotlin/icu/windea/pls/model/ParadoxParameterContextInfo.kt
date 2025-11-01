@@ -19,6 +19,9 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 import java.util.*
 
+/**
+ * 参数上下文信息。
+ */
 class ParadoxParameterContextInfo(
     val parameters: Map<String, List<Parameter>>,
     val project: Project,

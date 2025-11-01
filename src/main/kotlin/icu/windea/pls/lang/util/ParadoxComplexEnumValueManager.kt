@@ -48,7 +48,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement

@@ -13,7 +13,7 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 import icu.windea.pls.model.optimizeValue
 import java.io.DataInput
 import java.io.DataOutput

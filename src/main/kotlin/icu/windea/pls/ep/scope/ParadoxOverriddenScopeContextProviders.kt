@@ -17,8 +17,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.resolveNext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.stringValue

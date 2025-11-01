@@ -11,15 +11,15 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxEventInEventIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxEventInOnActionIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxInferredScopeContextAwareDefinitionIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxLocalisationParameterIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxOnActionInEventIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxEventInEventIndexInfo
+import icu.windea.pls.model.index.ParadoxEventInOnActionIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionIndexInfo
+import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
+import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 
 abstract class ParadoxIndexInfoType<T : ParadoxIndexInfo>(val id: Byte) {
     data object ComplexEnumValue : ParadoxIndexInfoType<ParadoxComplexEnumValueIndexInfo>(1)

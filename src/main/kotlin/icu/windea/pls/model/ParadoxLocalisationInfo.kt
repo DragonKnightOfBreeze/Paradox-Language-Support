@@ -2,6 +2,11 @@ package icu.windea.pls.model
 
 import java.util.*
 
+/**
+ * 本地化信息。
+ *
+ *
+ */
 class ParadoxLocalisationInfo(
     val name: String,
     val type: ParadoxLocalisationType,

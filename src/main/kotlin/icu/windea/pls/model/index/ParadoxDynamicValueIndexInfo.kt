@@ -1,17 +1,16 @@
-package icu.windea.pls.model.indexInfo
+package icu.windea.pls.model.index
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
-data class CwtConfigSymbolIndexInfo(
+data class ParadoxDynamicValueIndexInfo(
     val name: String,
-    val type: String,
+    val dynamicValueType: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val offset: Int,
-    override val elementOffset: Int,
-    override val gameType: ParadoxGameType
-) : CwtConfigIndexInfo {
+    val elementOffset: Int,
+    override val gameType: ParadoxGameType,
+) : ParadoxIndexInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null
 }

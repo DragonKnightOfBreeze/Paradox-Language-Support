@@ -10,7 +10,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
-import icu.windea.pls.model.indexInfo.ParadoxParameterIndexInfo
+import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.SearchParameters>() {

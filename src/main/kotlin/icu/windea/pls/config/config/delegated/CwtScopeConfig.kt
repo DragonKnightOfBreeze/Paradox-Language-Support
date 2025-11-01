@@ -5,8 +5,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.impl.CwtScopeConfigResolverImpl
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.model.ParadoxScope
-import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScope
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
  * 作用域规则。

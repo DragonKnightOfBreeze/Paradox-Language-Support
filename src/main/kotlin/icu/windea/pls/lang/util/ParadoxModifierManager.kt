@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -54,10 +55,10 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
-import icu.windea.pls.model.elementInfo.toInfo
-import icu.windea.pls.model.elementInfo.toPsiElement
+import icu.windea.pls.model.toInfo
+import icu.windea.pls.model.toPsiElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxModifierManager {
@@ -70,7 +71,7 @@ object ParadoxModifierManager {
     // rootFile -> cacheKey -> modifierInfo
     // depends on config group
     private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, String, ParadoxModifierInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxModifierInfo>> {
+        createNestedCache<VirtualFile, String, ParadoxModifierInfo, Cache<String, ParadoxModifierInfo>> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }

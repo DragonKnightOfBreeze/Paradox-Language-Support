@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
-import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 
 /**
  * 动态值的查询。（不涉及CWT规则文件中预定义的值）

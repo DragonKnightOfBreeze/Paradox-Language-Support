@@ -25,9 +25,7 @@ import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtSeparatorType
-import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.get
-import icu.windea.pls.model.resolveNext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 /**
  * 提供“选项数据访问器”（Option Data Accessors）的集中定义与实现。

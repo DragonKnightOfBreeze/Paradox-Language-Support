@@ -34,7 +34,7 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxScopeContextInferenceInfo
+import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

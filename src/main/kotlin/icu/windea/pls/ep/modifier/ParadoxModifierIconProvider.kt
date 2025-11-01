@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.model.elementInfo.ParadoxModifierInfo
+import icu.windea.pls.model.ParadoxModifierInfo
 
 /**
  * 用于为修正提供图标的图片。

@@ -1,4 +1,4 @@
-package icu.windea.pls.model.elementInfo
+package icu.windea.pls.model
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
@@ -7,13 +7,12 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.ep.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.modifier.support
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
-import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxModifierInfo(
-    override val name: String,
-    override val gameType: ParadoxGameType,
-    override val project: Project,
-) : UserDataHolderBase(), ParadoxElementInfo {
+    val name: String,
+    val gameType: ParadoxGameType,
+    val project: Project,
+) : UserDataHolderBase() {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
 
     companion object {

@@ -1,4 +1,8 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.scope
+
+import icu.windea.pls.config.config.delegated.CwtScopeConfig
+import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
+import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 
 /**
  * 作用域。
@@ -16,16 +20,22 @@ package icu.windea.pls.model
  * - **事件对象（event target）** - 用于保存需要的作用域，以便后续复用。
  * - **变量（variable）** - 用于保存需要的变量（数值、字符串等），以便后续复用。
  *
- * @property id 作用域（类型） ID。
+ * @property id 作用域的ID。指示作用域类型。
  *
  * @see ParadoxScopeContext
- * @see icu.windea.pls.config.config.delegated.CwtScopeConfig
- * @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
- * @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
- * @see icu.windea.pls.lang.util.ParadoxScopeManager
+ * @see CwtScopeConfig
+ * @see CwtScopeGroupConfig
+ * @see CwtSystemScopeConfig
  */
 sealed interface ParadoxScope {
     val id: String
+
+    /**
+     * 默认作用域。
+     */
+    class Default(override val id: String) : ParadoxScope {
+        override fun toString() = id
+    }
 
     /**
      * 任意作用域。
@@ -51,13 +61,9 @@ sealed interface ParadoxScope {
         override fun toString() = id
     }
 
-    class Default(override val id: String) : ParadoxScope {
-        override fun toString() = id
-    }
-
     companion object {
         @JvmStatic
-        fun of(id: String): ParadoxScope {
+        fun get(id: String): ParadoxScope {
             return when {
                 id == Any.id -> Any
                 id == Unknown.id -> Unknown

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 import org.junit.Test

@@ -14,7 +14,7 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.model.optimizeValue
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile

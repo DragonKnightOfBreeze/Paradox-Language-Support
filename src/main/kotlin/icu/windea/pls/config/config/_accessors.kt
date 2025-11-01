@@ -56,10 +56,10 @@ var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfi
 /** 当前值规则的标签类型（解析阶段推断，用于渲染和提示）。*/
 var CwtValueConfig.tagType: CwtTagType? by createKey(CwtMemberConfig.Keys)
 
-/** 当前成员规则的被覆写前的原始规则（用于规则覆盖、来源追踪等场景）。*/
+/** 当前成员规则的被重载前的原始规则（用于规则覆盖、来源追踪等场景）。*/
 var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMember>? by createKey(CwtMemberConfig.Keys)
 
-/** 当前成员规则对应的覆写提供者（来源于可覆写的规则分组）。*/
+/** 当前成员规则对应的重载提供者（来源于可重载的规则分组）。*/
 var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则（作为声明规则的顶级成员规则时）对应的声明规则的上下文信息（用于声明/定义相关能力）。*/

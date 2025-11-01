@@ -3,8 +3,8 @@ package icu.windea.pls.lang.index
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.ID
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable

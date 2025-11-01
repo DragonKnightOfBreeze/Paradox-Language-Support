@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.extendedDynamicValues
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.scope.ParadoxScopeContext
 
 class ParadoxBaseDynamicValueScopeContextProvider : ParadoxDynamicValueScopeContextProvider {
     override fun supports(element: ParadoxDynamicValueElement): Boolean {

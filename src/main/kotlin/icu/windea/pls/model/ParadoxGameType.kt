@@ -50,8 +50,8 @@ enum class ParadoxGameType(
      * - 入口名称即入口目录相对于游戏或模组根目录的路径。
      * - 游戏与模组文件实际上需要位于入口目录中，而非游戏或模组根目录中。
      * - 游戏与模组文件的（相对）路径，一般指相对于入口目录的路径。
-     * - 对于游戏来说，主要的入口名称为空字符串或 `"game"`，此外也有一些额外的入口名称（例 `"jomini"`），取决于游戏类型。
-     * - 对于模组来说，入口名称为空字符串，即入口目录等同于模组根目录。
+     * - 对于游戏来说，主要的入口名称为空字符串（即等同于游戏根目录）或 `"game"`，此外也有一些额外的入口名称（例 `"jomini"`），取决于游戏类型。
+     * - 对于模组来说，入口名称为空字符串（即等同于模组根目录）。
      */
     object EntryNames {
         val stellaris = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")

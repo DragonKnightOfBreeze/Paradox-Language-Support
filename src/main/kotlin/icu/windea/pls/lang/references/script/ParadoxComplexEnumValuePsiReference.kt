@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.model.indexInfo.ParadoxComplexEnumValueIndexInfo
+import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 class ParadoxComplexEnumValuePsiReference(

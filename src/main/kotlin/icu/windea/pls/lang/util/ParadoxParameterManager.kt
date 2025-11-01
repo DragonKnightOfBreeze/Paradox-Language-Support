@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -62,15 +63,15 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
-import icu.windea.pls.model.elementInfo.toInfo
+import icu.windea.pls.model.ParadoxParameterInfo
+import icu.windea.pls.model.toInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -90,7 +91,7 @@ object ParadoxParameterManager {
     // rootFile -> cacheKey -> parameterInfo
     // depends on config group
     private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, String, ParadoxParameterInfo, com.github.benmanes.caffeine.cache.Cache<String, ParadoxParameterInfo>> {
+        createNestedCache<VirtualFile, String, ParadoxParameterInfo, Cache<String, ParadoxParameterInfo>> {
             CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }

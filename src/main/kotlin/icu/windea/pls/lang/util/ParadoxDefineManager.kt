@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty

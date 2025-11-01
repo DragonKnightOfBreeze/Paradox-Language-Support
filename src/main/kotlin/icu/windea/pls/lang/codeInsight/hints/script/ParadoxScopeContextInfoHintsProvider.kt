@@ -25,9 +25,9 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.Settings
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.ParadoxScope
-import icu.windea.pls.model.ParadoxScopeContext
-import icu.windea.pls.model.toScopeMap
+import icu.windea.pls.model.scope.ParadoxScope
+import icu.windea.pls.model.scope.ParadoxScopeContext
+import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile

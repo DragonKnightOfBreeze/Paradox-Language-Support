@@ -22,7 +22,7 @@
 
 ---
 
-## Override（文件/脚本元素覆写）
+## Override（文件/脚本元素重载）
 
 - `ParadoxOverrideForFile`（WEAK WARNING，默认关）
 - `ParadoxOverrideForScriptedVariable`（WEAK WARNING，默认关）

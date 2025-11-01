@@ -31,7 +31,7 @@ import icu.windea.pls.lang.psi.PlsPsiManager
  * 需在子类中实现：
  * - [checkFileAvailable]：限定可用文件与语言；
  * - [isContainerElement]：定义“容器”节点；
- * - 可选覆写 [isMemberElement]/[canAttachComments]/[getLineRangeForMemberElements] 以适配具体语法。
+ * - 可选重载 [isMemberElement]/[canAttachComments]/[getLineRangeForMemberElements] 以适配具体语法。
  */
 abstract class ContainerBasedMover : LineMover() {
     override fun checkAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean): Boolean {
@@ -178,7 +178,7 @@ abstract class ContainerBasedMover : LineMover() {
     /**
      * 返回容器内用于移动的“成员行范围”。
      *
-     * 默认返回整个 [containerElement] 的行范围；如需排除花括号或边界标记，可覆写该方法。
+     * 默认返回整个 [containerElement] 的行范围；如需排除花括号或边界标记，可重载该方法。
      */
     protected open fun getLineRangeForMemberElements(editor: Editor, containerElement: PsiElement): LineRange? = LineRange(containerElement)
 

@@ -1,13 +1,12 @@
-package icu.windea.pls.model.indexInfo
+package icu.windea.pls.model.index
 
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
-data class ParadoxEventInOnActionIndexInfo(
-    val eventName: String,
-    val typeExpression: String,
-    val containingOnActionName: String,
-    override val elementOffset: Int,
+data class ParadoxDefineIndexInfo(
+    val namespace: String,
+    val variable: String?,
+    val elementOffsets: Set<Int>,
     override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo {
     @Volatile

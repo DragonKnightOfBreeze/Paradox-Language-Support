@@ -11,7 +11,7 @@ object Processors {
     /**
      * 查找处理器：在处理到第一个满足条件的元素时终止迭代。
      *
-     * 可通过覆写 [accept] 指定匹配条件；匹配成功后结果存入 [result] 并返回 `false` 停止迭代。
+     * 可通过重载 [accept] 指定匹配条件；匹配成功后结果存入 [result] 并返回 `false` 停止迭代。
      */
     open class FindProcessor<T> : Processor<T> {
         var result: T? = null
@@ -32,7 +32,7 @@ object Processors {
     /**
      * 收集处理器：将满足条件的元素加入到给定集合 [collection]。
      *
-     * 可通过覆写 [accept] 指定过滤条件；处理始终返回 `true` 以继续迭代。
+     * 可通过重载 [accept] 指定过滤条件；处理始终返回 `true` 以继续迭代。
      */
     open class CollectProcessor<T, C : MutableCollection<T>>(val collection: C) : Processor<T> {
         override fun process(e: T): Boolean {

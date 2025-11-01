@@ -1,5 +1,8 @@
 package icu.windea.pls.model
 
+/**
+ * 模组描述符信息。
+ */
 data class ParadoxModDescriptorInfo(
     val name: String,
     val version: String? = null,

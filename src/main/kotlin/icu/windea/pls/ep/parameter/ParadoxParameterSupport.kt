@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.SyncedKeyRegistry
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
-import icu.windea.pls.model.elementInfo.ParadoxParameterInfo
+import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

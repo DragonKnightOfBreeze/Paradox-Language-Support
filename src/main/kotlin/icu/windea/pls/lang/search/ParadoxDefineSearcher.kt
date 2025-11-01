@@ -12,7 +12,7 @@ import icu.windea.pls.lang.index.ParadoxDefineIndex
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
-import icu.windea.pls.model.indexInfo.ParadoxDefineIndexInfo
+import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
 /**

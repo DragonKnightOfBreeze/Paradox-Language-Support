@@ -11,7 +11,7 @@ import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.model.indexInfo.ParadoxDynamicValueIndexInfo
+import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
 /**

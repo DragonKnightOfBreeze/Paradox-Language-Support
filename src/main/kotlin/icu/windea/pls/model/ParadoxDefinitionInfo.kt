@@ -25,6 +25,8 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
+ * 定义信息。
+ *
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。
  * @property typeKey 定义的类型键（不一定是定义的名字）。
  * @property elementPath 相对于所属文件的定义成员路径。

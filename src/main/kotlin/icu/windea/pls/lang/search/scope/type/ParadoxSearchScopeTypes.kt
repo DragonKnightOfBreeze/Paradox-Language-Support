@@ -10,7 +10,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.indexInfo.ParadoxIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.script.psi.findParentDefinition
 
 object ParadoxSearchScopeTypes {

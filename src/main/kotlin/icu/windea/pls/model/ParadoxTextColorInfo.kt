@@ -19,5 +19,4 @@ class ParadoxTextColorInfo(
     val icon: ColorIcon = ColorIcon(16, color)
     val text: String = "$name = { $r $g $b }"
     val textWithColor: String = "<span style=\"color: #${ColorUtil.toHex(color, true)}\">$name</span> = { $r $g $b }"
-
 }
