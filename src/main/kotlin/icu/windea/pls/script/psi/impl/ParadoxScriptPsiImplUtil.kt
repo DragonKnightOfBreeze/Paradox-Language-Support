@@ -49,7 +49,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariable): String? {
-        runReadAction { element.stub }?.name?.orNull()?.let { return it }
+        element.stub?.name?.orNull()?.let { return it }
         return element.scriptedVariableName.name
     }
 
@@ -127,7 +127,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getName(element: ParadoxScriptProperty): String {
         // 注意：如果 element 对应一个定义，这里得到的不一定是定义的名字
-        runReadAction { element.stub }?.name?.orNull()?.let { return it }
+        element.stub?.name?.orNull()?.let { return it }
         return element.propertyKey.name
     }
 
