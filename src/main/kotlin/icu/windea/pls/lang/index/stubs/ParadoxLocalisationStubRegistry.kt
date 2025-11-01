@@ -14,8 +14,7 @@ import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.ParadoxIndexKeys
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
@@ -24,11 +23,12 @@ import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
+import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
+import icu.windea.pls.model.ValueOptimizers.ForParadoxLocalisationType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.optimized
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubRegistry : StubRegistryExtension {
@@ -46,13 +46,13 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxLocalisationFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.localisationType.optimizeValue())
-            dataStream.writeByte(stub.gameType.optimizeValue())
+            dataStream.writeByte(stub.localisationType.optimized(ForParadoxLocalisationType))
+            dataStream.writeByte(stub.gameType.optimized(ForParadoxGameType))
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxLocalisationFileStub {
-            val localisationType = dataStream.readByte().deoptimizeValue<ParadoxLocalisationType>()
-            val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
+            val localisationType = dataStream.readByte().deoptimized(ForParadoxLocalisationType)
+            val gameType = dataStream.readByte().deoptimized(ForParadoxGameType)
             return ParadoxLocalisationFileStub.create(null, localisationType, gameType)
         }
 
@@ -96,7 +96,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
 
     class PropertyFactory : LightStubElementFactory<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty> {
         override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<out PsiElement>?): ParadoxLocalisationPropertyStub {
-          return ParadoxLocalisationStubManager.createPropertyStub(psi, parentStub)
+            return ParadoxLocalisationStubManager.createPropertyStub(psi, parentStub)
         }
 
         override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {

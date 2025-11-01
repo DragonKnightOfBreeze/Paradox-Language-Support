@@ -29,8 +29,10 @@ import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.ValueOptimizers.ForCwtSeparatorType
+import icu.windea.pls.model.ValueOptimizers.ForCwtType
+import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.optimized
 
 class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver {
     private val logger = thisLogger()
@@ -132,11 +134,11 @@ private abstract class CwtPropertyConfigImpl(
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimizeValue() // use enum id as field to optimize memory
-    override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
+    private val valueTypeId = valueType.optimized(ForCwtType) // optimize memory
+    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
 
-    private val separatorTypeId = separatorType.optimizeValue() // use enum id as field to optimize memory
-    override val separatorType get() = separatorTypeId.deoptimizeValue<CwtSeparatorType>()
+    private val separatorTypeId = separatorType.optimized(ForCwtSeparatorType) // optimize memory
+    override val separatorType get() = separatorTypeId.deoptimized(ForCwtSeparatorType)
 
     // use memory-optimized lazy property
     @Volatile

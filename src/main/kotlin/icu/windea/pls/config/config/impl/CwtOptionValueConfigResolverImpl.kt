@@ -6,8 +6,9 @@ import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.ValueOptimizers.ForCwtType
+import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.optimized
 import java.util.concurrent.ConcurrentHashMap
 
 internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver {
@@ -44,8 +45,8 @@ private class CwtOptionValueConfigImpl(
 ) : CwtOptionValueConfig {
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimizeValue() // use enum id as field to optimize memory
-    override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
+    private val valueTypeId = valueType.optimized(ForCwtType) // optimize memory
+    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
 
     override fun toString() = "(option value) $value"
 }

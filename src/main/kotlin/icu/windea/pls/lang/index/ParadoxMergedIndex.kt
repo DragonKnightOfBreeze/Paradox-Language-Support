@@ -23,10 +23,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
+import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.optimized
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -141,7 +141,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id)
         val gameType = firstInfo.gameType
-        storage.writeByte(gameType.optimizeValue())
+        storage.writeByte(gameType.optimized(ForParadoxGameType))
         var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
             support.writeData(storage, info, previousInfo, gameType)
@@ -157,7 +157,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.id == id }
             ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
-        val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
+        val gameType = storage.readByte().deoptimized(ForParadoxGameType)
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType)

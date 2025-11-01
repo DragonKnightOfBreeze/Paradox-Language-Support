@@ -12,9 +12,10 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.optimized
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
@@ -54,13 +55,13 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         return object : DataExternalizer<Info> {
             override fun save(storage: DataOutput, value: Info) {
                 storage.writeUTFFast(value.directory)
-                storage.writeByte(value.gameType.optimizeValue())
+                storage.writeByte(value.gameType.optimized(ForParadoxGameType).toInt())
                 storage.writeBoolean(value.included)
             }
 
             override fun read(storage: DataInput): Info {
                 val path = storage.readUTFFast()
-                val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
+                val gameType = storage.readByte().deoptimized(ForParadoxGameType)
                 val included = storage.readBoolean()
                 return Info(path, gameType, included)
             }

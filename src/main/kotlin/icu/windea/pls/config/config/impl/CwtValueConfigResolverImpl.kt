@@ -24,8 +24,9 @@ import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.ValueOptimizers.ForCwtType
+import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.optimized
 
 class CwtValueConfigResolverImpl : CwtValueConfig.Resolver {
     private val logger = thisLogger()
@@ -120,8 +121,8 @@ private abstract class CwtValueConfigImpl(
 ) : UserDataHolderBase(), CwtValueConfig {
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimizeValue() // use enum id to optimize memory
-    override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
+    private val valueTypeId = valueType.optimized(ForCwtType) // use enum id to optimize memory
+    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
 
     override val propertyConfig = propertyConfig
 

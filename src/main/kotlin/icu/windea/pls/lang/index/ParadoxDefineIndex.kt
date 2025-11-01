@@ -12,10 +12,10 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
+import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
-import icu.windea.pls.model.optimizeValue
+import icu.windea.pls.model.optimized
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.properties
@@ -56,7 +56,7 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
             storage.writeUTFFast(info.variable.orEmpty())
             storage.writeIntFast(info.elementOffsets.size)
             info.elementOffsets.forEach { storage.writeIntFast(it) }
-            storage.writeByte(info.gameType.optimizeValue())
+            storage.writeByte(info.gameType.optimized(ForParadoxGameType).toInt())
         }
     }
 
@@ -68,7 +68,7 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
             val variable = storage.readUTFFast().orNull()
             val elementOffsetsSize = storage.readIntFast()
             val elementOffsets = if (elementOffsetsSize != 0) sortedSetOf<Int>().apply { repeat(elementOffsetsSize) { this += storage.readIntFast() } } else emptySet()
-            val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
+            val gameType = storage.readByte().deoptimized(ForParadoxGameType)
             map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffsets, gameType))
         }
         return map
