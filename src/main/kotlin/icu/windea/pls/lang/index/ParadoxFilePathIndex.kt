@@ -32,7 +32,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
 
     override fun getName() = ParadoxIndexKeys.FilePath
 
-    override fun getVersion() = 75 // VERSION for 2.0.5
+    override fun getVersion() = 76 // VERSION for 2.0.6
 
     override fun getIndexer(): DataIndexer<String, Info, FileContent> {
         return DataIndexer { inputData ->

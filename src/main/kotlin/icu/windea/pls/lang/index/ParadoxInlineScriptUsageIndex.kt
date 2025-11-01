@@ -9,5 +9,5 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxInlineScriptUsageIndex : StringStubIndexExtension<ParadoxScriptProperty>() {
     override fun getKey() = ParadoxIndexKeys.InlineScriptUsage
 
-    override fun getVersion() = 75 // VERSION for 2.0.5
+    override fun getVersion() = 76 // VERSION for 2.0.6
 }
