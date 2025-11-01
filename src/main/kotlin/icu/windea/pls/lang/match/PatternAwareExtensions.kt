@@ -40,7 +40,7 @@ fun String.matchFromPattern(
     val expression = ParadoxScriptExpression.resolve(key)
     val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
         if (ep !is PatternAwareParadoxScriptExpressionMatcher) return@f null
-        ep.matches(contextElement, expression, configExpression, null, configGroup, matchOptions)
+        ep.match(contextElement, expression, configExpression, null, configGroup, matchOptions)
     }
     if (matchResult == null) return false
     return matchResult.get(matchOptions)

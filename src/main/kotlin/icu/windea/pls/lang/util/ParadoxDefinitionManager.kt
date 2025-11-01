@@ -43,7 +43,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
@@ -51,6 +50,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.dataFlow.options
@@ -464,7 +464,7 @@ object ParadoxDefinitionManager {
             // 匹配值
             propertyConfig.stringValue != null -> {
                 val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
-                return ParadoxScriptExpressionMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
+                return ParadoxMatchService.matchScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
             }
             // 匹配single_alias
             ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
@@ -503,7 +503,7 @@ object ParadoxDefinitionManager {
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
-                ParadoxScriptExpressionMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
+                ParadoxMatchService.matchScriptExpression(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
             }
 
             // 如果没有匹配的规则则忽略
@@ -538,7 +538,7 @@ object ParadoxDefinitionManager {
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
             val matched = valueConfigs.any { valueConfig ->
-                val matched = ParadoxScriptExpressionMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
                 if (matched) occurrenceMap.get(valueConfig.value)?.let { it.actual++ }
                 matched
             }

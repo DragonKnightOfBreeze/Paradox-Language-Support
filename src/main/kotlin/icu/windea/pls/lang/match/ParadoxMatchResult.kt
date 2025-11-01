@@ -4,6 +4,9 @@ import com.intellij.util.BitUtil
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.PlsCoreManager
 
+/**
+ * 匹配结果。
+ */
 sealed class ParadoxMatchResult {
     abstract fun get(options: Int = ParadoxMatchOptions.Default): Boolean
 

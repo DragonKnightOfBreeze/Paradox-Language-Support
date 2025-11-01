@@ -21,10 +21,9 @@ import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
-import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -43,7 +42,7 @@ import icu.windea.pls.script.psi.members
 import icu.windea.pls.script.psi.propertyValue
 
 class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         return when (configExpression.type) {
             CwtDataTypes.Block -> {
                 if (expression.isKey != false) return ParadoxMatchResult.NotMatch
@@ -128,7 +127,7 @@ class ParadoxBaseScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         val project = configGroup.project
         val dataType = configExpression.type
         return when (dataType) {
@@ -263,14 +262,14 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
                 val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
-                ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, ParadoxMatchOptions.Default)
+                ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
             }
             CwtDataTypes.AliasName -> {
                 if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
                 if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
                 val aliasName = configExpression.value ?: return ParadoxMatchResult.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return ParadoxMatchResult.NotMatch
-                ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, ParadoxMatchOptions.Default)
+                ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, options)
             }
             CwtDataTypes.AliasMatchLeft -> {
                 return ParadoxMatchResult.NotMatch // 不在这里处理
@@ -337,7 +336,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ParadoxConstantScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Constant) return null
         val value = configExpression.value ?: return ParadoxMatchResult.NotMatch
         if (!configExpression.isKey) {
@@ -352,7 +351,7 @@ class ParadoxConstantScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
 }
 
 class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.TemplateExpression) return null
         if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
@@ -362,7 +361,7 @@ class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
 }
 
 class ParadoxAntScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Ant) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
         val ignoreCase = configExpression.ignoreCase ?: false
@@ -372,7 +371,7 @@ class ParadoxAntScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMat
 }
 
 class ParadoxRegexScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Regex) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
         val ignoreCase = configExpression.ignoreCase ?: false
@@ -382,7 +381,7 @@ class ParadoxRegexScriptExpressionMatcher : PatternAwareParadoxScriptExpressionM
 }
 
 class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
+    override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         // 如果附有 `## predicate = {...}` 选项，则根据上下文进行匹配
         // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig
         val memberConfig = if (config is CwtMemberConfig<*>) config.memberConfig else null

@@ -27,7 +27,7 @@ interface ParadoxCsvExpressionMatcher {
      * @see ParadoxMatchResult
      * @see ParadoxMatchResultProvider
      */
-    fun matches(
+    fun match(
         element: PsiElement,
         expressionText: String,
         configExpression: CwtDataExpression,
@@ -36,21 +36,5 @@ interface ParadoxCsvExpressionMatcher {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
-
-        /**
-         * @see ParadoxCsvExpressionMatcher.matches
-         */
-        fun matches(
-            element: PsiElement,
-            expressionText: String,
-            configExpression: CwtDataExpression,
-            configGroup: CwtConfigGroup,
-        ): ParadoxMatchResult {
-            EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.matches(element, expressionText, configExpression, configGroup)
-                if (r != null) return r
-            }
-            return ParadoxMatchResult.NotMatch
-        }
     }
 }

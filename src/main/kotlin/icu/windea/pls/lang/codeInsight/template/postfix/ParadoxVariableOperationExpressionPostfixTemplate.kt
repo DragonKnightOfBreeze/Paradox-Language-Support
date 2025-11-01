@@ -10,8 +10,8 @@ import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -45,7 +45,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if (config !is CwtPropertyConfig) return@p false
-            ParadoxScriptExpressionMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
+            ParadoxMatchService.matchScriptExpression(context, expression, config.keyExpression, config, configGroup).get()
         }
         if (matched == null) return emptyList()
         return stringElement.singleton.list()

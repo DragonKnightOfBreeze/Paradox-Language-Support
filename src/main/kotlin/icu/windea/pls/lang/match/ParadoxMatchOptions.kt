@@ -1,5 +1,8 @@
 package icu.windea.pls.lang.match
 
+/**
+ * 匹配选项。
+ */
 object ParadoxMatchOptions {
     /** 默认的匹配方式，先尝试通过 [ParadoxMatchResult.ExactMatch] 进行匹配，然后再尝试通过其他匹配方式进行匹配。 */
     const val Default = 0x00

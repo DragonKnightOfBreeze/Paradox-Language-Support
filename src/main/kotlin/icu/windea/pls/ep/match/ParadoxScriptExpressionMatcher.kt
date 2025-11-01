@@ -32,7 +32,7 @@ interface ParadoxScriptExpressionMatcher {
      * @see ParadoxMatchResult
      * @see ParadoxMatchResultProvider
      */
-    fun matches(
+    fun match(
         element: PsiElement,
         expression: ParadoxScriptExpression,
         configExpression: CwtDataExpression,
@@ -43,23 +43,5 @@ interface ParadoxScriptExpressionMatcher {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
-
-        /**
-         * @see ParadoxScriptExpressionMatcher.matches
-         */
-        fun matches(
-            element: PsiElement,
-            expression: ParadoxScriptExpression,
-            configExpression: CwtDataExpression,
-            config: CwtConfig<*>?,
-            configGroup: CwtConfigGroup,
-            options: Int = ParadoxMatchOptions.Default
-        ): ParadoxMatchResult {
-            EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.matches(element, expression, configExpression, config, configGroup, options)
-                if (r != null) return r
-            }
-            return ParadoxMatchResult.NotMatch
-        }
     }
 }

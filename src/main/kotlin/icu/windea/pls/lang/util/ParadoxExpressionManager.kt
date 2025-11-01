@@ -81,13 +81,13 @@ import icu.windea.pls.ep.configContext.CwtConfigContextProvider
 import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultValue
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
@@ -411,7 +411,7 @@ object ParadoxExpressionManager {
                 ProgressManager.checkCanceled()
                 val resultValuesMatchKey = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
                 result.forEach f@{ config ->
-                    val matchResult = ParadoxScriptExpressionMatcher.matches(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
+                    val matchResult = ParadoxMatchService.matchScriptExpression(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxMatchResult.NotMatch) return@f
                     resultValuesMatchKey += ParadoxMatchResultValue(config, matchResult)
                 }
@@ -513,7 +513,7 @@ object ParadoxExpressionManager {
                 val resultValuesMatchKey = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
                 contextConfigs.forEach f@{ config ->
                     if (config !is CwtPropertyConfig) return@f
-                    val matchResult = ParadoxScriptExpressionMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
+                    val matchResult = ParadoxMatchService.matchScriptExpression(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxMatchResult.NotMatch) return@f
                     resultValuesMatchKey += ParadoxMatchResultValue(config, matchResult)
                 }
@@ -530,7 +530,7 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val resultValues = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
         resultMatchKey.forEach f@{ config ->
-            val matchResult = ParadoxScriptExpressionMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
+            val matchResult = ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
             if (matchResult == ParadoxMatchResult.NotMatch) return@f
             resultValues += ParadoxMatchResultValue(config, matchResult)
         }
@@ -641,7 +641,7 @@ object ParadoxExpressionManager {
                 if (configs1.size <= 1) return@r1
                 configs.forEach f2@{ config ->
                     val valueConfig = config.valueConfig ?: return@f2
-                    val matchResult = ParadoxScriptExpressionMatcher.matches(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)
+                    val matchResult = ParadoxMatchService.matchScriptExpression(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)
                     if (matchResult.get(matchOptions)) return@f2
                     configsToRemove += config
                 }
@@ -663,7 +663,7 @@ object ParadoxExpressionManager {
                 }
                 // 这里需要再次进行匹配
                 overriddenConfigs.forEach { c ->
-                    val matchResult = ParadoxScriptExpressionMatcher.matches(element, expression, c.configExpression, c, configGroup, matchOptions)
+                    val matchResult = ParadoxMatchService.matchScriptExpression(element, expression, c.configExpression, c, configGroup, matchOptions)
                     if (matchResult.get(matchOptions)) {
                         result1 += c
                     }
@@ -740,7 +740,7 @@ object ParadoxExpressionManager {
             val matched = childConfigs.find { childConfig ->
                 if (childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if (childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                ParadoxScriptExpressionMatcher.matches(data, expression, childConfig.configExpression, childConfig, configGroup).get()
+                ParadoxMatchService.matchScriptExpression(data, expression, childConfig.configExpression, childConfig, configGroup).get()
             }
             if (matched == null) return@f
             val occurrence = occurrenceMap[matched.configExpression]
@@ -1072,7 +1072,7 @@ object ParadoxExpressionManager {
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.find { ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.find { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default): Set<String> {
@@ -1080,7 +1080,7 @@ object ParadoxExpressionManager {
         if (constKey != null) return setOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptySet()
         val expression = ParadoxScriptExpression.resolve(key, quoted, true)
-        return keys.filterTo(mutableSetOf()) { ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
+        return keys.filterTo(mutableSetOf()) { ParadoxMatchService.matchScriptExpression(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 
     fun getEntryName(config: CwtConfig<*>): String? {

@@ -10,8 +10,8 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.cancelable
-import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object CwtTemplateExpressionManager {
@@ -93,7 +93,7 @@ object CwtTemplateExpressionManager {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxScriptExpression.resolve(referenceName, false)
-                val matched = ParadoxScriptExpressionMatcher.matches(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxMatchService.matchScriptExpression(element, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
                 if (!matched) return false
             }
         }

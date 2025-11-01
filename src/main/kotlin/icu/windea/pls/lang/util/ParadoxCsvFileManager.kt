@@ -22,9 +22,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxCsvFileManager {
@@ -102,7 +102,7 @@ object ParadoxCsvFileManager {
             return column.value == columnConfig.key
         }
         val configExpression = columnConfig.valueConfig?.configExpression ?: return false
-        return ParadoxCsvExpressionMatcher.matches(column, column.text, configExpression, columnConfig.configGroup).get(matchOptions)
+        return ParadoxMatchService.matchCsvExpression(column, column.text, configExpression, columnConfig.configGroup).get(matchOptions)
     }
 
     fun computeHeaderColumnSize(element: ParadoxCsvHeader): Int {
