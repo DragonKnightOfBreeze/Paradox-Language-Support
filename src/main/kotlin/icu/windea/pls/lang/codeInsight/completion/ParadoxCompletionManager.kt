@@ -99,6 +99,7 @@ import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import java.util.concurrent.Callable
 
 object ParadoxCompletionManager {
     // region Predefined Lookup Elements
@@ -490,7 +491,6 @@ object ParadoxCompletionManager {
         val selector = selector(project, contextElement).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        // .distinctByName() // 这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ localisation ->
             // apply extraFilter since it's necessary
             if (context.extraFilter?.invoke(localisation) == false) return@p true
@@ -505,10 +505,9 @@ object ParadoxCompletionManager {
             result.addElement(lookupElement, context)
             true
         }
-        // 保证索引在此readAction中可用
-        ReadAction.nonBlocking<Unit> {
-            ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-        }.inSmartMode(project).executeSynchronously()
+        // 保证索引在此 readAction 中可用
+        val task = Callable { ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor) }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 
     fun completeSyncedLocalisation(context: ProcessingContext, result: CompletionResultSet) {
@@ -528,7 +527,6 @@ object ParadoxCompletionManager {
         val selector = selector(project, contextElement).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        // .distinctByName() // 这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> p@{ syncedLocalisation ->
             // apply extraFilter since it's necessary
             if (context.extraFilter?.invoke(syncedLocalisation) == false) return@p true
@@ -543,10 +541,9 @@ object ParadoxCompletionManager {
             result.addElement(lookupElement, context)
             true
         }
-        // 保证索引在此readAction中可用
-        ReadAction.nonBlocking<Unit> {
-            ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-        }.inSmartMode(project).executeSynchronously()
+        // 保证索引在此 readAction 中可用
+        val task = Callable { ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor) }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 
     fun completeDefinition(context: ProcessingContext, result: CompletionResultSet) {

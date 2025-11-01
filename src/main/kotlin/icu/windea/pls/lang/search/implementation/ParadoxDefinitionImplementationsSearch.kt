@@ -13,6 +13,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.util.concurrent.Callable
 
 /**
  * 定义的实现的查询。加入所有作用域内的同名定义。
@@ -28,12 +29,13 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         if (name.isEmpty()) return true
         val type = definitionInfo.type
         val project = queryParameters.project
-        ReadAction.nonBlocking<Unit> {
+        val task = Callable<Unit> {
             // 这里不进行排序
             val selector = selector(project, sourceElement).definition()
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
-        }.inSmartMode(project).executeSynchronously()
+        }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
         return true
     }
 }

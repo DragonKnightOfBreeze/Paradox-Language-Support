@@ -22,6 +22,7 @@ import icu.windea.pls.lang.util.ParadoxLocalisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
+import java.util.concurrent.Callable
 
 /**
  * 提供参数名字的代码补全。
@@ -45,7 +46,6 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
         val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        // .distinctByName() // 这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name
@@ -57,13 +57,13 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
             result.addElement(lookupElement)
             true
         }
-        // 保证索引在此readAction中可用
-
-        ReadAction.nonBlocking<Unit> {
+        // 保证索引在此 readAction 中可用
+        val task = Callable {
             when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
                 ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
-        }.inSmartMode(project).executeSynchronously()
+        }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 }

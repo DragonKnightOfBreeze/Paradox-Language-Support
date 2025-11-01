@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.lints
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
@@ -11,6 +12,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import java.util.concurrent.Callable
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
@@ -35,7 +37,8 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
 
     override fun doAnnotate(collectedInfo: Info?): PlsTigerLintResult? {
         val file = collectedInfo?.file ?: return null
-        return PlsTigerLintManager.getTigerLintResultForFile(file)
+        val task = Callable { PlsTigerLintManager.getTigerLintResultForFile(file) }
+        return ReadAction.nonBlocking(task).withDocumentsCommitted(file.project).executeSynchronously()
     }
 
     override fun apply(file: PsiFile, annotationResult: PlsTigerLintResult?, holder: AnnotationHolder) {

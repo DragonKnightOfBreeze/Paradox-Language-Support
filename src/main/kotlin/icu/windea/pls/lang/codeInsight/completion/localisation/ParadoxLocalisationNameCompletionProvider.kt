@@ -23,6 +23,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxLocalisationType
+import java.util.concurrent.Callable
 
 /**
  * 提供本地化名称的代码补全。
@@ -42,13 +43,12 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         // 本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
 
-        // 提示localisation或者synced_localisation
+        // 提示 `localisation` 或者 `synced_localisation`
         // 排除正在输入的那一个
         val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             .notSamePosition(element)
-        // .distinctByName() // 这里selector不需要指定去重
         val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> {
             ProgressManager.checkCanceled()
             val name = it.name
@@ -60,12 +60,13 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             result.addElement(lookupElement)
             true
         }
-        // 保证索引在此readAction中可用
-        ReadAction.nonBlocking<Unit> {
+        // 保证索引在此 readAction 中可用
+        val task = Callable {
             when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
                 ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
-        }.inSmartMode(project).executeSynchronously()
+        }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 }

@@ -15,7 +15,6 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import java.util.concurrent.Callable
 
 // com.intellij.uml.java.JavaUmlDataModel
 
@@ -52,7 +51,7 @@ abstract class ParadoxDiagramDataModel(
             if (application.isReadAccessAllowed) {
                 updateDataModel()
             } else {
-                ReadAction.nonBlocking(Callable { updateDataModel() })
+                ReadAction.nonBlocking<Unit> { updateDataModel() }
                     .inSmartMode(project)
                     .withDocumentsCommitted(project)
                     .expireWith(this)

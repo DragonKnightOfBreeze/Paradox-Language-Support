@@ -13,6 +13,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
+import java.util.concurrent.Callable
 
 /**
  * 文件的实现的查询。加入所有作用域内的同路径的文件。
@@ -26,14 +27,14 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         val path = fileInfo.path.path
         if (path.isEmpty()) return true
         val project = queryParameters.project
-        ReadAction.nonBlocking<Unit> {
+        val task = Callable {
             // 这里不进行排序
             val selector = selector(project, sourceElement).file()
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
-            ParadoxFilePathSearch.search(path, null, selector).forEach(Processor {
-                consumer.process(it.toPsiFile(project))
-            })
-        }.inSmartMode(project).executeSynchronously()
+            val query = ParadoxFilePathSearch.search(path, null, selector)
+            query.forEach(Processor { consumer.process(it.toPsiFile(project)) })
+        }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
         return true
     }
 }

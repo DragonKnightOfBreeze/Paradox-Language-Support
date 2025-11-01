@@ -1,7 +1,6 @@
 package icu.windea.pls.integrations.lints
 
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
@@ -16,8 +15,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.integrations.lints.PlsTigerLintResult.Confidence
-import icu.windea.pls.integrations.lints.PlsTigerLintResult.Severity
+import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 import icu.windea.pls.lang.ParadoxBaseLanguage
@@ -60,7 +58,7 @@ object PlsTigerLintManager {
         // Tiger 执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
 
         if (!isEnabled()) return null
-        return runReadAction { doGetTigerLintResultForFileFromCache(file) }
+        return doGetTigerLintResultForFileFromCache(file)
     }
 
     private fun doGetTigerLintResultForFileFromCache(file: PsiFile): PlsTigerLintResult? {
@@ -91,7 +89,7 @@ object PlsTigerLintManager {
     fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
         if (!isEnabled()) return null
         return synchronized(rootDirectory.virtualFile) { // 这里需要加锁
-            runReadAction { doGetTigerLintResultForRootDirectoryFromCache(rootDirectory) }
+            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
         }
     }
 

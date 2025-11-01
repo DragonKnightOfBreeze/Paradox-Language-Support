@@ -12,6 +12,7 @@ import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import java.util.concurrent.Callable
 
 /**
  * 封装变量的实现的查询。加入所有作用域内的同名封装变量。
@@ -24,13 +25,14 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
         val name = runReadAction { sourceElement.name }
         if (name.isNullOrEmpty()) return true
         val project = queryParameters.project
-        ReadAction.nonBlocking<Unit> {
+        val task = Callable {
             // 这里不进行排序
-            // 使用全部作用域
-            val selector = selector(project, sourceElement).scriptedVariable().withSearchScope(GlobalSearchScope.allScope(project))
+            val selector = selector(project, sourceElement).scriptedVariable()
+                .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
             ParadoxScriptedVariableSearch.searchLocal(name, selector).forEach(consumer)
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).forEach(consumer)
-        }.inSmartMode(project).executeSynchronously()
+        }
+        ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
         return true
     }
 }
