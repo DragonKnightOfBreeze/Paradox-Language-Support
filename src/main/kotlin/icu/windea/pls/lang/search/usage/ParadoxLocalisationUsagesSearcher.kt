@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.RequestResultProcessor
@@ -23,7 +24,8 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
 
         val target = queryParameters.elementToSearch
         if (target !is ParadoxLocalisationProperty) return
-        val name = target.name
+
+        val name = runReadAction { target.name }
         if (name.isEmpty()) return
         val ignoreCase = ParadoxIndexConstraint.Localisation.entries.filter { it.ignoreCase }.any { it.supports(name) }
 

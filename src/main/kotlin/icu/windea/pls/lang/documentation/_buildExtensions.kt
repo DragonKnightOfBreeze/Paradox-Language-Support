@@ -3,7 +3,6 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
@@ -25,11 +24,11 @@ import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.qualifiedName
-import icu.windea.pls.model.steamId
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.toScopeMap
+import icu.windea.pls.model.steamId
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
     append("<br>")
@@ -87,7 +86,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 }
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
-    val file = runReadAction { selectFile(element) } ?: return this
+    val file = selectFile(element) ?: return this
     if (PlsFileManager.isInjectedFile(file)) return this // ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo

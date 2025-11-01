@@ -22,6 +22,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         // 0.7.8 这里不能仅仅用fileName去查找，需要基于CWT规则文件判断
         val target = queryParameters.elementToSearch
         if (target !is PsiFile) return
+
         val fileInfo = target.fileInfo
         if (fileInfo == null) return
         val gameType = fileInfo.rootInfo.gameType

@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScopeUtil
@@ -21,7 +22,7 @@ class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, References
         val target = queryParameters.elementToSearch
         if (target !is CwtProperty && target !is CwtStringExpressionElement) return
 
-        val extraWords = getExtraWords(target)
+        val extraWords = runReadAction { getExtraWords(target) }
         if (extraWords.isEmpty()) return
 
         // 这里不能直接使用target.useScope，否则文件高亮会出现问题

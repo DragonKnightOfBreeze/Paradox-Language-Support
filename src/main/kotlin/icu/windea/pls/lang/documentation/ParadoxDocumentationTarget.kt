@@ -3,6 +3,7 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.model.Pointer
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.runReadAction
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
@@ -34,13 +35,13 @@ class ParadoxDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true)
+        return runReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
     }
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            val html = runReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) } ?: return@asyncDocumentation null
-            DocumentationResult.documentation(html)
+            val html = readAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) }
+            html?.let { DocumentationResult.documentation(it) }
         }
     }
 }
