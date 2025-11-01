@@ -13,7 +13,6 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
-import java.util.stream.Collectors
 
 /**
  * @see CwtDataTypes.Icon
@@ -120,23 +119,18 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         if (expressionRel != null) {
             return null // 信息不足
         }
-        val resolvedPath: String
         val index = configExpression.expressionString.lastIndexOf(',') // `,` 应当最多出现一次
-        if (index == -1) {
+        val resolvedPath = if (index == -1) {
             if (expression.endsWith('/')) {
-                resolvedPath = "$expression$pathReference"
+                "$expression$pathReference"
             } else {
-                resolvedPath = "$expression/$pathReference"
+                "$expression/$pathReference"
             }
         } else {
-            resolvedPath = expression.replace(",", pathReference)
+            expression.replace(",", pathReference)
         }
-
-        if (gameType != null) {
-            return gameType.subDirectoryEntries.plus(resolvedPath)
-                .stream()
-                .map({ directory -> "$directory/$resolvedPath" })
-                .collect(Collectors.toSet())
+        if (gameType != null && gameType.subDirectoryEntries.isNotEmpty()) {
+            return gameType.subDirectoryEntries.map { "$it/$resolvedPath" }.toSet()
         } else {
             return resolvedPath.singleton.set()
         }
