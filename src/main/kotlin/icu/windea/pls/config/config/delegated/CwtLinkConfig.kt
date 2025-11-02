@@ -76,9 +76,9 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     @FromProperty("type: string?")
     val type: String?
-    @FromProperty("from_data: boolean", defaultValue = "false")
+    @FromProperty("from_data: boolean", defaultValue = "no")
     val fromData: Boolean
-    @FromProperty("from_argument: boolean", defaultValue = "false")
+    @FromProperty("from_argument: boolean", defaultValue = "no")
     val fromArgument: Boolean
     @FromProperty("prefix: string?")
     val prefix: String?

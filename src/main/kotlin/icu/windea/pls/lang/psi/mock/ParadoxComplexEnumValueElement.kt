@@ -25,10 +25,14 @@ class ParadoxComplexEnumValueElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
-    val config: CwtComplexEnumConfig? by lazy { PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName) }
+    val config: CwtComplexEnumConfig? by lazy {
+        PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)
+    }
     val searchScopeType: ParadoxSearchScopeType by lazy {
-        val v = config?.searchScopeType
-        if (v == "definition") ParadoxSearchScopeTypes.Definition else ParadoxSearchScopeTypes.All
+        when {
+            config?.perDefinition == true -> ParadoxSearchScopeTypes.Definition
+            else -> ParadoxSearchScopeTypes.All
+        }
     }
 
     override fun getIcon(): Icon {

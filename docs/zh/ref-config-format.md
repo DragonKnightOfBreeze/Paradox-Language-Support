@@ -401,7 +401,7 @@ enums = {
 字段与实现（`CwtComplexEnumConfigResolverImpl`）：
 - 文件来源：`path`/`path_file`/`path_extension`/`path_pattern`/`path_strict`（路径会移除前缀 `game/`，扩展名不含点）。
 - `start_from_root`：是否从文件顶部（而非顶级属性）开始查询锚点。
-- `search_scope_type`（PLS 扩展）：查询作用域类型（目前仅支持 `definition`）。
+- `per_definition`：（PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别，而非文件级别。
 - `name` 小节：描述如何在匹配文件中定位值锚点；实现会收集其中所有名为 `enum_name` 的属性或值作为锚点（`enumNameConfigs`）。
 
 **解析流程（简要）**：

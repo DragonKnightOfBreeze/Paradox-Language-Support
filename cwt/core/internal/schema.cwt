@@ -95,6 +95,7 @@ enums = {
         path_strict = $bool
         path_pattern = $scalar
         start_from_root = $bool
+        per_definition = $bool
         name = $any
     }
 }

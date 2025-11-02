@@ -58,11 +58,11 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     val nameField: String?
     @FromProperty("type_key_prefix: string?")
     val typeKeyPrefix: String?
-    @FromProperty("name_from_file: boolean", defaultValue = "false")
+    @FromProperty("name_from_file: boolean", defaultValue = "no")
     val nameFromFile: Boolean
-    @FromProperty("type_per_file: boolean", defaultValue = "false")
+    @FromProperty("type_per_file: boolean", defaultValue = "no")
     val typePerFile: Boolean
-    @FromProperty("unique: boolean", defaultValue = "false")
+    @FromProperty("unique: boolean", defaultValue = "no")
     val unique: Boolean
     @FromProperty("severity: string?")
     val severity: String?

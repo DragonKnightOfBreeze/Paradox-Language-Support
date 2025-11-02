@@ -20,7 +20,7 @@ interface CwtFilePathMatchableConfig : CwtDelegatedConfig<CwtProperty, CwtProper
     val pathFile: String?
     @FromProperty("path_extension: string?")
     val pathExtension: String?
-    @FromProperty("path_strict: boolean", defaultValue = "false")
+    @FromProperty("path_strict: boolean", defaultValue = "no")
     val pathStrict: Boolean
     @FromProperty("path_pattern: string", multiple = true)
     val pathPatterns: Set<String>

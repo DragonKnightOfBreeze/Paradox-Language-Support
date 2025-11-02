@@ -657,7 +657,7 @@ object ParadoxCompletionManager {
             val complexEnumConfig = configGroup.complexEnums[enumName] ?: return@run
             ProgressManager.checkCanceled()
             val typeFile = complexEnumConfig.pointer.containingFile
-            val searchScope = complexEnumConfig.searchScopeType
+            val searchScope = complexEnumConfig.perDefinition
             val selector = selector(project, contextElement).complexEnumValue()
                 .withSearchScopeType(searchScope)
                 .contextSensitive()

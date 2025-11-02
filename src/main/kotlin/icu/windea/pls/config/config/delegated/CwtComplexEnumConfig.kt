@@ -28,18 +28,18 @@ import icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverI
  * ```
  *
  * @property name 名称（枚举名）。
- * @property startFromRoot 是否从文件顶部而非顶级属性开始查询（默认 false）。
- * @property searchScopeType （PLS 扩展）查询作用域类型。用于控制查询对象的等效性，认为仅该作用域下的复杂枚举值是等效的（目前仅支持：`definition`）。
+ * @property startFromRoot 是否从文件顶部（而非顶级属性）开始查询。
+ * @property perDefinition （PLS 扩展）是否将同名同类型的复杂枚举值的等效性限制在定义级别（而非文件级别）。
  * @property nameConfig `name` 对应的规则。
  * @property enumNameConfigs 在 [nameConfig] 中作为锚点的 `enum_name` 对应的规则集合。
  */
 interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
     @FromKey("complex_enum[$]")
     val name: String
-    @FromProperty("start_from_root: boolean", defaultValue = "false")
+    @FromProperty("start_from_root: boolean", defaultValue = "no")
     val startFromRoot: Boolean
-    @FromProperty("search_scope_type: string?")
-    val searchScopeType: String?
+    @FromProperty("per_definition: boolean", defaultValue = "no")
+    val perDefinition: Boolean
 
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>

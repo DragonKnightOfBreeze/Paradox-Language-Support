@@ -116,7 +116,7 @@ object ParadoxMatchResultProvider {
     }
 
     fun getComplexEnumValueMatchResult(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): ParadoxMatchResult {
-        val searchScope = complexEnumConfig.searchScopeType
+        val searchScope = complexEnumConfig.perDefinition
         if (searchScope == null) {
             val cacheKey = "ce#${enumName}#${name}"
             return getCachedMatchResult(element, cacheKey) {

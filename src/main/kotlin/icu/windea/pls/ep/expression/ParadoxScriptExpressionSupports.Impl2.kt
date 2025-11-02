@@ -324,7 +324,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupportBa
         // 尝试解析为复杂枚举
         val complexEnumConfig = configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
-            val searchScope = complexEnumConfig.searchScopeType
+            val searchScope = complexEnumConfig.perDefinition
             val selector = selector(project, element).complexEnumValue()
                 .withSearchScopeType(searchScope)
             // .contextSensitive(exact) // unnecessary

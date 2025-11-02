@@ -401,7 +401,7 @@ enums = {
 Fields and implementation (`CwtComplexEnumConfigResolverImpl`):
 - File sources: `path`/`path_file`/`path_extension`/`path_pattern`/`path_strict` (the prefix `game/` is removed; extension should not contain dot).
 - `start_from_root`: whether to query anchors from the top of the file (instead of top-level properties).
-- `search_scope_type` (PLS extension): the search scope type (currently only `definition`).
+- `per_definition`: (PLS extension) whether to limit the equivalence of complex enum values with same name and type to the definition level (instead of the file level).
 - `name` subsection: describes how to locate value anchors in matched files; the implementation collects all properties or values named `enum_name` (as `enumNameConfigs`).
 
 **Parsing flow (brief)**:

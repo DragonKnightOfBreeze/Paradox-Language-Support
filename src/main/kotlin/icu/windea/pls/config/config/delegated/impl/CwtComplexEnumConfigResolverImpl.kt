@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.processDescendants
@@ -40,8 +39,8 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
         val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
+        val perDefinition = propGroup.getOne("per_definition")?.booleanValue ?: false
         val nameConfig = propGroup.getOne("name")
-        val searchScopeType = config.optionData { searchScopeType }
 
         if (nameConfig == null) {
             logger.warn("Skipped invalid complex enum config (name: $name): Missing name config.".withLocationPrefix(config))
@@ -51,7 +50,7 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
         return CwtComplexEnumConfigImpl(
             config, name,
             paths, pathFile, pathExtension, pathStrict, pathPatterns,
-            startFromRoot, searchScopeType, nameConfig
+            startFromRoot, perDefinition, nameConfig
         )
     }
 }
@@ -65,7 +64,7 @@ private class CwtComplexEnumConfigImpl(
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
     override val startFromRoot: Boolean,
-    override val searchScopeType: String?,
+    override val perDefinition: Boolean,
     override val nameConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {

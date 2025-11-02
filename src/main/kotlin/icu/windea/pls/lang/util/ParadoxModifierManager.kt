@@ -153,7 +153,7 @@ object ParadoxModifierManager {
                 val complexEnumConfig = configGroup.complexEnums[enumName]
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
-                    val searchScope = complexEnumConfig.searchScopeType
+                    val searchScope = complexEnumConfig.perDefinition
                     val selector = selector(project, contextElement).complexEnumValue()
                         .withSearchScopeType(searchScope)
                         .contextSensitive()
