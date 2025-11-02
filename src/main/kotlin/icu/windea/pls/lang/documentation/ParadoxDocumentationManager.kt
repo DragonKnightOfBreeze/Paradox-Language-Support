@@ -82,8 +82,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
@@ -512,9 +510,8 @@ object ParadoxDocumentationManager {
             // 加上定义信息
             append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
-            when (valueElement) {
-                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
-                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
+            if (valueElement != null) {
+                append(" = ").append(valueElement.text.escapeXml())
             }
 
             // 加上相关本地化信息：同名的本地化
@@ -553,9 +550,8 @@ object ParadoxDocumentationManager {
             // 加上定义信息
             append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
-            when (valueElement) {
-                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
-                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
+            if (valueElement != null) {
+                append(" = ").append(valueElement.text.escapeXml())
             }
         }
     }
@@ -655,14 +651,14 @@ object ParadoxDocumentationManager {
             if (sectionKeys.contains(key)) continue
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
-                map[key] = resolveResult.message
+                map[key] = resolveResult.message.escapeXml()
             } else if (resolveResult.element != null) {
                 map[key] = buildDocumentation {
                     val link = ReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
                     appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
                 }
             } else if (required) {
-                map.putIfAbsent(key, resolveResult.name)
+                map.putIfAbsent(key, resolveResult.name.escapeXml())
             }
             val resolvedElement = resolveResult.element
             if (resolvedElement != null) {
@@ -692,7 +688,7 @@ object ParadoxDocumentationManager {
             if (sectionKeys.contains(key)) continue
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             if (resolveResult.message != null) {
-                map[key] = resolveResult.message
+                map[key] = resolveResult.message.escapeXml()
             } else if (resolveResult.element != null) {
                 val nameOrFilePath = resolveResult.nameOrFilePath
                 val gameType = definitionInfo.gameType
@@ -708,7 +704,7 @@ object ParadoxDocumentationManager {
                 }
                 map[key] = v
             } else if (required) {
-                map.putIfAbsent(key, resolveResult.nameOrFilePath)
+                map.putIfAbsent(key, resolveResult.nameOrFilePath.escapeXml())
             }
             val resolveElement = resolveResult.element
             if (resolveElement != null) {
