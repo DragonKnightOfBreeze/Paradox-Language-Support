@@ -25,8 +25,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
         val gameType = queryParameters.selector.gameType ?: return
 
         val indexInfoType = ParadoxIndexInfoType.ComplexEnumValue
-        PlsIndexService.processFiles(indexInfoType, project, gameType, scope) { file, infos ->
-            ProgressManager.checkCanceled()
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }

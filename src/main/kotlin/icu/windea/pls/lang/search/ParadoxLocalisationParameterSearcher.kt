@@ -22,8 +22,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         val gameType = queryParameters.selector.gameType ?: return
 
         val indexInfoType = ParadoxIndexInfoType.LocalisationParameter
-        PlsIndexService.processFiles(indexInfoType, project, gameType, scope) { file, infos ->
-            ProgressManager.checkCanceled()
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.index
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.gist.GistManager
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndex
@@ -25,7 +26,7 @@ import java.io.DataOutput
  */
 abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     private val inputFilter = IndexInputFilter { filterFile(it) }
-    private val indexer = DataIndexer<String, T, FileContent> { indexData(it.psiFile) }
+    private val indexer = DataIndexer<String, T, FileContent> { calculateData(it.psiFile) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
     private val valueExternalizer = object : DataExternalizer<T> {
         override fun save(storage: DataOutput, value: T) = saveValue(storage, value)
@@ -62,9 +63,18 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     protected abstract fun indexData(psiFile: PsiFile): Map<String, T>
 
+    protected open fun indexLazyData(psiFile: PsiFile): Map<String, T> = emptyMap()
+
     protected abstract fun saveValue(storage: DataOutput, value: T)
 
     protected abstract fun readValue(storage: DataInput): T
+
+    private fun calculateData(psiFile: PsiFile): Map<String, T> {
+        if (useLazyIndex(psiFile.virtualFile)) {
+            return indexLazyData(psiFile)
+        }
+        return indexData(psiFile)
+    }
 
     private fun calculateGistData(psiFile: PsiFile): Map<String, T> {
         val file = psiFile.virtualFile ?: return emptyMap()
@@ -95,5 +105,15 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
             return gist.getFileData(psiFile)
         }
         return FileBasedIndex.getInstance().getFileData(name, file, project)
+    }
+
+    fun getFileDataWithKey(file: VirtualFile, project: Project, key: String): T? {
+        if (useLazyIndex(file)) {
+            val psiFile = file.toPsiFile(project) ?: return null
+            val fileData = gist.getFileData(psiFile) ?: return null
+            return fileData[key]
+        }
+        val values = FileBasedIndex.getInstance().getValues(name, key, GlobalSearchScope.fileScope(project, file))
+        return values.firstOrNull()
     }
 }

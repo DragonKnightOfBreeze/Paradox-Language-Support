@@ -51,7 +51,7 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(ForAccess))
@@ -113,7 +113,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         return value.sortedWith(compressComparator).distinct()
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(ForAccess))
@@ -156,7 +156,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
         return value.sortedWith(compressComparator).distinct()
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxParameterIndexInfo, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxParameterIndexInfo, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(ForAccess))
@@ -198,7 +198,7 @@ class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<Par
         return value.sortedWith(compressComparator).distinct()
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxLocalisationParameterIndexInfo, previousInfo: ParadoxLocalisationParameterIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxLocalisationParameterIndexInfo, previousInfo: ParadoxLocalisationParameterIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.localisationName }, { storage.writeUTFFast(it) })
     }

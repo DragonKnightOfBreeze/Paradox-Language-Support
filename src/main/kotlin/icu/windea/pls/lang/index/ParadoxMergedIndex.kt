@@ -148,6 +148,14 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         }
     }
 
+    override fun indexLazyData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
+        // 用于兼容懒加载的索引
+        return buildMap {
+            val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
+            extensionList.forEach { ep -> put(ep.id.toString(), emptyList()) }
+        }
+    }
+
     override fun saveValue(storage: DataOutput, value: List<ParadoxIndexInfo>) {
         val size = value.size
         storage.writeIntFast(size)
@@ -163,7 +171,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         storage.writeByte(gameType.optimized(ForParadoxGameType))
         var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
-            support.writeData(storage, info, previousInfo, gameType)
+            support.saveData(storage, info, previousInfo, gameType)
             previousInfo = info
         }
     }

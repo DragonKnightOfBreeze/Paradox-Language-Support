@@ -4,6 +4,7 @@ import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
+import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
@@ -35,7 +36,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
                 if (configGroup.gameType != ParadoxGameType.Core && configGroup.gameType != gameType) return@p true
             }
 
-            val fileData = PlsIndexService.getFileData(indexId, file, project)
+            val fileData = FileBasedIndex.getInstance().getFileData(indexId, file, project)
             if (fileData.isEmpty()) return@p true
             types.process p1@{ type ->
                 val infos = fileData[type]

@@ -65,11 +65,11 @@ inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
 // /** 查找注册的 StubIndex 扩展。*/
-// inline fun <reified T : StubIndexExtension<*, *>> findStubIndex(): T {
-//     return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
+// fun <T : StubIndexExtension<*, *>> findStubIndex(type: Class<T>): T {
+//     return StubIndexExtension.EP_NAME.findExtensionOrFail(type)
 // }
 
 /** 查找注册的 FileBasedIndex 扩展。*/
-inline fun <reified T : FileBasedIndexExtension<*, *>> findFileBasedIndex(): T {
-    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
+fun <T : FileBasedIndexExtension<*, *>> findFileBasedIndex(type: Class<T>): T {
+    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(type)
 }

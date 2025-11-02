@@ -7,12 +7,10 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.ParadoxDefineIndex
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
@@ -24,23 +22,15 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType)
-            .withFilePath("common/defines", "txt")
+        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
         val gameType = queryParameters.selector.gameType ?: return
 
-        val namespace = queryParameters.namespace
         val variable = queryParameters.variable
+        val namespace = queryParameters.namespace
 
-        val indexId = PlsIndexKeys.Define
         val keys = namespace.singleton.setOrEmpty()
-        PlsIndexService.processFilesWithKeys(indexId, keys, scope) p@{ file ->
-            ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
-            if (gameType != selectGameType(file)) return@p true // check game type at file level
-
-            val fileData = PlsIndexService.getFileData(indexId, file, project)
-            if (fileData.isEmpty()) return@p true
+        PlsIndexService.processAllFileData(ParadoxDefineIndex::class.java, keys, project, gameType, scope) p@{ file, fileData ->
             if (namespace != null) {
                 val map = fileData[namespace] ?: return@p true
                 if (variable != null) {

@@ -25,8 +25,7 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         // 因为这里需要查询所有上下文的所有访问级别（读/写）的参数
 
         val indexInfoType = ParadoxIndexInfoType.Parameter
-        PlsIndexService.processFiles(indexInfoType, project, gameType, scope) { file, infos ->
-            ProgressManager.checkCanceled()
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }

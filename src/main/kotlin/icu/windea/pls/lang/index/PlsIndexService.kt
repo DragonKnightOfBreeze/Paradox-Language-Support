@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.stubs.StubIndex
@@ -22,16 +20,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
 object PlsIndexService {
-    fun processFiles(
-        fileType: FileType,
-        scope: GlobalSearchScope,
-        processor: Processor<VirtualFile>
-    ): Boolean {
-        ProgressManager.checkCanceled()
-        if (SearchScope.isEmptyScope(scope)) return true
-        return FileTypeIndex.processFiles(fileType, processor, scope)
-    }
-
     fun <K, V> processFilesWithKeys(
         indexId: ID<K, V>,
         keys: Collection<K>,
@@ -50,36 +38,49 @@ object PlsIndexService {
         return FileBasedIndex.getInstance().getAllKeys(indexId, project)
     }
 
-    fun <K, V> getFileData(
-        indexId: ID<K, V>,
-        file: VirtualFile,
-        project: Project
-    ): Map<K, V> {
-        ProgressManager.checkCanceled()
-        return FileBasedIndex.getInstance().getFileData(indexId, file, project)
-    }
-
-    fun <T : ParadoxIndexInfo> processFiles(
-        type: ParadoxIndexInfoType<T>,
+    fun <T> processAllFileData(
+        indexType: Class<out IndexInfoAwareFileBasedIndex<T>>,
+        keys: Collection<String>,
         project: Project,
         gameType: ParadoxGameType,
         scope: GlobalSearchScope,
-        processor: (file: VirtualFile, fileData: List<T>) -> Boolean
+        processor: (file: VirtualFile, fileData: Map<String, T>) -> Boolean
     ): Boolean {
         ProgressManager.checkCanceled()
         if (SearchScope.isEmptyScope(scope)) return true
-        val index = findFileBasedIndex<ParadoxMergedIndex>()
+        val index = findFileBasedIndex(indexType)
         val indexId = index.name
-        val key = type.id.toString()
-        val keys = setOf(key)
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != selectGameType(file)) return@p true // check game type at file level
 
             val fileData = index.getFileData(file, project)
-            val infos = fileData.get(key)?.castOrNull<List<T>>().orEmpty()
-            if (infos.isEmpty()) return@p true
+            if (fileData.isEmpty()) return@p true
+            processor(file, fileData)
+        }
+    }
+
+    fun <T : ParadoxIndexInfo> processAllFileDataWithKey(
+        indexInfoType: ParadoxIndexInfoType<T>,
+        project: Project,
+        gameType: ParadoxGameType,
+        scope: GlobalSearchScope,
+        processor: (file: VirtualFile, infos: List<T>) -> Boolean
+    ): Boolean {
+        ProgressManager.checkCanceled()
+        if (SearchScope.isEmptyScope(scope)) return true
+        val index = findFileBasedIndex(ParadoxMergedIndex::class.java)
+        val indexId = index.name
+        val key = indexInfoType.id.toString()
+        val keys = setOf(key)
+        return processFilesWithKeys(indexId, keys, scope) p@{ file ->
+            ProgressManager.checkCanceled()
+            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+            if (gameType != selectGameType(file)) return@p true // check game type at file level
+
+            val infos = index.getFileDataWithKey(file, project, key).castOrNull<List<T>>()
+            if (infos.isNullOrEmpty()) return@p true
             processor(file, infos)
         }
     }

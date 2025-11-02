@@ -24,7 +24,7 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
 
     fun compressData(value: List<T>): List<T> = value
 
-    fun writeData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
+    fun saveData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
 
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 

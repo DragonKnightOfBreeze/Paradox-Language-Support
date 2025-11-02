@@ -64,7 +64,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
@@ -107,7 +107,7 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
         return value.sortedWith(compressComparator).distinct()
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxEventInOnActionIndexInfo, previousInfo: ParadoxEventInOnActionIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxEventInOnActionIndexInfo, previousInfo: ParadoxEventInOnActionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.eventName)
         storage.writeUTFFast(info.typeExpression)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingOnActionName }, { storage.writeUTFFast(it) })
@@ -169,7 +169,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxEventInEventIndexInfo, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxEventInEventIndexInfo, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.eventName)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingEventName }, { storage.writeUTFFast(it) })
         storage.writeUTFFast(info.containingEventScope.orEmpty())
@@ -233,7 +233,7 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxOnActionInEventIndexInfo, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType) {
+    override fun saveData(storage: DataOutput, info: ParadoxOnActionInEventIndexInfo, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.onActionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingEventName }, { storage.writeUTFFast(it) })
         storage.writeUTFFast(info.containingEventScope.orEmpty())
