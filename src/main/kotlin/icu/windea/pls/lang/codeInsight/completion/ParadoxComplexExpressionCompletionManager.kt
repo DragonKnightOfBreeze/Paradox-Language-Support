@@ -13,7 +13,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.databaseObjectTypes
-import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.links
 import icu.windea.pls.config.configGroup.linksOfVariable
 import icu.windea.pls.config.configGroup.localisationCommands
