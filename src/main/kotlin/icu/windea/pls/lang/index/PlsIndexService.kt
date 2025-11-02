@@ -20,6 +20,8 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
 object PlsIndexService {
+    // region FileBasedIndex Methods
+
     fun <K, V> processFilesWithKeys(
         indexId: ID<K, V>,
         keys: Collection<K>,
@@ -84,6 +86,10 @@ object PlsIndexService {
             processor(file, infos)
         }
     }
+
+    // endregion
+
+    // region StubIndex Methods
 
     /**
      * 遍历给定键 [key] 下的所有元素并用 [processor] 处理。
@@ -172,4 +178,6 @@ object PlsIndexService {
             true
         }, scope)
     }
+
+    // endregion
 }
