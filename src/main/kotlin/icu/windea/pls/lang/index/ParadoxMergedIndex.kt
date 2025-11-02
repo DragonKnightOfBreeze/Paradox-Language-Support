@@ -72,8 +72,8 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                 is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
                 is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
             }
-            compressData(fileData)
         }
+        compressData(fileData)
     }
 
     private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
@@ -139,12 +139,15 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
     private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (fileData.isEmpty()) return
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
-        fileData.mapValues { (k, v) ->
-            val id = k.toByte()
+        for (key in fileData.keys) {
+            val oldValue = fileData.getValue(key)
+            if (oldValue.size <= 1) continue
+            val id = key.toByte()
             val support = extensionList.find { it.id == id }
                 ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
                 ?: throw UnsupportedOperationException()
-            support.compressData(v)
+            val newValue = support.compressData(oldValue)
+            fileData[key] = newValue
         }
     }
 
