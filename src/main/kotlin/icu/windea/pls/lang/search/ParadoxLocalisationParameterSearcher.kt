@@ -8,6 +8,7 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
@@ -16,12 +17,12 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope
+        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
         val gameType = queryParameters.selector.gameType ?: return
 
         val indexInfoType = ParadoxIndexInfoType.LocalisationParameter
-        PlsIndexService.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processFiles(indexInfoType, project, gameType, scope) { file, infos ->
             ProgressManager.checkCanceled()
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }

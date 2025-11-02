@@ -61,7 +61,6 @@ object PlsIndexService {
 
     fun <T : ParadoxIndexInfo> processFiles(
         type: ParadoxIndexInfoType<T>,
-        fileType: FileType,
         project: Project,
         gameType: ParadoxGameType,
         scope: GlobalSearchScope,
@@ -70,13 +69,16 @@ object PlsIndexService {
         ProgressManager.checkCanceled()
         if (SearchScope.isEmptyScope(scope)) return true
         val index = findFileBasedIndex<ParadoxMergedIndex>()
-        return processFiles(fileType, scope) p@{ file ->
+        val indexId = index.name
+        val key = type.id.toString()
+        val keys = setOf(key)
+        return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != selectGameType(file)) return@p true // check game type at file level
 
             val fileData = index.getFileData(file, project)
-            val infos = fileData.get(type.id.toString())?.castOrNull<List<T>>().orEmpty()
+            val infos = fileData.get(key)?.castOrNull<List<T>>().orEmpty()
             if (infos.isEmpty()) return@p true
             processor(file, infos)
         }
