@@ -61,7 +61,7 @@ object ParadoxSearchScopeTypes {
     val Definition = ParadoxSearchScopeType.InFile("definition", PlsBundle.message("search.scope.type.name.definition")) { project, context ->
         val contextElement = when {
             context is PsiElement -> context
-            context is ParadoxComplexEnumValueIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)
+            context is ParadoxComplexEnumValueIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.definitionElementOffset)
             else -> null
         }
         contextElement?.findParentDefinition()

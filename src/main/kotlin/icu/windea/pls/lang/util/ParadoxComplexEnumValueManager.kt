@@ -2,7 +2,7 @@
 
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -39,7 +39,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -62,6 +61,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
+import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isBlockMember
@@ -79,10 +79,6 @@ object ParadoxComplexEnumValueManager {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
         }.cancelable()
-    }
-
-    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {
-        return ParadoxComplexEnumValueIndexInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
     }
 
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
@@ -112,8 +108,11 @@ object ParadoxComplexEnumValueManager {
         val name = getName(value) ?: return null
         val enumName = complexEnumConfig.name
         val readWriteAccess = Access.Write // write (declaration)
-        val elementOffset = element.startOffset
-        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+        val definitionElementOffset = when {
+            complexEnumConfig.perDefinition -> element.findParentDefinition()?.startOffset ?: -1
+            else -> -1
+        }
+        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)
     }
 
     // NOTE 这里匹配时并不兼容向下内联的情况

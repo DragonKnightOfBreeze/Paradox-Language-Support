@@ -48,22 +48,22 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
     }
 
     override fun compressData(value: List<ParadoxComplexEnumValueIndexInfo>): List<ParadoxComplexEnumValueIndexInfo> {
-        return value.sortedWith(compressComparator)
+        return value.sortedWith(compressComparator).distinct()
     }
 
     override fun saveData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimized(ForAccess))
-        storage.writeIntFast(info.elementOffset)
+        storage.writeIntFast(info.definitionElementOffset)
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimized(ForAccess)
-        val elementOffset = storage.readIntFast()
-        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+        val definitionElementOffset = storage.readIntFast()
+        return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)
     }
 }
 
