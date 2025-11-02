@@ -18,6 +18,7 @@ import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -27,7 +28,7 @@ object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
 
     fun isDefineElement(define: ParadoxDefineIndexInfo, defineElement: ParadoxScriptProperty): Boolean {
-        if(define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
+        if (define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
         return true
     }
 
@@ -67,6 +68,8 @@ object ParadoxDefineManager {
     }
 
     fun isDefineFile(file: VirtualFile): Boolean {
+        val fileType = file.fileType
+        if (fileType != ParadoxScriptFileType) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path.path
         val configExpression = definePathExpression

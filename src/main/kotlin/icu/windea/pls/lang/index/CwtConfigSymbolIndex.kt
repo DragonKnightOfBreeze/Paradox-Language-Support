@@ -10,6 +10,7 @@ import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.model.ValueOptimizers.ForAccess
 import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
@@ -25,13 +26,16 @@ import java.io.DataOutput
  * @see CwtConfigSymbolIndexInfo
  */
 class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
+    private val fileTypes = arrayOf(CwtFileType)
+
     override fun getName() = PlsIndexKeys.ConfigSymbol
 
     override fun getVersion() = PlsIndexVersions.ConfigSymbol
 
     override fun filterFile(file: VirtualFile): Boolean {
         // 仅判断文件类型，不判断是否从属于某个规则分组
-        return true
+        val fileType = file.fileType
+        return fileType is CwtFileType
     }
 
     override fun indexData(psiFile: PsiFile): Map<String, List<CwtConfigSymbolIndexInfo>> {

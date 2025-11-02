@@ -2,10 +2,8 @@
 
 package icu.windea.pls.core
 
-import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.util.indexing.DefaultFileTypeSpecificInputFilter
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
@@ -17,19 +15,19 @@ fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputF
     return FileBasedIndex.InputFilter(predicate)
 }
 
-fun IndexInputFilter(vararg fileTypes: FileType): FileBasedIndex.InputFilter {
-    if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter { true }
-    return DefaultFileTypeSpecificInputFilter(*fileTypes)
-}
-
-fun IndexInputFilter(vararg fileTypes: FileType, predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
-    if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter(predicate)
-    return object : DefaultFileTypeSpecificInputFilter(*fileTypes) {
-        override fun acceptInput(file: VirtualFile): Boolean {
-            return predicate(file)
-        }
-    }
-}
+// fun IndexInputFilter(vararg fileTypes: FileType): FileBasedIndex.InputFilter {
+//     if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter { true }
+//     return DefaultFileTypeSpecificInputFilter(*fileTypes)
+// }
+//
+// fun IndexInputFilter(vararg fileTypes: FileType, predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
+//     if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter(predicate)
+//     return object : DefaultFileTypeSpecificInputFilter(*fileTypes) {
+//         override fun acceptInput(file: VirtualFile): Boolean {
+//             return predicate(file)
+//         }
+//     }
+// }
 
 /**
  * 从 [from] 复用已有值或从输入流读取。

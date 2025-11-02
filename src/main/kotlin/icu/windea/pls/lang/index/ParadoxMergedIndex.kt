@@ -11,7 +11,6 @@ import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.ep.index.ParadoxIndexInfoSupport
-import icu.windea.pls.lang.ParadoxBaseFileType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -20,6 +19,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.withState
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
@@ -28,6 +28,7 @@ import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
 import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.optimized
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -43,12 +44,29 @@ import java.io.DataOutput
  * @see ParadoxIndexInfo
  * @see ParadoxIndexInfoSupport
  */
-class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
+class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun getName() = PlsIndexKeys.Merged
 
     override fun getVersion() = PlsIndexVersions.Merged
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+    override fun filterFile(file: VirtualFile): Boolean {
+        val fileType = file.fileType
+        if (fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType) return false
+        if (file.fileInfo == null) return false
+        return true
+    }
+
+    override fun useLazyIndex(file: VirtualFile): Boolean {
+        if (PlsFileManager.isInjectedFile(file)) return true
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
+        return false
+    }
+
+    override fun indexData(psiFile: PsiFile): Map<String, List<ParadoxIndexInfo>> {
+        return buildMap { buildData(psiFile, this) }
+    }
+
+    private fun buildData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsCoreManager.processMergedIndex) {
             when (file) {
                 is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
@@ -130,7 +148,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         }
     }
 
-    override fun writeData(storage: DataOutput, value: List<ParadoxIndexInfo>) {
+    override fun saveValue(storage: DataOutput, value: List<ParadoxIndexInfo>) {
         val size = value.size
         storage.writeIntFast(size)
         if (value.isEmpty()) return
@@ -150,7 +168,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         }
     }
 
-    override fun readData(storage: DataInput): List<ParadoxIndexInfo> {
+    override fun readValue(storage: DataInput): List<ParadoxIndexInfo> {
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
@@ -161,21 +179,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         val gameType = storage.readByte().deoptimized(ForParadoxGameType)
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
-            support.readData(storage, previousInfo, gameType)
-                .also { previousInfo = it }
+            support.readData(storage, previousInfo, gameType).also { previousInfo = it }
         }
-    }
-
-    override fun filterFile(file: VirtualFile): Boolean {
-        val fileType = file.fileType
-        if (fileType !is ParadoxBaseFileType) return false
-        if (file.fileInfo == null) return false
-        return true
-    }
-
-    override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsFileManager.isInjectedFile(file)) return true
-        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true // inline script files should be lazy indexed
-        return false
     }
 }

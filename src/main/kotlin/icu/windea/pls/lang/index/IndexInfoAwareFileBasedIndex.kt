@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import com.intellij.util.gist.GistManager
 import com.intellij.util.indexing.DataIndexer
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
@@ -12,6 +12,11 @@ import com.intellij.util.indexing.ID
 import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import icu.windea.pls.core.IndexInputFilter
+import icu.windea.pls.core.readIntFast
+import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.writeIntFast
+import icu.windea.pls.core.writeUTFFast
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -19,12 +24,24 @@ import java.io.DataOutput
  * @see icu.windea.pls.model.index.IndexInfo
  */
 abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
-    private val inputFilter = IndexInputFilter(*filterFileTypes()) { filterFile(it) }
+    private val inputFilter = IndexInputFilter { filterFile(it) }
     private val indexer = DataIndexer<String, T, FileContent> { indexData(it.psiFile) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
     private val valueExternalizer = object : DataExternalizer<T> {
         override fun save(storage: DataOutput, value: T) = saveValue(storage, value)
         override fun read(storage: DataInput) = readValue(storage)
+    }
+
+    private val gistValueExternalizer by lazy {
+        object : DataExternalizer<Map<String, T>> {
+            override fun save(storage: DataOutput, value: Map<String, T>) = saveGistValue(storage, value)
+            override fun read(storage: DataInput) = readGistValue(storage)
+        }
+    }
+    private val gist by lazy {
+        val gistName = name.name + ".lazy"
+        val gistVersion = version
+        GistManager.getInstance().newPsiFileGist(gistName, gistVersion, gistValueExternalizer) { calculateGistData(it) }
     }
 
     abstract override fun getName(): ID<String, T>
@@ -39,9 +56,9 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     override fun getValueExternalizer() = valueExternalizer
 
-    protected open fun filterFileTypes(): Array<FileType> = FileType.EMPTY_ARRAY
-
     protected open fun filterFile(file: VirtualFile): Boolean = true
+
+    protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
     protected abstract fun indexData(psiFile: PsiFile): Map<String, T>
 
@@ -49,7 +66,34 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     protected abstract fun readValue(storage: DataInput): T
 
+    private fun calculateGistData(psiFile: PsiFile): Map<String, T> {
+        val file = psiFile.virtualFile ?: return emptyMap()
+        if (!filterFile(file)) return emptyMap()
+        if (!useLazyIndex(file)) return emptyMap()
+        return indexData(psiFile)
+    }
+
+    private fun saveGistValue(storage: DataOutput, value: Map<String, T>) {
+        storage.writeIntFast(value.size)
+        value.forEach { (k, infos) ->
+            storage.writeUTFFast(k)
+            saveValue(storage, infos)
+        }
+    }
+
+    private fun readGistValue(storage: DataInput): Map<String, T> = buildMap {
+        repeat(storage.readIntFast()) {
+            val key = storage.readUTFFast()
+            val value = readValue(storage)
+            put(key, value)
+        }
+    }
+
     fun getFileData(file: VirtualFile, project: Project): Map<String, T> {
+        if (useLazyIndex(file)) {
+            val psiFile = file.toPsiFile(project) ?: return emptyMap()
+            return gist.getFileData(psiFile)
+        }
         return FileBasedIndex.getInstance().getFileData(name, file, project)
     }
 }

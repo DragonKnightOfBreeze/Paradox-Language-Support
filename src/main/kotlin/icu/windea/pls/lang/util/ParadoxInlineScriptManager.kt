@@ -14,7 +14,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.extendedInlineScripts
-import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
@@ -30,6 +29,8 @@ import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.processQueryAsync
@@ -39,8 +40,8 @@ import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -72,6 +73,8 @@ object ParadoxInlineScriptManager {
      * 得到指定的 [file] 对应的内联脚本表达式。如果不是内联脚本文件则返回 `null`。
      */
     fun getInlineScriptExpression(file: VirtualFile): String? {
+        val fileType = file.fileType
+        if (fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
         val filePath = fileInfo.path.path
         val configExpression = inlineScriptPathExpression
