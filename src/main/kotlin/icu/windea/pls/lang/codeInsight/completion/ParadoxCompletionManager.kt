@@ -637,7 +637,7 @@ object ParadoxCompletionManager {
             val enumConfig = configGroup.enums[enumName] ?: return@run
             ProgressManager.checkCanceled()
             val enumValueConfigs = enumConfig.valueConfigMap.values
-            if (enumValueConfigs.isEmpty()) return
+            if (enumValueConfigs.isEmpty()) return@run
             val typeFile = enumConfig.pointer.containingFile
             for (enumValueConfig in enumValueConfigs) {
                 val name = enumValueConfig.value
@@ -700,7 +700,7 @@ object ParadoxCompletionManager {
                 if (configExpression.type != CwtDataTypes.Value && configExpression.type != CwtDataTypes.DynamicValue) return@run
                 ProgressManager.checkCanceled()
                 val tailText = getExpressionTailText(context, finalConfig)
-                val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
+                val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return@run
                 val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
                 for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
                     val name = dynamicValueTypeConfig.value
