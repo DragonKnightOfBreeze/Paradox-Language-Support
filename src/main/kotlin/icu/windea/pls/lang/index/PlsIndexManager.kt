@@ -81,6 +81,15 @@ object PlsIndexManager {
         return FileBasedIndex.getInstance().getAllKeys(indexId, project)
     }
 
+    fun <K, V> getFileData(
+        indexId: ID<K, V>,
+        file: VirtualFile,
+        project: Project
+    ): Map<K, V> {
+        ProgressManager.checkCanceled()
+        return FileBasedIndex.getInstance().getFileData(indexId, file, project)
+    }
+
     fun <T : ParadoxIndexInfo> processFiles(
         type: ParadoxIndexInfoType<T>,
         fileType: FileType,

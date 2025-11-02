@@ -5,10 +5,12 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.findFileBasedIndex
-import icu.windea.pls.lang.index.ParadoxDefineIndex
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexManager
 import icu.windea.pls.lang.search.scope.withFilePath
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
@@ -22,18 +24,22 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFilePath("common/defines", "txt")
+        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType)
+            .withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
         val gameType = queryParameters.selector.gameType ?: return
 
         val namespace = queryParameters.namespace
         val variable = queryParameters.variable
-        PlsIndexManager.processFiles(ParadoxScriptFileType, scope, Processor p@{ file ->
+
+        val indexId = PlsIndexKeys.Define
+        val keys = namespace.singleton.setOrEmpty()
+        PlsIndexManager.processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
-            if (selectGameType(file) != gameType) return@p true // check game type at file level
+            if (gameType != selectGameType(file)) return@p true // check game type at file level
 
-            val fileData = findFileBasedIndex<ParadoxDefineIndex>().getFileData(file, project)
+            val fileData = PlsIndexManager.getFileData(indexId, file, project)
             if (fileData.isEmpty()) return@p true
             if (namespace != null) {
                 val map = fileData[namespace] ?: return@p true
@@ -61,6 +67,6 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
                     }
                 }
             }
-        })
+        }
     }
 }
