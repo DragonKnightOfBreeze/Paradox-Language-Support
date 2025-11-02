@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
+import com.intellij.util.indexing.FileContent
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeUTFFast
@@ -32,9 +32,9 @@ class ParadoxFilePathIndex : IndexInfoAwareFileBasedIndex<ParadoxFilePathIndexIn
         return file.fileInfo != null
     }
 
-    override fun indexData(psiFile: PsiFile): Map<String, ParadoxFilePathIndexInfo> {
+    override fun indexData(fileContent: FileContent): Map<String, ParadoxFilePathIndexInfo> {
         // 这里索引的路径，使用相对于入口目录的路径
-        val file = psiFile.virtualFile
+        val file = fileContent.file
         val fileInfo = file.fileInfo ?: return emptyMap()
         val path = fileInfo.path.path
         val directoryPath = fileInfo.path.parent

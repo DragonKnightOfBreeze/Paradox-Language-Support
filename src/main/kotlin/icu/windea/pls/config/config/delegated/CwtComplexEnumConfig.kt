@@ -41,6 +41,7 @@ interface CwtComplexEnumConfig : CwtFilePathMatchableConfig {
     @FromProperty("per_definition: boolean", defaultValue = "no")
     val perDefinition: Boolean
 
+    val searchScopeType: String?
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>
 

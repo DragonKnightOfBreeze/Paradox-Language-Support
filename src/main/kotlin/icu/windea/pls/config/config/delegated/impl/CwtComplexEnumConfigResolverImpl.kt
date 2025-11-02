@@ -67,6 +67,7 @@ private class CwtComplexEnumConfigImpl(
     override val perDefinition: Boolean,
     override val nameConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
+    override val searchScopeType: String? = if (perDefinition) "definition" else null
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
         buildList {
             nameConfig.processDescendants {

@@ -210,7 +210,8 @@ class ParadoxDefinitionHierarchyTreeStructure(
             if (descriptor.nodeType == NodeType.Subtype) append(".").append(descriptor.name)
         }
         val element = elementPointer.element
-        val selector = selector(project, element).definition().withSearchScopeType(getHierarchySettings().scopeType)
+        val searchScopeType = getHierarchySettings().scopeType
+        val selector = selector(project, element).definition().withSearchScopeType(searchScopeType)
         val definitions = ParadoxDefinitionSearch.search(null, typeName, selector).findAll()
         if (definitions.isEmpty()) return
         val groupingRules = getGroupingRules(descriptor)
@@ -267,7 +268,8 @@ class ParadoxDefinitionHierarchyTreeStructure(
         val definition = descriptor.psiElement?.castOrNull<ParadoxScriptDefinitionElement>() ?: return
         val definitionInfo = definition.definitionInfo ?: return
         if (!type.predicate(definitionInfo)) return
-        val selector = selector(project, definition).definition().withSearchScopeType(getHierarchySettings().scopeType)
+        val searchScopeType = getHierarchySettings().scopeType
+        val selector = selector(project, definition).definition().withSearchScopeType(searchScopeType)
         val nestedDefinitions = when (type) {
             Type.EventTreeInvoker -> ParadoxEventManager.getInvokerEvents(definition, selector)
             Type.EventTreeInvoked -> ParadoxEventManager.getInvokedEvents(definition, selector)

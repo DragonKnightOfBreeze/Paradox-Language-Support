@@ -26,8 +26,6 @@ import java.io.DataOutput
  * @see CwtConfigSymbolIndexInfo
  */
 class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
-    private val fileTypes = arrayOf(CwtFileType)
-
     override fun getName() = PlsIndexKeys.ConfigSymbol
 
     override fun getVersion() = PlsIndexVersions.ConfigSymbol

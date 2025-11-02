@@ -26,7 +26,7 @@ import java.io.DataOutput
  */
 abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     private val inputFilter = IndexInputFilter { filterFile(it) }
-    private val indexer = DataIndexer<String, T, FileContent> { calculateData(it.psiFile) }
+    private val indexer = DataIndexer<String, T, FileContent> { indexData(it) }
     private val keyDescriptor = EnumeratorStringDescriptor.INSTANCE
     private val valueExternalizer = object : DataExternalizer<T> {
         override fun save(storage: DataOutput, value: T) = saveValue(storage, value)
@@ -61,20 +61,20 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
-    protected abstract fun indexData(psiFile: PsiFile): Map<String, T>
+    protected open fun indexData(fileContent: FileContent): Map<String, T> {
+        if (useLazyIndex(fileContent.file)) {
+            return indexLazyData(fileContent.psiFile)
+        }
+        return indexData(fileContent.psiFile)
+    }
+
+    protected open fun indexData(psiFile: PsiFile): Map<String, T> = emptyMap()
 
     protected open fun indexLazyData(psiFile: PsiFile): Map<String, T> = emptyMap()
 
     protected abstract fun saveValue(storage: DataOutput, value: T)
 
     protected abstract fun readValue(storage: DataInput): T
-
-    private fun calculateData(psiFile: PsiFile): Map<String, T> {
-        if (useLazyIndex(psiFile.virtualFile)) {
-            return indexLazyData(psiFile)
-        }
-        return indexData(psiFile)
-    }
 
     private fun calculateGistData(psiFile: PsiFile): Map<String, T> {
         val file = psiFile.virtualFile ?: return emptyMap()
