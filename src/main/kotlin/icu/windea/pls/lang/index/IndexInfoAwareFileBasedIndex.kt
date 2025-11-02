@@ -22,6 +22,8 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
+ * 用于存储索引信息的文件索引。
+ *
  * @see icu.windea.pls.model.index.IndexInfo
  */
 abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
@@ -33,6 +35,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
         override fun read(storage: DataInput) = readValue(storage)
     }
 
+    // NOTE 2.0.6 优先使用 `VirtualFileGist`（验证发现 `PsiFileGist` 有时会不稳定）
     private val gistValueExternalizer by lazy {
         object : DataExternalizer<Map<String, T>> {
             override fun save(storage: DataOutput, value: Map<String, T>) = saveGistValue(storage, value)
@@ -42,7 +45,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
     private val gist by lazy {
         val gistName = name.name + ".lazy"
         val gistVersion = version
-        GistManager.getInstance().newPsiFileGist(gistName, gistVersion, gistValueExternalizer) { calculateGistData(it) }
+        GistManager.getInstance().newVirtualFileGist(gistName, gistVersion, gistValueExternalizer) { project, file -> calculateGistData(project, file) }
     }
 
     abstract override fun getName(): ID<String, T>
@@ -76,10 +79,9 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     protected abstract fun readValue(storage: DataInput): T
 
-    private fun calculateGistData(psiFile: PsiFile): Map<String, T> {
-        val file = psiFile.virtualFile ?: return emptyMap()
+    private fun calculateGistData(project: Project, file: VirtualFile): Map<String, T> {
         if (!filterFile(file)) return emptyMap()
-        // if (!useLazyIndex(file)) return emptyMap() // unnecessary
+        val psiFile = file.toPsiFile(project) ?: return emptyMap()
         return indexData(psiFile)
     }
 
@@ -101,16 +103,14 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
 
     fun getFileData(file: VirtualFile, project: Project): Map<String, T> {
         if (useLazyIndex(file)) {
-            val psiFile = file.toPsiFile(project) ?: return emptyMap()
-            return gist.getFileData(psiFile)
+            return gist.getFileData(project, file)
         }
         return FileBasedIndex.getInstance().getFileData(name, file, project)
     }
 
     fun getFileDataWithKey(file: VirtualFile, project: Project, key: String): T? {
         if (useLazyIndex(file)) {
-            val psiFile = file.toPsiFile(project) ?: return null
-            val fileData = gist.getFileData(psiFile) ?: return null
+            val fileData = gist.getFileData(project, file) ?: return null
             return fileData[key]
         }
         val values = FileBasedIndex.getInstance().getValues(name, key, GlobalSearchScope.fileScope(project, file))
