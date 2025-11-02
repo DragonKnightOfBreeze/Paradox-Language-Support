@@ -12,13 +12,12 @@ import com.intellij.util.Processor
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.processAllElements
-import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -177,9 +176,9 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
     ): Boolean {
         val indexKey = PlsIndexKeys.ScriptedVariableName
         return if (name == null) {
-            indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element -> processor.process(element) }
         } else {
-            indexKey.processAllElements(name, project, scope) { element -> processor.process(element) }
+            PlsIndexService.processElements(indexKey, name, project, scope) { element -> processor.process(element) }
         }
     }
 }

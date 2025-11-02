@@ -28,15 +28,15 @@ import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
-import icu.windea.pls.lang.inspections.PlsInspectionManager
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -266,8 +266,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getFixes(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Array<LocalQuickFix> {
         val result = mutableListOf<LocalQuickFix>()
-        result += PlsInspectionManager.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
-        result += PlsInspectionManager.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionUtil.getSimilarityBasedFixesForUnresolvedExpression(element, expectedConfigs)
+        result += PlsInspectionUtil.getLocalisationReferenceFixesForUnresolvedExpression(element, expectedConfigs)
         if (result.isEmpty()) return LocalQuickFix.EMPTY_ARRAY
         return result.toTypedArray()
     }

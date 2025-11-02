@@ -26,7 +26,6 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.index.PlsIndexManager
 import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -109,7 +108,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
-                PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+                PlsIndexService.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
@@ -216,7 +215,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val type = ParadoxIndexInfoType.EventInOnAction
-            PlsIndexManager.processFiles(type, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processFiles(type, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -325,7 +324,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.EventInEvent
-            PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -476,7 +475,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.OnActionInEvent
-            PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()

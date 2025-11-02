@@ -7,7 +7,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.index.PlsIndexManager
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -25,11 +25,11 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         val gameType = queryParameters.selector.gameType ?: return
 
         val indexInfoType = ParadoxIndexInfoType.DynamicValue
-        PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, scope) { file, infos ->
             ProgressManager.checkCanceled()
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
-        PlsIndexManager.processFiles(indexInfoType, ParadoxLocalisationFileType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processFiles(indexInfoType, ParadoxLocalisationFileType, project, gameType, scope) { file, infos ->
             ProgressManager.checkCanceled()
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }

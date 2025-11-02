@@ -6,9 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
-import icu.windea.pls.core.processAllElements
-import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -43,9 +42,9 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (finalName == null) {
-            indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element -> processor.process(element) }
         } else {
-            indexKey.processAllElements(finalName, project, scope) { element -> processor.process(element) }
+            PlsIndexService.processElements(indexKey, finalName, project, scope) { element -> processor.process(element) }
         }
         if (!r) return false
 

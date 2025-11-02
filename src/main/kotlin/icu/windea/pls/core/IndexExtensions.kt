@@ -3,15 +3,8 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexExtension
-import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.DefaultFileTypeSpecificInputFilter
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
@@ -82,92 +75,4 @@ inline fun <reified T : StubIndexExtension<*, *>> findStubIndex(): T {
 /** 查找注册的 FileBasedIndex 扩展。*/
 inline fun <reified T : FileBasedIndexExtension<*, *>> findFileBasedIndex(): T {
     return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
-}
-
-/**
- * 遍历给定键 [key] 下的所有元素并用 [processor] 处理。
- *
- * Dumb 模式下直接返回 `true`。
- */
-inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElements(
-    key: K,
-    project: Project,
-    scope: GlobalSearchScope,
-    crossinline processor: (T) -> Boolean
-): Boolean {
-    if (DumbService.isDumb(project)) return true
-
-    return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-        ProgressManager.checkCanceled()
-        processor(element)
-    }
-}
-
-/**
- * 遍历所有键，并对命中的键（满足 [keyPredicate]）下的元素调用 [processor]。
- *
- * 提供按键粒度的过滤与处理能力。
- *
- * Dumb 模式下直接返回 `true`。
- */
-inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElementsByKeys(
-    project: Project,
-    scope: GlobalSearchScope,
-    crossinline keyPredicate: (key: K) -> Boolean = { true },
-    crossinline processor: (key: K, element: T) -> Boolean
-): Boolean {
-    if (DumbService.isDumb(project)) return true
-
-    return StubIndex.getInstance().processAllKeys(this, p@{ key ->
-        ProgressManager.checkCanceled()
-        if (keyPredicate(key)) {
-            StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                ProgressManager.checkCanceled()
-                processor(key, element)
-            }
-        }
-        true
-    }, scope)
-}
-
-/**
- * 遍历所有键，找到第一个满足 [predicate] 的元素，并调用 [processor]；若未找到，则使用 [getDefaultValue] 的返回值（可为 null）。
- *
- * 可在遍历每个键前调用 [resetDefaultValue] 重置外部缓存。
- *
- * Dumb 模式下直接返回 `true`。
- */
-inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElementByKeys(
-    project: Project,
-    scope: GlobalSearchScope,
-    crossinline keyPredicate: (key: K) -> Boolean = { true },
-    crossinline predicate: (element: T) -> Boolean = { true },
-    crossinline getDefaultValue: () -> T? = { null },
-    crossinline resetDefaultValue: () -> Unit = {},
-    crossinline processor: (element: T) -> Boolean
-): Boolean {
-    if (DumbService.isDumb(project)) return true
-
-    var value: T?
-    return StubIndex.getInstance().processAllKeys(this, p@{ key ->
-        ProgressManager.checkCanceled()
-        if (keyPredicate(key)) {
-            value = null
-            resetDefaultValue()
-            StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
-                ProgressManager.checkCanceled()
-                if (predicate(element)) {
-                    value = element
-                    return@processElements false
-                }
-                true
-            }
-            val finalValue = value ?: getDefaultValue()
-            if (finalValue != null) {
-                val result = processor(finalValue)
-                if (!result) return@p false
-            }
-        }
-        true
-    }, scope)
 }

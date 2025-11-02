@@ -8,7 +8,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexManager
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.selectGameType
@@ -34,12 +34,12 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
 
         val indexId = PlsIndexKeys.Define
         val keys = namespace.singleton.setOrEmpty()
-        PlsIndexManager.processFilesWithKeys(indexId, keys, scope) p@{ file ->
+        PlsIndexService.processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != selectGameType(file)) return@p true // check game type at file level
 
-            val fileData = PlsIndexManager.getFileData(indexId, file, project)
+            val fileData = PlsIndexService.getFileData(indexId, file, project)
             if (fileData.isEmpty()) return@p true
             if (namespace != null) {
                 val map = fileData[namespace] ?: return@p true

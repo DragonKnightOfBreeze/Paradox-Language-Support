@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
-object PlsInspectionManager {
+object PlsInspectionUtil {
     fun getSimilarityBasedFixesForUnresolvedExpression(
         element: ParadoxExpressionElement,
         expectedConfigs: List<CwtMemberConfig<*>>

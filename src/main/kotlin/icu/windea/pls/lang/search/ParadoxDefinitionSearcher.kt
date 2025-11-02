@@ -10,11 +10,10 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.swappedTypes
 import icu.windea.pls.config.configGroup.types
-import icu.windea.pls.core.processAllElements
-import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -115,18 +114,18 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (typeExpression == null) {
             if (finalName == null) {
-                indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+                PlsIndexService.processElementsByKeys(indexKey, project, scope, { true }) { _, element -> processor.process(element) }
             } else {
-                indexKey.processAllElements(finalName, project, scope) { element -> processor.process(element) }
+                PlsIndexService.processElements(indexKey, finalName, project, scope) { element -> processor.process(element) }
             }
         } else {
             if (finalName == null) {
-                PlsIndexKeys.DefinitionType.processAllElements(typeExpression.type, project, scope) p@{ element ->
+                PlsIndexService.processElements(PlsIndexKeys.DefinitionType, typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     processor.process(element)
                 }
             } else {
-                indexKey.processAllElements(finalName, project, scope) p@{ element ->
+                PlsIndexService.processElements(indexKey, finalName, project, scope) p@{ element ->
                     if (!matchesType(element, typeExpression.type)) return@p true
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     processor.process(element)

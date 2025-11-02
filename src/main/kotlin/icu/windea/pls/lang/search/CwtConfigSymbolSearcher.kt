@@ -8,7 +8,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexManager
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
@@ -27,7 +27,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
 
         val indexId = PlsIndexKeys.ConfigSymbol
         val keys = types
-        PlsIndexManager.processFilesWithKeys(indexId, keys, scope) p@{ file ->
+        PlsIndexService.processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             // check game type at file level
             if (gameType != null) {
@@ -35,7 +35,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
                 if (configGroup.gameType != ParadoxGameType.Core && configGroup.gameType != gameType) return@p true
             }
 
-            val fileData = PlsIndexManager.getFileData(indexId, file, project)
+            val fileData = PlsIndexService.getFileData(indexId, file, project)
             if (fileData.isEmpty()) return@p true
             types.process p1@{ type ->
                 val infos = fileData[type]

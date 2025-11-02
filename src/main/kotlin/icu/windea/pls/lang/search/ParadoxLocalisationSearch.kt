@@ -5,8 +5,8 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.core.processFirstElementByKeys
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -51,8 +51,10 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             val project = selector.project
             val scope = selector.scope
             // 保证返回结果的名字的唯一性
-            return PlsIndexKeys.LocalisationName.processFirstElementByKeys(
-                project, scope,
+            return PlsIndexService.processFirstElementByKeys(
+                PlsIndexKeys.LocalisationName,
+                project,
+                scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
                 predicate = { element -> selector.selectOne(element) },
                 getDefaultValue = { selector.defaultValue() },

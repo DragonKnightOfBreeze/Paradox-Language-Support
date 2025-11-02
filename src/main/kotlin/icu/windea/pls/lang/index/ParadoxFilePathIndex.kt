@@ -39,7 +39,7 @@ class ParadoxFilePathIndex : IndexInfoAwareFileBasedIndex<ParadoxFilePathIndexIn
         val path = fileInfo.path.path
         val directoryPath = fileInfo.path.parent
         val gameType = fileInfo.rootInfo.gameType
-        val included = PlsIndexManager.includeForFilePathIndex(file)
+        val included = PlsIndexUtil.includeForFilePathIndex(file)
         val info = ParadoxFilePathIndexInfo(directoryPath, gameType, included)
         return Collections.singletonMap(path, info)
     }

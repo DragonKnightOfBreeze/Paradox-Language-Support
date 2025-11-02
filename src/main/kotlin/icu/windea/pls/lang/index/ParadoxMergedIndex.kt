@@ -70,7 +70,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                 if (element is ParadoxScriptDefinitionElement) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
-                        element.putUserData(PlsIndexManager.indexInfoMarkerKey, true)
+                        element.putUserData(PlsIndexUtil.indexInfoMarkerKey, true)
                         definitionInfoStack.addLast(definitionInfo)
                     }
                 }
@@ -95,8 +95,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
             }
 
             override fun elementFinished(element: PsiElement) {
-                if (element.getUserData(PlsIndexManager.indexInfoMarkerKey) == true) {
-                    element.putUserData(PlsIndexManager.indexInfoMarkerKey, null)
+                if (element.getUserData(PlsIndexUtil.indexInfoMarkerKey) == true) {
+                    element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
                     definitionInfoStack.removeLastOrNull()
                 }
             }
