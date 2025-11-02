@@ -102,9 +102,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run
                         extensionList.forEach { ep ->
-                            configs.forEach { config ->
-                                ep.indexScriptExpression(element, config, definitionInfo, fileData)
-                            }
+                            ep.indexScriptExpression(element, configs, definitionInfo, fileData)
                         }
                     }
                 }

@@ -20,6 +20,8 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
 
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
+    fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+
     fun indexLocalisationExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun compressData(value: List<T>): List<T> = value
