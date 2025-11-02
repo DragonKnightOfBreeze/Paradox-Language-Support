@@ -79,7 +79,7 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
     private fun calculateGistData(psiFile: PsiFile): Map<String, T> {
         val file = psiFile.virtualFile ?: return emptyMap()
         if (!filterFile(file)) return emptyMap()
-        if (!useLazyIndex(file)) return emptyMap()
+        // if (!useLazyIndex(file)) return emptyMap() // unnecessary
         return indexData(psiFile)
     }
 
