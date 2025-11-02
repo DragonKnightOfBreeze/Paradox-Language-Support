@@ -387,7 +387,7 @@ object ParadoxExpressionManager {
                     configs.forEach f3@{ config ->
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
-                            val inlinedConfigs = doInlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
+                            val inlinedConfigs = inlineConfigForConfigContext(elementToMatch, subPath, config, matchOptions)
                             if (inlinedConfigs == null) { // null (cannot or failed)
                                 addToMatchedConfigs(config)
                             } else {
@@ -427,7 +427,7 @@ object ParadoxExpressionManager {
         return result.optimized()
     }
 
-    private fun doInlineConfigForConfigContext(
+    private fun inlineConfigForConfigContext(
         element: ParadoxScriptMember,
         key: String,
         config: CwtPropertyConfig,
