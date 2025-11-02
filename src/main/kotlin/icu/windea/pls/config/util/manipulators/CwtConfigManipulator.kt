@@ -175,27 +175,21 @@ object CwtConfigManipulator {
         val aliasName = valueExpression.value ?: return null
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasKeys = CwtConfigManager.getAliasKeys(configGroup, aliasName, key)
-        val aliasConfigs = when {
-            aliasKeys.isEmpty() -> emptyList()
-            aliasKeys.size == 1 -> aliasConfigGroup[aliasKeys.first()].orEmpty()
-            else -> aliasConfigGroup.filterKeys { it in aliasKeys }.values.flatten()
-        }
-        if (aliasConfigs.isEmpty()) return emptyList()
+        if (aliasKeys.isEmpty()) return emptyList()
         val result = mutableListOf<CwtMemberConfig<*>>()
-        aliasConfigs.forEach f2@{ aliasConfig ->
-            val inlinedConfig = inlineAlias(config, aliasConfig)
-            val finalInlinedConfig = when (inlinedConfig.valueExpression.type) {
-                CwtDataTypes.SingleAliasRight -> inlineSingleAlias(inlinedConfig) ?: return@f2
-                else -> inlinedConfig
+        aliasKeys.forEach f1@{ aliasKey ->
+            val aliasConfigs = aliasConfigGroup[aliasKey]
+            if (aliasConfigs.isNullOrEmpty()) return@f1
+            aliasConfigs.forEach f2@{ aliasConfig ->
+                result += inlineAlias(config, aliasConfig) ?: return@f2
             }
-            result += finalInlinedConfig
         }
         val parentConfig = config.parentConfig
         if (parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result.optimized()
     }
 
-    fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig {
+    fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
         val other = aliasConfig.config
         val inlined = CwtPropertyConfig.copy(
             targetConfig = config,
@@ -210,7 +204,11 @@ object CwtConfigManipulator {
         inlined.inlineConfig = config.inlineConfig
         inlined.aliasConfig = aliasConfig
         inlined.singleAliasConfig = config.singleAliasConfig
-        return inlined
+        val finalInlined = when (inlined.valueExpression.type) {
+            CwtDataTypes.SingleAliasRight -> inlineSingleAlias(inlined) ?: return null
+            else -> inlined
+        }
+        return finalInlined
     }
 
     fun inlineWithConfig(config: CwtPropertyConfig, otherConfig: CwtMemberConfig<*>, inlineMode: CwtConfigInlineMode): CwtPropertyConfig? {
