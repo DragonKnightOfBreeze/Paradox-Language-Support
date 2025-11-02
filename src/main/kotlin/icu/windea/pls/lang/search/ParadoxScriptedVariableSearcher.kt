@@ -18,7 +18,7 @@ import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -44,7 +44,9 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
+        val project = queryParameters.project
+        if (project.isDefault) return
+
         when (queryParameters.type) {
             ParadoxScriptedVariableType.Local -> {
                 val scope = queryParameters.selector.scope
@@ -53,8 +55,8 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
                 val fileInfo = file.fileInfo // NOTE fileInfo can be null here (e.g., injected files)
                 if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
                 val startOffset = queryParameters.selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
-                val fileScope = GlobalSearchScope.fileScope(queryParameters.project, file)
-                doProcessAllElements(queryParameters.name, queryParameters.project, fileScope) p@{ element ->
+                val fileScope = GlobalSearchScope.fileScope(project, file)
+                doProcessAllElements(queryParameters.name, project, fileScope) p@{ element ->
                     if (startOffset >= 0 && element.startOffset >= startOffset) return@p true // skip scripted variables after current position
                     consumer.process(element)
                 }.let { if (!it) return }
@@ -65,12 +67,12 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
             ParadoxScriptedVariableType.Global -> {
                 val scope = queryParameters.selector.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
                 if (SearchScope.isEmptyScope(scope)) return
-                doProcessAllElements(queryParameters.name, queryParameters.project, scope) { element -> consumer.process(element) }
+                doProcessAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
             }
             null -> {
                 val scope = queryParameters.selector.scope
                 if (SearchScope.isEmptyScope(scope)) return
-                doProcessAllElements(queryParameters.name, queryParameters.project, scope) { element -> consumer.process(element) }
+                doProcessAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
             }
         }
     }
@@ -173,7 +175,7 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         scope: GlobalSearchScope,
         processor: Processor<ParadoxScriptScriptedVariable>
     ): Boolean {
-        val indexKey = ParadoxIndexKeys.ScriptedVariableName
+        val indexKey = PlsIndexKeys.ScriptedVariableName
         return if (name == null) {
             indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {

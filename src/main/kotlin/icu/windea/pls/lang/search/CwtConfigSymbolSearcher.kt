@@ -3,29 +3,28 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.search.FileTypeIndex
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.lang.index.CwtConfigSymbolIndex
+import icu.windea.pls.lang.index.PlsIndexManager
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>() {
     override fun processQuery(queryParameters: CwtConfigSymbolSearch.SearchParameters, consumer: Processor<in CwtConfigSymbolIndexInfo>) {
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
-        val scope = queryParameters.scope
-        if (SearchScope.isEmptyScope(scope)) return
-        val name = queryParameters.name
-        val types = queryParameters.types
-        val gameType = queryParameters.gameType
         val project = queryParameters.project
+        if (project.isDefault) return
+        val scope = queryParameters.scope.withFileTypes(CwtFileType)
+        if (SearchScope.isEmptyScope(scope)) return
+        val gameType = queryParameters.gameType
 
-        processFiles(scope) p@{ file ->
+        PlsIndexManager.processFiles(CwtFileType, scope) p@{ file ->
             ProgressManager.checkCanceled()
             // check game type at file level
             if (gameType != null) {
@@ -35,22 +34,22 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
 
             val fileData = findFileBasedIndex<CwtConfigSymbolIndex>().getFileData(file, project)
             if (fileData.isEmpty()) return@p true
-            types.forEach f@{ type ->
+            queryParameters.types.process p1@{ type ->
                 val infos = fileData[type]
-                if (infos.isNullOrEmpty()) return@f
-                infos.forEach f@{ info ->
-                    if (name != null && name != info.name) return@f
-                    info.virtualFile = file
-                    val r = consumer.process(info)
-                    if (!r) return@p false
-                }
+                if (infos.isNullOrEmpty()) return@p1 true
+                infos.process { info -> processInfo(queryParameters, info, file, consumer) }
             }
-
-            true
         }
     }
 
-    private fun processFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        return FileTypeIndex.processFiles(CwtFileType, processor, scope)
+    private fun processInfo(
+        queryParameters: CwtConfigSymbolSearch.SearchParameters,
+        info: CwtConfigSymbolIndexInfo,
+        file: VirtualFile,
+        consumer: Processor<in CwtConfigSymbolIndexInfo>
+    ): Boolean {
+        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        info.virtualFile = file
+        return consumer.process(info)
     }
 }

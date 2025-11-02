@@ -13,7 +13,8 @@ import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.pass
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.core.writeByte
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.model.deoptimized
@@ -45,7 +46,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxScriptFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.gameType.optimized(ForParadoxGameType).toInt())
+            dataStream.writeByte(stub.gameType.optimized(ForParadoxGameType))
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxScriptFileStub {
@@ -92,7 +93,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
 
         override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
             if (stub.name.isEmpty()) return
-            sink.occurrence(ParadoxIndexKeys.ScriptedVariableName, stub.name)
+            sink.occurrence(PlsIndexKeys.ScriptedVariableName, stub.name)
         }
     }
 
@@ -185,7 +186,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     val definitionType = stub.definitionType
                     if (definitionName != null) {
                         // Note that definition name can be empty (aka anonymous)
-                        sink.occurrence(ParadoxIndexKeys.DefinitionName, definitionName)
+                        sink.occurrence(PlsIndexKeys.DefinitionName, definitionName)
                         ParadoxIndexConstraint.Definition.entries.forEach { constraint ->
                             if (constraint.supports(definitionType)) {
                                 val name = if (constraint.ignoreCase) definitionName.lowercase() else definitionName
@@ -194,14 +195,14 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                         }
                     }
                     if (definitionType.isNotEmpty()) {
-                        sink.occurrence(ParadoxIndexKeys.DefinitionType, definitionType)
+                        sink.occurrence(PlsIndexKeys.DefinitionType, definitionType)
                     }
                 }
                 is ParadoxScriptPropertyStub.InlineScriptUsage -> {
-                    sink.occurrence(ParadoxIndexKeys.InlineScriptUsage, stub.inlineScriptExpression)
+                    sink.occurrence(PlsIndexKeys.InlineScriptUsage, stub.inlineScriptExpression)
                 }
                 is ParadoxScriptPropertyStub.InlineScriptArgument -> {
-                    sink.occurrence(ParadoxIndexKeys.InlineScriptArgument, stub.inlineScriptExpression)
+                    sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.inlineScriptExpression)
                 }
             }
         }

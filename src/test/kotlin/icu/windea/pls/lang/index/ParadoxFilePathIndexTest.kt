@@ -34,7 +34,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val values = FileBasedIndex.getInstance().getValues(
-            ParadoxIndexKeys.FilePath,
+            PlsIndexKeys.FilePath,
             relPath,
             scope
         )
@@ -71,7 +71,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val values = FileBasedIndex.getInstance().getValues(
-            ParadoxIndexKeys.FilePath,
+            PlsIndexKeys.FilePath,
             relPath,
             scope
         )
@@ -123,7 +123,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val values = FileBasedIndex.getInstance().getValues(
-            ParadoxIndexKeys.FilePath,
+            PlsIndexKeys.FilePath,
             relPath,
             scope
         )
@@ -141,7 +141,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val relPath = "common/scripted_variables/.hidden.test.txt"
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, relPath, ParadoxGameType.Stellaris)
         val scope = GlobalSearchScope.projectScope(this.project)
-        val values = FileBasedIndex.getInstance().getValues(ParadoxIndexKeys.FilePath, relPath, scope)
+        val values = FileBasedIndex.getInstance().getValues(PlsIndexKeys.FilePath, relPath, scope)
         Assert.assertTrue(values.isNotEmpty())
         val info = values.single()
         Assert.assertEquals("common/scripted_variables", info.directory)

@@ -8,7 +8,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -27,9 +27,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         if (SearchScope.isEmptyScope(scope)) return
         val inlineScriptExpression = queryParameters.inlineScriptExpression
         val project = queryParameters.project
-        processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element ->
-            consumer.process(element)
-        }
+        processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element -> consumer.process(element) }
     }
 
     private fun processQueryForInlineScriptUsages(
@@ -38,7 +36,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         scope: GlobalSearchScope,
         processor: Processor<ParadoxScriptProperty>
     ): Boolean {
-        val indexKey = ParadoxIndexKeys.InlineScriptUsage
+        val indexKey = PlsIndexKeys.InlineScriptUsage
         if (inlineScriptExpression == null) {
             return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {

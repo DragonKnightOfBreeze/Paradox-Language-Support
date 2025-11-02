@@ -3,13 +3,11 @@ package icu.windea.pls.lang.search
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.search.FileTypeIndex
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.index.PlsIndexManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -20,38 +18,32 @@ import icu.windea.pls.script.ParadoxScriptFileType
 class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDynamicValueSearch.SearchParameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
+        val project = queryParameters.project
+        if (project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
+        val gameType = queryParameters.selector.gameType ?: return
 
-        val name = queryParameters.name
-        val dynamicValueTypes = queryParameters.dynamicValueTypes
-        val project = queryParameters.project
-        val selector = queryParameters.selector
-        val gameType = selector.gameType ?: return
-
-        processFiles(scope) p@{ file ->
+        val indexInfoType = ParadoxIndexInfoType.DynamicValue
+        PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, scope) { file, infos ->
             ProgressManager.checkCanceled()
-            ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
-            if (selectGameType(file) != gameType) return@p true // check game type at file level
-
-            val infos = ParadoxIndexInfoType.DynamicValue.findInfos(file, project)
-            if (infos.isEmpty()) return@p true
-            infos.forEach f@{ info ->
-                if (info.dynamicValueType !in dynamicValueTypes) return@f
-                if (name != null && name != info.name) return@f
-                info.virtualFile = file
-                val r = consumer.process(info)
-                if (!r) return@p false
-            }
-
-            true
+            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
+        }
+        PlsIndexManager.processFiles(indexInfoType, ParadoxLocalisationFileType, project, gameType, scope) { file, infos ->
+            ProgressManager.checkCanceled()
+            infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }
 
-    private fun processFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if (!it) return false }
-        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if (!it) return false }
-        return true
+    private fun processInfo(
+        queryParameters: ParadoxDynamicValueSearch.SearchParameters,
+        info: ParadoxDynamicValueIndexInfo,
+        file: VirtualFile,
+        consumer: Processor<in ParadoxDynamicValueIndexInfo>
+    ): Boolean {
+        if (info.dynamicValueType !in queryParameters.dynamicValueTypes) return true
+        if (queryParameters.name != null && queryParameters.name != info.name) return true
+        info.virtualFile = file
+        return consumer.process(info)
     }
 }

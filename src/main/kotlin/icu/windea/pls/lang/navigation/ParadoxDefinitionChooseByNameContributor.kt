@@ -8,7 +8,7 @@ import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = ParadoxIndexKeys.DefinitionName
+    private val indexKey = PlsIndexKeys.DefinitionName
 
     private fun isEnabled() = PlsFacade.getSettings().navigation.seForDefinitions
 

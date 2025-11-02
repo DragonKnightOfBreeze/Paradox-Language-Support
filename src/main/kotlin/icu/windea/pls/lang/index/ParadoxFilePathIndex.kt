@@ -1,101 +1,60 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.indexing.DataIndexer
-import com.intellij.util.indexing.FileBasedIndex
-import com.intellij.util.indexing.FileBasedIndexExtension
-import com.intellij.util.indexing.FileContent
-import com.intellij.util.io.DataExternalizer
-import com.intellij.util.io.EnumeratorStringDescriptor
-import com.intellij.util.io.KeyDescriptor
+import com.intellij.psi.PsiFile
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
-import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.index.ParadoxFilePathIndexInfo
 import icu.windea.pls.model.optimized
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
 
 /**
- * 用于索引文件的路径信息。
+ * 文件的路径信息的索引。
+ *
+ * @see ParadoxFilePathIndexInfo
  */
-class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathIndex.Info>() {
-    data class Info(
-        val directory: String,
-        val gameType: ParadoxGameType,
-        val included: Boolean
-    )
+class ParadoxFilePathIndex : IndexInfoAwareFileBasedIndex<ParadoxFilePathIndexInfo>() {
+    override fun getName() = PlsIndexKeys.FilePath
 
-    override fun getName() = ParadoxIndexKeys.FilePath
+    override fun getVersion() = PlsIndexVersions.FilePath
 
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun dependsOnFileContent() = false
 
-    override fun getIndexer(): DataIndexer<String, Info, FileContent> {
-        return DataIndexer { inputData ->
-            // 这里索引的路径，使用相对于入口目录的路径
-            val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
-            val path = fileInfo.path.path
-            val directoryPath = fileInfo.path.parent
-            val gameType = fileInfo.rootInfo.gameType
-            val included = isIncluded(inputData.file)
-            val info = Info(directoryPath, gameType, included)
-            Collections.singletonMap(path, info)
-        }
+    override fun indexDirectories() = true
+
+    override fun filterFile(file: VirtualFile): Boolean {
+        return file.fileInfo != null
     }
 
-    override fun getKeyDescriptor(): KeyDescriptor<String> {
-        return EnumeratorStringDescriptor.INSTANCE
+    override fun indexData(psiFile: PsiFile): Map<String, ParadoxFilePathIndexInfo> {
+        // 这里索引的路径，使用相对于入口目录的路径
+        val file = psiFile.virtualFile
+        val fileInfo = file.fileInfo ?: return emptyMap()
+        val path = fileInfo.path.path
+        val directoryPath = fileInfo.path.parent
+        val gameType = fileInfo.rootInfo.gameType
+        val included = PlsIndexManager.includeForFilePathIndex(file)
+        val info = ParadoxFilePathIndexInfo(directoryPath, gameType, included)
+        return Collections.singletonMap(path, info)
     }
 
-    override fun getValueExternalizer(): DataExternalizer<Info> {
-        return object : DataExternalizer<Info> {
-            override fun save(storage: DataOutput, value: Info) {
-                storage.writeUTFFast(value.directory)
-                storage.writeByte(value.gameType.optimized(ForParadoxGameType).toInt())
-                storage.writeBoolean(value.included)
-            }
-
-            override fun read(storage: DataInput): Info {
-                val path = storage.readUTFFast()
-                val gameType = storage.readByte().deoptimized(ForParadoxGameType)
-                val included = storage.readBoolean()
-                return Info(path, gameType, included)
-            }
-        }
+    override fun saveValue(storage: DataOutput, value: ParadoxFilePathIndexInfo) {
+        storage.writeUTFFast(value.directory)
+        storage.writeByte(value.gameType.optimized(ForParadoxGameType))
+        storage.writeBoolean(value.included)
     }
 
-    override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { it.fileInfo != null }
-    }
-
-    override fun indexDirectories(): Boolean {
-        return true
-    }
-
-    override fun dependsOnFileContent(): Boolean {
-        return false
-    }
-
-    private fun isIncluded(file: VirtualFile): Boolean {
-        if (file.fileInfo == null) return false
-        val parent = file.parent
-        if (parent != null && parent.fileInfo != null && !isIncluded(parent)) return false
-        val fileName = file.name
-        if (fileName.startsWith('.')) return false // 排除隐藏目录或文件
-        if (file.isDirectory) {
-            if (fileName in ParadoxIndexManager.excludeDirectoriesForFilePathIndex) return false // 排除一些特定的目录
-            return true
-        }
-        val fileExtension = fileName.substringAfterLast('.')
-        if (fileExtension.isEmpty()) return false
-        return fileExtension in PlsConstants.scriptFileExtensions
-            || fileExtension in PlsConstants.localisationFileExtensions
-            || fileExtension in PlsConstants.csvFileExtensions
-            || fileExtension in PlsConstants.imageFileExtensions
+    override fun readValue(storage: DataInput): ParadoxFilePathIndexInfo {
+        val path = storage.readUTFFast()
+        val gameType = storage.readByte().deoptimized(ForParadoxGameType)
+        val included = storage.readBoolean()
+        return ParadoxFilePathIndexInfo(path, gameType, included)
     }
 }
 

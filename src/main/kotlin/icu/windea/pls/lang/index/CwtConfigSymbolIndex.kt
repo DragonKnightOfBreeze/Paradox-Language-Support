@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
@@ -19,15 +20,26 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 用于索引CWT规则文件中的符号信息。
+ * 规则文件中的各种符号信息的索引。
+ *
+ * @see CwtConfigSymbolIndexInfo
  */
-class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
-    override fun getName() = CwtConfigIndexKeys.Symbol
+class CwtConfigSymbolIndex : IndexInfoAwareFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
+    override fun getName() = PlsIndexKeys.ConfigSymbol
 
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getVersion() = PlsIndexVersions.ConfigSymbol
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
-        file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+    override fun filterFile(file: VirtualFile): Boolean {
+        // 仅判断文件类型，不判断是否从属于某个规则分组
+        return true
+    }
+
+    override fun indexData(psiFile: PsiFile): Map<String, List<CwtConfigSymbolIndexInfo>> {
+        return buildMap { buildData(psiFile, this) }
+    }
+
+    private fun buildData(psiFile: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
+        psiFile.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is CwtStringExpressionElement) {
                     visitStringExpressionElement(element)
@@ -47,7 +59,7 @@ class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexIn
         })
     }
 
-    override fun writeData(storage: DataOutput, value: List<CwtConfigSymbolIndexInfo>) {
+    override fun saveValue(storage: DataOutput, value: List<CwtConfigSymbolIndexInfo>) {
         val size = value.size
         storage.writeIntFast(size)
         if (value.isEmpty()) return
@@ -63,7 +75,7 @@ class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexIn
         }
     }
 
-    override fun readData(storage: DataInput): List<CwtConfigSymbolIndexInfo> {
+    override fun readValue(storage: DataInput): List<CwtConfigSymbolIndexInfo> {
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 

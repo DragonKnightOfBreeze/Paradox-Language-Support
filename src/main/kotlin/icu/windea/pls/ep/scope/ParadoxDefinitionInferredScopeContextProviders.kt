@@ -15,7 +15,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.definitionScopeContextModificationTracker
 import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.systemScopes
-import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -27,6 +26,8 @@ import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
+import icu.windea.pls.lang.index.PlsIndexManager
+import icu.windea.pls.lang.match.findFromPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -34,8 +35,8 @@ import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -108,7 +109,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
-                indexInfoType.processQuery(ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+                PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
@@ -215,7 +216,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val type = ParadoxIndexInfoType.EventInOnAction
-            type.processQuery(ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexManager.processFiles(type, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -324,7 +325,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.EventInEvent
-            indexInfoType.processQuery(ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -475,7 +476,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.OnActionInEvent
-            indexInfoType.processQuery(ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexManager.processFiles(indexInfoType, ParadoxScriptFileType, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()

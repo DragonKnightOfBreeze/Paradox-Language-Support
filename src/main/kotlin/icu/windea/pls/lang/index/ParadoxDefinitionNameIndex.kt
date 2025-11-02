@@ -5,27 +5,34 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 基于名字索引定义声明。
+ * 定义声明的名字的索引。
  */
 class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
-    override fun getKey() = ParadoxIndexKeys.DefinitionName
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getKey() = PlsIndexKeys.DefinitionName
+
+    override fun getVersion() = PlsIndexVersions.ScriptStub
+
     override fun getCacheSize() = 12 * 1024 // CACHE SIZE - 38000+ in stellaris@3.6
+
+    /**
+     * @see ParadoxIndexConstraint.Definition
+     */
+    sealed class BaseIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
+        override fun getVersion() = PlsIndexVersions.ScriptStub
+    }
 
     /**
      * @see ParadoxIndexConstraint.Definition.Resource
      */
-    class ResourceIndex: StringStubIndexExtension<ParadoxScriptDefinitionElement> () {
-        override fun getKey() = ParadoxIndexKeys.DefinitionNameForResource
-        override fun getVersion() = 76 // VERSION for 2.0.6
+    class ResourceIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForResource
     }
 
     /**
      * @see ParadoxIndexConstraint.Definition.EconomicCategory
      */
-    class EconomicCategoryIndex: StringStubIndexExtension<ParadoxScriptDefinitionElement> () {
-        override fun getKey() = ParadoxIndexKeys.DefinitionNameForEconomicCategory
-        override fun getVersion() = 76 // VERSION for 2.0.6
+    class EconomicCategoryIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForEconomicCategory
     }
 
     /**
@@ -33,9 +40,8 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
      *
      * @see ParadoxIndexConstraint.Definition.TextIcon
      */
-    class TextIconIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
-        override fun getKey() = ParadoxIndexKeys.DefinitionNameForTextIcon
-        override fun getVersion() = 76 // VERSION for 2.0.6
+    class TextIconIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForTextIcon
     }
 
     /**
@@ -43,8 +49,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
      *
      * @see ParadoxIndexConstraint.Definition.TextFormat
      */
-    class TextFormatIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
-        override fun getKey() = ParadoxIndexKeys.DefinitionNameForTextFormat
-        override fun getVersion() = 76 // VERSION for 2.0.6
+    class TextFormatIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForTextFormat
     }
 }

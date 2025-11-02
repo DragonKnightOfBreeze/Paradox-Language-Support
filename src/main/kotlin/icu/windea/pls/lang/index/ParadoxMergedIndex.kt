@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
+import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.writeByte
@@ -35,17 +36,17 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 用于索引各种信息。
+ * 脚本文件和本地化文件中的各种信息的索引。
  *
- * 兼容需要内联的情况（此时使用懒加载的索引）。
+ * 兼容需要内联的情况（此时使用懒加载的索引，即 [VirtualFileGist]）。
  *
  * @see ParadoxIndexInfo
  * @see ParadoxIndexInfoSupport
  */
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
-    override fun getName() = ParadoxIndexKeys.Merged
+    override fun getName() = PlsIndexKeys.Merged
 
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getVersion() = PlsIndexVersions.Merged
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsCoreManager.processMergedIndex) {
@@ -69,7 +70,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                 if (element is ParadoxScriptDefinitionElement) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
-                        element.putUserData(ParadoxIndexManager.indexInfoMarkerKey, true)
+                        element.putUserData(PlsIndexManager.indexInfoMarkerKey, true)
                         definitionInfoStack.addLast(definitionInfo)
                     }
                 }
@@ -94,8 +95,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
             }
 
             override fun elementFinished(element: PsiElement) {
-                if (element.getUserData(ParadoxIndexManager.indexInfoMarkerKey) == true) {
-                    element.putUserData(ParadoxIndexManager.indexInfoMarkerKey, null)
+                if (element.getUserData(PlsIndexManager.indexInfoMarkerKey) == true) {
+                    element.putUserData(PlsIndexManager.indexInfoMarkerKey, null)
                     definitionInfoStack.removeLastOrNull()
                 }
             }

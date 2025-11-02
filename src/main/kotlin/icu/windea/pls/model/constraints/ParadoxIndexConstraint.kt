@@ -2,7 +2,7 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.StubIndexKey
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -17,16 +17,16 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
-        Resource(ParadoxIndexKeys.DefinitionNameForResource) {
+        Resource(PlsIndexKeys.DefinitionNameForResource) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.Resource
         },
-        EconomicCategory(ParadoxIndexKeys.DefinitionNameForEconomicCategory) {
+        EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.EconomicCategory
         },
-        TextIcon(ParadoxIndexKeys.DefinitionNameForTextIcon) {
+        TextIcon(PlsIndexKeys.DefinitionNameForTextIcon) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextIcon
         },
-        TextFormat(ParadoxIndexKeys.DefinitionNameForTextFormat, ignoreCase = true) {
+        TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ignoreCase = true) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextFormat
         },
         ;
@@ -39,14 +39,14 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxLocalisationProperty> {
-        Modifier(ParadoxIndexKeys.LocalisationNameForModifier, ignoreCase = true) {
+        Modifier(PlsIndexKeys.LocalisationNameForModifier, ignoreCase = true) {
             override fun supports(name: String) = name.startsWith("mod_", true)
         },
-        Event(ParadoxIndexKeys.LocalisationNameForEvent, inferred = true) {
+        Event(PlsIndexKeys.LocalisationNameForEvent, inferred = true) {
             private val regex = """[\w.]+\.\d+(\.[\w.]*)?""".toRegex()
             override fun supports(name: String) = name.contains('.') && name.matches(regex)
         },
-        Tech(ParadoxIndexKeys.LocalisationNameForTech) {
+        Tech(PlsIndexKeys.LocalisationNameForTech) {
             override fun supports(name: String) = name.startsWith("tech_")
         },
         ;

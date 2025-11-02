@@ -13,7 +13,7 @@ import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -127,7 +127,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
             if (stub.name.isEmpty()) return
             when (stub.type) {
                 ParadoxLocalisationType.Normal -> {
-                    sink.occurrence(ParadoxIndexKeys.LocalisationName, stub.name)
+                    sink.occurrence(PlsIndexKeys.LocalisationName, stub.name)
                     ParadoxIndexConstraint.Localisation.entries.forEach { constraint ->
                         if (constraint.supports(stub.name)) {
                             val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
@@ -136,7 +136,7 @@ class ParadoxLocalisationStubRegistry : StubRegistryExtension {
                     }
                 }
                 ParadoxLocalisationType.Synced -> {
-                    sink.occurrence(ParadoxIndexKeys.SyncedLocalisationName, stub.name)
+                    sink.occurrence(PlsIndexKeys.SyncedLocalisationName, stub.name)
                 }
             }
         }

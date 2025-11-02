@@ -4,9 +4,10 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 基于类型索引定义声明。
+ * 定义声明的类型的索引。
  */
 class ParadoxDefinitionTypeIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
-    override fun getKey() = ParadoxIndexKeys.DefinitionType
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getKey() = PlsIndexKeys.DefinitionType
+
+    override fun getVersion() = PlsIndexVersions.ScriptStub
 }

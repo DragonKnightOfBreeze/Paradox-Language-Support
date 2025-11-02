@@ -30,7 +30,7 @@ import icu.windea.pls.core.util.tryPutUserData
 import icu.windea.pls.ep.metadata.ParadoxInferredGameTypeProvider
 import icu.windea.pls.ep.metadata.ParadoxMetadataProvider
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
@@ -215,7 +215,7 @@ object ParadoxCoreManager {
             val cachedLocaleConfig1 = file.getUserData(PlsKeys.localeConfig)
             if (cachedLocaleConfig1 != null) return cachedLocaleConfig1.castOrNull()
 
-            val indexId = ParadoxIndexKeys.FileLocale
+            val indexId = PlsIndexKeys.FileLocale
             val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
             val localeConfig = PlsFacade.getConfigGroup(project).localisationLocalesById.get(localeId)
             file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)

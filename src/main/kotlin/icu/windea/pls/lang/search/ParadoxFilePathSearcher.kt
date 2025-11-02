@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -33,8 +33,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
 
         if (configExpression == null) {
             if (filePath == null) {
-                val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxIndexKeys.FilePath, project)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
+                val keys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.FilePath, project)
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
@@ -43,7 +43,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
             } else {
                 val keys = getFilePaths(filePath, queryParameters)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
@@ -55,11 +55,11 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
             val support = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: return
             if (filePath == null) {
                 val keys = mutableSetOf<String>()
-                FileBasedIndex.getInstance().processAllKeys(ParadoxIndexKeys.FilePath, p@{ p ->
+                FileBasedIndex.getInstance().processAllKeys(PlsIndexKeys.FilePath, p@{ p ->
                     if (!support.matches(configExpression, contextElement, p)) return@p true
                     keys.add(p)
                 }, scope, null)
-                FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
+                FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
                     val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
@@ -70,7 +70,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val resolvedPaths = support.resolvePath(configExpression, filePath, gameType)
                 if (resolvedPaths.isNotNullOrEmpty()) {
                     val keys = resolvedPaths
-                    FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
+                    FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                         ProgressManager.checkCanceled()
                         val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
                         if (fileInfo == null) return@p true

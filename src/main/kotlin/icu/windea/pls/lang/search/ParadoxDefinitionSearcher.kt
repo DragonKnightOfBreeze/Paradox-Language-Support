@@ -14,7 +14,7 @@ import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -33,12 +33,13 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
+        val project = queryParameters.project
+        if (project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
+
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-        val project = queryParameters.project
         val gameType = queryParameters.selector.gameType ?: return
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val constraint = queryParameters.selector.getConstraint()
@@ -109,7 +110,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         processor: Processor<in ParadoxScriptDefinitionElement>
     ): Boolean {
         val scope = queryParameters.selector.scope
-        val indexKey = constraint?.indexKey ?: ParadoxIndexKeys.DefinitionName
+        val indexKey = constraint?.indexKey ?: PlsIndexKeys.DefinitionName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (typeExpression == null) {
@@ -120,7 +121,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
             }
         } else {
             if (finalName == null) {
-                ParadoxIndexKeys.DefinitionType.processAllElements(typeExpression.type, project, scope) p@{ element ->
+                PlsIndexKeys.DefinitionType.processAllElements(typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     processor.process(element)
                 }

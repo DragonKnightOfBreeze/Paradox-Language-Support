@@ -19,7 +19,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     fun testFileLocaleIndex_English() {
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
-        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, myFixture.file.virtualFile, project)
+        val data = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_english", key)
     }
@@ -28,7 +28,7 @@ class ParadoxFileLocaleIndexTest : BasePlatformTestCase() {
     fun testFileLocaleIndex_SimpChinese() {
         myFixture.configureByFile("features/index/localisation/simp_chinese/ui_l_simp_chinese.test.yml")
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/simp_chinese/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
-        val data = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FileLocale, myFixture.file.virtualFile, project)
+        val data = FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FileLocale, myFixture.file.virtualFile, project)
         val key = data.keys.singleOrNull()
         Assert.assertEquals("l_simp_chinese", key)
     }

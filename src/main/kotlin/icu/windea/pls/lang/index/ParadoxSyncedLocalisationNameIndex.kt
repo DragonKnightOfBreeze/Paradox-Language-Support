@@ -4,9 +4,10 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * 基于名字索引同步本地化声明。
+ * 同步本地化声明的名字的索引。
  */
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-    override fun getKey() = ParadoxIndexKeys.SyncedLocalisationName
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getKey() = PlsIndexKeys.SyncedLocalisationName
+
+    override fun getVersion() = PlsIndexVersions.LocalisationStub
 }

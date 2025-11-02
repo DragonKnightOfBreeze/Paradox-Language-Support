@@ -8,6 +8,7 @@ import com.intellij.psi.stubs.LightLanguageStubDefinition
 import com.intellij.util.diff.FlyweightCapableTreeStructure
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.index.PlsIndexVersions
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.lexer.ParadoxLocalisationLexerFactory
 import icu.windea.pls.localisation.parser.ParadoxLocalisationParser
@@ -17,7 +18,7 @@ import icu.windea.pls.model.paths.matches
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {
-    override val stubVersion: Int = 76 // VERSION for 2.0.6
+    override val stubVersion = PlsIndexVersions.LocalisationStub
     override val builder = ParadoxLocalisationStubBuilder()
 
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {

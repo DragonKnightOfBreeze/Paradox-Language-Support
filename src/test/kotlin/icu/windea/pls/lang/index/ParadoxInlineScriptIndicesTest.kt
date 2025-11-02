@@ -24,7 +24,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptUsage,
+            PlsIndexKeys.InlineScriptUsage,
             "test_inline",
             project,
             scope,
@@ -42,7 +42,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptUsage,
+            PlsIndexKeys.InlineScriptUsage,
             "test_inline",
             project,
             scope,
@@ -60,7 +60,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptArgument,
+            PlsIndexKeys.InlineScriptArgument,
             "test_inline",
             project,
             scope,
@@ -77,7 +77,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptUsage,
+            PlsIndexKeys.InlineScriptUsage,
             "test_\$PARAM$",
             project,
             scope,
@@ -85,7 +85,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         )
         Assert.assertEquals(0, elements.size)
         val arguments = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptArgument,
+            PlsIndexKeys.InlineScriptArgument,
             "test_\$PARAM$",
             project,
             scope,
@@ -101,7 +101,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptUsage,
+            PlsIndexKeys.InlineScriptUsage,
             "test_inline",
             project,
             scope,
@@ -109,7 +109,7 @@ class ParadoxInlineScriptIndicesTest : BasePlatformTestCase() {
         )
         Assert.assertEquals(0, elements.size)
         val arguments = StubIndex.getElements(
-            ParadoxIndexKeys.InlineScriptArgument,
+            PlsIndexKeys.InlineScriptArgument,
             "test_inline",
             project,
             scope,

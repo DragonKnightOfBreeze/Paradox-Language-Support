@@ -8,7 +8,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -21,18 +21,17 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         if(PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        if(queryParameters.project.isDefault) return
+        val project = queryParameters.project
+        if (project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
-        val project = queryParameters.project
+
         val name = queryParameters.name
-        processQueryForSyncedLocalisations(name, project, scope) { element ->
-            consumer.process(element)
-        }
+        processQueryForSyncedLocalisations(name, project, scope) { element -> consumer.process(element) }
     }
 
     private fun processQueryForSyncedLocalisations(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
-        val indexKey = ParadoxIndexKeys.SyncedLocalisationName
+        val indexKey = PlsIndexKeys.SyncedLocalisationName
         if (name == null) {
             return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {

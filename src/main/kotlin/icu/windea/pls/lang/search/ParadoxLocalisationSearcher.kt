@@ -8,7 +8,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.core.processAllElements
 import icu.windea.pls.core.processAllElementsByKeys
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -23,10 +23,10 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
+        val project = queryParameters.project
+        if (project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
-        val project = queryParameters.project
         val constraint = queryParameters.selector.getConstraint()
 
         processQueryForLocalisations(queryParameters.name, project, scope, constraint) { element -> consumer.process(element) }
@@ -39,7 +39,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         constraint: ParadoxIndexConstraint<ParadoxLocalisationProperty>?,
         processor: Processor<ParadoxLocalisationProperty>
     ): Boolean {
-        val indexKey = constraint?.indexKey ?: ParadoxIndexKeys.LocalisationName
+        val indexKey = constraint?.indexKey ?: PlsIndexKeys.LocalisationName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (finalName == null) {

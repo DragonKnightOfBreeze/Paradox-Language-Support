@@ -30,7 +30,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
         // act
         val scope = GlobalSearchScope.projectScope(project)
         val values = FileBasedIndex.getInstance().getValues(
-            ParadoxIndexKeys.Define,
+            PlsIndexKeys.Define,
             "NGameplay",
             scope
         )

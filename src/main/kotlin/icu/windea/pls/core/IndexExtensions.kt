@@ -2,19 +2,41 @@
 
 package icu.windea.pls.core
 
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.util.indexing.DefaultFileTypeSpecificInputFilter
+import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.FileBasedIndexExtension
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil
 import java.io.DataInput
 import java.io.DataOutput
+
+fun IndexInputFilter(predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
+    return FileBasedIndex.InputFilter(predicate)
+}
+
+fun IndexInputFilter(vararg fileTypes: FileType): FileBasedIndex.InputFilter {
+    if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter { true }
+    return DefaultFileTypeSpecificInputFilter(*fileTypes)
+}
+
+fun IndexInputFilter(vararg fileTypes: FileType, predicate: (VirtualFile) -> Boolean): FileBasedIndex.InputFilter {
+    if (fileTypes.isEmpty()) return FileBasedIndex.InputFilter(predicate)
+    return object : DefaultFileTypeSpecificInputFilter(*fileTypes) {
+        override fun acceptInput(file: VirtualFile): Boolean {
+            return predicate(file)
+        }
+    }
+}
 
 /**
  * 从 [from] 复用已有值或从输入流读取。

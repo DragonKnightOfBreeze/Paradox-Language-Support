@@ -7,6 +7,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
+import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
@@ -23,17 +24,27 @@ import java.io.DataInput
 import java.io.DataOutput
 
 /**
- * 用于索引预定义的命名空间与变量。
+ * 预设值的命名空间和变量的索引。
+ *
+ * @see ParadoxDefineIndexInfo
  */
-class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo>>() {
-    override fun getName() = ParadoxIndexKeys.Define
+class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefineIndexInfo>>() {
+    override fun getName() = PlsIndexKeys.Define
 
-    override fun getVersion() = 76 // VERSION for 2.0.6
+    override fun getVersion() = PlsIndexVersions.Define
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
-        val gameType = selectGameType(file) ?: return
-        if (file !is ParadoxScriptFile) return
-        file.properties().forEach f1@{ prop1 ->
+    override fun filterFile(file: VirtualFile): Boolean {
+        return ParadoxDefineManager.isDefineFile(file)
+    }
+
+    override fun indexData(psiFile: PsiFile): Map<String, Map<String, ParadoxDefineIndexInfo>> {
+        return buildMap { buildData(psiFile, this) }
+    }
+
+    internal fun buildData(psiFile: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
+        val gameType = selectGameType(psiFile) ?: return
+        if (psiFile !is ParadoxScriptFile) return
+        psiFile.properties().forEach f1@{ prop1 ->
             val prop1Block = prop1.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return@f1
 
             val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f1
@@ -49,18 +60,18 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         }
     }
 
-    override fun writeData(storage: DataOutput, value: Map<String, ParadoxDefineIndexInfo>) {
+    override fun saveValue(storage: DataOutput, value: Map<String, ParadoxDefineIndexInfo>) {
         storage.writeIntFast(value.size)
         value.forEach { (_, info) ->
             storage.writeUTFFast(info.namespace)
             storage.writeUTFFast(info.variable.orEmpty())
             storage.writeIntFast(info.elementOffsets.size)
             info.elementOffsets.forEach { storage.writeIntFast(it) }
-            storage.writeByte(info.gameType.optimized(ForParadoxGameType).toInt())
+            storage.writeByte(info.gameType.optimized(ForParadoxGameType))
         }
     }
 
-    override fun readData(storage: DataInput): Map<String, ParadoxDefineIndexInfo> {
+    override fun readValue(storage: DataInput): Map<String, ParadoxDefineIndexInfo> {
         val map = mutableMapOf<String, ParadoxDefineIndexInfo>()
         val size = storage.readIntFast()
         repeat(size) {
@@ -72,9 +83,5 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
             map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffsets, gameType))
         }
         return map
-    }
-
-    override fun filterFile(file: VirtualFile): Boolean {
-        return ParadoxDefineManager.isDefineFile(file)
     }
 }
