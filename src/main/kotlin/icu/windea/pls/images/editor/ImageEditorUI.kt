@@ -4,7 +4,7 @@ import com.intellij.ide.CopyPasteDelegator
 import com.intellij.ide.CopyPasteSupport
 import com.intellij.ide.CopyProvider
 import com.intellij.ide.DeleteProvider
-import com.intellij.ide.util.DeleteHandler.DefaultDeleteProvider
+import com.intellij.ide.util.DeleteHandler.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -40,8 +40,7 @@ import icu.windea.pls.images.dds.DdsMetadataIndex
 import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.images.tga.TgaMetadataIndex
 import org.intellij.images.ImagesBundle
-import org.intellij.images.editor.ImageDocument.IMAGE_DOCUMENT_DATA_KEY
-import org.intellij.images.editor.ImageDocument.ScaledImageProvider
+import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.editor.ImageEditor
 import org.intellij.images.editor.ImageZoomModel
 import org.intellij.images.options.Options

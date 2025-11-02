@@ -2,8 +2,7 @@ package icu.windea.pls.csv.codeStyle
 
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.BlankLinesOption
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.CommenterOption
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import icu.windea.pls.core.pass

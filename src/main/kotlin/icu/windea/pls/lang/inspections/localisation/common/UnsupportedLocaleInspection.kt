@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 
 /**

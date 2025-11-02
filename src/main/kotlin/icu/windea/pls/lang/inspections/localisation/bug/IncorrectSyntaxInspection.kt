@@ -9,10 +9,7 @@ import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLORFUL_TEXT_END
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.TEXT_FORMAT_END
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class IncorrectSyntaxInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

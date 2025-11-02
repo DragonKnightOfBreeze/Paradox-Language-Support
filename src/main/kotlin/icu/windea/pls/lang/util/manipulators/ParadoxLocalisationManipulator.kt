@@ -8,7 +8,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NlsContexts.Command
+import com.intellij.openapi.util.NlsContexts.*
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.findParentInFile
@@ -22,7 +22,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.integrations.translation.PlsTranslationManager
-import icu.windea.pls.lang.children
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.locale

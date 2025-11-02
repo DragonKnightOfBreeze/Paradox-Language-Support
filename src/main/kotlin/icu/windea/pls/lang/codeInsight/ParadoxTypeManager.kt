@@ -32,9 +32,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.isCommandExpression
 import icu.windea.pls.localisation.psi.isDatabaseObjectExpression
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import icu.windea.pls.script.psi.ParadoxParameter
 import icu.windea.pls.script.psi.ParadoxScriptBlock

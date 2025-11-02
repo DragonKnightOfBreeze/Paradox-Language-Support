@@ -17,7 +17,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceHintTextHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceHintTextHintsProvider.*
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint

@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.diagram.DiagramElementManager.DEFAULT_TEXT_ATTR
+import com.intellij.diagram.DiagramElementManager.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile

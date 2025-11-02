@@ -18,7 +18,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
-import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider.*
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint

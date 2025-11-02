@@ -10,11 +10,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.quickfix.IntroduceGlobalVariableFix
 import icu.windea.pls.lang.quickfix.IntroduceLocalVariableFix
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import javax.swing.JComponent
 
 /**

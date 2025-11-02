@@ -16,10 +16,7 @@ import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.paths.ParadoxElementPath
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember

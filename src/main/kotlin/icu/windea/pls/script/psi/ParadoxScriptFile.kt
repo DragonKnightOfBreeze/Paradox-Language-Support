@@ -5,8 +5,8 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import icu.windea.pls.core.findChild
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.navigation.ParadoxScriptItemPresentation

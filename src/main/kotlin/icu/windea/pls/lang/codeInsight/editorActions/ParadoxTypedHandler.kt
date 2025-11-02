@@ -7,11 +7,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 

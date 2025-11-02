@@ -7,14 +7,7 @@ import icu.windea.pls.core.childrenOfType
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
 import icu.windea.pls.core.unquote
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.AT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE_NAME
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 object ParadoxScriptLightTreeUtil {
     fun getNameFromScriptedVariableNode(node: LighterASTNode, tree: LighterAST): String? {

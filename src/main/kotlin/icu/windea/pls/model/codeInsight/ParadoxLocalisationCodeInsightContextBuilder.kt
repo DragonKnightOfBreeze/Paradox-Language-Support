@@ -26,7 +26,7 @@ import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile

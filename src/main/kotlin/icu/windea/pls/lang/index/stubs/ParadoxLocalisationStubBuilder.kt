@@ -8,8 +8,7 @@ import com.intellij.psi.stubs.LightStubBuilder
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationFileStub
 import icu.windea.pls.model.ParadoxGameType

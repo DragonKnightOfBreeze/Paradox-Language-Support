@@ -9,10 +9,7 @@ import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.IElementType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.ROOT_BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.stubs.ParadoxScriptFileStub
 

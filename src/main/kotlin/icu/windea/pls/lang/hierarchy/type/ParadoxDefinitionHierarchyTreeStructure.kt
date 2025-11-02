@@ -19,8 +19,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
-import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
-import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType

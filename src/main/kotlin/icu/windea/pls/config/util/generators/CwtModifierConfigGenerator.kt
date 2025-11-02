@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNecessary

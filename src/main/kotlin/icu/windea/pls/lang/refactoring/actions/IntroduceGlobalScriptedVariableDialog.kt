@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.refactoring.actions
 
-import com.intellij.openapi.actionSystem.ActionManager.getInstance
-import com.intellij.openapi.actionSystem.IdeActions.ACTION_CODE_COMPLETION
+import com.intellij.openapi.actionSystem.ActionManager.*
+import com.intellij.openapi.actionSystem.IdeActions.*
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
+import com.intellij.openapi.keymap.KeymapUtil.*
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.whenTextChanged
 import com.intellij.openapi.project.Project
@@ -13,7 +13,7 @@ import com.intellij.openapi.ui.TextComponentAccessors
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.refactoring.RefactoringBundle.message
+import com.intellij.refactoring.RefactoringBundle.*
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton
 import com.intellij.ui.dsl.builder.*

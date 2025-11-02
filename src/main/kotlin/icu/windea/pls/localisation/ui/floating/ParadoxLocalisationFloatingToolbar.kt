@@ -10,8 +10,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.ui.FloatingToolbar
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_QUOTE
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.RIGHT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
 import kotlinx.coroutines.CoroutineScope

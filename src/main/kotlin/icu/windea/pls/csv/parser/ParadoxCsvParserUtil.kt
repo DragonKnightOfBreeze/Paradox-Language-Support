@@ -8,9 +8,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.EOL
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvParserUtil : GeneratedParserUtilBase() {

@@ -2,9 +2,7 @@ package icu.windea.pls.csv.psi
 
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.TokenSet
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COMMENT
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.EOL
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
 object ParadoxCsvTokenSets {
     @JvmField

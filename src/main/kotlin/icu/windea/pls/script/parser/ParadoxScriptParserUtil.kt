@@ -2,9 +2,7 @@ package icu.windea.pls.script.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.ARGUMENT_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LEFT_BRACKET
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.RIGHT_BRACKET
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
 @Suppress("UNUSED_PARAMETER")

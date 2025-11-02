@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument

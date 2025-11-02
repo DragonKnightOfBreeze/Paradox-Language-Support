@@ -2,7 +2,7 @@
 
 package icu.windea.pls.lang.documentation.actions
 
-import com.intellij.codeInsight.hint.HintManagerImpl.ActionToIgnore
+import com.intellij.codeInsight.hint.HintManagerImpl.*
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent

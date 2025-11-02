@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.actions.cwt
 
-import com.intellij.diff.DiffContentFactory.getInstance
+import com.intellij.diff.DiffContentFactory.*
 import com.intellij.diff.chains.SimpleDiffRequestChain
 import com.intellij.diff.requests.SimpleDiffRequest
 import com.intellij.execution.executors.DefaultRunExecutor

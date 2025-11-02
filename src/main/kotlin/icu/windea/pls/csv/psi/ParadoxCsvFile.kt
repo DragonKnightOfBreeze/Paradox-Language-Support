@@ -8,9 +8,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 class ParadoxCsvFile(

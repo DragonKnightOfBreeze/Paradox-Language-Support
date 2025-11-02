@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
-import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile

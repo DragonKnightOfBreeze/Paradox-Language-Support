@@ -4,7 +4,7 @@ import com.intellij.lexer.LayeredLexer
 import com.intellij.lexer.StringLiteralLexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
-import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT_TOKEN
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtTokenSets
 
 @Suppress("UNUSED_PARAMETER")

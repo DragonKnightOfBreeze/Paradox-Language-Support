@@ -19,8 +19,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType.Normal
-import icu.windea.pls.model.ParadoxLocalisationType.Synced
+import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
  * 提供本地化（localisation / localisation_synced）的装订线图标。

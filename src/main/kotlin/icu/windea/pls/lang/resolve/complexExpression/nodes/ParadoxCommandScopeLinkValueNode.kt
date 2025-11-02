@@ -9,8 +9,8 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 
 class ParadoxCommandScopeLinkValueNode(
     override val text: String,

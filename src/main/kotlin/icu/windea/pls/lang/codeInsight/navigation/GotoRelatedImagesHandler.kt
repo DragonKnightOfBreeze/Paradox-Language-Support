@@ -19,13 +19,13 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

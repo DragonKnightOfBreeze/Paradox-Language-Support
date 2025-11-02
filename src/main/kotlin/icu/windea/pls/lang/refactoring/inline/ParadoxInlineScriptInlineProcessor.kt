@@ -24,8 +24,8 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 class ParadoxInlineScriptInlineProcessor(

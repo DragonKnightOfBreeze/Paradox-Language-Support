@@ -16,7 +16,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceHintsProvider.*
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer

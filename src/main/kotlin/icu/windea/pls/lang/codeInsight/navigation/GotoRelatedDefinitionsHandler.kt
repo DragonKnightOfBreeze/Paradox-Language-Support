@@ -12,9 +12,9 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import java.util.*
 

@@ -11,10 +11,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.DefinitionsFilter
-import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.PropertiesFilter
-import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.ValuesFilter
-import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.VariablesFilter
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
 
 class ParadoxScriptStructureViewModel(
     editor: Editor?,

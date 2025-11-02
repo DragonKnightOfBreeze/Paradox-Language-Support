@@ -12,12 +12,11 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.forEachChild
-import icu.windea.pls.cwt.psi.CwtElementTypes.BLOCK
-import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtPsiUtil
-import icu.windea.pls.lang.settings.PlsSettingsState
 import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.settings.PlsSettingsState
 import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {

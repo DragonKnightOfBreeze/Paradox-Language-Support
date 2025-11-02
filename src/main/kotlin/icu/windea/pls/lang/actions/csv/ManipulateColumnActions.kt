@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.writeCommandAction
 import com.intellij.psi.PsiFile
-import com.intellij.psi.TokenType.WHITE_SPACE
+import com.intellij.psi.TokenType.*
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.util.dataFlow.ParadoxColumnSequence

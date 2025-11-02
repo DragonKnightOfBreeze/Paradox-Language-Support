@@ -15,7 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoHintsProvider.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint

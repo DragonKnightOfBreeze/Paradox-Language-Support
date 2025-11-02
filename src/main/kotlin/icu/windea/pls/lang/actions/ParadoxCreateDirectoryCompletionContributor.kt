@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.actions
 
 import com.intellij.ide.actions.CreateDirectoryCompletionContributor
-import com.intellij.ide.actions.CreateDirectoryCompletionContributor.Variant
+import com.intellij.ide.actions.CreateDirectoryCompletionContributor.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiDirectory

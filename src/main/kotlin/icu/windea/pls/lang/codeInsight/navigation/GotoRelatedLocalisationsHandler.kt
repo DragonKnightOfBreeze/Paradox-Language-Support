@@ -19,6 +19,8 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -29,8 +31,6 @@ import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

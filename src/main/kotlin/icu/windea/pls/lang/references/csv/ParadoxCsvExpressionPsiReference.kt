@@ -11,8 +11,8 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxCsvExpressionPsiReference(
     element: ParadoxCsvExpressionElement,

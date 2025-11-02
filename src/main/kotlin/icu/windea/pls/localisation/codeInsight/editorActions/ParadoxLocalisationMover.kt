@@ -9,7 +9,7 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.children
 import icu.windea.pls.core.codeInsight.editorActions.ContainerBasedMover
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 

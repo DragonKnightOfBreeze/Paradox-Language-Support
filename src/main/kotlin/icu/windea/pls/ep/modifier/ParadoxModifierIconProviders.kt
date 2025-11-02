@@ -13,8 +13,8 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.model.ParadoxModifierInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.findProperty
 

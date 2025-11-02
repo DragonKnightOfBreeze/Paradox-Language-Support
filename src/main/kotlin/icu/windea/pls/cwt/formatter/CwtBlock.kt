@@ -15,22 +15,7 @@ import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.core.processChild
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
-import icu.windea.pls.cwt.psi.CwtElementTypes.BLOCK
-import icu.windea.pls.cwt.psi.CwtElementTypes.BOOLEAN
-import icu.windea.pls.cwt.psi.CwtElementTypes.COMMENT
-import icu.windea.pls.cwt.psi.CwtElementTypes.DOC_COMMENT
-import icu.windea.pls.cwt.psi.CwtElementTypes.EQUAL_SIGN
-import icu.windea.pls.cwt.psi.CwtElementTypes.FLOAT
-import icu.windea.pls.cwt.psi.CwtElementTypes.INT
-import icu.windea.pls.cwt.psi.CwtElementTypes.LEFT_BRACE
-import icu.windea.pls.cwt.psi.CwtElementTypes.NOT_EQUAL_SIGN
-import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION
-import icu.windea.pls.cwt.psi.CwtElementTypes.OPTION_COMMENT
-import icu.windea.pls.cwt.psi.CwtElementTypes.PROPERTY
-import icu.windea.pls.cwt.psi.CwtElementTypes.RIGHT_BRACE
-import icu.windea.pls.cwt.psi.CwtElementTypes.ROOT_BLOCK
-import icu.windea.pls.cwt.psi.CwtElementTypes.STRING
-import icu.windea.pls.cwt.psi.CwtElementTypes.VALUE
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtBlock(
     node: ASTNode,

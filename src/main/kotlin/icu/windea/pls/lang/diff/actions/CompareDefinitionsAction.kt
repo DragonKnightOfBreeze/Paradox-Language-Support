@@ -43,12 +43,12 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath

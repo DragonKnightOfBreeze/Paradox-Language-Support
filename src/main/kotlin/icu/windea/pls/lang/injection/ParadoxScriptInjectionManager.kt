@@ -22,11 +22,11 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport
-import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxSeparatorType
 import icu.windea.pls.model.constants.PlsPatternConstants

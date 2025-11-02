@@ -13,13 +13,10 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
-import icu.windea.pls.lang.settings.PlsSettingsState
 import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.settings.PlsSettingsState
 import icu.windea.pls.model.constants.PlsStringConstants
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.BLOCK
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COMMENT
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.INLINE_MATH
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PARAMETER_CONDITION
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil

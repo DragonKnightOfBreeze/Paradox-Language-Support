@@ -10,7 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightInfo
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction

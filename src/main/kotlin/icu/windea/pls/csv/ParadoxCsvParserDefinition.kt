@@ -2,17 +2,13 @@ package icu.windea.pls.csv
 
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
-import com.intellij.lang.ParserDefinition.SpaceRequirements
-import com.intellij.lang.ParserDefinition.SpaceRequirements.MAY
-import com.intellij.lang.ParserDefinition.SpaceRequirements.MUST_LINE_BREAK
+import com.intellij.lang.ParserDefinition.*
+import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import icu.windea.pls.csv.lexer.ParadoxCsvLexerFactory
 import icu.windea.pls.csv.parser.ParadoxCsvParser
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COMMENT
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.Factory
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.HEADER
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.ROW
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 

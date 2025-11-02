@@ -6,8 +6,8 @@ import com.intellij.modcommand.ModCommandAction
 import com.intellij.modcommand.Presentation
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**

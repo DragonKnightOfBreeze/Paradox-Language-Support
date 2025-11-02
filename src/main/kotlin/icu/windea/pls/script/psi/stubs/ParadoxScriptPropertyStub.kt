@@ -6,7 +6,7 @@ import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxElementPath
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.PROPERTY
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**

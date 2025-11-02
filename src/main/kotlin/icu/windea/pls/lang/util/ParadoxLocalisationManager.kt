@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager

@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.codeInsight.generation.ParadoxGenerateLocalisationsHandler
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext
-import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.Type
+import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 
 class GenerateLocalisationsFix(
     element: PsiElement,

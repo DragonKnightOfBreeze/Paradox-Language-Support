@@ -5,10 +5,7 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption.CREATE
-import java.nio.file.StandardOpenOption.READ
-import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-import java.nio.file.StandardOpenOption.WRITE
+import java.nio.file.StandardOpenOption.*
 import javax.imageio.ImageIO
 import javax.imageio.ImageReader
 import javax.imageio.spi.ImageReaderSpi

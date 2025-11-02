@@ -16,11 +16,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatClosureNode
-import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDefinitionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
+import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
 import icu.windea.pls.lang.util.PlsCoreManager
 
 /**

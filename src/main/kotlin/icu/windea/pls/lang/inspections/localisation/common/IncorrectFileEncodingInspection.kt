@@ -7,8 +7,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
-import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.quickfix.ChangeFileEncodingFix
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.constants.PlsConstants
 

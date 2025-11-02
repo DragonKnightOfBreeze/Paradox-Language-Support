@@ -3,9 +3,7 @@ package icu.windea.pls.images.tga
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.runCatchingCancelable
 import java.io.ByteArrayInputStream
-import javax.imageio.ImageIO.createImageInputStream
-import javax.imageio.ImageIO.getImageReaders
-import javax.imageio.ImageIO.setUseCache
+import javax.imageio.ImageIO.*
 
 object TgaMetadataReader {
     fun read(file: VirtualFile): TgaMetadata? {

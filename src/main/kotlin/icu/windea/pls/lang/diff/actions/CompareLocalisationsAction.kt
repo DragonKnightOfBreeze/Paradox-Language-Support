@@ -41,6 +41,7 @@ import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
@@ -48,7 +49,6 @@ import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxRootInfo

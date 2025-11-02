@@ -19,7 +19,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFilePropertyEvent
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import icu.windea.pls.images.ImageManager
 import org.intellij.images.editor.ImageDocument
-import org.intellij.images.editor.ImageDocument.ScaledImageProvider
+import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.editor.ImageEditor
 import org.intellij.images.editor.ImageZoomModel
 import org.intellij.images.thumbnail.actionSystem.ThumbnailViewActions

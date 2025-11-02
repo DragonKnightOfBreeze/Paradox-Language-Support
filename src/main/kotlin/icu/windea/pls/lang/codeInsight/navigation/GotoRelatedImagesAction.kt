@@ -8,8 +8,8 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement

@@ -15,8 +15,8 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxScriptFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty

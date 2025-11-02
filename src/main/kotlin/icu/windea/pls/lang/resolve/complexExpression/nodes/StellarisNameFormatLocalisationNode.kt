@@ -10,6 +10,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.StellarisNameFormatExpression
@@ -21,7 +22,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys

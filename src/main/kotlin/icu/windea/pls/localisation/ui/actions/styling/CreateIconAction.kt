@@ -12,8 +12,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_END
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.ICON_START
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 

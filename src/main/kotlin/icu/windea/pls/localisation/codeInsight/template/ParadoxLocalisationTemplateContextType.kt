@@ -9,7 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighter
 import icu.windea.pls.localisation.editor.ParadoxLocalisationTextSyntaxHighlighter
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LEFT_QUOTE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 
 abstract class ParadoxLocalisationTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {

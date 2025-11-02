@@ -4,7 +4,7 @@ import com.intellij.lexer.LayeredLexer
 import com.intellij.lexer.StringLiteralLexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.tree.IElementType
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.COLUMN_TOKEN
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvLexerFactory {

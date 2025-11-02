@@ -1,12 +1,12 @@
 package icu.windea.pls.config.util.manipulators
 
+import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.openapi.util.Key
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile

@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
-import icu.windea.pls.config.util.generators.CwtConfigGenerator.Hint
+import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children

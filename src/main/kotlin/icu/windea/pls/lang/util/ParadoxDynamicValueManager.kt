@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig

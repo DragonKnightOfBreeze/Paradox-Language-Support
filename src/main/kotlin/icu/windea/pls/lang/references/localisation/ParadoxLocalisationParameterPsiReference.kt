@@ -20,8 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.ParadoxLocalisationType.Normal
-import icu.windea.pls.model.ParadoxLocalisationType.Synced
+import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider

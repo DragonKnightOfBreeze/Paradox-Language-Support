@@ -1,13 +1,13 @@
 package icu.windea.pls.images.actions
 
 import com.intellij.ide.util.DirectoryUtil
-import com.intellij.openapi.actionSystem.ActionManager.getInstance
-import com.intellij.openapi.actionSystem.IdeActions.ACTION_CODE_COMPLETION
+import com.intellij.openapi.actionSystem.ActionManager.*
+import com.intellij.openapi.actionSystem.IdeActions.*
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.fileChooser.impl.FileChooserUtil
-import com.intellij.openapi.keymap.KeymapUtil.getFirstKeyboardShortcutText
+import com.intellij.openapi.keymap.KeymapUtil.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
@@ -19,7 +19,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.refactoring.RefactoringBundle.message
+import com.intellij.refactoring.RefactoringBundle.*
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.TextFieldWithHistoryWithBrowseButton

@@ -8,7 +8,7 @@ import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.SEPARATOR
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.lang.util.ParadoxCsvFileManager
 
 object ParadoxCsvElementFactory {

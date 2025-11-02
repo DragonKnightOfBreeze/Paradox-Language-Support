@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.csv.psi.ParadoxCsvTokenSets
 import icu.windea.pls.model.constants.PlsConstants
 

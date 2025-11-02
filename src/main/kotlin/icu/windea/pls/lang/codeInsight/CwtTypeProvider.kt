@@ -4,7 +4,7 @@ import com.intellij.lang.ExpressionTypeProvider
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
-import com.intellij.ui.ColorUtil.toHtmlColor
+import com.intellij.ui.ColorUtil.*
 import com.intellij.ui.Gray
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.util.CwtConfigManager

@@ -11,9 +11,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.JComponent

@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.codeInsight.highlighting
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.usages.PsiElementUsageTarget

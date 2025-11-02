@@ -12,9 +12,9 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 
 class ParadoxLocalisationExpressionPsiReference(

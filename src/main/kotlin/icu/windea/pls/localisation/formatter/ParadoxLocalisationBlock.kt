@@ -14,12 +14,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import icu.windea.pls.core.processChild
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COLON
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.COMMENT
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_LIST
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_NUMBER
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationBlock(
     node: ASTNode,

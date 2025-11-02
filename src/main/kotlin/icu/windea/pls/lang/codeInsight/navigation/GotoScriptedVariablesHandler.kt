@@ -12,11 +12,11 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.util.*

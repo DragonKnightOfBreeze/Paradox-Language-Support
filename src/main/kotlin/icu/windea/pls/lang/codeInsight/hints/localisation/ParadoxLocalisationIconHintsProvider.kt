@@ -17,7 +17,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon

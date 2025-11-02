@@ -5,10 +5,7 @@ import com.intellij.lang.LighterASTNode
 import icu.windea.pls.core.children
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.internNode
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.LOCALE_TOKEN
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 object ParadoxLocalisationLightTreeUtil {
     fun getLocaleFromPropertyListNode(node: LighterASTNode, tree: LighterAST): String? {

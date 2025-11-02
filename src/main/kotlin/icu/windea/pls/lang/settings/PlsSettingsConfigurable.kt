@@ -19,10 +19,7 @@ import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
-import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup
-import icu.windea.pls.lang.settings.PlsStrategies.EventTreeGrouping
-import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration
-import icu.windea.pls.lang.settings.PlsStrategies.TechTreeGrouping
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType

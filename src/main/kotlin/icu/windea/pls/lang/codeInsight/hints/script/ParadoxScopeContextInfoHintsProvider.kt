@@ -22,7 +22,7 @@ import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.Settings
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.*
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScope

@@ -16,9 +16,7 @@ import icu.windea.pls.lang.util.ParadoxColorManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.COLOR_TOKEN
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.LEFT_BRACE
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.STRING_TOKEN
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFloat
 import icu.windea.pls.script.psi.ParadoxScriptInt
 import icu.windea.pls.script.psi.ParadoxScriptMember

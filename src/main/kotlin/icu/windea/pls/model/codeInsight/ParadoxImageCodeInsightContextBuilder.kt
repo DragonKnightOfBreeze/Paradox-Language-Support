@@ -19,7 +19,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
-import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.Type
+import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil

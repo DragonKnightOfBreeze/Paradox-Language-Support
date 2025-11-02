@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.StubBase
 import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.SCRIPTED_VARIABLE
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
