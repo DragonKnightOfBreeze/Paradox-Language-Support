@@ -18,6 +18,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -52,7 +53,6 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                 val baseType = swappedTypeConfig.baseType ?: return@f
                 val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
                 if (typeExpression.matches(baseTypeExpression)) {
-                    ProgressManager.checkCanceled()
                     val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
                     processQueryForDefinitions(name, swappedTypeExpression, configGroup, queryParameters, constraint, consumer)
                 }
@@ -86,6 +86,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<ParadoxScriptFile>
     ): Boolean {
+        ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         val ignoreCase = constraint?.ignoreCase == true
         return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
@@ -93,9 +94,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
             val file = it.toPsiFile(project) ?: return@p true
             if (file !is ParadoxScriptFile) return@p true
             val definitionInfo = file.definitionInfo ?: return@p true
-            if (name != null && !definitionInfo.name.equals(name, ignoreCase)) return@p true
-            if (typeExpression != null && definitionInfo.type != typeExpression.type) return@p true
-            if (typeExpression != null && typeExpression.subtypes.isNotEmpty() && !definitionInfo.subtypes.containsAll(typeExpression.subtypes)) return@p true
+            if (!matchesName(definitionInfo, name, ignoreCase)) return@p true
+            if (!matchesType(definitionInfo, typeExpression?.type)) return@p true
+            if (!matchesSubtypes(definitionInfo, typeExpression?.subtypes)) return@p true
             processor.process(file)
         }, scope)
     }
@@ -108,27 +109,40 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<in ParadoxScriptDefinitionElement>
     ): Boolean {
+        ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         val indexKey = constraint?.indexKey ?: PlsIndexKeys.DefinitionName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (typeExpression == null) {
             if (finalName == null) {
-                PlsIndexService.processElementsByKeys(indexKey, project, scope, { true }) { _, element -> processor.process(element) }
+                PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element ->
+                    processor.process(element)
+                }
             } else {
-                PlsIndexService.processElements(indexKey, finalName, project, scope) { element -> processor.process(element) }
+                PlsIndexService.processElements(indexKey, finalName, project, scope) { element ->
+                    processor.process(element)
+                }
             }
         } else {
             if (finalName == null) {
                 PlsIndexService.processElements(PlsIndexKeys.DefinitionType, typeExpression.type, project, scope) p@{ element ->
-                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                    if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     processor.process(element)
                 }
             } else {
-                PlsIndexService.processElements(indexKey, finalName, project, scope) p@{ element ->
-                    if (!matchesType(element, typeExpression.type)) return@p true
-                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
-                    processor.process(element)
+                if (constraint == null) {
+                    PlsIndexService.processElements(PlsIndexKeys.DefinitionType, typeExpression.type, project, scope) p@{ element ->
+                        if (!matchesName(element, name)) return@p true
+                        if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                        processor.process(element)
+                    }
+                } else {
+                    PlsIndexService.processElements(indexKey, finalName, project, scope) p@{ element ->
+                        if (!matchesType(element, typeExpression.type)) return@p true
+                        if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                        processor.process(element)
+                    }
                 }
             }
         }
@@ -142,11 +156,27 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         return true
     }
 
-    private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {
-        return ParadoxDefinitionManager.getType(element) == type
+    private fun matchesName(definitionInfo: ParadoxDefinitionInfo, name: String?, ignoreCase: Boolean = false): Boolean {
+        return name == null || definitionInfo.name.equals(name, ignoreCase)
     }
 
-    private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {
-        return ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
+    private fun matchesType(definitionInfo: ParadoxDefinitionInfo, type: String?): Boolean {
+        return type == null || definitionInfo.type == type
+    }
+
+    private fun matchesSubtypes(definitionInfo: ParadoxDefinitionInfo, subtypes: List<String>?): Boolean {
+        return subtypes.isNullOrEmpty() || definitionInfo.subtypes.containsAll(subtypes)
+    }
+
+    private fun matchesName(element: ParadoxScriptDefinitionElement, name: String?, ignoreCase: Boolean = false): Boolean {
+        return name == null || ParadoxDefinitionManager.getName(element).equals(name, ignoreCase)
+    }
+
+    private fun matchesType(element: ParadoxScriptDefinitionElement, type: String?): Boolean {
+        return type == null || ParadoxDefinitionManager.getType(element) == type
+    }
+
+    private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>?): Boolean {
+        return subtypes.isNullOrEmpty() || ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
     }
 }
