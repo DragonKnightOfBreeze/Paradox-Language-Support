@@ -3,6 +3,7 @@ package icu.windea.pls.lang.actions
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.lang.tools.PlsPathService
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -30,4 +31,14 @@ abstract class HandlePathActionBase(
     protected open fun isEnabled(e: AnActionEvent): Boolean = true
 
     protected abstract fun getTargetPath(e: AnActionEvent): Path?
+
+    protected fun openPath(e: AnActionEvent) {
+        val targetPath = getTargetPath(e) ?: return
+        PlsPathService.openPath(targetPath)
+    }
+
+    protected fun copyPath(e: AnActionEvent) {
+        val targetPath = getTargetPath(e) ?: return
+        PlsPathService.copyPath(targetPath)
+    }
 }

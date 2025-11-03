@@ -1,10 +1,7 @@
 package icu.windea.pls.lang.ui.tools
 
 import com.intellij.icons.AllIcons
-import com.intellij.ide.BrowserUtil
-import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.orNull
@@ -12,7 +9,6 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.actions.HandlePathActionBase
 import icu.windea.pls.lang.actions.HandleUrlActionBase
 import icu.windea.pls.lang.tools.PlsUrlService
-import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 
 interface ParadoxModDependenciesPopupActions {
@@ -24,10 +20,7 @@ interface ParadoxModDependenciesPopupActions {
         PlsBundle.message("mod.dependencies.popup.action.OpenModPath.text"),
         PlsBundle.message("mod.dependencies.popup.action.OpenModPath.description"),
     ) {
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetPath = getTargetPath(e) ?: return
-            RevealFileAction.openDirectory(targetPath)
-        }
+        override fun actionPerformed(e: AnActionEvent) = openPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val selectedItem = table.getSelectedItem() ?: return null
@@ -43,10 +36,7 @@ interface ParadoxModDependenciesPopupActions {
         PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text"),
         PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.description"),
     ) {
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetUrl = getTargetUrl(e) ?: return
-            BrowserUtil.open(targetUrl)
-        }
+        override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
@@ -63,10 +53,7 @@ interface ParadoxModDependenciesPopupActions {
         PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text"),
         PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.description"),
     ) {
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetUrl = getTargetUrl(e) ?: return // ignore
-            BrowserUtil.open(targetUrl)
-        }
+        override fun actionPerformed(e: AnActionEvent) = openUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
@@ -83,10 +70,7 @@ interface ParadoxModDependenciesPopupActions {
         PlsBundle.message("mod.dependencies.popup.action.CopyModPath.text"),
         PlsBundle.message("mod.dependencies.popup.action.CopyModPath.description"),
     ) {
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetPath = getTargetPath(e) ?: return
-            CopyPasteManager.getInstance().setContents(StringSelection(targetPath.toString()))
-        }
+        override fun actionPerformed(e: AnActionEvent) = copyPath(e)
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val selectedItem = table.getSelectedItem() ?: return null
@@ -102,10 +86,7 @@ interface ParadoxModDependenciesPopupActions {
         PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.text"),
         PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.description")
     ) {
-        override fun actionPerformed(e: AnActionEvent) {
-            val targetPath = getTargetUrl(e) ?: return
-            CopyPasteManager.getInstance().setContents(StringSelection(targetPath))
-        }
+        override fun actionPerformed(e: AnActionEvent) = copyUrl(e)
 
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null

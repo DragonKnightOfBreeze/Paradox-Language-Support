@@ -3,6 +3,7 @@ package icu.windea.pls.lang.actions
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.lang.tools.PlsUrlService
 import javax.swing.Icon
 
 abstract class HandleUrlActionBase(
@@ -29,4 +30,14 @@ abstract class HandleUrlActionBase(
     protected open fun isEnabled(e: AnActionEvent): Boolean = true
 
     protected abstract fun getTargetUrl(e: AnActionEvent): String?
+
+    protected fun copyUrl(e: AnActionEvent) {
+        val targetUrl = getTargetUrl(e) ?: return
+        PlsUrlService.copyUrl(targetUrl)
+    }
+
+    protected fun openUrl(e: AnActionEvent) {
+        val targetUrl = getTargetUrl(e) ?: return
+        PlsUrlService.openUrl(targetUrl)
+    }
 }

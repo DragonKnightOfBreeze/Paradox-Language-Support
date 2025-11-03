@@ -24,5 +24,15 @@ interface PlsPathService {
      */
     fun getGameDataPath(gameName: String): Path?
 
+    /**
+     * 在系统文件管理器中打开路径。
+     */
+    fun openPath(path:Path)
+
+    /**
+     * 复制路径到剪贴板。
+     */
+    fun copyPath(path: Path)
+
     companion object : PlsPathService by PlsPathServiceImpl()
 }

@@ -1,7 +1,10 @@
 package icu.windea.pls.lang.tools.impl
 
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.lang.tools.PlsUrlService
+import java.awt.datatransfer.StringSelection
 
 @Service
 class PlsUrlServiceImpl : PlsUrlService {
@@ -27,5 +30,13 @@ class PlsUrlServiceImpl : PlsUrlService {
 
     override fun getSteamWorkshopUrlInSteam(steamId: String): String {
         return "steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
+    }
+
+    override fun openUrl(url: String) {
+        BrowserUtil.open(url)
+    }
+
+    override fun copyUrl(url: String) {
+        CopyPasteManager.getInstance().setContents(StringSelection(url))
     }
 }

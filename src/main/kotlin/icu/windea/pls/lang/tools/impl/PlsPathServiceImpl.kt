@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.tools.impl
 
+import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.formatted
@@ -10,9 +12,11 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.constants.PlsPathConstants
+import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
+import kotlin.io.path.isDirectory
 
 @Service
 class PlsPathServiceImpl : PlsPathService {
@@ -93,5 +97,16 @@ class PlsPathServiceImpl : PlsPathService {
             OS.Windows -> PlsPathConstants.userHome.resolve(Path("Documents", "Paradox Interactive", gameName)).formatted()
             OS.Linux -> PlsPathConstants.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
+    }
+
+    override fun openPath(path: Path) {
+        when {
+            path.isDirectory() -> RevealFileAction.openDirectory(path)
+            else -> RevealFileAction.openFile(path)
+        }
+    }
+
+    override fun copyPath(path: Path) {
+        CopyPasteManager.getInstance().setContents(StringSelection(path.toString()))
     }
 }

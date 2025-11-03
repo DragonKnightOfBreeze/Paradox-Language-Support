@@ -33,5 +33,15 @@ interface PlsUrlService {
      */
     fun getSteamWorkshopUrlInSteam(steamId: String): String
 
+    /**
+     * 在浏览器中打开连接。
+     */
+    fun openUrl(url: String)
+
+    /**
+     * 复制链接到剪贴板。
+     */
+    fun copyUrl(url: String)
+
     companion object : PlsUrlService by PlsUrlServiceImpl()
 }
