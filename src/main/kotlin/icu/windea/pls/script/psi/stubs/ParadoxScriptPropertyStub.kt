@@ -21,9 +21,9 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
     /**
      * （作为脚本属性的）定义的存根。
      *
-     * @property definitionName 定义的名字。可以为空，表示匿名。可以为 null，表示需延后解析。
+     * @property definitionName 定义的名字。可以为空，表示匿名。可以为 `null`，表示无法获取。
      * @property definitionType 定义的类型。
-     * @property definitionSubtypes 定义的子类型。可以为 null，表示需延后解析。
+     * @property definitionSubtypes 定义的子类型。可以为 `null`，表示需延后解析。
      * @property typeKey 定义的类型键。等同于 [ParadoxScriptPropertyStub.name]。
      * @property elementPath 定义的元素路径（不含参数）。
      *

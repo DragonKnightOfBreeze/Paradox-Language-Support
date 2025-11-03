@@ -107,9 +107,9 @@ object CwtLocationExpressionManager {
     }
 
     private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxIndexConstraint.Localisation? {
-        return when {
-            definitionInfo.type == ParadoxDefinitionTypes.Event -> ParadoxIndexConstraint.Localisation.Event
-            definitionInfo.type == ParadoxDefinitionTypes.Technology -> ParadoxIndexConstraint.Localisation.Tech
+        return when (definitionInfo.type) {
+            ParadoxDefinitionTypes.Event -> ParadoxIndexConstraint.Localisation.Event
+            ParadoxDefinitionTypes.Technology -> ParadoxIndexConstraint.Localisation.Tech
             else -> null
         }
     }

@@ -43,8 +43,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val gameType = queryParameters.selector.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val constraint = queryParameters.selector.getConstraint()
+        val constraint0 = queryParameters.selector.getConstraint()
 
+        val constraint = constraint0.optimized(typeExpression)
         val r = processQueryForDefinitions(name, typeExpression, configGroup, queryParameters, scope, constraint, consumer)
         if (!r) return
 
@@ -55,10 +56,18 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                 val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
                 if (typeExpression.matches(baseTypeExpression)) {
                     val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
-                    processQueryForDefinitions(name, swappedTypeExpression, configGroup, queryParameters, scope, constraint, consumer)
+                    val swappedConstraint = constraint0.optimized(swappedTypeExpression)
+                    processQueryForDefinitions(name, swappedTypeExpression, configGroup, queryParameters, scope, swappedConstraint, consumer)
                 }
             }
         }
+    }
+
+    private fun ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?.optimized(typeExpression: ParadoxDefinitionTypeExpression?): ParadoxIndexConstraint<ParadoxScriptDefinitionElement>? {
+        // 如果没有默认选用的约束，且存在指定的定义类型对应的约束，则自动选用
+        if (this != null) return this
+        if (typeExpression == null) return null
+        return ParadoxIndexConstraint.Definition.get(typeExpression.type)
     }
 
     private fun processQueryForDefinitions(
@@ -162,9 +171,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         return subtypes.isNullOrEmpty() || definitionInfo.subtypes.containsAll(subtypes)
     }
 
-    private fun matchesName(element: ParadoxScriptDefinitionElement, name: String?, ignoreCase: Boolean = false): Boolean {
-        return name == null || ParadoxDefinitionManager.getName(element).equals(name, ignoreCase)
-    }
+    // private fun matchesName(element: ParadoxScriptDefinitionElement, name: String?, ignoreCase: Boolean = false): Boolean {
+    //     return name == null || ParadoxDefinitionManager.getName(element).equals(name, ignoreCase)
+    // }
 
     private fun matchesType(element: ParadoxScriptDefinitionElement, type: String?): Boolean {
         return type == null || ParadoxDefinitionManager.getType(element) == type

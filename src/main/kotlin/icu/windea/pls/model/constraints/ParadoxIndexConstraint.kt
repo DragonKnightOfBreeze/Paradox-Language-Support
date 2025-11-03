@@ -14,24 +14,27 @@ interface ParadoxIndexConstraint<T : PsiElement> {
 
     enum class Definition(
         override val indexKey: StubIndexKey<String, ParadoxScriptDefinitionElement>,
+        val definitionType: String? = null,
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
-        Resource(PlsIndexKeys.DefinitionNameForResource) {
-            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.Resource
-        },
-        EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory) {
-            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.EconomicCategory
-        },
-        TextIcon(PlsIndexKeys.DefinitionNameForTextIcon) {
-            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextIcon
-        },
-        TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ignoreCase = true) {
-            override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextFormat
-        },
+        Resource(PlsIndexKeys.DefinitionNameForResource, ParadoxDefinitionTypes.Resource),
+        EconomicCategory(PlsIndexKeys.DefinitionNameForEconomicCategory, ParadoxDefinitionTypes.EconomicCategory),
+        GameConcept(PlsIndexKeys.DefinitionNameForGameConcept, ParadoxDefinitionTypes.GameConcept),
+        TextColor(PlsIndexKeys.DefinitionNameForTextColor, ParadoxDefinitionTypes.TextColor),
+        TextIcon(PlsIndexKeys.DefinitionNameForTextIcon, ParadoxDefinitionTypes.TextIcon),
+        TextFormat(PlsIndexKeys.DefinitionNameForTextFormat, ParadoxDefinitionTypes.TextFormat, ignoreCase = true),
         ;
 
-        abstract fun supports(definitionType: String): Boolean
+        open fun supports(definitionType: String): Boolean = definitionType == this.definitionType
+
+        companion object {
+            @JvmStatic
+            private val map = entries.associateBy { it.definitionType }
+
+            @JvmStatic
+            fun get(definitionType: String): Definition? = map[definitionType]
+        }
     }
 
     enum class Localisation(

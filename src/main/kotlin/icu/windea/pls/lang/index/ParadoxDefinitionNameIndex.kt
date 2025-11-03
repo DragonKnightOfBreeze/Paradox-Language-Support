@@ -36,6 +36,24 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
     }
 
     /**
+     * 用于快速索引游戏概念的名字（其定义类型为 `game_concept`）。
+     *
+     * @see ParadoxIndexConstraint.Definition.GameConcept
+     */
+    class GameConceptIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForGameConcept
+    }
+
+    /**
+     * 用于快速索引文本颜色的名字（其定义类型为 `text_color`）。
+     *
+     * @see ParadoxIndexConstraint.Definition.TextColor
+     */
+    class TextColorIndex : BaseIndex() {
+        override fun getKey() = PlsIndexKeys.DefinitionNameForTextColor
+    }
+
+    /**
      * 用于快速索引文本图标的名字（其定义类型为 `text_icon`）。
      *
      * @see ParadoxIndexConstraint.Definition.TextIcon

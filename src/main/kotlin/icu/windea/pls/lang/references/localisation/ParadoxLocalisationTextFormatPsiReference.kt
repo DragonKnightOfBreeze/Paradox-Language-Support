@@ -58,7 +58,6 @@ class ParadoxLocalisationTextFormatPsiReference(
         val definitionName = element.name?.orNull() ?: return null
         val definitionType = ParadoxDefinitionTypes.TextFormat
         val definitionSelector = selector(project, element).definition().contextSensitive()
-            .withConstraint(ParadoxIndexConstraint.Definition.TextFormat)
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
         return resolved
     }
