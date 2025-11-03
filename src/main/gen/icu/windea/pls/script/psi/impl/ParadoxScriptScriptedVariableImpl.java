@@ -85,11 +85,6 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  public @Nullable String getUnquotedValue() {
-    return ParadoxScriptPsiImplUtil.getUnquotedValue(this);
-  }
-
-  @Override
   public @NotNull IElementType getIElementType() {
     return ParadoxScriptPsiImplUtil.getIElementType(this);
   }

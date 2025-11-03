@@ -45,7 +45,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
+    getIcon getName setName getNameIdentifier getTextOffset getValue
     getIElementType isEquivalentTo
   ]
 }

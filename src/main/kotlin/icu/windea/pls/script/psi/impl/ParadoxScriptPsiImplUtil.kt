@@ -78,11 +78,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getUnquotedValue(element: ParadoxScriptScriptedVariable): String? {
-        return element.scriptedVariableValue?.text
-    }
-
-    @JvmStatic
     fun getIElementType(element: ParadoxScriptScriptedVariable): IElementType {
         return SCRIPTED_VARIABLE
     }
