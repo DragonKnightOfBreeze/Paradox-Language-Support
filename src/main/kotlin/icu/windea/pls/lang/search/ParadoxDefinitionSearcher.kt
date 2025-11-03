@@ -129,18 +129,10 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                     processor.process(element)
                 }
             } else {
-                if (constraint == null) {
-                    PlsIndexService.processElements(PlsIndexKeys.DefinitionType, typeExpression.type, project, scope) p@{ element ->
-                        if (!matchesName(element, name)) return@p true
-                        if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
-                        processor.process(element)
-                    }
-                } else {
-                    PlsIndexService.processElements(indexKey, finalName, project, scope) p@{ element ->
-                        if (!matchesType(element, typeExpression.type)) return@p true
-                        if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
-                        processor.process(element)
-                    }
+                PlsIndexService.processElements(indexKey, finalName, project, scope) p@{ element ->
+                    if (!matchesType(element, typeExpression.type)) return@p true
+                    if (!matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                    processor.process(element)
                 }
             }
         }
