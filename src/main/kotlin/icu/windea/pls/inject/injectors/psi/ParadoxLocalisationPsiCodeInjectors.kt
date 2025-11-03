@@ -15,7 +15,7 @@ interface ParadoxLocalisationPsiCodeInjectors {
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationProperty */
     @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
     class Property : CodeInjectorBase()

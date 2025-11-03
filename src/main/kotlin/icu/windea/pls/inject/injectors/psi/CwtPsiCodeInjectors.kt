@@ -9,7 +9,7 @@ interface CwtPsiCodeInjectors {
 
     /** @see icu.windea.pls.cwt.psi.CwtProperty */
     @InjectTarget("icu.windea.pls.cwt.psi.impl.CwtPropertyImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
     class Property : CodeInjectorBase()
@@ -22,7 +22,7 @@ interface CwtPsiCodeInjectors {
 
     /** @see icu.windea.pls.cwt.psi.CwtOption */
     @InjectTarget("icu.windea.pls.cwt.psi.impl.CwtOptionImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
     class Option : CodeInjectorBase()

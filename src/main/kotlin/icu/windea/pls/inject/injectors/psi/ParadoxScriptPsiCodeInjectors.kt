@@ -9,7 +9,7 @@ interface ParadoxScriptPsiCodeInjectors {
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptProperty */
     @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
     class Property : CodeInjectorBase()
@@ -43,7 +43,7 @@ interface ParadoxScriptPsiCodeInjectors {
 
     /** @see icu.windea.pls.script.psi.ParadoxScriptColor */
     @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptColorImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getColorType", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getColorArgs", cleanup = "subtreeChanged")
     class Color : CodeInjectorBase()
