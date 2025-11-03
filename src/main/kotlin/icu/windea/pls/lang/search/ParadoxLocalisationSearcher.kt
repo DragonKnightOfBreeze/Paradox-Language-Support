@@ -8,8 +8,10 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 
@@ -24,11 +26,12 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope
+        val scope = queryParameters.scope.withFileTypes(ParadoxLocalisationFileType)
         if (SearchScope.isEmptyScope(scope)) return
-        val constraint = queryParameters.selector.getConstraint()
 
-        processQueryForLocalisations(queryParameters.name, project, scope, constraint) { element -> consumer.process(element) }
+        val name = queryParameters.name
+        val constraint = queryParameters.selector.getConstraint()
+        processQueryForLocalisations(name, project, scope, constraint) { element -> consumer.process(element) }
     }
 
     private fun processQueryForLocalisations(

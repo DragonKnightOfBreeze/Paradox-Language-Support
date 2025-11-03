@@ -9,7 +9,9 @@ import com.intellij.util.Processor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -21,11 +23,12 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
-        if (queryParameters.project.isDefault) return
-        val scope = queryParameters.selector.scope
-        if (SearchScope.isEmptyScope(scope)) return
-        val inlineScriptExpression = queryParameters.inlineScriptExpression
         val project = queryParameters.project
+        if (project.isDefault) return
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
+        if (SearchScope.isEmptyScope(scope)) return
+
+        val inlineScriptExpression = queryParameters.inlineScriptExpression
         processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element -> consumer.process(element) }
     }
 

@@ -17,12 +17,12 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType ?: return
 
+        val gameType = queryParameters.selector.gameType
         val indexInfoType = ParadoxIndexInfoType.LocalisationParameter
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
             infos.process { info -> processInfo(queryParameters, file, info, consumer) }
         }
     }

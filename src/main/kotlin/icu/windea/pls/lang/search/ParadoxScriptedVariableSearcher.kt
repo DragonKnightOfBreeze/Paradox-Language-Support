@@ -21,6 +21,7 @@ import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFilePath
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -28,6 +29,7 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxScriptedVariableType
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -43,13 +45,13 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
         if (PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
+        if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         if (project.isDefault) return
 
         when (queryParameters.type) {
             ParadoxScriptedVariableType.Local -> {
-                val scope = queryParameters.selector.scope
-                if (SearchScope.isEmptyScope(scope)) return
                 val file = queryParameters.selector.file ?: return
                 val fileInfo = file.fileInfo // NOTE fileInfo can be null here (e.g., injected files)
                 if (fileInfo != null && ParadoxScriptedVariableManager.isGlobalFilePath(fileInfo.path)) return // skip global scripted variables
@@ -64,13 +66,11 @@ class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedV
                 doProcessQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
             }
             ParadoxScriptedVariableType.Global -> {
-                val scope = queryParameters.selector.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
-                if (SearchScope.isEmptyScope(scope)) return
-                doProcessAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
+                val globalScope = queryParameters.scope.withFilePath("common/scripted_variables", "txt") // limit to global scripted variables
+                if (SearchScope.isEmptyScope(globalScope)) return
+                doProcessAllElements(queryParameters.name, project, globalScope) { element -> consumer.process(element) }
             }
             null -> {
-                val scope = queryParameters.selector.scope
-                if (SearchScope.isEmptyScope(scope)) return
                 doProcessAllElements(queryParameters.name, project, scope) { element -> consumer.process(element) }
             }
         }

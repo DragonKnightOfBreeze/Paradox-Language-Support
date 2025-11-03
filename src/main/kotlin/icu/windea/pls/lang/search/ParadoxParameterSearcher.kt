@@ -17,15 +17,16 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType ?: return
+
 
         // 尽管新增了内联脚本传参的索引（ParadoxInlineScriptArgumentIndex），这里仍然统一通过合并索引（ParadoxMergedIndex）进行查询
         // 因为这里需要查询所有上下文的所有访问级别（读/写）的参数
 
+        val gameType = queryParameters.selector.gameType
         val indexInfoType = ParadoxIndexInfoType.Parameter
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }

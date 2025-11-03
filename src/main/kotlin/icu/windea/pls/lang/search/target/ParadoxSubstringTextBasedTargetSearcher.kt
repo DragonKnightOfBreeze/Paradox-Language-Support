@@ -54,4 +54,3 @@ class ParadoxSubstringTextBasedTargetSearcher : ParadoxTextBasedTargetSearcher()
         private const val MAX_INPUT_LENGTH = 40
     }
 }
-

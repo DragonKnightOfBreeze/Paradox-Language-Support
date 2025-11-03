@@ -22,15 +22,15 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxD
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt")
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType).withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType ?: return
+        val gameType = queryParameters.selector.gameType
 
         val variable = queryParameters.variable
         val namespace = queryParameters.namespace
 
         val keys = namespace.singleton.setOrEmpty()
-        PlsIndexService.processAllFileData(ParadoxDefineIndex::class.java, keys, project, gameType, scope) p@{ file, fileData ->
+        PlsIndexService.processAllFileData(ParadoxDefineIndex::class.java, keys, project, scope, gameType) p@{ file, fileData ->
             if (namespace != null) {
                 val map = fileData[namespace] ?: return@p true
                 if (variable != null) {

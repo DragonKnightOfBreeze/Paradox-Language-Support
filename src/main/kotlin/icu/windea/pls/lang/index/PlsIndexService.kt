@@ -44,8 +44,8 @@ object PlsIndexService {
         indexType: Class<out IndexInfoAwareFileBasedIndex<T>>,
         keys: Collection<String>,
         project: Project,
-        gameType: ParadoxGameType,
         scope: GlobalSearchScope,
+        gameType: ParadoxGameType?,
         processor: (file: VirtualFile, fileData: Map<String, T>) -> Boolean
     ): Boolean {
         ProgressManager.checkCanceled()
@@ -55,7 +55,7 @@ object PlsIndexService {
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
-            if (gameType != selectGameType(file)) return@p true // check game type at file level
+            if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
 
             val fileData = index.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
@@ -66,8 +66,8 @@ object PlsIndexService {
     fun <T : ParadoxIndexInfo> processAllFileDataWithKey(
         indexInfoType: ParadoxIndexInfoType<T>,
         project: Project,
-        gameType: ParadoxGameType,
         scope: GlobalSearchScope,
+        gameType: ParadoxGameType?,
         processor: (file: VirtualFile, infos: List<T>) -> Boolean
     ): Boolean {
         ProgressManager.checkCanceled()
@@ -79,7 +79,7 @@ object PlsIndexService {
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
             ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
-            if (gameType != selectGameType(file)) return@p true // check game type at file level
+            if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
 
             val infos = index.getFileDataWithKey(file, project, key).castOrNull<List<T>>()
             if (infos.isNullOrEmpty()) return@p true

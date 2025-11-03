@@ -21,12 +21,13 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType, ParadoxLocalisationFileType)
         if (SearchScope.isEmptyScope(scope)) return
-        val gameType = queryParameters.selector.gameType ?: return
+
+        val gameType = queryParameters.selector.gameType
 
         val indexInfoType = ParadoxIndexInfoType.DynamicValue
-        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, scope) { file, infos ->
+        PlsIndexService.processAllFileDataWithKey(indexInfoType, project, scope, gameType) { file, infos ->
             infos.process { info -> processInfo(queryParameters, info, file, consumer) }
         }
     }

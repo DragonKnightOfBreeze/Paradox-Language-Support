@@ -14,7 +14,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
      * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     class SearchParameters(
-        val inlineScriptExpression: String,
+        val inlineScriptExpression: String?,
         override val selector: ChainedParadoxSelector<ParadoxScriptProperty>
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
@@ -29,7 +29,7 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
          */
         @JvmStatic
         fun search(
-            inlineScriptExpression: String,
+            inlineScriptExpression: String?,
             selector: ChainedParadoxSelector<ParadoxScriptProperty>
         ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(inlineScriptExpression, selector))

@@ -2,8 +2,8 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
@@ -15,6 +15,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.PlsCoreManager
@@ -35,16 +36,16 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope
+        val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
         val name = queryParameters.name
         val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
-        val gameType = queryParameters.selector.gameType ?: return
+        val gameType = queryParameters.selector.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val constraint = queryParameters.selector.getConstraint()
 
-        val r = processQueryForDefinitions(name, typeExpression, configGroup, queryParameters, constraint, consumer)
+        val r = processQueryForDefinitions(name, typeExpression, configGroup, queryParameters, scope, constraint, consumer)
         if (!r) return
 
         // process swapped types
@@ -54,7 +55,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                 val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
                 if (typeExpression.matches(baseTypeExpression)) {
                     val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
-                    processQueryForDefinitions(name, swappedTypeExpression, configGroup, queryParameters, constraint, consumer)
+                    processQueryForDefinitions(name, swappedTypeExpression, configGroup, queryParameters, scope, constraint, consumer)
                 }
             }
         }
@@ -65,29 +66,26 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         typeExpression: ParadoxDefinitionTypeExpression?,
         configGroup: CwtConfigGroup,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
+        scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<in ParadoxScriptDefinitionElement>
     ): Boolean {
         if (queryParameters.forFile && typePerFile(typeExpression, configGroup)) {
-            return processQueryForFileDefinitions(name, typeExpression, configGroup.project, queryParameters, constraint) { processor.process(it) }
+            return processQueryForFileDefinitions(name, typeExpression, queryParameters, scope, constraint) { processor.process(it) }
         }
-        return processQueryForStubDefinitions(name, typeExpression, configGroup.project, queryParameters, constraint) { processor.process(it) }
-    }
-
-    private fun typePerFile(typeExpression: ParadoxDefinitionTypeExpression?, configGroup: CwtConfigGroup): Boolean {
-        return typeExpression == null || configGroup.types.get(typeExpression.type)?.typePerFile == true
+        return processQueryForStubDefinitions(name, typeExpression, queryParameters, scope, constraint) { processor.process(it) }
     }
 
     private fun processQueryForFileDefinitions(
         name: String?,
         typeExpression: ParadoxDefinitionTypeExpression?,
-        project: Project,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
+        scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<ParadoxScriptFile>
     ): Boolean {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.selector.scope
+        val project = queryParameters.project
         val ignoreCase = constraint?.ignoreCase == true
         return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
             ProgressManager.checkCanceled()
@@ -104,13 +102,13 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
     private fun processQueryForStubDefinitions(
         name: String?,
         typeExpression: ParadoxDefinitionTypeExpression?,
-        project: Project,
         queryParameters: ParadoxDefinitionSearch.SearchParameters,
+        scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<in ParadoxScriptDefinitionElement>
     ): Boolean {
         ProgressManager.checkCanceled()
-        val scope = queryParameters.selector.scope
+        val project = queryParameters.project
         val indexKey = constraint?.indexKey ?: PlsIndexKeys.DefinitionName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
@@ -150,10 +148,14 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 
         // fallback for inferred constraints
         if (constraint != null && constraint.inferred) {
-            return processQueryForStubDefinitions(name, typeExpression, project, queryParameters, null, processor)
+            return processQueryForStubDefinitions(name, typeExpression, queryParameters, scope, null, processor)
         }
 
         return true
+    }
+
+    private fun typePerFile(typeExpression: ParadoxDefinitionTypeExpression?, configGroup: CwtConfigGroup): Boolean {
+        return typeExpression == null || configGroup.types.get(typeExpression.type)?.typePerFile == true
     }
 
     private fun matchesName(definitionInfo: ParadoxDefinitionInfo, name: String?, ignoreCase: Boolean = false): Boolean {

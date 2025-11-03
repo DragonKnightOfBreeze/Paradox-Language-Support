@@ -23,8 +23,9 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
     override fun processQuery(queryParameters: ParadoxFilePathSearch.SearchParameters, consumer: Processor<in VirtualFile>) {
         ProgressManager.checkCanceled()
         if(queryParameters.project.isDefault) return
-        val scope = queryParameters.selector.scope
+        val scope = queryParameters.scope
         if (SearchScope.isEmptyScope(scope)) return
+
         val filePath = queryParameters.filePath
         val configExpression = queryParameters.configExpression
         val project = queryParameters.project

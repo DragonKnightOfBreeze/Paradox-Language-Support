@@ -108,7 +108,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard {
             withRecursionCheck("${definitionInfo.name}:${definitionInfo.type}") {
                 val indexInfoType = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
-                PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, searchScope) p@{ file, infos ->
+                PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
@@ -215,7 +215,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val indexInfoType = ParadoxIndexInfoType.EventInOnAction
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -324,7 +324,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.EventInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -475,7 +475,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexInfoType = ParadoxIndexInfoType.OnActionInEvent
-            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, gameType, searchScope) p@{ file, infos ->
+            PlsIndexService.processAllFileDataWithKey(indexInfoType, project, searchScope, gameType) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()

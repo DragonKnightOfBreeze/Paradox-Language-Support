@@ -8,7 +8,9 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
+import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -22,14 +24,19 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         ProgressManager.checkCanceled()
         val project = queryParameters.project
         if (project.isDefault) return
-        val scope = queryParameters.selector.scope
+        val scope = queryParameters.scope.withFileTypes(ParadoxLocalisationFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
         val name = queryParameters.name
         processQueryForSyncedLocalisations(name, project, scope) { element -> consumer.process(element) }
     }
 
-    private fun processQueryForSyncedLocalisations(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
+    private fun processQueryForSyncedLocalisations(
+        name: String?,
+        project: Project,
+        scope: GlobalSearchScope,
+        processor: Processor<ParadoxLocalisationProperty>
+    ): Boolean {
         val indexKey = PlsIndexKeys.SyncedLocalisationName
         if (name == null) {
             return PlsIndexService.processElementsByKeys(indexKey, project, scope) { _, element -> processor.process(element) }
