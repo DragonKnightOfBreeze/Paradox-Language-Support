@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.tools
 
 import org.ktorm.database.Database
 import java.nio.file.Path
@@ -6,7 +6,7 @@ import java.sql.DriverManager
 import java.sql.Statement
 import java.util.*
 
-object PlsSqliteManager {
+object PlsSqliteService {
     fun executeSql(dbPath: Path, sql: String) {
         val conn = DriverManager.getConnection("jdbc:sqlite:${dbPath.toAbsolutePath()}")
         conn.autoCommit = false

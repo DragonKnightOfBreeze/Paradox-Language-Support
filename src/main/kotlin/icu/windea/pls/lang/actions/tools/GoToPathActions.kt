@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.actions.tools
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.actions.gameType
 import icu.windea.pls.lang.actions.gameTypeProperty
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 
@@ -15,7 +15,7 @@ interface GoToPathActions {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (targetPath == null) {
-                targetPath = PlsFacade.getDataProvider().getSteamPath()
+                targetPath = PlsPathService.getSteamPath()
             }
             return true
         }
@@ -31,7 +31,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+                this.targetPath = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
             }
             return true
         }
@@ -48,7 +48,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
+                this.targetPath = PlsPathService.getSteamWorkshopPath(gameType.steamId)
             }
             return true
         }
@@ -65,7 +65,7 @@ interface GoToPathActions {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
+                this.targetPath = PlsPathService.getGameDataPath(gameType.title)
             }
             return true
         }

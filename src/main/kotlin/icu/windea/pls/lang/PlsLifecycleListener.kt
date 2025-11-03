@@ -66,7 +66,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     private fun initCachesAsync() {
         PlsPathConstants.initAsync()
-        PlsFacade.getDataProvider().initAsync()
     }
 
     @Suppress("ObsoleteDispatchersEdt")

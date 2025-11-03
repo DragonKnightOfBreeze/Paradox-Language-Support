@@ -21,6 +21,6 @@ class ParadoxCallHierarchyBrowserSettings : PersistentStateComponent<ParadoxCall
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project) = project.service<ParadoxCallHierarchyBrowserSettings>()
+        fun getInstance(project: Project): ParadoxCallHierarchyBrowserSettings = project.service()
     }
 }

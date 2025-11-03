@@ -17,6 +17,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
@@ -47,7 +48,7 @@ object ParadoxFileManager {
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val path0 = path.normalizePath().removePrefix("game/")
-        val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: return null
+        val gamePath = PlsPathService.getSteamGamePath(gameType.id, gameType.title) ?: return null
         val mainEntryPath = if (gameType.mainEntry.isEmpty()) gamePath else gamePath.resolve(gameType.mainEntry)
         val resultPath = mainEntryPath.resolve(path0)
         return resultPath.formatted()

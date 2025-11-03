@@ -3,11 +3,11 @@ package icu.windea.pls.ep.tools.importer
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -32,7 +32,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
 
     override suspend fun execute(filePath: Path, modSetInfo: ParadoxModSetInfo): ParadoxModImporter.Result {
         val gameType = modSetInfo.gameType
-        val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
+        val workshopDirPath = PlsPathService.getSteamWorkshopPath(gameType.steamId)
         if (workshopDirPath == null) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         }
@@ -113,7 +113,7 @@ class ParadoxLauncherJsonImporter : ParadoxJsonBasedModImporter() {
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 游戏数据目录中的 playlists/playlist.json，或者 playlists 目录
         val jsonFileName = getJsonFileName()
-        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
         val playlistPath = gameDataPath.resolve(Constants.playlistsName).takeIf { it.exists() } ?: return null
         val playlistJsonPath = playlistPath.resolve(jsonFileName).takeIf { it.exists() }
         if (playlistJsonPath != null) return playlistJsonPath

@@ -1,7 +1,6 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.tools.impl
 
 import com.intellij.openapi.components.Service
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.formatted
@@ -9,37 +8,16 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.constants.PlsPathConstants
-import kotlinx.coroutines.launch
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 
-/**
- * 用于提供一些需要动态获取的数据。
- */
 @Service
-class PlsDataProvider {
+class PlsPathServiceImpl : PlsPathService {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
     private val emptyPath = Path.of("")
-
-    fun initAsync() {
-        // preload cached values
-        val coroutineScope = PlsFacade.getCoroutineScope()
-        coroutineScope.launch {
-            launch {
-                getSteamPath()
-            }
-            ParadoxGameType.getAll().forEach { gameType ->
-                launch {
-                    getSteamGamePath(gameType.steamId, gameType.title)
-                }
-            }
-        }
-    }
-
-    // region Paths
 
     // Steam的实际安装路径：（通过特定命令获取）
     // Steam游戏的实际安装路径：（通过特定命令获取）
@@ -47,10 +25,7 @@ class PlsDataProvider {
     // 创意工坊安装目录：steamapps/common/content（其子目录是游戏的steamId）
     // 游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
 
-    /**
-     * 得到Steam目录的路径。
-     */
-    fun getSteamPath(): Path? {
+    override fun getSteamPath(): Path? {
         return steamPathCache.getOrPut("") { doGetSteamPath() ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
@@ -71,10 +46,7 @@ class PlsDataProvider {
         }
     }
 
-    /**
-     * 得到指定ID对应的Steam游戏目录的路径。
-     */
-    fun getSteamGamePath(steamId: String, gameName: String): Path? {
+    override fun getSteamGamePath(steamId: String, gameName: String): Path? {
         return steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId, gameName) ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
@@ -101,10 +73,7 @@ class PlsDataProvider {
         }
     }
 
-    /**
-     * 得到指定ID对应的Steam创意工坊目录的路径。
-     */
-    fun getSteamWorkshopPath(steamId: String): Path? {
+    override fun getSteamWorkshopPath(steamId: String): Path? {
         return doGetSteamWorkshopPath(steamId)
     }
 
@@ -114,10 +83,7 @@ class PlsDataProvider {
         return steamPath.resolve(Path("steamapps", "workshop", "content", steamId)).formatted()
     }
 
-    /**
-     * 得到指定游戏名对应的游戏数据目录的路径。
-     */
-    fun getGameDataPath(gameName: String): Path? {
+    override fun getGameDataPath(gameName: String): Path? {
         return doGetGameDataPath(gameName)
     }
 
@@ -128,52 +94,4 @@ class PlsDataProvider {
             OS.Linux -> PlsPathConstants.userHome.resolve(Path(".local", "share", "Paradox Interactive", gameName)).formatted()
         }
     }
-
-    // endregion
-
-    // region Urls
-
-    /**
-     * 得到指定ID对应的Steam游戏商店页面链接。
-     */
-    fun getSteamGameStoreUrl(steamId: String): String {
-        return "https://store.steampowered.com/app/$steamId/"
-    }
-
-    /**
-     * 得到指定ID对应的Steam游戏商店页面链接。（直接在Steam中打开）
-     */
-    fun getSteamGameStoreUrlInSteam(steamId: String): String {
-        return "steam://store/$steamId"
-    }
-
-    /**
-     * 得到指定ID对应的Steam游戏创意工坊页面链接。
-     */
-    fun getSteamGameWorkshopUrl(steamId: String): String {
-        return "https://steamcommunity.com/app/$steamId/workshop/"
-    }
-
-    /**
-     * 得到指定ID对应的Steam游戏创意工坊页面链接。（直接在Steam中打开）
-     */
-    fun getSteamGameWorkshopUrlInSteam(steamId: String): String {
-        return "steam://openurl/https://steamcommunity.com/app/$steamId/workshop/"
-    }
-
-    /**
-     * 得到指定ID对应的Steam创意工坊链接。
-     */
-    fun getSteamWorkshopUrl(steamId: String): String {
-        return "https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
-    }
-
-    /**
-     * 得到指定ID对应的Steam创意工坊链接。（直接在Steam中打开）
-     */
-    fun getSteamWorkshopUrlInSteam(steamId: String): String {
-        return "steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=$steamId"
-    }
-
-    // endregion
 }

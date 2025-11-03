@@ -12,7 +12,6 @@ import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.isClassPresent
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.PlsDataProvider
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
@@ -36,8 +35,6 @@ object PlsFacade {
     fun getCoroutineScope() = service<CoroutineScopeService>().coroutineScope
 
     fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
-
-    fun getDataProvider() = service<PlsDataProvider>()
 
     fun getConfigGroupService() = service<CwtConfigGroupService>()
 

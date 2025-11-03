@@ -34,6 +34,7 @@ import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
@@ -228,7 +229,7 @@ object ParadoxCoreManager {
     }
 
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+        val path = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.notExists()) return null
         return path.toString()
     }

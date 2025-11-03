@@ -7,9 +7,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.steamId
@@ -53,8 +53,8 @@ class OpenInSteamAction : DumbAwareAction() {
         val rootInfo = fileInfo.rootInfo
         val steamId = rootInfo.steamId ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsFacade.getDataProvider().getSteamGameStoreUrlInSteam(steamId)
-            is ParadoxRootInfo.Mod -> PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            is ParadoxRootInfo.Game -> PlsUrlService.getSteamGameStoreUrlInSteam(steamId)
+            is ParadoxRootInfo.Mod -> PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
             else -> null
         }
     }

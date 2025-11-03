@@ -3,7 +3,6 @@ package icu.windea.pls.ep.tools.importer
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.ModEntity
@@ -11,6 +10,7 @@ import icu.windea.pls.ep.tools.model.Mods
 import icu.windea.pls.ep.tools.model.PlaysetEntity
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -42,7 +42,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
         val gameType = modSetInfo.gameType
 
         // 校验 Steam 创意工坊目录
-        val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
+        val workshopDirPath = PlsPathService.getSteamWorkshopPath(gameType.steamId)
             ?: throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir0"))
         if (workshopDirPath.notExists()) {
             throw IllegalStateException(PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))
@@ -94,7 +94,7 @@ open class ParadoxLauncherDbImporter : ParadoxDbBasedModImporter() {
 
     override fun getSelectedFile(gameType: ParadoxGameType): Path? {
         // 默认选择游戏数据目录下的数据库文件，否则回退到游戏数据目录
-        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
+        val gameDataPath = PlsPathService.getGameDataPath(gameType.title)?.takeIf { it.exists() } ?: return null
         val dbPath = gameDataPath.resolve(getDbFileName())
         return if (dbPath.exists()) dbPath else gameDataPath
     }

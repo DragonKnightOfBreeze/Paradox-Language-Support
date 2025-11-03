@@ -6,12 +6,12 @@ import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ide.CopyPasteManager
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.lang.actions.HandlePathActionBase
 import icu.windea.pls.lang.actions.HandleUrlActionBase
+import icu.windea.pls.lang.tools.PlsUrlService
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 
@@ -51,7 +51,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            return PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -71,7 +71,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
+            return PlsUrlService.getSteamWorkshopUrl(steamId)
         }
     }
 
@@ -110,7 +110,7 @@ interface ParadoxModDependenciesPopupActions {
         override fun getTargetUrl(e: AnActionEvent): String? {
             val selectedItem = table.getSelectedItem() ?: return null
             val steamId = selectedItem.remoteId?.orNull() ?: return null
-            return PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            return PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
         }
     }
 }

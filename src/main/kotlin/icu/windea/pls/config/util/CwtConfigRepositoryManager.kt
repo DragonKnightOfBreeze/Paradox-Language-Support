@@ -23,7 +23,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener
 import icu.windea.pls.lang.util.PlsCoreManager
-import icu.windea.pls.lang.util.PlsGitManager
+import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -91,7 +91,7 @@ object CwtConfigRepositoryManager {
 
     private fun tryCheckRemote(string: String): Result<String> {
         if (string.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitManager.checkRemote(string) }
+        return runCatchingCancelable { PlsGitService.checkRemote(string) }
     }
 
     fun isValidToSync(): Boolean {
@@ -154,7 +154,7 @@ object CwtConfigRepositoryManager {
                 return@c
             }
 
-            val updated = results.any { result -> result.getOrNull().let { !PlsGitManager.isUpdateToDate(it) } }
+            val updated = results.any { result -> result.getOrNull().let { !PlsGitService.isUpdateToDate(it) } }
 
             // 发送成功的通知
             val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0")
@@ -172,6 +172,6 @@ object CwtConfigRepositoryManager {
 
     private fun trySyncFromRemote(url: String, parentDirectory: String): Result<String> {
         if (url.isEmpty()) return Result.success("")
-        return runCatchingCancelable { PlsGitManager.syncFromRemote(url, parentDirectory) }
+        return runCatchingCancelable { PlsGitService.syncFromRemote(url, parentDirectory) }
     }
 }

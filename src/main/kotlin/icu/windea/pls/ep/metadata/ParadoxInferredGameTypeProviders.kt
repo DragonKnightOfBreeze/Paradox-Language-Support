@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.metadata
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -9,13 +9,12 @@ import icu.windea.pls.model.ParadoxGameType
  */
 class ParadoxGameDataModPathBasedInferredGameTypeProvider : ParadoxInferredGameTypeProvider {
     override fun getGameType(rootFile: VirtualFile): ParadoxGameType? {
-        //
         val parentDir = rootFile.parent
         val modDir = parentDir.takeIf { it.name == "mod" } ?: return null
         val gameDataDir = modDir.parent ?: return null
         val gameName = gameDataDir.name
         val gameType = ParadoxGameType.getAll().find { it.title == gameName } ?: return null
-        if (PlsFacade.getDataProvider().getGameDataPath(gameName) != gameDataDir.toNioPath()) return null
+        if (PlsPathService.getGameDataPath(gameName) != gameDataDir.toNioPath()) return null
         return gameType
     }
 }
@@ -29,7 +28,7 @@ class ParadoxWorkshopPathBasedInferredGameTypeProvider : ParadoxInferredGameType
         val steamWorkshopDir = parentDir ?: return null
         val steamId = steamWorkshopDir.name
         val gameType = ParadoxGameType.getAll().find { it.steamId == steamId } ?: return null
-        if (PlsFacade.getDataProvider().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
+        if (PlsPathService.getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return null
         return gameType
     }
 }

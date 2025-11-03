@@ -3,10 +3,10 @@ package icu.windea.pls.lang.actions.tools
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.actions.HandlePathActionBase
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxRootInfo
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
@@ -21,7 +21,7 @@ interface CopyPathActions {
 
     class Steam : Base() {
         override fun getTargetPath(e: AnActionEvent): Path? {
-            return PlsFacade.getDataProvider().getSteamPath()
+            return PlsPathService.getSteamPath()
         }
     }
 
@@ -29,7 +29,7 @@ interface CopyPathActions {
         override fun getTargetPath(e: AnActionEvent): Path? {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val gameType = selectGameType(file) ?: return null
-            return PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+            return PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
 
@@ -37,7 +37,7 @@ interface CopyPathActions {
         override fun getTargetPath(e: AnActionEvent): Path? {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val gameType = selectGameType(file) ?: return null
-            return PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
+            return PlsPathService.getSteamWorkshopPath(gameType.steamId)
         }
     }
 
@@ -45,7 +45,7 @@ interface CopyPathActions {
         override fun getTargetPath(e: AnActionEvent): Path? {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val gameType = selectGameType(file) ?: return null
-            return PlsFacade.getDataProvider().getGameDataPath(gameType.title)
+            return PlsPathService.getGameDataPath(gameType.title)
         }
     }
 

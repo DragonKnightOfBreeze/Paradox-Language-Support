@@ -2,7 +2,7 @@ package icu.windea.pls.model
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.util.ObjectMappers
-import icu.windea.pls.lang.PlsDataProvider
+import icu.windea.pls.lang.tools.PlsPathService
 import org.junit.Assume
 import org.junit.Test
 import kotlin.io.path.exists
@@ -62,7 +62,7 @@ class ParadoxLauncherSettingsInfoTest {
     @Test
     fun readLauncherSettings_fromLocal_ifExists() {
         val gameType = ParadoxGameType.Stellaris
-        val gameDataDir = PlsDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+        val gameDataDir = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
         Assume.assumeTrue("Skip: gameDir not found", gameDataDir != null)
         gameDataDir!!
 

@@ -2,7 +2,6 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.openapi.fileChooser.FileSaverDescriptor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.KnexMigrations
@@ -12,6 +11,7 @@ import icu.windea.pls.ep.tools.model.PlaysetEntity
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsModEntity
 import icu.windea.pls.ep.tools.model.PlaysetsMods
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
@@ -125,7 +125,7 @@ open class ParadoxLauncherDbExporter : ParadoxDbBasedModExporter() {
 
     override fun getSavedBaseDir(gameType: ParadoxGameType): Path? {
         // 游戏数据目录
-        return PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.takeIf { it.exists() }
+        return PlsPathService.getGameDataPath(gameType.title)?.takeIf { it.exists() }
     }
 
     override fun getSavedFileName(gameType: ParadoxGameType): String? {

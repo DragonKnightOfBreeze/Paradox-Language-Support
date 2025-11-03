@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.tools
 
 import icu.windea.pls.core.console.CommandExecutionException
 import icu.windea.pls.core.executeCommand
@@ -7,7 +7,7 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-object PlsGitManager {
+object PlsGitService {
     fun getRepositoryPathFromUrl(url: String): String {
         return url.substringAfterLast('/').removeSuffix(".git")
     }

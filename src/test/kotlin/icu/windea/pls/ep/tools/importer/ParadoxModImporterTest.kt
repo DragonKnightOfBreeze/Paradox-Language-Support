@@ -2,8 +2,8 @@ package icu.windea.pls.ep.tools.importer
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.lang.PlsDataProvider
-import icu.windea.pls.lang.util.PlsSqliteManager
+import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.AssumePredicates
@@ -35,10 +35,9 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
     private fun addAllowedRoots() {
         // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
-        val dataProvider = PlsDataProvider()
         val additionalAllowedRoots = listOfNotNull(
-            dataProvider.getSteamWorkshopPath(gameType.steamId),
-            dataProvider.getGameDataPath(gameType.title),
+            PlsPathService.getSteamWorkshopPath(gameType.steamId),
+            PlsPathService.getGameDataPath(gameType.title),
         )
         System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))
     }
@@ -85,7 +84,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteManager.executeSql(dbFile, sql)
+        PlsSqliteService.executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())
@@ -103,7 +102,7 @@ class ParadoxModImporterTest : BasePlatformTestCase() {
 
         val outDir = Path.of("build", "tmp", "import-db").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v4_import_${UUID.randomUUID()}.sqlite")
-        PlsSqliteManager.executeSql(dbFile, sql)
+        PlsSqliteService.executeSql(dbFile, sql)
 
         val importer = ParadoxLauncherDbImporter()
         val modSet = ParadoxModSetInfo(gameType, "ImporterTest", emptyList())

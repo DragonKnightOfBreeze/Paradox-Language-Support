@@ -2,15 +2,14 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
-import icu.windea.pls.lang.PlsDataProvider
+import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.lang.util.ParadoxMetadataManager
-import icu.windea.pls.lang.util.PlsSqliteManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo
@@ -51,16 +50,15 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
 
     private fun addAllowedRoots() {
         // com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowedRoots
-        val dataProvider = PlsDataProvider()
         val additionalAllowedRoots = listOfNotNull(
-            dataProvider.getSteamWorkshopPath(gameType.steamId),
-            dataProvider.getGameDataPath(gameType.title),
+            PlsPathService.getSteamWorkshopPath(gameType.steamId),
+            PlsPathService.getGameDataPath(gameType.title),
         )
         System.setProperty("vfs.additional-allowed-roots", additionalAllowedRoots.joinToString(File.pathSeparator))
     }
 
     private fun buildModSetInfoFromWorkshop(): ParadoxModSetInfo {
-        val workshop = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
+        val workshop = PlsPathService.getSteamWorkshopPath(gameType.steamId)
             ?: throw AssertionError("Steam workshop path not found for ${gameType.title}")
         val mods = remoteIds.mapNotNull f@{ id ->
             val dir = ParadoxMetadataManager.getModDirectoryFromSteamId(id, workshop) ?: return@f null
@@ -117,7 +115,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
 
-        PlsSqliteManager.executeSql(dbFile, sql)
+        PlsSqliteService.executeSql(dbFile, sql)
 
         val exporter = ParadoxLauncherDbExporter()
         val modSet = buildModSetInfoFromWorkshop()
@@ -142,7 +140,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         val outDir = Path.of("build", "tmp", "export-out").also { if (!it.exists()) it.createDirectories() }
         val dbFile = outDir.resolve("launcher_v2_export_${UUID.randomUUID()}.sqlite")
 
-        PlsSqliteManager.executeSql(dbFile, sql)
+        PlsSqliteService.executeSql(dbFile, sql)
 
         val exporter = ParadoxLauncherDbExporter()
         val modSet = buildModSetInfoFromWorkshop()

@@ -6,7 +6,6 @@ import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
 import icu.windea.pls.core.documentation.grayed
@@ -20,6 +19,7 @@ import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
@@ -106,17 +106,16 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         val steamId = rootInfo.steamId
         if (steamId != null) {
             append(" | ")
-            val dataProvider = PlsFacade.getDataProvider()
             val workshopUrlInSteam = when (rootInfo) {
-                is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrlInSteam(steamId)
-                is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrlInSteam(steamId)
+                is ParadoxRootInfo.Game -> PlsUrlService.getSteamGameStoreUrlInSteam(steamId)
+                is ParadoxRootInfo.Mod -> PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
             }
             appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) // 自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
-                is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrl(steamId)
-                is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrl(steamId)
+                is ParadoxRootInfo.Game -> PlsUrlService.getSteamGameStoreUrl(steamId)
+                is ParadoxRootInfo.Mod -> PlsUrlService.getSteamWorkshopUrl(steamId)
             }
             appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) // 自带外部链接图标
         }
