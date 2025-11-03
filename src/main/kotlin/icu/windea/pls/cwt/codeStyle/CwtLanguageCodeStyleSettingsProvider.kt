@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.codeStyle
 
 import com.intellij.application.options.SmartIndentOptionsEditor
+import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
@@ -11,6 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.model.constants.PlsStringConstants
+import kotlin.reflect.KMutableProperty1
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
@@ -20,7 +22,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 
-    // 需要重载这个方法以显示indentOptions设置页面
+    // 需要重载这个方法以显示 indentOptions 设置页面
     override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
@@ -47,17 +49,18 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
             IndentOption.INDENT_SIZE.name,
             IndentOption.CONTINUATION_INDENT_SIZE.name,
             IndentOption.KEEP_INDENTS_ON_EMPTY_LINES.name,
-            IndentOption.USE_TAB_CHARACTER.name
+            IndentOption.USE_TAB_CHARACTER.name,
         )
     }
 
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
         val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_OPTION_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(Settings::SPACE_AROUND_OPTION_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
+        consumer.showCustomOption(Settings::SPACE_AROUND_PROPERTY_SEPARATOR, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
 
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
-        consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(Settings::SPACE_WITHIN_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
+        consumer.showCustomOption(Settings::SPACE_WITHIN_EMPTY_BRACES, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.emptyBraces"), spacesWithinGroup)
     }
 
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {
@@ -69,11 +72,15 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
     private fun customizeCommenterSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
-            CommenterOption.LINE_COMMENT_ADD_SPACE.name
+            CommenterOption.LINE_COMMENT_ADD_SPACE.name,
         )
         val commentsGroup = CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_COMMENTS
-        consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
-        consumer.showCustomOption(Settings::class.java, Settings::DOC_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
+        consumer.showCustomOption(Settings::OPTION_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
+        consumer.showCustomOption(Settings::DOC_COMMENT_ADD_SPACE, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
+    }
+
+    fun CodeStyleSettingsCustomizable.showCustomOption(property: KMutableProperty1<Settings, Boolean>, title: @NlsContexts.Label String, groupName: @NlsContexts.Label String?) {
+        showCustomOption(Settings::class.java, property.name, title, groupName)
     }
 
     class IndentOptionsEditor(

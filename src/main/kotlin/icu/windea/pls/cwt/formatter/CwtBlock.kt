@@ -43,7 +43,7 @@ class CwtBlock(
                 .between(MEMBERS, MEMBERS).spaces(1) // 属性/值之间需要有空格或者换行
                 .aroundInside(SEPARATORS, OPTION).spaceIf(customSettings.SPACE_AROUND_OPTION_SEPARATOR) // 间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
-                .between(LEFT_BRACE, RIGHT_BRACE).none() // 花括号之间总是不需要空格
+                .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
         }
     }
@@ -62,7 +62,7 @@ class CwtBlock(
 
     override fun getIndent(): Indent? {
         // 配置缩进
-        // block中的property、value、comment、documentation_comment和option_comment需要缩进
+        // `block` 中的 `property` `value` `comment` `doc_comment` 和 `option_comment` 需要缩进
         val elementType = myNode.elementType
         val parentElementType = myNode.treeParent?.elementType
         return when {
@@ -73,8 +73,8 @@ class CwtBlock(
 
     override fun getChildIndent(): Indent? {
         // 配置换行时的自动缩进
-        // 在file和rootBlock中不要缩进
-        // 在block中需要缩进
+        // 在 `file` 和 `rootBlock` 中不要缩进
+        // 在 `block` 中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()

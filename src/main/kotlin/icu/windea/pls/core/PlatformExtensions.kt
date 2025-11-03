@@ -26,6 +26,8 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.util.NlsContexts
+import com.intellij.openapi.util.NlsContexts.Label
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtilRt
@@ -46,6 +48,8 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.TokenType
+import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import com.intellij.psi.impl.source.tree.LightTreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
@@ -66,11 +70,14 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
 import java.io.IOException
 import java.nio.file.Path
+import kotlin.jvm.java
+import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
 // region Common Extensions

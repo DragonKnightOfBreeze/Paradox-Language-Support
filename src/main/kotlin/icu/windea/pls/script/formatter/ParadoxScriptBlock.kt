@@ -47,7 +47,7 @@ class ParadoxScriptBlock(
                 .aroundInside(SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) // 间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) // 间隔符周围按情况可能需要空格
                 .around(INLINE_MATH_OPERATORS).spaceIf(customSettings.SPACE_AROUND_INLINE_MATH_OPERATOR) // 内联数学表达式操作符周围按情况可能需要空格
-                .between(LEFT_BRACE, RIGHT_BRACE).none()//花括号之间总是不需要空格
+                .between(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_EMPTY_BRACES) // 花括号之间按情况可能需要空格
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) // 花括号内侧按情况可能需要空格
                 .between(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).none() // 参数条件表达式如果为空则不需要空格（尽管这是语法错误）
                 .withinPair(NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET).spaceIf(customSettings.SPACE_WITHIN_PARAMETER_CONDITION_EXPRESSION_BRACKETS) // 参数条件表达式内侧非换行按情况可能需要空格
@@ -73,7 +73,7 @@ class ParadoxScriptBlock(
 
     override fun getIndent(): Indent? {
         // 配置缩进
-        // block和parameter_condition中的variable、property、value、parameter_condition和comment需要缩进
+        // `block` 和 `parameter_condition` 中的 `variable` `property` `value` `parameter_condition` 和 `comment` 需要缩进
         val elementType = myNode.elementType
         val parentElementType = myNode.treeParent?.elementType
         return when {
@@ -84,8 +84,8 @@ class ParadoxScriptBlock(
 
     override fun getChildIndent(): Indent? {
         // 配置换行时的自动缩进
-        // 在file和rootBlock中不要缩进
-        // 在block、parameter_condition、parameter_condition_expression中需要缩进
+        // 在 `file` 和 `rootBlock` 中不要缩进
+        // 在 `block` `parameter_condition` `parameter_condition_expression` 中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()

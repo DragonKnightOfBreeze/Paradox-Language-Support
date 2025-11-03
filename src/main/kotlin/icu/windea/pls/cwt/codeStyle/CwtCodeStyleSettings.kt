@@ -17,6 +17,8 @@ class CwtCodeStyleSettings(
     var SPACE_AROUND_PROPERTY_SEPARATOR = true
     @JvmField
     var SPACE_WITHIN_BRACES = true
+    @JvmField
+    var SPACE_WITHIN_EMPTY_BRACES = true
 
     // commenter settings
 

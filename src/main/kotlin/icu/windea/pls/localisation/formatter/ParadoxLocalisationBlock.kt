@@ -55,7 +55,7 @@ class ParadoxLocalisationBlock(
 
     override fun getIndent(): Indent? {
         // 配置缩进
-        // property_list中的property和comment需要缩进
+        // `property_list` 中的 `property` 和 `comment` 需要缩进
         // 属性和非头部非行尾注释要缩进
         val elementType = myNode.elementType
         val parentElementType = myNode.treeParent?.elementType
@@ -67,8 +67,8 @@ class ParadoxLocalisationBlock(
 
     override fun getChildIndent(): Indent? {
         // 配置换行时的自动缩进
-        // 在file中不要缩进
-        // 在property_list中需要缩进
+        // 在 `file` 中不要缩进
+        // 在 `property_list` 中需要缩进
         val elementType = myNode.elementType
         return when {
             elementType is IFileElementType -> Indent.getNoneIndent()
