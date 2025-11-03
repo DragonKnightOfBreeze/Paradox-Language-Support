@@ -113,7 +113,18 @@ abstract class IndexInfoAwareFileBasedIndex<T> : FileBasedIndexExtension<String,
             val fileData = gist.getFileData(project, file) ?: return null
             return fileData[key]
         }
-        val values = FileBasedIndex.getInstance().getValues(name, key, GlobalSearchScope.fileScope(project, file))
-        return values.firstOrNull()
+        // use fast return value processor to optimize performance
+        val valueProcessor = FastReturnValueProcessor<T>()
+        FileBasedIndex.getInstance().processValues(name, key, file, valueProcessor, GlobalSearchScope.fileScope(project, file))
+        return valueProcessor.result
+    }
+
+    private class FastReturnValueProcessor<V> : FileBasedIndex.ValueProcessor<V> {
+        var result: V? = null
+
+        override fun process(file: VirtualFile, value: V): Boolean {
+            result = value
+            return false
+        }
     }
 }
