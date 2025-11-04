@@ -51,7 +51,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxCsvColumn): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic

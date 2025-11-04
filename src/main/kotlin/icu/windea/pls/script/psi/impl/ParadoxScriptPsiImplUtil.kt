@@ -200,7 +200,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptPropertyKey): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -231,7 +231,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableReference): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -328,7 +328,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptValue): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic

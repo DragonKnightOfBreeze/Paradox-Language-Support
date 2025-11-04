@@ -82,7 +82,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getName(element: CwtOptionKey): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -142,7 +142,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getName(element: CwtPropertyKey): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -168,7 +168,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getName(element: CwtValue): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -189,7 +189,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getName(element: CwtString): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
@@ -225,7 +225,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getName(element: CwtBlock): String {
-        return getValue(element)
+        return element.value
     }
 
     @JvmStatic
