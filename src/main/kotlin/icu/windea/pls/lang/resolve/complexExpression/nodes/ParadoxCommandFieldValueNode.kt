@@ -32,9 +32,9 @@ class ParadoxCommandFieldValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandFieldValueNode {
-            // text may contain parameters & may be an argument list inside parentheses for fromArgument links
             val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+            val separatorChar = if (linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
@@ -57,7 +57,7 @@ class ParadoxCommandFieldValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) {
+                            separatorChar -> if (depthParen == 0) {
                                 hasTopLevelComma = true; return@run
                             }
                         }
@@ -110,16 +110,16 @@ class ParadoxCommandFieldValueNode(
                 argIndex++
             }
             while (i < text.length) {
-                val ch = text[i]
+                val c = text[i]
                 val inParam = parameterRanges.any { i in it }
                 if (!inParam) {
-                    if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
-                    else if (!inSingleQuote) when (ch) {
+                    if (c == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
+                    else if (!inSingleQuote) when (c) {
                         '(' -> depthParen++
                         ')' -> if (depthParen > 0) depthParen--
-                        ',' -> if (depthParen == 0) {
+                        separatorChar -> if (depthParen == 0) {
                             emitSegment(i, true)
-                            nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                            nodes += ParadoxMarkerNode(c.toString(), TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }
                     }

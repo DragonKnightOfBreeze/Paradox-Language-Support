@@ -36,11 +36,9 @@ class ParadoxValueFieldValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
-            // text may contain parameters & may be an argument list inside parentheses
-            // For argumented dynamic links, we support multi-args separated by commas with optional blanks,
             val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+            val separatorChar = if(linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
@@ -73,7 +71,7 @@ class ParadoxValueFieldValueNode(
                 }
             }
 
-            // Detect top-level commas to decide whether it's an argument list
+            // Detect top-level separators to decide whether it's an argument list
             var hasTopLevelComma = false
             run {
                 var i = 0
@@ -87,7 +85,7 @@ class ParadoxValueFieldValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) {
+                            separatorChar -> if (depthParen == 0) {
                                 hasTopLevelComma = true; return@run
                             }
                         }
@@ -103,7 +101,7 @@ class ParadoxValueFieldValueNode(
                 return ParadoxValueFieldValueNode(text, textRange, configGroup, linkConfigs, nodes)
             }
 
-            // Argument list path: split by top-level commas, emit blanks and markers
+            // Argument list path: split by top-level separators, emit blanks and markers
             val offset = textRange.startOffset
             var startIndex = 0
             var i = 0
@@ -131,7 +129,7 @@ class ParadoxValueFieldValueNode(
                         resolveSingle(coreText, coreRange, cfgs)
                     }
                 } else if (fromComma) {
-                    // empty argument -> insert error token node at the position before comma
+                    // empty argument -> insert error token node at the position before separator
                     val p = startIndex + offset
                     nodes += ParadoxErrorTokenNode("", TextRange.create(p, p), configGroup)
                 } else if (incomplete) {
@@ -148,17 +146,17 @@ class ParadoxValueFieldValueNode(
                 argIndex++
             }
             while (i < text.length) {
-                val ch = text[i]
+                val c = text[i]
                 val inParam = parameterRanges.any { i in it }
                 if (!inParam) {
-                    if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
-                    else if (!inSingleQuote) when (ch) {
+                    if (c == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
+                    else if (!inSingleQuote) when (c) {
                         '(' -> depthParen++
                         ')' -> if (depthParen > 0) depthParen--
-                        ',' -> if (depthParen == 0) {
+                        separatorChar -> if (depthParen == 0) {
                             emitSegment(i, true)
-                            // emit comma marker
-                            nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                            // emit separator marker
+                            nodes += ParadoxMarkerNode(c.toString(), TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }
                     }

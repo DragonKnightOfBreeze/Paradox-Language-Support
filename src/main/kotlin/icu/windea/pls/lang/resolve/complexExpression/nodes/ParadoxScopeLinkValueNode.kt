@@ -36,10 +36,8 @@ class ParadoxScopeLinkValueNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
             val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
-
-            // text may contain parameters & may be an argument list inside parentheses
-            // For argumented dynamic links, we support multi-args separated by commas with optional blanks,
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
+            val separatorChar = if(linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
 
@@ -78,7 +76,7 @@ class ParadoxScopeLinkValueNode(
                         else if (!inSingleQuote) when (ch) {
                             '(' -> depthParen++
                             ')' -> if (depthParen > 0) depthParen--
-                            ',' -> if (depthParen == 0) {
+                            separatorChar -> if (depthParen == 0) {
                                 hasTopLevelComma = true; return@run
                             }
                         }
@@ -139,17 +137,17 @@ class ParadoxScopeLinkValueNode(
                 argIndex++
             }
             while (i < text.length) {
-                val ch = text[i]
+                val c = text[i]
                 val inParam = parameterRanges.any { i in it }
                 if (!inParam) {
-                    if (ch == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
-                    else if (!inSingleQuote) when (ch) {
+                    if (c == '\'' && !text.isEscapedCharAt(i)) inSingleQuote = !inSingleQuote
+                    else if (!inSingleQuote) when (c) {
                         '(' -> depthParen++
                         ')' -> if (depthParen > 0) depthParen--
-                        ',' -> if (depthParen == 0) {
+                        separatorChar -> if (depthParen == 0) {
                             emitSegment(i, true)
                             // emit comma marker
-                            nodes += ParadoxMarkerNode(",", TextRange.create(i + offset, i + 1 + offset), configGroup)
+                            nodes += ParadoxMarkerNode(c.toString(), TextRange.create(i + offset, i + 1 + offset), configGroup)
                             startIndex = i + 1
                         }
                     }

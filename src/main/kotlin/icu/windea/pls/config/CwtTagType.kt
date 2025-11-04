@@ -6,9 +6,7 @@ package icu.windea.pls.config
  * 用于标记特殊的值规则。
  * 脚本文件中的对应的值会启用特殊的语义高亮与文档注释。
  */
-enum class CwtTagType(
-    val id: String
-) {
+enum class CwtTagType(val id: String) {
     /**
      * 预定义的标签。
      * - 适用于：某些拥有特殊用途的单独的字符串，如 `optimize_memory`。
@@ -22,4 +20,6 @@ enum class CwtTagType(
      */
     TypeKeyPrefix("type key prefix"),
     ;
+
+    override fun toString() = id
 }

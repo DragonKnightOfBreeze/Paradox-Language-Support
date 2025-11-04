@@ -39,6 +39,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
         var startIndex = 0
         var i = 0
         var depthParen = 0
+        val barrierCheckIndex = text.lastIndexOf("value:").let { if (it == -1) 0 else it }
         var barrier = false // '@' 或 '|' 作为屏障：之后不再按 '.' 切分
         val textLength = text.length
         while (i < textLength) {
@@ -46,10 +47,11 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
             val inParam = parameterRanges.any { i in it }
             if (!inParam) {
                 when (ch) {
-                    '(' -> depthParen++ // 支持 prefix(x).owner
+                    '(' -> depthParen++ // 支持 prefix(x).owner：括号内的点不切分
                     ')' -> if (depthParen > 0) depthParen--
-                    '@', '|' -> if (depthParen == 0) barrier = true
+                    '@', '|' -> if (depthParen == 0 && i >= barrierCheckIndex) barrier = true
                     '.' -> if (depthParen == 0 && !barrier) {
+                        // 中间段：按作用域链接解析
                         val nodeText = text.substring(startIndex, i)
                         val nodeTextRange = TextRange.create(startIndex + offset, i + offset)
                         val node = ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)

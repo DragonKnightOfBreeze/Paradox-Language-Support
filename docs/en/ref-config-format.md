@@ -475,6 +475,10 @@ values = {
   - `type`: `scope` | `value` | `both` (default `scope`).
   - `from_data`: whether to read dynamic data from the text (format `prefix:data`).
   - `from_argument`: whether to read dynamic data from function arguments (format `func(arg)`).
+  - `type`：link type (`scope`/`value`/`both`, default to `scope`).
+  - `from_data`：whether to read dynamic data from text data (format `prefix:data`).
+  - `from_argument`：whether to read dynamic data from arguments (format `func(arg)`).
+  - `argument_separator`：the argument separator to use when there are multiple arguments (`comma`/`pipe`, default to `comma`).
   - `prefix`: prefix for dynamic links; when `from_argument = yes`, the parser removes a trailing colon to avoid `prefix:` duplication.
   - `data_source` (multiple): each is a data expression that constrains legal values of dynamic data, supporting multi-argument scenarios.
   - `input_scopes`: input scope set; both `input_scope` and `input_scopes` are accepted by the resolver.

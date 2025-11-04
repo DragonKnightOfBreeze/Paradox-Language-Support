@@ -5,7 +5,9 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.booleanValue
+import icu.windea.pls.config.config.delegated.CwtLinkArgumentSeparator
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtLinkType
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
@@ -35,9 +37,10 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
         }
 
         val propGroup = props.groupBy { it.key }
-        val type = propGroup.getOne("type")?.stringValue
+        val type = propGroup.getOne("type")?.stringValue.let { CwtLinkType.resolve(it) }
         val fromData = propGroup.getOne("from_data")?.booleanValue ?: false
         val fromArgument = propGroup.getOne("from_argument")?.booleanValue ?: false
+        val argumentSeparator = propGroup.getOne("argument_separator")?.stringValue.let { CwtLinkArgumentSeparator.resolve(it) }
         var prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
         val dataSources = propGroup.getAll("data_source").mapNotNull { it.stringValue }.optimized()
         val inputScopes = buildSet {
@@ -68,7 +71,8 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
 
         logger.debug { "Resolved link config (name: $name).".withLocationPrefix(config) }
         return CwtLinkConfigImpl(
-            config, name, type, fromData, fromArgument, prefix, dataSources, inputScopes, outputScope,
+            config, name, type, fromData, fromArgument, argumentSeparator,
+            prefix, dataSources, inputScopes, outputScope,
             forDefinitionType, isLocalisationLink
         )
     }
@@ -77,7 +81,8 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
     private fun doResolve(linkConfig: CwtLinkConfig, isLocalisationLink: Boolean = false): CwtLinkConfig {
         return linkConfig.apply {
             CwtLinkConfigImpl(
-                config, name, type, fromData, fromArgument, prefix, dataSources, inputScopes, outputScope,
+                config, name, type, fromData, fromArgument, argumentSeparator,
+                prefix, dataSources, inputScopes, outputScope,
                 forDefinitionType, isLocalisationLink
             )
         }
@@ -94,15 +99,16 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
 private class CwtLinkConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val type: String?,
+    override val type: CwtLinkType,
     override val fromData: Boolean,
     override val fromArgument: Boolean,
+    override val argumentSeparator: CwtLinkArgumentSeparator,
     override val prefix: String?,
     override val dataSources: List<String>,
     override val inputScopes: Set<String>,
     override val outputScope: String?,
     override val forDefinitionType: String?,
-    override val isLocalisationLink: Boolean
+    override val isLocalisationLink: Boolean,
 ) : UserDataHolderBase(), CwtLinkConfig {
     override val isStatic get() = dataSources.isEmpty()
     override val dataSourceIndex: Int get() = 0

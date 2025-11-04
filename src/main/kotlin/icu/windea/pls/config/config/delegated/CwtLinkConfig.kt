@@ -52,12 +52,13 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
  *
  * @property name 规则名称（链接名）。
  * @property type 链接类型（`scope`/`value`/`both`，默认为 `scope`）。
- * @property fromData 为动态链接时，是否从数据中读取动态数据。对应的节点格式形如 `prefix:data`。
- * @property fromArgument （PLS 扩展）为动态链接时，是否从传入参数中读取动态数据。对应的节点格式形如 `func(arg)`。
- * @property prefix 为动态链接时，携带的前缀。如果为 null，则将整个文本作为动态数据。
+ * @property fromData 为动态链接时，是否从后置数据中读取动态数据。对应的节点格式形如 `prefix:data`。
+ * @property fromArgument （PLS 扩展）为动态链接时，是否从传参中读取动态数据。对应的节点格式形如 `func(arg)`。
+ * @property argumentSeparator （PLS 扩展） 为动态链接且有多个传参时，使用的传参分隔符（`comma`/`pipe`，默认为 `comma`）。
+ * @property prefix 为动态链接时，携带的前缀。如果为 `null`，则将整个文本作为动态数据。
  * @property dataSources 数据源（数据表达式）。如果有多个传参，则可以有多个。如果为空，则将链接视为静态链接。
  * @property inputScopes 输入作用域（类型）的集合。
- * @property outputScope 输出作用域（类型）。
+ * @property outputScope 输出作用域（类型）。如果为 `null`，则表示需要基于数据源传递作用域。
  * @property forDefinitionType 仅用于指定的定义类型。
  * @property isStatic 是否为静态链接。
  * @property isLocalisationLink 是否为本地化链接（可在本地化命令中使用）。
@@ -75,11 +76,13 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey
     val name: String
     @FromProperty("type: string?")
-    val type: String?
+    val type: CwtLinkType
     @FromProperty("from_data: boolean", defaultValue = "no")
     val fromData: Boolean
     @FromProperty("from_argument: boolean", defaultValue = "no")
     val fromArgument: Boolean
+    @FromProperty("argument_separator: string?", defaultValue = "comma")
+    val argumentSeparator: CwtLinkArgumentSeparator
     @FromProperty("prefix: string?")
     val prefix: String?
     @FromProperty("data_source: string?", multiple = true)
@@ -100,14 +103,8 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
     override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
-    // type = null -> default to "scope"
-    // output_scope = null -> transfer scope based on data source
-    // e.g., for event_target, output_scope should be null
-
-    /** 是否用于“作用域”链接（含缺省情形）。*/
-    fun forScope() = type != "value" /* type.isNullOrEmpty() || type == "both" || type == "scope" */
-    /** 是否用于“值”链接。*/
-    fun forValue() = type == "both" || type == "value"
+    fun forScope() = type.forScope()
+    fun forValue() = type.forValue()
 
     interface Resolver {
         /** 由属性规则解析为（常规）链接规则。*/

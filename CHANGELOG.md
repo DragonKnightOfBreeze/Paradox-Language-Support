@@ -11,6 +11,7 @@
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
 - [X] 同步其他游戏的规则文件 / Synchronize config files of other games
 - [X] #196 `key0 = { { key1 = …… key2 = …… } }` 写法解析异常，需要修复
+- [X] #220 [EU5] Multi Parameter Link/Trigger
 - [X] 优化：优化复杂表达式的实现，对于 `relations(x)` 格式的节点，允许单引号括起的传参、多个传参 / OP: Optimize the implementation of complex expressions, for nodes in the `relations(x)` format, literal arguments (enclosed in single quotes) and multiple arguments are allowed
 - [X] 优化：对于脚本文件中用引号括起的字符串，如有必要，尝试通过语言注入将其识别为本地化文本 / OP: For quoted strings in script files, if necessary, try to recognize it as localisation text via language injection
 - [X] 优化：可以在插件设置页面中配置是否启用自动语言注入 / OP: Can configure whether to enable auto language injection in plugin settings page

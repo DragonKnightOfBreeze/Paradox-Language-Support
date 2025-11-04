@@ -472,9 +472,10 @@ values = {
   - 动态链接：声明了 `data_source` 与/或 `prefix`/`from_*`，可携带动态数据（如 `modifier:x`、`relations(x)`、`var:x`）。
 
 - **字段与语义（实现）**：
-  - `type`：`scope`/`value`/`both`（默认 `scope`）。
-  - `from_data`：是否从“文本数据”读取动态数据（格式如 `prefix:data`）。
-  - `from_argument`：是否从“函数参数”读取动态数据（格式如 `func(arg)`）。
+  - `type`：链接类型（`scope`/`value`/`both`，默认为 `scope`）。
+  - `from_data`：是否从文本数据中读取动态数据（格式如 `prefix:data`）。
+  - `from_argument`：是否从传参中读取动态数据（格式如 `func(arg)`）。
+  - `argument_separator`：有多个传参时，使用的传参分隔符（`comma`/`pipe`，默认为 `comma`）。
   - `prefix`：动态链接的前缀；当 `from_argument = yes` 时，解析会移除尾随冒号（避免 `prefix:` 重复）。
   - `data_source`（可多值）：每个数据源是一个“数据表达式”，用于约束动态数据的合法取值，支持多传参场景。
   - `input_scopes`：输入作用域集合；可写单个或集合，解析器同时支持 `input_scope` 与 `input_scopes` 两种写法。
