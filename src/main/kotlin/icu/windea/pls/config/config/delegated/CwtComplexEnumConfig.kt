@@ -19,10 +19,10 @@ import icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverI
  * enums = {
  *     complex_enum[component_tag] = {
  *         path = "game/common/component_tags"
- *         name = {
- *         	enum_name
- *         }
  *         start_from_root = yes
+ *         name = {
+ *         	   enum_name
+ *         }
  *     }
  * }
  * ```

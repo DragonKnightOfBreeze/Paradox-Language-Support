@@ -415,10 +415,10 @@ Declaration (example):
 enums = {
     complex_enum[component_tag] = {
         path = "game/common/component_tags"
+        start_from_root = yes
         name = {
             enum_name
         }
-        start_from_root = yes
     }
 }
 ```
