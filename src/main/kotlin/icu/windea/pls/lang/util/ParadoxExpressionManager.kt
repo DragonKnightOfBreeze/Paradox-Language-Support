@@ -458,10 +458,7 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)
-        val cacheKey = buildString {
-            append('#').append(orDefault.toInt())
-            append('#').append(matchOptions)
-        }
+        val cacheKey = "${orDefault.toInt()},${matchOptions}"
         return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
@@ -689,8 +686,8 @@ object ParadoxExpressionManager {
 
         ProgressManager.checkCanceled()
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
-        // NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
-        val cacheKey = childConfigs.joinToString(" ")
+        // based on shallow keys of child configs & intern to optimize memory
+        val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getShallowKey(it) }.intern()
         return childOccurrenceMap.getOrPut(cacheKey) {
             val result = doGetChildOccurrenceMap(element, configs)
             result.optimized()

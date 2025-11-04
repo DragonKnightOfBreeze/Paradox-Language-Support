@@ -340,7 +340,7 @@ object ParadoxParameterManager {
         val project = parameterElement.project
         val configGroup = PlsFacade.getConfigGroup(project, parameterElement.gameType)
         val cache = configGroup.parameterInfoCache.get(rootFile)
-        val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
+        val cacheKey = "${parameterElement.name}@${parameterElement.contextKey}"
         val parameterInfo = cache.get(cacheKey) {
             parameterElement.toInfo()
         }

@@ -32,7 +32,24 @@ import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
 
 object CwtConfigManipulator {
-    // region Core Methods
+    // region Common Methods
+
+    fun getShallowKey(config: CwtMemberConfig<*>): String {
+        return doGetShallowKey(config)
+    }
+
+    private fun doGetShallowKey(config: CwtMemberConfig<*>): String {
+        return when (config) {
+            is CwtPropertyConfig -> when {
+                config.configs == null -> "${config.key}=${config.value}"
+                else -> "${config.key}={}"
+            }
+            is CwtValueConfig -> when {
+                config.configs == null -> config.value
+                else -> "{}"
+            }
+        }
+    }
 
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
@@ -49,24 +66,20 @@ object CwtConfigManipulator {
             return doGetDistinctKey(inlinedConfig, newGuardStack)
         }
         return when (config) {
-            is CwtPropertyConfig -> {
-                when {
-                    config.configs == null -> "${config.key}=${config.value}"
-                    config.configs.isNullOrEmpty() -> "${config.key}={}"
-                    else -> {
-                        val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
-                        return "${config.key}={${v}}"
-                    }
+            is CwtPropertyConfig -> when {
+                config.configs == null -> "${config.key}=${config.value}"
+                config.configs.isNullOrEmpty() -> "${config.key}={}"
+                else -> {
+                    val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
+                    return "${config.key}={${v}}"
                 }
             }
-            is CwtValueConfig -> {
-                when {
-                    config.configs == null -> config.value
-                    config.configs.isNullOrEmpty() -> "{}"
-                    else -> {
-                        val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
-                        return "{${v}}"
-                    }
+            is CwtValueConfig -> when {
+                config.configs == null -> config.value
+                config.configs.isNullOrEmpty() -> "{}"
+                else -> {
+                    val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
+                    return "{${v}}"
                 }
             }
         }
