@@ -61,7 +61,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
             is ParadoxDynamicValueElement -> {
                 when (location) {
                     UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.dynamicValue")
-                    UsageViewNodeTextLocation.INSTANCE -> element.name + ": " + element.dynamicValueTypes.joinToString(" | ")
+                    UsageViewNodeTextLocation.INSTANCE -> "${element.name}: ${element.dynamicValueTypes.joinToString(" | ")}"
                     else -> element.name
                 }
             }

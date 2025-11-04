@@ -142,7 +142,7 @@ object ParadoxScriptNavigationManager {
                 val localizedName = ParadoxLocalisationTextRenderer().render(localisation)
                 append(" ").append(localizedName)
             }
-        }
+        }.intern() // intern to optimize memory
     }
 
     private fun String.formatted(): String {

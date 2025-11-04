@@ -3,6 +3,7 @@ package icu.windea.pls.model.scope
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
+import icu.windea.pls.core.util.CacheBuilder
 
 /**
  * 作用域。
@@ -62,12 +63,14 @@ sealed interface ParadoxScope {
     }
 
     companion object {
+        private val cache = CacheBuilder("maximumSize=1024, expireAfterAccess=30m").build<String, ParadoxScope> { Default(it) }
+
         @JvmStatic
         fun get(id: String): ParadoxScope {
             return when {
                 id == Any.id -> Any
                 id == Unknown.id -> Unknown
-                else -> Default(id)
+                else -> cache.get(id)
             }
         }
     }

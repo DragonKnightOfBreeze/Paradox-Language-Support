@@ -359,7 +359,7 @@ object CwtConfigManager {
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
             else -> text
-        }?.orNull()
+        }?.orNull()?.intern() // intern to optimize memory
     }
 
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
@@ -427,7 +427,7 @@ object CwtConfigManager {
         if (pathPatterns.isNotEmpty()) {
             result += pathPatterns
         }
-        return result.optimized()
+        return result.optimized() // optimized to optimize memory
     }
 
     fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
@@ -452,12 +452,12 @@ object CwtConfigManager {
         if (pathPatterns.isNotEmpty()) {
             result += pathPatterns.map { it.substringBefore("/**", "").orNull() ?: it.substringBeforeLast("/") }
         }
-        return result.optimized()
+        return result.optimized() // optimized to optimize memory
     }
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
         // This method should be very fast
-        // 1.4.2 optimized, DO NOT use config.filePathPatterns here
+        // 1.4.2 use optimized match logic, DO NOT use config.filePathPatterns here
 
         val pathPatterns = config.pathPatterns
         if (pathPatterns.isNotEmpty()) {
