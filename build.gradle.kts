@@ -60,7 +60,7 @@ dependencies {
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // Caffeine - https://github.com/ben-manes/caffeine
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2") {
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3") {
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
         exclude(group = "org.jspecify", module = "jspecify")
     }
@@ -115,8 +115,8 @@ dependencies {
     // 目前仅用作参考
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.17.7")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.17.7")
+    testImplementation("net.bytebuddy:byte-buddy:1.17.8")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.17.8")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")
