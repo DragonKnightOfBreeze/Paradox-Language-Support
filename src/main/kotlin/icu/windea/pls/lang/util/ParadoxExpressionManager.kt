@@ -629,14 +629,14 @@ object ParadoxExpressionManager {
         // 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
         run r1@{
             if (newResult.isEmpty()) return@r1
+            val group = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
+            if (group.isEmpty()) return@r1
+            val filteredGroup = group.filter { configs -> configs.size > 1 && configs.filter { it.valueType == CwtType.Block }.size > 1 }
+            if (filteredGroup.isEmpty()) return@r1
             val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
             val blockExpression = ParadoxScriptExpression.resolveBlock()
             val configsToRemove = mutableSetOf<CwtPropertyConfig>()
-            val group: Collection<List<CwtPropertyConfig>> = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
-            group.forEach f1@{ configs ->
-                if (configs.size <= 1) return@f1
-                val configs1 = configs.filter { it.valueType == CwtType.Block }
-                if (configs1.size <= 1) return@r1
+            filteredGroup.forEach f1@{ configs ->
                 configs.forEach f2@{ config ->
                     val valueConfig = config.valueConfig ?: return@f2
                     val matchResult = ParadoxMatchService.matchScriptExpression(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)

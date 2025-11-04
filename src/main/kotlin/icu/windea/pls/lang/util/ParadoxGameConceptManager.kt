@@ -26,8 +26,16 @@ object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptDefinitionElement? {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
-            .filterBy { it.name == nameOrAlias || it.getDefinitionData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
+            .filterBy { getName(it) == nameOrAlias || getAlias(it).contains(nameOrAlias) }
         return ParadoxDefinitionSearch.search(null, ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
+    }
+
+    fun getName(element: ParadoxScriptDefinitionElement): String {
+        return element.name // = element.definitionInfo?.name
+    }
+
+    fun getAlias(element: ParadoxScriptDefinitionElement): Set<String> {
+        return element.getDefinitionData<StellarisGameConceptData>()?.alias.orEmpty()
     }
 
     /**

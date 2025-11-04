@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 定义信息。
  *
- * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。
+ * @property doGetName 定义的名字。如果是空字符串，则表示定义是匿名的。
  * @property typeKey 定义的类型键（不一定是定义的名字）。
  * @property elementPath 相对于所属文件的定义成员路径。
  */
@@ -41,46 +41,42 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
+    private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
+
     // NOTE 部分属性需要使用懒加载
 
-    // NOTE 这里不处理需要内联的情况
-    val name: String by lazy { name0 ?: ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig) }
+    val name: String by lazy { name0 ?: doGetName() }
 
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
-
-    val type: String = typeConfig.name
-
-    val subtypes: List<String> by lazy { subtypeConfigs.map { it.name } }
-
-    val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
-
-    val typesText: String by lazy { types.joinToString(", ") }
-
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
 
+    val type: String = typeConfig.name
+    val subtypes: List<String> by lazy { subtypeConfigs.map { it.name } }
+    val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
+    val typesText: String by lazy { types.joinToString(", ") }
+
     val localisations: List<RelatedLocalisationInfo> by lazy { doGetLocalisations() }
-
     val images: List<RelatedImageInfo> by lazy { doGetImages() }
-
     val modifiers: List<ModifierInfo> by lazy { doGetModifiers() }
-
-    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { localisations.filter { it.primary || it.primaryByInference }.optimized() }
-
-    val primaryImages: List<RelatedImageInfo> by lazy { images.filter { it.primary || it.primaryByInference }.optimized() }
+    val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { doGetPrimaryLocalisations() }
+    val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
 
     val declarationConfig get() = configGroup.declarations.get(type)
-
     val project get() = configGroup.project
-
-    fun getDeclaration(matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
-        return doGetDeclarationFromCache(matchOptions)
-    }
 
     fun getSubtypeConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
         return doGetSubtypeConfigsFromCache(matchOptions)
     }
 
-    private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
+    fun getDeclaration(matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
+        return doGetDeclarationFromCache(matchOptions)
+    }
+
+    private fun doGetName(): String {
+        // NOTE 这里不处理需要内联的情况
+        return ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig)
+    }
 
     private fun doGetSubtypeConfigsFromCache(matchOptions: Int): List<CwtSubtypeConfig> {
         return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
@@ -96,8 +92,6 @@ class ParadoxDefinitionInfo(
         }
         return result.optimized()
     }
-
-    private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
 
     private fun doGetDeclarationFromCache(matchOptions: Int): CwtPropertyConfig? {
         return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) ?: EMPTY_OBJECT }.castOrNull()
@@ -145,6 +139,14 @@ class ParadoxDefinitionInfo(
                 }
             }
         }.optimized()
+    }
+
+    private fun doGetPrimaryLocalisations(): List<RelatedLocalisationInfo> {
+        return localisations.filter { it.primary || it.primaryByInference }.optimized()
+    }
+
+    private fun doGetPrimaryImages(): List<RelatedImageInfo> {
+        return images.filter { it.primary || it.primaryByInference }.optimized()
     }
 
     override fun equals(other: Any?): Boolean {
