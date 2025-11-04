@@ -116,7 +116,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
 
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo // 注意这里的 fileInfo 可以为 null（例如，在内联脚本参数的多行参数值中）
-        val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.subPaths.let { it.subList(rootIndex + 1, it.size) })
+        val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.subPaths.drop(rootIndex + 1))
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
         configContext.elementPathFromRoot = elementPathFromRoot

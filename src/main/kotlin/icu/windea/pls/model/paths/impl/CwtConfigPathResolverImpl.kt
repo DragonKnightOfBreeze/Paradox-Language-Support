@@ -1,5 +1,6 @@
 package icu.windea.pls.model.paths.impl
 
+import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.model.paths.CwtConfigPath
 
 internal class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
@@ -22,23 +23,33 @@ private class CwtConfigPathImpl : CwtConfigPath {
     override val length: Int get() = subPaths.size
 
     constructor(path: String) {
-        this.path = path
-        this.subPaths = path2SubPaths(path)
+        this.path = getPath(path)
+        this.subPaths = getSubPaths(path)
     }
 
     constructor(subPaths: List<String>) {
-        this.path = subPaths2Path(subPaths)
-        this.subPaths = subPaths
+        this.path = getPath(subPaths)
+        this.subPaths = getSubPath(subPaths)
     }
 
-    private fun path2SubPaths(path: String): List<String> {
-        // use simple implementation
-        return path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/') }
+    private fun getPath(path: String): String {
+        // intern to optimize memory
+        return path.intern()
     }
 
-    private fun subPaths2Path(subPaths: List<String>): String {
-        // use simple implementation
-        return subPaths.joinToString("/") { it.replace("/", "\\/") }
+    private fun getPath(subPaths: List<String>): String {
+        // use simple implementation & intern to optimize memory
+        return subPaths.joinToString("/") { it.replace("/", "\\/") }.intern()
+    }
+
+    private fun getSubPaths(path: String): List<String> {
+        // use simple implementation & intern and optimized to optimize memory
+        return path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/').intern() }.optimized()
+    }
+
+    private fun getSubPath(subPaths: List<String>): List<String> {
+        // optimized to optimize memory
+        return subPaths.optimized()
     }
 
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
