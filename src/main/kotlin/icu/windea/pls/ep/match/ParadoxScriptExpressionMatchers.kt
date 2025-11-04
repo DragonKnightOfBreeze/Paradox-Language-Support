@@ -21,6 +21,7 @@ import icu.windea.pls.core.matchesRegex
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
+import icu.windea.pls.lang.match.ParadoxMatchProvider
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.ParadoxMatchResultProvider
 import icu.windea.pls.lang.match.ParadoxMatchService
@@ -214,7 +215,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.value, textRange, configGroup)
                 if (scopeFieldExpression == null) return ParadoxMatchResult.NotMatch
                 if (scopeFieldExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
-                ParadoxMatchResultProvider.getScopeFieldMatchResult(element, scopeFieldExpression, configExpression, configGroup)
+                ParadoxMatchResultProvider.getScopeFieldMatchResult(element, configGroup, scopeFieldExpression, configExpression)
             }
             in CwtDataTypeGroups.ValueField -> {
                 // 也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -252,7 +253,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return ParadoxMatchResult.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return ParadoxMatchResult.NotMatch
                 if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
-                ParadoxMatchResultProvider.getModifierMatchResult(element, expression.value, configGroup)
+                ParadoxMatchResultProvider.getModifierMatchResult(element, configGroup, expression.value)
             }
             CwtDataTypes.SingleAliasRight -> {
                 ParadoxMatchResult.NotMatch // 不在这里处理
@@ -356,7 +357,7 @@ class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
         if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
         if (expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch
         // 允许用引号括起
-        return ParadoxMatchResultProvider.getTemplateMatchResult(element, expression.value, configExpression, configGroup)
+        return ParadoxMatchResultProvider.getTemplateMatchResult(element, configGroup, expression.value, configExpression)
     }
 }
 
@@ -386,7 +387,7 @@ class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatc
         // 这里的 config 也可能是属性值对应的规则，因此下面需要传入 config.memberConfig
         val memberConfig = if (config is CwtMemberConfig<*>) config.memberConfig else null
         if (memberConfig == null) return null
-        if (!ParadoxMatchService.matchesByPredicate(element, memberConfig)) return ParadoxMatchResult.NotMatch
+        if (!ParadoxMatchProvider.matchesByPredicate(element, memberConfig)) return ParadoxMatchResult.NotMatch
         return null
     }
 }

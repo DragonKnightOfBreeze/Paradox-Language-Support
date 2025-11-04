@@ -9,7 +9,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -29,21 +28,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
-import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
-import icu.windea.pls.lang.search.selector.complexEnumValue
-import icu.windea.pls.lang.search.selector.definition
-import icu.windea.pls.lang.search.selector.file
-import icu.windea.pls.lang.search.selector.localisation
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
-import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.PlsCoreManager
 
@@ -94,16 +80,12 @@ object ParadoxMatchResultProvider {
         }
         return getCachedMatchResult(element, key, cacheKey) {
             when {
-                suffixes.isEmpty() -> matchesDefinition(element, project, expression, typeExpression)
-                else -> suffixes.any { matchesDefinition(element, project, expression + it, typeExpression) }
+                suffixes.isEmpty() -> ParadoxMatchProvider.matchesDefinition(element, project, expression, typeExpression)
+                else -> suffixes.any { ParadoxMatchProvider.matchesDefinition(element, project, expression + it, typeExpression) }
             }
         }
     }
 
-    private fun matchesDefinition(element: PsiElement, project: Project, name: String, typeExpression: String): Boolean {
-        val selector = selector(project, element).definition()
-        return ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
-    }
 
     fun getLocalisationMatchResult(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
         val suffixes = configExpression.suffixes.orEmpty()
@@ -114,15 +96,10 @@ object ParadoxMatchResultProvider {
         }
         return getCachedMatchResult(element, key, cacheKey) {
             when {
-                suffixes.isEmpty() -> matchesLocalisation(element, project, expression)
-                else -> suffixes.any { matchesLocalisation(element, project, expression + it) }
+                suffixes.isEmpty() -> ParadoxMatchProvider.matchesLocalisation(element, project, expression)
+                else -> suffixes.any { ParadoxMatchProvider.matchesLocalisation(element, project, expression + it) }
             }
         }
-    }
-
-    private fun matchesLocalisation(element: PsiElement, project: Project, fullName: String): Boolean {
-        val selector = selector(project, element).localisation()
-        return ParadoxLocalisationSearch.search(fullName, selector).findFirst() != null
     }
 
     fun getSyncedLocalisationMatchResult(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -134,15 +111,10 @@ object ParadoxMatchResultProvider {
         }
         return getCachedMatchResult(element, key, cacheKey) {
             when {
-                suffixes.isEmpty() -> matchesSyncedLocalisation(element, project, expression)
-                else -> suffixes.any { matchesSyncedLocalisation(element, project, expression + it) }
+                suffixes.isEmpty() -> ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression)
+                else -> suffixes.any { ParadoxMatchProvider.matchesSyncedLocalisation(element, project, expression + it) }
             }
         }
-    }
-
-    private fun matchesSyncedLocalisation(element: PsiElement, project: Project, name: String): Boolean {
-        val selector = selector(project, element).localisation()
-        return ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
     }
 
     fun getPathReferenceMatchResult(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
@@ -150,35 +122,42 @@ object ParadoxMatchResultProvider {
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
         return getCachedMatchResult(element, key, cacheKey) {
-            matchesPathReference(element, project, pathReference, configExpression)
+            ParadoxMatchProvider.matchesPathReference(element, project, pathReference, configExpression)
         }
-    }
-
-    private fun matchesPathReference(element: PsiElement, project: Project, pathReference: String, configExpression: CwtDataExpression): Boolean {
-        val selector = selector(project, element).file()
-        return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
     }
 
     fun getComplexEnumValueMatchResult(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): ParadoxMatchResult {
         val searchScopeType = complexEnumConfig.searchScopeType
         if (searchScopeType != null) {
             return ParadoxMatchResult.LazyIndexAwareMatch {
-                matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
+                ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName, searchScopeType)
             }
         }
         val key = Keys.cacheForComplexEnumValues
         val cacheKey = "${enumName}#${name}"
         return getCachedMatchResult(element, key, cacheKey) {
-            matchesComplexEnumValue(element, project, name, enumName)
+            ParadoxMatchProvider.matchesComplexEnumValue(element, project, name, enumName)
         }
     }
 
-    private fun matchesComplexEnumValue(element: PsiElement, project: Project, name: String, enumName: String, searchScopeType: String? = null): Boolean {
-        val selector = selector(project, element).complexEnumValue().withSearchScopeType(searchScopeType)
-        return ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
+    fun getModifierMatchResult(element: PsiElement, configGroup: CwtConfigGroup, name: String): ParadoxMatchResult {
+        val key = Keys.cacheForModifiers
+        val cacheKey = name
+        return getCachedMatchResult(element, key, cacheKey) {
+            ParadoxMatchProvider.matchesModifier(element, configGroup, name)
+        }
     }
 
-    fun getScopeFieldMatchResult(element: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxMatchResult {
+    fun getTemplateMatchResult(element: PsiElement, configGroup: CwtConfigGroup, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        val template = configExpression.expressionString
+        val key = Keys.cacheForTemplates
+        val cacheKey = "${template}#${expression}"
+        return getCachedMatchResult(element, key, cacheKey) {
+            ParadoxMatchProvider.matchesTemplate(element, configGroup, expression, template)
+        }
+    }
+
+    fun getScopeFieldMatchResult(element: PsiElement, configGroup: CwtConfigGroup, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxMatchResult {
         return when (configExpression.type) {
             CwtDataTypes.ScopeField -> ParadoxMatchResult.ExactMatch
             CwtDataTypes.Scope -> {
@@ -198,22 +177,4 @@ object ParadoxMatchResultProvider {
             else -> ParadoxMatchResult.NotMatch
         }
     }
-
-    fun getModifierMatchResult(element: PsiElement, name: String, configGroup: CwtConfigGroup): ParadoxMatchResult {
-        val key = Keys.cacheForModifiers
-        val cacheKey = name
-        return getCachedMatchResult(element, key, cacheKey) {
-            ParadoxModifierManager.matchesModifier(name, element, configGroup)
-        }
-    }
-
-    fun getTemplateMatchResult(element: PsiElement, expression: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxMatchResult {
-        val template = configExpression.expressionString
-        val key = Keys.cacheForTemplates
-        val cacheKey = "${template}#${expression}"
-        return getCachedMatchResult(element, key, cacheKey) {
-            CwtTemplateExpressionManager.matches(element, expression, CwtTemplateExpression.resolve(template), configGroup)
-        }
-    }
-
 }
