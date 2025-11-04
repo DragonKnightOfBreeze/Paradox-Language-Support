@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.bug
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 /**
  * 不正确的语法的代码检查。
  */
-class IncorrectSyntaxInspection : LocalInspectionTool() {
+class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
         return true

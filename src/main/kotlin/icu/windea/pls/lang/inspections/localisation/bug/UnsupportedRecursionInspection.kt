@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.bug
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -15,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * （对于本地化文件）检查是否存在不支持的递归。
  * - 对于每个本地化，检查其本地化文本中是否存在递归的本地化引用。
  */
-class UnsupportedRecursionInspection : LocalInspectionTool() {
+class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标
 
     override fun isAvailableForFile(file: PsiFile): Boolean {

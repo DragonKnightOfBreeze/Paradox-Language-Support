@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 /**
  * （对于脚本文件）检查是否在不支持的地方使用了内联脚本。
  */
-class UnsupportedInlineScriptUsageInspection : LocalInspectionTool() {
+class UnsupportedInlineScriptUsageInspection : LocalInspectionTool()/*, DumbAware*/ {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
         return true

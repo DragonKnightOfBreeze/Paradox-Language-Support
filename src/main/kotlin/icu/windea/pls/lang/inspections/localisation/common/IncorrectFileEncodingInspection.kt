@@ -4,6 +4,7 @@ import com.intellij.codeInspection.InspectionManager
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.hasBom
@@ -23,7 +24,7 @@ import icu.windea.pls.model.constants.PlsConstants
  *
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
-class IncorrectFileEncodingInspection : LocalInspectionTool() {
+class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)

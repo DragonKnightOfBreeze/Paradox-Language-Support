@@ -5,6 +5,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiFile
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
@@ -22,7 +23,7 @@ import javax.swing.JComponent
  *
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"。
  */
-class MultipleLocalesInspection : LocalInspectionTool() {
+class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
     @JvmField
     var ignoredFileNames = "languages.yml"
 

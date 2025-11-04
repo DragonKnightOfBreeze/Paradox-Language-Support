@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.script.bug
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -20,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * - 对于每个scripted_trigger，检测其值中是否存在递归的scripted_trigger调用。
  * - 对于每个scripted_effect，检测其值中是否存在递归的scripted_effect调用。
  */
-class UnsupportedRecursionInspection : LocalInspectionTool() {
+class UnsupportedRecursionInspection : LocalInspectionTool(), DumbAware {
     // 目前仅做检查即可，不需要显示递归的装订线图标
     // 在封装变量声明/定义声明级别进行此项检查
 

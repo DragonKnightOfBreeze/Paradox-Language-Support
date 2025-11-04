@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.bug
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -11,7 +12,7 @@ import icu.windea.pls.lang.quickfix.DeleteStringByElementTypeFix
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class IncorrectSyntaxInspection : LocalInspectionTool() {
+class IncorrectSyntaxInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
         return true

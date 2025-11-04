@@ -2,6 +2,7 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import icu.windea.pls.PlsBundle
@@ -14,7 +15,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  * 提供快速修复：
  * - 导航到重复项
  */
-class DuplicatePropertiesInspection : LocalInspectionTool() {
+class DuplicatePropertiesInspection : LocalInspectionTool(), DumbAware {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {

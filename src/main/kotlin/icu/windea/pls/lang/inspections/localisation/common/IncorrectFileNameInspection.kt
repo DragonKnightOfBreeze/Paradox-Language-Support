@@ -9,6 +9,7 @@ import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -33,7 +34,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
  * - 改为正确的文件名
  * - 改为正确的语言环境名
  */
-class IncorrectFileNameInspection : LocalInspectionTool() {
+class IncorrectFileNameInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (PlsFileManager.isLightFile(file.virtualFile)) return false // skip for in-memory files
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true)

@@ -5,6 +5,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
@@ -21,7 +22,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  * 提供快速修复：
  * - 导航到重复项
  */
-class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
+class DuplicateScriptedVariablesInspection : LocalInspectionTool(), DumbAware {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
         val rootBlock = file.block ?: return null

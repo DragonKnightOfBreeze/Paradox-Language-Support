@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.lints
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.SuppressQuickFix
 import com.intellij.codeInspection.ex.ExternalAnnotatorBatchInspection
+import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
@@ -13,7 +14,7 @@ import javax.swing.JComponent
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintInspection
 
-class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection {
+class PlsTigerLintInspection : LocalInspectionTool(), ExternalAnnotatorBatchInspection, DumbAware {
     companion object {
         const val SHORT_NAME = "PlsTigerLint"
     }
