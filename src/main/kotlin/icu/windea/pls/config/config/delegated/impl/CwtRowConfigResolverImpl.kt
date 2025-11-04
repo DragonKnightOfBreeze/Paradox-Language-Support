@@ -8,15 +8,14 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver {
+internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
@@ -30,11 +29,11 @@ internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver {
         }
 
         val propGroup = propElements.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
         val columnConfigs = propGroup.getOne("columns")?.properties?.associateBy { it.key }.orEmpty()
         val endColumn = propGroup.getOne("end_column")?.stringValue
 

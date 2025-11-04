@@ -53,10 +53,12 @@ import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
@@ -318,7 +320,7 @@ object ParadoxExpressionManager {
         matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.sortedByPriority({ it.configExpression }, { it.configGroup })
+        return result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
     }
 
     private fun doGetConfigsForConfigContext(
@@ -424,7 +426,7 @@ object ParadoxExpressionManager {
             result = result.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
 
-        return result.optimized()
+        return result
     }
 
     private fun inlineConfigForConfigContext(
@@ -461,8 +463,8 @@ object ParadoxExpressionManager {
             append('#').append(matchOptions)
         }
         return configsMap.getOrPut(cacheKey) {
-            val result = doGetConfigs(memberElement, orDefault, matchOptions).optimized()
-            result.sortedByPriority({ it.configExpression }, { it.configGroup })
+            val result = doGetConfigs(memberElement, orDefault, matchOptions)
+            result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
         }
     }
 
@@ -689,7 +691,10 @@ object ParadoxExpressionManager {
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         // NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
         val cacheKey = childConfigs.joinToString(" ")
-        return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs).optimized() }
+        return childOccurrenceMap.getOrPut(cacheKey) {
+            val result = doGetChildOccurrenceMap(element, configs)
+            result.optimized()
+        }
     }
 
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
@@ -1115,33 +1120,35 @@ object ParadoxExpressionManager {
     }
 
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.inBlockKeys) {
-            val keys = caseInsensitiveStringSet()
-            config.configs?.forEach {
-                if (it is CwtPropertyConfig && isInBlockKey(it)) {
-                    keys.add(it.key)
-                }
+        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimizedIfEmpty() }
+    }
+
+    private fun doGetInBlockKeys(config: CwtMemberConfig<*>): MutableSet<@CaseInsensitive String> {
+        val keys = caseInsensitiveStringSet()
+        config.configs?.forEach {
+            if (it is CwtPropertyConfig && isInBlockKey(it)) {
+                keys.add(it.key)
             }
-            when (config) {
-                is CwtPropertyConfig -> {
-                    val propertyConfig = config
-                    propertyConfig.parentConfig?.configs?.forEach { c ->
-                        if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-                is CwtValueConfig -> {
-                    val propertyConfig = config.propertyConfig
-                    propertyConfig?.parentConfig?.configs?.forEach { c ->
-                        if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
-                        }
-                    }
-                }
-            }
-            return keys
         }
+        when (config) {
+            is CwtPropertyConfig -> {
+                val propertyConfig = config
+                propertyConfig.parentConfig?.configs?.forEach { c ->
+                    if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                        c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                    }
+                }
+            }
+            is CwtValueConfig -> {
+                val propertyConfig = config.propertyConfig
+                propertyConfig?.parentConfig?.configs?.forEach { c ->
+                    if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                        c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                    }
+                }
+            }
+        }
+        return keys
     }
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {

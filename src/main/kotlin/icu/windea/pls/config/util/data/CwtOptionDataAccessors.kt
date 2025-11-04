@@ -19,8 +19,10 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
+import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtSeparatorType
@@ -42,7 +44,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @see CwtOptionDataAccessor
  */
-object CwtOptionDataAccessors : CwtOptionDataExtensions {
+object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     fun <T> create(cached: Boolean = false, action: CwtMemberConfig<*>.() -> T): CwtOptionDataAccessorProvider<T> {
         return CwtOptionDataAccessorProvider(cached, action)
     }
@@ -330,13 +332,13 @@ object CwtOptionDataAccessors : CwtOptionDataExtensions {
      * ## type_key_filter <> { ship country }
      * ```
      */
-    val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<String>>?> by create {
+    val typeKeyFilter: CwtOptionDataAccessor<ReversibleValue<Set<@CaseInsensitive String>>?> by create {
         // 值可能是 string 也可能是 stringArray
         val option = findOption("type_key_filter") ?: return@create null
         val values = option.getOptionValueOrValues() ?: return@create null
         val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val positive = option.separatorType == CwtSeparatorType.EQUAL
-        ReversibleValue(positive, set.optimized())
+        ReversibleValue(positive, set.optimizedIfEmpty())
     }
 
     /**

@@ -20,11 +20,12 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.type2ModifiersMap
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -32,7 +33,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
 
-internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
+internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver,CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
@@ -47,11 +48,11 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver {
         }
 
         val propGroup = propElements.groupBy { it.key }
-        var paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) {it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        var paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) {it.stringValue?.normalizePath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizePath() }.optimized()
         val baseType = propGroup.getOne("base_type")?.stringValue
         val nameField = propGroup.getOne("name_field")?.stringValue
         val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue
@@ -141,7 +142,7 @@ private class CwtTypeConfigImpl(
         caseInsensitiveStringSet().apply {
             typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
             subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
-        }.optimized()
+        }.optimizedIfEmpty()
     }
 
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {

@@ -13,8 +13,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigCollector
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.createPointer
@@ -34,7 +34,7 @@ import icu.windea.pls.model.ValueOptimizers.ForCwtType
 import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.optimized
 
-class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver {
+class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {

@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "unused")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.core.collections
 
@@ -8,38 +8,29 @@ import java.util.*
 /** 如果当前集合为 `null` 或为空，则返回 `null`。否则返回自身。*/
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
-/** 将只读 [List] 视为 [MutableList]（要求实际类型可变，否则抛出异常）。*/
+/** 将当前只读 [List] 视为 [MutableList]（要求实际可变，否则抛出异常）。*/
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
-/** 将只读 [Set] 视为 [MutableSet]（要求实际类型可变，否则抛出异常）。*/
+/** 将当前只读 [Set] 视为 [MutableSet]（要求实际可变，否则抛出异常）。*/
 inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
-// only for empty list (since, e.g., string elements may ignore case)
-/** 若列表为空则返回标准库空列表，否则返回自身（减少空集合分配）。*/
-inline fun <T> List<T>.optimized(): List<T> = ifEmpty { emptyList() }
-
-// only for empty list (since, e.g., string elements may ignore case)
-/** 若集合为空则返回标准库空集合，否则返回自身（减少空集合分配）。*/
-inline fun <T : Any> Set<T>.optimized(): Set<T> = ifEmpty { emptySet() }
-
-/** 返回加锁包装的 [MutableList]，基于 [Collections.synchronizedList]。*/
-inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
-
-/** 返回加锁包装的 [MutableSet]，基于 [Collections.synchronizedSet]。*/
-inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
-
-/** 若当前已是 [List] 则直接返回，否则拷贝为新的 [List]。*/
+/** 如果当前集合已是 [List]，则直接返回，否则转化为新的 [List]。*/
 inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toList()
 
-/** 若当前已是 [Set] 则直接返回，否则拷贝为新的 [Set]。*/
+/** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。*/
 inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
+
+/** 返回加锁后的同步的 [MutableList]。*/
+inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
+
+/** 返回加锁后的同步的 [MutableSet]。*/
+inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
 
 /** 过滤为 [R] 类型并附加谓词 [predicate]。*/
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
     return filterIsInstance(R::class.java, predicate)
 }
 
-@Suppress("UNCHECKED_CAST")
 /** 过滤为 [klass] 类型并附加谓词 [predicate]。*/
 inline fun <R> Iterable<*>.filterIsInstance(klass: Class<R>, predicate: (R) -> Boolean): List<R> {
     val result = ArrayList<R>()
@@ -52,7 +43,6 @@ inline fun <reified R> Iterable<*>.findIsInstance(predicate: (R) -> Boolean = { 
     return find { it is R && predicate(it) } as R?
 }
 
-@Suppress("UNCHECKED_CAST")
 /** 查找第一个为 [klass] 类型且满足 [predicate] 的元素。*/
 inline fun <R> Iterable<*>.findIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
     return find { klass.isInstance(it) && predicate(it as R) } as R?
@@ -63,8 +53,8 @@ inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { 
     return findLast { it is R && predicate(it) } as R?
 }
 
-@Suppress("UNCHECKED_CAST")
 /** 查找最后一个为 [klass] 类型且满足 [predicate] 的元素。*/
+@Suppress("UNCHECKED_CAST")
 inline fun <R> List<*>.findLastIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
     return findLast { klass.isInstance(it) && predicate(it as R) } as R?
 }
@@ -74,7 +64,7 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
     return Array(size) { transform(this[it]) }
 }
 
-/** 将当前集合映射为数组。若为列表则走下标路径，否则顺序遍历。*/
+/** 将当前集合映射为数组。如果为列表则走下标路径，否则顺序遍历。*/
 inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
     if (this is List) return this.mapToArray(transform)
     val result = arrayOfNulls<R>(this.size)
@@ -84,7 +74,7 @@ inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R
     return result.cast()
 }
 
-/** 逐个处理元素，若处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
+/** 逐个处理元素，如果处理函数 [processor] 返回 `false` 则提前终止并返回 `false`。*/
 inline fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
     for (e in this) {
         val result = processor(e)
@@ -132,12 +122,12 @@ inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
  *
  * @param keepEmpty 是否在输出中保留空的分块。
  */
-fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -> Boolean): List<List<T>> {
+inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -> Boolean): List<List<T>> {
     val result = mutableListOf<List<T>>()
     val list = mutableListOf<T>()
     for (e in this) {
         if (predicate(e)) {
-            if(keepEmpty || list.isNotEmpty()) {
+            if (keepEmpty || list.isNotEmpty()) {
                 result += list.toList()
                 list.clear()
             }
@@ -145,7 +135,7 @@ fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -> Boole
             list += e
         }
     }
-    if(keepEmpty || list.isNotEmpty()) {
+    if (keepEmpty || list.isNotEmpty()) {
         result += list.toList()
     }
     return result
@@ -166,6 +156,16 @@ fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -> Boole
 //    return this
 // }
 
-fun <K, V> Map<K, List<V>>.getOne(key: K): V? = get(key)?.lastOrNull()
+/** 如果当前列表为空或单例，则返回优化后的 [List]，否则返回自身。用于优化内存。*/
+fun <T> List<T>.optimized(): List<T> = if (size <= 1) toList() else this
 
-fun <K, V> Map<K, List<V>>.getAll(key: K): List<V> = get(key).orEmpty()
+/** 如果当前集为空或单例，则返回优化后的 [Set]，否则返回自身。用于优化内存。*/
+fun <T : Any> Set<T>.optimized(): Set<T> = if (size <= 1) toSet() else this
+
+/** 如果当前列表为空，则返回优化后的 [List]，否则返回自身。用于优化内存。*/
+@Suppress("ReplaceIsEmptyWithIfEmpty")
+fun <T> List<T>.optimizedIfEmpty(): List<T> = if (isEmpty()) emptyList() else this
+
+/** 如果当前集为空，则返回优化后的 [Set]，否则返回自身。用于优化内存。*/
+@Suppress("ReplaceIsEmptyWithIfEmpty")
+fun <T : Any> Set<T>.optimizedIfEmpty(): Set<T> = if (isEmpty()) emptySet() else this

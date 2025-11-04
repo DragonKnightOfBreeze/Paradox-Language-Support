@@ -5,12 +5,13 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.config.config.properties
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
-internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.Resolver {
+internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig.Resolver, CwtConfigResolverMixin {
     // no logger here (unnecessary)
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? = doResolve(config)

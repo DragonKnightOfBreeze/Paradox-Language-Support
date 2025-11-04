@@ -7,14 +7,14 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver {
+internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     // TODO an enum value can also be a template expression
@@ -40,7 +40,7 @@ internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver {
             valueConfigMap.put(valueElement.value, valueElement)
         }
         logger.debug { "Resolved enum config (name: $name).".withLocationPrefix(config) }
-        return CwtEnumConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
+        return CwtEnumConfigImpl(config, name, values.optimizedIfEmpty(), valueConfigMap.optimizedIfEmpty())
     }
 }
 

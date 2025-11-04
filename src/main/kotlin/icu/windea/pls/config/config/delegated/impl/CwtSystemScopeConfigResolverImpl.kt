@@ -7,9 +7,9 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 
-internal class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver {
+internal class CwtSystemScopeConfigResolverImpl : CwtSystemScopeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)

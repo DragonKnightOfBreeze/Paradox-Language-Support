@@ -8,11 +8,11 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
-internal class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.Resolver {
+internal class CwtModifierCategoryConfigResolverImpl : CwtModifierCategoryConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? = doResolve(config)

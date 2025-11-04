@@ -2,6 +2,7 @@ package icu.windea.pls.config.config.impl
 
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
@@ -11,7 +12,7 @@ import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.optimized
 import java.util.concurrent.ConcurrentHashMap
 
-internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver {
+internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverMixin {
     private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
 
     override fun resolve(element: CwtValue): CwtOptionValueConfig {

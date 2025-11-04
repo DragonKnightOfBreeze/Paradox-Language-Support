@@ -13,7 +13,7 @@ import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
 @Suppress("unused")
-interface CwtOptionDataExtensions {
+interface CwtOptionDataAccessorMixin {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
         return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }
     }
@@ -45,6 +45,4 @@ interface CwtOptionDataExtensions {
     fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
         return getOptionValue()?.singleton?.set() ?: getOptionValues()
     }
-
-    companion object : CwtOptionDataExtensions
 }

@@ -83,7 +83,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromProperty("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
-    val possibleTypeKeys: Set<String>
+    val possibleTypeKeys: Set<@CaseInsensitive String>
     val typeKeyPrefixConfig: CwtValueConfig? // #123
 
     interface Resolver {

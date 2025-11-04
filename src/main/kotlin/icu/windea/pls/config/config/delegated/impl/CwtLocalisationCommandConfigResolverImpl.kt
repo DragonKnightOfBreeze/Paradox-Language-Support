@@ -7,12 +7,12 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
-internal class CwtLocalisationCommandConfigResolverImpl : CwtLocalisationCommandConfig.Resolver {
+internal class CwtLocalisationCommandConfigResolverImpl : CwtLocalisationCommandConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig = doResolve(config)

@@ -38,15 +38,6 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun optimized_for_empty() {
-        Assert.assertTrue(emptyList<Int>().optimized().isEmpty())
-        Assert.assertEquals(listOf(1), listOf(1).optimized())
-
-        Assert.assertTrue(emptySet<Int>().optimized().isEmpty())
-        Assert.assertEquals(setOf(1), setOf(1).optimized())
-    }
-
-    @Test
     fun filterIsInstance_and_findIsInstance() {
         val list: List<Any?> = listOf(1, "a", null, "abc", 2)
         val onlyOneChar = list.filterIsInstance<String> { it.length == 1 }
@@ -180,7 +171,7 @@ class CollectionExtensionsTest {
             nums.chunkedBy { it == 0 }
         )
     }
-    
+
     @Test
     fun pinned_partition_equivalence() {
         val cases = listOf(

@@ -7,12 +7,12 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 
-internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver {
+internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? = doResolve(config)
@@ -35,7 +35,7 @@ internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver {
             valueConfigMap.put(valueElement.value, valueElement)
         }
         logger.debug { "Resolved scope group config (name: $name).".withLocationPrefix(config) }
-        return CwtScopeGroupConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
+        return CwtScopeGroupConfigImpl(config, name, values.optimizedIfEmpty(), valueConfigMap.optimizedIfEmpty())
     }
 }
 

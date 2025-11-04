@@ -11,15 +11,14 @@ import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.processDescendants
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
+class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
@@ -33,11 +32,11 @@ class CwtComplexEnumConfigResolverImpl : CwtComplexEnumConfig.Resolver {
         }
 
         val propGroup = propElements.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.removePrefix(".")?.intern()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.removePrefix("game/")?.normalizePath()?.intern() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
         val startFromRoot = propGroup.getOne("start_from_root")?.booleanValue ?: false
         val perDefinition = propGroup.getOne("per_definition")?.booleanValue ?: false
         val nameConfig = propGroup.getOne("name")

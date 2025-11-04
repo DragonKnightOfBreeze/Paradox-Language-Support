@@ -8,11 +8,11 @@ import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 
-internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver {
+internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtScopeConfig? = doResolve(config)
@@ -26,7 +26,7 @@ internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver {
         }
         val aliases = propElements.find { it.key == "aliases" }?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-        }?.optimized().orEmpty()
+        }?.optimizedIfEmpty().orEmpty()
         logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }
         return CwtScopeConfigImpl(config, name, aliases)
     }

@@ -9,11 +9,11 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.foldingSettings
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
 
-internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver {
+internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {

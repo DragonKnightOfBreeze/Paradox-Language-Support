@@ -5,12 +5,13 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.config.properties
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
-internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver {
+internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverMixin {
     // no logger here (unnecessary)
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeImagesConfig? = doResolve(config)

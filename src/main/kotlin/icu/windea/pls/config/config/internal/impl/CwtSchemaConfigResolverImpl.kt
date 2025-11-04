@@ -6,8 +6,9 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.schemas
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 
-internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver {
+internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverMixin {
     // no logger here (unnecessary)
 
     override fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {

@@ -66,10 +66,10 @@ annotation class Tags(vararg val value: Tag) {
 val CwtConfigGroup.schemas: MutableList<CwtSchemaConfig>
     by createKey(CwtConfigGroup.Keys) { mutableListOf() }
 @Tags(Tag.Internal)
-val CwtConfigGroup.foldingSettings: MutableMap<String, MutableMap<String, CwtFoldingSettingsConfig>>
+val CwtConfigGroup.foldingSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtFoldingSettingsConfig>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 @Tags(Tag.Internal)
-val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSettingsConfig>>
+val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<@CaseInsensitive String, CwtPostfixTemplateSettingsConfig>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
 // endregion

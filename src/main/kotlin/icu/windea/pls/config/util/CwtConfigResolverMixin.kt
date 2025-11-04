@@ -1,0 +1,25 @@
+package icu.windea.pls.config.util
+
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.core.normalizePath
+
+interface CwtConfigResolverMixin {
+    fun String.withLocationPrefix(element: PsiElement? = null): String {
+        val location = CwtConfigResolverUtil.getLocation() ?: return this
+        val file = element?.containingFile
+        val lineNumber = file?.fileDocument?.getLineNumber(element.startOffset)
+        val lineNumberString = lineNumber?.let { "#L$it" }.orEmpty()
+        return "[$location$lineNumberString] $this"
+    }
+
+    fun String.withLocationPrefix(config: CwtConfig<*>): String {
+        val element = config.pointer.element
+        return withLocationPrefix(element)
+    }
+
+    fun String.normalizedPath() = removePrefix("game/").normalizePath().intern()
+
+    fun String.normalizedPathExtension() = removePrefix(".").intern()
+}

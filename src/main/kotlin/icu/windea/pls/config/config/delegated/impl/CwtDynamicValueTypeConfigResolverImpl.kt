@@ -7,14 +7,14 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig
 import icu.windea.pls.config.config.values
-import icu.windea.pls.config.util.CwtConfigResolverUtil.withLocationPrefix
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
-class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver {
+class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     // TODO a dynamic value can also be a template expression
@@ -41,7 +41,7 @@ class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver
             valueConfigMap.put(v, propertyConfigValue)
         }
         logger.debug { "Resolved dynamic value type config (name: $name).".withLocationPrefix(config) }
-        return CwtDynamicValueTypeConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
+        return CwtDynamicValueTypeConfigImpl(config, name, values.optimizedIfEmpty(), valueConfigMap.optimizedIfEmpty())
     }
 }
 
