@@ -88,10 +88,9 @@ object ParadoxParameterManager {
         val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(Keys)
     }
 
-    // rootFile -> cacheKey -> parameterInfo
-    // depends on config group
     private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, _, _, _> {
+        // rootFile -> cacheKey -> parameterInfo
+        createNestedCache<VirtualFile, _, _, Cache<String, ParadoxParameterInfo>> {
             CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }

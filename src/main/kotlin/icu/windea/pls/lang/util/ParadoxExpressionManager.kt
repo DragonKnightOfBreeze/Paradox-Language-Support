@@ -304,8 +304,7 @@ object ParadoxExpressionManager {
     private fun doGetConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
-            // also depends on localisation files (for loc references)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
@@ -469,8 +468,7 @@ object ParadoxExpressionManager {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            // also depends on localisation files (for loc references)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
@@ -698,8 +696,7 @@ object ParadoxExpressionManager {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
-            // also depends on localisation files (for loc references)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
@@ -866,7 +863,7 @@ object ParadoxExpressionManager {
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
@@ -892,7 +889,7 @@ object ParadoxExpressionManager {
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
@@ -908,7 +905,7 @@ object ParadoxExpressionManager {
         val key = Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 

@@ -8,6 +8,7 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -16,26 +17,26 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
         override fun enteredDumbMode() {
-            ParadoxModificationTrackers.refreshAllFileTrackers()
+            PlsAnalyzeManager.refreshAllFileTrackers()
         }
 
         override fun exitDumbMode() {
-            ParadoxModificationTrackers.refreshAllFileTrackers()
+            PlsAnalyzeManager.refreshAllFileTrackers()
         }
     }
 
-    // 这个方法应当尽可能地快
     override fun treeChanged(event: PsiTreeChangeEventImpl) {
+        // This method should be very fast
+
         if (!PsiModificationTrackerImpl.canAffectPsi(event)) return
 
         val file = event.file ?: return
-        when {
-            file is ParadoxScriptFile -> {
-                val fileInfo = file.fileInfo ?: return
-                ParadoxModificationTrackers.FileTracker.incModificationCount()
-                ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-
-                val trackers = ParadoxModificationTrackers.ScriptFileTrackers.values
+        if (file !is ParadoxBaseFile) return
+        val fileInfo = file.fileInfo ?: return
+        when (file) {
+            is ParadoxScriptFile -> {
+                ParadoxModificationTrackers.ScriptFile.incModificationCount()
+                val trackers = ParadoxModificationTrackers.ScriptFileMap.values
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
@@ -46,15 +47,11 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                     }
                 }
             }
-            file is ParadoxLocalisationFile -> {
-                if (file.fileInfo == null) return
-                ParadoxModificationTrackers.FileTracker.incModificationCount()
-                ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
+            is ParadoxLocalisationFile -> {
+                ParadoxModificationTrackers.LocalisationFile.incModificationCount()
             }
-            file is ParadoxCsvFile -> {
-                if (file.fileInfo == null) return
-                ParadoxModificationTrackers.FileTracker.incModificationCount()
-                ParadoxModificationTrackers.CsvFileTracker.incModificationCount()
+            is ParadoxCsvFile -> {
+                ParadoxModificationTrackers.CsvFile.incModificationCount()
             }
         }
     }

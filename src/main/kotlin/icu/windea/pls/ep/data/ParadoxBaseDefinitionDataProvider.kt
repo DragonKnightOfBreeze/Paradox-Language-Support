@@ -47,8 +47,8 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
             val value = doGetData(element, type)
             value.withDependencyItems(
                 element,
-                ParadoxModificationTrackers.ScriptedVariablesTracker,
-                ParadoxModificationTrackers.InlineScriptsTracker,
+                ParadoxModificationTrackers.ScriptedVariables,
+                ParadoxModificationTrackers.InlineScripts,
             )
         }
     }

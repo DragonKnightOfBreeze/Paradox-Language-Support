@@ -69,7 +69,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             value.withDependencyItems(
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker,
+                ParadoxModificationTrackers.DefinitionScopeContextInference,
                 getTracker(definition),
             )
         }
@@ -77,7 +77,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     private fun getTracker(definition: ParadoxScriptDefinitionElement): ModificationTracker {
         val configGroup = definition.definitionInfo?.configGroup
-            ?: return ParadoxModificationTrackers.ScriptFileTracker
+            ?: return ParadoxModificationTrackers.ScriptFile
         return configGroup.definitionScopeContextModificationTracker
     }
 
@@ -176,8 +176,8 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             value.withDependencyItems(
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker,
-                ParadoxModificationTrackers.ScriptFileTracker("common/on_actions/**/*.txt"),
+                ParadoxModificationTrackers.DefinitionScopeContextInference,
+                ParadoxModificationTrackers.ScriptFile("common/on_actions/**/*.txt"),
             )
         }
     }
@@ -285,8 +285,8 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             value.withDependencyItems(
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker,
-                ParadoxModificationTrackers.ScriptFileTracker("events/**/*.txt"),
+                ParadoxModificationTrackers.DefinitionScopeContextInference,
+                ParadoxModificationTrackers.ScriptFile("events/**/*.txt"),
             )
         }
     }
@@ -433,8 +433,8 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             ProgressManager.checkCanceled()
             val value = doGetScopeContext(definition)
             value.withDependencyItems(
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker,
-                ParadoxModificationTrackers.ScriptFileTracker("events/**/*.txt"),
+                ParadoxModificationTrackers.DefinitionScopeContextInference,
+                ParadoxModificationTrackers.ScriptFile("events/**/*.txt"),
             )
         }
     }

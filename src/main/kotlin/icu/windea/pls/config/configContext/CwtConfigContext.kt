@@ -1,5 +1,6 @@
 package icu.windea.pls.config.configContext
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.jetbrains.rd.util.*
@@ -77,18 +78,13 @@ class CwtConfigContext(
     object Keys : KeyRegistry()
 }
 
-// rootFile -> cacheKey -> configs
-// use soft values to optimize memory
-// depends on config group, indices and inference statuses
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
-        createNestedCache<VirtualFile, _, _, _> {
+        // rootFile -> cacheKey -> configs
+        // use soft values to optimize memory
+        createNestedCache<VirtualFile, _, _, Cache<String, List<CwtMemberConfig<*>>>> {
             CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
-        }.withDependencyItems(
-            ParadoxModificationTrackers.FileTracker,
-            ParadoxModificationTrackers.ParameterConfigInferenceTracker,
-            ParadoxModificationTrackers.InlineScriptConfigInferenceTracker,
-        )
+        }.withDependencyItems(ParadoxModificationTrackers.Match)
     }
 }
 

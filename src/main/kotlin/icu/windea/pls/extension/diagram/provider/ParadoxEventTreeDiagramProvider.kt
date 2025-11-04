@@ -272,7 +272,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
             val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
             val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
-            return ParadoxModificationTrackers.ScriptFileTracker(key)
+            return ParadoxModificationTrackers.ScriptFile(key)
         }
     }
 }

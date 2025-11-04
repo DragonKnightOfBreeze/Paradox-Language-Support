@@ -27,11 +27,11 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.PlsStates
 
 private typealias KeyForCache = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
@@ -39,18 +39,16 @@ private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
 
 object ParadoxMatchResultProvider {
     object Keys : KeyRegistry() {
-        val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFileTracker)
-        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFileTracker)
-        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFileTracker)
-        val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FileTracker)
-        val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFileTracker)
-        val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFileTracker)
-        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFileTracker, ParadoxModificationTrackers.LocalisationFileTracker)
-
-        // rootFile -> cacheKey -> configMatchResult
-        // depends on config group and indices
+        val cacheForDefinitions by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile)
+        val cacheForSyncedLocalisations by createKeyForCache(ParadoxModificationTrackers.LocalisationFile)
+        val cacheForPathReferences by createKeyForCache(ParadoxModificationTrackers.FilePath)
+        val cacheForComplexEnumValues by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
+        val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile)
 
         private fun createKeyForCache(vararg dependencyItems: Any) = createKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
+            // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
                 createNestedCache<VirtualFile, _, _, _> {
                     CacheBuilder().build<String, ParadoxMatchResult>().cancelable()

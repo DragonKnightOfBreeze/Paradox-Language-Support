@@ -622,7 +622,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFile)
         }
     }
 
@@ -647,7 +647,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
         }
     }
 
@@ -672,7 +672,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFile, ParadoxModificationTrackers.PreferredLocale)
         }
     }
 
@@ -698,7 +698,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptFile)
         }
     }
 

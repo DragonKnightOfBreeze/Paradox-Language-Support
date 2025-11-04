@@ -258,7 +258,7 @@ val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
         val definitionTypes = definitionTypesSupportParameters
         val configs = definitionTypes.mapNotNull { types[it] }
         val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
-        ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
+        ParadoxModificationTrackers.ScriptFile(patterns.joinToString(";"))
     }
 
 @Tags(Tag.Computed)
@@ -267,7 +267,7 @@ val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracke
         val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Constants.DEFINITION_TYPES
         val configs = definitionTypes.mapNotNull { types[it] }
         val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
-        ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
+        ParadoxModificationTrackers.ScriptFile(patterns.joinToString(";"))
     }
 
 // endregion

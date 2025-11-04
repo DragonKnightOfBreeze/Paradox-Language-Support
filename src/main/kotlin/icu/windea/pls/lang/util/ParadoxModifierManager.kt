@@ -68,10 +68,9 @@ object ParadoxModifierManager {
         val modifierIconPaths by createKey<Set<String>>(Keys)
     }
 
-    // rootFile -> cacheKey -> modifierInfo
-    // depends on config group
     private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
-        createNestedCache<VirtualFile, String, ParadoxModifierInfo, Cache<String, ParadoxModifierInfo>> {
+        // rootFile -> cacheKey -> modifierInfo
+        createNestedCache<VirtualFile, _, _, Cache<String, ParadoxModifierInfo>> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
         }
     }

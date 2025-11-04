@@ -5,6 +5,7 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.psi.ParadoxBaseFile
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -15,7 +16,7 @@ import icu.windea.pls.model.ParadoxGameType
 class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
-) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
+) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage), ParadoxBaseFile {
     companion object {
         @JvmField
         val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_LOCALISATION_FILE", ParadoxLocalisationLanguage)

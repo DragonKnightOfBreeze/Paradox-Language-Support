@@ -76,6 +76,13 @@ object PlsAnalyzeManager {
 
     // region Refresh & Reparse Methods
 
+    fun refreshAllFileTrackers() {
+        ParadoxModificationTrackers.ScriptFile.incModificationCount()
+        ParadoxModificationTrackers.LocalisationFile.incModificationCount()
+        ParadoxModificationTrackers.CsvFile.incModificationCount()
+        ParadoxModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
+    }
+
     @Volatile
     private var reparseLock = false // 防止抖动（否则可能出现SOF）
 
@@ -101,8 +108,10 @@ object PlsAnalyzeManager {
         val psiFiles = runReadAction {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
-        ParadoxModificationTrackers.refreshAllFileTrackers()
+
         runInEdt {
+            // refresh all file trackers
+            refreshAllFileTrackers()
             // reparse files
             FileContentUtilCore.reparseFiles(files)
             // restart DaemonCodeAnalyzer
@@ -128,6 +137,7 @@ object PlsAnalyzeManager {
         val psiFiles = runReadAction {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
+
         if (restartDaemon) {
             // restart DaemonCodeAnalyzer
             psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }

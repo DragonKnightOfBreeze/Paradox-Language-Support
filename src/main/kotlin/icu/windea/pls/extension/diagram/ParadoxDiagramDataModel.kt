@@ -68,6 +68,6 @@ abstract class ParadoxDiagramDataModel(
     protected abstract fun updateDataModel()
 
     override fun getModificationTracker(): ModificationTracker {
-        return ParadoxModificationTrackers.FileTracker
+        return ParadoxModificationTrackers.ScriptFile
     }
 }

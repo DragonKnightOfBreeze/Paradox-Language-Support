@@ -100,7 +100,8 @@ object PlsTigerLintManager {
             val value = doGetTigerLintResultForRootDirectory(rootDirectory)
             val trackers = mutableListOf(rootDirectory, modificationTrackers.getValue(gameType))
             if (value == null || value.error != null) { // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
-                trackers += ParadoxModificationTrackers.FileTracker
+                trackers += ParadoxModificationTrackers.ScriptFile
+                trackers += ParadoxModificationTrackers.LocalisationFile
             }
             value.withDependencyItems(trackers.toTypedArray())
         }

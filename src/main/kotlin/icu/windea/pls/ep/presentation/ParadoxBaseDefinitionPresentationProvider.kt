@@ -44,7 +44,8 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
             val value = doGetPresentation(element, type)
             value.withDependencyItems(
                 element,
-                ParadoxModificationTrackers.FileTracker,
+                ParadoxModificationTrackers.ScriptFile,
+                ParadoxModificationTrackers.LocalisationFile,
             )
         }
     }

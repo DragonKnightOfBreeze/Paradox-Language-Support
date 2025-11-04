@@ -279,7 +279,7 @@ object ParadoxScopeManager {
                 ?: doGetSwitchedScopeContextOfDefinitionMember(element)
             value.withDependencyItems(
                 element.containingFile,
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker, // from inference
+                ParadoxModificationTrackers.Scope,
             )
         }
     }

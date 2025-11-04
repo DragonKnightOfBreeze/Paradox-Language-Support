@@ -658,7 +658,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun onPreferredLocaleChanged(oldPreferredLocale: String?, newPreferredLocale: String?) {
         if (!callbackLock.check("onPreferredLocaleChanged")) return
 
-        ParadoxModificationTrackers.LocaleTracker.incModificationCount()
+        ParadoxModificationTrackers.PreferredLocale.incModificationCount()
     }
 
     // NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
@@ -680,7 +680,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForParameterInference() {
         if (!callbackLock.check("refreshForParameterInference")) return
 
-        ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
+        ParadoxModificationTrackers.ParameterConfigInference.incModificationCount()
 
         refreshForOpenedFiles()
     }
@@ -688,10 +688,9 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForInlineScriptInference() {
         if (!callbackLock.check("refreshForInlineScriptInference")) return
 
-        ParadoxModificationTrackers.FileTracker.incModificationCount()
-        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
+        ParadoxModificationTrackers.ScriptFile.incModificationCount()
+        ParadoxModificationTrackers.InlineScripts.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
         val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
@@ -701,7 +700,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForScopeContextInference() {
         if (!callbackLock.check("refreshForScopeContextInference")) return
 
-        ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
+        ParadoxModificationTrackers.DefinitionScopeContextInference.incModificationCount()
 
         refreshForOpenedFiles()
     }
