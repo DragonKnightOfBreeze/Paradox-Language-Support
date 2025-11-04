@@ -1,0 +1,19 @@
+# Test CWT config for multi-arguments links, use pipe for argument separator
+
+# Examples in script files:
+# - colonial_charter_utility(scope:target|scope:some)
+
+# see #220
+
+links = {
+    colonial_charter_utility = {
+        input_scopes = { country }
+        output_scope = value
+        type = both
+        from_argument = yes
+        argument_separator = pipe
+        prefix = colonial_charter_utility:
+        data_source = scope[province_definition]
+        data_source = scope[location]
+    }
+}

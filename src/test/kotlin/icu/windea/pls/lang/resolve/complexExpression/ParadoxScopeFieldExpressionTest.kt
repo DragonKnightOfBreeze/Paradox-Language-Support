@@ -268,4 +268,42 @@ class ParadoxScopeFieldExpressionTest : ParadoxComplexExpressionTest() {
         }
         exp.check(dsl)
     }
+
+    @Test
+    fun test_forArguments_usePipeSeparator() {
+        val s = "colonial_charter_utility(scope:target|scope:some)"
+        val exp = parse(s, gameType = ParadoxGameType.Vic3)!! // ensure `scope:` is available
+        println(exp.render())
+        val dsl = buildExpression<ParadoxScopeFieldExpression>("colonial_charter_utility(scope:target|scope:some)", 0..49) {
+            node<ParadoxDynamicScopeLinkNode>("colonial_charter_utility(scope:target|scope:some)", 0..49) {
+                node<ParadoxScopeLinkPrefixNode>("colonial_charter_utility", 0..24)
+                node<ParadoxMarkerNode>("(", 24..25)
+                node<ParadoxScopeLinkValueNode>("scope:target|scope:some", 25..48) {
+                    expression<ParadoxScopeFieldExpression>("scope:target", 25..37) {
+                        node<ParadoxDynamicScopeLinkNode>("scope:target", 25..37) {
+                            node<ParadoxScopeLinkPrefixNode>("scope:", 25..31)
+                            node<ParadoxScopeLinkValueNode>("target", 31..37) {
+                                expression<ParadoxDynamicValueExpression>("target", 31..37) {
+                                    node<ParadoxDynamicValueNode>("target", 31..37)
+                                }
+                            }
+                        }
+                    }
+                    node<ParadoxMarkerNode>("|", 37..38)
+                    expression<ParadoxScopeFieldExpression>("scope:some", 38..48) {
+                        node<ParadoxDynamicScopeLinkNode>("scope:some", 38..48) {
+                            node<ParadoxScopeLinkPrefixNode>("scope:", 38..44)
+                            node<ParadoxScopeLinkValueNode>("some", 44..48) {
+                                expression<ParadoxDynamicValueExpression>("some", 44..48) {
+                                    node<ParadoxDynamicValueNode>("some", 44..48)
+                                }
+                            }
+                        }
+                    }
+                }
+                node<ParadoxMarkerNode>(")", 48..49)
+            }
+        }
+        exp.check(dsl)
+    }
 }
