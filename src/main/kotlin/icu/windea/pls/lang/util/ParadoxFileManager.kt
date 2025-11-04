@@ -12,7 +12,6 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.formatted
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
@@ -44,21 +43,22 @@ object ParadoxFileManager {
     }
 
     /**
-     * 将输入路径视为相对于游戏目录（或者主要入口目录）的路径，得到规范化后的绝对路径。
+     * 将输入路径视为相对于游戏的主要入口目录的路径，得到规范化后的绝对路径。
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
-        val path0 = path.normalizePath().removePrefix("game/")
         val gamePath = PlsPathService.getSteamGamePath(gameType.id, gameType.title) ?: return null
-        val mainEntryPath = if (gameType.mainEntry.isEmpty()) gamePath else gamePath.resolve(gameType.mainEntry)
-        val resultPath = mainEntryPath.resolve(path0)
+        val mainEntryName = gameType.mainEntries.firstOrNull()
+        val mainEntryPath = if (mainEntryName != null) gamePath.resolve(mainEntryName) else gamePath
+        val resultPath = mainEntryPath.resolve(path)
         return resultPath.formatted()
     }
 
     /**
      * 判断指定的文件能否引用另一个文件中的内容。
      *
-     * 游戏目录下可以存在多个入口目录，
-     * 插件认为模组目录以及游戏目录的主要入口目录（游戏目录或其game子目录）不能引用游戏目录的次要入口目录下的文件中的内容。
+     * 主要入口目录中的文件不能引用次要入口目录中的文件中的内容。
+     *
+     * @see ParadoxGameType.Entries
      */
     fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = file?.fileInfo ?: return true

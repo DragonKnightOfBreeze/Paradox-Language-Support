@@ -152,42 +152,42 @@ fun CharSequence.addSurrounding(prefix: CharSequence, suffix: CharSequence): Str
     return prefix.toString() + this.toString() + suffix.toString()
 }
 
-/** 去除成对的前后缀（若存在）。*/
+/** 如果当前字符序列存在指定的前缀，则去除并返回，否则返回具有相同字符的新字符序列。。*/
 fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
     return removePrefix(prefix).removeSuffix(suffix)
 }
 
-/** 去除成对的前后缀（若存在）。*/
+/** 如果当前字符串存在指定的前缀，则去除并返回，否则返回自身。 */
 fun String.removeSurrounding(prefix: CharSequence, suffix: CharSequence): String {
     return removePrefix(prefix).removeSuffix(suffix)
 }
 
-/** 若存在指定前缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符序列存在指定的前缀，则去除并返回，否则返回 `null`。*/
 fun CharSequence.removePrefixOrNull(prefix: CharSequence, ignoreCase: Boolean = false): String? {
     return if (startsWith(prefix, ignoreCase)) substring(prefix.length) else null
 }
 
-/** 若存在指定前缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符串存在指定的前缀，则去除并返回，否则返回 `null`。*/
 fun String.removePrefixOrNull(prefix: CharSequence, ignoreCase: Boolean = false): String? {
     return if (startsWith(prefix, ignoreCase)) substring(prefix.length) else null
 }
 
-/** 若存在指定后缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符序列存在指定的后缀，则去除并返回，否则返回 `null`。*/
 fun CharSequence.removeSuffixOrNull(suffix: CharSequence, ignoreCase: Boolean = false): String? {
     return if (endsWith(suffix, ignoreCase)) substring(0, length - suffix.length) else null
 }
 
-/** 若存在指定后缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符串存在指定的后缀，则去除并返回，否则返回 `null`。*/
 fun String.removeSuffixOrNull(suffix: CharSequence, ignoreCase: Boolean = false): String? {
     return if (endsWith(suffix, ignoreCase)) substring(0, length - suffix.length) else null
 }
 
-/** 若存在成对前后缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符序列存在指定的前后缀，则去除并返回，否则返回 `null`。*/
 fun CharSequence.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence, ignoreCase: Boolean = false): String? {
     return if (surroundsWith(prefix, suffix, ignoreCase)) substring(prefix.length, length - suffix.length) else null
 }
 
-/** 若存在成对前后缀则去除并返回，否则返回 `null`。*/
+/** 如果当前字符串存在指定的前后缀，则去除并返回，否则返回 `null`。*/
 fun String.removeSurroundingOrNull(prefix: CharSequence, suffix: CharSequence): String? {
     return if (surroundsWith(prefix, suffix)) substring(prefix.length, length - suffix.length) else null
 }

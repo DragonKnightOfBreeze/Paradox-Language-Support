@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.util.getOrPutUserData
@@ -36,6 +37,10 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.util.concurrent.atomic.AtomicReference
+
+fun String.normalizedPath() = removePrefix("game/").normalizePath().intern()
+
+fun String.normalizedPathExtension() = removePrefix(".").intern()
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)

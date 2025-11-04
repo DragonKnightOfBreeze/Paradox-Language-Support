@@ -242,4 +242,99 @@ class CollectionExtensionsTest {
     fun chunkedBy_predicate_exception_propagates() {
         listOf(1, 2, 3).chunkedBy { if (it == 2) throw IllegalStateException("boom") else false }
     }
+
+    @Test
+    fun optimized_list_behaviors() {
+        // empty -> emptyList()
+        val e = emptyList<Int>()
+        val eo = e.optimized()
+        Assert.assertEquals(emptyList<Int>(), eo)
+        // singleton -> toList() (not necessarily same instance)
+        val s = listOf(1)
+        val so = s.optimized()
+        Assert.assertEquals(listOf(1), so)
+        // size > 1 -> same instance
+        val m = mutableListOf(1, 2)
+        val mo = m.optimized()
+        Assert.assertSame(m, mo)
+    }
+
+    @Test
+    fun optimized_set_behaviors() {
+        // empty -> emptySet()
+        val e = emptySet<Int>()
+        val eo = e.optimized()
+        Assert.assertEquals(emptySet<Int>(), eo)
+        // singleton -> toSet() (not necessarily same instance)
+        val s = setOf(1)
+        val so = s.optimized()
+        Assert.assertEquals(setOf(1), so)
+        // size > 1 -> same instance
+        val m: MutableSet<Int> = linkedSetOf(1, 2)
+        val mo = m.optimized()
+        Assert.assertSame(m, mo)
+    }
+
+    @Test
+    fun optimizedIfEmpty_list_and_set() {
+        // list
+        val el = emptyList<Int>()
+        val el2 = el.optimizedIfEmpty()
+        Assert.assertEquals(emptyList<Int>(), el2)
+        val l = mutableListOf(1)
+        Assert.assertSame(l, l.optimizedIfEmpty())
+
+        // set
+        val es = emptySet<Int>()
+        val es2 = es.optimizedIfEmpty()
+        Assert.assertEquals(emptySet<Int>(), es2)
+        val s = mutableSetOf(1)
+        Assert.assertSame(s, s.optimizedIfEmpty())
+    }
+
+    @Test
+    fun removePrefixOrNull_basic_and_edges() {
+        val base = listOf(1, 2, 3)
+
+        // empty prefix -> return this (identity)
+        Assert.assertSame(base, base.removePrefixOrNull(emptyList()))
+
+        // longer prefix -> null
+        Assert.assertNull(base.removePrefixOrNull(listOf(1, 2, 3, 4)))
+
+        // exact match -> empty list
+        Assert.assertEquals(emptyList<Int>(), base.removePrefixOrNull(listOf(1, 2, 3)))
+
+        // proper prefix -> tail
+        Assert.assertEquals(listOf(3), base.removePrefixOrNull(listOf(1, 2)))
+
+        // mismatch at first element
+        Assert.assertNull(base.removePrefixOrNull(listOf(0)))
+
+        // mismatch inside
+        Assert.assertNull(base.removePrefixOrNull(listOf(1, 0)))
+    }
+
+    @Test
+    fun removeSuffixOrNull_basic_and_edges() {
+        val base = listOf(1, 2, 3)
+
+        // empty suffix -> return this (identity)
+        Assert.assertSame(base, base.removeSuffixOrNull(emptyList()))
+
+        // longer suffix -> null
+        Assert.assertNull(base.removeSuffixOrNull(listOf(0, 1, 2, 3)))
+
+        // exact match -> empty list
+        Assert.assertEquals(emptyList<Int>(), base.removeSuffixOrNull(listOf(1, 2, 3)))
+
+        // proper suffix -> head
+        Assert.assertEquals(listOf(1), base.removeSuffixOrNull(listOf(2, 3)))
+
+        // mismatch at last element
+        Assert.assertNull(base.removeSuffixOrNull(listOf(4)))
+
+        // mismatch inside
+        Assert.assertNull(base.removeSuffixOrNull(listOf(2, 4)))
+    }
 }

@@ -40,7 +40,6 @@ import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -66,7 +65,7 @@ object ParadoxInlineScriptManager {
      */
     fun getInlineScriptFilePath(pathReference: String): String? {
         val configExpression = inlineScriptPathExpression
-        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath(), ParadoxGameType.Stellaris)?.firstOrNull()
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.resolvePath(configExpression, pathReference.normalizePath())?.firstOrNull()
     }
 
     /**

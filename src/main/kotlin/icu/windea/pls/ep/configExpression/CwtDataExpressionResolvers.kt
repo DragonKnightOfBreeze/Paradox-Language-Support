@@ -13,6 +13,7 @@ import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
+import icu.windea.pls.lang.normalizedPath
 
 class CwtBaseDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(
@@ -51,8 +52,8 @@ class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.FileName, "filename"),
         rule(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() },
         rule(CwtDataTypes.FilePath, "filepath"),
-        rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.removePrefix("game/").orNull() },
-        rule(CwtDataTypes.Icon, "icon[", "]") { value = it.removePrefix("game/").orNull() },
+        rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.normalizedPath().orNull() },
+        rule(CwtDataTypes.Icon, "icon[", "]") { value = it.normalizedPath().orNull() },
 
         rule(CwtDataTypes.Modifier, "<modifier>"),
         rule(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>"),

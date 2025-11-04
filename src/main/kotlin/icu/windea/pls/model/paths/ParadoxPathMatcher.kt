@@ -11,36 +11,15 @@ import icu.windea.pls.model.constants.PlsConstants
 enum class ParadoxPathMatcher {
     InLocalisationPath {
         private val roots = arrayOf("localisation", "localization", "localisation_synced", "localization_synced")
-        override fun matches(path: ParadoxPath): Boolean {
-            if (path.subPaths.size > 1) {
-                // EU5 TODO: Clean up
-                return path.root in roots || path.subPaths.get(1) in roots
-            } else {
-                return path.root in roots
-            }
-        }
+        override fun matches(path: ParadoxPath) = path.root in roots
     },
     InNormalLocalisationPath {
         private val roots = arrayOf("localisation", "localization")
-        override fun matches(path: ParadoxPath): Boolean {
-            if (path.subPaths.size > 1) {
-                // EU5 TODO: Clean up
-                return path.root in roots || path.subPaths.get(1) in roots
-            } else {
-                return path.root in roots
-            }
-        }
+        override fun matches(path: ParadoxPath) = path.root in roots
     },
     InSyncedLocalisationPath {
         private val roots = arrayOf("localisation_synced", "localization_synced")
-        override fun matches(path: ParadoxPath): Boolean {
-            if (path.subPaths.size > 1) {
-                // EU5 TODO: Clean up
-                return path.root in roots || path.subPaths.get(1) in roots
-            } else {
-                return path.root in roots
-            }
-        }
+        override fun matches(path: ParadoxPath) = path.root in roots
     },
     ModDescriptorFile {
         override fun matches(path: ParadoxPath): Boolean {

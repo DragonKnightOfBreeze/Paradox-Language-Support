@@ -26,14 +26,14 @@ import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.optimizedIfEmpty
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
+import icu.windea.pls.lang.normalizedPathExtension
 
-internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver,CwtConfigResolverMixin {
+internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
@@ -48,7 +48,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver,CwtConfigResol
         }
 
         val propGroup = propElements.groupBy { it.key }
-        var paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) {it.stringValue?.normalizePath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizePath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
         val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
@@ -71,17 +71,6 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver,CwtConfigResol
         val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
-
-        if (configGroup.gameType.subDirectoryEntries.isNotNullOrEmpty() && paths.isNotNullOrEmpty()) {
-            val temp = sortedSetOf<String>()
-            for (path in paths) {
-                temp += path
-                for (subDirectory in configGroup.gameType.subDirectoryEntries) {
-                    temp += "$subDirectory/$path"
-                }
-            }
-            paths = temp
-        }
 
         // merge all properties named 'modifiers'
         propGroup.getAll("modifiers").forEach { prop ->

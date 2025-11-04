@@ -11,7 +11,6 @@ import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
@@ -37,13 +36,14 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
         return filePathWithoutExtension.removePrefixOrNull(expression, ignoreCase)?.trimFast('/')
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         return null // 信息不足
     }
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         val fileNameWithoutExtension = pathReference.substringAfterLast('/')
-        return PlsConstants.imageFileExtensions.mapTo(mutableSetOf()) { "$fileNameWithoutExtension.$it" }
+        val resolved = PlsConstants.imageFileExtensions.mapTo(mutableSetOf()) { "$fileNameWithoutExtension.$it" }
+        return resolved
     }
 
     private fun getFilePathWithoutExtension(filePath: String): String? {
@@ -113,14 +113,14 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         }
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         val expression = configExpression.value ?: return pathReference.singleton.set()
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             return null // 信息不足
         }
         val index = configExpression.expressionString.lastIndexOf(',') // `,` 应当最多出现一次
-        val resolvedPath = if (index == -1) {
+        val resolved = if (index == -1) {
             if (expression.endsWith('/')) {
                 "$expression$pathReference"
             } else {
@@ -129,21 +129,18 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         } else {
             expression.replace(",", pathReference)
         }
-        if (gameType != null && gameType.subDirectoryEntries.isNotEmpty()) {
-            return gameType.subDirectoryEntries.map { "$it/$resolvedPath" }.toSet()
-        } else {
-            return resolvedPath.singleton.set()
-        }
+        return resolved.singleton.set()
     }
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
         val expression = configExpression.value ?: return pathReference.substringAfterLast('/').singleton.set()
         val index = expression.lastIndexOf(',') // `,` 应当最多出现一次
-        if (index == -1) {
-            return pathReference.substringAfterLast('/').singleton.set()
+        val resolved = if (index == -1) {
+            pathReference.substringAfterLast('/')
         } else {
-            return expression.replace(",", pathReference).substringAfterLast('/').singleton.set()
+            expression.replace(",", pathReference).substringAfterLast('/')
         }
+        return resolved.singleton.set()
     }
 
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {
@@ -171,7 +168,7 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
         return filePath.substringAfterLast('/')
     }
 
-    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String, gameType: ParadoxGameType?): Set<String>? {
+    override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
         return null // 信息不足
     }
 

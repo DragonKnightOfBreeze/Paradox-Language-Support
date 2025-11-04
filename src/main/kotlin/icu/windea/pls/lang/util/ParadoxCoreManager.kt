@@ -18,9 +18,9 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.localisationLocalesById
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -195,10 +195,10 @@ object ParadoxCoreManager {
 
     private fun resolvePathAndEntryName(relPath: ParadoxPath, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String> {
         if (rootInfo is ParadoxRootInfo.Mod) return relPath to ""
-        relPath.path.removePrefixOrNull("game/")?.let { return ParadoxPath.resolve(it) to "game" }
-        rootInfo.gameType.entryNames.forEach { entryName ->
-            relPath.path.removePrefixOrNull("$entryName/")?.let { return ParadoxPath.resolve(it) to entryName }
+        rootInfo.gameType.entryMap.forEach { (entryName, entryPath) ->
+            relPath.subPaths.removePrefixOrNull(entryPath)?.let { return ParadoxPath.resolve(it) to entryName }
         }
+        // relPath.subPaths.removePrefixOrNull(listOf("game"))?.let { return ParadoxPath.resolve(it) to "game" }
         return relPath to ""
     }
 

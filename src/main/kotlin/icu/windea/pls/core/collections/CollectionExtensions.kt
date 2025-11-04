@@ -156,6 +156,26 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
 //    return this
 // }
 
+/** 如果当前列表存在指定的作为后缀的子列表（可以为空），则去除并返回。否则，返回 `null`。*/
+fun <T> List<T>.removePrefixOrNull(prefix: List<T>): List<T>? {
+    if (prefix.isEmpty()) return this
+    if (prefix.size > this.size) return null
+    for ((i, e) in prefix.withIndex()) {
+        if (e != this[i]) return null
+    }
+    return this.drop(prefix.size)
+}
+
+/** 如果当前列表存在指定的作为后缀的子列表（可以为空），则去除并返回，否则返回 `null`。*/
+fun <T> List<T>.removeSuffixOrNull(suffix: List<T>): List<T>? {
+    if (suffix.isEmpty()) return this
+    if (suffix.size > this.size) return null
+    for ((i, e) in suffix.withIndex()) {
+        if (e != this[this.size - suffix.size + i]) return null
+    }
+    return this.dropLast(suffix.size)
+}
+
 /** 如果当前列表为空或单例，则返回优化后的 [List]，否则返回自身。用于优化内存。*/
 fun <T> List<T>.optimized(): List<T> = if (size <= 1) toList() else this
 

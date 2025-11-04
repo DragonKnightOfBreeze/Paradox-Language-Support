@@ -68,7 +68,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     consumer.process(file)
                 }
             } else {
-                val resolvedPaths = support.resolvePath(configExpression, filePath, gameType)
+                val resolvedPaths = support.resolvePath(configExpression, filePath)
                 if (resolvedPaths.isNotNullOrEmpty()) {
                     val keys = resolvedPaths
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->

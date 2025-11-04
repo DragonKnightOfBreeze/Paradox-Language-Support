@@ -101,7 +101,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String {
-        // remove leading `@` & can be parameterized
+        // remove leading `@` & can be parameterized & intern to optimize memory
         return element.text.removePrefix("@").intern()
     }
 
@@ -236,7 +236,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        // remove leading `@` & can be parameterized
+        // remove leading `@` & can be parameterized & intern to optimize memory
         return element.text.removePrefix("@").intern()
     }
 

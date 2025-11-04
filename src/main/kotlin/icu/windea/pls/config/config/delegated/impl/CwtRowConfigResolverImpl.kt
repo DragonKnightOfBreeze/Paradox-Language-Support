@@ -14,6 +14,8 @@ import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.lang.normalizedPath
+import icu.windea.pls.lang.normalizedPathExtension
 
 internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()

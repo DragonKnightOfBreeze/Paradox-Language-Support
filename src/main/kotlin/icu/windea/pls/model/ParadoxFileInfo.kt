@@ -6,8 +6,8 @@ import java.util.*
 /**
  * 文件信息。
  *
- * @property path 文件路径。相对于入口目录，参见 [ParadoxGameType.EntryNames]。
- * @property entryName 入口名称。参见 [ParadoxGameType.EntryNames]。
+ * @property path 文件路径。相对于入口目录，参见 [ParadoxGameType.Entries]。
+ * @property entryName 入口名称。参见 [ParadoxGameType.Entries]。
  * @property fileType 检测得到的文件类型。
  * @property rootInfo 游戏或模组的根信息。
  */
@@ -17,8 +17,12 @@ class ParadoxFileInfo(
     val fileType: ParadoxFileType,
     val rootInfo: ParadoxRootInfo
 ) {
+    /**
+     * 是否位于主要入口目录中。参见 [ParadoxGameType.Entries]。
+     */
     fun inMainEntry(): Boolean {
-        return entryName.isEmpty() || entryName == "game"
+        // empty entry name -> consider as in main entry
+        return entryName.isEmpty() || entryName in rootInfo.gameType.mainEntries
     }
 
     override fun equals(other: Any?): Boolean {

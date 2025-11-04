@@ -76,4 +76,32 @@ class MapExtensionsTest {
         level2["inner"] = 5
         assertEquals(5, m2["outer"]?.get("inner"))
     }
+
+    @Test
+    fun optimized_map_behaviors() {
+        // empty -> emptyMap()
+        val e = emptyMap<String, Int>()
+        val eo = e.optimized()
+        assertEquals(emptyMap<String, Int>(), eo)
+
+        // singleton -> toMap() (content equal)
+        val s = mapOf("a" to 1)
+        val so = s.optimized()
+        assertEquals(mapOf("a" to 1), so)
+
+        // size > 1 -> same instance
+        val m = linkedMapOf("a" to 1, "b" to 2)
+        val mo = m.optimized()
+        assertSame(m, mo)
+    }
+
+    @Test
+    fun optimizedIfEmpty_map() {
+        val e = emptyMap<String, Int>()
+        val eo = e.optimizedIfEmpty()
+        assertEquals(emptyMap<String, Int>(), eo)
+
+        val m = mutableMapOf("a" to 1)
+        assertSame(m, m.optimizedIfEmpty())
+    }
 }
