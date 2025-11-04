@@ -24,8 +24,6 @@ public interface ParadoxScriptParameter extends ParadoxParameter, ParadoxScriptA
 
   @NotNull ParadoxScriptParameter setName(@NotNull String name);
 
-  @Nullable String getValue();
-
   int getTextOffset();
 
   @Nullable String getDefaultValue();

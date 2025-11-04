@@ -44,8 +44,8 @@ object ParadoxScriptElementFactory {
     }
 
     @JvmStatic
-    fun createPropertyKey(project: Project, text: String): ParadoxScriptPropertyKey {
-        return createProperty(project, "$text = v")
+    fun createPropertyKey(project: Project, name: String): ParadoxScriptPropertyKey {
+        return createProperty(project, "$name = v")
             .findChild<ParadoxScriptPropertyKey>() ?: throw IncorrectOperationException()
     }
 

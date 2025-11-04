@@ -50,7 +50,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariable): String? {
         element.stub?.name?.orNull()?.let { return it }
-        return element.scriptedVariableName.name
+        return element.scriptedVariableName.name.orNull()
     }
 
     @JvmStatic
@@ -100,14 +100,9 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getName(element: ParadoxScriptScriptedVariableName): String? {
-        // 不包含作为前缀的"@"
-        return element.text.removePrefix("@").orNull()
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptScriptedVariableName): String? {
-        return element.name
+    fun getName(element: ParadoxScriptScriptedVariableName): String {
+        // remove leading `@` & can be parameterized
+        return element.text.removePrefix("@").intern()
     }
 
     // endregion
@@ -205,7 +200,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptPropertyKey): String {
-        return element.value
+        return getValue(element)
     }
 
     @JvmStatic
@@ -236,12 +231,13 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableReference): String {
-        return element.text.removePrefix("@")
+        return getValue(element)
     }
 
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        return element.name
+        // remove leading `@` & can be parameterized
+        return element.text.removePrefix("@").intern()
     }
 
     @JvmStatic
@@ -289,7 +285,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getColorType(element: ParadoxScriptColor): String {
-        return element.text.substringBefore('{').trim()
+        return element.text.substringBefore('{').trim().intern() // intern to optimize memory
     }
 
     @JvmStatic
@@ -332,7 +328,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptValue): String {
-        return element.value
+        return getValue(element)
     }
 
     @JvmStatic
@@ -375,7 +371,7 @@ object ParadoxScriptPsiImplUtil {
                 else -> true
             }
         }
-        return builder?.toString()
+        return builder?.toString()?.intern() // intern to optimize memory
     }
 
     @JvmStatic
@@ -411,7 +407,7 @@ object ParadoxScriptPsiImplUtil {
                 else -> true
             }
         }
-        return builder?.toString()
+        return builder?.toString()?.intern() // intern to optimize memory
     }
 
     @JvmStatic
@@ -442,11 +438,6 @@ object ParadoxScriptPsiImplUtil {
     fun setName(element: ParadoxScriptParameterConditionParameter, name: String): ParadoxScriptParameterConditionParameter {
         val newElement = ParadoxScriptElementFactory.createParameterConditionParameter(element.project, name)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptParameterConditionParameter): String {
-        return element.name
     }
 
     @JvmStatic
@@ -509,11 +500,6 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    @JvmStatic
-    fun getValue(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
-        return element.name
-    }
-
     // endregion
 
     // region ParadoxScriptParameter
@@ -543,11 +529,6 @@ object ParadoxScriptPsiImplUtil {
         if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptParameter): String? {
-        return element.name
     }
 
     @JvmStatic
@@ -596,11 +577,6 @@ object ParadoxScriptPsiImplUtil {
         if (element.idElement == null) throw IncorrectOperationException() // 不支持重命名
         val newElement = ParadoxScriptElementFactory.createInlineMathParameterSmartly(element.project, name)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptInlineMathParameter): String? {
-        return element.name
     }
 
     @JvmStatic

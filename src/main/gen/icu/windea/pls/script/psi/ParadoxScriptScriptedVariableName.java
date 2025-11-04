@@ -15,9 +15,7 @@ public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAware
 
   @Nullable PsiElement getIdElement();
 
-  @Nullable String getName();
-
-  @Nullable String getValue();
+  @NotNull String getName();
 
   @NotNull GlobalSearchScope getResolveScope();
 

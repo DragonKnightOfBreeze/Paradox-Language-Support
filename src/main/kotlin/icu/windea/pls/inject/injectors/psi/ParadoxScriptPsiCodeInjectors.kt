@@ -7,6 +7,19 @@ import icu.windea.pls.inject.annotations.InjectTarget
 interface ParadoxScriptPsiCodeInjectors {
     // 用于优化性能
 
+    /** @see icu.windea.pls.script.psi.ParadoxScriptScriptedVariable */
+    @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl", pluginId = "icu.windea.pls")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
+    @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
+    class ScriptedVariable : CodeInjectorBase()
+
+    /** @see icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName */
+    @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableNameImpl", pluginId = "icu.windea.pls")
+    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
+    class ScriptedVariableName : CodeInjectorBase()
+
     /** @see icu.windea.pls.script.psi.ParadoxScriptProperty */
     @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl", pluginId = "icu.windea.pls")
     // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")

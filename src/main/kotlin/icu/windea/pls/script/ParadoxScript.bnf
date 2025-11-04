@@ -55,7 +55,7 @@ scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> sc
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
-  methods=[getIdElement parameter="" getName getValue]
+  methods=[getIdElement parameter="" getName]
 }
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_parameter_condition
 private scripted_variable_separator ::= EQUAL_SIGN
@@ -199,7 +199,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getValue getTextOffset getDefaultValue getReference
+    getIcon getName setName getTextOffset getDefaultValue getReference
   ]
 }
 inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
@@ -211,7 +211,7 @@ inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument=""
-    getIcon getName setName getValue getTextOffset getDefaultValue getReference
+    getIcon getName setName getTextOffset getDefaultValue getReference
   ]
 }
 private parameter_name ::= PARAMETER_TOKEN
@@ -242,7 +242,7 @@ private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_exp
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
   implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
-  methods=[getIdElement getIcon getName setName getValue getTextOffset getReference]
+  methods=[getIdElement getIcon getName setName getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition {
   recoverWhile="#auto"
@@ -326,8 +326,7 @@ inline_math_scripted_variable_reference ::= inline_math_scripted_variable_refere
   ]
   methods=[
     getIdElement inline_math_parameter=""
-    getIcon getName setName getValue getReference getReferences
+    getIcon getName setName getReference getReferences
   ]
 }
 private inline_math_scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
-

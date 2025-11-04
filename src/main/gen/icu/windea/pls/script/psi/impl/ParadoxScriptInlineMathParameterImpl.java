@@ -60,11 +60,6 @@ public class ParadoxScriptInlineMathParameterImpl extends ParadoxScriptInlineMat
   }
 
   @Override
-  public @Nullable String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
   public int getTextOffset() {
     return ParadoxScriptPsiImplUtil.getTextOffset(this);
   }

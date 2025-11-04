@@ -55,11 +55,6 @@ public class ParadoxScriptParameterConditionParameterImpl extends ASTWrapperPsiE
   }
 
   @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
   public int getTextOffset() {
     return ParadoxScriptPsiImplUtil.getTextOffset(this);
   }

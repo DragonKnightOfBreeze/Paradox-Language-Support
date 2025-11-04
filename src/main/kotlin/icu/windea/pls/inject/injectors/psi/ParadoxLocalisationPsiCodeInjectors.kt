@@ -9,7 +9,7 @@ interface ParadoxLocalisationPsiCodeInjectors {
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationLocale */
     @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationLocaleImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
     class Locale : CodeInjectorBase()
 
@@ -17,7 +17,7 @@ interface ParadoxLocalisationPsiCodeInjectors {
     @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl", pluginId = "icu.windea.pls")
     // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     @InjectFieldBasedCache("getName", cleanup = "subtreeChanged")
-    @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getValue", cleanup = "subtreeChanged")
     class Property : CodeInjectorBase()
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey */
@@ -27,7 +27,7 @@ interface ParadoxLocalisationPsiCodeInjectors {
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue */
     @InjectTarget("icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyValueImpl", pluginId = "icu.windea.pls")
-    @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
+    // @InjectFieldBasedCache("getText", cleanup = "subtreeChanged")
     class PropertyValue : CodeInjectorBase()
 
     /** @see icu.windea.pls.localisation.psi.ParadoxLocalisationParameter */
