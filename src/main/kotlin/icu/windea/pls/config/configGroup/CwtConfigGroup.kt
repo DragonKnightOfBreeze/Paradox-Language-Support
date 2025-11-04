@@ -33,6 +33,7 @@ class CwtConfigGroup(
 ) : UserDataHolderBase() {
     private val mutex = Mutex()
 
+    val initialized = AtomicBoolean()
     val changed = AtomicBoolean()
     val modificationTracker = SimpleModificationTracker()
 
@@ -51,6 +52,7 @@ class CwtConfigGroup(
             dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
             configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
             modificationTracker.incModificationCount() // 显式增加修改计数
+            initialized.set(true) // 标记规则数据已全部加载完毕
             val end = System.currentTimeMillis()
             val targetName = if (project.isDefault) "application" else "project '${project.name}'"
             logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")

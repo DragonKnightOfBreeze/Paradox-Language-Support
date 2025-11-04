@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.selectGameType
@@ -17,6 +18,9 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
  */
 abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
+        // 要求规则数据已全部加载完毕
+        if (!PlsInspectionUtil.isConfigGroupInitialized(file)) return false
+
         return ParadoxPsiFileMatcher.isLocalisationFile(file, smart = true, injectable = true)
     }
 

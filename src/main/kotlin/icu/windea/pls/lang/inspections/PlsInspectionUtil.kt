@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.LocalQuickFix
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.match.similarity.SimilarityMatchOptions
@@ -11,11 +13,18 @@ import icu.windea.pls.lang.quickfix.GenerateLocalisationsFix
 import icu.windea.pls.lang.quickfix.GenerateLocalisationsInFileFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionFix
 import icu.windea.pls.lang.quickfix.ReplaceWithSimilarExpressionInListFix
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContextBuilder
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object PlsInspectionUtil {
+    fun isConfigGroupInitialized(file: PsiFile): Boolean {
+        val project = file.project
+        return PlsFacade.getConfigGroup(project).initialized.get()
+            && PlsFacade.getConfigGroup(project, selectGameType(file)).initialized.get()
+    }
+
     fun getSimilarityBasedFixesForUnresolvedExpression(
         element: ParadoxExpressionElement,
         expectedConfigs: List<CwtMemberConfig<*>>

@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.inspections.script.event
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
@@ -12,8 +12,8 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
  */
 abstract class EventInspectionBase : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        // 要求索引就绪
-        if (DumbService.isDumb(file.project)) return false
+        // 要求规则数据已全部加载完毕
+        if (!PlsInspectionUtil.isConfigGroupInitialized(file)) return false
 
         // 仅检查事件的脚本文件
         if (file !is ParadoxScriptFile) return false
