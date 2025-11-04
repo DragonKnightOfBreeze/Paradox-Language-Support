@@ -15,7 +15,7 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     // 基于 expressionString 的结果缓存，避免重复解析
     // - maximumSize: 限制缓存上界，避免长时间运行导致内存无限增长
     // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收，保持性能与内存的平衡
-    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
         .build<String, CwtSchemaExpression> { doResolve(it) }
 
     // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）

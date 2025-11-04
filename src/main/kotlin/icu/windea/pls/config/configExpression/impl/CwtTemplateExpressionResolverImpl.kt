@@ -21,7 +21,7 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
     // 模板解析结果缓存：模板常用于复杂规则拼装，命中率较高
     // - maximumSize: 限制上界，避免内存膨胀
     // - expireAfterAccess: 非热点在一段时间无访问后自动淘汰
-    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=10m")
+    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
         .build<String, CwtTemplateExpression> { doResolve(it) }
 
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
