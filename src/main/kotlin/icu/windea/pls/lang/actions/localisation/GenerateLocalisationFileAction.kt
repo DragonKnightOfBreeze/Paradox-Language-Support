@@ -33,7 +33,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -151,7 +150,7 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                PlsCoreManager.createNotification(
+                PlsFacade.createNotification(
                     NotificationType.INFORMATION,
                     PlsBundle.message("notification.generateLocalisationFile.success.title"),
                     PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total)

@@ -1,9 +1,9 @@
 package icu.windea.pls.config.configGroup
 
+import com.intellij.openapi.components.service
 import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.ep.configGroup.CwtBuiltInConfigGroupFileProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
@@ -21,7 +21,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (file !is CwtFile) return
         val vFile = file.virtualFile ?: return
         val project = file.project
-        val configGroupService = PlsFacade.getConfigGroupService()
+        val configGroupService = service<CwtConfigGroupService>()
         val configGroups = mutableSetOf<CwtConfigGroup>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->

@@ -1,9 +1,10 @@
 package icu.windea.pls.test
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
@@ -14,20 +15,20 @@ import kotlinx.coroutines.runBlocking
 
 object PlsTestUtil {
     fun initConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
-        val configGroupService = PlsFacade.getConfigGroupService()
+        val configGroupService = service<CwtConfigGroupService>()
         val groups = configGroupService.getConfigGroups(project).values
         runBlocking { configGroupService.init(groups, project) }
         return configGroupService.getConfigGroup(project, gameType)
     }
 
     fun initConfigGroups(project: Project) {
-        val configGroupService = PlsFacade.getConfigGroupService()
+        val configGroupService = service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups(project).values
         runBlocking { configGroupService.init(configGroups, project) }
     }
 
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        val configGroupService = PlsFacade.getConfigGroupService()
+        val configGroupService = service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups(project).values
             .filter { it.gameType == ParadoxGameType.Core || it.gameType in gameTypes }
         runBlocking { configGroupService.init(configGroups, project) }

@@ -9,7 +9,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 /**
  * 用于提供重载后的规则。
@@ -55,7 +55,7 @@ interface CwtOverriddenConfigProvider {
                         it.originalConfig = config
                         it.overriddenProvider = ep
                     }
-                    ?.also { PlsCoreManager.dynamicContextConfigs.set(true) }
+                    ?.also { PlsStates.dynamicContextConfigs.set(true) }
             }.orEmpty()
         }
     }

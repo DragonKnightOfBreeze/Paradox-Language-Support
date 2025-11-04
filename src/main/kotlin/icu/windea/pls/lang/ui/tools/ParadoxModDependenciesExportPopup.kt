@@ -9,12 +9,12 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.tools.exporter.ParadoxModExporter
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.errorDetails
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.qualifiedName
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.tools.toModSetInfo
 import kotlinx.coroutines.CancellationException
 
@@ -62,22 +62,22 @@ class ParadoxModDependenciesExportPopup(
             if (e is ProcessCanceledException || e is CancellationException) throw e
             logger.warn(e)
             val content = PlsBundle.message("mod.dependencies.export.error") + e.message.errorDetails
-            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
         val from = modSetInfo.name
         if (result.actualTotal == 0) {
             val content = PlsBundle.message("mod.dependencies.export.empty", from)
-            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
 
         if (result.warning != null) {
             val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal) + result.warning.errorDetails
-            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
+            PlsFacade.createNotification(NotificationType.WARNING, qualifiedName, content).notify(project)
             return
         }
         val content = PlsBundle.message("mod.dependencies.export.info", from, result.actualTotal)
-        PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
+        PlsFacade.createNotification(NotificationType.INFORMATION, qualifiedName, content).notify(project)
     }
 }

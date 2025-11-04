@@ -48,7 +48,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxRootInfo
@@ -136,7 +135,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         if (localisations.size <= 1) {
             // unexpected, should not be empty here
-            PlsCoreManager.createNotification(
+            PlsFacade.createNotification(
                 NotificationType.INFORMATION,
                 PlsBundle.message("diff.compare.localisations.content.title.info.1")
             ).notify(project)

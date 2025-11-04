@@ -13,6 +13,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
@@ -20,7 +21,6 @@ import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.lang.withErrorRef
@@ -90,16 +90,16 @@ class AiCopyLocalisationWithTranslationIntention : ManipulateLocalisationIntenti
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
-                return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
+                return PlsFacade.createNotification(NotificationType.INFORMATION, content)
             }
             val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess())
-            return PlsCoreManager.createNotification(NotificationType.WARNING, content)
+            return PlsFacade.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
-        return PlsCoreManager.createNotification(NotificationType.WARNING, content)
+        return PlsFacade.createNotification(NotificationType.WARNING, content)
     }
 }

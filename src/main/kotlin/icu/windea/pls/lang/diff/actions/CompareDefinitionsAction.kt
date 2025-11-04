@@ -48,7 +48,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -139,7 +138,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         if (definitions.size <= 1) {
             // unexpected, should not be empty here
-            PlsCoreManager.createNotification(
+            PlsFacade.createNotification(
                 NotificationType.INFORMATION,
                 PlsBundle.message("diff.compare.definitions.content.title.info.1")
             ).notify(project)

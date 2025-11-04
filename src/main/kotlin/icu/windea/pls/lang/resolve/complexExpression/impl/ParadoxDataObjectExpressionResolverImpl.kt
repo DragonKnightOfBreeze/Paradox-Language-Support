@@ -13,11 +13,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObject
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()

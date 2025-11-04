@@ -23,7 +23,6 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.reflect.KMutableProperty0
@@ -122,7 +121,7 @@ object PlsTigerLintManager {
         val title = PlsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> PlsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: PlsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        PlsCoreManager.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
+        PlsFacade.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
     }
 
     /**

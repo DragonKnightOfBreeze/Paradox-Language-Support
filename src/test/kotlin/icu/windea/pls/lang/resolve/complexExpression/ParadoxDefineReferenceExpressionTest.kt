@@ -10,7 +10,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -33,7 +33,7 @@ class ParadoxDefineReferenceExpressionTest : ParadoxComplexExpressionTest() {
         incomplete: Boolean = false
     ): ParadoxDefineReferenceExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
+        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxDefineReferenceExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 

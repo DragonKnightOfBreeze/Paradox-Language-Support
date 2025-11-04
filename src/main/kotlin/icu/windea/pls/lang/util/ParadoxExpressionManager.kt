@@ -84,6 +84,7 @@ import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -861,7 +862,7 @@ object ParadoxExpressionManager {
         // 尝试兼容可能包含参数的情况
         // if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
@@ -872,7 +873,7 @@ object ParadoxExpressionManager {
     private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         // 尝试基于CWT规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
-        val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val matchOptions = if (processMergedIndex) ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope else ParadoxMatchOptions.Default
         val configs = getConfigs(element, orDefault = isKey, matchOptions = matchOptions)
         val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
@@ -887,7 +888,7 @@ object ParadoxExpressionManager {
         // 尝试兼容可能包含参数的情况
         // if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        val processMergedIndex = PlsCoreManager.processMergedIndex.get() == true
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)

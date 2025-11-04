@@ -12,7 +12,7 @@ import icu.windea.pls.lang.ParadoxLibraryProvider
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
 import icu.windea.pls.lang.paradoxLibrary
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 
 /**
  * 当添加或更改模组配置后，刷新库信息。
@@ -42,8 +42,8 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         }
 
         // 重新解析根目录下已打开的文件（IDE之后会自动请求重新索引）
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true).filter { VfsUtil.isAncestor(root, it, true) }
-        PlsCoreManager.reparseFiles(openedFiles)
+        val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true).filter { VfsUtil.isAncestor(root, it, true) }
+        PlsAnalyzeManager.reparseFiles(openedFiles)
     }
 }
 

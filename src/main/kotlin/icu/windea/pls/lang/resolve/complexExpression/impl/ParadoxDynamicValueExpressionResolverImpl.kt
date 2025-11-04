@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
@@ -28,7 +28,7 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
 
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)

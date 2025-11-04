@@ -72,7 +72,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.withState
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
@@ -668,7 +668,7 @@ object ParadoxComplexExpressionCompletionManager {
     }
 
     private inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(PlsCoreManager.incompleteComplexExpression, action)
+        return withState(PlsStates.incompleteComplexExpression, action)
     }
 
     // endregion

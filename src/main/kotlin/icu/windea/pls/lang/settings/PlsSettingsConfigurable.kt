@@ -21,7 +21,7 @@ import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
@@ -666,15 +666,15 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = PlsCoreManager.findFilesByFileNames(fileNames)
-        PlsCoreManager.reparseFiles(files)
+        val files = PlsAnalyzeManager.findFilesByFileNames(fileNames)
+        PlsAnalyzeManager.reparseFiles(files)
     }
 
     private fun refreshForOpenedFiles() {
         if (!callbackLock.check("refreshForOpenedFiles")) return
 
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsCoreManager.refreshFiles(openedFiles)
+        val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalyzeManager.refreshFiles(openedFiles)
     }
 
     private fun refreshForParameterInference() {
@@ -688,13 +688,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForInlineScriptInference() {
         if (!callbackLock.check("refreshForInlineScriptInference")) return
 
+        ParadoxModificationTrackers.FileTracker.incModificationCount()
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
 
         // 这里只用刷新内联脚本文件
-        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsCoreManager.reparseFiles(openedFiles)
+        val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsAnalyzeManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForScopeContextInference() {

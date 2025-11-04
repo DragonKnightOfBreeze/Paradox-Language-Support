@@ -2,7 +2,7 @@ package icu.windea.pls.lang.match
 
 import com.intellij.util.BitUtil
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 /**
  * 匹配结果。
@@ -47,8 +47,8 @@ sealed class ParadoxMatchResult {
             return when {
                 this is LazySimpleMatch -> BitUtil.isSet(options, ParadoxMatchOptions.Relax)
                 this is LazyBlockAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.Relax)
-                this is LazyIndexAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.SkipIndex) || PlsCoreManager.processMergedIndex.get() == true
-                this is LazyScopeAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.SkipScope) || PlsCoreManager.processMergedIndex.get() == true
+                this is LazyIndexAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.SkipIndex) || PlsStates.processMergedIndex.get() == true
+                this is LazyScopeAwareMatch -> BitUtil.isSet(options, ParadoxMatchOptions.SkipScope) || PlsStates.processMergedIndex.get() == true
                 else -> false
             }
         }

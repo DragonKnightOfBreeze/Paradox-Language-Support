@@ -23,7 +23,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxPredefinedCommandFieldNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemCommandScopeNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -46,7 +46,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
         incomplete: Boolean = false
     ): ParadoxCommandExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
+        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 

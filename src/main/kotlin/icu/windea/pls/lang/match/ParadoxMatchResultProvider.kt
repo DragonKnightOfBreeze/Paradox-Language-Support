@@ -31,7 +31,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 private typealias KeyForCache = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
@@ -61,7 +61,7 @@ object ParadoxMatchResultProvider {
 
     fun getCachedMatchResult(element: PsiElement, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {
         // indexing -> should not visit indices -> treat as exact match
-        if (PlsCoreManager.processMergedIndex.get() == true) return ParadoxMatchResult.ExactMatch
+        if (PlsStates.processMergedIndex.get() == true) return ParadoxMatchResult.ExactMatch
 
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch

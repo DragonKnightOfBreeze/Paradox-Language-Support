@@ -1,6 +1,9 @@
 package icu.windea.pls
 
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -36,8 +39,6 @@ object PlsFacade {
 
     fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
 
-    fun getConfigGroupService() = service<CwtConfigGroupService>()
-
     /**
      * 得到默认项目的指定游戏类型的规则分组。不能用来访问 PSI。
      *
@@ -45,7 +46,7 @@ object PlsFacade {
      */
     fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return getConfigGroupService().getConfigGroup(getDefaultProject(), finalGameType)
+        return service<CwtConfigGroupService>().getConfigGroup(getDefaultProject(), finalGameType)
     }
 
     /**
@@ -56,7 +57,7 @@ object PlsFacade {
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return getConfigGroupService().getConfigGroup(project, finalGameType)
+        return service<CwtConfigGroupService>().getConfigGroup(project, finalGameType)
     }
 
     fun getSettings() = service<PlsSettings>().state
@@ -84,6 +85,16 @@ object PlsFacade {
     }
 
     fun getInternalSettings() = service<PlsInternalSettings>()
+
+    fun createNotification(notificationType: NotificationType, content: String): Notification {
+        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+            .createNotification(content, notificationType)
+    }
+
+    fun createNotification(notificationType: NotificationType, title: String, content: String): Notification {
+        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+            .createNotification(title, content, notificationType)
+    }
 
     /** 是否正在进行单元测试。*/
     fun isUnitTestMode(): Boolean {

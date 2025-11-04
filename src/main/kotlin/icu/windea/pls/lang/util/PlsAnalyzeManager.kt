@@ -2,9 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.editor.EditorFactory
@@ -20,47 +17,8 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxBaseFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.index.ParadoxMergedIndex
 
-object PlsCoreManager {
-    // region ThreadLocals
-
-    /**
-     * 用于标记当前线程是否正在为[ParadoxMergedIndex]编制索引。
-     */
-    val processMergedIndex = ThreadLocal<Boolean>()
-
-    /**
-     * 用于标记当前线程是否正在为[ParadoxMergedIndex]编制索引并且正在解析引用。
-     */
-    val resolveForMergedIndex = ThreadLocal<Boolean>()
-
-    /**
-     * 用于标记是否是动态的上下文规则。（例如需要基于脚本上下文）
-     */
-    val dynamicContextConfigs = ThreadLocal<Boolean>()
-
-    /**
-     * 用于标记是否允许不完整的复杂脚本表达式。（用于兼容代码补全）
-     */
-    val incompleteComplexExpression = ThreadLocal<Boolean>()
-
-    // endregion
-
-    // region Global Methods
-
-    fun createNotification(notificationType: NotificationType, content: String): Notification {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-            .createNotification(content, notificationType)
-    }
-
-    fun createNotification(notificationType: NotificationType, title: String, content: String): Notification {
-        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-            .createNotification(title, content, notificationType)
-    }
-
-    // endregion
-
+object PlsAnalyzeManager {
     // region VFS Methods
 
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
@@ -116,7 +74,7 @@ object PlsCoreManager {
 
     // endregion
 
-    // region VFS Refresh Methods
+    // region Refresh & Reparse Methods
 
     @Volatile
     private var reparseLock = false // 防止抖动（否则可能出现SOF）
@@ -139,13 +97,14 @@ object PlsCoreManager {
             if (file !in files) return@f false
             true
         }
+        if (editors.isEmpty()) return
         val psiFiles = runReadAction {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
+        ParadoxModificationTrackers.refreshAllFileTrackers()
         runInEdt {
-            ParadoxModificationTrackers.refreshPsi()
+            // reparse files
             FileContentUtilCore.reparseFiles(files)
-
             // restart DaemonCodeAnalyzer
             psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
             // refresh inlay hints
@@ -169,7 +128,6 @@ object PlsCoreManager {
         val psiFiles = runReadAction {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
-
         if (restartDaemon) {
             // restart DaemonCodeAnalyzer
             psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }

@@ -21,7 +21,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 /**
  * 解析器：Stellaris 命名格式表达式。
@@ -36,7 +36,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         val configExpression = config.configExpression ?: return null
         if (configExpression.type != CwtDataTypes.StellarisNameFormat) return null
 
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val formatName = configExpression.value

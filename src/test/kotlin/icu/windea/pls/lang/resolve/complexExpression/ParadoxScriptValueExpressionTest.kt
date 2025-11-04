@@ -10,7 +10,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArgumentValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -33,7 +33,7 @@ class ParadoxScriptValueExpressionTest : ParadoxComplexExpressionTest() {
         incomplete: Boolean = false
     ): ParadoxScriptValueExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
+        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         val linkConfig = configGroup.links["script_value"] ?: error("script_value link not found in config group")
         return ParadoxScriptValueExpression.resolve(text, TextRange(0, text.length), configGroup, linkConfig)
     }

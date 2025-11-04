@@ -17,7 +17,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -47,8 +47,8 @@ class CwtConfigGroupService {
             }
             if (!project.isDefault) {
                 // 重新解析已打开的文件
-                val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-                PlsCoreManager.reparseFiles(openedFiles)
+                val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
+                PlsAnalyzeManager.reparseFiles(openedFiles)
             }
             callback()
         }
@@ -117,11 +117,11 @@ class CwtConfigGroupService {
                 refresh(configGroups, project)
             }
             // 重新解析已打开的文件
-            val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsCoreManager.reparseFiles(openedFiles)
+            val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsAnalyzeManager.reparseFiles(openedFiles)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
-                PlsCoreManager.createNotification(
+                PlsFacade.createNotification(
                     NotificationType.INFORMATION,
                     PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
                     ""
@@ -131,7 +131,7 @@ class CwtConfigGroupService {
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                 }
-                PlsCoreManager.createNotification(
+                PlsFacade.createNotification(
                     NotificationType.INFORMATION,
                     PlsBundle.message("configGroup.refresh.notification.finished.title"),
                     PlsBundle.message("configGroup.refresh.notification.finished.content")
@@ -145,8 +145,8 @@ class CwtConfigGroupService {
         // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
         reparseFilesInRootFilePaths(configGroups)
         val rootFilePaths = getRootFilePaths(configGroups)
-        val files = PlsCoreManager.findFilesByRootFilePaths(rootFilePaths)
-        PlsCoreManager.reparseFiles(files)
+        val files = PlsAnalyzeManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsAnalyzeManager.reparseFiles(files)
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {

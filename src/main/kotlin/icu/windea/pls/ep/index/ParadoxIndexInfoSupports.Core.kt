@@ -15,7 +15,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.withState
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxGameType
@@ -84,7 +84,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         }
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsCoreManager.resolveForMergedIndex) { reference.resolve() }
+            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
             if (resolved !is ParadoxDynamicValueElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
                 val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
@@ -100,7 +100,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
         val references = ParadoxExpressionManager.getExpressionReferences(element)
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsCoreManager.resolveForMergedIndex) { reference.resolve() }
+            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
             if (resolved !is ParadoxDynamicValueElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
                 val info = ParadoxDynamicValueIndexInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.gameType)
@@ -144,7 +144,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
         }
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsCoreManager.resolveForMergedIndex) { reference.resolve() }
+            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
             if (resolved !is ParadoxParameterElement) return@f
             // note that element.startOffset may not equal to actual parameterElement.startOffset (e.g. in a script value expression)
             val info = ParadoxParameterIndexInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, resolved.gameType)
@@ -187,7 +187,7 @@ class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<Par
         }
         references.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
-            val resolved = withState(PlsCoreManager.resolveForMergedIndex) { reference.resolve() }
+            val resolved = withState(PlsStates.resolveForMergedIndex) { reference.resolve() }
             if (resolved !is ParadoxLocalisationParameterElement) return@f
             val info = ParadoxLocalisationParameterIndexInfo(resolved.name, resolved.localisationName, resolved.gameType)
             addToFileData(info, fileData)

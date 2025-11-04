@@ -9,7 +9,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObject
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -32,7 +32,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
         incomplete: Boolean = false
     ): ParadoxDatabaseObjectExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
+        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), configGroup)
     }
 

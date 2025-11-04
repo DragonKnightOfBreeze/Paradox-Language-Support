@@ -14,11 +14,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefinePrefixNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDefineVariableNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxDefineReferenceExpressionResolverImpl : ParadoxDefineReferenceExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()

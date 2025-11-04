@@ -13,7 +13,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
@@ -28,7 +28,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
             }
         }.takeIf { it.expressionString.isNotEmpty() } ?: return null
 
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         // 这里需要允许部分匹配

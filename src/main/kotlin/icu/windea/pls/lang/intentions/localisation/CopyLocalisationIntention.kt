@@ -8,7 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.PlsFacade
 import java.awt.datatransfer.StringSelection
 
 /**
@@ -28,6 +28,6 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(),
 
     private fun createNotification(): Notification {
         val content = PlsBundle.message("intention.copyLocalisation.notification", Messages.success())
-        return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
+        return PlsFacade.createNotification(NotificationType.INFORMATION, content)
     }
 }

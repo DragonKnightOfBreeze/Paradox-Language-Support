@@ -43,15 +43,15 @@ class CwtConfigContext(
         val cached = withRecursionGuard {
             withRecursionCheck(cachedKey) action@{
                 try {
-                    PlsCoreManager.dynamicContextConfigs.set(false)
+                    PlsStates.dynamicContextConfigs.set(false)
                     // use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
                         doGetConfigs(matchOptions)?.optimized().orEmpty()
                     }
                 } finally {
                     // use uncached result if result context configs are dynamic (e.g., based on script context)
-                    if (PlsCoreManager.dynamicContextConfigs.get() == true) cache.invalidate(cachedKey)
-                    PlsCoreManager.dynamicContextConfigs.remove()
+                    if (PlsStates.dynamicContextConfigs.get() == true) cache.invalidate(cachedKey)
+                    PlsStates.dynamicContextConfigs.remove()
                 }
             }
         } ?: emptyList() // unexpected recursion, return empty list

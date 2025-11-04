@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.tryPutUserData
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxMetadataManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 
 /**
  * 用于监听游戏或模组文件的更改，以更新相关缓存。
@@ -136,21 +136,22 @@ class ParadoxFileListener : AsyncFileListener {
         }
     }
 
+    private fun refreshForInlineScripts() {
+        // 重新解析内联脚本文件
+        ParadoxModificationTrackers.FileTracker.incModificationCount()
+        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
+    }
+
     private fun reparseOpenedFiles() {
         // 重新解析所有项目的所有已打开的文件
-        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsCoreManager.reparseFiles(files)
+        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsAnalyzeManager.reparseFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
         // 重新解析所有项目的所有已打开的内联脚本文件
-        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsCoreManager.reparseFiles(files)
-    }
-
-    private fun refreshForInlineScripts() {
-        // 重新解析内联脚本文件
-        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
+        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsAnalyzeManager.reparseFiles(files)
     }
 }

@@ -26,8 +26,8 @@ import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxScriptedVariableType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -42,7 +42,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 class ParadoxScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (PlsCoreManager.resolveForMergedIndex.get() == true) return
+        if (PlsStates.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)

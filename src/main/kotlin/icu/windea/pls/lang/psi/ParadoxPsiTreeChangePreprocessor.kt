@@ -16,11 +16,11 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
         override fun enteredDumbMode() {
-            ParadoxModificationTrackers.refreshPsi()
+            ParadoxModificationTrackers.refreshAllFileTrackers()
         }
 
         override fun exitDumbMode() {
-            ParadoxModificationTrackers.refreshPsi()
+            ParadoxModificationTrackers.refreshAllFileTrackers()
         }
     }
 
@@ -32,6 +32,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         when {
             file is ParadoxScriptFile -> {
                 val fileInfo = file.fileInfo ?: return
+                ParadoxModificationTrackers.FileTracker.incModificationCount()
                 ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
 
                 val trackers = ParadoxModificationTrackers.ScriptFileTrackers.values
@@ -46,11 +47,13 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 }
             }
             file is ParadoxLocalisationFile -> {
-                if(file.fileInfo == null) return
+                if (file.fileInfo == null) return
+                ParadoxModificationTrackers.FileTracker.incModificationCount()
                 ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
             }
             file is ParadoxCsvFile -> {
-                if(file.fileInfo == null) return
+                if (file.fileInfo == null) return
+                ParadoxModificationTrackers.FileTracker.incModificationCount()
                 ParadoxModificationTrackers.CsvFileTracker.incModificationCount()
             }
         }

@@ -20,12 +20,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldNode
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxType
 
 internal class ParadoxValueFieldExpressionResolverImpl : ParadoxValueFieldExpression.Resolver {
     override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-        val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+        val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         // skip if text is a number

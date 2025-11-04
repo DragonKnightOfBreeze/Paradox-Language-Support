@@ -40,7 +40,6 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.qualifiedName
 import java.awt.Color
@@ -95,7 +94,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         }
         if (virtualFiles.size <= 1) {
             // unexpected, should not be empty here
-            PlsCoreManager.createNotification(
+            PlsFacade.createNotification(
                 NotificationType.INFORMATION,
                 PlsBundle.message("diff.compare.files.content.title.info.1")
             ).notify(project)

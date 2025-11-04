@@ -24,12 +24,12 @@ import com.intellij.util.IncorrectOperationException
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.containers.MultiMap
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.images.ImageManager
-import icu.windea.pls.lang.util.PlsCoreManager
 import icu.windea.pls.lang.util.PlsFileManager
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
@@ -109,7 +109,7 @@ abstract class ConvertImageFormatAction(
                     files.size -> PlsBundle.message("convertImageFormat.error.1", targetFormatName)
                     else -> PlsBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                PlsCoreManager.createNotification(NotificationType.WARNING, content)
+                PlsFacade.createNotification(NotificationType.WARNING, content)
                     .notify(targetDirectory.project)
             }
         } catch (e: Exception) {

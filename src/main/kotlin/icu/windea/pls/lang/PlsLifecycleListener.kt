@@ -4,12 +4,14 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.getDefaultProject
@@ -90,7 +92,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun initConfigGroupsAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         if (project.isDisposed) return
-        PlsFacade.getConfigGroupService().initAsync(project) {
+        service<CwtConfigGroupService>().initAsync(project) {
             // 规则数据加载完毕后，异步地刷新外部库的根目录
             refreshRootsForLibrariesAsync(project)
         }

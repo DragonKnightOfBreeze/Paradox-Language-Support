@@ -12,7 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 import kotlinx.coroutines.launch
 import javax.swing.Icon
 
@@ -44,7 +44,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
             if (projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsAnalyzeManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 

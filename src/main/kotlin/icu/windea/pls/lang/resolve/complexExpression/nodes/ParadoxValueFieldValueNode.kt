@@ -13,7 +13,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpressi
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxValueFieldValueNode(
@@ -36,7 +36,7 @@ class ParadoxValueFieldValueNode(
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
-            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val separatorChar = if(linkConfigs.any { it.argumentSeparator.usePipe() }) '|' else ','
 

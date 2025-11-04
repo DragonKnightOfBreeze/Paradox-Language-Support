@@ -12,7 +12,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -38,7 +38,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val configs = configGroup.links.values.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
-        if (incomplete) PlsCoreManager.incompleteComplexExpression.set(true) else PlsCoreManager.incompleteComplexExpression.remove()
+        if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
         return ParadoxDynamicValueExpression.resolve(text, TextRange(0, text.length), configGroup, configs)
     }
 

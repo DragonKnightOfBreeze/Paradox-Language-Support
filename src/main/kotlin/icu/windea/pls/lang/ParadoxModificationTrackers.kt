@@ -2,17 +2,20 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.util.SimpleModificationTracker
 import icu.windea.pls.core.util.FilePathBasedModificationTracker
-import icu.windea.pls.core.util.MergedModificationTracker
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 用于追踪更改 - 具有更高的精确度，提高缓存命中率。
  */
 object ParadoxModificationTrackers {
+    /** 追踪任意游戏或模组目录中的脚本文件、本地化文件或 CSV 文件的更改。 */
+    val FileTracker = SimpleModificationTracker()
+    /** 追踪任意游戏或模组目录中的脚本文件的更改。 */
     val ScriptFileTracker = SimpleModificationTracker()
+    /** 追踪任意游戏或模组目录中的本地化文件的更改。 */
     val LocalisationFileTracker = SimpleModificationTracker()
+    /** 追踪任意游戏或模组目录中的 CSV 文件的更改。 */
     val CsvFileTracker = SimpleModificationTracker()
-    val FileTracker = MergedModificationTracker(ScriptFileTracker, LocalisationFileTracker, CsvFileTracker)
 
     val ScriptFileTrackers = ConcurrentHashMap<String, FilePathBasedModificationTracker>()
 
@@ -23,12 +26,14 @@ object ParadoxModificationTrackers {
     val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables/**/*.txt")
     val InlineScriptsTracker = ScriptFileTracker("common/inline_scripts/**/*.txt")
 
+    val LocaleTracker = SimpleModificationTracker()
+
     val ParameterConfigInferenceTracker = SimpleModificationTracker()
     val InlineScriptConfigInferenceTracker = SimpleModificationTracker()
     val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
-    val LocaleTracker = SimpleModificationTracker()
 
-    fun refreshPsi() {
+    fun refreshAllFileTrackers() {
+        FileTracker.incModificationCount()
         ScriptFileTracker.incModificationCount()
         LocalisationFileTracker.incModificationCount()
         CsvFileTracker.incModificationCount()

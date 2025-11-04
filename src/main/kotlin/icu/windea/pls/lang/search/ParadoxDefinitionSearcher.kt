@@ -18,7 +18,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if (PlsCoreManager.resolveForMergedIndex.get() == true) return
+        if (PlsStates.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         val project = queryParameters.project
