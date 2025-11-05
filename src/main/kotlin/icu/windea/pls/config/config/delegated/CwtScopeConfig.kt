@@ -26,6 +26,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @property name 规则名称。
  * @property aliases 该作用域的别名集合（忽略大小写）。
+ * @property isSubscopeOf TODO 暂不支持。
  *
  * @see ParadoxScope
  * @see ParadoxScopeContext
@@ -35,6 +36,8 @@ interface CwtScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     @FromProperty("aliases: string[]")
     val aliases: Set<@CaseInsensitive String>
+    @FromProperty("is_subscope_of: string?")
+    val isSubscopeOf: String?
 
     interface Resolver {
         /** 由属性规则解析为作用域规则。*/

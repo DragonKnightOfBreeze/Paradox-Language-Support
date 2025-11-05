@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimizedIfEmpty
 
 internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverMixin {
@@ -20,22 +21,25 @@ internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigRe
     private fun doResolve(config: CwtPropertyConfig): CwtScopeConfig? {
         val name = config.key
         val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
-            logger.warn("Skipped invalid scope config (name: $name): Missing properties.".withLocationPrefix(config))
+        if (propElements == null) {
+            logger.warn("Skipped invalid scope config (name: $name): Null properties.".withLocationPrefix(config))
             return null
         }
-        val aliases = propElements.find { it.key == "aliases" }?.let { prop ->
+        val propGroup = propElements.groupBy { it.key }
+        val aliases = propGroup.getOne("aliases")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
         }?.optimizedIfEmpty().orEmpty()
+        val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue
         logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }
-        return CwtScopeConfigImpl(config, name, aliases)
+        return CwtScopeConfigImpl(config, name, aliases, isSubscopeOf)
     }
 }
 
 private class CwtScopeConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val aliases: Set<String>
+    override val aliases: Set<String>,
+    override val isSubscopeOf: String?,
 ) : UserDataHolderBase(), CwtScopeConfig {
     override fun toString() = "CwtScopeConfigImpl(name='$name')"
 }
