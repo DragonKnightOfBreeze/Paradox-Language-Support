@@ -81,7 +81,7 @@ class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.VariableField, "variable_field(", "") { floatRange = FloatRangeInfo.from("($it") },
         rule(CwtDataTypes.VariableField, "variable_field32"),
         rule(CwtDataTypes.VariableField, "variable_field32[", "") { floatRange = FloatRangeInfo.from("[$it") },
-        rule(CwtDataTypes.VariableField, "variable_field32(", "") { floatRange = FloatRangeInfo.from("[$it") },
+        rule(CwtDataTypes.VariableField, "variable_field32(", "") { floatRange = FloatRangeInfo.from("($it") },
         rule(CwtDataTypes.IntVariableField, "int_variable_field"),
         rule(CwtDataTypes.IntVariableField, "int_variable_field[", "") { intRange = IntRangeInfo.from("[$it") },
         rule(CwtDataTypes.IntVariableField, "int_variable_field(", "") { intRange = IntRangeInfo.from("($it") },

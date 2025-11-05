@@ -229,11 +229,27 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
 
         // variable field variants
         run { assertEquals(CwtDataTypes.VariableField, CwtDataExpression.resolve("variable_field", false).type) }
-        run { assertEquals("foo", CwtDataExpression.resolve("variable_field[foo]", false).value) }
-        run { assertEquals("bar", CwtDataExpression.resolve("variable_field32[bar]", false).value) }
+        run {
+            val e = CwtDataExpression.resolve("variable_field[0.0..1.0]", false)
+            assertEquals(CwtDataTypes.VariableField, e.type)
+            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.floatRange)
+        }
+        run {
+            val e = CwtDataExpression.resolve("variable_field32(0.0..1.0]", false)
+            assertEquals(CwtDataTypes.VariableField, e.type)
+            assertEquals(FloatRangeInfo.from("(0.0..1.0]"), e.floatRange)
+        }
         run { assertEquals(CwtDataTypes.IntVariableField, CwtDataExpression.resolve("int_variable_field", false).type) }
-        run { assertEquals("7", CwtDataExpression.resolve("int_variable_field[7]", false).value) }
-        run { assertEquals("8", CwtDataExpression.resolve("int_variable_field_32[8]", false).value) }
+        run {
+            val e = CwtDataExpression.resolve("int_variable_field(0..1)", false)
+            assertEquals(CwtDataTypes.IntVariableField, e.type)
+            assertEquals(IntRangeInfo.from("(0..1)"), e.intRange)
+        }
+        run {
+            val e = CwtDataExpression.resolve("int_variable_field(0..1]", false)
+            assertEquals(CwtDataTypes.IntVariableField, e.type)
+            assertEquals(IntRangeInfo.from("(0..1]"), e.intRange)
+        }
 
         // alias related
         run { assertEquals("right", CwtDataExpression.resolve("single_alias_right[right]", false).value) }
