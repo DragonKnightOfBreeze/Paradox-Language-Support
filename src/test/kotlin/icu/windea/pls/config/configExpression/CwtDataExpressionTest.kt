@@ -2,6 +2,8 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.util.FloatRangeInfo
+import icu.windea.pls.core.util.IntRangeInfo
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -214,15 +216,15 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         // value field / int value field
         run { assertEquals(CwtDataTypes.ValueField, CwtDataExpression.resolve("value_field", false).type) }
         run {
-            val e = CwtDataExpression.resolve("value_field[abc]", false)
+            val e = CwtDataExpression.resolve("value_field[0.0..1.0]", false)
             assertEquals(CwtDataTypes.ValueField, e.type)
-            assertEquals("abc", e.value)
+            assertEquals(FloatRangeInfo.from("[0.0..1.0]"), e.floatRange)
         }
         run { assertEquals(CwtDataTypes.IntValueField, CwtDataExpression.resolve("int_value_field", false).type) }
         run {
-            val e = CwtDataExpression.resolve("int_value_field[42]", false)
+            val e = CwtDataExpression.resolve("int_value_field(0..1)", false)
             assertEquals(CwtDataTypes.IntValueField, e.type)
-            assertEquals("42", e.value)
+            assertEquals(IntRangeInfo.from("(0..1)"), e.intRange)
         }
 
         // variable field variants

@@ -88,8 +88,9 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     val cardinality: CwtOptionDataAccessor<CwtCardinalityExpression?> by create(cached = true) {
         val option = findOption("cardinality")
         if (option == null) {
-            // 如果没有注明且类型是常量，则推断为 1..~1
-            if (configExpression.type == CwtDataTypes.Constant) {
+            // 如果没有注明且类型是常量或枚举值，则推断为 1..~1
+            val dataType = configExpression.type
+            if (dataType == CwtDataTypes.Constant || dataType == CwtDataTypes.EnumValue) {
                 return@create CwtCardinalityExpression.resolve("1..~1")
             }
         }
