@@ -18,11 +18,11 @@ object ParadoxMatchService {
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
-        options: Int = ParadoxMatchOptions.Default
+        matchOptions: Int = ParadoxMatchOptions.Default
     ): ParadoxMatchResult {
-        val matchContext = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, options)
-        val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(matchContext) }
-        return matchResult ?: ParadoxMatchResult.NotMatch
+        val context = ParadoxScriptExpressionMatcher.Context(element, expression, configExpression, config, configGroup, matchOptions)
+        val result = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(context) }
+        return result ?: ParadoxMatchResult.NotMatch
     }
 
     /**
@@ -34,8 +34,8 @@ object ParadoxMatchService {
         configExpression: CwtDataExpression,
         configGroup: CwtConfigGroup,
     ): ParadoxMatchResult {
-        val matchContext = ParadoxCsvExpressionMatcher.Context(element, expressionText, configExpression, configGroup)
-        val matchResult = ParadoxCsvExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(matchContext) }
-        return matchResult ?: ParadoxMatchResult.NotMatch
+        val context = ParadoxCsvExpressionMatcher.Context(element, expressionText, configExpression, configGroup)
+        val result = ParadoxCsvExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(context) }
+        return result ?: ParadoxMatchResult.NotMatch
     }
 }

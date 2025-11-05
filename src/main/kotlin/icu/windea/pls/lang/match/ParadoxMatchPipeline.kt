@@ -2,14 +2,8 @@ package icu.windea.pls.lang.match
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.ParadoxExpressionManager.isConstantMatch
-import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ParadoxType
-import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxMatchPipeline {
     inline fun <T : CwtMemberConfig<*>> collectCandidates(
@@ -91,63 +85,16 @@ object ParadoxMatchPipeline {
         configs: List<CwtMemberConfig<*>>,
         matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
+        // 进行后续优化
+
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
         var result = configs
-
-        run r1@{
-            // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
-            if (result.size <= 1) return@r1
-            if (expression.type != ParadoxType.String) return@r1
-            val result1 = result.filter { isConstantMatch(configGroup, expression, it.configExpression) }
-            if (result1.isEmpty()) return@r1
-            result = result1
+        val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, matchOptions)
+        for (optimizer in ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList) {
+            result = optimizer.optimize(result, context)
+            if (result.isEmpty()) break
         }
-
-        run r1@{
-            // 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
-            if (result.isEmpty()) return@r1
-            val group = result.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
-            if (group.isEmpty()) return@r1
-            val filteredGroup = group.filter { configs -> configs.size > 1 && configs.filter { it.valueType == CwtType.Block }.size > 1 }
-            if (filteredGroup.isEmpty()) return@r1
-            val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
-            val blockExpression = ParadoxScriptExpression.resolveBlock()
-            val configsToRemove = mutableSetOf<CwtPropertyConfig>()
-            for (configs in filteredGroup) {
-                for (config in configs) {
-                    val valueConfig = config.valueConfig ?: continue
-                    val matchResult = ParadoxMatchService.matchScriptExpression(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)
-                    if (matchResult.get(matchOptions)) continue
-                    configsToRemove += config
-                }
-            }
-            if (configsToRemove.isEmpty()) return@r1
-            val result1 = result.filter { it !in configsToRemove }
-            result = result1
-        }
-
-        run r1@{
-            // 如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
-            if (result.isEmpty()) return@r1
-            val result1 = mutableListOf<CwtMemberConfig<*>>()
-            for (config in result) {
-                val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, config)
-                if (overriddenConfigs.isEmpty()) {
-                    result1 += config
-                    continue
-                }
-                // 这里需要再次进行匹配
-                for (c in overriddenConfigs) {
-                    val matchResult = ParadoxMatchService.matchScriptExpression(element, expression, c.configExpression, c, configGroup, matchOptions)
-                    if (matchResult.get(matchOptions)) {
-                        result1 += c
-                    }
-                }
-            }
-            result = result1
-        }
-
         return result
     }
 }

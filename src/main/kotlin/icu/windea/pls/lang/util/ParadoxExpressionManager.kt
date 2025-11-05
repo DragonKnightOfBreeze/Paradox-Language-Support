@@ -87,7 +87,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchResultOptimizer
+import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -279,13 +279,11 @@ object ParadoxExpressionManager {
     }
 
     fun isParameterElementInExpression(element: PsiElement): Boolean {
-        return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition
-            || element is ParadoxLocalisationParameter
+        return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition || element is ParadoxLocalisationParameter
     }
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
-        return text.firstOrNull()?.let { it == '+' || it == '-' } == true
-            && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
+        return text.firstOrNull()?.let { it == '+' || it == '-' } == true && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
     }
 
     // endregion
@@ -310,22 +308,14 @@ object ParadoxExpressionManager {
     }
 
     fun getConfigsForConfigContext(
-        element: ParadoxScriptMember,
-        rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxElementPath,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, elementPathFromRoot: ParadoxElementPath, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         return result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
     }
 
     private fun doGetConfigsForConfigContext(
-        element: ParadoxScriptMember,
-        rootConfigs: List<CwtMemberConfig<*>>,
-        elementPathFromRoot: ParadoxElementPath,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
+        element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, elementPathFromRoot: ParadoxElementPath, configGroup: CwtConfigGroup, matchOptions: Int
     ): List<CwtMemberConfig<*>> {
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
 
@@ -408,10 +398,11 @@ object ParadoxExpressionManager {
                 if (subPath == "-") return@r1 // #196
                 if (!matchesKey) return@r1
                 ProgressManager.checkCanceled()
-                val candidates = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
                     ParadoxMatchService.matchScriptExpression(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
                 }
-                val optimizedResult = ParadoxMatchResultOptimizer.optimize(elementToMatch, expression, candidates, true, matchOptions)
+                val filteredResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
+                val optimizedResult = ParadoxMatchPipeline.optimize(elementToMatch, expression, filteredResult, matchOptions)
                 result = optimizedResult
             }
         }
@@ -434,10 +425,7 @@ object ParadoxExpressionManager {
     }
 
     private fun inlineConfigForConfigContext(
-        element: ParadoxScriptMember,
-        key: String,
-        config: CwtPropertyConfig,
-        matchOptions: Int
+        element: ParadoxScriptMember, key: String, config: CwtPropertyConfig, matchOptions: Int
     ): List<CwtMemberConfig<*>>? {
         val valueExpression = config.valueExpression
         val result = when (valueExpression.type) {
@@ -455,9 +443,7 @@ object ParadoxExpressionManager {
     }
 
     fun getConfigs(
-        element: PsiElement,
-        orDefault: Boolean = true,
-        matchOptions: Int = ParadoxMatchOptions.Default
+        element: PsiElement, orDefault: Boolean = true, matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
@@ -503,20 +489,23 @@ object ParadoxExpressionManager {
 
                 ProgressManager.checkCanceled()
                 val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-                val candidatesMatchKey = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                val candidatesForKey = ParadoxMatchPipeline.collectCandidates(result) { config ->
                     ParadoxMatchService.matchScriptExpression(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
                 }
-                val resultMatchKey = ParadoxMatchResultOptimizer.optimize(element, keyExpression, candidatesMatchKey, true, matchOptions)
+                val filteredResultForKey = ParadoxMatchPipeline.filter(candidatesForKey, matchOptions)
+                val optimizedResultForKey = ParadoxMatchPipeline.optimize(element, keyExpression, filteredResultForKey, matchOptions)
+                val resultForKey = optimizedResultForKey
+                if (resultForKey.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
                 ProgressManager.checkCanceled()
                 val valueExpression = element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-                if (valueExpression == null) return resultMatchKey // 如果无法得到值表达式，则返回所有匹配键的规则
-                val candidates = ParadoxMatchResultOptimizer.collectCandidates(resultMatchKey) { config ->
+                if (valueExpression == null) return resultForKey // 如果无法得到值表达式，则返回所有匹配键的规则
+                val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
-                val optimizedResult = ParadoxMatchResultOptimizer.optimize(element, valueExpression, candidates, false, matchOptions)
-                if (optimizedResult.isEmpty() && orDefault) return resultMatchKey // 如果无结果且需要使用默认值，则返回所有匹配键的规则
-                return optimizedResult
+                val filteredResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
+                if (filteredResult.isEmpty() && orDefault) return resultForKey // 如果无结果且需要使用默认值，则返回所有匹配键的规则
+                return filteredResult
             }
             else -> {
                 // 匹配文件或单独的值
@@ -530,10 +519,10 @@ object ParadoxExpressionManager {
                     else -> null
                 }
                 if (valueExpression == null) return result // 如果无法得到值表达式，则返回所有上下文值规则
-                val candidates = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
-                val optimizedResult = ParadoxMatchResultOptimizer.optimize(element, valueExpression, candidates, false, matchOptions)
+                val optimizedResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
                 if (optimizedResult.isEmpty() && orDefault) return result // 如果无结果且需要使用默认值，则返回所有上下文值规则
                 return optimizedResult
             }
