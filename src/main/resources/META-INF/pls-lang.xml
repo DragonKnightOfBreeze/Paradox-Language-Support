@@ -40,6 +40,7 @@
     <fileIconProvider implementation="icu.windea.pls.lang.ParadoxFileIconProvider" order="first"/>
     <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>
 
+    <qualifiedNameProvider implementation="icu.windea.pls.lang.CwtQualifiedNameProvider"/>
     <qualifiedNameProvider implementation="icu.windea.pls.lang.ParadoxQualifiedNameProvider"/>
     <codeInsight.typeInfo language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.CwtTypeProvider"/>
     <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTypeProvider"/>

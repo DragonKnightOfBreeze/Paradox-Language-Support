@@ -8,32 +8,32 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-
-// 用于复制路径/引用（Edit > Copy Path/Reference...）
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 
 /**
- * - 如果是封装变量名：返回封装变量的名字
- * - 如果是定义：返回定义的名字
- * - 如果是本地化：返回本地化的键名
- * - 忽略非定义、非定义成员的脚本属性，以及非本地化的本地化属性
+ * 用于复制引用（`Edit > Copy Path/Reference... > Copy Reference`）。
+ *
+ * 说明：
+ * - 封装变量（[ParadoxScriptScriptedVariable]） -> 封装变量的名字。
+ * - 脚本属性（[ParadoxScriptProperty]） - 定义的名字（如果是定义），或者属性的名字。
+ * - 本地化属性（[ParadoxLocalisationProperty]） - 属性的名字。
  */
 class ParadoxQualifiedNameProvider : QualifiedNameProvider {
     override fun adjustElementToCopy(element: PsiElement): PsiElement? {
-        return null
+        return when (element) {
+            is ParadoxScriptScriptedVariableName -> element.parent
+            is ParadoxScriptPropertyKey -> element.parent
+            is ParadoxLocalisationPropertyKey -> element.parent
+            else -> null
+        }
     }
 
     override fun getQualifiedName(element: PsiElement): String? {
-        when {
-            element is ParadoxScriptScriptedVariable -> return element.name
-            element is ParadoxScriptProperty -> {
-                val definitionInfo = element.definitionInfo
-                if (definitionInfo != null) return definitionInfo.name
-                return null
-            }
-            element is ParadoxScriptPropertyKey -> return getQualifiedName(element.parent)
-            element is ParadoxLocalisationProperty -> return element.name
-            element is ParadoxLocalisationPropertyKey -> return getQualifiedName(element.parent)
-            else -> return null
+        return when (element) {
+            is ParadoxScriptScriptedVariable -> element.name
+            is ParadoxScriptProperty -> element.definitionInfo?.name ?: element.name
+            is ParadoxLocalisationProperty -> element.name
+            else -> null
         }
     }
 
@@ -41,3 +41,4 @@ class ParadoxQualifiedNameProvider : QualifiedNameProvider {
         return null // 不处理
     }
 }
+
