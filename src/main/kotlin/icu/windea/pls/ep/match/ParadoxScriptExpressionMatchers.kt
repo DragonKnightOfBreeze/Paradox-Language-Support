@@ -336,7 +336,7 @@ class ParadoxCoreScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ParadoxConstantScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxConstantScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Constant) return null
         val value = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -351,7 +351,7 @@ class ParadoxConstantScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
     }
 }
 
-class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxTemplateScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.TemplateExpression) return null
         if (!expression.type.isStringLikeType()) return ParadoxMatchResult.NotMatch
@@ -359,9 +359,11 @@ class ParadoxTemplateScriptExpressionMatcher : PatternAwareParadoxScriptExpressi
         // 允许用引号括起
         return ParadoxMatchResultProvider.getTemplateMatchResult(element, configGroup, expression.value, configExpression)
     }
+
+    override fun isPatternAware() = true
 }
 
-class ParadoxAntScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxAntScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Ant) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -369,9 +371,11 @@ class ParadoxAntScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMat
         val r = expression.value.matchesAntPattern(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }
+
+    override fun isPatternAware() = true
 }
 
-class ParadoxRegexScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
+class ParadoxRegexScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun match(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): ParadoxMatchResult? {
         if (configExpression.type != CwtDataTypes.Regex) return null
         val pattern = configExpression.value ?: return ParadoxMatchResult.NotMatch
@@ -379,6 +383,8 @@ class ParadoxRegexScriptExpressionMatcher : PatternAwareParadoxScriptExpressionM
         val r = expression.value.matchesRegex(pattern, ignoreCase)
         return ParadoxMatchResult.of(r)
     }
+
+    override fun isPatternAware() = true
 }
 
 class ParadoxPredicateBasedScriptExpressionMatcher : ParadoxScriptExpressionMatcher {

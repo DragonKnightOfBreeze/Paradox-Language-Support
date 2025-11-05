@@ -36,10 +36,8 @@ object ParadoxMatchService {
         configExpression: CwtDataExpression,
         configGroup: CwtConfigGroup,
     ): ParadoxMatchResult {
-        ParadoxCsvExpressionMatcher.EP_NAME.extensionList.forEach f@{ ep ->
-            val r = ep.match(element, expressionText, configExpression, configGroup)
-            if (r != null) return r
-        }
-        return ParadoxMatchResult.NotMatch
+        val context = ParadoxCsvExpressionMatcher.Context(element, expressionText, configExpression, configGroup)
+        val r = ParadoxCsvExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull { ep -> ep.match(context) }
+        return r ?: ParadoxMatchResult.NotMatch
     }
 }

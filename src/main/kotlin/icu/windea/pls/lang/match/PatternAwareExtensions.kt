@@ -8,7 +8,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher
-import icu.windea.pls.ep.match.PatternAwareParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 /**
@@ -39,7 +38,7 @@ fun String.matchFromPattern(
     if (configExpression.expressionString.isEmpty()) return false
     val expression = ParadoxScriptExpression.resolve(key)
     val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-        if (ep !is PatternAwareParadoxScriptExpressionMatcher) return@f null
+        if (!ep.isPatternAware()) return@f null
         ep.match(contextElement, expression, configExpression, null, configGroup, matchOptions)
     }
     if (matchResult == null) return false

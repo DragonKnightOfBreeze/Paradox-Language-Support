@@ -23,7 +23,7 @@ interface ParadoxScriptExpressionMatcher {
      * 匹配脚本表达式和规则表达式。
      *
      * @param element 上下文 PSI 元素。
-     * @param expression 脚本表达式
+     * @param expression 脚本表达式。
      * @param configExpression 规则表达式。
      * @param config 上下文规则。
      * @param configGroup 规则分组。
@@ -40,6 +40,8 @@ interface ParadoxScriptExpressionMatcher {
         configGroup: CwtConfigGroup,
         options: Int = ParadoxMatchOptions.Default
     ): ParadoxMatchResult?
+
+    fun isPatternAware(): Boolean = false
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")

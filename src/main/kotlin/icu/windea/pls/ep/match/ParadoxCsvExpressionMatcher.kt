@@ -18,21 +18,29 @@ interface ParadoxCsvExpressionMatcher {
     /**
      * 匹配 CSV 表达式和规则表达式。
      *
-     * @param element 上下文 PSI 元素。
-     * @param expressionText 表达式文本。
-     * @param configExpression 规则表达式。
-     * @param configGroup 规则分组。
-     * @return 匹配结果。
-     *
+     * @see ParadoxCsvExpressionMatcher.Context
      * @see ParadoxMatchResult
      * @see ParadoxMatchResultProvider
      */
-    fun match(
-        element: PsiElement,
-        expressionText: String,
-        configExpression: CwtDataExpression,
-        configGroup: CwtConfigGroup
-    ): ParadoxMatchResult?
+    fun match(context: Context): ParadoxMatchResult?
+
+    /**
+     * 匹配上下文。
+     *
+     * @property element 上下文 PSI 元素。
+     * @property expressionText 表达式文本。
+     * @property configExpression 规则表达式。
+     * @property configGroup 规则分组。
+     */
+    data class Context(
+        val element: PsiElement,
+        val expressionText: String,
+        val configExpression: CwtDataExpression,
+        val configGroup: CwtConfigGroup,
+    ) {
+        val dataType get() = configExpression.type
+        val project get() = configGroup.project
+    }
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
