@@ -3,6 +3,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.Occurrence
@@ -50,6 +51,27 @@ fun <T : CwtMember> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, 
         occurrence.maxDefine = cardinalityMaxDefine
     }
     return occurrence
+}
+
+
+inline fun CwtMemberConfig<*>.processParent(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
+    var parent = this.parentConfig
+    while (parent != null) {
+        val result = processor(parent)
+        if (!result) return false
+        parent = parent.parentConfig
+    }
+    return true
+}
+
+fun CwtMemberConfig<*>.processDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
+    return doProcessDescendants(processor)
+}
+
+private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
+    processor(this).also { if (!it) return false }
+    this.configs?.process { it.doProcessDescendants(processor) }?.also { if (!it) return false }
+    return true
 }
 
 // endregion

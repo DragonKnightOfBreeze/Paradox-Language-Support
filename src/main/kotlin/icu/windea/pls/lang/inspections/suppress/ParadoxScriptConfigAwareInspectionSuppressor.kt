@@ -9,8 +9,8 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.optionData
+import icu.windea.pls.config.config.processParent
 import icu.windea.pls.config.config.singleAliasConfig
-import icu.windea.pls.config.processParent
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.ParadoxExpressionManager

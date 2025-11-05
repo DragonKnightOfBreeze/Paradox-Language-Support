@@ -8,14 +8,14 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtRowConfig
 import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.config.optimizedPath
+import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.lang.normalizedPath
-import icu.windea.pls.lang.normalizedPathExtension
 
 internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -31,11 +31,11 @@ internal class CwtRowConfigResolverImpl : CwtRowConfig.Resolver, CwtConfigResolv
         }
 
         val propGroup = propElements.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizedPath() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val columnConfigs = propGroup.getOne("columns")?.properties?.associateBy { it.key }.orEmpty()
         val endColumn = propGroup.getOne("end_column")?.stringValue
 

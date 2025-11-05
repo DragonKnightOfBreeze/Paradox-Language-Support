@@ -8,12 +8,12 @@ import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.FloatRangeInfo
 import icu.windea.pls.core.util.IntRangeInfo
-import icu.windea.pls.lang.normalizedPath
 
 class CwtBaseDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(
@@ -52,8 +52,8 @@ class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.FileName, "filename"),
         rule(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() },
         rule(CwtDataTypes.FilePath, "filepath"),
-        rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.normalizedPath().orNull() },
-        rule(CwtDataTypes.Icon, "icon[", "]") { value = it.normalizedPath().orNull() },
+        rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() },
+        rule(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() },
 
         rule(CwtDataTypes.Modifier, "<modifier>"),
         rule(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>"),
@@ -70,18 +70,24 @@ class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.ScopeGroup, "scope_group[", "]") { value = it.orNull() },
 
         rule(CwtDataTypes.ValueField, "value_field"),
-        rule(CwtDataTypes.ValueField, "value_field[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.ValueField, "value_field[", "") { floatRange = FloatRangeInfo.from("[$it") },
+        rule(CwtDataTypes.ValueField, "value_field(", "") { floatRange = FloatRangeInfo.from("($it") },
         rule(CwtDataTypes.IntValueField, "int_value_field"),
-        rule(CwtDataTypes.IntValueField, "int_value_field[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.IntValueField, "int_value_field[", "") { intRange = IntRangeInfo.from("[$it") },
+        rule(CwtDataTypes.IntValueField, "int_value_field(", "") { intRange = IntRangeInfo.from("($it") },
 
         rule(CwtDataTypes.VariableField, "variable_field"),
-        rule(CwtDataTypes.VariableField, "variable_field[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.VariableField, "variable_field[", "") { floatRange = FloatRangeInfo.from("[$it") },
+        rule(CwtDataTypes.VariableField, "variable_field(", "") { floatRange = FloatRangeInfo.from("($it") },
         rule(CwtDataTypes.VariableField, "variable_field32"),
-        rule(CwtDataTypes.VariableField, "variable_field32[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.VariableField, "variable_field32[", "") { floatRange = FloatRangeInfo.from("[$it") },
+        rule(CwtDataTypes.VariableField, "variable_field32(", "") { floatRange = FloatRangeInfo.from("[$it") },
         rule(CwtDataTypes.IntVariableField, "int_variable_field"),
-        rule(CwtDataTypes.IntVariableField, "int_variable_field[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.IntVariableField, "int_variable_field[", "") { intRange = IntRangeInfo.from("[$it") },
+        rule(CwtDataTypes.IntVariableField, "int_variable_field(", "") { intRange = IntRangeInfo.from("($it") },
         rule(CwtDataTypes.IntVariableField, "int_variable_field_32"),
-        rule(CwtDataTypes.IntVariableField, "int_variable_field_32[", "]") { value = it.orNull() },
+        rule(CwtDataTypes.IntVariableField, "int_variable_field_32[", "") { intRange = IntRangeInfo.from("[$it") },
+        rule(CwtDataTypes.IntVariableField, "int_variable_field_32(", "") { intRange = IntRangeInfo.from("($it") },
 
         rule(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]") { value = it.orNull() },
         rule(CwtDataTypes.AliasName, "alias_name[", "]") { value = it.orNull() },

@@ -13,8 +13,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.overriddenProvider
+import icu.windea.pls.config.config.processParent
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.processParent
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider

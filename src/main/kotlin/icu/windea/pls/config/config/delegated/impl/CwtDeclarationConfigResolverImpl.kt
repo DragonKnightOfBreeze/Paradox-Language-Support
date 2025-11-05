@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
-import icu.windea.pls.config.processDescendants
+import icu.windea.pls.config.config.processDescendants
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.collections.optimized

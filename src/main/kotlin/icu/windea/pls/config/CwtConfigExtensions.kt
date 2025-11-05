@@ -13,8 +13,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.toListOrThis
+import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
@@ -45,26 +45,6 @@ fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
     } as? T
 }
 
-inline fun CwtMemberConfig<*>.processParent(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
-    var parent = this.parentConfig
-    while (parent != null) {
-        val result = processor(parent)
-        if (!result) return false
-        parent = parent.parentConfig
-    }
-    return true
-}
-
-fun CwtMemberConfig<*>.processDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
-    return doProcessDescendants(processor)
-}
-
-private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
-    processor(this).also { if (!it) return false }
-    this.configs?.process { it.doProcessDescendants(processor) }?.also { if (!it) return false }
-    return true
-}
-
 val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
 
 val CwtFilePathMatchableConfig.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
@@ -84,3 +64,7 @@ fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
     this.putUserData(PlsKeys.bindingConfig, config)
     return this
 }
+
+fun String.optimizedPath() = removePrefix("game/").normalizePath().intern()
+
+fun String.optimizedPathExtension() = removePrefix(".").intern()

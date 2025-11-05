@@ -20,18 +20,18 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.type2ModifiersMap
+import icu.windea.pls.config.optimizedPath
+import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.optimizedIfEmpty
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.takeWithOperator
-import icu.windea.pls.lang.normalizedPathExtension
 
 internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -48,11 +48,11 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
         }
 
         val propGroup = propElements.groupBy { it.key }
-        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizePath() }.optimized()
+        val paths = propGroup.getAll("path").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val pathFile = propGroup.getOne("path_file")?.stringValue
-        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.normalizedPathExtension()
+        val pathExtension = propGroup.getOne("path_extension")?.stringValue?.optimizedPathExtension()
         val pathStrict = propGroup.getOne("path_strict")?.booleanValue ?: false
-        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.normalizePath() }.optimized()
+        val pathPatterns = propGroup.getAll("path_pattern").mapNotNullTo(sortedSetOf()) { it.stringValue?.optimizedPath() }.optimized()
         val baseType = propGroup.getOne("base_type")?.stringValue
         val nameField = propGroup.getOne("name_field")?.stringValue
         val typeKeyPrefix = propGroup.getOne("type_key_prefix")?.stringValue

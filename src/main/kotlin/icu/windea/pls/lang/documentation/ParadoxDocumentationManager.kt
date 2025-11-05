@@ -82,6 +82,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
@@ -510,8 +512,9 @@ object ParadoxDocumentationManager {
             // 加上定义信息
             append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
-            if (valueElement != null) {
-                append(" = ").append(valueElement.text.escapeXml())
+            when (valueElement) {
+                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
+                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
             }
 
             // 加上相关本地化信息：同名的本地化
@@ -550,8 +553,9 @@ object ParadoxDocumentationManager {
             // 加上定义信息
             append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
-            if (valueElement != null) {
-                append(" = ").append(valueElement.text.escapeXml())
+            when (valueElement) {
+                is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
+                is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
             }
         }
     }

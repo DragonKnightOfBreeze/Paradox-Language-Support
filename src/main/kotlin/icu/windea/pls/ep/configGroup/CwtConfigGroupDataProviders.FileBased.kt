@@ -74,13 +74,13 @@ import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.util.CwtConfigCollector
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.lang.normalizedPath
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -171,7 +171,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "priorities" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val k = config.key.normalizedPath().orNull() ?: continue
+                        val k = config.key.optimizedPath().orNull() ?: continue
                         val v = config.stringValue?.orNull()?.let { ParadoxOverrideStrategy.get(it.uppercase()) } ?: continue
                         configGroup.priorities[k] = v
                     }
