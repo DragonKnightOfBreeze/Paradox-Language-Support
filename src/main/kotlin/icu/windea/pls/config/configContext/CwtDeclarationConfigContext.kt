@@ -61,4 +61,3 @@ private val CwtConfigGroup.declarationConfigCache by createKey(CwtDeclarationCon
 }
 
 var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKey(CwtDeclarationConfigContext.Keys)
-
