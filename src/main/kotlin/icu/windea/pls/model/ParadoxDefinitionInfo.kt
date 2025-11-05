@@ -48,13 +48,13 @@ class ParadoxDefinitionInfo(
 
     val name: String by lazy { name0 ?: doGetName() }
 
+    val type: String = typeConfig.name
+    val subtypes: List<String> by lazy { doGetSubtypes() }
+    val types: List<String> by lazy { doGetTypes() }
+    val typesText: String get() = types.joinToString(", ")
+
     val subtypeConfigs: List<CwtSubtypeConfig> by lazy { subtypeConfigs0 ?: getSubtypeConfigs() }
     val declaration: CwtPropertyConfig? by lazy { getDeclaration() }
-
-    val type: String = typeConfig.name
-    val subtypes: List<String> by lazy { subtypeConfigs.map { it.name } }
-    val types: List<String> by lazy { mutableListOf(type).apply { addAll(subtypes) } }
-    val typesText: String by lazy { types.joinToString(", ") }
 
     val localisations: List<RelatedLocalisationInfo> by lazy { doGetLocalisations() }
     val images: List<RelatedImageInfo> by lazy { doGetImages() }
@@ -78,75 +78,94 @@ class ParadoxDefinitionInfo(
         return ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig)
     }
 
-    private fun doGetSubtypeConfigsFromCache(matchOptions: Int): List<CwtSubtypeConfig> {
-        return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
+    private fun doGetSubtypes(): List<String> {
+        val result = subtypeConfigs.map { it.name }
+        return result.optimized() // optimized to optimize memory
     }
 
-    private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
-        val subtypesConfig = typeConfig.subtypes
-        val result = mutableListOf<CwtSubtypeConfig>()
-        for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxDefinitionManager.matchesSubtype(element, typeKey, subtypeConfig, result, configGroup, matchOptions)) {
-                result.add(subtypeConfig)
-            }
-        }
-        return result.optimized()
+    private fun doGetTypes(): List<String> {
+        val result = buildList(subtypes.size + 1) { add(type); addAll(subtypes) }
+        return result.optimized() // optimized to optimize memory
+    }
+
+    private fun doGetSubtypeConfigsFromCache(matchOptions: Int): List<CwtSubtypeConfig> {
+        return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
     }
 
     private fun doGetDeclarationFromCache(matchOptions: Int): CwtPropertyConfig? {
         return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) ?: EMPTY_OBJECT }.castOrNull()
     }
 
+    private fun doGetSubtypeNames(matchOptions: Int): List<String> {
+        val result = getSubtypeConfigs(matchOptions).map { it.name }
+        return result.optimized() // optimized to optimize memory
+    }
+
+    private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
+        val subtypesConfig = typeConfig.subtypes
+        val result = buildList(subtypesConfig.size) {
+            for (subtypeConfig in subtypesConfig.values) {
+                if (ParadoxDefinitionManager.matchesSubtype(element, typeKey, subtypeConfig, this, configGroup, matchOptions)) {
+                    this += subtypeConfig
+                }
+            }
+        }
+        return result.optimized() // optimized to optimize memory
+    }
+
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
-        val subtypes = getSubtypeConfigs(matchOptions).map { it.name }
+        val subtypes = doGetSubtypeNames(matchOptions)
         val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
-        val mergedConfig = typeConfig.localisation?.getConfigs(subtypes) ?: return emptyList()
-        val result = mutableListOf<RelatedLocalisationInfo>()
-        // 从已有的cwt规则
-        for (config in mergedConfig) {
-            val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
-            val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
-            result.add(info)
+        val mergedConfigs = typeConfig.localisation?.getConfigs(subtypes) ?: return emptyList()
+        val result = buildList(mergedConfigs.size) {
+            for (config in mergedConfigs) {
+                val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
+                val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
+                this += info
+            }
         }
-        return result.optimized()
+        return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetImages(): List<RelatedImageInfo> {
-        val mergedConfig = typeConfig.images?.getConfigs(subtypes) ?: return emptyList()
-        val result = mutableListOf<RelatedImageInfo>()
-        // 从已有的cwt规则
-        for (config in mergedConfig) {
-            val locationExpression = CwtImageLocationExpression.resolve(config.value)
-            val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
-            result.add(info)
+        val mergedConfigs = typeConfig.images?.getConfigs(subtypes) ?: return emptyList()
+        val result = buildList(mergedConfigs.size) {
+            for (config in mergedConfigs) {
+                val locationExpression = CwtImageLocationExpression.resolve(config.value)
+                val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
+                this += info
+            }
         }
-        return result.optimized()
+        return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetModifiers(): List<ModifierInfo> {
-        return buildList {
+        val result = buildList {
             configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) ->
-                add(ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v))
+                this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)
             }
             for (subtype in subtypes) {
                 configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) ->
-                    add(ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v))
+                    this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)
                 }
             }
-        }.optimized()
+        }
+        return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetPrimaryLocalisations(): List<RelatedLocalisationInfo> {
-        return localisations.filter { it.primary || it.primaryByInference }.optimized()
+        val result = localisations.filter { it.primary || it.primaryByInference }
+        return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetPrimaryImages(): List<RelatedImageInfo> {
-        return images.filter { it.primary || it.primaryByInference }.optimized()
+        val result = images.filter { it.primary || it.primaryByInference }
+        return result.optimized() // optimized to optimize memory
     }
 
     override fun equals(other: Any?): Boolean {
