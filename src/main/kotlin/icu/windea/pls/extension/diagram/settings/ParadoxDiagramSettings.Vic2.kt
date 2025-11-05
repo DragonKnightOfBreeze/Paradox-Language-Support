@@ -1,6 +1,5 @@
 package icu.windea.pls.extension.diagram.settings
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
@@ -8,8 +7,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.PlsDocBundle
-import icu.windea.pls.core.collections.provideDelegate
-import icu.windea.pls.core.collections.withDefault
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -35,21 +32,16 @@ class Vic2EventTreeDiagramSettings(
         var type by linkedMap<String, Boolean>()
         @get:XMap
         var attribute by linkedMap<String, Boolean>()
-
-        val attributeSettings = AttributeSettings()
-
-        inner class AttributeSettings {
-            val triggered by attribute withDefault true
-            val major by attribute withDefault true
-        }
     }
 
     override val groupName: String = PlsDiagramBundle.message("eventTree.name.vic2")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val types = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Vic2) }
+        val types = ParadoxEventManager.getAllTypes(gameType)
         settings.type.retainSettings(types)
+        val attributes = ParadoxEventManager.getAllAttributes(gameType)
+        settings.attribute.retainSettings(attributes)
         settings.updateSettings()
 
         row {

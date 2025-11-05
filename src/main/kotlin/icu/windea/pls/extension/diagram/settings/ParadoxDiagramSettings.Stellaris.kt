@@ -8,8 +8,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.XMap
 import icu.windea.pls.PlsDocBundle
-import icu.windea.pls.core.collections.provideDelegate
-import icu.windea.pls.core.collections.withDefault
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
@@ -37,23 +35,16 @@ class StellarisEventTreeDiagramSettings(
         var type by linkedMap<String, Boolean>()
         @get:XMap
         var attribute by linkedMap<String, Boolean>()
-
-        val attributeSettings = AttributeSettings()
-
-        inner class AttributeSettings {
-            val hidden by attribute withDefault true
-            val triggered by attribute withDefault true
-            val major by attribute withDefault true
-            val diplomatic by attribute withDefault true
-        }
     }
 
     override val groupName: String = PlsDiagramBundle.message("eventTree.name.stellaris")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val types = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Stellaris) }
+        val types = ParadoxEventManager.getAllTypes(gameType)
         settings.type.retainSettings(types)
+        val attributes = ParadoxEventManager.getAllAttributes(gameType)
+        settings.attribute.retainSettings(attributes)
         settings.updateSettings()
 
         row {
@@ -91,16 +82,6 @@ class StellarisTechTreeDiagramSettings(
         var category by linkedMap<String, Boolean>()
         @get:XMap
         var attribute by linkedMap<String, Boolean>()
-
-        val attributeSettings = AttributeSettings()
-
-        inner class AttributeSettings {
-            val start by attribute withDefault true
-            val rare by attribute withDefault true
-            val dangerous by attribute withDefault true
-            val insight by attribute withDefault true
-            val repeatable by attribute withDefault true
-        }
     }
 
     override val groupName: String = PlsDiagramBundle.message("techTree.name.stellaris")
@@ -109,10 +90,12 @@ class StellarisTechTreeDiagramSettings(
         val settings = state
         val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getAllTiers(project, null) }
         settings.tier.retainSettings(tiers) { it.name }
-        val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getAllResearchAreas() }
+        val areas = ParadoxTechnologyManager.Stellaris.getAllResearchAreas()
         settings.area.retainSettings(areas)
         val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getAllCategories(project, null) }
         settings.category.retainSettings(categories) { it.name }
+        val attributes = ParadoxTechnologyManager.Stellaris.getAllAttributes(gameType)
+        settings.area.retainSettings(attributes)
         settings.updateSettings()
 
         val areaNameProviders = mutableMapOf<String, () -> String?>()

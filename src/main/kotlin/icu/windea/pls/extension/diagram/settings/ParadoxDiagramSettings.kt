@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
     val project: Project,
     initialState: T,
-    val gameType: ParadoxGameType?
+    open val gameType: ParadoxGameType?
 ) : SimplePersistentStateComponent<T>(initialState) {
     abstract val id: String
 

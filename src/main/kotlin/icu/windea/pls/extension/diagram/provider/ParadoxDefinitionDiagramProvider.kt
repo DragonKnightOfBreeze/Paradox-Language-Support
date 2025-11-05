@@ -4,6 +4,7 @@ import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScopes
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
@@ -82,5 +83,17 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         }
 
         protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
+
+        protected fun showNodeBySettings(settings: Map<String, Boolean>, value: String?): Boolean {
+            val v = value ?: return true
+            val enabled = settings[v] ?: true
+            return enabled
+        }
+
+        protected fun showNodeBySettings(settings: Map<String, Boolean>, values: Collection<String>?): Boolean {
+            val v = values.orNull() ?: return true
+            val enabled = v.mapNotNull { settings[it] }.none { !it }
+            return enabled
+        }
     }
 }

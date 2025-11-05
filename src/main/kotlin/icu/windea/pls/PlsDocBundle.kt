@@ -50,7 +50,7 @@ object PlsDocBundle {
     @JvmStatic
     @Nls
     fun eventType(name: String, gameType: ParadoxGameType?): String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.type.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.type.$name") }
             ?: INSTANCE.messageOrNull("general.event.type.$name")
             ?: INSTANCE.getMessage("default.event.type", name)
     }
@@ -58,7 +58,7 @@ object PlsDocBundle {
     @JvmStatic
     @Nls
     fun eventAttribute(name: String, gameType: ParadoxGameType?): String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.attribute.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.event.attribute.$name") }
             ?: INSTANCE.messageOrNull("general.event.attribute.$name")
             ?: INSTANCE.getMessage("general.event.attribute.default", name)
     }
@@ -66,7 +66,7 @@ object PlsDocBundle {
     @JvmStatic
     @Nls
     fun technologyTier(name: String, gameType: ParadoxGameType?): String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.tier.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.tier.$name") }
             ?: INSTANCE.messageOrNull("general.technology.tier.$name")
             ?: INSTANCE.getMessage("default.technology.tier", name)
     }
@@ -83,7 +83,7 @@ object PlsDocBundle {
             return text
         }
 
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.area.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.area.$name") }
             ?: INSTANCE.messageOrNull("general.technology.area.$name")
             ?: INSTANCE.getMessage("default.technology.area", name)
     }
@@ -100,7 +100,7 @@ object PlsDocBundle {
             return text
         }
 
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.category.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.category.$name") }
             ?: INSTANCE.messageOrNull("general.technology.category.$name")
             ?: INSTANCE.getMessage("default.technology.category", name)
     }
@@ -108,7 +108,7 @@ object PlsDocBundle {
     @JvmStatic
     @Nls
     fun technologyAttribute(name: String, gameType: ParadoxGameType?): String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.attribute.$name")
+        return gameType?.id?.let { INSTANCE.messageOrNull("$it.technology.attribute.$name") }
             ?: INSTANCE.messageOrNull("general.technology.attribute.$name")
             ?: INSTANCE.getMessage("default.technology.attribute", name)
     }

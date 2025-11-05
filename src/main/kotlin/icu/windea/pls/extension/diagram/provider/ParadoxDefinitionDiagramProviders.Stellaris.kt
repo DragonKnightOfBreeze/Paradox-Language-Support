@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.data.StellarisTechnologyData
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
@@ -43,28 +42,15 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        provider: ParadoxDefinitionDiagramProvider
+        override val provider: StellarisEventTreeDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
-            if (provider !is StellarisEventTreeDiagramProvider) return true
             if (settings !is StellarisEventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
 
             // 对于每组配置，只要其中任意一个配置匹配即可
-            with(settings.attributeSettings) {
-                val v = definitionInfo.subtypes.orNull() ?: return@with
-                var enabled = false
-                if (v.contains("hidden")) enabled = enabled || this.hidden
-                if (v.contains("triggered")) enabled = enabled || this.triggered
-                if (v.contains("major")) enabled = enabled || this.major
-                if (v.contains("diplomatic")) enabled = enabled || this.diplomatic
-                if (!enabled) return false
-            }
-            with(settings.type) {
-                val v = definitionInfo.subtypes.orNull() ?: return@with
-                val enabled = v.mapNotNull { this[it] }.none { !it }
-                if (!enabled) return false
-            }
+            if (!showNodeBySettings(settings.type, definitionInfo.subtypes)) return false
+            if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
     }
@@ -122,40 +108,18 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        provider: ParadoxDefinitionDiagramProvider
+        override val provider: StellarisTechTreeDiagramProvider
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
-            if (provider !is StellarisTechTreeDiagramProvider) return true
             if (settings !is StellarisTechTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
             val data = definition.getDefinitionData<StellarisTechnologyData>() ?: return false
 
             // 对于每组配置，只要其中任意一个配置匹配即可
-            with(settings.attributeSettings) {
-                val v = definitionInfo.subtypes.orNull() ?: return@with
-                var enabled = false
-                if (v.contains("start")) enabled = enabled || this.start
-                if (v.contains("rare")) enabled = enabled || this.rare
-                if (v.contains("dangerous")) enabled = enabled || this.dangerous
-                if (v.contains("insight")) enabled = enabled || this.insight
-                if (v.contains("repeatable")) enabled = enabled || this.repeatable
-                if (!enabled) return false
-            }
-            with(settings.tier) {
-                val v = data.tier ?: return@with
-                val enabled = this[v] ?: true
-                if (!enabled) return false
-            }
-            with(settings.area) {
-                val v = data.area ?: return@with
-                val enabled = this[v] ?: true
-                if (!enabled) return false
-            }
-            with(settings.category) {
-                val v = data.category.orNull() ?: return@with
-                val enabled = v.mapNotNull { this[it] }.none { !it }
-                if (!enabled) return false
-            }
+            if (!showNodeBySettings(settings.tier, data.tier)) return false
+            if (!showNodeBySettings(settings.area, data.area)) return false
+            if (!showNodeBySettings(settings.category, data.category)) return false
+            if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
     }
