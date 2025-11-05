@@ -128,6 +128,7 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
             } else {
                 current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
             }
+            ProgressManager.checkCanceled()
         }
     } else {
         current = current.findProperty("", ignoreCase, conditional, inline) ?: return null
@@ -151,9 +152,9 @@ fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     var current: PsiElement = this
     while (current !is PsiDirectory) {
-        ProgressManager.checkCanceled()
         if (current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
         current = current.parent ?: break
+        ProgressManager.checkCanceled()
     }
     return null
 }
@@ -175,12 +176,12 @@ fun PsiElement.findParentProperty(
         current is ParadoxScriptMember -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
-        ProgressManager.checkCanceled()
         if (current is ParadoxScriptDefinitionElement) {
             if (propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
         }
         if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
         current = current.parent ?: break
+        ProgressManager.checkCanceled()
     }
     if (current is ParadoxScriptFile) return current
     return null
@@ -201,12 +202,12 @@ fun PsiElement.findParentProperty(
         current is ParadoxScriptMember -> current = current.parent ?: return null
     }
     while (current !is PsiFile) {
-        ProgressManager.checkCanceled()
         if (current is ParadoxScriptDefinitionElement) {
             if (propertyPredicate(current.name)) return current
         }
         if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
         current = current.parent ?: break
+        ProgressManager.checkCanceled()
     }
     if (current is ParadoxScriptFile) return current
     return null
@@ -233,6 +234,7 @@ fun ParadoxScriptMember.findParentByPath(
                 "-" -> current.parent?.castOrNull<ParadoxScriptBlock>() ?: return null
                 else -> current.findParentProperty(subPath, ignoreCase) ?: return null
             }
+            ProgressManager.checkCanceled()
         }
     }
     if (definitionType != null) {
