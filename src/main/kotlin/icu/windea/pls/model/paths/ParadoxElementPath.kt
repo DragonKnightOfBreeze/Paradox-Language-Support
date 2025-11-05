@@ -41,9 +41,10 @@ interface ParadoxElementPath : Iterable<String> {
         fun resolveEmpty(): ParadoxElementPath
         fun resolve(path: String): ParadoxElementPath
         fun resolve(subPaths: List<String>): ParadoxElementPath
+        fun intern(input: ParadoxElementPath): ParadoxElementPath
     }
 
-    companion object: Resolver by ParadoxElementPathResolverImpl()
+    companion object : Resolver by ParadoxElementPathResolverImpl()
 }
 
 fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath? {
@@ -52,3 +53,6 @@ fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath
     val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
     return ParadoxElementPath.resolve(subPaths)
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxElementPath.intern(): ParadoxElementPath = ParadoxElementPath.intern(this)

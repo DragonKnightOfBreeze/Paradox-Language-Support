@@ -1,68 +1,63 @@
 package icu.windea.pls.model.paths.impl
 
 import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 internal class ParadoxElementPathResolverImpl : ParadoxElementPath.Resolver {
+    private val cacheForSingleton = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+        .build<String, ParadoxElementPath> { SingletonParadoxElementPath(it) }
+
     override fun resolveEmpty(): ParadoxElementPath = EmptyParadoxElementPath
 
     override fun resolve(path: String): ParadoxElementPath {
         if (path.isEmpty()) return EmptyParadoxElementPath
-        return ParadoxElementPathImpl(path)
+        return ParadoxElementPathImpl1(path)
     }
 
     override fun resolve(subPaths: List<String>): ParadoxElementPath {
         if (subPaths.isEmpty()) return EmptyParadoxElementPath
-        return ParadoxElementPathImpl(subPaths)
+        if (subPaths.size == 1) return SingletonParadoxElementPath(subPaths.get(0))
+        return ParadoxElementPathImpl2(subPaths)
+    }
+
+    override fun intern(input: ParadoxElementPath): ParadoxElementPath {
+        return when {
+            input.subPaths.isEmpty() -> EmptyParadoxElementPath
+            input.subPaths.size == 1 -> cacheForSingleton.get(input.subPaths.get(0))
+            else -> input
+        }
     }
 }
 
-private class ParadoxElementPathImpl : ParadoxElementPath {
-    override val path: String
-    override val subPaths: List<String>
+// - 不要在创建时使用 `String.intern()`
+// - 优化子路径列表为空的情况
+// - 优化子路径列表为单例的情况
+
+private abstract class ParadoxElementPathImpl : ParadoxElementPath {
     override val length: Int get() = subPaths.size
 
-    constructor(path: String) {
-        this.path = getPath(path)
-        this.subPaths = getSubPaths(path)
-    }
-
-    constructor(subPaths: List<String>) {
-        this.path = getPath(subPaths)
-        this.subPaths = getSubPath(subPaths)
-    }
-
-    private fun getPath(path: String): String {
-        // intern to optimize memory
-        return path.intern()
-    }
-
-    private fun getPath(subPaths: List<String>): String {
-        // use simple implementation & intern to optimize memory
-        return subPaths.joinToString("/") { it.replace("/", "\\/") }.intern()
-    }
-
-    private fun getSubPaths(path: String): List<String> {
-        // use simple implementation & intern and optimized to optimize memory
-        return path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/').intern() }.optimized()
-    }
-
-    private fun getSubPath(subPaths: List<String>): List<String> {
-        // optimized to optimize memory
-        return subPaths.optimized()
-    }
-
     override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }
 
-private object EmptyParadoxElementPath : ParadoxElementPath {
-    override val path: String = ""
-    override val subPaths: List<String> = emptyList()
-    override val length: Int = 0
+private class ParadoxElementPathImpl1(path: String) : ParadoxElementPathImpl() {
+    override val path: String = path
+    override val subPaths: List<String> = path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/') }.optimized()
+}
 
-    override fun equals(other: Any?) = this === other || other is ParadoxElementPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
+private class ParadoxElementPathImpl2(subPaths: List<String>) : ParadoxElementPathImpl() {
+    override val path: String = subPaths.joinToString("/") { it.replace("/", "\\/") }
+    override val subPaths: List<String> = subPaths
+}
+
+private class SingletonParadoxElementPath(subPath: String) : ParadoxElementPathImpl() {
+    override val path: String = subPath.replace("/", "\\/")
+    override val subPaths: List<String> = listOf(subPath)
+}
+
+private object EmptyParadoxElementPath : ParadoxElementPathImpl() {
+    override val path: String get() = ""
+    override val subPaths: List<String> get() = emptyList()
 }

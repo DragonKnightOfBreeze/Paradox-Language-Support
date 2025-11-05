@@ -41,6 +41,5 @@ interface ParadoxPath : Iterable<String> {
     companion object : Resolver by ParadoxPathResolverImpl()
 }
 
-fun ParadoxPath.matches(matcher: ParadoxPathMatcher): Boolean {
-    return matcher.matches(this)
-}
+@Suppress("NOTHING_TO_INLINE")
+inline fun ParadoxPath.matches(matcher: ParadoxPathMatcher): Boolean = matcher.matches(this)

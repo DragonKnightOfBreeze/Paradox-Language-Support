@@ -17,7 +17,10 @@ internal class ParadoxPathResolverImpl : ParadoxPath.Resolver {
     }
 }
 
-private sealed class ParadoxPathImpl : ParadoxPath {
+// - 不要在创建时使用 `String.intern()`
+// - 优化子路径列表为空的情况
+
+private abstract class ParadoxPathBase : ParadoxPath {
     override val root: String get() = subPaths.firstOrNull().orEmpty()
     override val fileName: String get() = subPaths.lastOrNull().orEmpty()
     override val fileExtension: String? get() = fileName.substringAfterLast('.', "").orNull()
@@ -28,28 +31,23 @@ private sealed class ParadoxPathImpl : ParadoxPath {
     override fun toString() = path
 }
 
-private class ParadoxPathImpl1(path: String) : ParadoxPathImpl() {
+private class ParadoxPathImpl1(path: String) : ParadoxPathBase() {
     override val path: String = path
     override val subPaths: List<String> = path.split('/')
     override val parent: String = path.substringBeforeLast('/', "")
 }
 
-private class ParadoxPathImpl2(subPaths: List<String>) : ParadoxPathImpl() {
+private class ParadoxPathImpl2(subPaths: List<String>) : ParadoxPathBase() {
     override val path: String = subPaths.joinToString("/")
     override val subPaths: List<String> = subPaths
     override val parent: String = path.substringBeforeLast('/', "")
 }
 
-private object EmptyParadoxPath : ParadoxPath {
-    override val subPaths: List<String> = emptyList()
-    override val path: String = ""
-    override val parent: String = ""
-    override val root: String = ""
-    override val fileName: String = ""
-    override val fileExtension: String? = null
-    override val length: Int = 0
-
-    override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
+private object EmptyParadoxPath : ParadoxPathBase() {
+    override val subPaths: List<String> get() = emptyList()
+    override val path: String get() = ""
+    override val parent: String get() = ""
+    override val root: String get() = ""
+    override val fileName: String get() = ""
+    override val fileExtension: String? get() = null
 }

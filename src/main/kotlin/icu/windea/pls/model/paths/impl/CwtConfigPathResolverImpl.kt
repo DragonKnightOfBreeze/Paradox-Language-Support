@@ -8,61 +8,44 @@ internal class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
 
     override fun resolve(path: String): CwtConfigPath {
         if (path.isEmpty()) return EmptyCwtConfigPath
-        return CwtConfigPathImpl(path)
+        return CwtConfigPathImpl1(path)
     }
 
     override fun resolve(subPaths: List<String>): CwtConfigPath {
         if (subPaths.isEmpty()) return EmptyCwtConfigPath
-        return CwtConfigPathImpl(subPaths)
+        if (subPaths.size == 1) return SingletonCwtConfigPath(subPaths.get(0))
+        return CwtConfigPathImpl2(subPaths)
     }
 }
 
-private class CwtConfigPathImpl : CwtConfigPath {
-    override val path: String
-    override val subPaths: List<String>
+// - 不要在创建时使用 `String.intern()`
+// - 优化子路径列表为空的情况
+// - 优化子路径列表为单例的情况
+
+private abstract class CwtConfigPathBase : CwtConfigPath {
     override val length: Int get() = subPaths.size
 
-    constructor(path: String) {
-        this.path = getPath(path)
-        this.subPaths = getSubPaths(path)
-    }
-
-    constructor(subPaths: List<String>) {
-        this.path = getPath(subPaths)
-        this.subPaths = getSubPath(subPaths)
-    }
-
-    private fun getPath(path: String): String {
-        // intern to optimize memory
-        return path.intern()
-    }
-
-    private fun getPath(subPaths: List<String>): String {
-        // use simple implementation & intern to optimize memory
-        return subPaths.joinToString("/") { it.replace("/", "\\/") }.intern()
-    }
-
-    private fun getSubPaths(path: String): List<String> {
-        // use simple implementation & intern and optimized to optimize memory
-        return path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/').intern() }.optimized()
-    }
-
-    private fun getSubPath(subPaths: List<String>): List<String> {
-        // optimized to optimize memory
-        return subPaths.optimized()
-    }
-
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }
 
-private object EmptyCwtConfigPath : CwtConfigPath {
-    override val path: String = ""
-    override val subPaths: List<String> = emptyList()
-    override val length: Int = 0
+private class CwtConfigPathImpl1(path: String) : CwtConfigPathBase() {
+    override val path: String = path
+    override val subPaths: List<String> = path.replace("\\/", "\u0000").split('/').map { it.replace('\u0000', '/') }.optimized()
+}
 
-    override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
+private class CwtConfigPathImpl2(subPaths: List<String>) : CwtConfigPathBase() {
+    override val path: String = subPaths.joinToString("/") { it.replace("/", "\\/") }
+    override val subPaths: List<String> = subPaths
+}
+
+private class SingletonCwtConfigPath(subPath: String) : CwtConfigPathBase() {
+    override val path: String = subPath.replace("/", "\\/")
+    override val subPaths: List<String> = listOf(subPath)
+}
+
+private object EmptyCwtConfigPath : CwtConfigPathBase() {
+    override val path: String get() = ""
+    override val subPaths: List<String> get() = emptyList()
 }

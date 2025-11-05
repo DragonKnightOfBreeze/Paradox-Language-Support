@@ -1,6 +1,5 @@
 package icu.windea.pls.model.paths
 
-import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.model.paths.impl.CwtConfigPathResolverImpl
 
 /**
@@ -33,12 +32,4 @@ interface CwtConfigPath : Iterable<String> {
     }
 
     companion object : Resolver by CwtConfigPathResolverImpl()
-}
-
-@Suppress("unused")
-fun CwtConfigPath.relativeTo(other: CwtConfigPath): CwtConfigPath? {
-    if (this == other) return CwtConfigPath.resolveEmpty()
-    if (this.isEmpty()) return other
-    val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
-    return CwtConfigPath.resolve(subPaths)
 }
