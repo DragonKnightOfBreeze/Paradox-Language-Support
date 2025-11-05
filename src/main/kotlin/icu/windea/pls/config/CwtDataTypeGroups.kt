@@ -7,10 +7,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.IntVariableField,
     )
     val Float = arrayOf(
-        CwtDataTypes.Int,
         CwtDataTypes.Float,
-        CwtDataTypes.IntValueField,
-        CwtDataTypes.IntVariableField,
         CwtDataTypes.ValueField,
         CwtDataTypes.VariableField,
     )
@@ -62,23 +59,22 @@ object CwtDataTypeGroups {
     //     CwtDataTypes.Any,
     // )
 
-    val ImageLocationResolved = arrayOf(
-        CwtDataTypes.FilePath,
-        CwtDataTypes.Icon,
-        CwtDataTypes.Definition,
-    )
-    val LocalisationLocationResolved = arrayOf(
-        CwtDataTypes.Localisation,
-        CwtDataTypes.SyncedLocalisation,
-        CwtDataTypes.InlineLocalisation,
-    )
-
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel,
     )
     val LocalisationAware = arrayOf(
         CwtDataTypes.Localisation,
+        CwtDataTypes.InlineLocalisation,
+    )
+    val ImageLocationAware = arrayOf(
+        CwtDataTypes.FilePath,
+        CwtDataTypes.Icon,
+        CwtDataTypes.Definition,
+    )
+    val LocalisationLocationAware = arrayOf(
+        CwtDataTypes.Localisation,
+        CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation,
     )
     val PatternAware = arrayOf(

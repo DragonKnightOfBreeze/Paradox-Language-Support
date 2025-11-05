@@ -65,7 +65,7 @@ object CwtLocationExpressionManager {
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+        if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationAware) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
@@ -163,7 +163,7 @@ object CwtLocationExpressionManager {
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationResolved) {
+        if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationAware) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
