@@ -78,7 +78,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.configContext.CwtConfigContextProvider
 import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
@@ -88,8 +87,7 @@ import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxMatchResultValue
+import icu.windea.pls.lang.match.ParadoxMatchResultOptimizer
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -104,7 +102,6 @@ import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.ParadoxType
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -411,13 +408,10 @@ object ParadoxExpressionManager {
                 if (subPath == "-") return@r1 // #196
                 if (!matchesKey) return@r1
                 ProgressManager.checkCanceled()
-                val resultValuesMatchKey = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
-                result.forEach f@{ config ->
-                    val matchResult = ParadoxMatchService.matchScriptExpression(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
-                    if (matchResult == ParadoxMatchResult.NotMatch) return@f
-                    resultValuesMatchKey += ParadoxMatchResultValue(config, matchResult)
+                val candidates = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                    ParadoxMatchService.matchScriptExpression(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
                 }
-                val optimizedResult = optimizeMatchedConfigs(elementToMatch, expression, resultValuesMatchKey, true, matchOptions)
+                val optimizedResult = ParadoxMatchResultOptimizer.optimize(elementToMatch, expression, candidates, true, matchOptions)
                 result = optimizedResult
             }
         }
@@ -427,6 +421,16 @@ object ParadoxExpressionManager {
         }
 
         return result
+    }
+
+    private fun matchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
+        // 如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
+        // 目前要求推断结果必须是唯一的
+        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
+
+        if (pkConfigs == null) return null // 不是作为参数的键，不作特殊处理
+        if (pkConfigs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
+        return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
 
     private fun inlineConfigForConfigContext(
@@ -465,7 +469,7 @@ object ParadoxExpressionManager {
         }
     }
 
-    private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
+    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
@@ -477,199 +481,63 @@ object ParadoxExpressionManager {
         return ContainerUtil.createConcurrentSoftValueMap()
     }
 
-    private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
-        // 未填写属性的值 - 匹配所有
-        val keyExpression = when (element) {
-            is ParadoxScriptFile -> null
-            is ParadoxScriptProperty -> element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-            is ParadoxScriptValue -> null
-            else -> return emptyList()
-        }
-        val valueExpression = when (element) {
-            is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
-            is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
-            is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
-            else -> return emptyList()
-        }
-
-        val configContext = getConfigContext(element) ?: return emptyList()
-        val configGroup = configContext.configGroup
-
+    private fun doGetConfigs(element: ParadoxScriptMember, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
+        ProgressManager.checkCanceled()
+        val configContext = getConfigContext(element)
+        if (configContext == null) return emptyList()
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
         if (contextConfigs.isEmpty()) return emptyList()
 
+        // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
         if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
-            // 直接返回 contextConfigs
             if (BitUtil.isSet(matchOptions, ParadoxMatchOptions.AcceptDefinition)) return contextConfigs
         }
 
-        // 匹配键
-        val resultMatchKey = when {
-            keyExpression != null -> {
-                val resultValuesMatchKey = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
-                contextConfigs.forEach f@{ config ->
-                    if (config !is CwtPropertyConfig) return@f
-                    val matchResult = ParadoxMatchService.matchScriptExpression(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
-                    if (matchResult == ParadoxMatchResult.NotMatch) return@f
-                    resultValuesMatchKey += ParadoxMatchResultValue(config, matchResult)
+        val configGroup = configContext.configGroup
+        when (element) {
+            is ParadoxScriptProperty -> {
+                // 匹配属性
+                val result = contextConfigs.filterIsInstance<CwtPropertyConfig>()
+                if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
+
+                ProgressManager.checkCanceled()
+                val keyExpression = element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
+                val candidatesMatchKey = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                    ParadoxMatchService.matchScriptExpression(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
                 }
-                optimizeMatchedConfigs(element, keyExpression, resultValuesMatchKey, true, matchOptions)
-            }
-            else -> contextConfigs.filterIsInstance<CwtValueConfig>()
-        }
-        if (resultMatchKey.isEmpty()) return emptyList()
+                val resultMatchKey = ParadoxMatchResultOptimizer.optimize(element, keyExpression, candidatesMatchKey, true, matchOptions)
 
-        // 如果无法获取valueExpression，则返回所有匹配键的规则
-        if (valueExpression == null) return resultMatchKey
-
-        // 得到所有可能匹配的结果
-        ProgressManager.checkCanceled()
-        val resultValues = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
-        resultMatchKey.forEach f@{ config ->
-            val matchResult = ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
-            if (matchResult == ParadoxMatchResult.NotMatch) return@f
-            resultValues += ParadoxMatchResultValue(config, matchResult)
-        }
-        // 如果无结果且需要使用默认值，则返回所有可能匹配的规则
-        if (resultValues.isEmpty() && orDefault) return resultMatchKey
-
-        // 优化匹配结果
-        ProgressManager.checkCanceled()
-        val optimizedResult = optimizeMatchedConfigs(element, valueExpression, resultValues, false, matchOptions)
-        // 如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则
-        if (optimizedResult.isEmpty() && orDefault) return resultMatchKey
-        return optimizedResult
-    }
-
-    private fun matchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
-        // 如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
-        // 目前要求推断结果必须是唯一的
-        // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
-
-        if (pkConfigs == null) return null // 不是作为参数的键，不作特殊处理
-        if (pkConfigs.size != 1) return false // 推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
-        return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
-    }
-
-    private fun optimizeMatchedConfigs(
-        element: PsiElement,
-        expression: ParadoxScriptExpression,
-        resultValues: List<ParadoxMatchResultValue<CwtMemberConfig<*>>>,
-        postHandle: Boolean,
-        matchOptions: Int = ParadoxMatchOptions.Default
-    ): List<CwtMemberConfig<*>> {
-        if (resultValues.isEmpty()) return emptyList()
-
-        val configGroup = resultValues.first().value.configGroup
-
-        // 首先尝试直接的精确匹配，如果有结果，则直接返回
-        // 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        // 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
-        // 然后，尝试非部分非回退的匹配，如果有结果，则直接返回
-        // 然后，尝试部分匹配（可以部分解析为复杂表达式，但存在错误），如果有结果，则直接返回
-        // 然后，尝试回退匹配，如果有结果，则直接返回
-        // 如果到这里仍然无法匹配，则直接返回空列表
-
-        val result = run r1@{
-            val exactMatched = resultValues.filter { it.result is ParadoxMatchResult.ExactMatch }
-            if (exactMatched.isNotEmpty()) return@r1 exactMatched.map { it.value }
-
-            val matched = mutableListOf<ParadoxMatchResultValue<CwtMemberConfig<*>>>()
-
-            fun addLazyMatchedConfigs(predicate: (ParadoxMatchResultValue<CwtMemberConfig<*>>) -> Boolean) {
-                val lazyMatched = resultValues.filter(predicate)
-                val lazyMatchedSize = lazyMatched.size
-                if (lazyMatchedSize == 1) {
-                    matched += lazyMatched.first()
-                } else if (lazyMatchedSize > 1) {
-                    val oldMatchedSize = matched.size
-                    lazyMatched.filterTo(matched) { it.result.get(matchOptions) }
-                    if (oldMatchedSize == matched.size) matched += lazyMatched.first()
+                ProgressManager.checkCanceled()
+                val valueExpression = element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
+                if (valueExpression == null) return resultMatchKey // 如果无法得到值表达式，则返回所有匹配键的规则
+                val candidates = ParadoxMatchResultOptimizer.collectCandidates(resultMatchKey) { config ->
+                    ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
+                val optimizedResult = ParadoxMatchResultOptimizer.optimize(element, valueExpression, candidates, false, matchOptions)
+                if (optimizedResult.isEmpty() && orDefault) return resultMatchKey // 如果无结果且需要使用默认值，则返回所有匹配键的规则
+                return optimizedResult
             }
+            else -> {
+                // 匹配文件或单独的值
+                val result = contextConfigs.filterIsInstance<CwtValueConfig>()
+                if (result.isEmpty()) return emptyList() // 如果无结果，则直接返回空列表
 
-            addLazyMatchedConfigs { it.result is ParadoxMatchResult.LazyBlockAwareMatch }
-            addLazyMatchedConfigs { it.result is ParadoxMatchResult.LazyScopeAwareMatch }
-
-            resultValues.filterTo(matched) p@{
-                if (it.result is ParadoxMatchResult.LazyBlockAwareMatch) return@p false // 已经匹配过
-                if (it.result is ParadoxMatchResult.LazyScopeAwareMatch) return@p false // 已经匹配过
-                if (it.result is ParadoxMatchResult.LazySimpleMatch) return@p true // 直接认为是匹配的
-                if (it.result is ParadoxMatchResult.PartialMatch) return@p false // 之后再匹配
-                if (it.result is ParadoxMatchResult.FallbackMatch) return@p false // 之后再匹配
-                it.result.get(matchOptions)
-            }
-            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
-
-            resultValues.filterTo(matched) { it.result is ParadoxMatchResult.PartialMatch }
-            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
-
-            resultValues.filterTo(matched) { it.result is ParadoxMatchResult.FallbackMatch }
-            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
-
-            emptyList()
-        }
-        if (result.isEmpty() || !postHandle) return result.optimized()
-
-        var newResult = result
-
-        // 后续处理
-
-        // 如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
-        run r1@{
-            if (newResult.size <= 1) return@r1
-            if (expression.type != ParadoxType.String) return@r1
-            val result1 = newResult.filter { isConstantMatch(configGroup, expression, it.configExpression) }
-            if (result1.isEmpty()) return@r1
-            newResult = result1
-        }
-
-        // 如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
-        run r1@{
-            if (newResult.isEmpty()) return@r1
-            val group = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
-            if (group.isEmpty()) return@r1
-            val filteredGroup = group.filter { configs -> configs.size > 1 && configs.filter { it.valueType == CwtType.Block }.size > 1 }
-            if (filteredGroup.isEmpty()) return@r1
-            val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
-            val blockExpression = ParadoxScriptExpression.resolveBlock()
-            val configsToRemove = mutableSetOf<CwtPropertyConfig>()
-            filteredGroup.forEach f1@{ configs ->
-                configs.forEach f2@{ config ->
-                    val valueConfig = config.valueConfig ?: return@f2
-                    val matchResult = ParadoxMatchService.matchScriptExpression(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)
-                    if (matchResult.get(matchOptions)) return@f2
-                    configsToRemove += config
+                ProgressManager.checkCanceled()
+                val valueExpression = when (element) {
+                    is ParadoxScriptFile -> ParadoxScriptExpression.resolveBlock()
+                    is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
+                    else -> null
                 }
-            }
-            if (configsToRemove.isEmpty()) return@r1
-            val result1 = newResult.filter { it !in configsToRemove }
-            newResult = result1
-        }
-
-        // 如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
-        run r1@{
-            if (newResult.isEmpty()) return@r1
-            val result1 = mutableListOf<CwtMemberConfig<*>>()
-            newResult.forEach f1@{ config ->
-                val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, config)
-                if (overriddenConfigs.isEmpty()) {
-                    result1 += config
-                    return@f1
+                if (valueExpression == null) return result // 如果无法得到值表达式，则返回所有上下文值规则
+                val candidates = ParadoxMatchResultOptimizer.collectCandidates(result) { config ->
+                    ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
-                // 这里需要再次进行匹配
-                overriddenConfigs.forEach { c ->
-                    val matchResult = ParadoxMatchService.matchScriptExpression(element, expression, c.configExpression, c, configGroup, matchOptions)
-                    if (matchResult.get(matchOptions)) {
-                        result1 += c
-                    }
-                }
+                val optimizedResult = ParadoxMatchResultOptimizer.optimize(element, valueExpression, candidates, false, matchOptions)
+                if (optimizedResult.isEmpty() && orDefault) return result // 如果无结果且需要使用默认值，则返回所有上下文值规则
+                return optimizedResult
             }
-            newResult = result1
         }
-
-        return newResult.optimized()
     }
 
     // 兼容需要考虑内联的情况（如内联脚本）
