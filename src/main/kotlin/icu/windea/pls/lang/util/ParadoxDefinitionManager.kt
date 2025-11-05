@@ -23,7 +23,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.config.configGroup.definitionTypesMayWithTypeKeyPrefix
+import icu.windea.pls.config.configGroup.definitionTypesModel
 import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigManager
@@ -340,7 +340,7 @@ object ParadoxDefinitionManager {
         }
 
         // 如果属性type_key_prefix存在，且有必要校验，则要求其与typeKeyPrefix必须一致（忽略大小写）
-        if (typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
+        if (typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesModel.mayWithTypeKeyPrefix) {
             val result = typeConfig.typeKeyPrefix.equals(typeKeyPrefix.value, ignoreCase = true)
             if (!result) return false
         }

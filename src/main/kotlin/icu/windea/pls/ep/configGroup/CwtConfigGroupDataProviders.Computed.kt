@@ -12,12 +12,12 @@ import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.aliasKeysGroupConst
 import icu.windea.pls.config.configGroup.aliasKeysGroupNoConst
 import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.config.configGroup.definitionTypesMayWithTypeKeyPrefix
-import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
+import icu.windea.pls.config.configGroup.definitionTypesModel
 import icu.windea.pls.config.configGroup.generatedModifiers
 import icu.windea.pls.config.configGroup.links
-import icu.windea.pls.config.configGroup.linksOfVariable
+import icu.windea.pls.config.configGroup.linksModel
 import icu.windea.pls.config.configGroup.localisationLinks
+import icu.windea.pls.config.configGroup.localisationLinksModel
 import icu.windea.pls.config.configGroup.modifierCategories
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.parameterConfigs
@@ -87,13 +87,6 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        // bind specific links and localisation links
-        run {
-            currentCoroutineContext.ensureActive()
-            configGroup.linksOfVariable += configGroup.links.values
-                .filter { it.forValue() && it.fromData && it.name == "variable" }
-        }
-
         // bind `categoryConfigMap` for modifier configs
         run {
             currentCoroutineContext.ensureActive()
@@ -129,38 +122,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
-        // compute `definitionTypesSupportParameters`
-        run {
-            currentCoroutineContext.ensureActive()
-            with(configGroup.definitionTypesSupportParameters) {
-                for (parameterConfig in configGroup.parameterConfigs) {
-                    val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
-                    val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                    val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression else CwtDataExpression.resolve(aliasSubName, true)
-                    if (contextExpression.type == CwtDataTypes.Definition) {
-                        contextExpression.value?.let { this += it }
-                    }
-                }
-            }
-        }
-
-        // compute `definitionTypesMayWithTypeKeyPrefix`
-        run {
-            // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
-            // based on file paths, in detail, based on file path patterns (has any same file path patterns)
-            currentCoroutineContext.ensureActive()
-            with(configGroup.definitionTypesMayWithTypeKeyPrefix) {
-                val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
-                val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
-                val types1 = configGroup.types.values.filter { c ->
-                    val filePathPatterns1 = c.filePathPatterns
-                    filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
-                }
-                types1.forEach { c -> this += c.name }
-            }
-        }
-
-        // computer `relatedLocalisationPatterns`
+        // compute `relatedLocalisationPatterns`
         run {
             currentCoroutineContext.ensureActive()
             with(configGroup.relatedLocalisationPatterns) {
@@ -174,6 +136,87 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     this += tupleOf(s.substring(0, i), s.substring(i + 1))
                 }
                 this.sortedWith(compareBy({ it.first }, { it.second }))
+            }
+        }
+
+        // compute `linksModel`
+        run {
+            currentCoroutineContext.ensureActive()
+            with(configGroup.linksModel) {
+                val staticLinks = configGroup.links.values.filter { it.isStatic }
+                staticLinks.forEach { c ->
+                    if (c.forScope()) forScopeStatic += c
+                    if (c.forValue()) forValueStatic += c
+                }
+                val dynamicLinksSorted = configGroup.links.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
+                dynamicLinksSorted.forEach { c ->
+                    if (c.forScope()) {
+                        if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
+                        if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
+                        if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
+                    }
+                    if (c.forValue()) {
+                        if (c.name == "variable") variable += c
+                        if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
+                        if (c.fromData && c.prefix != null) forValueFromDataSorted += c
+                        if (c.fromData && c.prefix == null) forValueFromDataNoPrefixSorted += c
+                    }
+                }
+            }
+        }
+
+        // compute `localisationLinksModel`
+        run {
+            currentCoroutineContext.ensureActive()
+            with(configGroup.localisationLinksModel) {
+                val staticLinks = configGroup.localisationLinks.values.filter { it.isStatic }
+                staticLinks.forEach { c ->
+                    if (c.forScope()) forScopeStatic += c
+                    if (c.forValue()) forValueStatic += c
+                }
+                val dynamicLinksSorted = configGroup.localisationLinks.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
+                dynamicLinksSorted.forEach { c ->
+                    if (c.forScope()) {
+                        if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
+                        if (c.fromData && c.prefix != null) forScopeFromDataSorted += c
+                        if (c.fromData && c.prefix == null) forScopeFromDataNoPrefixSorted += c
+                    }
+                    if (c.forValue()) {
+                        if (c.fromArgument && c.prefix != null) forValueFromArgumentSorted += c
+                        if (c.fromData && c.prefix != null) forValueFromDataSorted += c
+                        if (c.fromData && c.prefix == null) forValueFromDataNoPrefixSorted += c
+                    }
+                }
+            }
+        }
+
+        // compute `definitionTypesModel`
+        run {
+            currentCoroutineContext.ensureActive()
+            with(configGroup.definitionTypesModel) {
+                with(supportParameters) {
+                    for (parameterConfig in configGroup.parameterConfigs) {
+                        val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
+                        val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
+                        val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
+                        else CwtDataExpression.resolve(aliasSubName, true)
+                        if (contextExpression.type == CwtDataTypes.Definition) {
+                            contextExpression.value?.let { this += it }
+                        }
+                    }
+                }
+
+                // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
+                // based on file paths, in detail, based on file path patterns (has any same file path patterns)
+                with(mayWithTypeKeyPrefix) {
+                    val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
+                    val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
+                    val types1 = configGroup.types.values.filter { c ->
+                        val filePathPatterns1 = c.filePathPatterns
+                        filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
+                    }
+                    types1.forEach { c -> this += c.name }
+                }
             }
         }
 

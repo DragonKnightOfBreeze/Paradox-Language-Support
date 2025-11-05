@@ -20,7 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
-import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
+import icu.windea.pls.config.configGroup.definitionTypesModel
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer
@@ -75,7 +75,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (element !is ParadoxScriptProperty) return false
         val definitionInfo = element.definitionInfo ?: return false
         // NOTE 简单判断 - 目前不需要兼容子类型
-        return definitionInfo.type in definitionInfo.configGroup.definitionTypesSupportParameters
+        return definitionInfo.type in definitionInfo.configGroup.definitionTypesModel.supportParameters
     }
 
     override fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {

@@ -9,7 +9,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
+import icu.windea.pls.config.configGroup.definitionTypesModel
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
@@ -75,7 +75,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                                 if (!checkForSystemScopes) continue
                                 if (scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
                                     val definitionType = definitionInfo?.type ?: continue
-                                    if (config.configGroup.definitionTypesSkipCheckSystemScope.contains(definitionType)) continue
+                                    if (config.configGroup.definitionTypesModel.skipCheckSystemScope.contains(definitionType)) continue
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.desc.3",
                                         scopeNode.text

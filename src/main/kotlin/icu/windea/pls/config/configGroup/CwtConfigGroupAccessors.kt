@@ -102,10 +102,10 @@ val CwtConfigGroup.declarations: MutableMap<String, CwtDeclarationConfig>
 val CwtConfigGroup.rows: MutableMap<String, CwtRowConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
-// enumValue可以是int、float、bool类型，统一用字符串表示
+// enumValue可以是 int、float、bool 类型，统一用字符串表示
 val CwtConfigGroup.enums: MutableMap<String, CwtEnumConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-// 基于enum_name进行定位，对应的可能是key/value
+// 基于 enum_name 进行定位，对应的可能是 key/value
 val CwtConfigGroup.complexEnums: MutableMap<String, CwtComplexEnumConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
@@ -181,55 +181,79 @@ val CwtConfigGroup.extendedInlineScripts: MutableMap<String, CwtExtendedInlineSc
 val CwtConfigGroup.extendedParameters: MutableMap<String, MutableList<CwtExtendedParameterConfig>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
+// endregion
+
+// region Computed & Collected Accessors
+
+/** 预定义的修正规则的映射。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.predefinedModifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+/** 生成的修正规则的映射。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.generatedModifiers: MutableMap<@CaseInsensitive String, CwtModifierConfig>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
-// 常量字符串的别名的组名的映射
+/** 常量字符串的别名的组名的映射。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.aliasKeysGroupConst: MutableMap<@CaseInsensitive String, MutableMap<String, String>>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-// 非常量字符串的别名的组名的映射
+/** 非常量字符串的别名的组名的映射。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.aliasKeysGroupNoConst: MutableMap<String, MutableSet<String>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
-// 变量对应的连接规则
-@Tags(Tag.Computed)
-val CwtConfigGroup.linksOfVariable: MutableList<CwtLinkConfig>
-    by createKey(CwtConfigGroup.Keys) { mutableListOf() }
-
-// 必定支持作用域的CWT别名规则
+/** 必定支持作用域的别名规则。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.aliasNamesSupportScope: MutableSet<String>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 必定支持作用域的定义类型
-@Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesSupportScope: MutableSet<String>
-    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 必定间接支持作用域的定义类型
-@Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesIndirectSupportScope: MutableSet<String>
-    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）
-@Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesSkipCheckSystemScope: MutableSet<String>
-    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 支持参数的定义类型
-@Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
-    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算
-@Tags(Tag.Computed)
-val CwtConfigGroup.definitionTypesMayWithTypeKeyPrefix: MutableSet<String>
-    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
-// 相关本地化的模式，用于从本地化导航到相关定义
+
+/** 相关本地化的模式，用于从本地化导航到相关定义。 */
 @Tags(Tag.Computed)
 val CwtConfigGroup.relatedLocalisationPatterns: MutableSet<Tuple2<String, String>>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
+
+/** 获取符合特定条件的排序后的链接规则。 */
+@Tags(Tag.Computed)
+val CwtConfigGroup.linksModel: LinksModel
+    by createKey(CwtConfigGroup.Keys) { LinksModel() }
+/** 获取符合特定条件的排序后的本地化的链接规则。 */
+@Tags(Tag.Computed)
+val CwtConfigGroup.localisationLinksModel: LinksModel
+    by createKey(CwtConfigGroup.Keys) { LinksModel() }
+
+/** 用于获取符合特定条件的链接规则。 */
+data class LinksModel(
+    /** 变量对应的链接规则的列表。 */
+    val variable: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forScopeStatic: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forScopeFromArgumentSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forScopeFromDataSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forScopeFromDataNoPrefixSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forValueStatic: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forValueFromArgumentSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forValueFromDataSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+    val forValueFromDataNoPrefixSorted: MutableList<CwtLinkConfig> = mutableListOf(),
+)
+
+/** 获取符合特定条件的定义类型。 */
+@Tags(Tag.Computed)
+val CwtConfigGroup.definitionTypesModel: DefinitionTypesModel
+    by createKey(CwtConfigGroup.Keys) { DefinitionTypesModel() }
+
+/** 用于获取符合特定条件的定义类型。 */
+data class DefinitionTypesModel(
+    /** 必定支持作用域的定义类型。 */
+    val supportScope: MutableSet<String> = mutableSetOf(),
+    /** 必定间接支持作用域的定义类型。 */
+    val indirectSupportScope: MutableSet<String> = mutableSetOf(),
+    /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
+    val skipCheckSystemScope: MutableSet<String> = mutableSetOf(),
+    /** 支持参数的定义类型。 */
+    val supportParameters: MutableSet<String> = mutableSetOf(),
+    /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
+    val mayWithTypeKeyPrefix: MutableSet<String> = mutableSetOf(),
+)
 
 @Tags(Tag.Collected)
 val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>
@@ -240,7 +264,7 @@ val CwtConfigGroup.parameterConfigs: MutableSet<CwtMemberConfig<*>>
 
 // endregion
 
-// region Mock Configs
+// region Extra Accessors
 
 @Tags(Tag.Computed)
 val CwtConfigGroup.mockVariableConfig: CwtValueConfig
@@ -248,14 +272,10 @@ val CwtConfigGroup.mockVariableConfig: CwtValueConfig
         CwtValueConfig.create(emptyPointer(), this, "value[variable]")
     }
 
-// endregion
-
-// region Modification Trackers
-
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
     by createKey(CwtConfigGroup.Keys) {
-        val definitionTypes = definitionTypesSupportParameters
+        val definitionTypes = definitionTypesModel.supportParameters
         val configs = definitionTypes.mapNotNull { types[it] }
         val patterns = configs.flatMapTo(sortedSetOf()) { it.filePathPatterns }
         ParadoxModificationTrackers.ScriptFile(patterns.joinToString(";"))

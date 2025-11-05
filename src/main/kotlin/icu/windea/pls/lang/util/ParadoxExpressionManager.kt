@@ -863,20 +863,20 @@ object ParadoxExpressionManager {
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
 
-    fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
+    fun resolveSystemScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemScopeConfig = configGroup.systemScopes[name] ?: return null
         val resolved = systemScopeConfig.pointer.element?.bindConfig(systemScopeConfig) ?: return null
         return resolved
     }
 
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.forScope() && !it.fromData } ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.forScope() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }
 
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.links[name]?.takeIf { it.forValue() && !it.fromData } ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.forValue() && it.isStatic } ?: return null
         val resolved = linkConfig.pointer.element?.bindConfig(linkConfig) ?: return null
         return resolved
     }

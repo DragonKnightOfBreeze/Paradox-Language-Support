@@ -43,7 +43,7 @@ class ParadoxScopeNode(
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeNode? {
             if (text.isParameterized()) return null
-            val config = configGroup.links.get(text)?.takeIf { it.forScope() && !it.fromData } ?: return null
+            val config = configGroup.links[text]?.takeIf { it.forScope() && it.isStatic } ?: return null
             return ParadoxScopeNode(text, textRange, configGroup, config)
         }
     }

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.linksOfVariable
+import icu.windea.pls.config.configGroup.linksModel
 import icu.windea.pls.core.cast
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
@@ -71,7 +71,7 @@ internal class ParadoxVariableFieldExpressionResolverImpl : ParadoxVariableField
             val end = textLength
             val nodeText = text.substring(startIndex, end)
             val nodeTextRange = TextRange.create(startIndex + offset, end + offset)
-            val node = ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksOfVariable)
+            val node = ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksModel.variable)
             // if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
             nodes += node
         }

@@ -21,7 +21,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasNamesSupportScope
 import icu.windea.pls.config.configGroup.definitionTypesIndirectSupportScope
-import icu.windea.pls.config.configGroup.definitionTypesSupportScope
+import icu.windea.pls.config.configGroup.definitionTypesModel
 import icu.windea.pls.config.configGroup.extendedParameters
 import icu.windea.pls.config.configGroup.localisationPromotions
 import icu.windea.pls.config.configGroup.scopeAliasMap
@@ -206,8 +206,8 @@ object ParadoxScopeManager {
             if (definitionInfo != null) {
                 val configGroup = definitionInfo.configGroup
                 val definitionType = definitionInfo.type
-                if (definitionType in configGroup.definitionTypesSupportScope) return true
-                if (indirect && definitionType in configGroup.definitionTypesIndirectSupportScope) return true
+                if (definitionType in configGroup.definitionTypesModel.supportScope) return true
+                if (indirect && definitionType in configGroup.definitionTypesModel.indirectSupportScope) return true
             }
         }
 

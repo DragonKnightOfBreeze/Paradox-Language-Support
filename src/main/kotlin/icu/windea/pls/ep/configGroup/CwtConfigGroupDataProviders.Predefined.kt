@@ -2,44 +2,36 @@ package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasNamesSupportScope
-import icu.windea.pls.config.configGroup.definitionTypesIndirectSupportScope
-import icu.windea.pls.config.configGroup.definitionTypesSkipCheckSystemScope
-import icu.windea.pls.config.configGroup.definitionTypesSupportParameters
-import icu.windea.pls.config.configGroup.definitionTypesSupportScope
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.ensureActive
+import icu.windea.pls.config.configGroup.definitionTypesModel
 
 /**
  * 用于初始规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
-        val currentCoroutineContext = currentCoroutineContext()
-
-        run {
-            currentCoroutineContext.ensureActive()
-            with(configGroup.aliasNamesSupportScope) {
-                this += "modifier" // 也支持，但不能切换作用域
-                this += "trigger"
-                this += "effect"
-            }
-            with(configGroup.definitionTypesSupportScope) {
+        with(configGroup.aliasNamesSupportScope) {
+            this += "modifier" // 也支持，但不能切换作用域
+            this += "trigger"
+            this += "effect"
+        }
+        with(configGroup.definitionTypesModel) {
+            with(supportScope) {
                 this += "scripted_effect"
                 this += "scripted_trigger"
                 this += "game_rule"
             }
-            with(configGroup.definitionTypesIndirectSupportScope) {
+            with(indirectSupportScope) {
                 this += "on_action" // 也支持，其中调用的事件的类型要匹配
                 this += "event" // 事件
             }
-            with(configGroup.definitionTypesSkipCheckSystemScope) {
+            with(skipCheckSystemScope) {
                 this += "event"
                 this += "scripted_trigger"
                 this += "scripted_effect"
                 this += "script_value"
                 this += "game_rule"
             }
-            with(configGroup.definitionTypesSupportParameters) {
+            with(supportParameters) {
                 this += "script_value"
                 // this += "inline_script" // 内联脚本也支持参数（但它不是定义）
             }

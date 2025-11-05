@@ -4,8 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.links
-import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.config.configGroup.linksModel
 import icu.windea.pls.core.collections.findIsInstance
 
 class ParadoxDynamicScopeLinkNode(
@@ -31,9 +30,8 @@ class ParadoxDynamicScopeLinkNode(
             // 匹配某一前缀且使用传参格式的场合（如 `relations(root.owner)`）
             run r1@{
                 if (!text.contains('(')) return@r1
-                val linkConfigs = configGroup.links.values
-                    .filter { it.forScope() && it.fromArgument && it.prefix != null && text.startsWith(it.prefix!! + '(') }
-                    .sortedByPriority({ it.configExpression }, { configGroup })
+                val linkConfigs = configGroup.linksModel.forScopeFromArgumentSorted
+                    .filter { text.startsWith(it.prefix!! + '(') }
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
@@ -67,9 +65,8 @@ class ParadoxDynamicScopeLinkNode(
 
             // 匹配某一前缀的场合（如 `event_target:some_job`）
             run r1@{
-                val linkConfigs = configGroup.links.values
-                    .filter { it.forScope() && it.fromData && it.prefix != null && text.startsWith(it.prefix!!) }
-                    .sortedByPriority({ it.configExpression }, { configGroup })
+                val linkConfigs = configGroup.linksModel.forScopeFromDataSorted
+                    .filter { text.startsWith(it.prefix!!) }
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
@@ -89,9 +86,7 @@ class ParadoxDynamicScopeLinkNode(
 
             // 没有前缀且允许没有前缀的场合
             run r1@{
-                val linkConfigs = configGroup.links.values
-                    .filter { it.forScope() && it.fromData && it.prefix == null }
-                    .sortedByPriority({ it.configExpression }, { configGroup })
+                val linkConfigs = configGroup.linksModel.forScopeFromDataNoPrefixSorted
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxScopeLinkValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
