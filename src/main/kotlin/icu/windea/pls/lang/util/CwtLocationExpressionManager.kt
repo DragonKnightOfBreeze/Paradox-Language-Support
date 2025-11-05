@@ -12,6 +12,7 @@ import icu.windea.pls.config.configExpression.CwtLocationExpression
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
+import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -26,11 +27,9 @@ import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ImageFrameInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.merge
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
@@ -124,16 +123,11 @@ object CwtLocationExpressionManager {
         val (location, isPlaceholder, namePaths, framePaths) = locationExpression
         val project = definitionInfo.project
 
-        var newFrameInfo = frameInfo
-        if (definitionInfo.type == ParadoxDefinitionTypes.Sprite) {
-            newFrameInfo = newFrameInfo merge ParadoxSpriteManager.getFrameInfo(definition)
-        } else {
-            val frameFromPath = findByPaths(definition, framePaths)?.toIntOrNull()
-            if (frameFromPath != null) {
-                val frameInfoFromPath = ImageFrameInfo.of(frameFromPath)
-                newFrameInfo = newFrameInfo merge frameInfoFromPath
-            }
+        val nextFrameInfo = when {
+            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> ParadoxSpriteManager.getFrameInfo(definition)
+            else -> findByPaths(definition, framePaths)?.toIntOrNull()?.let { ImageFrameInfo.of(it) }
         }
+        val newFrameInfo = ImageFrameInfo.merge(frameInfo, nextFrameInfo)
 
         if (isPlaceholder) {
             val nameText = findByPaths(definition, namePaths) ?: definitionInfo.name

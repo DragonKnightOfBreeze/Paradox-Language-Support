@@ -2,7 +2,7 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.impl.CwtImageLocationExpressionResolverImpl
-import icu.windea.pls.model.ImageFrameInfo
+import icu.windea.pls.images.ImageFrameInfo
 
 /**
  * 图片位置表达式。

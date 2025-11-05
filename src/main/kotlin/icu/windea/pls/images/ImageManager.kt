@@ -6,7 +6,6 @@ import icu.windea.pls.images.spi.DdsImageReaderSpi
 import icu.windea.pls.images.spi.TgaImageReaderSpi
 import icu.windea.pls.images.support.ImageSupport
 import icu.windea.pls.images.tga.TgaFileType
-import icu.windea.pls.model.ImageFrameInfo
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.awt.image.BufferedImage
 import java.io.InputStream

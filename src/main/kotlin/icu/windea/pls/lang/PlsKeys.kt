@@ -8,7 +8,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.model.ImageFrameInfo
+import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
