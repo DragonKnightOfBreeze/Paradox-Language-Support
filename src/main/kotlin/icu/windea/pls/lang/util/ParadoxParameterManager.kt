@@ -61,8 +61,8 @@ import icu.windea.pls.lang.codeInsight.completion.forScriptExpression
 import icu.windea.pls.lang.codeInsight.completion.parameters
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectGameType
@@ -386,8 +386,8 @@ object ParadoxParameterManager {
 
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
-        val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
+        val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
+        val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
         return config.getContextConfigs(parameterElement)
     }
 

@@ -10,8 +10,8 @@ import icu.windea.pls.config.configGroup.extendedScriptedVariables
 import icu.windea.pls.config.documentation
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.*
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -39,7 +39,7 @@ class ParadoxExtendedScriptedVariableQuickDocTextProvider : ParadoxQuickDocTextP
         val gameType = selectGameType(element) ?: return null
         val project = element.project
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
@@ -51,7 +51,7 @@ class ParadoxExtendedDefinitionQuickDocTextProvider : ParadoxQuickDocTextProvide
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
+        val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
@@ -65,7 +65,7 @@ class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderB
         if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
@@ -78,7 +78,7 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
@@ -91,7 +91,7 @@ class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextP
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
-        val config = configs.findFromPattern(name, element, configGroup) ?: return null
+        val config = configs.findByPattern(name, element, configGroup) ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }
@@ -105,7 +105,7 @@ class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProvi
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.dynamicValueTypes) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
-            val config = configs.findFromPattern(name, element, configGroup) ?: continue
+            val config = configs.findByPattern(name, element, configGroup) ?: continue
             val quickDoc = config.config.documentation?.orNull()
             if (quickDoc != null) return quickDoc
         }
@@ -119,8 +119,8 @@ class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProvider
     override fun doGetQuickDocText(element: ParadoxParameterElement): String? {
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
-        val configs = configGroup.extendedParameters.findFromPattern(name, element, configGroup).orEmpty()
-        val config = configs.findLast { it.contextKey.matchFromPattern(element.contextKey, element, configGroup) } ?: return null
+        val configs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
+        val config = configs.findLast { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) } ?: return null
         val quickDoc = config.config.documentation?.orNull()
         return quickDoc
     }

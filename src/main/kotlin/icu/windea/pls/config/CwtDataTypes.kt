@@ -4,13 +4,13 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 
 object CwtDataTypes {
-    val Block = CwtDataType("Block")
+    val Any = CwtDataType("Any")
     val Bool = CwtDataType("Bool")
     val Int = CwtDataType("Int")
     val Float = CwtDataType("Float")
     val Scalar = CwtDataType("Scalar")
     val ColorField = CwtDataType("ColorField")
-    val Any = CwtDataType("Any")
+    val Block = CwtDataType("Block")
 
     val PercentageField = CwtDataType("PercentageField")
     val DateField = CwtDataType("DateField")

@@ -32,8 +32,8 @@ import icu.windea.pls.ep.modifier.modifierConfig
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -179,7 +179,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val name = element.name
             if (name.isNullOrEmpty()) return@r0
             if (name.isParameterized()) return@r0
-            val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup)
+            val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup)
             if (config != null) result += config
         }
 
@@ -191,18 +191,18 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             if (definitionName.isEmpty()) return@r0
             if (definitionName.isParameterized()) return@r0
             run r1@{
-                val extendedConfigs = configGroup.extendedDefinitions.findFromPattern(definitionName, definition, configGroup).orEmpty()
+                val extendedConfigs = configGroup.extendedDefinitions.findByPattern(definitionName, definition, configGroup).orEmpty()
                 val matchedConfigs = extendedConfigs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
                 result += matchedConfigs
             }
             run r1@{
                 if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return@r1
-                val extendedConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup)
+                val extendedConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }
             run r1@{
                 if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return@r1
-                val extendedConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup)
+                val extendedConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }
         }
@@ -211,8 +211,8 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val element = file.findElementAt(offset) {
                 it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterManager.getParameterElement(p) }
             } ?: return@r0
-            val extendedConfigs = configGroup.extendedParameters.findFromPattern(element.name, element, configGroup).orEmpty()
-                .filterTo(result) { it.contextKey.matchFromPattern(element.contextKey, element, configGroup) }
+            val extendedConfigs = configGroup.extendedParameters.findByPattern(element.name, element, configGroup).orEmpty()
+                .filterTo(result) { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) }
             result += extendedConfigs
         }
 
@@ -225,21 +225,21 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 when {
                     ParadoxResolveConstraint.Parameter.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
-                        val extendedConfigs = configGroup.extendedParameters.findFromPattern(name, element, configGroup).orEmpty()
-                            .filterTo(result) { it.contextKey.matchFromPattern(resolved.contextKey, element, configGroup) }
+                        val extendedConfigs = configGroup.extendedParameters.findByPattern(name, element, configGroup).orEmpty()
+                            .filterTo(result) { it.contextKey.matchesByPattern(resolved.contextKey, element, configGroup) }
                         result += extendedConfigs
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
                         val extendedConfigs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
-                        val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
+                        val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue
                         result += extendedConfig
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
                         for (type in resolved.dynamicValueTypes) {
                             val extendedConfigs = configGroup.extendedDynamicValues[type] ?: continue
-                            val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
+                            val extendedConfig = extendedConfigs.findByPattern(resolved.name, element, configGroup) ?: continue
                             result += extendedConfig
                         }
                     }
@@ -252,7 +252,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             for (config in configs) {
                 val configExpression = config.configExpression
                 if (configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression) {
-                    val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
+                    val extendedConfig = configGroup.extendedInlineScripts.findByPattern(name, element, configGroup) ?: continue
                     result += extendedConfig
                 }
             }

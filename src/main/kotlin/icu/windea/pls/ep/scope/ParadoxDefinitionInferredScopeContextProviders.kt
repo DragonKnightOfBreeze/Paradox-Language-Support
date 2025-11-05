@@ -27,7 +27,7 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -224,7 +224,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                     val containingOnActionName = info.containingOnActionName
                     withRecursionCheck(containingOnActionName) {
                         // 这里使用psiFile作为contextElement
-                        val config = configGroup.extendedOnActions.findFromPattern(containingOnActionName, psiFile, configGroup)
+                        val config = configGroup.extendedOnActions.findByPattern(containingOnActionName, psiFile, configGroup)
                         if (config == null) return@f // missing
                         if (config.eventType != thisEventType) return@f // invalid (mismatch)
                         val map = config.config.optionData { replaceScopes } ?: return@f
@@ -444,7 +444,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         val definitionInfo = definition.definitionInfo ?: return null
         val configGroup = definitionInfo.configGroup
         // skip if on action is predefined
-        val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup)
+        val config = configGroup.extendedOnActions.findByPattern(definitionInfo.name, definition, configGroup)
         if (config != null) return null
         val thisOnActionName = definitionInfo.name
         // optimize search scope

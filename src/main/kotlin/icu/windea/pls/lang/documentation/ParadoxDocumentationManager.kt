@@ -33,7 +33,7 @@ import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
@@ -804,7 +804,7 @@ object ParadoxDocumentationManager {
         // 有些游戏类型直接通过 CWT 文件指定了事件类型，而非 CSV 文件，忽略这种情况
         val configGroup = definitionInfo.configGroup
         val gameType = configGroup.gameType
-        val config = definitionInfo.configGroup.extendedOnActions.findFromPattern(definitionInfo.name, element, definitionInfo.configGroup)
+        val config = definitionInfo.configGroup.extendedOnActions.findByPattern(definitionInfo.name, element, definitionInfo.configGroup)
         if (config == null) return
         val eventType = config.eventType
         appendBr()

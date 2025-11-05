@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.extendedDefinitions
 import icu.windea.pls.config.configGroup.extendedGameRules
 import icu.windea.pls.config.configGroup.extendedOnActions
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -37,7 +37,7 @@ class ParadoxBaseDefinitionScopeContextProvider : ParadoxDefinitionScopeContextP
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.findFromPattern(definitionInfo.name, definition, configGroup).orEmpty()
+        val configs = configGroup.extendedDefinitions.findByPattern(definitionInfo.name, definition, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         return config.config.optionData { scopeContext }
     }
@@ -50,7 +50,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.findFromPattern(definitionInfo.name, definition, configGroup)
+        val config = configGroup.extendedGameRules.findByPattern(definitionInfo.name, definition, configGroup)
         return config?.config?.optionData { scopeContext }
     }
 }
@@ -62,7 +62,7 @@ class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvide
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup)
+        val config = configGroup.extendedOnActions.findByPattern(definitionInfo.name, definition, configGroup)
         return config?.config?.optionData { scopeContext }
     }
 }

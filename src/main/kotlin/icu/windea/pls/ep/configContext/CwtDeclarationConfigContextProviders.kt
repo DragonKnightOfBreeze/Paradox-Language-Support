@@ -16,7 +16,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 // region Extensions
@@ -62,7 +62,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.GameRule) return null
         if (definitionName.isNullOrEmpty()) return null
-        val gameRuleConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup) ?: return null
+        val gameRuleConfig = configGroup.extendedGameRules.findByPattern(definitionName, element, configGroup) ?: return null
         if (gameRuleConfig.config.configs.isNullOrEmpty()) return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
             .apply { this.gameRuleConfig = gameRuleConfig }
@@ -94,7 +94,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
     override fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
         if (definitionType != ParadoxDefinitionTypes.OnAction) return null
         if (definitionName.isNullOrEmpty()) return null
-        val onActionConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup) ?: return null
+        val onActionConfig = configGroup.extendedOnActions.findByPattern(definitionName, element, configGroup) ?: return null
         return CwtDeclarationConfigContext(definitionName, definitionType, definitionSubtypes, configGroup)
             .apply { this.onActionConfig = onActionConfig }
     }

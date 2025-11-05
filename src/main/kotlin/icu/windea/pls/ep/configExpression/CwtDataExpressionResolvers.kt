@@ -17,6 +17,8 @@ import icu.windea.pls.core.util.IntRangeInfo
 
 class CwtBaseDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(
+        rule(CwtDataTypes.Any, "\$any"),
+
         rule(CwtDataTypes.Bool, "bool"),
 
         rule(CwtDataTypes.Int, "int"),
@@ -33,8 +35,6 @@ class CwtBaseDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.ColorField, "colour[", "]") { value = it.orNull() },
         rule(CwtDataTypes.ColorField, "color_field"),
         rule(CwtDataTypes.ColorField, "color[", "]") { value = it.orNull() },
-
-        rule(CwtDataTypes.Any, "\$any"),
     )
 }
 

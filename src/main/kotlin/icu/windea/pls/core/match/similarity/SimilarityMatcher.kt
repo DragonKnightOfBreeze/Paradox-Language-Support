@@ -2,6 +2,8 @@ package icu.windea.pls.core.match.similarity
 
 /**
  * 相似度匹配器。
+ *
+ * @see SimilarityMatchService
  */
 interface SimilarityMatcher {
     /**

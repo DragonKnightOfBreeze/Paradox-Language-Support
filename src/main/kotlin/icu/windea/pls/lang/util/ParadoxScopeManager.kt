@@ -51,8 +51,8 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.findFromPattern
-import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
@@ -460,8 +460,8 @@ object ParadoxScopeManager {
             if (parameter.text != node.text) return@r1
             val parameterElement = ParadoxParameterManager.getParameterElement(parameter) ?: return@r1
             val configGroup = node.configGroup
-            val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
-            val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
+            val configs = configGroup.extendedParameters.findByPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
+            val config = configs.findLast { it.contextKey.matchesByPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return@r1
             val containerConfig = config.getContainerConfig(parameterElement)
 
             // ex_param = scope[country]

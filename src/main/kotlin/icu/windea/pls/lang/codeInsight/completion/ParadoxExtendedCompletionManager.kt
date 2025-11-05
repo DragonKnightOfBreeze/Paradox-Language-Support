@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.extendedScriptedVariables
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.lang.match.matchFromPattern
+import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
@@ -143,7 +143,7 @@ object ParadoxExtendedCompletionManager {
         val contextElement = context.contextElement ?: return
         configGroup.extendedParameters.values.forEach { configs0 ->
             configs0.forEach f@{ config0 ->
-                if (!config0.contextKey.matchFromPattern(contextKey, contextElement, configGroup)) return@f
+                if (!config0.contextKey.matchesByPattern(contextKey, contextElement, configGroup)) return@f
                 val name = config0.name
                 if (checkExtendedConfigName(name)) return@f
                 if (argumentNames != null && !argumentNames.add(name)) return@f  // 排除已输入的

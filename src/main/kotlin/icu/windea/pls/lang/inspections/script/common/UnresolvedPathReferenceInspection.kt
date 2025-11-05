@@ -21,7 +21,7 @@ import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
@@ -100,7 +100,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val value = element.value
                 val configExpression = memberConfig.configExpression
                 if (configExpression != ParadoxInlineScriptManager.inlineScriptPathExpression) {
-                    val config = configGroup.extendedInlineScripts.findFromPattern(value, element, configGroup)
+                    val config = configGroup.extendedInlineScripts.findByPattern(value, element, configGroup)
                     if (config != null) return true
                 }
                 return false

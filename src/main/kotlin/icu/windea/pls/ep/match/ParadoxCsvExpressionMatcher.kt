@@ -6,21 +6,18 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.match.ParadoxMatchResult
-import icu.windea.pls.lang.match.ParadoxMatchResultProvider
+import icu.windea.pls.lang.match.ParadoxMatchService
 
 /**
  * 用于匹配 CSV 表达式与规则表达式。
  *
+ * @see ParadoxMatchService
  * @see ParadoxCsvExpressionElement
  * @see CwtDataExpression
  */
 interface ParadoxCsvExpressionMatcher {
     /**
      * 匹配 CSV 表达式和规则表达式。
-     *
-     * @see ParadoxCsvExpressionMatcher.Context
-     * @see ParadoxMatchResult
-     * @see ParadoxMatchResultProvider
      */
     fun match(context: Context): ParadoxMatchResult?
 

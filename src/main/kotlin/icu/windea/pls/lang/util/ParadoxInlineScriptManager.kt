@@ -29,7 +29,7 @@ import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
@@ -213,7 +213,7 @@ object ParadoxInlineScriptManager {
 
     private fun doGetInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         val configGroup = context.configGroup
-        val config = configGroup.extendedInlineScripts.findFromPattern(expression, contextElement, configGroup, matchOptions) ?: return emptyList()
+        val config = configGroup.extendedInlineScripts.findByPattern(expression, contextElement, configGroup, matchOptions) ?: return emptyList()
         return config.getContextConfigs()
     }
 

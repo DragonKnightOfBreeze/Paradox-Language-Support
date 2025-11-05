@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.extendedOnActions
 import icu.windea.pls.config.configGroup.extendedScriptedVariables
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
@@ -88,7 +88,7 @@ class ParadoxExtendedScriptedVariableHintTextProvider : ParadoxHintTextProviderB
         val gameType = selectGameType(element) ?: return null
         val project = element.project
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
         return hint
     }
@@ -105,7 +105,7 @@ class ParadoxExtendedDefinitionHintTextProvider : ParadoxHintTextProviderBase.De
     override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
+        val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
         val config = configs.findLast { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) } ?: return null
         val hint = config.hint?.orNull()
         return hint
@@ -124,7 +124,7 @@ class ParadoxExtendedGameRuleHintTextProvider : ParadoxHintTextProviderBase.Defi
         if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedGameRules.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedGameRules.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
         return hint
     }
@@ -142,7 +142,7 @@ class ParadoxExtendedOnActionHintTextProvider : ParadoxHintTextProviderBase.Defi
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
         val name = definitionInfo.name
         val configGroup = definitionInfo.configGroup
-        val config = configGroup.extendedOnActions.findFromPattern(name, element, configGroup) ?: return null
+        val config = configGroup.extendedOnActions.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
         return hint
     }
@@ -160,7 +160,7 @@ class ParadoxExtendedComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
         val name = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
-        val config = configs.findFromPattern(name, element, configGroup) ?: return null
+        val config = configs.findByPattern(name, element, configGroup) ?: return null
         val hint = config.hint?.orNull()
         return hint
     }
@@ -179,7 +179,7 @@ class ParadoxExtendedDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         for (type in element.dynamicValueTypes) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
-            val config = configs.findFromPattern(name, element, configGroup) ?: continue
+            val config = configs.findByPattern(name, element, configGroup) ?: continue
             val hint = config.hint?.orNull()
             if (hint != null) return hint
         }

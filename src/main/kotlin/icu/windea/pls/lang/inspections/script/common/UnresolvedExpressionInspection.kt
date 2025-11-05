@@ -31,7 +31,7 @@ import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
@@ -215,15 +215,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val configExpression = memberConfig.configExpression
                     if (configExpression.type in CwtDataTypeGroups.DefinitionAware) {
                         val definitionType = configExpression.value ?: continue
-                        val configs = configGroup.extendedDefinitions.findFromPattern(value, element, configGroup).orEmpty()
+                        val configs = configGroup.extendedDefinitions.findByPattern(value, element, configGroup).orEmpty()
                         val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
                         if (config != null) return true
                         if (definitionType == ParadoxDefinitionTypes.GameRule) {
-                            val config1 = configGroup.extendedGameRules.findFromPattern(value, element, configGroup)
+                            val config1 = configGroup.extendedGameRules.findByPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }
                         if (definitionType == ParadoxDefinitionTypes.OnAction) {
-                            val config1 = configGroup.extendedOnActions.findFromPattern(value, element, configGroup)
+                            val config1 = configGroup.extendedOnActions.findByPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }
                     }

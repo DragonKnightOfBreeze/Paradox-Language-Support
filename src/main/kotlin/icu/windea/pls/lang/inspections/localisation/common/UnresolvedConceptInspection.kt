@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.extendedDefinitions
-import icu.windea.pls.lang.match.findFromPattern
+import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
@@ -53,7 +53,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
             private fun isIgnoredByConfigs(element: ParadoxLocalisationConceptCommand): Boolean {
                 if (!ignoredByConfigs) return false
                 val name = element.name
-                val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
+                val configs = configGroup.extendedDefinitions.findByPattern(name, element, configGroup).orEmpty()
                 val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.GameConcept) }
                 if (config != null) return true
                 return false
