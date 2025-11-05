@@ -9,14 +9,11 @@ import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 
 internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
-    // 三类缓存分别对应 key / value / template 的解析结果
-    // - maximumSize: 限制缓存容量，防止内存无限增长
-    // - expireAfterAccess: 非热点条目在一段时间未被访问后回收
-    private val cacheForKey = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+    private val cacheForKey = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtDataExpression> { doResolve(it, true) }
-    private val cacheForValue = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+    private val cacheForValue = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtDataExpression> { doResolve(it, false) }
-    private val cacheForTemplate = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+    private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtDataExpression> { doResolveTemplate(it) }
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant).apply { value = "" }

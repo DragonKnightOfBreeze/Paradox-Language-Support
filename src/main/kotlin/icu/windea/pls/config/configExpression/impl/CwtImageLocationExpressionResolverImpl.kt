@@ -8,7 +8,7 @@ internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpressi
     // 解析结果缓存：图像路径表达式在索引/渲染等流程中会被反复解析
     // - maximumSize: 限制缓存容量，防止内存无限增长
     // - expireAfterAccess: 非热点表达式在一段时间未被访问后回收
-    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+    private val cache = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtImageLocationExpression> { doResolve(it) }
 
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")

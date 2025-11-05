@@ -18,10 +18,7 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
     // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描
     // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式
 
-    // 模板解析结果缓存：模板常用于复杂规则拼装，命中率较高
-    // - maximumSize: 限制上界，避免内存膨胀
-    // - expireAfterAccess: 非热点在一段时间无访问后自动淘汰
-    private val cache = CacheBuilder("maximumSize=4096, expireAfterAccess=30m")
+    private val cache = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtTemplateExpression> { doResolve(it) }
 
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())

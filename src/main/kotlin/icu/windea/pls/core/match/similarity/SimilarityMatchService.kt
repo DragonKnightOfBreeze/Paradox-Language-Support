@@ -37,7 +37,7 @@ object SimilarityMatchService {
     }
 
 
-    private val bestMatchesCache = CacheBuilder("maximumSize=5000, expireAfterAccess=30m").build<Int, List<SimilarityMatchResult>>()
+    private val bestMatchesCache = CacheBuilder("maximumSize=1000").build<Int, List<SimilarityMatchResult>>()
 
     private fun doFindBestMatchesFromCache(input: String, finalCandidates: List<String>, options: SimilarityMatchOptions): List<SimilarityMatchResult> {
         val cacheKey = doGetBestMatchesCacheKey(input, finalCandidates, options)
