@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -13,16 +14,16 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxScopeFieldExpressionResolverImpl : ParadoxScopeFieldExpression.Resolver {
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxScopeFieldExpressionImpl(text, range, configGroup, nodes)
 
         val offset = range.startOffset

@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsBundle
@@ -166,7 +165,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var modifierConfig: CwtModifierConfig? = null
         val templateExpression = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, TextRange.from(0, modifierName.length), configGroup, config)
+            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, null, configGroup, config)
             if (templateExpression != null) modifierConfig = config
             templateExpression
         }

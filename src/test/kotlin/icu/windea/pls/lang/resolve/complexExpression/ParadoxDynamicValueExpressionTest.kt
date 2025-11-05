@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.configGroup.links
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.expression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
@@ -12,7 +12,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxOperatorNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeLinkNode
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -39,7 +38,7 @@ class ParadoxDynamicValueExpressionTest : ParadoxComplexExpressionTest() {
         val configs = configGroup.links.values.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
         if (configs.isEmpty()) error("No dynamic value configs found in links")
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
-        return ParadoxDynamicValueExpression.resolve(text, TextRange(0, text.length), configGroup, configs)
+        return ParadoxDynamicValueExpression.resolve(text, null, configGroup, configs)
     }
 
     @Test

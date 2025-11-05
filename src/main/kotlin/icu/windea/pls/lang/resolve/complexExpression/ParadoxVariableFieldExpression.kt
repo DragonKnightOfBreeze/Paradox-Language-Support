@@ -54,7 +54,7 @@ interface ParadoxVariableFieldExpression : ParadoxComplexExpression, ParadoxLink
     val variableNode: ParadoxDataSourceNode
 
     interface Resolver {
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression?
     }
 
     companion object : Resolver by ParadoxVariableFieldExpressionResolverImpl()

@@ -3,7 +3,6 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
@@ -352,8 +351,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
                                 val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
-                                val textRange = TextRange.create(0, expressionString.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@f
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return@f
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }
@@ -503,8 +501,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
                                 val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
-                                val textRange = TextRange.create(0, expressionString.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@f
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return@f
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
                             }

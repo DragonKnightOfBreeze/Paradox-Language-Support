@@ -67,7 +67,7 @@ interface StellarisNameFormatExpression : ParadoxComplexExpression {
     val config: CwtConfig<*>
 
     interface Resolver {
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): StellarisNameFormatExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): StellarisNameFormatExpression?
     }
 
     companion object : Resolver by StellarisNameFormatExpressionResolverImpl()

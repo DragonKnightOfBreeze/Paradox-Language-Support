@@ -101,9 +101,8 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         if (configExpression.type != CwtDataTypes.Scope) return
         val expectedScope = configExpression.value ?: return
         val value = element.value
-        val textRange = TextRange.create(0, value.length)
         val configGroup = config.configGroup
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
@@ -122,9 +121,8 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         if (configExpression.type != CwtDataTypes.ScopeGroup) return
         val expectedScopeGroup = configExpression.value ?: return
         val value = element.value
-        val textRange = TextRange.create(0, value.length)
         val configGroup = config.configGroup
-        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
+        val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(value, null, configGroup) ?: return
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return
         val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)

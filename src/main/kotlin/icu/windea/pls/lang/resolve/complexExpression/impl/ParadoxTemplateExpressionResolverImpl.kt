@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
@@ -13,14 +14,11 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpress
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
-import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {
         val templateExpression = when {
-            config is CwtModifierConfig -> {
-                config.template
-            }
+            config is CwtModifierConfig -> config.template
             else -> {
                 if (config.configExpression?.type != CwtDataTypes.TemplateExpression) return null
                 val templateString = config.configExpression?.expressionString ?: return null
@@ -40,6 +38,7 @@ internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression
         if (!incomplete && matchGroups.size < templateExpression.referenceExpressions.size) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxTemplateExpressionImpl(text, range, configGroup, nodes)
 
         run r1@{

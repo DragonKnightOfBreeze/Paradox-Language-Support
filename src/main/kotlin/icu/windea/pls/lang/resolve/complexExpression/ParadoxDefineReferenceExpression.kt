@@ -37,7 +37,7 @@ interface ParadoxDefineReferenceExpression : ParadoxComplexExpression {
     val variableNode: ParadoxDefineVariableNode?
 
     interface Resolver {
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression?
     }
 
     companion object : Resolver by ParadoxDefineReferenceExpressionResolverImpl()

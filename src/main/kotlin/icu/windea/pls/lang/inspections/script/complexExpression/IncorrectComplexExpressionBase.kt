@@ -3,7 +3,6 @@ package icu.windea.pls.lang.inspections.script.complexExpression
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -49,8 +48,7 @@ abstract class IncorrectComplexExpressionBase : LocalInspectionTool() {
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
         if (!isAvailableForConfig(config)) return null
         val value = element.value
-        val textRange = TextRange.create(0, value.length)
-        return ParadoxComplexExpression.resolveByConfig(value, textRange, configGroup, config)
+        return ParadoxComplexExpression.resolveByConfig(value, null, configGroup, config)
     }
 
     protected abstract fun isAvailableForConfig(config: CwtMemberConfig<*>): Boolean

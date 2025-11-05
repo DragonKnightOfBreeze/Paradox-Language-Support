@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
@@ -18,16 +19,16 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueArg
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScriptValueNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxScriptValueExpressionResolverImpl : ParadoxScriptValueExpression.Resolver {
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxScriptValueExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset

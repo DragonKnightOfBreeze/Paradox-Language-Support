@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippe
  */
 interface ParadoxTemplateExpression : ParadoxComplexExpression {
     interface Resolver {
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression?
     }
 
     companion object : Resolver by ParadoxTemplateExpressionResolverImpl()

@@ -47,8 +47,8 @@ interface ParadoxDynamicValueExpression : ParadoxComplexExpression {
     val scopeFieldExpression: ParadoxScopeFieldExpression?
 
     interface Resolver {
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression?
-        fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression?
+        fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression?
     }
 
     companion object : Resolver by ParadoxDynamicValueExpressionResolverImpl()

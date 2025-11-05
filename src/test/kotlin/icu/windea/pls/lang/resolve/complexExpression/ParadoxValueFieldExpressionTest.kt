@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.expression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
@@ -24,7 +24,6 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxStringLiteralN
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldPrefixNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxValueFieldValueNode
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
@@ -48,7 +47,7 @@ class ParadoxValueFieldExpressionTest : ParadoxComplexExpressionTest() {
     ): ParadoxValueFieldExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
-        return ParadoxValueFieldExpression.resolve(text, TextRange(0, text.length), configGroup)
+        return ParadoxValueFieldExpression.resolve(text, null, configGroup)
     }
 
     @Test

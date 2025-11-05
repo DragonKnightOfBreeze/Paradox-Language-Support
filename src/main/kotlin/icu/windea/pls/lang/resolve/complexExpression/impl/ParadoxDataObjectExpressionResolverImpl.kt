@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -13,14 +14,14 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObject
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.PlsStates
 
 internal class ParadoxDataObjectExpressionResolverImpl : ParadoxDatabaseObjectExpression.Resolver {
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
         if (!incomplete && text.isEmpty()) return null
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxDatabaseObjectExpressionImpl(text, range, configGroup, nodes)
 
         run r1@{

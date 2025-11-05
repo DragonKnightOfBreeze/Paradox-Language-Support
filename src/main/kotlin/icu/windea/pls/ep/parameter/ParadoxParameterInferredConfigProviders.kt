@@ -1,6 +1,5 @@
 package icu.windea.pls.ep.parameter
 
-import com.intellij.openapi.util.TextRange
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
@@ -149,8 +148,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     private fun getContextConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
         val configGroup = expressionConfig.configGroup
         val value = expressionElement.value
-        val textRange = TextRange.create(0, value.length)
-        val expression = ParadoxComplexExpression.resolveByConfig(value, textRange, configGroup, expressionConfig) ?: return null
+        val expression = ParadoxComplexExpression.resolveByConfig(value, null, configGroup, expressionConfig) ?: return null
         val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: List<CwtValueConfig>? = null
         expression.accept(object : ParadoxComplexExpressionVisitor() {

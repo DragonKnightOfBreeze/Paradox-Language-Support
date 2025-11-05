@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -18,14 +19,13 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicValueNo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorTokenNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.PlsStates
 
 class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.Resolver {
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
         return resolve(text, range, configGroup, config.singleton.list())
     }
 
-    override fun resolve(text: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
         if (configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
 
         val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
@@ -34,6 +34,7 @@ class ParadoxDynamicValueExpressionResolverImpl : ParadoxDynamicValueExpression.
         val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxDynamicValueExpression(text, range, configGroup, configs, nodes)
 
         val offset = range.startOffset

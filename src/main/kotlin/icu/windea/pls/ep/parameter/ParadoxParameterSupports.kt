@@ -345,8 +345,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val configGroup = expressionElementConfig.configGroup
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val range = TextRange.create(0, expressionString.length)
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, range, configGroup) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val definitionName = scriptValueExpression.scriptValueNode.text.orNull() ?: return null
         if (definitionName.isParameterized()) return null // skip if context name is parameterized
@@ -380,9 +379,8 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         if (config.configExpression.type !in CwtDataTypeGroups.ValueField) return null
         val expressionString = element.value
         if (!expressionString.contains("value:")) return null // 快速判断
-        val range = TextRange.create(0, expressionString.length)
         val configGroup = config.configGroup
-        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, range, configGroup) ?: return null
+        val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionString, null, configGroup) ?: return null
         val scriptValueExpression = valueFieldExpression.scriptValueExpression ?: return null
         val scriptValueNode = scriptValueExpression.scriptValueNode
         val definitionName = scriptValueNode.text

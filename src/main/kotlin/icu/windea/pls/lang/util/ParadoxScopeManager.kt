@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -318,9 +317,8 @@ object ParadoxScopeManager {
             if (parentScopeContext == null) return null
             val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
             val expressionString = expressionElement.value
-            val textRange = TextRange.create(0, expressionString.length)
             val configGroup = config.configGroup
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return null
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
             val result = getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
             return result
         } else {

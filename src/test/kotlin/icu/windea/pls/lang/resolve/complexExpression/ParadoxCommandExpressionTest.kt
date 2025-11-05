@@ -47,7 +47,7 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     ): ParadoxCommandExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
-        return ParadoxCommandExpression.resolve(text, TextRange(0, text.length), configGroup)
+        return ParadoxCommandExpression.resolve(text, null, configGroup)
     }
 
     @Test

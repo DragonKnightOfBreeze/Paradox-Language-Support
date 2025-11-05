@@ -33,7 +33,7 @@ class ParadoxDatabaseObjectExpressionTest : ParadoxComplexExpressionTest() {
     ): ParadoxDatabaseObjectExpression? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         if (incomplete) PlsStates.incompleteComplexExpression.set(true) else PlsStates.incompleteComplexExpression.remove()
-        return ParadoxDatabaseObjectExpression.resolve(text, TextRange(0, text.length), configGroup)
+        return ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
     }
 
     @Test

@@ -30,21 +30,18 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
             is ParadoxScriptExpressionElement -> {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
                 val value = element.value
-                val textRange = TextRange.create(0, value.length)
-                resolveByConfig(value, textRange, configGroup, config)
+                resolveByConfig(value, null, configGroup, config)
             }
             is ParadoxLocalisationExpressionElement -> {
                 if (!element.isComplexExpression()) return null
                 when {
                     element.isCommandExpression() -> {
                         val value = element.value
-                        val textRange = TextRange.create(0, value.length)
-                        ParadoxCommandExpression.resolve(value, textRange, configGroup)
+                        ParadoxCommandExpression.resolve(value, null, configGroup)
                     }
                     element.isDatabaseObjectExpression(strict = true) -> {
                         val value = element.value
-                        val textRange = TextRange.create(0, value.length)
-                        ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup)
+                        ParadoxDatabaseObjectExpression.resolve(value, null, configGroup)
                     }
                     else -> null
                 }
@@ -53,12 +50,12 @@ internal class ParadoxComplexExpressionResolverImpl : ParadoxComplexExpression.R
         }
     }
 
-    override fun resolveByConfig(text: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
+    override fun resolveByConfig(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
         val dataType = config.configExpression?.type ?: return null
         return resolveByDataType(text, range, configGroup, dataType, config)
     }
 
-    override fun resolveByDataType(text: String, range: TextRange, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
+    override fun resolveByDataType(text: String, range: TextRange?, configGroup: CwtConfigGroup, dataType: CwtDataType, config: CwtConfig<*>?): ParadoxComplexExpression? {
         return when {
             dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(text, range, configGroup, config ?: return null)
             dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(text, range, configGroup, config ?: return null)

@@ -41,12 +41,11 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.configExpression.type
                 val value = element.value
-                val textRange = TextRange.create(0, value.length)
                 val complexExpression = when {
-                    dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config)
-                    dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(value, textRange, configGroup)
-                    dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(value, textRange, configGroup)
-                    dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(value, textRange, configGroup)
+                    dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(value, null, configGroup, config)
+                    dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(value, null, configGroup)
+                    dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(value, null, configGroup)
+                    dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(value, null, configGroup)
                     else -> null
                 }
                 if (complexExpression == null) return

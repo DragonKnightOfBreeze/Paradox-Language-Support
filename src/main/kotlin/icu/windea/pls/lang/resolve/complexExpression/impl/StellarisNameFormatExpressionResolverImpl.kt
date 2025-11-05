@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxCommandExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
@@ -21,18 +22,12 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatTextNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
-import icu.windea.pls.lang.PlsStates
 
 /**
  * 解析器：Stellaris 命名格式表达式。
  */
 internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatExpression.Resolver {
-    override fun resolve(
-        text: String,
-        range: TextRange,
-        configGroup: CwtConfigGroup,
-        config: CwtConfig<*>,
-    ): StellarisNameFormatExpression? {
+    override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): StellarisNameFormatExpression? {
         val configExpression = config.configExpression ?: return null
         if (configExpression.type != CwtDataTypes.StellarisNameFormat) return null
 
@@ -43,6 +38,7 @@ internal class StellarisNameFormatExpressionResolverImpl : StellarisNameFormatEx
         val definitionType = formatName?.let { "${it}_name_parts_list" }
 
         val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+        val range = range ?: TextRange.create(0, text.length)
         val expression = StellarisNameFormatExpressionImpl(text, range, configGroup, config, nodes)
 
         val offset = range.startOffset

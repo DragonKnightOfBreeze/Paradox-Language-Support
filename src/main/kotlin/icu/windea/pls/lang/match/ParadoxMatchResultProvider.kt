@@ -2,7 +2,6 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
@@ -232,48 +231,42 @@ object ParadoxMatchResultProvider {
     }
 
     fun forScopeFieldExpression(configGroup: CwtConfigGroup, text: String, configExpression: CwtDataExpression, element: PsiElement): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup)
+        val complexExpression = ParadoxScopeFieldExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return forScopeField(element, configGroup, complexExpression, configExpression)
     }
 
     fun forValueFieldExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = ParadoxValueFieldExpression.resolve(text, textRange, configGroup)
+        val complexExpression = ParadoxValueFieldExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return ParadoxMatchResult.ExactMatch
     }
 
     fun forVariableFieldExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = ParadoxVariableFieldExpression.resolve(text, textRange, configGroup)
+        val complexExpression = ParadoxVariableFieldExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return ParadoxMatchResult.ExactMatch
     }
 
     fun forDatabaseObjectExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, textRange, configGroup)
+        val complexExpression = ParadoxDatabaseObjectExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return ParadoxMatchResult.ExactMatch
     }
 
     fun forDefineReferenceExpression(configGroup: CwtConfigGroup, text: String): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = ParadoxDefineReferenceExpression.resolve(text, textRange, configGroup)
+        val complexExpression = ParadoxDefineReferenceExpression.resolve(text, null, configGroup)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return ParadoxMatchResult.ExactMatch
     }
 
     fun forStellarisNameFormatExpression(configGroup: CwtConfigGroup, text: String, config: CwtConfig<*>): ParadoxMatchResult {
-        val textRange = TextRange.create(0, text.length)
-        val complexExpression = StellarisNameFormatExpression.resolve(text, textRange, configGroup, config)
+        val complexExpression = StellarisNameFormatExpression.resolve(text, null, configGroup, config)
         if (complexExpression == null) return ParadoxMatchResult.NotMatch
         if (complexExpression.getAllErrors(null).isNotEmpty()) return ParadoxMatchResult.PartialMatch
         return ParadoxMatchResult.ExactMatch

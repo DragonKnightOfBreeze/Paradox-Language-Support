@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.scope
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentsOfType
 import icu.windea.pls.config.CwtDataTypes
@@ -82,9 +81,8 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(triggerScopeProperty) ?: return null
             val pv = triggerScopeProperty.propertyValue ?: return null
             val expressionString = pv.value
-            val textRange = TextRange.create(0, expressionString.length)
             val configGroup = finalConfig.configGroup
-            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return null
+            val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
             return ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
         }
         // 基于trigger的值得到最终的scopeContext，然后推断属性parameters的scopeContext

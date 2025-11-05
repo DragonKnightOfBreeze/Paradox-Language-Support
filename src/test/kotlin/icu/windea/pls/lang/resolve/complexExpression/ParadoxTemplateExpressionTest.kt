@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
@@ -42,7 +41,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
             CwtTemplateExpressionManager.extract(tpl, refMap)
         }
         val g = PlsFacade.getConfigGroup(project, gameType)
-        val exp = ParadoxTemplateExpression.resolve(text, TextRange(0, text.length), g, cfg)!!
+        val exp = ParadoxTemplateExpression.resolve(text, null, g, cfg)!!
         val out = exp.render()
         println(out)
         Assert.assertTrue(out.contains("ParadoxTemplateSnippetConstantNode") && out.contains("ParadoxTemplateSnippetNode"))
@@ -58,7 +57,7 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
         Assume.assumeTrue(tpl.referenceExpressions.size == 1)
         val text = CwtTemplateExpressionManager.extract(tpl, "foo")
         val g = PlsFacade.getConfigGroup(project, gameType)
-        val exp = ParadoxTemplateExpression.resolve(text, TextRange(0, text.length), g, cfg)!!
+        val exp = ParadoxTemplateExpression.resolve(text, null, g, cfg)!!
         val out = exp.render()
         println(out)
         Assert.assertTrue(out.isNotBlank())
