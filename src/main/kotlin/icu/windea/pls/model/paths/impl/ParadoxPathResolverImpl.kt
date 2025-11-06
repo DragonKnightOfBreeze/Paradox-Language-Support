@@ -7,8 +7,8 @@ import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.model.paths.ParadoxPath
 
 private val interner = Interner.newWeakInterner<String>()
-private val cacheForSingleton = CacheBuilder().build<String, ParadoxPath> { OptimizedParadoxPath(it, true) }
-private val cache = CacheBuilder().build<String, ParadoxPath> { OptimizedParadoxPath(it, false) }
+private val cacheForSingleton = CacheBuilder().build<String, ParadoxPath> { ParadoxPathImplOptimized(it, true) }
+private val cache = CacheBuilder().build<String, ParadoxPath> { ParadoxPathImplOptimized(it, false) }
 
 private fun String.internPath() = interner.intern(this)
 private fun String.splitSubPaths() = splitFast('/')
@@ -20,13 +20,13 @@ internal class ParadoxPathResolverImpl : ParadoxPath.Resolver {
 
     override fun resolve(input: String): ParadoxPath {
         if (input.isEmpty()) return EmptyParadoxPath
-        return ParadoxPathImpl1(input)
+        return ParadoxPathImplFromPath(input)
     }
 
     override fun resolve(input: List<String>): ParadoxPath {
         if (input.isEmpty()) return EmptyParadoxPath
         if (input.size == 1) return cacheForSingleton.get(input.get(0))
-        return ParadoxPathImpl2(input)
+        return ParadoxPathImplFromSubPaths(input)
     }
 
     override fun invalidateCache() {
@@ -42,7 +42,7 @@ private abstract class ParadoxPathBase : ParadoxPath {
     override val length: Int get() = subPaths.size
 
     override fun normalize(): ParadoxPath {
-        if (this is OptimizedParadoxPath || this is EmptyParadoxPath) return this
+        if (this is ParadoxPathImplOptimized || this is EmptyParadoxPath) return this
         if (this.isEmpty()) return EmptyParadoxPath
         if (this.subPaths.size == 1) return cacheForSingleton.get(this.subPaths.get(0))
         return cache.get(this.path)
@@ -53,19 +53,19 @@ private abstract class ParadoxPathBase : ParadoxPath {
     override fun toString() = path
 }
 
-private class ParadoxPathImpl1(input: String) : ParadoxPathBase() {
+private class ParadoxPathImplFromPath(input: String) : ParadoxPathBase() {
     override val path: String = input
     override val subPaths: List<String> = input.splitSubPaths()
     override val parent: String = input.getParent()
 }
 
-private class ParadoxPathImpl2(input: List<String>) : ParadoxPathBase() {
+private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase() {
     override val path: String = input.joinSubPaths()
     override val subPaths: List<String> = input
     override val parent: String = path.getParent()
 }
 
-private class OptimizedParadoxPath(input: String, singleton: Boolean) : ParadoxPathBase() {
+private class ParadoxPathImplOptimized(input: String, singleton: Boolean) : ParadoxPathBase() {
     override val path: String = input.internPath()
     override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.internPath() }
     override val parent: String = if (singleton) "" else path.getParent().internPath()
