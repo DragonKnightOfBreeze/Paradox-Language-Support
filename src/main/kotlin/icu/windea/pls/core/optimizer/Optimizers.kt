@@ -28,6 +28,8 @@ private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimiz
 private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
     val className = c.name
     if (className.startsWith("java.util.ImmutableCollections$")) return true
+    // Kotlin 标准集合在某些情况下会返回 JDK 的单例实现（例如 listOf("a") -> java.util.Collections$SingletonList）
+    if (className.startsWith("java.util.Collections$")) return true
     if (className.startsWith("kotlin.collections.")) return true
     // if(className.startsWith("kotlinx.collections.immutable.")) return true // bad memory
     return false

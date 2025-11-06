@@ -30,6 +30,15 @@ class OptimizerTest {
         assertEquals("x", r1)
     }
 
+    @Test
+    fun testStringOptimizer_emptyString_shortCircuit() {
+        val optimizer = OptimizerRegistry.forString()
+        val r = optimizer.optimize("")
+        // 应直接返回标准空串单例
+        assertSame("", r)
+        assertEquals(0, r.length)
+    }
+
     // ========== List ==========
     @Test
     fun testListOptimizer_emptyLists_valueEquality_only() {
@@ -169,6 +178,54 @@ class OptimizerTest {
         val optimizer = OptimizerRegistry.forMap<String, Any?>()
         val input = hashMapOf("a" to null)
         assertThrows(NullPointerException::class.java) { optimizer.optimize(input) }
+    }
+
+    // ========== String List (small-size interning) ==========
+    @Test
+    fun testStringListOptimizer_smallLists_interned_referenceEqual() {
+        val optimizer = OptimizerRegistry.forStringList()
+        val l1 = listOf("a", "b")
+        val l2 = listOf("a", "b")
+        val r1 = optimizer.optimize(l1)
+        val r2 = optimizer.optimize(l2)
+        assertEquals(l1, r1)
+        assertEquals(l2, r2)
+        // 小集合应被驻留，等价内容返回同一引用
+        assertSame(r1, r2)
+    }
+
+    @Test
+    fun testStringListOptimizer_threshold_largeList_returnsSelf() {
+        val optimizer = OptimizerRegistry.forStringList()
+        val input = (1..9).map { it.toString() } // size = 9 > SMALL_INTERN_THRESHOLD(8)
+        val result = optimizer.optimize(input)
+        // 大集合不驻留，应直接返回自身
+        assertSame(input, result)
+        assertEquals(9, result.size)
+    }
+
+    // ========== String Set (small-size interning) ==========
+    @Test
+    fun testStringSetOptimizer_smallSets_interned_referenceEqual() {
+        val optimizer = OptimizerRegistry.forStringSet()
+        val s1 = setOf("a", "b")
+        val s2 = setOf("b", "a")
+        val r1 = optimizer.optimize(s1)
+        val r2 = optimizer.optimize(s2)
+        assertEquals(s1, r1)
+        assertEquals(s2, r2)
+        // 小集合应被驻留，等价内容返回同一引用
+        assertSame(r1, r2)
+    }
+
+    @Test
+    fun testStringSetOptimizer_threshold_largeSet_returnsSelf() {
+        val optimizer = OptimizerRegistry.forStringSet()
+        val input = (1..9).map { it.toString() }.toSet() // size = 9 > SMALL_INTERN_THRESHOLD(8)
+        val result = optimizer.optimize(input)
+        // 大集合不驻留，应直接返回自身
+        assertSame(input, result)
+        assertEquals(9, result.size)
     }
 
     // ========== Platform Access ==========
