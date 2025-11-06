@@ -3,6 +3,8 @@ package icu.windea.pls.ep.metadata
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.isFile
+import com.intellij.openapi.vfs.readBytes
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLauncherSettingsInfo
@@ -39,4 +41,29 @@ class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
             return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
         }
     }
+}
+
+class ParadoxEuropaUniversalisVMetadataProvider : ParadoxMetadataProvider {
+    override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
+        // Europa Universalis V has no launcher metadata file.
+        // So we detect the binary directly and read the version from the game branch file.
+        rootFile.findFileByRelativePath("binaries/eu5.exe")?.exists() ?: return null
+        val branch = rootFile.findFileByRelativePath("caesar_branch.txt")?.readBytes()?.toString(Charsets.UTF_8) ?: return null
+        val entryFile = rootFile.findFileByRelativePath("game") ?: return null
+        return Metadata(
+            rootFile = rootFile,
+            name = ParadoxGameType.Eu5.name,
+            version = branch,
+            gameType = ParadoxGameType.Eu5,
+            entryFile = entryFile,
+        )
+    }
+
+    class Metadata(
+        override val rootFile: VirtualFile,
+        override val name: String,
+        override val version: String?,
+        override val gameType: ParadoxGameType,
+        override val entryFile: VirtualFile,
+    ) : ParadoxMetadata.Game
 }
