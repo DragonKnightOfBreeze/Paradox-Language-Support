@@ -20,7 +20,7 @@ interface CwtConfigPath : Iterable<String> {
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
     fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
-    fun optimized(): CwtConfigPath = this
+    fun normalize(): CwtConfigPath = this
 
     override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean

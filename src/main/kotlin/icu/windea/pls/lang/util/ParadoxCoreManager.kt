@@ -175,7 +175,7 @@ object ParadoxCoreManager {
             ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
             else -> ParadoxFileType.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.optimized(), entryName, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
         return fileInfo
     }
 
@@ -189,7 +189,7 @@ object ParadoxCoreManager {
             ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileType.Other
             else -> ParadoxFileType.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.optimized(), entryName, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
         return fileInfo
     }
 

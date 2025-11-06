@@ -146,7 +146,7 @@ object ParadoxDefinitionManager {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.optimized(), gameType, configGroup)
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize(), gameType, configGroup)
     }
 
     fun getTypeKey(element: ParadoxScriptDefinitionElement): String {

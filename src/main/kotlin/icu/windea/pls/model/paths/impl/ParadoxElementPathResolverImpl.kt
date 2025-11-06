@@ -1,17 +1,15 @@
 package icu.windea.pls.model.paths.impl
 
+import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.model.paths.ParadoxElementPath
 
-private val stringPool = CacheBuilder()
-    .build<String, String> { it }
-private val cacheForSingleton = CacheBuilder()
-    .build<String, ParadoxElementPath> { OptimizedParadoxElementPath(it, true) }
-private val cache = CacheBuilder()
-    .build<String, ParadoxElementPath> { OptimizedParadoxElementPath(it, false) }
+private val interner = Interner.newWeakInterner<String>()
+private val cacheForSingleton = CacheBuilder().build<String, ParadoxElementPath> { OptimizedParadoxElementPath(it, true) }
+private val cache = CacheBuilder().build<String, ParadoxElementPath> { OptimizedParadoxElementPath(it, false) }
 
-private fun String.optimized() = stringPool.get(this)
+private fun String.internPath() = interner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').map { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
@@ -30,7 +28,6 @@ internal class ParadoxElementPathResolverImpl : ParadoxElementPath.Resolver {
     }
 
     override fun invalidateCache() {
-        stringPool.invalidateAll()
         cacheForSingleton.invalidateAll()
         cache.invalidateAll()
     }
@@ -39,7 +36,7 @@ internal class ParadoxElementPathResolverImpl : ParadoxElementPath.Resolver {
 private abstract class ParadoxElementPathBase : ParadoxElementPath {
     override val length: Int get() = subPaths.size
 
-    override fun optimized(): ParadoxElementPath {
+    override fun normalize(): ParadoxElementPath {
         if (this is OptimizedParadoxElementPath || this is EmptyParadoxElementPath) return this
         if (this.isEmpty()) return EmptyParadoxElementPath
         if (this.subPaths.size == 1) return cacheForSingleton.get(this.subPaths.get(0))
@@ -62,8 +59,8 @@ private class ParadoxElementPathImpl2(input: List<String>) : ParadoxElementPathB
 }
 
 private class OptimizedParadoxElementPath(input: String, singleton: Boolean) : ParadoxElementPathBase() {
-    override val path: String = input.optimized()
-    override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.optimized() }
+    override val path: String = input.internPath()
+    override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.internPath() }
 }
 
 private object EmptyParadoxElementPath : ParadoxElementPathBase() {
