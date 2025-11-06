@@ -114,6 +114,24 @@ enum class ParadoxResolveConstraint {
             }
         }
     },
+    LocalisationReference {
+        override fun canResolveReference(element: PsiElement): Boolean {
+            return Localisation.canResolveReference(element)
+        }
+
+        override fun canResolve(reference: PsiReference): Boolean {
+            return when (reference) {
+                is ParadoxIdentifierNode.Reference -> reference.canResolveFor(this)
+                is ParadoxScriptExpressionPsiReference -> {
+                    // also for synced_localisation
+                    val configExpression = reference.config.configExpression
+                    val dataType = configExpression.type
+                    dataType in CwtDataTypeGroups.LocalisationReference || dataType == CwtDataTypes.AliasKeysField
+                }
+                else -> Localisation.canResolve(reference)
+            }
+        }
+    },
     Parameter {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {

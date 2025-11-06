@@ -22,7 +22,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.JComponent
 
 /**
@@ -59,7 +58,6 @@ class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxScriptHintsProvid
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptExpressionElement) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true

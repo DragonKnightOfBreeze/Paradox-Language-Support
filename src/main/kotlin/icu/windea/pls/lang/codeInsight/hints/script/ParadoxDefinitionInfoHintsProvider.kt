@@ -49,15 +49,14 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element is ParadoxScriptProperty) {
             val definitionInfo = element.definitionInfo
-            if (definitionInfo != null) {
-                // 忽略类似event_namespace这样定义的值不是子句的定义
-                if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return true
+            if (definitionInfo == null) return true
+            // 忽略类似 event_namespace 这样的定义的值不是子句的定义
+            if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return true
 
-                val presentation = doCollect(definitionInfo, settings)
-                val finalPresentation = presentation.toFinalPresentation(this, file.project)
-                val endOffset = element.propertyKey.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
+            val presentation = doCollect(definitionInfo, settings)
+            val finalPresentation = presentation.toFinalPresentation(this, file.project)
+            val endOffset = element.propertyKey.endOffset
+            sink.addInlineElement(endOffset, true, finalPresentation, false)
         }
         return true
     }

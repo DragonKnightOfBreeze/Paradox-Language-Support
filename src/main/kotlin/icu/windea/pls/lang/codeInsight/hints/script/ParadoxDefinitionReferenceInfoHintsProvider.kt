@@ -20,7 +20,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import javax.swing.JComponent
 
 /**
@@ -48,19 +47,16 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<S
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptExpressionElement) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
         if (resolved is ParadoxScriptDefinitionElement) {
-            val definitionInfo = resolved.definitionInfo
-            if (definitionInfo != null) {
-                val presentation = doCollect(definitionInfo, settings)
-                val finalPresentation = presentation.toFinalPresentation(this, file.project)
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
+            val definitionInfo = resolved.definitionInfo ?: return true
+            val presentation = doCollect(definitionInfo, settings)
+            val finalPresentation = presentation.toFinalPresentation(this, file.project)
+            val endOffset = element.endOffset
+            sink.addInlineElement(endOffset, true, finalPresentation, false)
         }
         return true
     }
