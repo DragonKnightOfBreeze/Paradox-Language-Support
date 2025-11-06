@@ -104,10 +104,7 @@ class ParadoxLocalisationTextInlayRenderer(
         val continueProcess = action()
         val newBuilder = builder
         builder = oldBuilder
-        val presentation = run {
-            newBuilder.mergePresentations()
-            Unit
-        } ?: return true
+        val presentation = newBuilder.mergePresentations() ?: return true
         val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
         builder.add(finalPresentation)
         return continueProcess
@@ -116,8 +113,7 @@ class ParadoxLocalisationTextInlayRenderer(
     private fun doRender(action: () -> Boolean): InlayPresentation? {
         val r = action()
         if (!r) builder.add(factory.smallText("...")) // 添加省略号
-        builder.mergePresentations()
-        return Unit
+        return builder.mergePresentations()
     }
 
     private fun renderRichTextTo(element: ParadoxLocalisationRichText): Boolean {
@@ -182,7 +178,6 @@ class ParadoxLocalisationTextInlayRenderer(
                                 val newBuilder = builder
                                 builder = oldBuilder
                                 newBuilder.mergePresentations()
-                                Unit
                             } finally {
                                 guardStack.removeLast()
                             }
@@ -253,8 +248,7 @@ class ParadoxLocalisationTextInlayRenderer(
                     presentations.add(factory.smallText(c.text))
                 }
             }
-            presentations.mergePresentations()
-            val mergedPresentation = Unit
+            val mergedPresentation = presentations.mergePresentations()
             if (mergedPresentation != null) builder.add(mergedPresentation)
             continueProcess()
         }
@@ -284,7 +278,7 @@ class ParadoxLocalisationTextInlayRenderer(
             }
             builder = oldBuilder
             val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
-            var presentation: InlayPresentation = newBuilder.mergePresentations()
+            var presentation = newBuilder.mergePresentations()
             if (presentation != null) {
                 val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
                 presentation = WithAttributesPresentation(presentation, conceptAttributesKey, editor, attributesFlags)
@@ -361,8 +355,7 @@ class ParadoxLocalisationTextInlayRenderer(
         val references = element.references
         if (references.isEmpty()) {
             presentations.add(factory.smallText(element.text))
-            presentations.mergePresentations()
-            return Unit
+            return presentations.mergePresentations()
         }
         var i = 0
         for (reference in references) {
@@ -387,7 +380,6 @@ class ParadoxLocalisationTextInlayRenderer(
             val s = text.substring(endOffset)
             presentations.add(factory.smallText(s))
         }
-        presentations.mergePresentations()
-        return Unit
+        return presentations.mergePresentations()
     }
 }
