@@ -1,70 +1,84 @@
-@file:Suppress("unused")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.optimizer
 
+import com.github.benmanes.caffeine.cache.Interner
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import it.unimi.dsi.fastutil.Hash
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.collections.immutable.toImmutableSet
 import java.util.*
 
-fun OptimizerRegistry.intern() = register(InternStringOptimizer)
+fun OptimizerRegistry.forString() = register(StringOptimizer)
 fun <E> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
 fun <E> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
 fun <K, V> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
 
-private object InternStringOptimizer : Optimizer.Unary<String> {
-    override fun optimize(value: String): String {
-        return value.intern()
+private object StringOptimizer : Optimizer.Unary<String> {
+    private val interner = Interner.newWeakInterner<String>()
+
+    override fun optimize(input: String): String {
+        return interner.intern(input)
     }
 }
 
 private object ListOptimizer : Optimizer.Unary<List<*>> {
-    override fun optimize(value: List<*>): List<*> {
-        if (value.isEmpty()) return emptyList<Any?>()
-        if (ignore(value)) return value
-        if (value.size == 1) return applySingleton(value)
-        return apply(value)
+    override fun optimize(input: List<*>): List<*> {
+        if (input.isEmpty()) return applyForEmpty()
+        if (ignore(input)) return input
+        return apply(input)
     }
 
-    private fun ignore(value: List<*>) = false
+    private inline fun ignore(input: List<*>): Boolean {
+        return input is ImmutableList
+    }
 
-    /** @see kotlin.collections.toList */
-    private fun applySingleton(value: List<*>) = listOf(value.get(0))
+    private inline fun applyForEmpty(): List<Any?> {
+        return emptyList()
+    }
 
-    private fun apply(value: List<*>) = value.toImmutableList()
+    private inline fun apply(input: List<*>): List<Any?> {
+        if (input.size == 1) return listOf(input.get(0))
+        return ImmutableList.copyOf(input)
+    }
 }
 
 private object SetOptimizer : Optimizer.Unary<Set<*>> {
-    override fun optimize(value: Set<*>): Set<*> {
-        if (value.isEmpty()) return emptySet<Any?>()
-        if (ignore(value)) return value
-        if (value.size == 1) return applySingleton(value)
-        return apply(value)
+    override fun optimize(input: Set<*>): Set<*> {
+        if (input.isEmpty()) return applyForEmpty()
+        if (ignore(input)) return input
+        return apply(input)
     }
 
-    private fun ignore(value: Set<*>): Boolean {
-        return value is Hash
+    private inline fun ignore(input: Set<*>): Boolean {
+        return input is ImmutableSet || input is Hash
     }
 
-    /** @see kotlin.collections.toSet */
-    private fun applySingleton(value: Set<*>): Set<Any?> = setOf(value.iterator().next())
+    private inline fun applyForEmpty(): Set<Any?> {
+        return emptySet()
+    }
 
-    private fun apply(value: Set<*>) = value.toImmutableSet()
+    private inline fun apply(input: Set<*>): Set<Any?> {
+        return ImmutableSet.copyOf(input)
+    }
 }
 
 private object MapOptimizer : Optimizer.Unary<Map<*, *>> {
-    override fun optimize(value: Map<*, *>): Map<*, *> {
-        if (value.isEmpty()) return emptyMap<Any?, Any?>()
-        if (ignore(value)) return value
-        if (value.size == 1) return applySingleton(value)
-        return apply(value)
+    override fun optimize(input: Map<*, *>): Map<*, *> {
+        if (input.isEmpty()) return applyForEmpty()
+        if (ignore(input)) return input
+        return apply(input)
     }
 
-    private fun ignore(value: Map<*, *>) = value is Hash
+    private inline fun ignore(input: Map<*, *>): Boolean {
+        return input is ImmutableMap || input is Hash
+    }
 
-    /** @see kotlin.collections.toMap */
-    private fun applySingleton(value: Map<*, *>) = with(value.entries.iterator().next()) { Collections.singletonMap(key, value) }
+    private inline fun applyForEmpty(): Map<Any?, Any?> {
+        return emptyMap()
+    }
 
-    private fun apply(value: Map<*, *>) = value.toImmutableMap()
+    private inline fun apply(input: Map<*, *>): Map<Any?, Any?> {
+        return ImmutableMap.copyOf(input)
+    }
 }

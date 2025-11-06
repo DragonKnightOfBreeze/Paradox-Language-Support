@@ -8,6 +8,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Test
 import org.junit.runner.RunWith

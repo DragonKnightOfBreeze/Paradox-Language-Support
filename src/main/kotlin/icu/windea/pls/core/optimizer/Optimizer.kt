@@ -13,14 +13,19 @@ package icu.windea.pls.core.optimizer
  */
 interface Optimizer<T, R> {
     /**
-     * 将 [value] 转化为优化后的等价对象。
+     * 将输入的对象 [input] 转化为优化后的等价对象。
      */
-    fun optimize(value: T): R
+    fun optimize(input: T): R
 
     /**
-     * [value] 转化为反优化后的等价对象。
+     * 将输入的对象 [input] 转化为反优化后的等价对象。
      */
-    fun deoptimize(value: R): T = throw UnsupportedOperationException()
+    fun deoptimize(input: R): T = throw UnsupportedOperationException()
 
+    /**
+     * 一元的优化器。
+     *
+     * 这类优化器不会在处理后更改对象的类型。
+     */
     interface Unary<T> : Optimizer<T, T>
 }

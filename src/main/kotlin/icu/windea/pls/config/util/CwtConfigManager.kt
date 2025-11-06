@@ -187,7 +187,7 @@ object CwtConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             runReadAction {
                 val file = element.containingFile
-                val value = doGetConfigPath(element)?.optimized()
+                val value = doGetConfigPath(element)?.normalize()
                 value.withDependencyItems(file)
             }
         }

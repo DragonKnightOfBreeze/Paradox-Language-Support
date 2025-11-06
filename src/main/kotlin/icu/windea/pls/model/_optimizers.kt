@@ -9,41 +9,41 @@ fun OptimizerRegistry.forGameType() = register(ParadoxGameTypeOptimizer)
 fun OptimizerRegistry.forLocalisationType() = register(ParadoxLocalisationTypeOptimizer)
 
 private object CwtTypeOptimizer : Optimizer<CwtType, Byte> {
-    override fun optimize(value: CwtType): Byte {
-        return value.ordinal.toByte()
+    override fun optimize(input: CwtType): Byte {
+        return input.ordinal.toByte()
     }
 
-    override fun deoptimize(value: Byte): CwtType {
-        return CwtType.entries[value.toInt()]
+    override fun deoptimize(input: Byte): CwtType {
+        return CwtType.entries[input.toInt()]
     }
 }
 
 private object CwtSeparatorTypeOptimizer : Optimizer<CwtSeparatorType, Byte> {
-    override fun optimize(value: CwtSeparatorType): Byte {
-        return value.ordinal.toByte()
+    override fun optimize(input: CwtSeparatorType): Byte {
+        return input.ordinal.toByte()
     }
 
-    override fun deoptimize(value: Byte): CwtSeparatorType {
-        return CwtSeparatorType.entries[value.toInt()]
+    override fun deoptimize(input: Byte): CwtSeparatorType {
+        return CwtSeparatorType.entries[input.toInt()]
     }
 }
 
 private object ParadoxGameTypeOptimizer : Optimizer<ParadoxGameType, Byte> {
-    override fun optimize(value: ParadoxGameType): Byte {
-        return (value.ordinal - 1).toByte()
+    override fun optimize(input: ParadoxGameType): Byte {
+        return (input.ordinal - 1).toByte()
     }
 
-    override fun deoptimize(value: Byte): ParadoxGameType {
-        return ParadoxGameType.getAll(withCore = true)[value.toInt() + 1]
+    override fun deoptimize(input: Byte): ParadoxGameType {
+        return ParadoxGameType.getAll(withCore = true)[input.toInt() + 1]
     }
 }
 
 private object ParadoxLocalisationTypeOptimizer : Optimizer<ParadoxLocalisationType, Byte> {
-    override fun optimize(value: ParadoxLocalisationType): Byte {
-        return value.ordinal.toByte()
+    override fun optimize(input: ParadoxLocalisationType): Byte {
+        return input.ordinal.toByte()
     }
 
-    override fun deoptimize(value: Byte): ParadoxLocalisationType {
-        return ParadoxLocalisationType.entries[value.toInt()]
+    override fun deoptimize(input: Byte): ParadoxLocalisationType {
+        return ParadoxLocalisationType.entries[input.toInt()]
     }
 }
