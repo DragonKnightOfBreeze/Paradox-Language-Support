@@ -32,6 +32,7 @@ import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.model.CwtMemberType
 
 object CwtConfigResolverUtil {
     private val currentLocation = ThreadLocal<String>()
@@ -100,17 +101,20 @@ object CwtConfigResolverUtil {
         return optionConfigs.optimized() // optimized to optimize memory
     }
 
-    fun isPropertyConfigOnly(configs: List<CwtMemberConfig<*>>): Boolean? {
-        if (configs.isEmpty()) return true
-        var flag1 = false
-        var flag2 = false
+    fun checkMemberType(configs: List<CwtMemberConfig<*>>): CwtMemberType? {
+        if (configs.isEmpty()) return null
+        var result: CwtMemberType? = null
         configs.forEachFast { c ->
-            when (c) {
-                is CwtPropertyConfig -> flag1 = true
-                is CwtValueConfig -> flag2 = true
+            val r = when (c) {
+                is CwtPropertyConfig -> CwtMemberType.PROPERTY
+                is CwtValueConfig -> CwtMemberType.VALUE
+            }
+            when {
+                result == null -> result = r
+                result != r -> return null
             }
         }
-        return flag1 != flag2
+        return result
     }
 
     fun applyOptions(config: CwtMemberConfig<*>) {

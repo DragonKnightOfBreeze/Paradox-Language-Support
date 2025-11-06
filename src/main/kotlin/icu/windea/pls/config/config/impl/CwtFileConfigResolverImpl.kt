@@ -15,6 +15,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.ifNotEmpty
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.model.CwtMemberType
 
 internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -29,10 +30,11 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         }
         val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
         logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
-        return if (CwtConfigResolverUtil.isPropertyConfigOnly(configs)) {
-            CwtFileConfigImplWithUniformConfigs(pointer, configGroup, fileName, filePath, configs)
-        } else {
-            CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
+        val memberType = CwtConfigResolverUtil.checkMemberType(configs)
+        return when (memberType) {
+            null -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
+            CwtMemberType.PROPERTY -> CwtFileConfigImplWithPropertyConfigs(pointer, configGroup, fileName, filePath, configs)
+            CwtMemberType.VALUE -> CwtFileConfigImplWithValueConfigs(pointer, configGroup, fileName, filePath, configs)
         }
     }
 }
@@ -61,7 +63,7 @@ private class CwtFileConfigImplWithConfigs(
     override val configs: List<CwtMemberConfig<*>>,
 ) : CwtFileConfigBase()
 
-private class CwtFileConfigImplWithUniformConfigs(
+private class CwtFileConfigImplWithPropertyConfigs(
     override val pointer: SmartPsiElementPointer<CwtFile>,
     override val configGroup: CwtConfigGroup,
     override val name: String,
@@ -69,5 +71,16 @@ private class CwtFileConfigImplWithUniformConfigs(
     override val configs: List<CwtMemberConfig<*>>,
 ) : CwtFileConfigBase() {
     override val properties: List<CwtPropertyConfig> get() = configs.cast()
+    override val values: List<CwtValueConfig> get() = emptyList()
+}
+
+private class CwtFileConfigImplWithValueConfigs(
+    override val pointer: SmartPsiElementPointer<CwtFile>,
+    override val configGroup: CwtConfigGroup,
+    override val name: String,
+    override val path: String,
+    override val configs: List<CwtMemberConfig<*>>,
+) : CwtFileConfigBase() {
+    override val properties: List<CwtPropertyConfig> get() = emptyList()
     override val values: List<CwtValueConfig> get() = configs.cast()
 }
