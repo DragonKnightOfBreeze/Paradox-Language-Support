@@ -5,9 +5,6 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
-    // 解析结果缓存：本地化路径表达式在补全/导航中被频繁使用
-    // - maximumSize: 限制缓存容量，防止内存无限增长
-    // - expireAfterAccess: 非热点表达式在一段时间未被访问后回收
     private val cache = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtLocalisationLocationExpression> { doResolve(it) }
 

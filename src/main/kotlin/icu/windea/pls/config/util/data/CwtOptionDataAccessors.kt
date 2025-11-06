@@ -161,13 +161,13 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
         if (option == null) return@create null
         val options1 = option.options ?: return@create null
         buildMap {
-                for (option1 in options1) {
-                    // ignore case for both system scopes and scopes (to lowercase)
-                    val k = option1.key.lowercase()
-                    val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
-                    put(k, v)
-                }
-            }.optimized()
+            for (option1 in options1) {
+                // ignore case for both system scopes and scopes (to lowercase)
+                val k = option1.key.lowercase()
+                val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
+                put(k, v)
+            }
+        }.optimized()
     }
 
     /**
@@ -462,6 +462,6 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor
      */
     val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
-        findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }
+        findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }.optimized()
     }
 }
