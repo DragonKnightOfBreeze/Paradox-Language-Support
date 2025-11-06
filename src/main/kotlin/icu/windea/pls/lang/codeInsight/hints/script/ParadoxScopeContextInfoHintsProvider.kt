@@ -8,7 +8,6 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -20,6 +19,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.systemScopes
+import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.*
@@ -83,13 +83,13 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
             val gameType = selectGameType(file) ?: return true
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
             val presentation = doCollect(scopeContext, configGroup)
-            val finalPresentation = presentation.toFinalPresentation(this, file.project)
+            val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
             sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
         }
         return true
     }
 
-    private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation {
+    private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
         var appendSeparator = false
         scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->
@@ -102,7 +102,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
             presentations.add(smallText(" = "))
             presentations.add(scopeLinkPresentation(value, configGroup))
         }
-        return SequencePresentation(presentations)
+        return presentations.mergePresentations()
     }
 
     private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {

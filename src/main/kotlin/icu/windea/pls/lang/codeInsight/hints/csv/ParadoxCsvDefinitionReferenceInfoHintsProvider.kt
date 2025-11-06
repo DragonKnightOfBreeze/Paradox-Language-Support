@@ -8,13 +8,13 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider.*
 import icu.windea.pls.lang.definitionInfo
@@ -74,6 +74,6 @@ class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxCsvHintsProvider<S
                 presentations.add(psiSingleReference(smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
             }
         }
-        return SequencePresentation(presentations)
+        return presentations.mergePresentations()
     }
 }

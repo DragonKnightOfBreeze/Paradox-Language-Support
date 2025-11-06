@@ -7,7 +7,6 @@ import com.intellij.codeInsight.hints.NoSettings
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -15,6 +14,7 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -53,6 +53,6 @@ class ParadoxCsvComplexEnumValueInfoHintsProvider : ParadoxCsvHintsProvider<NoSe
         val presentations = mutableListOf<InlayPresentation>()
         presentations.add(smallText(": "))
         presentations.add(psiSingleReference(smallText(config.name)) { config.pointer.element })
-        return SequencePresentation(presentations)
+        return presentations.mergePresentations()
     }
 }

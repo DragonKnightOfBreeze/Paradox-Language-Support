@@ -3,18 +3,19 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.codeInsight.hints.InlayPresentationFactory
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
@@ -35,7 +36,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationString
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
-import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -104,7 +104,10 @@ class ParadoxLocalisationTextInlayRenderer(
         val continueProcess = action()
         val newBuilder = builder
         builder = oldBuilder
-        val presentation = mergePresentation(newBuilder) ?: return true
+        val presentation = run {
+            newBuilder.mergePresentations()
+            Unit
+        } ?: return true
         val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
         builder.add(finalPresentation)
         return continueProcess
@@ -113,7 +116,8 @@ class ParadoxLocalisationTextInlayRenderer(
     private fun doRender(action: () -> Boolean): InlayPresentation? {
         val r = action()
         if (!r) builder.add(factory.smallText("...")) // 添加省略号
-        return mergePresentation(builder)
+        builder.mergePresentations()
+        return Unit
     }
 
     private fun renderRichTextTo(element: ParadoxLocalisationRichText): Boolean {
@@ -177,7 +181,8 @@ class ParadoxLocalisationTextInlayRenderer(
                                 renderTo(resolved)
                                 val newBuilder = builder
                                 builder = oldBuilder
-                                mergePresentation(newBuilder)
+                                newBuilder.mergePresentations()
+                                Unit
                             } finally {
                                 guardStack.removeLast()
                             }
@@ -248,7 +253,8 @@ class ParadoxLocalisationTextInlayRenderer(
                     presentations.add(factory.smallText(c.text))
                 }
             }
-            val mergedPresentation = mergePresentation(presentations)
+            presentations.mergePresentations()
+            val mergedPresentation = Unit
             if (mergedPresentation != null) builder.add(mergedPresentation)
             continueProcess()
         }
@@ -278,21 +284,22 @@ class ParadoxLocalisationTextInlayRenderer(
             }
             builder = oldBuilder
             val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
-            var presentation: InlayPresentation = SequencePresentation(newBuilder)
+            var presentation: InlayPresentation = newBuilder.mergePresentations()
+            if (presentation != null) {
+                val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+                presentation = WithAttributesPresentation(presentation, conceptAttributesKey, editor, attributesFlags)
+                val referencePresentation = factory.psiSingleReference(presentation) { referenceElement }
+                presentation = factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
+                    override fun onHover(event: MouseEvent, translated: Point) {
+                        attributesFlags.isDefault = true // change foreground
+                    }
 
-            val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-            presentation = WithAttributesPresentation(presentation, conceptAttributesKey, editor, attributesFlags)
-            val referencePresentation = factory.psiSingleReference(presentation) { referenceElement }
-            presentation = factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
-                override fun onHover(event: MouseEvent, translated: Point) {
-                    attributesFlags.isDefault = true // change foreground
-                }
-
-                override fun onHoverFinished() {
-                    attributesFlags.isDefault = false // reset foreground
-                }
-            })
-            builder.add(presentation)
+                    override fun onHoverFinished() {
+                        attributesFlags.isDefault = false // reset foreground
+                    }
+                })
+                builder.add(presentation)
+            }
             if (!continueProcess) return false
             return continueProcess()
         }
@@ -329,14 +336,6 @@ class ParadoxLocalisationTextInlayRenderer(
         return continueProcess
     }
 
-    private fun mergePresentation(presentations: MutableList<InlayPresentation>): InlayPresentation? {
-        return when {
-            presentations.isEmpty() -> null
-            presentations.size == 1 -> presentations.first()
-            else -> SequencePresentation(presentations)
-        }
-    }
-
     private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
         val truncatedText = if (textLengthLimit > 0) text.take(truncateRemain.get()) else text
         val truncatedTextSingleLine = truncatedText.substringBefore('\n')
@@ -362,7 +361,8 @@ class ParadoxLocalisationTextInlayRenderer(
         val references = element.references
         if (references.isEmpty()) {
             presentations.add(factory.smallText(element.text))
-            return mergePresentation(presentations)
+            presentations.mergePresentations()
+            return Unit
         }
         var i = 0
         for (reference in references) {
@@ -387,6 +387,7 @@ class ParadoxLocalisationTextInlayRenderer(
             val s = text.substring(endOffset)
             presentations.add(factory.smallText(s))
         }
-        return mergePresentation(presentations)
+        presentations.mergePresentations()
+        return Unit
     }
 }

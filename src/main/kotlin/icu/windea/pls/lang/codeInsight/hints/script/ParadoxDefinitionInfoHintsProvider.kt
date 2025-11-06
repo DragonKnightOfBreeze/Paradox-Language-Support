@@ -8,13 +8,13 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.codeInsight.hints.presentation.SequencePresentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.CwtType
@@ -54,14 +54,14 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
             if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return true
 
             val presentation = doCollect(definitionInfo, settings)
-            val finalPresentation = presentation.toFinalPresentation(this, file.project)
+            val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
             val endOffset = element.propertyKey.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
         }
         return true
     }
 
-    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation {
+    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation? {
         val presentations: MutableList<InlayPresentation> = mutableListOf()
         val name = definitionInfo.name
         // 如果定义名等同于类型键，则省略定义名
@@ -79,6 +79,6 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
                 presentations.add(psiSingleReference(smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
             }
         }
-        return SequencePresentation(presentations)
+        return presentations.mergePresentations()
     }
 }
