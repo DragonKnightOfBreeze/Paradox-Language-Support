@@ -131,8 +131,8 @@ private abstract class CwtPropertyConfigImpl(
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL
 ) : UserDataHolderBase(), CwtPropertyConfig {
-    override val key = key.intern() // intern to optimize memory
-    override val value = value.intern() // intern to optimize memory
+    override val key = key.optimized() // optimized to optimize memory
+    override val value = value.optimized() // optimized to optimize memory
 
     private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
     override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
@@ -254,8 +254,8 @@ private class CwtPropertyConfigDelegateWith(
     value: String,
     // configs should be always null here
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val key = key.intern() // intern to optimize memory
-    override val value = value.intern() // intern to optimize memory
+    override val key = key.optimized() // optimized to optimize memory
+    override val value = value.optimized() // optimized to optimize memory
 
     // must override all following expression related properties, since key and value are overridden
     override val keyExpression get() = CwtDataExpression.resolve(key, true)

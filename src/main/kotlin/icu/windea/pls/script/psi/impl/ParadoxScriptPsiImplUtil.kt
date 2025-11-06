@@ -101,8 +101,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String {
-        // remove leading `@` & can be parameterized & intern to optimize memory
-        return element.text.removePrefix("@").intern()
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     // endregion
@@ -236,8 +236,8 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariableReference): String {
-        // remove leading `@` & can be parameterized & intern to optimize memory
-        return element.text.removePrefix("@").intern()
+        // remove leading `@` & can be parameterized & optimized to optimize memory
+        return element.text.removePrefix("@").optimized()
     }
 
     @JvmStatic
@@ -285,7 +285,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getColorType(element: ParadoxScriptColor): String {
-        return element.text.substringBefore('{').trim().intern() // intern to optimize memory
+        return element.text.substringBefore('{').trim().optimized() // optimized to optimize memory
     }
 
     @JvmStatic
@@ -371,7 +371,7 @@ object ParadoxScriptPsiImplUtil {
                 else -> true
             }
         }
-        return builder?.toString()?.intern() // intern to optimize memory
+        return builder?.toString()?.optimized() // optimized to optimize memory
     }
 
     @JvmStatic
@@ -407,7 +407,7 @@ object ParadoxScriptPsiImplUtil {
                 else -> true
             }
         }
-        return builder?.toString()?.intern() // intern to optimize memory
+        return builder?.toString()?.optimized() // optimized to optimize memory
     }
 
     @JvmStatic

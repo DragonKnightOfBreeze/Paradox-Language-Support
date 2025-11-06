@@ -22,7 +22,7 @@ class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver
 
     private fun doResolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
         val key = config.key
-        val name = key.removeSurroundingOrNull("value[", "]")?.orNull()?.intern() ?: return null
+        val name = key.removeSurroundingOrNull("value[", "]")?.orNull()?.optimized() ?: return null
         val valueElements = config.values
         if (valueElements == null) {
             logger.warn("Skipped invalid dynamic value type config (name: $name): Null values.".withLocationPrefix(config))
@@ -35,7 +35,7 @@ class CwtDynamicValueTypeConfigResolverImpl : CwtDynamicValueTypeConfig.Resolver
         val values = caseInsensitiveStringSet() // ignore case
         val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() // ignore case
         for (propertyConfigValue in valueElements) {
-            val v = propertyConfigValue.value.intern()
+            val v = propertyConfigValue.value.optimized()
             values.add(v)
             valueConfigMap.put(v, propertyConfigValue)
         }

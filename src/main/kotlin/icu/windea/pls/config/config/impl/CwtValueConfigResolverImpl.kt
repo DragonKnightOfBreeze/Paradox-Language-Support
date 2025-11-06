@@ -119,7 +119,7 @@ private abstract class CwtValueConfigImpl(
     valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : UserDataHolderBase(), CwtValueConfig {
-    override val value = value.intern() // intern to optimize memory
+    override val value = value.optimized() // optimized to optimize memory
 
     private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // use enum id to optimize memory
     override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
@@ -223,7 +223,7 @@ private class CwtValueConfigDelegateWith(
     value: String,
     // configs should be always null here
 ) : CwtValueConfigDelegate(delegate) {
-    override val value = value.intern() // intern to optimize memory
+    override val value = value.optimized() // optimized to optimize memory
 
     // must override all following expression related properties, since value is overridden
     override val valueExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)

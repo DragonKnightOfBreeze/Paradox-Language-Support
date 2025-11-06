@@ -447,8 +447,8 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)
-        // intern to optimize memory
-        val cacheKey = "${orDefault.toInt()},${matchOptions}".intern()
+        // optimized to optimize memory
+        val cacheKey = "${orDefault.toInt()},${matchOptions}".optimized()
         return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
@@ -543,8 +543,8 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         // based on shallow keys of child configs
-        // intern to optimize memory
-        val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getShallowKey(it) }.intern()
+        // optimized to optimize memory
+        val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getShallowKey(it) }.optimized()
         return childOccurrenceMap.getOrPut(cacheKey) {
             val result = doGetChildOccurrenceMap(element, configs)
             result.optimized()

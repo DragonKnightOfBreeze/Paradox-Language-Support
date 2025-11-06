@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
@@ -17,7 +18,7 @@ internal class CwtInlineConfigResolverImpl : CwtInlineConfig.Resolver, CwtConfig
     override fun resolve(config: CwtPropertyConfig): CwtInlineConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtInlineConfig? {
-        val name = config.key.removeSurroundingOrNull("inline[", "]")?.orNull()?.intern() ?: return null
+        val name = config.key.removeSurroundingOrNull("inline[", "]")?.orNull()?.optimized() ?: return null
         logger.debug { "Resolved inline config (name: $name).".withLocationPrefix(config) }
         return CwtInlineConfigImpl(config, name)
     }

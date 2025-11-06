@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigCollector
 import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
@@ -37,8 +38,8 @@ private class CwtAliasConfigImpl(
     name: String,
     subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
-    override val name = name.intern() // intern to optimize memory
-    override val subName = subName.intern() // intern to optimize memory
+    override val name = name.optimized() // optimized to optimize memory
+    override val subName = subName.optimized() // optimized to optimize memory
 
     override val supportedScopes get() = config.optionData { this.supportedScopes }
     override val outputScope get() = config.optionData { pushScope }

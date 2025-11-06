@@ -364,7 +364,7 @@ object CwtConfigManager {
             CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
             CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
             else -> text
-        }?.orNull()?.intern() // intern to optimize memory
+        }?.orNull()?.optimized() // optimized to optimize memory
     }
 
     fun getDocumentation(config: CwtMemberConfig<*>): String? {

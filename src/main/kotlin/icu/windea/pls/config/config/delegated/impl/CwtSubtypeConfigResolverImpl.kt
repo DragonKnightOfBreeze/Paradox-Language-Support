@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
@@ -17,7 +18,7 @@ internal class CwtSubtypeConfigResolverImpl : CwtSubtypeConfig.Resolver, CwtConf
     override fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
-        val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.intern() ?: return null
+        val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.optimized() ?: return null
         val typeKeyFilter = config.optionData { typeKeyFilter }
         val typeKeyRegex = config.optionData { typeKeyRegex }
         val startsWith = config.optionData { startsWith }

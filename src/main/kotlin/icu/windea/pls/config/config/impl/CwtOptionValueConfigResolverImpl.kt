@@ -41,7 +41,7 @@ private class CwtOptionValueConfigImpl(
     valueType: CwtType,
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?
 ) : CwtOptionValueConfig {
-    override val value = value.intern() // intern to optimize memory
+    override val value = value.optimized() // optimized to optimize memory
 
     private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
     override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())

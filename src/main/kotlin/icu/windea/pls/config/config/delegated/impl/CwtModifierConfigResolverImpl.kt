@@ -42,7 +42,7 @@ internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtCo
             logger.debug { "Skipped invalid modifier config from definition modifier (name: $name): Null categories".withLocationPrefix(config) }
             return null
         }
-        val modifierName = name.replace("$", "<$typeExpression>").intern()
+        val modifierName = name.replace("$", "<$typeExpression>").optimized()
         logger.debug { "Resolved modifier config from definition modifier (name: $name, type expression: $typeExpression).".withLocationPrefix(config) }
         return CwtModifierConfigImpl(config, modifierName, categories)
     }

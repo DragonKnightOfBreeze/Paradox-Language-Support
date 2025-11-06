@@ -22,7 +22,7 @@ internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigReso
 
     private fun doResolve(config: CwtPropertyConfig): CwtEnumConfig? {
         val key = config.key
-        val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.intern() ?: return null
+        val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.optimized() ?: return null
         val valueElements = config.values
         if (valueElements == null) {
             logger.warn("Skipped invalid enum config (name: $name): Null values.".withLocationPrefix(config))

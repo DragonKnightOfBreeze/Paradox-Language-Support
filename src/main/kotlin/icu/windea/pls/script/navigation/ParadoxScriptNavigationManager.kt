@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.truncate
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
@@ -142,7 +143,7 @@ object ParadoxScriptNavigationManager {
                 val localizedName = ParadoxLocalisationTextRenderer().render(localisation)
                 append(" ").append(localizedName)
             }
-        }.intern() // intern to optimize memory
+        }.optimized() // optimized to optimize memory
     }
 
     private fun String.formatted(): String {

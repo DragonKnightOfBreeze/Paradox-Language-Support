@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.cancelable
@@ -19,7 +20,7 @@ internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, C
         val locationConfigs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()
         val props1 = config.properties ?: return null
         for (prop1 in props1) {
-            val subtypeName = prop1.key.removeSurroundingOrNull("subtype[", "]")?.intern()
+            val subtypeName = prop1.key.removeSurroundingOrNull("subtype[", "]")?.optimized()
             if (subtypeName != null) {
                 val props2 = prop1.properties ?: continue
                 for (prop2 in props2) {

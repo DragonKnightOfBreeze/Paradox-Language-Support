@@ -31,6 +31,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toCapitalizedWords
 import icu.windea.pls.core.util.KeyRegistry
@@ -111,7 +112,7 @@ object ParadoxScopeManager {
      * 得到作用域的ID（全小写+下划线）。
      */
     fun getScopeId(scope: String): String {
-        val scopeId = scope.lowercase().replace(' ', '_').intern() // intern to optimize memory
+        val scopeId = scope.lowercase().replace(' ', '_').optimized() // optimized to optimize memory
         // "all" scope are always resolved as "any" scope
         if (scopeId == allScopeId) return anyScopeId
         return scopeId
@@ -127,7 +128,7 @@ object ParadoxScopeManager {
         // a scope may not have aliases, or not defined in scopes.cwt
         return configGroup.scopes[scope]?.name
             ?: configGroup.scopeAliasMap[scope]?.name
-            ?: scope.toCapitalizedWords().intern() // intern to optimize memory
+            ?: scope.toCapitalizedWords().optimized() // optimized to optimize memory
     }
 
     fun isUnsureScopeId(scopeId: String): Boolean {

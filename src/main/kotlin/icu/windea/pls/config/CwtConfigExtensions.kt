@@ -15,6 +15,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
@@ -65,6 +66,6 @@ fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
     return this
 }
 
-fun String.optimizedPath() = removePrefix("game/").normalizePath().intern()
+fun String.optimizedPath() = removePrefix("game/").normalizePath().optimized()
 
-fun String.optimizedPathExtension() = removePrefix(".").intern()
+fun String.optimizedPathExtension() = removePrefix(".").optimized()

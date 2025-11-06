@@ -37,7 +37,7 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
 
     private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         val configGroup = config.configGroup
-        val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
+        val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
         val propElements = config.properties
         if (propElements.isNullOrEmpty()) {
             logger.warn("Skipped invalid type config (name: $name): Missing properties.".withLocationPrefix(config))
