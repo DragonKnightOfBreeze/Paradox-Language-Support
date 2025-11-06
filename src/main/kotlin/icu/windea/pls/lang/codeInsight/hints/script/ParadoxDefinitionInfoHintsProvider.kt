@@ -15,6 +15,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.CwtType
@@ -68,7 +69,7 @@ class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>(
         if (name.equals(definitionInfo.typeKey, true)) {
             presentations.add(smallText(": "))
         } else {
-            presentations.add(smallText("$name: "))
+            presentations.add(smallText("$name: ".optimized()))
         }
         val typeConfig = definitionInfo.typeConfig
         presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })

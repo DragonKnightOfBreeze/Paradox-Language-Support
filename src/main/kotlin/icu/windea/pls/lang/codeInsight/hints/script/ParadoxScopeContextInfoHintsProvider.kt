@@ -21,6 +21,7 @@ import icu.windea.pls.config.configGroup.scopeAliasMap
 import icu.windea.pls.config.configGroup.systemScopes
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.findChild
+import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.*
 import icu.windea.pls.lang.selectGameType
@@ -106,7 +107,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
     }
 
     private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-        return psiSingleReference(smallText(scope)) { configGroup.systemScopes[scope]?.pointer?.element }
+        return psiSingleReference(smallText(scope.optimized())) { configGroup.systemScopes[scope]?.pointer?.element }
     }
 
     private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {

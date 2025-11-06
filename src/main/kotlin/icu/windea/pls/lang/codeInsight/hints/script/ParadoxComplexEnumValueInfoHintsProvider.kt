@@ -56,7 +56,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         val config = configGroup.complexEnums[enumName] ?: return null
         val presentations = mutableListOf<InlayPresentation>()
         presentations.add(smallText(": "))
-        presentations.add(psiSingleReference(smallText(enumName)) { config.pointer.element })
+        presentations.add(psiSingleReference(smallText(config.name)) { config.pointer.element })
         return presentations.mergePresentations()
     }
 }

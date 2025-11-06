@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -54,6 +55,6 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettin
         if (name.isEmpty()) return null
         if (name.isParameterized()) return null
         val type = element.dynamicValueType
-        return smallText(": $type")
+        return smallText(": $type".optimized())
     }
 }
