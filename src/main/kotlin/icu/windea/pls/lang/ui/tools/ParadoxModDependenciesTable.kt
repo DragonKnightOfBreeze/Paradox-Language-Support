@@ -18,7 +18,6 @@ import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerClickListener
-import icu.windea.pls.core.registerCopyProvider
 import icu.windea.pls.lang.actions.PlsActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
@@ -28,7 +27,7 @@ import javax.swing.JPanel
 
 class ParadoxModDependenciesTable(
     val model: ParadoxModDependenciesTableModel
-) : JBTable(model) {
+) : JBTable(model), CopyProvider {
     /**
      * 得到选中项。
      */
@@ -64,6 +63,21 @@ class ParadoxModDependenciesTable(
             setRowSelectionInterval(position, position + newModDependencies.size - 1)
         }
     }
+
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+    override fun performCopy(dataContext: DataContext) {
+        // 允许复制选中的内容
+        val text = selectedRows.joinToString("\n") {
+            val item = model.getItem(convertRowIndexToModel(it))
+            item.name + "\t" + item.version + "\t" + item.supportedVersion
+        }
+        CopyPasteManager.getInstance().setContents(TextTransferable(text as CharSequence))
+    }
+
+    override fun isCopyEnabled(dataContext: DataContext) = true
+
+    override fun isCopyVisible(dataContext: DataContext) = selectedRowCount > 0
 
     companion object {
         // com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.createTableWithButtons
@@ -117,26 +131,7 @@ class ParadoxModDependenciesTable(
                 modDescriptorSettings.name.orEmpty()
             }
 
-            // 允许复制选中的内容
-
-            table.registerCopyProvider(object : CopyProvider {
-                override fun getActionUpdateThread() = ActionUpdateThread.EDT
-
-                override fun performCopy(dataContext: DataContext) {
-                    val text = table.selectedRows.joinToString("\n") {
-                        val item = table.model.getItem(table.convertRowIndexToModel(it))
-                        item.name + "\t" + item.version + "\t" + item.supportedVersion
-                    }
-                    CopyPasteManager.getInstance().setContents(TextTransferable(text as CharSequence))
-                }
-
-                override fun isCopyEnabled(dataContext: DataContext) = true
-
-                override fun isCopyVisible(dataContext: DataContext) = table.selectedRowCount > 0
-            })
-
             // 双击打开模组依赖信息对话框
-
             table.registerClickListener(object : DoubleClickListener() {
                 override fun onDoubleClick(event: MouseEvent): Boolean {
                     if (table.selectedRowCount != 1) return true

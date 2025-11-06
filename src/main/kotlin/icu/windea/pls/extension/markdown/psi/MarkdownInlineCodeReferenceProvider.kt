@@ -25,7 +25,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.constants.PlsPatternConstants
 
 /**
- * 用于支持在markdown文件中，将内联代码尝试没戏为匹配的目标引用（定义、本地化等）。
+ * 用于支持在markdown文件中，将内联代码尝试解析为匹配的目标引用（定义、本地化等）。
  */
 @Suppress("UnstableApiUsage")
 class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {

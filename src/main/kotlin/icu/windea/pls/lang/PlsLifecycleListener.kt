@@ -42,13 +42,13 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
-        if (pluginDescriptor.pluginId.idString == PlsConstants.pluginId) {
+        if (pluginDescriptor.pluginId == PlsConstants.pluginId) {
             ImageManager.registerImageIOSpi()
         }
     }
 
     override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
-        if (pluginDescriptor.pluginId.idString == PlsConstants.pluginId) {
+        if (pluginDescriptor.pluginId == PlsConstants.pluginId) {
             ImageManager.deregisterImageIOSpi()
         }
     }

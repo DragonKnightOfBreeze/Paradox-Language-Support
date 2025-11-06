@@ -7,7 +7,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
@@ -108,7 +107,7 @@ object PlsFacade {
 
     /** 是否是开发中版本。*/
     fun isDevVersion(): Boolean {
-        return PluginManagerCore.getPlugin(PluginId.findId(PlsConstants.pluginId))?.version?.endsWith("-dev") == true
+        return PluginManagerCore.getPlugin(PlsConstants.pluginId)?.version?.endsWith("-dev") == true
     }
 
     /**

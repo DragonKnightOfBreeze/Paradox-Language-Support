@@ -2,9 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.ide.CopyProvider
-import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.properties.GraphProperty
@@ -91,13 +88,6 @@ fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
 /** 为组件注册点击监听器。*/
 fun <T : JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
     clickListener.installOn(this, allowDragWhileClicking)
-}
-
-/** 为组件注册剪贴板复制提供者。*/
-fun <T : JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
-    DataManager.registerDataProvider(this) { dataId ->
-        if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) copyProvider else null
-    }
 }
 
 // endregion

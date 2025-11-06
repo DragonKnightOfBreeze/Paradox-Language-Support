@@ -1,7 +1,9 @@
 package icu.windea.pls.model.constants
 
+import com.intellij.openapi.extensions.PluginId
+
 object PlsConstants {
-    const val pluginId = "icu.windea.pls"
+    val pluginId = PluginId.getId("icu.windea.pls")
     const val pluginSettingsFileName = "paradox-language-support.xml"
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
