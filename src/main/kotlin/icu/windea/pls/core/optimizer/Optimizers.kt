@@ -6,18 +6,56 @@ import com.github.benmanes.caffeine.cache.Interner
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.util.CacheBuilder
 import it.unimi.dsi.fastutil.Hash
 import java.util.*
 
 fun OptimizerRegistry.forString() = register(StringOptimizer)
+fun OptimizerRegistry.forStringList() = register(StringListOptimizer)
+fun OptimizerRegistry.forStringSet() = register(StringSetOptimizer)
 fun <E> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
 fun <E> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
 fun <K, V> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
 
-private object StringOptimizer : Optimizer.Unary<String> {
-    private val interner = Interner.newWeakInterner<String>()
+private val stringInterner = Interner.newWeakInterner<String>()
+private inline fun String.internString() = stringInterner.intern(this)
 
+private const val SMALL_INTERN_THRESHOLD = 8
+
+private inline fun isOptimizedByClass(input: Any) = classNameCache.get(input.javaClass)
+private val classNameCache = CacheBuilder().build<Class<*>, Boolean> { isOptimizedByClassName(it) }
+private inline fun isOptimizedByClassName(c: Class<*>): Boolean {
+    val className = c.name
+    if (className.startsWith("java.util.ImmutableCollections$")) return true
+    if (className.startsWith("kotlin.collections.")) return true
+    // if(className.startsWith("kotlinx.collections.immutable.")) return true // bad memory
+    return false
+}
+
+private object StringOptimizer : Optimizer.Unary<String> {
     override fun optimize(input: String): String {
+        if (input.isEmpty()) return ""
+        return input.internString()
+    }
+}
+
+private object StringListOptimizer : Optimizer.Unary<List<String>> {
+    private val interner = Interner.newWeakInterner<List<String>>()
+
+    override fun optimize(input: List<String>): List<String> {
+        if (input.isEmpty()) return emptyList()
+        if (input.size > SMALL_INTERN_THRESHOLD) return input
+        return interner.intern(input)
+    }
+}
+
+private object StringSetOptimizer : Optimizer.Unary<Set<String>> {
+    private val interner = Interner.newWeakInterner<Set<String>>()
+
+    override fun optimize(input: Set<String>): Set<String> {
+        if (input.isEmpty()) return emptySet()
+        if (input.size > SMALL_INTERN_THRESHOLD) return input
         return interner.intern(input)
     }
 }
@@ -30,7 +68,11 @@ private object ListOptimizer : Optimizer.Unary<List<*>> {
     }
 
     private inline fun ignore(input: List<*>): Boolean {
-        return input is ImmutableList
+        if (input is ImmutableList) return true
+        if (PlsFacade.Capacities.strictOptimize()) {
+            if (isOptimizedByClass(input)) return true
+        }
+        return false
     }
 
     private inline fun applyForEmpty(): List<Any?> {
@@ -51,7 +93,12 @@ private object SetOptimizer : Optimizer.Unary<Set<*>> {
     }
 
     private inline fun ignore(input: Set<*>): Boolean {
-        return input is ImmutableSet || input is Hash
+        if (input is ImmutableSet) return true
+        if (PlsFacade.Capacities.strictOptimize()) {
+            if (isOptimizedByClass(input)) return true
+        }
+        if (input is Hash) return true // may be case-insensitive or custom hash
+        return false
     }
 
     private inline fun applyForEmpty(): Set<Any?> {
@@ -71,7 +118,12 @@ private object MapOptimizer : Optimizer.Unary<Map<*, *>> {
     }
 
     private inline fun ignore(input: Map<*, *>): Boolean {
-        return input is ImmutableMap || input is Hash
+        if (input is ImmutableMap) return true
+        if (PlsFacade.Capacities.strictOptimize()) {
+            if (isOptimizedByClass(input)) return true
+        }
+        if (input is Hash) return true // may be case-insensitive or custom hash
+        return false
     }
 
     private inline fun applyForEmpty(): Map<Any?, Any?> {

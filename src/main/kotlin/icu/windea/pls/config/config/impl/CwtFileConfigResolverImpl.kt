@@ -29,7 +29,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         }
         val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
         logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
-        return if (CwtConfigResolverUtil.isUniform(configs)) {
+        return if (CwtConfigResolverUtil.isPropertyConfigOnly(configs)) {
             CwtFileConfigImplWithUniformConfigs(pointer, configGroup, fileName, filePath, configs)
         } else {
             CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)

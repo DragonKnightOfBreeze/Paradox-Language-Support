@@ -10,22 +10,22 @@ import icu.windea.pls.core.optimizer.forSet
 import icu.windea.pls.core.optimizer.forString
 
 /** @see Optimizer.optimize */
-inline fun <T, R> T.optimized(optimizer: Optimizer<T, R>): R {
+inline fun <T : Any, R : Any> T.optimized(optimizer: Optimizer<T, R>): R {
     return optimizer.optimize(this)
 }
 
 /** @see Optimizer.optimize */
-inline fun <T, R> T.optimized(optimizerProvider: OptimizerRegistry.() -> Optimizer<T, R>): R {
+inline fun <T : Any, R : Any> T.optimized(optimizerProvider: OptimizerRegistry.() -> Optimizer<T, R>): R {
     return OptimizerRegistry.optimizerProvider().optimize(this)
 }
 
 /** @see Optimizer.deoptimize */
-inline fun <T, R> R.deoptimized(optimizer: Optimizer<T, R>): T {
+inline fun <T : Any, R : Any> R.deoptimized(optimizer: Optimizer<T, R>): T {
     return optimizer.deoptimize(this)
 }
 
 /** @see Optimizer.deoptimize */
-inline fun <T, R> R.deoptimized(optimizerProvider: OptimizerRegistry.() -> Optimizer<T, R>): T {
+inline fun <T : Any, R : Any> R.deoptimized(optimizerProvider: OptimizerRegistry.() -> Optimizer<T, R>): T {
     return OptimizerRegistry.optimizerProvider().deoptimize(this)
 }
 

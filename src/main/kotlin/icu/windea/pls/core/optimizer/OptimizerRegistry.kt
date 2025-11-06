@@ -7,11 +7,11 @@ import icu.windea.pls.core.cast
  */
 object OptimizerRegistry {
     @Suppress("NOTHING_TO_INLINE")
-    inline fun <T, R> register(optimizer: Optimizer<T, R>): Optimizer<T, R> = optimizer
+    inline fun <T : Any, R : Any> register(optimizer: Optimizer<T, R>): Optimizer<T, R> = optimizer
 
     @Suppress("NOTHING_TO_INLINE")
-    inline fun <T> register(optimizer: Optimizer.Unary<T>): Optimizer.Unary<T> = optimizer
+    inline fun <T : Any> register(optimizer: Optimizer.Unary<T>): Optimizer.Unary<T> = optimizer
 
     @Suppress("NOTHING_TO_INLINE")
-    inline fun <T : T0, T0> registerTyped(optimizer: Optimizer.Unary<T0>): Optimizer.Unary<T> = optimizer.cast()
+    inline fun <T : T0, T0 : Any> registerTyped(optimizer: Optimizer.Unary<T0>): Optimizer.Unary<T> = optimizer.cast()
 }

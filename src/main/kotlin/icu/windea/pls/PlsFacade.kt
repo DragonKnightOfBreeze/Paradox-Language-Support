@@ -114,10 +114,17 @@ object PlsFacade {
      * 用于检查插件的各种可选择的能力。
      */
     object Capacities {
-        /** 是否记录缓存状态。*/
-        fun recordCacheStats() = System.getProperty("pls.cache.recordStats").toBoolean()
+        private val includeSqlite get() = "org.sqlite.JDBC".isClassPresent()
+        private val recordCacheStats by lazy { System.getProperty("pls.cache.recordStats").toBoolean() }
+        private val strictOptimize by lazy { System.getProperty("pls.strict.optimize").toBoolean() }
 
         /** 是否包含 SQLite 驱动包，从而启用与 SQLite 相关的各种功能。*/
-        fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
+        fun includeSqlite() = includeSqlite
+
+        /** 是否记录缓存状态。*/
+        fun recordCacheStats() = recordCacheStats
+
+        /** 是否启用更严格的优化策略。这适用于多数需要加入到缓存中的集合，进行更准确的忽略检查。 */
+        fun strictOptimize() = strictOptimize
     }
 }

@@ -100,7 +100,7 @@ object CwtConfigResolverUtil {
         return optionConfigs.optimized() // optimized to optimize memory
     }
 
-    fun isUniform(configs: List<CwtMemberConfig<*>>): Boolean {
+    fun isPropertyConfigOnly(configs: List<CwtMemberConfig<*>>): Boolean? {
         if (configs.isEmpty()) return false
         var flag1 = false
         var flag2 = false

@@ -11,7 +11,7 @@ package icu.windea.pls.core.optimizer
  *
  * @see OptimizerRegistry
  */
-interface Optimizer<T, R> {
+interface Optimizer<T : Any, R : Any> {
     /**
      * 将输入的对象 [input] 转化为优化后的等价对象。
      */
@@ -27,5 +27,5 @@ interface Optimizer<T, R> {
      *
      * 这类优化器不会在处理后更改对象的类型。
      */
-    interface Unary<T> : Optimizer<T, T>
+    interface Unary<T : Any> : Optimizer<T, T>
 }
