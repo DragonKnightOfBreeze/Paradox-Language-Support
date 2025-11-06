@@ -101,7 +101,7 @@ object CwtConfigResolverUtil {
     }
 
     fun isPropertyConfigOnly(configs: List<CwtMemberConfig<*>>): Boolean? {
-        if (configs.isEmpty()) return false
+        if (configs.isEmpty()) return true
         var flag1 = false
         var flag2 = false
         configs.forEachFast { c ->
@@ -110,7 +110,7 @@ object CwtConfigResolverUtil {
                 is CwtValueConfig -> flag2 = true
             }
         }
-        return flag1 == flag2
+        return flag1 != flag2
     }
 
     fun applyOptions(config: CwtMemberConfig<*>) {
