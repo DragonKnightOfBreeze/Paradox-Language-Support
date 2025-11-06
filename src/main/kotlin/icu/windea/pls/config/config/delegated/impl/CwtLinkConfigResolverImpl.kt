@@ -8,15 +8,13 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtLinkArgumentSeparator
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLinkType
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
@@ -44,16 +42,16 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
         var prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
         val dataSources = propGroup.getAll("data_source").mapNotNull { it.stringValue }.optimized()
         val inputScopes = buildSet {
-            // both input_scopes and input_scope are supported
-            propGroup.getAll("input_scopes").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-            }
-            propGroup.getAll("input_scope").forEach { p ->
-                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-            }
-        }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
+                // both input_scopes and input_scope are supported
+                propGroup.getAll("input_scopes").forEach { p ->
+                    p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                    p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+                }
+                propGroup.getAll("input_scope").forEach { p ->
+                    p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                    p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+                }
+            }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
         val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
         val forDefinitionType = propGroup.getOne("for_definition_type")?.stringValue
 

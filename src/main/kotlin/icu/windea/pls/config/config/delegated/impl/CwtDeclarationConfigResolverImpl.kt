@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.processDescendants
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression

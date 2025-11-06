@@ -62,9 +62,9 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
             val definitionElementPath = definitionInfo.elementPath
             val elementPathFromRoot = definitionElementPath.relativeTo(elementPath) ?: return null
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-            val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+            val configContext = CwtConfigContext(element, fileInfo, elementPath.optimized(), gameType, configGroup)
             configContext.definitionInfo = definitionInfo
-            configContext.elementPathFromRoot = elementPathFromRoot
+            configContext.elementPathFromRoot = elementPathFromRoot.optimized()
             return configContext
         }
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
@@ -118,8 +118,8 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val fileInfo = vFile.fileInfo // 注意这里的 fileInfo 可以为 null（例如，在内联脚本参数的多行参数值中）
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.subPaths.drop(rootIndex + 1))
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
-        configContext.elementPathFromRoot = elementPathFromRoot
+        val configContext = CwtConfigContext(element, fileInfo, elementPath.optimized(), gameType, configGroup)
+        configContext.elementPathFromRoot = elementPathFromRoot.optimized()
         return configContext
     }
 
@@ -162,11 +162,10 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
-        val elementPathFromRoot = elementPath
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+        val configContext = CwtConfigContext(element, fileInfo, elementPath.optimized(), gameType, configGroup)
         configContext.inlineScriptExpression = inlineScriptExpression
-        configContext.elementPathFromRoot = elementPathFromRoot
+        configContext.elementPathFromRoot = configContext.elementPath
         return configContext
     }
 
@@ -231,12 +230,11 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
 
         val gameType = selectGameType(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
-        val elementPathFromRoot = elementPath
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-        val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
+        val configContext = CwtConfigContext(element, null, elementPath.optimized(), gameType, configGroup)
         configContext.parameterElement = parameterElement
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
-        configContext.elementPathFromRoot = elementPathFromRoot
+        configContext.elementPathFromRoot = configContext.elementPath
         return configContext
     }
 

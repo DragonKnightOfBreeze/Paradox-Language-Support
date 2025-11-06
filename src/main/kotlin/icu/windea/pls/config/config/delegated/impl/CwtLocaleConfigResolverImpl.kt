@@ -6,11 +6,9 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 internal class CwtLocaleConfigResolverImpl : CwtLocaleConfig.Resolver, CwtConfigResolverMixin {

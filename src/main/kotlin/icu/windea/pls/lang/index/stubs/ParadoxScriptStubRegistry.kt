@@ -12,13 +12,14 @@ import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.stubs.StubRegistry
 import com.intellij.psi.stubs.StubRegistryExtension
 import com.intellij.psi.stubs.StubSerializer
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.deoptimized
-import icu.windea.pls.model.optimized
+import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -46,11 +47,11 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
         }
 
         override fun serialize(stub: ParadoxScriptFileStub, dataStream: StubOutputStream) {
-            dataStream.writeByte(stub.gameType.optimized(ForParadoxGameType))
+            dataStream.writeByte(stub.gameType.optimized(OptimizerRegistry.forGameType()))
         }
 
         override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ParadoxScriptFileStub {
-            val gameType = dataStream.readByte().deoptimized(ForParadoxGameType)
+            val gameType = dataStream.readByte().deoptimized(OptimizerRegistry.forGameType())
             return ParadoxScriptFileStub.create(null, gameType)
         }
 

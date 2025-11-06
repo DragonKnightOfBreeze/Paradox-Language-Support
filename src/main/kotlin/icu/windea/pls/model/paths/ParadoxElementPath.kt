@@ -31,17 +31,19 @@ interface ParadoxElementPath : Iterable<String> {
 
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
+    fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
+    fun optimized(): ParadoxElementPath = this
 
-    override fun iterator(): Iterator<String> = this.subPaths.iterator()
+    override fun iterator(): Iterator<String> = subPaths.iterator()
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     override fun toString(): String
 
     interface Resolver {
         fun resolveEmpty(): ParadoxElementPath
-        fun resolve(path: String): ParadoxElementPath
-        fun resolve(subPaths: List<String>): ParadoxElementPath
-        fun intern(input: ParadoxElementPath): ParadoxElementPath
+        fun resolve(input: String): ParadoxElementPath
+        fun resolve(input: List<String>): ParadoxElementPath
+        fun invalidateCache()
     }
 
     companion object : Resolver by ParadoxElementPathResolverImpl()
@@ -53,6 +55,3 @@ fun ParadoxElementPath.relativeTo(other: ParadoxElementPath): ParadoxElementPath
     val subPaths = other.subPaths.removePrefixOrNull(this.subPaths) ?: return null
     return ParadoxElementPath.resolve(subPaths)
 }
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun ParadoxElementPath.intern(): ParadoxElementPath = ParadoxElementPath.intern(this)

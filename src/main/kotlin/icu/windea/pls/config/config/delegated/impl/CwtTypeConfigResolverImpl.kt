@@ -14,10 +14,8 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.modifiers
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.config.optimizedPath
@@ -26,8 +24,7 @@ import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
-import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.collections.optimizedIfEmpty
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.ReversibleValue
@@ -129,9 +126,9 @@ private class CwtTypeConfigImpl(
 ) : UserDataHolderBase(), CwtTypeConfig {
     override val possibleTypeKeys: Set<String> by lazy {
         caseInsensitiveStringSet().apply {
-            typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
-            subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
-        }.optimizedIfEmpty()
+                typeKeyFilter?.takeWithOperator()?.let { addAll(it) }
+                subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeWithOperator()?.let { addAll(it) } }
+            }.optimized()
     }
 
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {

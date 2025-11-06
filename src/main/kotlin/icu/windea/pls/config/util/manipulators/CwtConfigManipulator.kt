@@ -19,9 +19,9 @@ import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.merge
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton

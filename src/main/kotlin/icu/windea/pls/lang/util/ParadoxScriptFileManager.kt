@@ -105,19 +105,20 @@ object ParadoxScriptFileManager {
     fun getKeyPrefixes(element: PsiElement): List<String> {
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
         if (memberElement !is ParadoxScriptProperty && memberElement !is ParadoxScriptValue) return emptyList()
-        var result: MutableList<String>? = null
-        memberElement.siblings(forward = false, withSelf = false).forEach f@{ e ->
-            when (e) {
-                is PsiWhiteSpace, is PsiComment -> return@f
-                is ParadoxScriptString -> {
-                    val v = e.value.takeUnless { it.isParameterized() } ?: return result ?: emptyList()
-                    if (result == null) result = mutableListOf()
-                    result += v
+        val siblings = memberElement.siblings(forward = false, withSelf = false)
+        val result = buildList {
+            for (e in siblings) {
+                when (e) {
+                    is PsiWhiteSpace, is PsiComment -> continue
+                    is ParadoxScriptString -> {
+                        val v = e.value.takeUnless { it.isParameterized() } ?: break
+                        this += v
+                    }
+                    else -> break
                 }
-                else -> return result ?: emptyList()
             }
         }
-        return result ?: emptyList()
+        return result // no optimization here
     }
 
     /**
@@ -127,25 +128,25 @@ object ParadoxScriptFileManager {
         val parent = node.parent(tree) ?: return emptyList()
         val siblings = parent.children(tree)
         if (siblings.isEmpty()) return emptyList()
-        var flag = false
-        var result: MutableList<String>? = null
-        for (i in siblings.lastIndex downTo 0) {
-            val n = siblings[i]
-            if (flag) {
-                val tokenType = n.tokenType
-                when (tokenType) {
-                    TokenType.WHITE_SPACE, COMMENT -> continue
-                    STRING -> {
-                        val v = ParadoxScriptLightTreeUtil.getValueFromStringNode(n, tree) ?: return result ?: emptyList()
-                        if (result == null) result = mutableListOf()
-                        result += v
+        val result = buildList {
+            var flag = false
+            for (i in siblings.lastIndex downTo 0) {
+                val n = siblings[i]
+                if (flag) {
+                    val tokenType = n.tokenType
+                    when (tokenType) {
+                        TokenType.WHITE_SPACE, COMMENT -> continue
+                        STRING -> {
+                            val v = ParadoxScriptLightTreeUtil.getValueFromStringNode(n, tree) ?: break
+                            this += v
+                        }
+                        else -> break
                     }
-                    else -> return result ?: emptyList()
+                } else {
+                    if (n == node) flag = true // 这里需要使用值相等
                 }
-            } else {
-                if (n == node) flag = true // 这里需要使用值相等
             }
         }
-        return result ?: emptyList()
+        return result // no optimization here
     }
 }

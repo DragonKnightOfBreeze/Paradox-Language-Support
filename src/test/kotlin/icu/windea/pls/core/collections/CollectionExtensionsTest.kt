@@ -244,55 +244,6 @@ class CollectionExtensionsTest {
     }
 
     @Test
-    fun optimized_list_behaviors() {
-        // empty -> emptyList()
-        val e = emptyList<Int>()
-        val eo = e.optimized()
-        Assert.assertEquals(emptyList<Int>(), eo)
-        // singleton -> toList() (not necessarily same instance)
-        val s = listOf(1)
-        val so = s.optimized()
-        Assert.assertEquals(listOf(1), so)
-        // size > 1 -> same instance
-        val m = mutableListOf(1, 2)
-        val mo = m.optimized()
-        Assert.assertSame(m, mo)
-    }
-
-    @Test
-    fun optimized_set_behaviors() {
-        // empty -> emptySet()
-        val e = emptySet<Int>()
-        val eo = e.optimized()
-        Assert.assertEquals(emptySet<Int>(), eo)
-        // singleton -> toSet() (not necessarily same instance)
-        val s = setOf(1)
-        val so = s.optimized()
-        Assert.assertEquals(setOf(1), so)
-        // size > 1 -> same instance
-        val m: MutableSet<Int> = linkedSetOf(1, 2)
-        val mo = m.optimized()
-        Assert.assertSame(m, mo)
-    }
-
-    @Test
-    fun optimizedIfEmpty_list_and_set() {
-        // list
-        val el = emptyList<Int>()
-        val el2 = el.optimizedIfEmpty()
-        Assert.assertEquals(emptyList<Int>(), el2)
-        val l = mutableListOf(1)
-        Assert.assertSame(l, l.optimizedIfEmpty())
-
-        // set
-        val es = emptySet<Int>()
-        val es2 = es.optimizedIfEmpty()
-        Assert.assertEquals(emptySet<Int>(), es2)
-        val s = mutableSetOf(1)
-        Assert.assertSame(s, s.optimizedIfEmpty())
-    }
-
-    @Test
     fun removePrefixOrNull_basic_and_edges() {
         val base = listOf(1, 2, 3)
 

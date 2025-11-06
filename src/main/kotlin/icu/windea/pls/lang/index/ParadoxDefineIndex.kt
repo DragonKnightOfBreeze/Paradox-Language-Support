@@ -4,6 +4,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readUTFFast
@@ -13,10 +16,8 @@ import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefineManager
-import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
-import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
-import icu.windea.pls.model.optimized
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.properties
@@ -67,7 +68,7 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
             storage.writeUTFFast(info.variable.orEmpty())
             storage.writeIntFast(info.elementOffsets.size)
             info.elementOffsets.forEach { storage.writeIntFast(it) }
-            storage.writeByte(info.gameType.optimized(ForParadoxGameType))
+            storage.writeByte(info.gameType.optimized(OptimizerRegistry.forGameType()))
         }
     }
 
@@ -79,7 +80,7 @@ class ParadoxDefineIndex : IndexInfoAwareFileBasedIndex<Map<String, ParadoxDefin
             val variable = storage.readUTFFast().orNull()
             val elementOffsetsSize = storage.readIntFast()
             val elementOffsets = if (elementOffsetsSize != 0) sortedSetOf<Int>().apply { repeat(elementOffsetsSize) { this += storage.readIntFast() } } else emptySet()
-            val gameType = storage.readByte().deoptimized(ForParadoxGameType)
+            val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
             map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffsets, gameType))
         }
         return map

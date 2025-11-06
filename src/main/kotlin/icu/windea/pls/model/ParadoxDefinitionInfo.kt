@@ -13,7 +13,7 @@ import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -44,8 +44,6 @@ class ParadoxDefinitionInfo(
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
     private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
 
-    // NOTE 部分属性需要使用懒加载
-
     val name: String by lazy { name0 ?: doGetName() }
 
     val type: String = typeConfig.name
@@ -74,7 +72,6 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetName(): String {
-        // NOTE 这里不处理需要内联的情况
         return ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig)
     }
 

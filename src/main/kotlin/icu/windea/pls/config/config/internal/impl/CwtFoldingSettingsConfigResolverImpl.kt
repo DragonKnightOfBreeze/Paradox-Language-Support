@@ -4,9 +4,7 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.foldingSettings
 import icu.windea.pls.config.util.CwtConfigResolverMixin

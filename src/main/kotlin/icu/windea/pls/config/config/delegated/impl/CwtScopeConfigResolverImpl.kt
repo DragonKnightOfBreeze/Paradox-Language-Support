@@ -5,13 +5,11 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
-import icu.windea.pls.core.collections.optimizedIfEmpty
+import icu.windea.pls.core.optimized
 
 internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -28,7 +26,7 @@ internal class CwtScopeConfigResolverImpl : CwtScopeConfig.Resolver, CwtConfigRe
         val propGroup = propElements.groupBy { it.key }
         val aliases = propGroup.getOne("aliases")?.let { prop ->
             prop.values?.mapNotNullTo(caseInsensitiveStringSet()) { it.stringValue }
-        }?.optimizedIfEmpty().orEmpty()
+        }?.optimized().orEmpty()
         val isSubscopeOf = propGroup.getOne("is_subscope_of")?.stringValue
         logger.debug { "Resolved scope config (name: $name).".withLocationPrefix(config) }
         return CwtScopeConfigImpl(config, name, aliases, isSubscopeOf)

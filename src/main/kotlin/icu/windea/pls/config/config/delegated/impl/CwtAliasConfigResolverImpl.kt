@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigCollector
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -24,6 +25,10 @@ internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRe
         val (name, subName) = tokens
         logger.debug { "Resolved alias config (name: $name, subName: $subName).".withLocationPrefix(config) }
         return CwtAliasConfigImpl(config, name, subName)
+    }
+
+    override fun postProcess(config: CwtAliasConfig) {
+        CwtConfigCollector.collectFromConfigExpression(config, config.configExpression)
     }
 }
 

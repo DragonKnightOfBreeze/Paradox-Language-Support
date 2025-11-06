@@ -8,10 +8,9 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtModifierConfigResolverImpl : CwtModifierConfig.Resolver, CwtConfigResolverMixin {

@@ -6,11 +6,10 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtEnumConfig
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimizedIfEmpty
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 
@@ -40,7 +39,7 @@ internal class CwtEnumConfigResolverImpl : CwtEnumConfig.Resolver, CwtConfigReso
             valueConfigMap.put(valueElement.value, valueElement)
         }
         logger.debug { "Resolved enum config (name: $name).".withLocationPrefix(config) }
-        return CwtEnumConfigImpl(config, name, values.optimizedIfEmpty(), valueConfigMap.optimizedIfEmpty())
+        return CwtEnumConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
     }
 }
 

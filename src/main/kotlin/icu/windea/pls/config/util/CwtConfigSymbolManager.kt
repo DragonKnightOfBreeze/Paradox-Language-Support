@@ -14,9 +14,9 @@ import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.findKeywordsWithTextRanges
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry

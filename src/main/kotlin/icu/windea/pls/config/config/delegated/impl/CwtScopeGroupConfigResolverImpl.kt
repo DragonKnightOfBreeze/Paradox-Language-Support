@@ -6,11 +6,10 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimizedIfEmpty
+import icu.windea.pls.core.optimized
 
 internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -35,7 +34,7 @@ internal class CwtScopeGroupConfigResolverImpl : CwtScopeGroupConfig.Resolver, C
             valueConfigMap.put(valueElement.value, valueElement)
         }
         logger.debug { "Resolved scope group config (name: $name).".withLocationPrefix(config) }
-        return CwtScopeGroupConfigImpl(config, name, values.optimizedIfEmpty(), valueConfigMap.optimizedIfEmpty())
+        return CwtScopeGroupConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
     }
 }
 

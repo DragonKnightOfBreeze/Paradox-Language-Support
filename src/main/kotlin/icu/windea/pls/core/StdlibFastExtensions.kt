@@ -1,15 +1,11 @@
 package icu.windea.pls.core
 
+import icu.windea.pls.core.annotations.Fast
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
-/**
- * 去除字符串两端给定字符 [c]，尽量避免不必要的分配。
- *
- * 复杂度 O(n)。
- */
+/** @see kotlin.text.trim */
+@Fast
 fun String.trimFast(c: Char): String {
-    // This method should be very fast
-
     var startIndex = 0
     var endIndex = length - 1
     var startFound = false
@@ -31,15 +27,9 @@ fun String.trimFast(c: Char): String {
     return substring(startIndex, endIndex + 1)
 }
 
-/**
- * 以单个字符分隔符高效分割字符串。
- *
- * - 等价于 `split(delimiter)` 的轻量实现，避免正则与多次分配；
- * - [limit] 语义与标准库一致（>0 时最多返回 `limit` 段，最后一段包含余下所有内容）。
- */
+/** @see kotlin.text.split */
+@Fast
 fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
-    // This method should be very fast
-
     require(limit >= 0) { "Limit must be non-negative, but was $limit" }
 
     var currentOffset = 0

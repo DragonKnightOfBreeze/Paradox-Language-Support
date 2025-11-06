@@ -2,14 +2,15 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.FileContent
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readUTFFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
-import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxFilePathIndexInfo
-import icu.windea.pls.model.optimized
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
@@ -46,13 +47,13 @@ class ParadoxFilePathIndex : IndexInfoAwareFileBasedIndex<ParadoxFilePathIndexIn
 
     override fun saveValue(storage: DataOutput, value: ParadoxFilePathIndexInfo) {
         storage.writeUTFFast(value.directory)
-        storage.writeByte(value.gameType.optimized(ForParadoxGameType))
+        storage.writeByte(value.gameType.optimized(OptimizerRegistry.forGameType()))
         storage.writeBoolean(value.included)
     }
 
     override fun readValue(storage: DataInput): ParadoxFilePathIndexInfo {
         val path = storage.readUTFFast()
-        val gameType = storage.readByte().deoptimized(ForParadoxGameType)
+        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         val included = storage.readBoolean()
         return ParadoxFilePathIndexInfo(path, gameType, included)
     }

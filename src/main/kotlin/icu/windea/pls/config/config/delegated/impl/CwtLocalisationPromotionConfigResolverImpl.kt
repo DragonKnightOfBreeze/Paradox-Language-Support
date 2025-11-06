@@ -6,9 +6,8 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromotionConfig.Resolver, CwtConfigResolverMixin {
@@ -19,9 +18,9 @@ internal class CwtLocalisationPromotionConfigResolverImpl : CwtLocalisationPromo
     private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig {
         val name = config.key
         val supportedScopes = buildSet {
-            config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-        }.optimized()
+                config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }.optimized()
         logger.debug { "Resolved localisation promotion config (name: $name).".withLocationPrefix(config) }
         return CwtLocalisationPromotionConfigImpl(config, name, supportedScopes)
     }

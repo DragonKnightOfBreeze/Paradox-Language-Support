@@ -1,6 +1,10 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.optimizer.forAccess
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.readOrReadFrom
 import icu.windea.pls.core.readUTFFast
@@ -8,6 +12,7 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -15,19 +20,15 @@ import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.withState
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ValueOptimizers.ForAccess
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
-import icu.windea.pls.model.deoptimized
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.model.index.ParadoxDynamicValueIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
-import icu.windea.pls.model.optimized
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
 import java.io.DataInput
@@ -54,14 +55,14 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
     override fun saveData(storage: DataOutput, info: ParadoxComplexEnumValueIndexInfo, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(ForAccess))
+        storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forAccess()))
         storage.writeIntFast(info.definitionElementOffset)
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueIndexInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(ForAccess)
+        val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forAccess())
         val definitionElementOffset = storage.readIntFast()
         return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, definitionElementOffset, gameType)
     }
@@ -116,13 +117,13 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
     override fun saveData(storage: DataOutput, info: ParadoxDynamicValueIndexInfo, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(ForAccess))
+        storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forAccess()))
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueIndexInfo?, gameType: ParadoxGameType): ParadoxDynamicValueIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.dynamicValueType }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(ForAccess)
+        val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forAccess())
         return ParadoxDynamicValueIndexInfo(name, dynamicValueType, readWriteAccess, gameType)
     }
 }
@@ -159,13 +160,13 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
     override fun saveData(storage: DataOutput, info: ParadoxParameterIndexInfo, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
-        storage.writeByte(info.readWriteAccess.optimized(ForAccess))
+        storage.writeByte(info.readWriteAccess.optimized(OptimizerRegistry.forAccess()))
     }
 
     override fun readData(storage: DataInput, previousInfo: ParadoxParameterIndexInfo?, gameType: ParadoxGameType): ParadoxParameterIndexInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val contextKey = storage.readOrReadFrom(previousInfo, { it.contextKey }, { storage.readUTFFast() })
-        val readWriteAccess = storage.readByte().deoptimized(ForAccess)
+        val readWriteAccess = storage.readByte().deoptimized(OptimizerRegistry.forAccess())
         return ParadoxParameterIndexInfo(name, contextKey, readWriteAccess, gameType)
     }
 }

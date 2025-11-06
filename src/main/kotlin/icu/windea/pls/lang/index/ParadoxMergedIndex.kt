@@ -7,6 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.util.gist.VirtualFileGist
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.readIntFast
 import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
@@ -24,10 +27,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ValueOptimizers.ForParadoxGameType
-import icu.windea.pls.model.deoptimized
+import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
-import icu.windea.pls.model.optimized
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -169,7 +170,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id)
         val gameType = firstInfo.gameType
-        storage.writeByte(gameType.optimized(ForParadoxGameType))
+        storage.writeByte(gameType.optimized(OptimizerRegistry.forGameType()))
         var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
             support.saveData(storage, info, previousInfo, gameType)
@@ -185,7 +186,7 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
         val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.id == id }
             ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
-        val gameType = storage.readByte().deoptimized(ForParadoxGameType)
+        val gameType = storage.readByte().deoptimized(OptimizerRegistry.forGameType())
         var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType).also { previousInfo = it }

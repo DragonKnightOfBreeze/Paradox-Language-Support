@@ -6,7 +6,6 @@ import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()
-
     private val cache = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtCardinalityExpression> { key -> doResolve(key) }
 

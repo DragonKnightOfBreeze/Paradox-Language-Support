@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused", "ERROR_SUPPRESSION")
 
 package icu.windea.pls.core.collections
 
@@ -175,17 +175,3 @@ fun <T> List<T>.removeSuffixOrNull(suffix: List<T>): List<T>? {
     }
     return this.dropLast(suffix.size)
 }
-
-/** 如果当前列表为空或单例，则返回优化后的 [List]，否则返回自身。用于优化内存。*/
-fun <T> List<T>.optimized(): List<T> = if (size <= 1) toList() else this
-
-/** 如果当前集为空或单例，则返回优化后的 [Set]，否则返回自身。用于优化内存。*/
-fun <T : Any> Set<T>.optimized(): Set<T> = if (size <= 1) toSet() else this
-
-/** 如果当前列表为空，则返回优化后的 [List]，否则返回自身。用于优化内存。*/
-@Suppress("ReplaceIsEmptyWithIfEmpty")
-fun <T> List<T>.optimizedIfEmpty(): List<T> = if (isEmpty()) emptyList() else this
-
-/** 如果当前集为空，则返回优化后的 [Set]，否则返回自身。用于优化内存。*/
-@Suppress("ReplaceIsEmptyWithIfEmpty")
-fun <T : Any> Set<T>.optimizedIfEmpty(): Set<T> = if (isEmpty()) emptySet() else this

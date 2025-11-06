@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.core.collections
 
@@ -61,10 +61,3 @@ fun <K, E, M : MutableMap<K, MutableList<E>>> M.getOrInit(key: K): MutableList<E
 
 /** 得到指定键 [key] 对应的类型为 [MutableMap] 的值，如果不存在则先初始化。*/
 fun <K, K1, V1, M : MutableMap<K, MutableMap<K1, V1>>> M.getOrInit(key: K): MutableMap<K1, V1> = getOrPut(key) { mutableMapOf() }
-
-/** 如果当前映射为空或单例，则返回优化后的 [Map]，否则返回自身。用于优化内存。*/
-fun <K, V> Map<K, V>.optimized(): Map<K, V> = if (size <= 1) toMap() else this
-
-/** 如果当前映射为空，则返回优化后的 [Map]，否则返回自身。用于优化内存。*/
-@Suppress("ReplaceIsEmptyWithIfEmpty")
-fun <K, V> Map<K, V>.optimizedIfEmpty(): Map<K, V> = if (isEmpty()) emptyMap() else this

@@ -21,8 +21,7 @@ import icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
-import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.collections.optimizedIfEmpty
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.CwtSeparatorType
@@ -162,13 +161,13 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
         if (option == null) return@create null
         val options1 = option.options ?: return@create null
         buildMap {
-            for (option1 in options1) {
-                // ignore case for both system scopes and scopes (to lowercase)
-                val k = option1.key.lowercase()
-                val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
-                put(k, v)
-            }
-        }.optimized()
+                for (option1 in options1) {
+                    // ignore case for both system scopes and scopes (to lowercase)
+                    val k = option1.key.lowercase()
+                    val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
+                    put(k, v)
+                }
+            }.optimized()
     }
 
     /**
@@ -339,7 +338,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
         val values = option.getOptionValueOrValues() ?: return@create null
         val set = caseInsensitiveStringSet().apply { addAll(values) } // 忽略大小写
         val positive = option.separatorType == CwtSeparatorType.EQUAL
-        ReversibleValue(positive, set.optimizedIfEmpty())
+        ReversibleValue(positive, set.optimized())
     }
 
     /**

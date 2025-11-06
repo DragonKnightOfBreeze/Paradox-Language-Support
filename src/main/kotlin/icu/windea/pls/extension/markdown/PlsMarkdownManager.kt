@@ -98,7 +98,7 @@ object PlsMarkdownManager {
             val rootInfo = selectRootFile(element)?.rootInfo
             if (rootInfo == null) return@run
             val fileType = ParadoxFileType.resolve(path)
-            val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
+            val injectedFileInfo = ParadoxFileInfo(path.optimized(), "", fileType, rootInfo)
             return injectedFileInfo
         }
 
@@ -106,7 +106,7 @@ object PlsMarkdownManager {
 
         val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
         val fileType = ParadoxFileType.resolve(path)
-        val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
+        val injectedFileInfo = ParadoxFileInfo(path.optimized(), "", fileType, rootInfo)
         return injectedFileInfo
     }
 

@@ -4,7 +4,6 @@ import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.postfixTemplateSettings

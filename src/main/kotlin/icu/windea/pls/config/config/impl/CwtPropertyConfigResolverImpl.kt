@@ -12,13 +12,15 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
-import icu.windea.pls.config.util.CwtConfigCollector
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getUserDataOrDefault
 import icu.windea.pls.core.util.getValue
@@ -29,10 +31,8 @@ import icu.windea.pls.cwt.psi.CwtPropertyPointer
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ValueOptimizers.ForCwtSeparatorType
-import icu.windea.pls.model.ValueOptimizers.ForCwtType
-import icu.windea.pls.model.deoptimized
-import icu.windea.pls.model.optimized
+import icu.windea.pls.model.forCwtSeparatorType
+import icu.windea.pls.model.forCwtType
 
 class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -57,9 +57,9 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         val configs = CwtConfigResolverUtil.getConfigs(valueElement, file, configGroup)
         val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
         val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
-        CwtConfigCollector.postHandleConfig(config)
-        CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
-        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
+        CwtConfigResolverUtil.applyOptions(config)
+        CwtConfigResolverUtil.collectFromConfigExpression(config, config.keyExpression)
+        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
         logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
         return config
@@ -134,11 +134,11 @@ private abstract class CwtPropertyConfigImpl(
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimized(ForCwtType) // optimize memory
-    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
+    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
+    override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
 
-    private val separatorTypeId = separatorType.optimized(ForCwtSeparatorType) // optimize memory
-    override val separatorType get() = separatorTypeId.deoptimized(ForCwtSeparatorType)
+    private val separatorTypeId = separatorType.optimized(OptimizerRegistry.forCwtSeparatorType()) // optimize memory
+    override val separatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
 
     // use memory-optimized lazy property
     @Volatile
@@ -166,7 +166,7 @@ private class CwtPropertyConfigImpl1(
     configs: List<CwtMemberConfig<*>>? = null,
     optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs
+    override var configs = configs
     override val optionConfigs = optionConfigs
 }
 
@@ -180,7 +180,7 @@ private class CwtPropertyConfigImpl2(
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs
+    override var configs = configs
     override val optionConfigs get() = null
 }
 
@@ -237,7 +237,7 @@ private class CwtPropertyConfigDelegate1(
     delegate: CwtPropertyConfig,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val configs = configs
+    override var configs = configs
 }
 
 // 12 + 4 * 4 = 28 -> 32

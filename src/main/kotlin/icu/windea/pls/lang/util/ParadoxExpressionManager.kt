@@ -57,11 +57,10 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
-import icu.windea.pls.core.collections.optimized
-import icu.windea.pls.core.collections.optimizedIfEmpty
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
@@ -974,7 +973,7 @@ object ParadoxExpressionManager {
     }
 
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimizedIfEmpty() }
+        return config.getOrPutUserData(Keys.inBlockKeys) { doGetInBlockKeys(config).optimized() }
     }
 
     private fun doGetInBlockKeys(config: CwtMemberConfig<*>): MutableSet<@CaseInsensitive String> {

@@ -11,7 +11,6 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assert.*
 import org.junit.Test

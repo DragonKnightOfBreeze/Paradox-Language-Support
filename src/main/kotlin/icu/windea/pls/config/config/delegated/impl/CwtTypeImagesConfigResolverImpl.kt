@@ -4,7 +4,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.CacheBuilder

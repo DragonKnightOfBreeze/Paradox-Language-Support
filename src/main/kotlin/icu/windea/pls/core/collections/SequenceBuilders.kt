@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
+
 package icu.windea.pls.core.collections
 
 /**
@@ -5,7 +7,6 @@ package icu.windea.pls.core.collections
  *
  * 使用广度优先遍历。
  */
-@Suppress("unused")
 fun <T : Any> generateBreathFirstSequence(seed: T?, nextFunction: (T) -> Collection<T>): Sequence<T> {
     if (seed == null) return emptySequence()
     return sequence {
@@ -24,7 +25,6 @@ fun <T : Any> generateBreathFirstSequence(seed: T?, nextFunction: (T) -> Collect
  *
  * 使用深度优先遍历（前序遍历）。
  */
-@Suppress("unused")
 fun <T : Any> generateDepthFirstSequence(seed: T?, nextFunction: (T) -> Collection<T>): Sequence<T> {
     if (seed == null) return emptySequence()
     return sequence {

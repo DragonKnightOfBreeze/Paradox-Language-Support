@@ -4,16 +4,17 @@ import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ValueOptimizers.ForCwtType
-import icu.windea.pls.model.deoptimized
-import icu.windea.pls.model.optimized
-import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.model.forCwtType
 
 internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverMixin {
-    private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
+    private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
 
     override fun resolve(element: CwtValue): CwtOptionValueConfig {
         val value = element.value
@@ -23,14 +24,10 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver,
     }
 
     override fun create(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
-        return doCreate(value, valueType, optionConfigs)
-    }
-
-    private fun doCreate(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
         // use cache if possible to optimize memory
         if (optionConfigs.isNullOrEmpty()) {
             val cacheKey = "${valueType.ordinal}#${value}"
-            return cache.getOrPut(cacheKey) {
+            return cache.get(cacheKey) {
                 CwtOptionValueConfigImpl(value, valueType, optionConfigs)
             }
         }
@@ -46,8 +43,8 @@ private class CwtOptionValueConfigImpl(
 ) : CwtOptionValueConfig {
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimized(ForCwtType) // optimize memory
-    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
+    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
+    override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
 
     override fun toString() = "(option value) $value"
 }

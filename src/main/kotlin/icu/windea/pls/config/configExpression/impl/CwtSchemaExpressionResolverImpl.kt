@@ -11,10 +11,6 @@ import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     private val logger = thisLogger()
-
-    // 基于 expressionString 的结果缓存，避免重复解析
-    // - maximumSize: 限制缓存上界，避免长时间运行导致内存无限增长
-    // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收，保持性能与内存的平衡
     private val cache = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtSchemaExpression> { doResolve(it) }
 
@@ -67,7 +63,7 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     }
 }
 
-private sealed class CwtSchemaExpressionImplBase : CwtSchemaExpression {
+private sealed class CwtSchemaExpressionBase : CwtSchemaExpression {
     override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString
@@ -75,25 +71,25 @@ private sealed class CwtSchemaExpressionImplBase : CwtSchemaExpression {
 
 private class CwtSchemaConstantExpression(
     override val expressionString: String
-) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Constant
+) : CwtSchemaExpressionBase(), CwtSchemaExpression.Constant
 
 private class CwtSchemaTemplateExpression(
     override val expressionString: String,
     override val pattern: String,
     override val parameterRanges: List<TextRange>
-) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Template
+) : CwtSchemaExpressionBase(), CwtSchemaExpression.Template
 
 private class CwtSchemaTypeExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Type
+) : CwtSchemaExpressionBase(), CwtSchemaExpression.Type
 
 private class CwtSchemaEnumExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Enum
+) : CwtSchemaExpressionBase(), CwtSchemaExpression.Enum
 
 private class CwtSchemaConstraintExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Constraint
+) : CwtSchemaExpressionBase(), CwtSchemaExpression.Constraint

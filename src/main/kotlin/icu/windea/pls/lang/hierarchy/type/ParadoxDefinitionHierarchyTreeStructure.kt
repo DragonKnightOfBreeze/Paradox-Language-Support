@@ -9,9 +9,9 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isSamePosition
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.definitionInfo
@@ -224,15 +224,15 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun getGroupingRules(descriptor: ParadoxDefinitionHierarchyNodeDescriptor): List<Pair<NodeType, String>> {
         return buildList {
-            var currentDescriptor = descriptor
-            while (true) {
-                val currentNodeType = currentDescriptor.nodeType
-                if (currentNodeType.grouped) {
-                    this += tupleOf(currentNodeType, currentDescriptor.name)
+                var currentDescriptor = descriptor
+                while (true) {
+                    val currentNodeType = currentDescriptor.nodeType
+                    if (currentNodeType.grouped) {
+                        this += tupleOf(currentNodeType, currentDescriptor.name)
+                    }
+                    currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
                 }
-                currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
-            }
-        }.optimized()
+            }.optimized()
     }
 
     private fun filterDefinitionChild(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, definition: ParadoxScriptDefinitionElement, groupingRules: List<Tuple2<NodeType, String>>): Boolean {

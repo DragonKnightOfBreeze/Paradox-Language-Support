@@ -15,10 +15,8 @@ import icu.windea.pls.config.config.booleanValue
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.properties
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
@@ -28,12 +26,12 @@ import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.PathMatcher
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
@@ -148,7 +146,7 @@ object ParadoxDefinitionManager {
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath, gameType, configGroup)
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.optimized(), gameType, configGroup)
     }
 
     fun getTypeKey(element: ParadoxScriptDefinitionElement): String {
@@ -579,6 +577,7 @@ object ParadoxDefinitionManager {
     }
 
     fun resolveNameFromTypeConfig(element: ParadoxScriptDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
+        // NOTE 2.0.6 inline logic is not applied here
         return when {
             // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
             typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
@@ -594,6 +593,7 @@ object ParadoxDefinitionManager {
     }
 
     fun resolveNameFromTypeConfig(node: LighterASTNode, tree: LighterAST, typeKey: String, typeConfig: CwtTypeConfig): String? {
+        // NOTE 2.0.6 inline logic is not applied here
         return when {
             // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
             typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())

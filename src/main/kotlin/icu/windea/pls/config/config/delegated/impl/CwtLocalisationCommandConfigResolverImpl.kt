@@ -6,10 +6,9 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.values
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.util.ParadoxScopeManager
 
 internal class CwtLocalisationCommandConfigResolverImpl : CwtLocalisationCommandConfig.Resolver, CwtConfigResolverMixin {
@@ -20,9 +19,9 @@ internal class CwtLocalisationCommandConfigResolverImpl : CwtLocalisationCommand
     private fun doResolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig {
         val name = config.key
         val supportedScopes = buildSet {
-            config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-            config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-        }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
+                config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
         logger.debug { "Resolved localisation command config (name: $name).".withLocationPrefix(config) }
         return CwtLocalisationCommandConfigImpl(config, name, supportedScopes)
     }

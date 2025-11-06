@@ -5,19 +5,20 @@ import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.core.deoptimized
+import icu.windea.pls.core.optimized
+import icu.windea.pls.core.optimizer.OptimizerRegistry
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
-import icu.windea.pls.model.ValueOptimizers.ForCwtSeparatorType
-import icu.windea.pls.model.ValueOptimizers.ForCwtType
-import icu.windea.pls.model.deoptimized
-import icu.windea.pls.model.optimized
-import java.util.concurrent.ConcurrentHashMap
+import icu.windea.pls.model.forCwtSeparatorType
+import icu.windea.pls.model.forCwtType
 
 internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
-    private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
+    private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 
     override fun resolve(element: CwtOption): CwtOptionConfig? {
         val optionValueElement = element.optionValue
@@ -51,7 +52,7 @@ internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfig
         // use cache if possible to optimize memory
         if (optionConfigs.isNullOrEmpty()) {
             val cacheKey = "${valueType.ordinal}#${separatorType.ordinal}#${key}#${value}"
-            return cache.getOrPut(cacheKey) {
+            return cache.get(cacheKey) {
                 CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
             }
         }
@@ -70,11 +71,11 @@ private class CwtOptionConfigImpl(
     override val key = key.intern() // intern to optimize memory
     override val value = value.intern() // intern to optimize memory
 
-    private val valueTypeId = valueType.optimized(ForCwtType) // optimize memory
-    override val valueType get() = valueTypeId.deoptimized(ForCwtType)
+    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
+    override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
 
-    private val separatorTypeId = separatorType.optimized(ForCwtSeparatorType) // optimize memory
-    override val separatorType get() = separatorTypeId.deoptimized(ForCwtSeparatorType)
+    private val separatorTypeId = separatorType.optimized(OptimizerRegistry.forCwtSeparatorType()) // optimize memory
+    override val separatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
 
     override fun toString() = "(option) $key $separatorType $value"
 }

@@ -11,11 +11,16 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
+import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -24,11 +29,11 @@ import icu.windea.pls.config.configGroup.aliasKeysGroupConst
 import icu.windea.pls.config.configGroup.aliasKeysGroupNoConst
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.singleAliases
-import icu.windea.pls.core.collections.optimized
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.splitByBlank
@@ -182,7 +187,7 @@ object CwtConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             runReadAction {
                 val file = element.containingFile
-                val value = doGetConfigPath(element)
+                val value = doGetConfigPath(element)?.optimized()
                 value.withDependencyItems(file)
             }
         }
@@ -526,6 +531,11 @@ object CwtConfigManager {
     //     }
     //     return r
     // }
+
+    fun isRemoved(config: CwtConfig<*>): Boolean {
+        if (config !is CwtSingleAliasConfig && config !is CwtAliasConfig) return false
+        return config.config.optionData { apiStatus } == CwtApiStatus.Removed
+    }
 
     fun findLiterals(configs: List<CwtMemberConfig<*>>): Set<String> {
         val configGroup = configs.firstOrNull()?.configGroup ?: return emptySet()
