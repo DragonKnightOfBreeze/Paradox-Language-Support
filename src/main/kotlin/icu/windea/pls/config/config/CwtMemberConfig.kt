@@ -39,7 +39,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     override fun toString(): String
 
     interface Resolver {
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
         fun postOptimize(config: CwtMemberConfig<*>)
 
         /**

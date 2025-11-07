@@ -2,6 +2,7 @@
 
 package icu.windea.pls.lang.util
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
@@ -19,7 +20,6 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.BitUtil
-import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
@@ -54,6 +54,7 @@ import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
@@ -64,6 +65,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
@@ -128,8 +130,8 @@ object ParadoxExpressionManager {
         val cachedParameterRanges by createKey<CachedValue<List<TextRange>>>(Keys)
 
         val cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
+        val cachedConfigsCache by createKey<CachedValue<Cache<String, List<CwtMemberConfig<*>>>>>(Keys)
+        val cachedChildOccurrenceMapCache by createKey<CachedValue<Cache<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
 
         val cachedExpressionReferences by createKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesForMergedIndex by createKey<CachedValue<Array<out PsiReference>>>(Keys)
@@ -414,7 +416,7 @@ object ParadoxExpressionManager {
     }
 
     private fun matchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
-        // 如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
+        // 如果作为参数的键的规则类型可以（从扩展的规则）推断出来且是匹配的，则需要继续向下匹配
         // 目前要求推断结果必须是唯一的
         // 目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
 
@@ -446,25 +448,26 @@ object ParadoxExpressionManager {
     ): List<CwtMemberConfig<*>> {
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        val configsMap = doGetConfigsCacheFromCache(memberElement)
+        val cache = doGetConfigsCacheFromCache(memberElement)
         // optimized to optimize memory
         val cacheKey = "${orDefault.toInt()},${matchOptions}".optimized()
-        return configsMap.getOrPut(cacheKey) {
+        return cache.get(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
         }
     }
 
-    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
+    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): Cache<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
-    private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
+    @Optimized
+    private fun doGetConfigsCache(): Cache<String, List<CwtMemberConfig<*>>> {
         // use soft values to optimize memory
-        return ContainerUtil.createConcurrentSoftValueMap()
+        return CacheBuilder().softValues().build()
     }
 
     private fun doGetConfigs(element: ParadoxScriptMember, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
@@ -541,26 +544,27 @@ object ParadoxExpressionManager {
         if (childConfigs.isEmpty()) return emptyMap()
 
         ProgressManager.checkCanceled()
-        val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
+        val cache = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         // based on shallow keys of child configs
         // optimized to optimize memory
         val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getShallowKey(it) }.optimized()
-        return childOccurrenceMap.getOrPut(cacheKey) {
+        return cache.get(cacheKey) {
             val result = doGetChildOccurrenceMap(element, configs)
             result.optimized()
         }
     }
 
-    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
+    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): Cache<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
         }
     }
 
-    private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
+    @Optimized
+    private fun doGetChildOccurrenceMapCache(): Cache<String, Map<CwtDataExpression, Occurrence>> {
         // use soft values to optimize memory
-        return ContainerUtil.createConcurrentSoftValueMap()
+        return CacheBuilder().softValues().build()
     }
 
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
@@ -726,7 +730,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
-        // 尝试基于CWT规则进行解析
+        // 尝试基于规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
         val processMergedIndex = PlsStates.processMergedIndex.get() == true
         val matchOptions = if (processMergedIndex) ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope else ParadoxMatchOptions.Default
@@ -814,7 +818,7 @@ object ParadoxExpressionManager {
     private fun getResolvedConfigElement(element: ParadoxExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
         val resolvedConfig = config.resolved()
         if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
-            // 特殊处理合成的CWT规则
+            // 特殊处理合成的规则
             val gameType = configGroup.gameType
             val project = configGroup.project
             return CwtMemberConfigElement(element, resolvedConfig, gameType, project)

@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.annotations.Fast
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.merge
 import icu.windea.pls.core.emptyPointer
@@ -94,12 +94,12 @@ object CwtConfigManipulator {
 
     // region Deep Copy Methods
 
-    @Fast
+    @Optimized
     fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
         return ObjectArrayList()
     }
 
-    @Fast
+    @Optimized
     @OptIn(ExperimentalContracts::class)
     fun createListForDeepCopy(configs: List<CwtMemberConfig<*>>?): MutableList<CwtMemberConfig<*>>? {
         contract {

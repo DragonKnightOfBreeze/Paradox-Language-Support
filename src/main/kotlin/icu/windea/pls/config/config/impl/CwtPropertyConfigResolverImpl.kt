@@ -178,7 +178,7 @@ private abstract class CwtPropertyConfigBase : UserDataHolderBase(), CwtProperty
         return CwtValueConfig.resolveFromPropertyConfig(valuePointer, this)
     }
 
-    override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(value, true)
+    override val keyExpression: CwtDataExpression get() = CwtDataExpression.resolve(key, true)
     override val valueExpression: CwtDataExpression get() = if (configs != null) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString() = "(property) $key $separatorType $value"

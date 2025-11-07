@@ -1,7 +1,7 @@
 package icu.windea.pls.core.accessor
 
-import com.jetbrains.rd.util.ConcurrentHashMap
 import icu.windea.pls.core.cast
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 /**

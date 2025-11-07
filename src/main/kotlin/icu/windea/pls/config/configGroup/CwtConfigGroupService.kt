@@ -11,7 +11,6 @@ import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.util.application
-import fleet.multiplatform.shims.ConcurrentHashMap
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
@@ -21,6 +20,7 @@ import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 private val logger = logger<CwtConfigGroupService>()
 

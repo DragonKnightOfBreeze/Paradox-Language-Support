@@ -53,7 +53,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
         fun postProcess(config: CwtPropertyConfig)
 
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
         fun postOptimize(config: CwtPropertyConfig)
 
         /** 由 [CwtProperty] 解析为属性规则。 */

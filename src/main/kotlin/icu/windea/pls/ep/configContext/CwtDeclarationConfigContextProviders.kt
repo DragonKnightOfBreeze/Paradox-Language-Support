@@ -36,7 +36,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
     override fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String {
         val gameTypeId = context.configGroup.gameType.id
         val definitionSubtypes = context.definitionSubtypes
-        val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration
+        val subtypesToDistinct = declarationConfig.subtypesUsedInDeclaration // TODO 2.0.6+ 这里存在一定的耗时，需要考虑是否直接将 `definitionSubtypes` 加入缓存键
         val subtypes = definitionSubtypes?.filter { it in subtypesToDistinct }.orEmpty()
         val typeString = buildString {
             append(context.definitionType)

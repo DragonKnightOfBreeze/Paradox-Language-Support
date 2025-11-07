@@ -20,7 +20,7 @@ import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.filePathExpressions
 import icu.windea.pls.config.configGroup.parameterConfigs
-import icu.windea.pls.core.annotations.Fast
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
@@ -53,7 +53,7 @@ object CwtConfigResolverUtil {
         return currentLocation.get()
     }
 
-    @Fast
+    @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtBlockElement) return null
         val configs: MutableList<CwtMemberConfig<*>> = ObjectArrayList()
@@ -74,7 +74,7 @@ object CwtConfigResolverUtil {
         return configs // delay optimization
     }
 
-    @Fast
+    @Optimized
     fun getOptionConfigs(element: CwtMember): List<CwtOptionMemberConfig<*>> {
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
         var current: PsiElement = element
@@ -99,7 +99,7 @@ object CwtConfigResolverUtil {
         return optionConfigs // delay optimization
     }
 
-    @Fast
+    @Optimized
     fun getOptionConfigsInOption(element: CwtValue): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
@@ -118,7 +118,7 @@ object CwtConfigResolverUtil {
         return optionConfigs.optimized() // optimized to optimize memory
     }
 
-    @Fast
+    @Optimized
     fun checkMemberType(configs: List<CwtMemberConfig<*>>?): CwtMemberType? {
         if (configs.isNullOrEmpty()) return null
         var result: CwtMemberType? = null
