@@ -51,7 +51,7 @@ dependencies {
         // bundledPlugins("tslint")
 
         // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
-        plugin("cn.yiiguxing.plugin.translate:3.7.3")
+        plugin("cn.yiiguxing.plugin.translate:3.8.0")
     }
 
     // junit - https://github.com/junit-team/junit4
