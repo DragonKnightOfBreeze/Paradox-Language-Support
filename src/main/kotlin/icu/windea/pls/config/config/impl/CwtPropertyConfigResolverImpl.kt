@@ -162,9 +162,9 @@ private abstract class CwtPropertyConfigBase : UserDataHolderBase(), CwtProperty
     // use memory-optimized lazy property
     @Volatile
     private var _valueConfig: Any? = EMPTY_OBJECT
-    override val valueConfig: CwtValueConfig? @Synchronized get() = getValueConfig()
+    override val valueConfig: CwtValueConfig? @Synchronized get() = resolveLazyValueConfig()
 
-    private fun getValueConfig(): CwtValueConfig? {
+    private fun resolveLazyValueConfig(): CwtValueConfig? {
         return if (_valueConfig !== EMPTY_OBJECT) _valueConfig.cast() else resolveValueConfig().also { _valueConfig = it }
     }
 
