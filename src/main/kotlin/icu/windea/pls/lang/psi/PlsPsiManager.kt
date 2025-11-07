@@ -147,8 +147,9 @@ object PlsPsiManager {
      * 得到属于 [element] 的符合特定条件的所有注释，顺序从前向后。这些注释的文本可用于渲染到快速文档中。
      */
     fun getOwnedComments(element: PsiElement, predicate: (PsiComment) -> Boolean): List<PsiComment> {
+        // 这里使用“截断”而非“过滤”逻辑
         val attachedComments = getAttachedComments(element)
-        return attachedComments.takeWhile(predicate).toList().reversed() // 这里使用“截断”而非“过滤”逻辑
+        return attachedComments.dropWhile { !predicate(it) }.takeWhile(predicate).toList().reversed()
     }
 
     fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
