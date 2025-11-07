@@ -3,14 +3,13 @@ package icu.windea.pls.ep.metadata
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.vfs.readBytes
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLauncherSettingsInfo
 import icu.windea.pls.model.ParadoxMetadata
 
-class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
+class ParadoxLauncherSettingsJsonBasedGameMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         // 尝试在根目录或其launcher子目录中查找launcher-settings.json
         // 如果找到，再根据"dlcPath"的值获取游戏文件的根目录
@@ -43,7 +42,7 @@ class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
     }
 }
 
-class ParadoxEuropaUniversalisVMetadataProvider : ParadoxMetadataProvider {
+class Eu5GameMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         // Europa Universalis V has no launcher metadata file.
         // So we detect the binary directly and read the version from the game branch file.

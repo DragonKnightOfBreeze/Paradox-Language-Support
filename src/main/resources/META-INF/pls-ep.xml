@@ -206,10 +206,10 @@
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
 
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxLauncherSettingsBasedMetadataProvider"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxEuropaUniversalisVMetadataProvider"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxModDescriptorBasedMetadataProvider" order="last"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxModMetadataBasedMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.metadata.Eu5GameMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
+    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxMetadataJsonBasedModMetadataProvider"/>
 
     <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxPredefinedModifierSupport"/>
     <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxTemplateModifierSupport"/>

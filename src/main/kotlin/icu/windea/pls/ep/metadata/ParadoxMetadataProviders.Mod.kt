@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxModDescriptorInfo
 import icu.windea.pls.model.ParadoxModMetadataInfo
 import icu.windea.pls.model.ParadoxModSource
 
-class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
+class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         // 尝试在根目录中查找descriptor.mod
 
@@ -53,7 +53,7 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
 /**
  * 参见：[Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)
  */
-class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
+class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         // 尝试在根目录的.metadata子目录中查找metadata.json
 
