@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.forCwtType
 import java.util.*
 
@@ -33,10 +34,11 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver,
                 CwtOptionValueConfigImpl(value, valueType)
             }
         }
-        return CwtOptionValueConfigImplNested(value, optionConfigs)
+        return CwtOptionValueConfigImplNested(optionConfigs)
     }
 }
 
+private const val blockValue = PlsStringConstants.blockFolder
 private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
 
 private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
@@ -47,25 +49,22 @@ private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
     override fun toString() = "(option value) $value"
 }
 
-private abstract class CwtOptionValueConfigImplBase(
-    value: String,
-) : CwtOptionValueConfigBase() {
-    override val value: String = value.optimized() // optimized to optimize memory
-}
+private abstract class CwtOptionValueConfigImplBase : CwtOptionValueConfigBase()
 
 private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtType,
-) : CwtOptionValueConfigImplBase(value) {
+) : CwtOptionValueConfigImplBase() {
     private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
 
+    override val value: String = value.optimized() // optimized to optimize memory
     override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
 private class CwtOptionValueConfigImplNested(
-    value: String,
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
-) : CwtOptionValueConfigImplBase(value) {
+) : CwtOptionValueConfigImplBase() {
+    override val value: String get() = blockValue
     override val valueType: CwtType get() = CwtType.Block
 }
