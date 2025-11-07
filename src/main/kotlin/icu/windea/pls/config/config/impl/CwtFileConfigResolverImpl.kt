@@ -12,8 +12,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.collections.ifNotEmpty
+import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.CwtMemberType
 
@@ -24,12 +25,27 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         val pointer = file.createPointer()
         val fileName = file.name
         val rootBlock = file.block
-        if (rootBlock == null) {
-            logger.debug { "Resolved empty file config.".withLocationPrefix() }
+        val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
+        val config = create(pointer, configGroup, fileName, filePath, configs)
+        when (configs.isEmpty()) {
+            true -> logger.debug { "Resolved empty file config.".withLocationPrefix() }
+            else -> logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
+        }
+        return config
+    }
+
+    override fun create(
+        pointer: SmartPsiElementPointer<CwtFile>,
+        configGroup: CwtConfigGroup,
+        fileName: String,
+        filePath: String,
+        configs: List<CwtMemberConfig<*>>,
+    ): CwtFileConfig {
+        val noConfigs = configs.isEmpty()
+        if (noConfigs) {
             return CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
         }
-        val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
-        logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
+        val configs = configs.optimized() // optimized to optimize memory
         val memberType = CwtConfigResolverUtil.checkMemberType(configs)
         return when (memberType) {
             null -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
@@ -40,47 +56,54 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
 }
 
 private abstract class CwtFileConfigBase : UserDataHolderBase(), CwtFileConfig {
-    override val properties: List<CwtPropertyConfig> get() = configs.ifNotEmpty { filterIsInstance<CwtPropertyConfig>() }
-    override val values: List<CwtValueConfig> get() = configs.ifNotEmpty { filterIsInstance<CwtValueConfig>() }
+    override val properties: List<CwtPropertyConfig> get() = configs.filterIsInstanceFast<CwtPropertyConfig>()
+    override val values: List<CwtValueConfig> get() = configs.filterIsInstanceFast<CwtValueConfig>()
 
-    override fun toString() = "CwtFileConfigImpl(name='$name', path='$path')"
+    override fun toString() = "CwtFileConfig(name='$name', path='$path')"
 }
 
-private class CwtFileConfigImpl(
+private abstract class CwtFileConfigImplBase(
     override val pointer: SmartPsiElementPointer<CwtFile>,
     override val configGroup: CwtConfigGroup,
     override val name: String,
     override val path: String,
-) : CwtFileConfigBase() {
+) : CwtFileConfigBase()
+
+private class CwtFileConfigImpl(
+    pointer: SmartPsiElementPointer<CwtFile>,
+    configGroup: CwtConfigGroup,
+    name: String,
+    path: String,
+) : CwtFileConfigImplBase(pointer, configGroup, name, path) {
     override val configs: List<CwtMemberConfig<*>> get() = emptyList()
 }
 
-private class CwtFileConfigImplWithConfigs(
-    override val pointer: SmartPsiElementPointer<CwtFile>,
-    override val configGroup: CwtConfigGroup,
-    override val name: String,
-    override val path: String,
+private open class CwtFileConfigImplWithConfigs(
+    pointer: SmartPsiElementPointer<CwtFile>,
+    configGroup: CwtConfigGroup,
+    name: String,
+    path: String,
     override val configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigBase()
+) : CwtFileConfigImplBase(pointer, configGroup, name, path)
 
 private class CwtFileConfigImplWithPropertyConfigs(
-    override val pointer: SmartPsiElementPointer<CwtFile>,
-    override val configGroup: CwtConfigGroup,
-    override val name: String,
-    override val path: String,
-    override val configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigBase() {
+    pointer: SmartPsiElementPointer<CwtFile>,
+    configGroup: CwtConfigGroup,
+    name: String,
+    path: String,
+    configs: List<CwtMemberConfig<*>>,
+) : CwtFileConfigImplWithConfigs(pointer, configGroup, name, path, configs) {
     override val properties: List<CwtPropertyConfig> get() = configs.cast()
     override val values: List<CwtValueConfig> get() = emptyList()
 }
 
 private class CwtFileConfigImplWithValueConfigs(
-    override val pointer: SmartPsiElementPointer<CwtFile>,
-    override val configGroup: CwtConfigGroup,
-    override val name: String,
-    override val path: String,
-    override val configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigBase() {
+    pointer: SmartPsiElementPointer<CwtFile>,
+    configGroup: CwtConfigGroup,
+    name: String,
+    path: String,
+    configs: List<CwtMemberConfig<*>>,
+) : CwtFileConfigImplWithConfigs(pointer, configGroup, name, path, configs) {
     override val properties: List<CwtPropertyConfig> get() = emptyList()
     override val values: List<CwtValueConfig> get() = configs.cast()
 }

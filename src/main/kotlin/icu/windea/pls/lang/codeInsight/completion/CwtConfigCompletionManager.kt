@@ -333,7 +333,7 @@ object CwtConfigCompletionManager {
 
     private fun completeByOptionConfigs(config: CwtMemberConfig<*>, schema: CwtSchemaConfig, context: ProcessingContext, result: CompletionResultSet) {
         val optionConfigs = config.optionConfigs
-        if (optionConfigs.isNullOrEmpty()) return
+        if (optionConfigs.isEmpty()) return
         val optionConfigsGroup = optionConfigs.groupBy { optionConfig ->
             when (optionConfig) {
                 is CwtOptionConfig -> "#" + optionConfig.key

@@ -15,6 +15,7 @@ import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.forCwtSeparatorType
 import icu.windea.pls.model.forCwtType
+import java.util.*
 
 internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
@@ -40,42 +41,59 @@ internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfig
         valueType: CwtType,
         separatorType: CwtSeparatorType,
         optionConfigs: List<CwtOptionMemberConfig<*>>?,
-    ): CwtOptionConfig = doCreate(key, value, valueType, separatorType, optionConfigs)
-
-    private fun doCreate(
-        key: String,
-        value: String,
-        valueType: CwtType,
-        separatorType: CwtSeparatorType,
-        optionConfigs: List<CwtOptionMemberConfig<*>>?
     ): CwtOptionConfig {
-        // use cache if possible to optimize memory
-        if (optionConfigs.isNullOrEmpty()) {
+        val noOptionConfigs = optionConfigs.isNullOrEmpty()
+        if (noOptionConfigs) {
+            // use (strong) cache if not nested to optimize memory
             val cacheKey = "${valueType.ordinal}#${separatorType.ordinal}#${key}#${value}"
             return cache.get(cacheKey) {
-                CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
+                CwtOptionConfigImpl(key, value, valueType, separatorType)
             }
         }
-        return CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
+        return CwtOptionConfigImplNested(key, value, separatorType, optionConfigs)
     }
 }
 
-// 12 + 3 * 4 + 2 * 1 = 26 -> 32
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+
+private abstract class CwtOptionConfigBase : CwtOptionConfig {
+    override fun equals(other: Any?) = this === other || other is CwtOptionConfig
+        && key == other.key && value == other.value
+        && separatorType == other.separatorType && optionConfigs == other.optionConfigs
+
+    override fun hashCode() = Objects.hash(key, value, separatorType, optionConfigs)
+    override fun toString() = "(option) $key $separatorType $value"
+}
+
+private abstract class CwtOptionConfigImplBase(
+    key: String,
+    value: String,
+    separatorType: CwtSeparatorType,
+) : CwtOptionConfigBase() {
+    private val separatorTypeId = separatorType.optimized(OptimizerRegistry.forCwtSeparatorType()) // optimized to optimize memory
+
+    override val key: String = key.optimized() // optimized to optimize memory
+    override val value: String = value.optimized() // optimized to optimize memory
+    override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
+}
+
 private class CwtOptionConfigImpl(
     key: String,
     value: String,
     valueType: CwtType,
     separatorType: CwtSeparatorType,
+) : CwtOptionConfigImplBase(key, value, separatorType) {
+    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
+
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
+}
+
+private class CwtOptionConfigImplNested(
+    key: String,
+    value: String,
+    separatorType: CwtSeparatorType,
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
-) : CwtOptionConfig {
-    override val key = key.optimized() // optimized to optimize memory
-    override val value = value.optimized() // optimized to optimize memory
-
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
-    override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
-
-    private val separatorTypeId = separatorType.optimized(OptimizerRegistry.forCwtSeparatorType()) // optimize memory
-    override val separatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
-
-    override fun toString() = "(option) $key $separatorType $value"
+) : CwtOptionConfigImplBase(key, value, separatorType) {
+    override val valueType: CwtType get() = CwtType.Block
 }

@@ -65,14 +65,14 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             val p = props.getValue("space_prop")
             val opts = p.optionConfigs
             assertNotNull(opts)
-            val hasLabel = opts!!.any { it is CwtOptionValueConfig && it.value == "label with space" }
+            val hasLabel = opts.any { it is CwtOptionValueConfig && it.value == "label with space" }
             assertTrue(hasLabel)
         }
 
         // multiple options with different separators
         run {
             val p = props.getValue("mode_prop")
-            val opts = p.optionConfigs!!.filterIsInstance<CwtOptionConfig>()
+            val opts = p.optionConfigs.filterIsInstance<CwtOptionConfig>()
             assertEquals(2, opts.size)
             val eq = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.EQUAL.name && it.value == "strict" }
             val ne = opts.any { it.key == "mode" && it.separatorType.name == CwtSeparatorType.NOT_EQUAL.name && it.value == "relax" }
@@ -83,11 +83,11 @@ class CwtFileConfigTest : BasePlatformTestCase() {
         // option with block value, containing nested option members
         run {
             val p = props.getValue("opt_block_prop")
-            val meta = p.optionConfigs!!.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
+            val meta = p.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
             assertEquals(CwtType.Block, meta.valueType)
             val nested = meta.optionConfigs
             assertNotNull(nested)
-            val inner = nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
+            val inner = nested.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
             val foo = nested.any { it is CwtOptionValueConfig && it.value == "inner_val" }
             assertTrue(inner)
             assertTrue(foo)
@@ -168,7 +168,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
 
             val opts = p.optionConfigs
             assertNotNull(opts)
-            assertEquals(2, opts!!.size)
+            assertEquals(2, opts.size)
             val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
             val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "warning" }
             assertTrue(hasRequired)
@@ -184,7 +184,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.String, v.valueType)
             val opts = v.optionConfigs
             assertNotNull(opts)
-            val hasTag = opts!!.any { it is CwtOptionValueConfig && it.value == "tag" }
+            val hasTag = opts.any { it is CwtOptionValueConfig && it.value == "tag" }
             assertTrue(hasTag)
         }
         run {

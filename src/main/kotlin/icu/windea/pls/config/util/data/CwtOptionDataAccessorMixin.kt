@@ -15,23 +15,23 @@ import icu.windea.pls.core.util.singleton
 @Suppress("unused")
 interface CwtOptionDataAccessorMixin {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
-        return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key == key }
+        return optionConfigs.findLastIsInstance<CwtOptionConfig> { it.key == key }
     }
 
     fun CwtMemberConfig<*>.findOption(vararg keys: String): CwtOptionConfig? {
-        return optionConfigs?.findLastIsInstance<CwtOptionConfig> { it.key in keys }
+        return optionConfigs.findLastIsInstance<CwtOptionConfig> { it.key in keys }
     }
 
     fun CwtMemberConfig<*>.findOptions(key: String): List<CwtOptionConfig> {
-        return optionConfigs?.filterIsInstance<CwtOptionConfig> { it.key == key }.orEmpty()
+        return optionConfigs.filterIsInstance<CwtOptionConfig> { it.key == key }
     }
 
     fun CwtMemberConfig<*>.findOptions(vararg keys: String): List<CwtOptionConfig> {
-        return optionConfigs?.filterIsInstance<CwtOptionConfig> { it.key in keys }.orEmpty()
+        return optionConfigs.filterIsInstance<CwtOptionConfig> { it.key in keys }
     }
 
     fun CwtMemberConfig<*>.findOptionValues(): Set<String> {
-        return optionConfigs?.filterIsInstance<CwtOptionValueConfig>()?.mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull() }.orEmpty()
+        return optionConfigs.filterIsInstance<CwtOptionValueConfig>().mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull() }
     }
 
     fun CwtOptionMemberConfig<*>.getOptionValue(): String? {

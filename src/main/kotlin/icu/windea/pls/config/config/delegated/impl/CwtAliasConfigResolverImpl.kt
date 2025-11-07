@@ -29,6 +29,7 @@ internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRe
     }
 
     override fun postProcess(config: CwtAliasConfig) {
+        // collect information
         CwtConfigCollector.collectFromConfigExpression(config, config.configExpression)
     }
 }

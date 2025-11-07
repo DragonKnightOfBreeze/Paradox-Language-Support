@@ -28,7 +28,7 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     val configs: List<CwtMemberConfig<*>>?
     val properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
     val values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
-    val optionConfigs: List<CwtOptionMemberConfig<*>>?
+    val optionConfigs: List<CwtOptionMemberConfig<*>>
 
     var parentConfig: CwtMemberConfig<*>?
 

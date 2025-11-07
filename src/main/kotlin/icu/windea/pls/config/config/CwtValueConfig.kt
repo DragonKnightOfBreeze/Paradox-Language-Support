@@ -24,7 +24,11 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     override val configExpression: CwtDataExpression get() = valueExpression
 
     interface Resolver {
+        /** 由 [CwtValue] 解析为值规则。 */
         fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig
+
+        /** 进行解析后的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        fun postProcess(config: CwtValueConfig)
 
         fun create(
             pointer: SmartPsiElementPointer<out CwtValue>,
@@ -32,8 +36,8 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             value: String,
             valueType: CwtType = CwtType.String,
             configs: List<CwtMemberConfig<*>>? = null,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
-            propertyConfig: CwtPropertyConfig? = null
+            optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
+            propertyConfig: CwtPropertyConfig? = null,
         ): CwtValueConfig
 
         fun copy(
@@ -42,7 +46,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             value: String = targetConfig.value,
             valueType: CwtType = targetConfig.valueType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs,
+            optionConfigs: List<CwtOptionMemberConfig<*>> = targetConfig.optionConfigs,
             propertyConfig: CwtPropertyConfig? = targetConfig.propertyConfig,
         ): CwtValueConfig
 
@@ -67,7 +71,7 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
          */
         fun delegatedWith(
             targetConfig: CwtValueConfig,
-            value: String
+            value: String,
         ): CwtValueConfig
     }
 

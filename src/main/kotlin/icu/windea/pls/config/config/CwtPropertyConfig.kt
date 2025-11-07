@@ -38,7 +38,11 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     override val configExpression: CwtDataExpression get() = keyExpression
 
     interface Resolver {
+        /** 由 [CwtProperty] 解析为属性规则。 */
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
+
+        /** 进行解析后的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        fun postProcess(config: CwtPropertyConfig)
 
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -48,7 +52,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             valueType: CwtType = CwtType.String,
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = null
+            optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
         ): CwtPropertyConfig
 
         fun copy(
@@ -59,7 +63,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             valueType: CwtType = targetConfig.valueType,
             separatorType: CwtSeparatorType = targetConfig.separatorType,
             configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
-            optionConfigs: List<CwtOptionMemberConfig<*>>? = targetConfig.optionConfigs
+            optionConfigs: List<CwtOptionMemberConfig<*>> = targetConfig.optionConfigs,
         ): CwtPropertyConfig
 
         /**
@@ -67,7 +71,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
          */
         fun delegated(
             targetConfig: CwtPropertyConfig,
-            configs: List<CwtMemberConfig<*>>? = targetConfig.configs
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
         ): CwtPropertyConfig
 
         /**
@@ -76,7 +80,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         fun delegatedWith(
             targetConfig: CwtPropertyConfig,
             key: String,
-            value: String
+            value: String,
         ): CwtPropertyConfig
     }
 

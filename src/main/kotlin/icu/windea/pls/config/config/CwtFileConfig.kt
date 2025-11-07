@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.config.config.impl.CwtFileConfigResolverImpl
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.cwt.psi.CwtFile
@@ -27,6 +28,14 @@ interface CwtFileConfig : CwtConfig<CwtFile> {
 
     interface Resolver {
         fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
+
+        fun create(
+            pointer: SmartPsiElementPointer<CwtFile>,
+            configGroup: CwtConfigGroup,
+            fileName: String,
+            filePath: String,
+            configs: List<CwtMemberConfig<*>> = emptyList(),
+        ): CwtFileConfig
     }
 
     companion object : Resolver by CwtFileConfigResolverImpl()

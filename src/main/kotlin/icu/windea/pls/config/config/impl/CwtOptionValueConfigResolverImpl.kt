@@ -12,6 +12,7 @@ import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.forCwtType
+import java.util.*
 
 internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver, CwtConfigResolverMixin {
     private val cache = CacheBuilder().build<String, CwtOptionValueConfig>()
@@ -24,27 +25,47 @@ internal class CwtOptionValueConfigResolverImpl : CwtOptionValueConfig.Resolver,
     }
 
     override fun create(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
-        // use cache if possible to optimize memory
-        if (optionConfigs.isNullOrEmpty()) {
+        val noOptionConfigs = optionConfigs.isNullOrEmpty()
+        if (noOptionConfigs) {
+            // use (strong) cache if not nested to optimize memory
             val cacheKey = "${valueType.ordinal}#${value}"
             return cache.get(cacheKey) {
-                CwtOptionValueConfigImpl(value, valueType, optionConfigs)
+                CwtOptionValueConfigImpl(value, valueType)
             }
         }
-        return CwtOptionValueConfigImpl(value, valueType, optionConfigs)
+        return CwtOptionValueConfigImplNested(value, optionConfigs)
     }
 }
 
-// 12 + 2 * 4 + 1 * 1 = 21 -> 24
+private val blockValueTypeId = CwtType.Block.optimized(OptimizerRegistry.forCwtType())
+
+private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
+    override fun equals(other: Any?) = this === other || other is CwtOptionValueConfig
+        && value == other.value && optionConfigs == other.optionConfigs
+
+    override fun hashCode() = Objects.hash(value, optionConfigs)
+    override fun toString() = "(option value) $value"
+}
+
+private abstract class CwtOptionValueConfigImplBase(
+    value: String,
+) : CwtOptionValueConfigBase() {
+    override val value: String = value.optimized() // optimized to optimize memory
+}
+
 private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtType,
-    override val optionConfigs: List<CwtOptionMemberConfig<*>>?
-) : CwtOptionValueConfig {
-    override val value = value.optimized() // optimized to optimize memory
+) : CwtOptionValueConfigImplBase(value) {
+    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimized to optimize memory
 
-    private val valueTypeId = valueType.optimized(OptimizerRegistry.forCwtType()) // optimize memory
-    override val valueType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val valueType: CwtType get() = valueTypeId.deoptimized(OptimizerRegistry.forCwtType())
+    override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
+}
 
-    override fun toString() = "(option value) $value"
+private class CwtOptionValueConfigImplNested(
+    value: String,
+    override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
+) : CwtOptionValueConfigImplBase(value) {
+    override val valueType: CwtType get() = CwtType.Block
 }

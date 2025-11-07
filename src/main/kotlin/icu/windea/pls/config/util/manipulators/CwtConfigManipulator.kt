@@ -263,7 +263,7 @@ object CwtConfigManipulator {
             value = PlsStringConstants.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
-            optionConfigs = config?.optionConfigs
+            optionConfigs = config?.optionConfigs.orEmpty()
         )
     }
 
