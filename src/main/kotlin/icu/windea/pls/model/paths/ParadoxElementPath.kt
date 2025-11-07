@@ -21,7 +21,6 @@ import icu.windea.pls.model.paths.impl.ParadoxElementPathResolverImpl
  * - （空字符串） - 对应所属文件或定义本身。
  * - `foo` - 对应所属文件或定义中名为 `foo` 的属性。
  * - `foo/bar` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar` 的属性。
- * - `foo/"bar"` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，名为 `bar`的属性（属性名在脚本中用引号括起）。
  * - `foo/-` - 对应所属文件或定义中名为 `foo` 的属性的值（代码块）中，任意的值。
  */
 interface ParadoxElementPath : Iterable<String> {
