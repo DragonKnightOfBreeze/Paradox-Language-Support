@@ -1,4 +1,5 @@
 package icu.windea.pls.config.config
+
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -88,7 +89,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         val opts = c.optionConfigs
         assertNotNull(opts)
         // ## required ; ## severity = info
-        assertEquals(2, opts!!.size)
+        assertEquals(2, opts.size)
         val hasRequired = opts.any { it is CwtOptionValueConfig && it.value == "required" }
         val hasSeverity = opts.any { it is CwtOptionConfig && it.key == "severity" && it.value == "info" }
         assertTrue(hasRequired)
@@ -108,14 +109,14 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             val c = CwtPropertyConfig.resolve(p, file, group)!!
             val opts = c.optionConfigs
             assertNotNull(opts)
-            assertTrue(opts!!.any { it is CwtOptionValueConfig && it.value == "label with space" })
+            assertTrue(opts.any { it is CwtOptionValueConfig && it.value == "label with space" })
         }
 
         // two options with different separators for same key
         run {
             val p = root.findChild<CwtProperty> { it.name == "mode_prop" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            val opts = c.optionConfigs!!.filterIsInstance<CwtOptionConfig>()
+            val opts = c.optionConfigs.filterIsInstance<CwtOptionConfig>()
             assertEquals(2, opts.size)
             assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.EQUAL && it.value == "strict" })
             assertTrue(opts.any { it.key == "mode" && it.separatorType == CwtSeparatorType.NOT_EQUAL && it.value == "relax" })
@@ -125,7 +126,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         run {
             val p = root.findChild<CwtProperty> { it.name == "opt_block_prop" }!!
             val c = CwtPropertyConfig.resolve(p, file, group)!!
-            val meta = c.optionConfigs!!.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
+            val meta = c.optionConfigs.filterIsInstance<CwtOptionConfig>().single { it.key == "meta" }
             assertEquals(CwtType.Block, meta.valueType)
             val nested = meta.optionConfigs
             assertNotNull(nested)
@@ -175,7 +176,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
 
     // region Resolver: create/copy/delegated/delegatedWith + userData
 
-    private val EXTRA_KEY: Key<String> = createKey("test.extra.property")
+    private val extraKey: Key<String> = createKey("test.extra.property")
 
     @Test
     fun testResolver_create_copy_delegated_forProperty() {
@@ -185,7 +186,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
         // base property (block)
         val baseProp = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val baseCfg = CwtPropertyConfig.resolve(baseProp, file, group)!!
-        baseCfg.putUserData(EXTRA_KEY, "v1")
+        baseCfg.putUserData(extraKey, "v1")
 
         // create from scratch (configs = null but valueType = Block => configs should be emptyList, not null)
         run {
@@ -199,8 +200,8 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Block, created.valueType)
             assertNotNull(created.configs)
             assertTrue(created.configs!!.isEmpty())
-            // userData is not auto-filled on create
-            assertNull(created.getUserData(EXTRA_KEY))
+            // userData is not autofilled on create
+            assertNull(created.getUserData(extraKey))
         }
 
         // copy with overrides (should NOT copy arbitrary userData)
@@ -219,8 +220,8 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             assertEquals(baseCfg.valueType, copied.valueType)
             assertEquals(CwtSeparatorType.EQUAL, copied.separatorType)
             assertEquals(baseCfg.configs?.size, copied.configs?.size)
-            assertEquals(baseCfg.optionConfigs?.size, copied.optionConfigs?.size)
-            assertNull(copied.getUserData(EXTRA_KEY))
+            assertEquals(baseCfg.optionConfigs.size, copied.optionConfigs.size)
+            assertNull(copied.getUserData(extraKey))
         }
 
         // delegated (inherit read of userData; parentConfig should be reset; configs can be replaced)
@@ -230,12 +231,12 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             assertNotNull(delegated.configs)
             assertTrue(delegated.configs!!.isEmpty())
             // inherit read from target (wrapper defers to delegate if present)
-            assertEquals("v1", delegated.getUserData(EXTRA_KEY))
+            assertEquals("v1", delegated.getUserData(extraKey))
             // write wrapper-only data using another key
-            val EXTRA_KEY_2: Key<String> = createKey("test.extra.property.2")
-            delegated.putUserData(EXTRA_KEY_2, "v2")
-            assertEquals("v2", delegated.getUserData(EXTRA_KEY_2))
-            assertNull(baseCfg.getUserData(EXTRA_KEY_2))
+            val extraKey2: Key<String> = createKey("test.extra.property.2")
+            delegated.putUserData(extraKey2, "v2")
+            assertEquals("v2", delegated.getUserData(extraKey2))
+            assertNull(baseCfg.getUserData(extraKey2))
         }
 
         // delegatedWith (override key/value; expressions recomputed)
@@ -243,9 +244,9 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
             val delegated = CwtPropertyConfig.delegatedWith(baseCfg, key = baseCfg.key + "_d", value = "42")
             assertEquals(baseCfg.key + "_d", delegated.key)
             assertEquals("42", delegated.value)
-            // expressions exist; for block value (configs != null), valueExpression is blockExpression with isKey=true
+            // expressions exist; for block value (configs != null), valueExpression is blockExpression with isKey=false
             assertTrue(delegated.keyExpression.isKey)
-            assertTrue(delegated.valueExpression.isKey)
+            assertFalse(delegated.valueExpression.isKey)
         }
     }
 

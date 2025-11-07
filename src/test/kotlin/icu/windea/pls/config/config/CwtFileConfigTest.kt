@@ -87,7 +87,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Block, meta.valueType)
             val nested = meta.optionConfigs
             assertNotNull(nested)
-            val inner = nested.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
+            val inner = nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" }
             val foo = nested.any { it is CwtOptionValueConfig && it.value == "inner_val" }
             assertTrue(inner)
             assertTrue(foo)

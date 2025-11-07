@@ -146,14 +146,14 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Block, meta.valueType)
             val nested = meta.optionConfigs
             assertNotNull(nested)
-            assertTrue(nested.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" })
+            assertTrue(nested!!.filterIsInstance<CwtOptionConfig>().any { it.key == "inner" && it.value == "1" })
             assertTrue(nested.any { it is CwtOptionValueConfig && it.value == "foo" })
         }
     }
 
     // region Resolver: create/copy/delegated/delegatedWith/resolveFromPropertyConfig + userData
 
-    private val extraVKey: Key<String> = createKey("test.extra.value")
+    private val extraKey: Key<String> = createKey("test.extra.value")
 
     @Test
     fun testResolver_create_copy_delegated_forValue() {
@@ -165,7 +165,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         // base value (block)
         val base = root.findChild<CwtValue> { it.value == "{...}" }!!
         val baseCfg = CwtValueConfig.resolve(base, file, group)
-        baseCfg.putUserData(extraVKey, "vv1")
+        baseCfg.putUserData(extraKey, "vv1")
 
         // create from scratch (configs = null but valueType = Block => configs should be emptyList, not null)
         run {
@@ -178,8 +178,8 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             assertEquals(CwtType.Block, created.valueType)
             assertNotNull(created.configs)
             assertTrue(created.configs!!.isEmpty())
-            // userData is not auto-filled on create
-            assertNull(created.getUserData(extraVKey))
+            // userData is not autofilled on create
+            assertNull(created.getUserData(extraKey))
         }
 
         // copy with overrides (should NOT copy arbitrary userData)
@@ -196,7 +196,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             assertEquals(baseCfg.valueType, copied.valueType)
             assertEquals(baseCfg.configs?.size, copied.configs?.size)
             assertEquals(baseCfg.optionConfigs.size, copied.optionConfigs.size)
-            assertNull(copied.getUserData(extraVKey))
+            assertNull(copied.getUserData(extraKey))
         }
 
         // delegated (inherit read of userData; parentConfig should be reset; configs can be replaced)
@@ -206,20 +206,20 @@ class CwtValueConfigTest : BasePlatformTestCase() {
             assertNotNull(delegated.configs)
             assertTrue(delegated.configs!!.isEmpty())
             // inherit read from target (wrapper defers to delegate if present)
-            assertEquals("vv1", delegated.getUserData(this.extraVKey))
+            assertEquals("vv1", delegated.getUserData(this.extraKey))
             // write wrapper-only data using another key
-            val extraV2Key: Key<String> = createKey("test.extra.value.2")
-            delegated.putUserData(extraV2Key, "vv2")
-            assertEquals("vv2", delegated.getUserData(extraV2Key))
-            assertNull(baseCfg.getUserData(extraV2Key))
+            val extraKey2: Key<String> = createKey("test.extra.value.2")
+            delegated.putUserData(extraKey2, "vv2")
+            assertEquals("vv2", delegated.getUserData(extraKey2))
+            assertNull(baseCfg.getUserData(extraKey2))
         }
 
         // delegatedWith (override value; expressions recomputed)
         run {
             val delegated = CwtValueConfig.delegatedWith(baseCfg, value = "over")
             assertEquals("over", delegated.value)
-            // for block base (configs != null), valueExpression is blockExpression with isKey=true
-            assertTrue(delegated.valueExpression.isKey)
+            // for block base (configs != null), valueExpression is blockExpression with isKey=false
+            assertFalse(delegated.valueExpression.isKey)
         }
     }
 
@@ -232,7 +232,7 @@ class CwtValueConfigTest : BasePlatformTestCase() {
 
         val prop = root.findChild<CwtProperty> { it.name == "block_prop" }!!
         val pCfg = CwtPropertyConfig.resolve(prop, file, group)!!
-        pCfg.putUserData(extraVKey, "pv1")
+        pCfg.putUserData(extraKey, "pv1")
 
         val vPtr = prop.propertyValue!!.createPointer(file)
         val vCfg = CwtValueConfig.resolveFromPropertyConfig(vPtr, pCfg)
@@ -242,13 +242,13 @@ class CwtValueConfigTest : BasePlatformTestCase() {
         assertEquals(pCfg.valueType, vCfg.valueType)
         assertEquals(pCfg.configs?.size, vCfg.configs?.size)
         assertEquals(pCfg.optionConfigs.size, vCfg.optionConfigs.size)
-        // for block property, wrapper valueExpression is blockExpression with isKey=true
-        assertTrue(vCfg.valueExpression.isKey)
+        // for block property, wrapper valueExpression is blockExpression with isKey=false
+        assertFalse(vCfg.valueExpression.isKey)
         // userData should NOT be inherited from property config on wrapper
-        assertNull(vCfg.getUserData(extraVKey))
-        vCfg.putUserData(extraVKey, "vw1")
-        assertEquals("vw1", vCfg.getUserData(extraVKey))
-        assertEquals("pv1", pCfg.getUserData(extraVKey))
+        assertNull(vCfg.getUserData(extraKey))
+        vCfg.putUserData(extraKey, "vw1")
+        assertEquals("vw1", vCfg.getUserData(extraKey))
+        assertEquals("pv1", pCfg.getUserData(extraKey))
     }
 
     @Test

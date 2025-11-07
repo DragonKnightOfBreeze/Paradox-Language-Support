@@ -122,9 +122,9 @@ class CwtConfigManipulatorTest : BasePlatformTestCase() {
         // userData not copied (wrapper has no own value), but read is inherited from delegate
         assertEquals("orig", p2Copied.getUserData(extraKey))
         // writing to wrapper with another key does not affect original
-        val extra2Key: Key<String> = createKey("test.deepcopy.extra2")
-        p2Copied.putUserData(extra2Key, "wrap")
-        assertEquals(null, p2Original.getUserData(extra2Key))
+        val extraKey2: Key<String> = createKey("test.deepcopy.extra2")
+        p2Copied.putUserData(extraKey2, "wrap")
+        assertEquals(null, p2Original.getUserData(extraKey2))
     }
 
     @Test

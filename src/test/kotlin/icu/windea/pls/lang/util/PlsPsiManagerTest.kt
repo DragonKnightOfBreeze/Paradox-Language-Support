@@ -25,17 +25,17 @@ class PlsPsiManagerTest : BasePlatformTestCase() {
 
         val rootProperty = rootBlock.findChild<ParadoxScriptProperty> { it.name == "root" }!!
         val block = rootProperty.block!!
-        val rootAttachedComments = PlsPsiManager.getAttachedComments(rootProperty)
+        val rootAttachedComments = PlsPsiManager.getAttachedComments(rootProperty).toList()
         Assert.assertEquals(1, rootAttachedComments.size)
         Assert.assertEquals("root attached comment", rootAttachedComments[0].commentText)
 
         val property1 = block.findChild<ParadoxScriptProperty> { it.name == "key_1" }!!
-        val attachedComments1 = PlsPsiManager.getAttachedComments(property1)
+        val attachedComments1 = PlsPsiManager.getAttachedComments(property1).toList()
         Assert.assertEquals(1, attachedComments1.size)
         Assert.assertEquals("attached comment", attachedComments1[0].commentText)
 
         val property2 = block.findChild<ParadoxScriptProperty> { it.name == "key_2" }!!
-        val attachedComments2 = PlsPsiManager.getAttachedComments(property2)
+        val attachedComments2 = PlsPsiManager.getAttachedComments(property2).toList()
         Assert.assertEquals(0, attachedComments2.size)
     }
 

@@ -17,6 +17,7 @@
 - [X] 优化：可以在插件设置页面中配置是否启用自动语言注入 / OP: Can configure whether to enable auto language injection in plugin settings page
 - [X] 优化：支持在快速文档和类型信息中显示使用的覆盖方式 / OP: Support to show used override strategy in quick doc and type info
 - [X] 优化：优化与重载/覆盖相关的代码检查 / OP: Optimize override related inspections
+- [X] 优化：支持渲染规则文件中的文档注释（从而兼容阅读器模式和 Translation 插件） / OP: Support to render documentation comments in config files (thus compatible with reader mode and Translation plugin)
 - [X] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
 - [X] 新功能：支持 Stellaris 中的命名格式表达式 / NEW: Support the name format expressions in Stellaris #193
 - [X] 新功能：提供工具动作，用于从日志或脚本文件生成规则文件的维护提示 / NEW: Provide tool actions to generate maintenance hints for config files from log or script files

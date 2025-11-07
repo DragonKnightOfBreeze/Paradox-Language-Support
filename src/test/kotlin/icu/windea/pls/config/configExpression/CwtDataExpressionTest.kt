@@ -45,7 +45,7 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
         val e = CwtDataExpression.resolveBlock()
         assertEquals("{...}", e.expressionString)
         assertEquals(CwtDataTypes.Block, e.type)
-        assertTrue(e.isKey)
+        assertFalse(e.isKey)
         assertSame(e, CwtDataExpression.resolveBlock())
     }
 
