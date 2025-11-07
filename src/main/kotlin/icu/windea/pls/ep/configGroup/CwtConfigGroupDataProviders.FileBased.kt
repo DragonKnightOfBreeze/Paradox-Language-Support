@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.configGroup
 
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFileConfig
@@ -75,6 +76,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
@@ -85,6 +87,8 @@ import kotlinx.coroutines.ensureActive
  * 用于初始规则分组中基于文件内容的那些数据。
  */
 class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
+    private val logger = thisLogger()
+
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 
@@ -141,13 +145,19 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     }
 
     private fun resolveAndProcessInternalFile(filePath: String, file: VirtualFile, configGroup: CwtConfigGroup) {
-        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
+        val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }
+            .onFailure { logger.warn(it) }
+            .getOrNull()
+        if(psiFile !is CwtFile) return
         val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
         processInternalFile(filePath, fileConfig, configGroup)
     }
 
     private fun resolveAndProcessFile(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String) {
-        val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return
+        val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }
+            .onFailure { logger.warn(it) }
+            .getOrNull()
+        if(psiFile !is CwtFile) return
         val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
         processFile(fileConfig, configGroup)
     }
