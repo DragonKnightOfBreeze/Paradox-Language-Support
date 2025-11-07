@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import icu.windea.pls.config.config.impl.CwtMemberConfigResolverImpl
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.cwt.psi.CwtMember
@@ -37,5 +38,17 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
 
     override fun toString(): String
 
+    interface Resolver {
+        /**
+         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。
+         */
+        fun <T: CwtMemberConfig<*>> delegated(
+            targetConfig: T,
+            configs: List<CwtMemberConfig<*>>? = targetConfig.configs,
+        ): T
+    }
+
     object Keys : KeyRegistry()
+
+    companion object : Resolver by CwtMemberConfigResolverImpl()
 }

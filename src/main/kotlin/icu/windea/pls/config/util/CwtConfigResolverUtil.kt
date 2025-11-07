@@ -54,18 +54,26 @@ object CwtConfigResolverUtil {
 
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtBlockElement) return null
-        val configs = ObjectArrayList<CwtMemberConfig<*>>()
-        element.forEachChild { e ->
+        val configs: MutableList<CwtMemberConfig<*>> = ObjectArrayList()
+        element.forEachChild f@{ e ->
             when (e) {
-                is CwtProperty -> CwtPropertyConfig.resolve(e, file, configGroup)?.let { configs += it }
-                is CwtValue -> CwtValueConfig.resolve(e, file, configGroup).let { configs += it }
+                is CwtProperty -> {
+                    val resolved = CwtPropertyConfig.resolve(e, file, configGroup) ?: return@f
+                    CwtPropertyConfig.postProcess(resolved)
+                    configs += resolved
+                }
+                is CwtValue -> {
+                    val resolved = CwtValueConfig.resolve(e, file, configGroup)
+                    CwtValueConfig.postProcess(resolved)
+                    configs += resolved
+                }
             }
         }
         return configs // delay optimization
     }
 
     fun getOptionConfigs(element: CwtMember): List<CwtOptionMemberConfig<*>> {
-        val optionConfigs = ObjectArrayList<CwtOptionMemberConfig<*>>()
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
         var current: PsiElement = element
         while (true) {
             current = current.prevSibling ?: break
@@ -90,14 +98,18 @@ object CwtConfigResolverUtil {
 
     fun getOptionConfigsInOption(element: CwtValue): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
-        val optionConfigs = ObjectArrayList<CwtOptionMemberConfig<*>>()
-        element.forEachChild { e ->
-            val resolved = when (e) {
-                is CwtOption -> CwtOptionConfig.resolve(e)
-                is CwtValue -> CwtOptionValueConfig.resolve(e)
-                else -> null
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
+        element.forEachChild f@{ e ->
+            when (e) {
+                is CwtOption -> {
+                    val resolved = CwtOptionConfig.resolve(e) ?: return@f
+                    optionConfigs += resolved
+                }
+                is CwtValue -> {
+                    val resolved = CwtOptionValueConfig.resolve(e)
+                    optionConfigs += resolved
+                }
             }
-            if (resolved != null) optionConfigs += resolved
         }
         return optionConfigs.optimized() // optimized to optimize memory
     }

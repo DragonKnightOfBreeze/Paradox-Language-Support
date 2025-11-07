@@ -98,7 +98,7 @@ object CwtConfigManipulator {
         val result = mutableListOf<CwtMemberConfig<*>>()
         for (config in configs) {
             val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-            val delegatedConfig = getDelegatedConfig(config, childConfigs).also { it.parentConfig = parentConfig }
+            val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigs(config, delegatedConfig).orEmpty()
             result += delegatedConfig
         }
@@ -126,20 +126,13 @@ object CwtConfigManipulator {
             }
 
             val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
-            val delegatedConfig = getDelegatedConfig(config, childConfigs).also { it.parentConfig = parentConfig }
+            val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
             result += delegatedConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
         result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result // 这里需要直接返回可变列表
-    }
-
-    private fun getDelegatedConfig(childConfig: CwtMemberConfig<*>, deepChildConfigs: MutableList<CwtMemberConfig<*>>?): CwtMemberConfig<*> {
-        return when (childConfig) {
-            is CwtPropertyConfig -> CwtPropertyConfig.delegated(childConfig, deepChildConfigs)
-            is CwtValueConfig -> CwtValueConfig.delegated(childConfig, deepChildConfigs)
-        }
     }
 
     private fun isSubtypeMatchedInDeclarationConfig(config: CwtMemberConfig<*>, context: CwtDeclarationConfigContext): Boolean? {
@@ -173,8 +166,8 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = config.optionConfigs,
         )
-        inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
         inlined.aliasConfig = config.aliasConfig
         inlined.singleAliasConfig = singleAliasConfig
@@ -212,8 +205,8 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = other.optionConfigs
         )
-        inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
         inlined.aliasConfig = aliasConfig
         inlined.singleAliasConfig = config.singleAliasConfig

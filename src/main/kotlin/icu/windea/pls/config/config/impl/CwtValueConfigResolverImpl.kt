@@ -40,7 +40,6 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         val configs = CwtConfigResolverUtil.getConfigs(element, file, configGroup)
         val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
         val config = create(pointer, configGroup, value, valueType, configs, optionConfigs)
-        postProcess(config)
         logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
         return config
     }
@@ -52,6 +51,10 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         CwtConfigResolverUtil.applyOptions(config)
         // collect information
         CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
+    }
+
+    override fun postOptimize(config: CwtValueConfig) {
+        TODO("Not yet implemented")
     }
 
     override fun create(

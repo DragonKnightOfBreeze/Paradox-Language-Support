@@ -41,8 +41,11 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         /** 由 [CwtProperty] 解析为属性规则。 */
         fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
 
-        /** 进行解析后的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
         fun postProcess(config: CwtPropertyConfig)
+
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        fun postOptimize(config: CwtPropertyConfig)
 
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -67,7 +70,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         ): CwtPropertyConfig
 
         /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 null。
+         * 创建 [targetConfig] 的委托规则，并指定要替换的子规则列表。父规则会被重置为 `null`。
          */
         fun delegated(
             targetConfig: CwtPropertyConfig,
@@ -75,7 +78,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
         ): CwtPropertyConfig
 
         /**
-         * 创建 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 null。
+         * 创建 [targetConfig] 的委托规则，并指定要替换的键和值。父规则会被重置为 `null`。
          */
         fun delegatedWith(
             targetConfig: CwtPropertyConfig,
