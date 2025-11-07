@@ -153,6 +153,8 @@ object PlsPsiManager {
     }
 
     fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
+        // TODO 2.0.6+ 这里的处理逻辑需要持续优化
+
         // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
         if(comments.isEmpty()) return null
         val result = comments.mapNotNull { it.text.trimStart('#').trim().escapeXml().orNull() }.joinToString(lineSeparator)
@@ -160,6 +162,8 @@ object PlsPsiManager {
     }
 
     fun getDocCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
+        // TODO 2.0.6+ 这里的处理逻辑需要持续优化（并且，需要考虑如何推断是否需要换行）
+
         // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
         // - 如果某行注释以 '\' 结束，则输出时不要在这里换行
         if(comments.isEmpty()) return null

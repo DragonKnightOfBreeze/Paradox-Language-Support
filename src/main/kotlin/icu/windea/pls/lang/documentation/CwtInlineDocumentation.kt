@@ -24,7 +24,7 @@ class CwtInlineDocumentation(
     }
 
     override fun renderText(): String? {
-        return PlsPsiManager.getDocCommentText(comments)
+        return PlsPsiManager.getDocCommentText(comments, "<br>")
     }
 
     override fun getOwnerTarget(): DocumentationTarget? {
