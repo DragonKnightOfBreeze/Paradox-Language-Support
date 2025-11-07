@@ -13,6 +13,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
+import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.orNull
 
 object PlsPsiManager {
     fun toPresentableString(element: PsiElement): String {
@@ -37,16 +39,15 @@ object PlsPsiManager {
     }
 
     /**
-     * 得到附加到 [element] 上的所有注释的列表，顺序从后到前。
+     * 得到附加到 [element] 上的所有注释，顺序从后到前。
      *
      * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
      */
-    fun getAttachedComments(element: PsiElement): List<PsiComment> {
-        if (element is PsiComment || element is PsiWhiteSpace) return emptyList()
+    fun getAttachedComments(element: PsiElement): Sequence<PsiComment> {
+        if (element is PsiComment || element is PsiWhiteSpace) return emptySequence()
         return element.siblings(forward = false, withSelf = false)
             .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
             .filterIsInstance<PsiComment>()
-            .toList()
     }
 
     /**
@@ -83,7 +84,7 @@ object PlsPsiManager {
      */
     fun findTextStartOffsetInView(element: PsiElement, canAttachComment: Boolean = false): Int {
         if (canAttachComment) {
-            val attachingComments = getAttachedComments(element)
+            val attachingComments = getAttachedComments(element).toList()
             if (attachingComments.isNotEmpty()) return attachingComments.last().startOffset
         }
         return element.startOffset
@@ -108,7 +109,7 @@ object PlsPsiManager {
         }
     }
 
-    fun findSiblingLineComments(element: PsiComment, predicate: (PsiComment) -> Boolean): List<PsiComment> {
+    fun findSiblingComments(element: PsiComment, predicate: (PsiComment) -> Boolean): List<PsiComment> {
         if (!predicate(element)) return emptyList()
         val before = element.siblings(forward = false, withSelf = false)
             .takeWhile { (it is PsiComment && predicate(it)) || (it is PsiWhiteSpace && !containsBlankLine(it)) }
@@ -126,12 +127,12 @@ object PlsPsiManager {
         return result
     }
 
-    fun findAllSiblingLineCommentsIn(parentElement: PsiElement, predicate: (PsiComment) -> Boolean): List<List<PsiComment>> {
+    fun findAllSiblingCommentsIn(parentElement: PsiElement, predicate: (PsiComment) -> Boolean): List<List<PsiComment>> {
         var current = parentElement.firstChild
         val result = mutableListOf<List<PsiComment>>()
         while (current != null) {
             if (current is PsiComment) {
-                val comments = findSiblingLineComments(current, predicate)
+                val comments = findSiblingComments(current, predicate)
                 if (comments.isNotEmpty()) {
                     result.add(comments)
                     current = comments.last()
@@ -140,5 +141,28 @@ object PlsPsiManager {
             current = current.nextSibling
         }
         return result
+    }
+
+    /**
+     * 得到属于 [element] 的符合特定条件的所有注释，顺序从前向后。这些注释的文本可用于渲染到快速文档中。
+     */
+    fun getOwnedComments(element: PsiElement, predicate: (PsiComment) -> Boolean): List<PsiComment> {
+        val attachedComments = getAttachedComments(element)
+        return attachedComments.takeWhile(predicate).toList().reversed() // 这里使用“截断”而非“过滤”逻辑
+    }
+
+    fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
+        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
+        if(comments.isEmpty()) return null
+        val result = comments.mapNotNull { it.text.trimStart('#').trim().escapeXml().orNull() }.joinToString(lineSeparator)
+        return result
+    }
+
+    fun getDocCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
+        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
+        // - 如果某行注释以 '\' 结束，则输出时不要在这里换行
+        if(comments.isEmpty()) return null
+        val result = comments.mapNotNull { it.text.trimStart('#').trim().escapeXml().orNull() }.joinToString(lineSeparator)
+        return result.replace("\\$lineSeparator", " ")
     }
 }

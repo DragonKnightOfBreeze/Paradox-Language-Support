@@ -50,7 +50,7 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtElementTypes
+import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -58,7 +58,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxPath
@@ -384,7 +384,9 @@ object CwtConfigManager {
     }
 
     private fun doGetDocumentation(element: CwtMember): String? {
-        return ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
+        val ownedComments = PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
+        val documentation = PlsPsiManager.getDocCommentText(ownedComments, "<br>")
+        return documentation
     }
 
     fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {

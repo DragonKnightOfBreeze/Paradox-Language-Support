@@ -6,7 +6,6 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.TokenType
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
@@ -14,9 +13,7 @@ import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.containsBlankLine
 import icu.windea.pls.core.containsLineBreak
-import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.orNull
@@ -61,8 +58,6 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.resolved
-import java.util.LinkedList
-import kotlin.collections.ArrayDeque
 
 object ParadoxPsiManager {
     object Keys : KeyRegistry() {
@@ -140,49 +135,6 @@ object ParadoxPsiManager {
             }
             else -> null to null
         }
-    }
-
-    fun getLineCommentText(element: PsiElement, lineSeparator: String = "\n"): String? {
-        // 认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
-
-        var lines: LinkedList<String>? = null
-        var prevElement = element.prevSibling ?: element.parent?.prevSibling // 兼容comment在rootBlock之外的特殊情况
-        while (prevElement != null) {
-            val text = prevElement.text
-            if (prevElement !is PsiWhiteSpace) {
-                if (prevElement !is PsiComment) break
-                val docText = text.trimStart('#').trim().escapeXml()
-                if (lines == null) lines = LinkedList()
-                lines.addFirst(docText)
-            } else {
-                if (text.containsBlankLine()) break
-            }
-            prevElement = prevElement.prevSibling
-        }
-        if (lines.isNullOrEmpty()) return null
-        return lines.joinToString(lineSeparator)
-    }
-
-    fun getDocCommentText(element: PsiElement, documentationElementType: IElementType, lineSeparator: String = "\n"): String? {
-        // 如果某行注释以'#'开始，则输出时需要全部忽略
-        // 如果某行注释以'\'结束，则输出时不要在这里换行
-
-        var lines: MutableList<String>? = null
-        var current: PsiElement = element
-        while (true) {
-            current = current.prevSibling ?: break
-            when {
-                current.elementType == documentationElementType -> {
-                    if (lines == null) lines = ArrayDeque()
-                    val line = current.text.trimStart('#').trim()
-                    lines.addFirst(line)
-                }
-                current is PsiWhiteSpace || current is PsiComment -> continue
-                else -> break
-            }
-        }
-        if (lines.isNullOrEmpty()) return null
-        return lines.joinToString(lineSeparator).replace("\\$lineSeparator", "")
     }
 
     // endregion

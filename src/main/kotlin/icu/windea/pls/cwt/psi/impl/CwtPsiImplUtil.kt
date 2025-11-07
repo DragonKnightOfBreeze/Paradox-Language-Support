@@ -247,6 +247,13 @@ object CwtPsiImplUtil {
         return DOC_COMMENT
     }
 
+    @JvmStatic
+    fun getOwner(element: CwtDocComment): PsiElement? {
+        val attachingElement = PlsPsiManager.getAttachingElement(element)
+        if (!CwtPsiUtil.canAttachComment(element)) return null
+        return attachingElement
+    }
+
     // endregion
 
     // region CwtOptionComment

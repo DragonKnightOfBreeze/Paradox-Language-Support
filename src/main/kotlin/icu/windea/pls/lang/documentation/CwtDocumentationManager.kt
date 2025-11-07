@@ -41,7 +41,7 @@ import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtElementTypes
+import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.isExpression
@@ -49,7 +49,6 @@ import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -415,7 +414,8 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val documentation = ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
+        val ownedComments = PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
+        val documentation = PlsPsiManager.getDocCommentText(ownedComments, "<br>")
         if (documentation.isNullOrEmpty()) return
         content {
             append(documentation)

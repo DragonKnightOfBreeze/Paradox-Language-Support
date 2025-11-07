@@ -50,7 +50,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
         if (!settings.comment) return
-        val allSiblingLineComments = PlsPsiManager.findAllSiblingLineCommentsIn(element) { it.elementType == COMMENT }
+        val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
         allSiblingLineComments.forEach {
             val startOffset = it.first().startOffset

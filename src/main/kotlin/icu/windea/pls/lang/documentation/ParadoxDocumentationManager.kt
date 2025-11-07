@@ -35,7 +35,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
-import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
@@ -923,11 +923,11 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {
         // 加上单行注释文本
         if (!PlsFacade.getSettings().documentation.renderLineComment) return
-        val docText = ParadoxPsiManager.getLineCommentText(element, "<br>")
-        if (docText.isNotNullOrEmpty()) {
-            content {
-                append(docText)
-            }
+        val ownedComments = PlsPsiManager.getOwnedComments(element) { true }
+        val commentText = PlsPsiManager.getLineCommentText(ownedComments, "<br>")
+        if (commentText.isNullOrEmpty()) return
+        content {
+            append(commentText)
         }
     }
 }

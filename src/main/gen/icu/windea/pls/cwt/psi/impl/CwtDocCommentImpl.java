@@ -37,6 +37,11 @@ public class CwtDocCommentImpl extends ASTWrapperPsiElement implements CwtDocCom
   }
 
   @Override
+  public @Nullable PsiElement getOwner() {
+    return CwtPsiImplUtil.getOwner(this);
+  }
+
+  @Override
   public @NotNull GlobalSearchScope getResolveScope() {
     return CwtPsiImplUtil.getResolveScope(this);
   }

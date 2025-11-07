@@ -124,6 +124,7 @@
 
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.CwtPsiDocumentationTargetProvider"/>
     <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.ParadoxPsiDocumentationTargetProvider"/>
+    <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.documentation.CwtInlineDocumentationProvider"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationLinkHandler"/>
 
