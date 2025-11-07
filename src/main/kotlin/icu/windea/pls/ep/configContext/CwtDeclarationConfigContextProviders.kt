@@ -48,7 +48,7 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        CwtPropertyConfig.postOptimize(finalRootConfig)
+        CwtPropertyConfig.postOptimize(finalRootConfig) // 进行后续优化
         return finalRootConfig
     }
 }
@@ -80,7 +80,7 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        CwtPropertyConfig.postOptimize(finalRootConfig)
+        CwtPropertyConfig.postOptimize(finalRootConfig) // 进行后续优化
         return finalRootConfig
     }
 }
@@ -112,7 +112,7 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
-        CwtPropertyConfig.postOptimize(finalRootConfig)
+        CwtPropertyConfig.postOptimize(finalRootConfig) // 进行后续优化
         return finalRootConfig
     }
 }

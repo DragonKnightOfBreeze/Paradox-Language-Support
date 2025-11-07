@@ -109,7 +109,9 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
                 return@map CwtValueConfig.create(emptyPointer(), configGroup, config.key)
             }
-            CwtMemberConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config)).also { it.parentConfig = config.parentConfig }
+            val delegatedConfig = CwtMemberConfig.delegated(config, CwtConfigManipulator.deepCopyConfigs(config)).also { it.parentConfig = config.parentConfig }
+            CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
+            delegatedConfig
         }
         if (finalConfigs.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)

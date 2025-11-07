@@ -120,6 +120,7 @@ object CwtConfigManipulator {
             val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigs(config, delegatedConfig).orEmpty()
+            CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
             result += delegatedConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
@@ -148,6 +149,7 @@ object CwtConfigManipulator {
             val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
+            CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
             result += delegatedConfig
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
@@ -174,7 +176,7 @@ object CwtConfigManipulator {
             key = config.name,
             configs = deepCopyConfigs(other)
         )
-        CwtPropertyConfig.postOptimize(inlined)
+        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.inlineConfig = config
         return inlined
@@ -199,7 +201,7 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = config.optionConfigs,
         )
-        CwtPropertyConfig.postOptimize(inlined)
+        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
@@ -239,7 +241,7 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = other.optionConfigs
         )
-        CwtPropertyConfig.postOptimize(inlined)
+        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
@@ -276,7 +278,7 @@ object CwtConfigManipulator {
                 else -> deepCopyConfigs(config)
             },
         )
-        CwtPropertyConfig.postOptimize(inlined)
+        CwtPropertyConfig.postOptimize(inlined) // 进行后续优化
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig
