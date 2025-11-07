@@ -312,7 +312,7 @@ object ParadoxExpressionManager {
         element: ParadoxScriptMember, rootConfigs: List<CwtMemberConfig<*>>, elementPathFromRoot: ParadoxElementPath, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxMatchOptions.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
+        return result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
     }
 
     private fun doGetConfigsForConfigContext(
@@ -453,7 +453,7 @@ object ParadoxExpressionManager {
         val cacheKey = "${orDefault.toInt()},${matchOptions}".optimized()
         return cache.get(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
-            result.optimized().sortedByPriority({ it.configExpression }, { it.configGroup })
+            result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
         }
     }
 
