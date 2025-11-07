@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
+import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
@@ -17,6 +18,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.aliasGroups
 import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.annotations.Fast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.merge
 import icu.windea.pls.core.emptyPointer
@@ -30,6 +32,9 @@ import icu.windea.pls.ep.configExpression.CwtDataExpressionMerger
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 object CwtConfigManipulator {
     // region Common Methods
@@ -89,15 +94,30 @@ object CwtConfigManipulator {
 
     // region Deep Copy Methods
 
+    @Fast
+    fun createListForDeepCopy(): MutableList<CwtMemberConfig<*>> {
+        return ObjectArrayList()
+    }
+
+    @Fast
+    @OptIn(ExperimentalContracts::class)
+    fun createListForDeepCopy(configs: List<CwtMemberConfig<*>>?): MutableList<CwtMemberConfig<*>>? {
+        contract {
+            returnsNotNull() implies (configs != null)
+        }
+        if (configs == null) return null
+        return ObjectArrayList()
+    }
+
     fun deepCopyConfigs(
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig
     ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
-        val result = mutableListOf<CwtMemberConfig<*>>()
+        val result = createListForDeepCopy()
         for (config in configs) {
-            val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigs(config, delegatedConfig).orEmpty()
             result += delegatedConfig
@@ -114,7 +134,7 @@ object CwtConfigManipulator {
     ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
-        val result = mutableListOf<CwtMemberConfig<*>>()
+        val result = createListForDeepCopy()
         for (config in configs) {
             val matched = isSubtypeMatchedInDeclarationConfig(config, context)
             if (matched != null) {
@@ -125,7 +145,7 @@ object CwtConfigManipulator {
                 continue
             }
 
-            val childConfigs = if (config.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+            val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
             if (childConfigs != null) childConfigs += deepCopyConfigsInDeclarationConfig(config, delegatedConfig, context).orEmpty()
             result += delegatedConfig
@@ -147,6 +167,19 @@ object CwtConfigManipulator {
 
     // region Inline Methods
 
+    fun inline(config: CwtInlineConfig): CwtPropertyConfig {
+        val other = config.config
+        val inlined = CwtPropertyConfig.copy(
+            targetConfig = other,
+            key = config.name,
+            configs = deepCopyConfigs(other)
+        )
+        CwtPropertyConfig.postOptimize(inlined)
+        inlined.configs?.forEach { it.parentConfig = inlined }
+        inlined.inlineConfig = config
+        return inlined
+    }
+
     fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
@@ -166,6 +199,7 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = config.optionConfigs,
         )
+        CwtPropertyConfig.postOptimize(inlined)
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
@@ -182,7 +216,7 @@ object CwtConfigManipulator {
         val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasKeys = CwtConfigManager.getAliasKeys(configGroup, aliasName, key)
         if (aliasKeys.isEmpty()) return emptyList()
-        val result = mutableListOf<CwtMemberConfig<*>>()
+        val result = createListForDeepCopy()
         aliasKeys.forEach f1@{ aliasKey ->
             val aliasConfigs = aliasConfigGroup[aliasKey]
             if (aliasConfigs.isNullOrEmpty()) return@f1
@@ -205,6 +239,7 @@ object CwtConfigManipulator {
             configs = deepCopyConfigs(other),
             optionConfigs = other.optionConfigs
         )
+        CwtPropertyConfig.postOptimize(inlined)
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.inlineConfig = config.inlineConfig
@@ -241,6 +276,7 @@ object CwtConfigManipulator {
                 else -> deepCopyConfigs(config)
             },
         )
+        CwtPropertyConfig.postOptimize(inlined)
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
         inlined.singleAliasConfig = config.singleAliasConfig

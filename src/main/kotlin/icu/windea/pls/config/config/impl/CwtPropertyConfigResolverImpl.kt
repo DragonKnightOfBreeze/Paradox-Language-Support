@@ -36,41 +36,6 @@ import icu.windea.pls.model.forCwtType
 class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {
-        // - use `EmptyPointer` for default project to optimize memory
-        // - use `CwtPropertyPointer` to optimize performance and memory
-
-        val valueElement = element.propertyValue
-        if (valueElement == null) {
-            logger.warn("Missing property value.".withLocationPrefix(element))
-            return null
-        }
-        val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(element.createPointer(file))
-        val key = element.name
-        val value: String = valueElement.value
-        val valueType = valueElement.type
-        val separatorType = element.separatorType
-        val configs = CwtConfigResolverUtil.getConfigs(valueElement, file, configGroup)
-        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
-        val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
-        logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
-        return config
-    }
-
-    override fun postProcess(config: CwtPropertyConfig) {
-        // bind parent config
-        config.configs?.forEach { it.parentConfig = config }
-        // apply special options
-        CwtConfigResolverUtil.applyOptions(config)
-        // collect information
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.keyExpression)
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
-    }
-
-    override fun postOptimize(config: CwtPropertyConfig) {
-        TODO("Not yet implemented")
-    }
-
     override fun create(
         pointer: SmartPsiElementPointer<out CwtProperty>,
         configGroup: CwtConfigGroup,
@@ -79,10 +44,11 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         valueType: CwtType,
         separatorType: CwtSeparatorType,
         configs: List<CwtMemberConfig<*>>?,
-        optionConfigs: List<CwtOptionMemberConfig<*>>
+        optionConfigs: List<CwtOptionMemberConfig<*>>,
+        injectable: Boolean,
     ): CwtPropertyConfig {
         val optionConfigs = optionConfigs.optimized() // optimized to optimize memory
-        val noConfigs = configs == null // 2.0.6 NOTE configs may be injected during deep copy
+        val noConfigs = configs == null || (!injectable && configs.isEmpty())  // 2.0.6 NOTE configs may be injected during inline or deep copy
         val noOptionConfigs = optionConfigs.isEmpty()
         if (noConfigs) {
             return when (noOptionConfigs) {
@@ -108,6 +74,47 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         }
     }
 
+    override fun postProcess(config: CwtPropertyConfig) {
+        // bind parent config
+        config.configs?.forEach { it.parentConfig = config }
+        // apply special options
+        CwtConfigResolverUtil.applyOptions(config)
+        // collect information
+        CwtConfigResolverUtil.collectFromConfigExpression(config, config.keyExpression)
+        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
+    }
+
+    override fun postOptimize(config: CwtPropertyConfig) {
+        // optimize child configs
+        when (config) {
+            is CwtPropertyConfigImplWithConfigs -> config.configs = config.configs.optimized()
+            is CwtPropertyConfigDelegateWithConfigs -> config.configs = config.configs?.optimized()
+        }
+        // bind parent config
+        config.configs?.forEach { it.parentConfig = config }
+    }
+
+    override fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig? {
+        // - use `EmptyPointer` for default project to optimize memory
+        // - use `CwtPropertyPointer` to optimize performance and memory
+
+        val valueElement = element.propertyValue
+        if (valueElement == null) {
+            logger.warn("Missing property value.".withLocationPrefix(element))
+            return null
+        }
+        val pointer = if (configGroup.project.isDefault) emptyPointer() else CwtPropertyPointer(element.createPointer(file))
+        val key = element.name
+        val value: String = valueElement.value
+        val valueType = valueElement.type
+        val separatorType = element.separatorType
+        val configs = CwtConfigResolverUtil.getConfigs(valueElement, file, configGroup)
+        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
+        val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
+        logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
+        return config
+    }
+
     override fun copy(
         targetConfig: CwtPropertyConfig,
         pointer: SmartPsiElementPointer<out CwtProperty>,
@@ -116,16 +123,18 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         valueType: CwtType,
         separatorType: CwtSeparatorType,
         configs: List<CwtMemberConfig<*>>?,
-        optionConfigs: List<CwtOptionMemberConfig<*>>
+        optionConfigs: List<CwtOptionMemberConfig<*>>,
     ): CwtPropertyConfig {
-        return create(pointer, targetConfig.configGroup, key, value, valueType, separatorType, configs, optionConfigs)
+        val config = create(pointer, targetConfig.configGroup, key, value, valueType, separatorType, configs, optionConfigs, injectable = true)
+        return config
     }
 
     override fun delegated(
         targetConfig: CwtPropertyConfig,
-        configs: List<CwtMemberConfig<*>>?
+        configs: List<CwtMemberConfig<*>>?,
     ): CwtPropertyConfig {
-        return when (configs == null) {
+        val noConfigs = configs == null  // 2.0.6 NOTE configs may be injected during inline or deep copy
+        return when (noConfigs) {
             true -> CwtPropertyConfigDelegate(targetConfig)
             else -> CwtPropertyConfigDelegateWithConfigs(targetConfig, configs)
         }
@@ -208,7 +217,7 @@ private open class CwtPropertyConfigImplWithConfigs(
     configGroup: CwtConfigGroup,
     key: String,
     separatorType: CwtSeparatorType,
-    override val configs: List<CwtMemberConfig<*>>,
+    override var configs: List<CwtMemberConfig<*>>,
 ) : CwtPropertyConfigImplBase(pointer, configGroup, key, separatorType) {
     override val value: String get() = blockValue
     override val valueType: CwtType get() = CwtType.Block
@@ -294,7 +303,7 @@ private open class CwtPropertyConfigDelegate(
 
 private class CwtPropertyConfigDelegateWithConfigs(
     delegate: CwtPropertyConfig,
-    override val configs: List<CwtMemberConfig<*>>?,
+    override var configs: List<CwtMemberConfig<*>>?,
 ) : CwtPropertyConfigDelegate(delegate) {
     override val valueType: CwtType get() = if (configs != null) CwtType.Block else super.valueType
 }

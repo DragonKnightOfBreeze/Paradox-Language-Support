@@ -42,16 +42,16 @@ internal class CwtLinkConfigResolverImpl : CwtLinkConfig.Resolver, CwtConfigReso
         var prefix = propGroup.getOne("prefix")?.stringValue?.orNull()
         val dataSources = propGroup.getAll("data_source").mapNotNull { it.stringValue }.optimized()
         val inputScopes = buildSet {
-                // both input_scopes and input_scope are supported
-                propGroup.getAll("input_scopes").forEach { p ->
-                    p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                    p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-                }
-                propGroup.getAll("input_scope").forEach { p ->
-                    p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
-                    p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-                }
-            }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
+            // both input_scopes and input_scope are supported
+            propGroup.getAll("input_scopes").forEach { p ->
+                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }
+            propGroup.getAll("input_scope").forEach { p ->
+                p.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
+                p.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
+            }
+        }.optimized().orNull() ?: ParadoxScopeManager.anyScopeIdSet
         val outputScope = propGroup.getOne("output_scope")?.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
         val forDefinitionType = propGroup.getOne("for_definition_type")?.stringValue
 
@@ -123,4 +123,6 @@ private class CwtLinkConfigDelegate(
     // NOTE 需要重载下面两个属性
     override val dataSourceExpression = dataSourceExpressions.getOrNull(dataSourceIndex) ?: dataSourceExpressions.firstOrNull()
     override val configExpression get() = dataSourceExpression
+
+    override fun toString() = "CwtLinkConfigDelegate(name='$name', dataSourceIndex='$dataSourceIndex')"
 }

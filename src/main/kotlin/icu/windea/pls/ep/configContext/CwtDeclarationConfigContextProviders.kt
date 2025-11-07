@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.configContext
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
@@ -45,10 +44,11 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
-        val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+        val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        CwtPropertyConfig.postOptimize(finalRootConfig)
         return finalRootConfig
     }
 }
@@ -76,10 +76,11 @@ class CwtGameRuleDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = context.gameRuleConfig?.configForDeclaration ?: declarationConfig.configForDeclaration
-        val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+        val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        CwtPropertyConfig.postOptimize(finalRootConfig)
         return finalRootConfig
     }
 }
@@ -107,10 +108,11 @@ class CwtOnActionDeclarationConfigContextProvider : CwtDeclarationConfigContextP
 
     override fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         val rootConfig = declarationConfig.configForDeclaration
-        val configs = if (rootConfig.configs == null) null else mutableListOf<CwtMemberConfig<*>>()
+        val configs = CwtConfigManipulator.createListForDeepCopy(rootConfig.configs)
         val finalRootConfig = CwtPropertyConfig.delegated(rootConfig, configs)
         finalRootConfig.declarationConfigContext = context
         if (configs != null) configs += CwtConfigManipulator.deepCopyConfigsInDeclarationConfig(rootConfig, finalRootConfig, context).orEmpty()
+        CwtPropertyConfig.postOptimize(finalRootConfig)
         return finalRootConfig
     }
 }

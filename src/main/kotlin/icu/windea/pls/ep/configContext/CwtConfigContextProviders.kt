@@ -9,6 +9,7 @@ import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.definitionInfo
 import icu.windea.pls.config.configContext.elementPathFromRoot
 import icu.windea.pls.config.configGroup.inlineConfigGroup
+import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -136,7 +137,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val configGroup = context.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptManager.inlineScriptKey] ?: return null
         val contextElement = context.element
-        val rootConfigs = inlineConfigs.map { it.inline() }
+        val rootConfigs = inlineConfigs.map { CwtConfigManipulator.inline(it) }
         return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }

@@ -5,9 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
-import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -28,17 +26,5 @@ private class CwtInlineConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String
 ) : UserDataHolderBase(), CwtInlineConfig {
-    override fun inline(): CwtPropertyConfig {
-        val other = this.config
-        val inlined = CwtPropertyConfig.copy(
-            targetConfig = other,
-            key = name,
-            configs = CwtConfigManipulator.deepCopyConfigs(other)
-        )
-        inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineConfig = this
-        return inlined
-    }
-
     override fun toString() = "CwtInlineConfigImpl(name='$name')"
 }

@@ -21,19 +21,6 @@ import icu.windea.pls.model.CwtMemberType
 internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig {
-        val pointer = file.createPointer()
-        val fileName = file.name
-        val rootBlock = file.block
-        val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
-        val config = create(pointer, configGroup, fileName, filePath, configs)
-        when (configs.isEmpty()) {
-            true -> logger.debug { "Resolved empty file config.".withLocationPrefix() }
-            else -> logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
-        }
-        return config
-    }
-
     override fun create(
         pointer: SmartPsiElementPointer<CwtFile>,
         configGroup: CwtConfigGroup,
@@ -52,6 +39,19 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
             CwtMemberType.PROPERTY -> CwtFileConfigImplWithPropertyConfigs(pointer, configGroup, fileName, filePath, configs)
             CwtMemberType.VALUE -> CwtFileConfigImplWithValueConfigs(pointer, configGroup, fileName, filePath, configs)
         }
+    }
+
+    override fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig {
+        val pointer = file.createPointer()
+        val fileName = file.name
+        val rootBlock = file.block
+        val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
+        val config = create(pointer, configGroup, fileName, filePath, configs)
+        when (configs.isEmpty()) {
+            true -> logger.debug { "Resolved empty file config.".withLocationPrefix() }
+            else -> logger.debug { "Resolved file config (${configs.size} member configs).".withLocationPrefix() }
+        }
+        return config
     }
 }
 

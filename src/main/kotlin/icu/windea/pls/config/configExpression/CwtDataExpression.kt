@@ -31,11 +31,11 @@ interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
     val type: CwtDataType
 
     interface Resolver {
+        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression
         fun resolveEmpty(isKey: Boolean): CwtDataExpression
         fun resolveBlock(): CwtDataExpression
         fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression
         fun resolveTemplate(expressionString: String): CwtDataExpression
-        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression
     }
 
     object Keys : KeyRegistry()

@@ -27,8 +27,6 @@ interface CwtFileConfig : CwtConfig<CwtFile> {
     val values: List<CwtValueConfig>
 
     interface Resolver {
-        fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
-
         fun create(
             pointer: SmartPsiElementPointer<CwtFile>,
             configGroup: CwtConfigGroup,
@@ -36,6 +34,8 @@ interface CwtFileConfig : CwtConfig<CwtFile> {
             filePath: String,
             configs: List<CwtMemberConfig<*>> = emptyList(),
         ): CwtFileConfig
+
+        fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
     }
 
     companion object : Resolver by CwtFileConfigResolverImpl()

@@ -31,32 +31,6 @@ import icu.windea.pls.model.forCwtType
 class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {
-        // - use `EmptyPointer` for default project to optimize memory
-
-        val pointer = if (configGroup.project.isDefault) emptyPointer() else element.createPointer(file)
-        val value = element.value
-        val valueType = element.type
-        val configs = CwtConfigResolverUtil.getConfigs(element, file, configGroup)
-        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
-        val config = create(pointer, configGroup, value, valueType, configs, optionConfigs)
-        logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
-        return config
-    }
-
-    override fun postProcess(config: CwtValueConfig) {
-        // bind parent config
-        config.configs?.forEach { it.parentConfig = config }
-        // apply special options
-        CwtConfigResolverUtil.applyOptions(config)
-        // collect information
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
-    }
-
-    override fun postOptimize(config: CwtValueConfig) {
-        TODO("Not yet implemented")
-    }
-
     override fun create(
         pointer: SmartPsiElementPointer<out CwtValue>,
         configGroup: CwtConfigGroup,
@@ -64,10 +38,11 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         valueType: CwtType,
         configs: List<CwtMemberConfig<*>>?,
         optionConfigs: List<CwtOptionMemberConfig<*>>,
-        propertyConfig: CwtPropertyConfig?
+        propertyConfig: CwtPropertyConfig?,
+        injectable: Boolean,
     ): CwtValueConfig {
         val optionConfigs = optionConfigs.optimized() // optimized to optimize memory
-        val noConfigs = configs == null // 2.0.6 NOTE configs may be injected during deep copy
+        val noConfigs = configs == null || (!injectable && configs.isEmpty())  // 2.0.6 NOTE configs may be injected during inline or deep copy
         val noOptionConfigs = optionConfigs.isEmpty()
         if (noConfigs) {
             return when (noOptionConfigs) {
@@ -93,6 +68,38 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         }
     }
 
+    override fun postProcess(config: CwtValueConfig) {
+        // bind parent config
+        config.configs?.forEach { it.parentConfig = config }
+        // apply special options
+        CwtConfigResolverUtil.applyOptions(config)
+        // collect information
+        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
+    }
+
+    override fun postOptimize(config: CwtValueConfig) {
+        // optimize child configs
+        when (config) {
+            is CwtValueConfigImplWithConfigs -> config.configs = config.configs.optimized()
+            is CwtValueConfigDelegateWithConfigs -> config.configs = config.configs?.optimized()
+        }
+        // bind parent config
+        config.configs?.forEach { it.parentConfig = config }
+    }
+
+    override fun resolve(element: CwtValue, file: CwtFile, configGroup: CwtConfigGroup): CwtValueConfig {
+        // - use `EmptyPointer` for default project to optimize memory
+
+        val pointer = if (configGroup.project.isDefault) emptyPointer() else element.createPointer(file)
+        val value = element.value
+        val valueType = element.type
+        val configs = CwtConfigResolverUtil.getConfigs(element, file, configGroup)
+        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
+        val config = create(pointer, configGroup, value, valueType, configs, optionConfigs)
+        logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
+        return config
+    }
+
     override fun copy(
         targetConfig: CwtValueConfig,
         pointer: SmartPsiElementPointer<out CwtValue>,
@@ -102,12 +109,13 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         optionConfigs: List<CwtOptionMemberConfig<*>>,
         propertyConfig: CwtPropertyConfig?,
     ): CwtValueConfig {
-        return create(pointer, targetConfig.configGroup, value, valueType, configs, optionConfigs, propertyConfig)
+        val config = create(pointer, targetConfig.configGroup, value, valueType, configs, optionConfigs, propertyConfig, injectable = true)
+        return config
     }
 
     override fun resolveFromPropertyConfig(
         pointer: SmartPsiElementPointer<out CwtValue>,
-        propertyConfig: CwtPropertyConfig
+        propertyConfig: CwtPropertyConfig,
     ): CwtValueConfig {
         return CwtValueConfigFromPropertyConfig(pointer, propertyConfig)
     }
@@ -116,7 +124,8 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         targetConfig: CwtValueConfig,
         configs: List<CwtMemberConfig<*>>?,
     ): CwtValueConfig {
-        return when (configs == null) {
+        val noConfigs = configs == null  // 2.0.6 NOTE configs may be injected during inline or deep copy
+        return when (noConfigs) {
             true -> CwtValueConfigDelegate(targetConfig)
             else -> CwtValueConfigDelegateWithConfigs(targetConfig, configs)
         }
@@ -171,7 +180,7 @@ private open class CwtValueConfigImplWithConfigs(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     propertyConfig: CwtPropertyConfig?,
-    override val configs: List<CwtMemberConfig<*>>,
+    override var configs: List<CwtMemberConfig<*>>,
 ) : CwtValueConfigImplBase(pointer, configGroup, propertyConfig) {
     override val value: String get() = blockValue
     override val valueType: CwtType get() = CwtType.Block
@@ -249,7 +258,7 @@ private open class CwtValueConfigDelegate(
 
 private class CwtValueConfigDelegateWithConfigs(
     delegate: CwtValueConfig,
-    override val configs: List<CwtMemberConfig<*>>?,
+    override var configs: List<CwtMemberConfig<*>>?,
 ) : CwtValueConfigDelegate(delegate) {
     override val valueType: CwtType get() = if (configs != null) CwtType.Block else super.valueType
 }

@@ -38,15 +38,6 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     override val configExpression: CwtDataExpression get() = keyExpression
 
     interface Resolver {
-        /** 由 [CwtProperty] 解析为属性规则。 */
-        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
-
-        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
-        fun postProcess(config: CwtPropertyConfig)
-
-        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
-        fun postOptimize(config: CwtPropertyConfig)
-
         fun create(
             pointer: SmartPsiElementPointer<out CwtProperty>,
             configGroup: CwtConfigGroup,
@@ -56,7 +47,17 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
             optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
+            injectable: Boolean = true,
         ): CwtPropertyConfig
+
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        fun postProcess(config: CwtPropertyConfig)
+
+        /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要进行的后续优化。 */
+        fun postOptimize(config: CwtPropertyConfig)
+
+        /** 由 [CwtProperty] 解析为属性规则。 */
+        fun resolve(element: CwtProperty, file: CwtFile, configGroup: CwtConfigGroup): CwtPropertyConfig?
 
         fun copy(
             targetConfig: CwtPropertyConfig,

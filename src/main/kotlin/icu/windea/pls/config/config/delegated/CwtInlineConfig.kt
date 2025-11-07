@@ -27,9 +27,6 @@ interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     @FromKey("inline[$]")
     val name: String
 
-    /** 将该内联展开为普通属性规则，供后续流程直接消费。*/
-    fun inline(): CwtPropertyConfig
-
     interface Resolver {
         /** 由属性规则解析为内联规则。*/
         fun resolve(config: CwtPropertyConfig): CwtInlineConfig?

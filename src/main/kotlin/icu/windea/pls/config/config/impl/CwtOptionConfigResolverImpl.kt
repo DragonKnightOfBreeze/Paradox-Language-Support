@@ -22,20 +22,6 @@ internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfig
     private val logger = thisLogger()
     private val cache = CacheBuilder().build<String, CwtOptionConfig>()
 
-    override fun resolve(element: CwtOption): CwtOptionConfig? {
-        val optionValueElement = element.optionValue
-        if (optionValueElement == null) {
-            logger.warn("Missing option value, skipped.".withLocationPrefix(element))
-            return null
-        }
-        val key = element.name
-        val value = optionValueElement.value
-        val valueType: CwtType = optionValueElement.type
-        val separatorType = element.separatorType
-        val optionConfigs = CwtConfigResolverUtil.getOptionConfigsInOption(optionValueElement)
-        return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
-    }
-
     override fun create(
         key: String,
         value: String,
@@ -52,6 +38,20 @@ internal class CwtOptionConfigResolverImpl : CwtOptionConfig.Resolver, CwtConfig
             }
         }
         return CwtOptionConfigImplNested(key, separatorType, optionConfigs)
+    }
+
+    override fun resolve(element: CwtOption): CwtOptionConfig? {
+        val optionValueElement = element.optionValue
+        if (optionValueElement == null) {
+            logger.warn("Missing option value, skipped.".withLocationPrefix(element))
+            return null
+        }
+        val key = element.name
+        val value = optionValueElement.value
+        val valueType: CwtType = optionValueElement.type
+        val separatorType = element.separatorType
+        val optionConfigs = CwtConfigResolverUtil.getOptionConfigsInOption(optionValueElement)
+        return CwtOptionConfig.create(key, value, valueType, separatorType, optionConfigs)
     }
 }
 

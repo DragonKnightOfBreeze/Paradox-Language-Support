@@ -20,6 +20,11 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant).apply { value = "" }
     private val blockExpression = CwtDataExpressionImpl("{...}", true, CwtDataTypes.Block)
 
+    override fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
+        if (expressionString.isEmpty()) return resolveEmpty(isKey)
+        return CwtDataExpressionImpl(expressionString, isKey, type)
+    }
+
     override fun resolveEmpty(isKey: Boolean): CwtDataExpression = if (isKey) emptyKeyExpression else emptyValueExpression
 
     override fun resolveBlock(): CwtDataExpression = blockExpression
@@ -33,10 +38,6 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     override fun resolveTemplate(expressionString: String): CwtDataExpression {
         if (expressionString.isEmpty()) return emptyValueExpression
         return cacheForTemplate.get(expressionString)
-    }
-
-    override fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
-        return CwtDataExpressionImpl(expressionString, isKey, type)
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
