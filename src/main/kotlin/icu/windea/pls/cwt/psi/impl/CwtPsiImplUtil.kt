@@ -249,8 +249,8 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getOwner(element: CwtDocComment): PsiElement? {
-        val attachingElement = PlsPsiManager.getAttachingElement(element)
-        if (!CwtPsiUtil.canAttachComment(element)) return null
+        val attachingElement = PlsPsiManager.getAttachingElement(element) ?: return null
+        if (!CwtPsiUtil.canAttachComment(attachingElement)) return null
         return attachingElement
     }
 
