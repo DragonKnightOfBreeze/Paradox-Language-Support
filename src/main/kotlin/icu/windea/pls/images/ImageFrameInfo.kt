@@ -1,6 +1,6 @@
 package icu.windea.pls.images
 
-import java.util.Objects
+import java.util.*
 
 /**
  * 图片的帧数信息，用于切分图片。

@@ -6,11 +6,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.scope.withFileTypes
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 

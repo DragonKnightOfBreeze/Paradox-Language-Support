@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.resolve.complexExpression
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.node
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectDataNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDatabaseObjectTypeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert

@@ -8,12 +8,12 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isQuoted
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScriptValueExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxValueFieldValueNode(

@@ -21,6 +21,7 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
@@ -29,7 +30,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsConstants

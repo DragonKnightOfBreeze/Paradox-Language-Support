@@ -9,8 +9,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
