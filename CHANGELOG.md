@@ -8,6 +8,9 @@
 
 ## 2.0.7-dev
 
+- [ ] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 2.0.6
 
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
