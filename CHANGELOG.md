@@ -6,6 +6,8 @@
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:x = {...}`） / NEW: Support injection syntax in VIC3 and EU5 (e.g, `inject:x = {...}`)
 - [ ] 新功能：支持内联定义（即通过内联脚本声明的定义） / NEW: Support inline definitions (aka definitions declared by inline scripts) #194
 
+## 2.0.7-dev
+
 ## 2.0.6
 
 - [X] 完善 Stellaris 的规则文件以匹配最新游戏版本 4.1 / Optimize config files for Stellaris to the lastest game version 4.1
