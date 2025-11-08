@@ -100,7 +100,7 @@ class ParadoxDefinitionInfo(
 
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
         val subtypesConfig = typeConfig.subtypes
-        val result = buildList(subtypesConfig.size) {
+        val result = buildList {
             for (subtypeConfig in subtypesConfig.values) {
                 if (ParadoxDefinitionManager.matchesSubtype(element, typeKey, subtypeConfig, this, configGroup, matchOptions)) {
                     this += subtypeConfig

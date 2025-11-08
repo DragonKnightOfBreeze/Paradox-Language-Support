@@ -109,7 +109,7 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = runReadActionSmartly { doGetInfo(element, file) }
-            value.withDependencyItems(file)
+            value.withDependencyItems(file) // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
         }
     }
 
