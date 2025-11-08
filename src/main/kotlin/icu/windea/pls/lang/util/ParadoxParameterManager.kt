@@ -50,8 +50,8 @@ import icu.windea.pls.core.util.trackedBy
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.parameter.ParadoxParameterInferredConfigProvider
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.argumentNames

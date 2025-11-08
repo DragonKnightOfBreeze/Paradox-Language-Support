@@ -25,11 +25,11 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider
-import icu.windea.pls.ep.modifier.ParadoxDefinitionModifierProvider
-import icu.windea.pls.ep.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
-import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
+import icu.windea.pls.ep.resolve.modifier.ParadoxDefinitionModifierProvider
+import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.localisationInfo

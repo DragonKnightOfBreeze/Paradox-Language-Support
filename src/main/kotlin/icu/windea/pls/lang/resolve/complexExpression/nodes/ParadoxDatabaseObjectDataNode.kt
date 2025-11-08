@@ -11,7 +11,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport
+import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement

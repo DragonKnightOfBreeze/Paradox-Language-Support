@@ -12,7 +12,7 @@ import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.parameter.containingContextReference
+import icu.windea.pls.ep.resolve.parameter.containingContextReference
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.PlsStates

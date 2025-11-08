@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
-import icu.windea.pls.ep.parameter.support
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import javax.swing.Icon
 

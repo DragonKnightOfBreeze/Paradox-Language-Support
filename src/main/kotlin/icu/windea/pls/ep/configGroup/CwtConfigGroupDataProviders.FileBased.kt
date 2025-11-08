@@ -84,7 +84,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
 /**
- * 用于初始规则分组中基于文件内容的那些数据。
+ * 用于初始化规则分组中基于文件内容的那些数据。
  */
 class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     private val logger = thisLogger()

@@ -4,7 +4,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
-import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
 
 /** 需要提升的作用域的 ID 列表。 */
 var ParadoxScopeContext.promotions: Set<String> by createKey(ParadoxScopeContext.Keys) { emptySet() }

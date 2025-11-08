@@ -56,7 +56,7 @@ import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized

@@ -38,7 +38,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
 /**
- * 用于初始规则分组中需要经过计算的那些数据。
+ * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {

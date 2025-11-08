@@ -40,11 +40,11 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProvider
-import icu.windea.pls.ep.scope.ParadoxDefinitionScopeContextProvider
-import icu.windea.pls.ep.scope.ParadoxDynamicValueInferredScopeContextProvider
-import icu.windea.pls.ep.scope.ParadoxDynamicValueScopeContextProvider
-import icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionInferredScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueInferredScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized

@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ep.scope.ParadoxDefinitionInferredScopeContextProvider
+import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionInferredScopeContextProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxDefinitionInfo

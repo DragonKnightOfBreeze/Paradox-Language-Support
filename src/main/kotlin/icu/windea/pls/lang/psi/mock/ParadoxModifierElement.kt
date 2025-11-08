@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.ep.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.model.ParadoxGameType
 import java.util.*
 import javax.swing.Icon

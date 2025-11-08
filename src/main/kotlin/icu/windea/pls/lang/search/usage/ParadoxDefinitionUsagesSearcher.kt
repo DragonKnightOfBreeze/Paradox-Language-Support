@@ -10,9 +10,9 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.data.StellarisGameConceptData
-import icu.windea.pls.ep.resolve.CompositeParadoxLocalisationIconSupport
-import icu.windea.pls.ep.resolve.DefinitionBasedParadoxLocalisationIconSupport
-import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.CompositeParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.DefinitionBasedParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo

@@ -28,7 +28,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.modifier.modifierConfig
+import icu.windea.pls.ep.resolve.modifier.modifierConfig
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions

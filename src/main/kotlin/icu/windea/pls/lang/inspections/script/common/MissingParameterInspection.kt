@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

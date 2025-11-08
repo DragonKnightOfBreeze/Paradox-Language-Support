@@ -8,7 +8,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.ep.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

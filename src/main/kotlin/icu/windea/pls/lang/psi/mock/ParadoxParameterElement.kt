@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxConditionParameter
 import java.util.*

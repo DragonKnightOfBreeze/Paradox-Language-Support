@@ -21,7 +21,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

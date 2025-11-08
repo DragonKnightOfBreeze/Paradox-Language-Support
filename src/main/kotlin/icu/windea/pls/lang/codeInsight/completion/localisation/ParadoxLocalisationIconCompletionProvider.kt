@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.resolve.ParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.isParameterized

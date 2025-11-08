@@ -5,7 +5,7 @@ import icu.windea.pls.config.configGroup.aliasNamesSupportScope
 import icu.windea.pls.config.configGroup.definitionTypesModel
 
 /**
- * 用于初始规则分组中预先定义的那些数据。
+ * 用于初始化规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(configGroup: CwtConfigGroup): Boolean {

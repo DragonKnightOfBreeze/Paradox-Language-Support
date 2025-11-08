@@ -12,8 +12,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.ep.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.scope.ParadoxDefinitionSupportedScopesProvider
+import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement

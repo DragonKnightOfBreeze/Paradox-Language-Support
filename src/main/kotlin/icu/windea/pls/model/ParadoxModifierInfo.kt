@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.ep.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.modifier.support
+import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
+import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 
 data class ParadoxModifierInfo(

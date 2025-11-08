@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.unquote
-import icu.windea.pls.ep.parameter.ParadoxParameterSupport
+import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -36,7 +36,7 @@ class ParadoxScriptValueArgumentNode(
     }
 
     /**
-     * @see icu.windea.pls.ep.parameter.ParadoxScriptValueInlineParameterSupport
+     * @see icu.windea.pls.ep.resolve.parameter.ParadoxScriptValueInlineParameterSupport
      */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
