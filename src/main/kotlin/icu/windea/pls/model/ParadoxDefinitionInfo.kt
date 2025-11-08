@@ -16,6 +16,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
+import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionDeclarationProvider
+import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionSubtypesProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -99,6 +101,10 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
+        // Try EP first
+        val epResult = ParadoxDefinitionSubtypesProvider.getSubtypeConfigs(element, this, matchOptions)
+        if (epResult != null) return epResult.optimized()
+        // Fallback to previous built-in logic
         val subtypesConfig = typeConfig.subtypes
         val result = buildList {
             for (subtypeConfig in subtypesConfig.values) {
@@ -111,6 +117,10 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
+        // Try EP first
+        val epResult = ParadoxDefinitionDeclarationProvider.getDeclaration(element, this, matchOptions)
+        if (epResult != null) return epResult
+        // Fallback to previous built-in logic
         val declarationConfig = configGroup.declarations.get(type) ?: return null
         val subtypes = doGetSubtypeNames(matchOptions)
         val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, configGroup)
