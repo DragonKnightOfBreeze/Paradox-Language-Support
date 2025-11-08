@@ -43,7 +43,7 @@ KEYWORDS: PLS, CWTools, Paradox, Stellaris, Crusader Kings, Europa Universalis, 
 <br/>
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
-[Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
+[Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Discord](https://discord.gg/vBpbET2bXT) |
 [群聊](https://qm.qq.com/q/oRPgLwrTZm)

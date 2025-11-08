@@ -1,12 +1,39 @@
 # Paradox Language Support
 
-[![中文文档](https://img.shields.io/badge/文档-中文-blue)](README.md)
-[![English Documentation](https://img.shields.io/badge/Docs-English-green)](README_en.md)
+[![中文文档][badge:doc-zh]](README.md)
+[![English Documentation][badge:doc-en]](README_en.md)
+[![Reference Docs][badge:doc-ref]][url:doc-ref]
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support)
-[![Reference Docs](https://img.shields.io/badge/Docs-Reference-orange)](https://windea.icu/Paradox-Language-Support)
-[![Plugin Marketplace](https://img.shields.io/badge/JetBrains-Marketplace-orange)](https://plugins.jetbrains.com/plugin/16825-paradox-language-support)
-[![Discord](https://img.shields.io/badge/Discord-Community-blue?logo=discord)](https://discord.gg/vBpbET2bXT)
+[![GitHub][badge:github]][url:github]
+[![Release][badge:release]][url:release]
+[![License][badge:license]][url:license]
+[![Plugin Homepage][badge:plugin-homepage]][url:plugin-homepage]
+[![Plugin Version][badge:plugin-version]][url:plugin-versions]
+[![Plugin Downloads][badge:plugin-downloads]][url:plugin-homepage]
+[![Plugin Rating][badge:plugin-rating]][url:plugin-homepage]
+[![Discord][badge:discord]][url:discord]
+
+[badge:doc-zh]: https://img.shields.io/badge/中文文档-2f89d7.svg
+[badge:doc-en]: https://img.shields.io/badge/English%20Documentation-2f89d7.svg
+[badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
+
+[badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support?sort=semver
+[badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support
+[badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg
+[badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
+[badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
+[badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825
+[badge:discord]: https://img.shields.io/badge/Discord-Community-blue?logo=discord
+
+[url:doc-ref]: https://windea.icu/Paradox-Language-Support
+
+[url:github]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support
+[url:release]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/rleeases
+[url:license]: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/LICENSE
+[url:plugin-homepage]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support
+[url:plugin-versions]: https://plugins.jetbrains.com/plugin/16825-paradox-language-support/versions
+[url:discord]: https://discord.gg/vBpbET2bXT
 
 ## Overview
 
