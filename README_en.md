@@ -18,13 +18,13 @@
 [badge:doc-ref]: https://img.shields.io/badge/Reference%20Docs-2f89d7.svg
 
 [badge:github]: https://img.shields.io/badge/GitHub-blue.svg?logo=github
-[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support?sort=semver
-[badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support
-[badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg
+[badge:release]: https://img.shields.io/github/release/DragonKnightOfBreeze/Paradox-Language-Support.svg?sort=semver
+[badge:license]: https://img.shields.io/github/license/DragonKnightOfBreeze/Paradox-Language-Support.svg
+[badge:plugin-homepage]: https://img.shields.io/badge/Plugin%20Homepage-orange.svg?logo=jetbrains
 [badge:plugin-version]: https://img.shields.io/jetbrains/plugin/v/16825.svg?label=version
 [badge:plugin-downloads]: https://img.shields.io/jetbrains/plugin/d/16825.svg
-[badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825
-[badge:discord]: https://img.shields.io/badge/Discord-Community-blue?logo=discord
+[badge:plugin-rating]: https://img.shields.io/jetbrains/plugin/r/rating/16825.svg
+[badge:discord]: https://img.shields.io/badge/Discord-Community-blue.svg?logo=discord
 
 [url:doc-ref]: https://windea.icu/Paradox-Language-Support
 
