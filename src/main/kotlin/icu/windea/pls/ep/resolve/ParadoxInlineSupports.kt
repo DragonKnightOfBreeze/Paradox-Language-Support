@@ -21,9 +21,9 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         if (element !is ParadoxScriptProperty) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element).orEmpty()
         if (inlineScriptExpression.isEmpty() || inlineScriptExpression.isParameterized()) return null
-        return withRecursionGuard a1@{
-            withRecursionCheck(inlineScriptExpression) a2@{
-                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return@a2 null
+        return withRecursionGuard {
+            withRecursionCheck(inlineScriptExpression) a@{
+                val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return@a null
                 val project = configContext.configGroup.project
                 ParadoxInlineScriptManager.getInlineScriptFile(inlineScriptExpression, project, element)
             }

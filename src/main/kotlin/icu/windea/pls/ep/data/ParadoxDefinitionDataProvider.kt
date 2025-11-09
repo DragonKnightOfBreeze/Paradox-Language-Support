@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.data
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -16,7 +15,7 @@ interface ParadoxDefinitionDataProvider {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider>("icu.windea.pls.definitionDataProvider")
 
         fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
-            if (element.definitionInfo == null) return null
+            // if (element.definitionInfo == null) return null // NOTE 不能在这里判断，否则会出现 SOE
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(element, type)) return@f null
                 ep.get(element, type)

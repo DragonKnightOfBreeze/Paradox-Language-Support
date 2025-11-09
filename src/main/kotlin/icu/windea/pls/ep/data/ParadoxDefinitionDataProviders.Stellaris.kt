@@ -66,4 +66,5 @@ class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionDataBase(da
     val optionClear: Boolean by data.get("option_clear", false)
     val pictureClear: Boolean by data.get("picture_clear", false)
     val showSoundClear: Boolean by data.get("show_sound_clear", false)
+    val triggerClear: Boolean by data.get("trigger_clear", false)
 }

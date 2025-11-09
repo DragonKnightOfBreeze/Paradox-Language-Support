@@ -17,6 +17,11 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  */
 @WithGameTypeEP
 interface ParadoxInlineSupport {
+    /**
+     * 从指定的定义成员得到需要被内联的 PSI。
+     *
+     * **注意**：需要避免递归。
+     */
     fun getInlinedElement(element: ParadoxScriptMember): ParadoxScriptMember?
 
     companion object INSTANCE {

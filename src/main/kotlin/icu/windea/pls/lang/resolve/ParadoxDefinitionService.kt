@@ -16,7 +16,6 @@ import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
@@ -72,7 +71,7 @@ object ParadoxDefinitionService {
             }
         }
         processSubtypeConfigsFromInherit(definitionInfo, result)
-        return result
+        return result.distinctBy { it.name } // it's necessary to distinct by name
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
@@ -158,9 +157,7 @@ object ParadoxDefinitionService {
         val gameType = definitionInfo.gameType
         ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            val superDefinition = ep.getSuperDefinition(definitionInfo) ?: return@f null
-            val superDefinitionInfo = superDefinition.definitionInfo ?: return@f null
-            ep.processSubtypeConfigs(definitionInfo, superDefinitionInfo, subtypeConfigs)
+            ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
     }
 

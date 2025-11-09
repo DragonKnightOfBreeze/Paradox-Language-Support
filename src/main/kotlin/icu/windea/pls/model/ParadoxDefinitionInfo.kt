@@ -82,7 +82,7 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
-        if (subtypeConfigs.isEmpty()) return emptyList()
+        if (typeConfig.subtypes.isEmpty()) return emptyList()
         val cache = subtypeConfigsCache
         val result = cache.getOrPut(matchOptions) {
             ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)

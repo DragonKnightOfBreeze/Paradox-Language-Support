@@ -20,6 +20,11 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInheritSupport {
+    /**
+     * 从指定的定义信息得到父定义。
+     *
+     * **注意**：需要避免递归。
+     */
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
 
     fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? = null
@@ -28,13 +33,11 @@ interface ParadoxDefinitionInheritSupport {
      * 如果一个定义继承自另一个定义，在解析其子类型时，可能需要进行额外的处理。
      * 例如，依赖于其父定义的子类型，或是其父定义的特定成员属性的值。
      *
-     * 如果实现了这个方法，需要同时考虑实现 [getModificationTracker]，以及避免递归。
+     * 如果实现了这个方法，需要同时考虑实现 [getModificationTracker]。
+     *
+     * **注意**：需要避免递归。
      */
-    fun processSubtypeConfigs(
-        definitionInfo: ParadoxDefinitionInfo,
-        superDefinitionInfo: ParadoxDefinitionInfo,
-        subtypeConfigs: MutableList<CwtSubtypeConfig>
-    ) = {}
+    fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {}
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
