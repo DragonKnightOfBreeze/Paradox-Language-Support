@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.resolve
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.paths.ParadoxElementPath
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -26,9 +26,9 @@ import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isBlockMember
 
-object ParadoxScriptFileManager {
+object ParadoxScriptService {
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
+     * 得到 [element] 对应的脚本成员的 PSI（[icu.windea.pls.script.psi.ParadoxScriptMember]）的相对于所在文件的路径。
      *
      * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
      */
@@ -58,7 +58,7 @@ object ParadoxScriptFileManager {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(subPaths)
+        return ParadoxElementPath.Companion.resolve(subPaths)
     }
 
     /**
@@ -72,12 +72,12 @@ object ParadoxScriptFileManager {
         val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
-                current.tokenType == PROPERTY -> {
+                current.tokenType == ParadoxScriptElementTypes.PROPERTY -> {
                     val p = ParadoxScriptLightTreeUtil.getNameFromPropertyNode(current, tree) ?: return null
                     subPaths.addFirst(p)
                     depth++
                 }
-                ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == BLOCK -> {
+                ParadoxScriptTokenSets.VALUES.contains(current.tokenType) && tree.getParent(current)?.tokenType == ParadoxScriptElementTypes.BLOCK -> {
                     subPaths.addFirst("-")
                     depth++
                 }
@@ -85,21 +85,21 @@ object ParadoxScriptFileManager {
             if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = tree.getParent(current) ?: break
         }
-        if (current.tokenType == ParadoxScriptFile.ELEMENT_TYPE) {
+        if (current.tokenType == ParadoxScriptFile.Companion.ELEMENT_TYPE) {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.resolve(subPaths)
+        return ParadoxElementPath.Companion.resolve(subPaths)
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组键前缀。
+     * 得到 [element] 对应的脚本成员的 PSI（[icu.windea.pls.script.psi.ParadoxScriptMember]）的一组键前缀。
      *
-     * 找到 [element] 对应的 [ParadoxScriptMember]，
-     * 接着找到直接在其前面的连续的一组 [ParadoxScriptString]（忽略空白和注释），
+     * 找到 [element] 对应的 [icu.windea.pls.script.psi.ParadoxScriptMember]，
+     * 接着找到直接在其前面的连续的一组 [icu.windea.pls.script.psi.ParadoxScriptString]（忽略空白和注释），
      * 最后将它们转化为字符串列表（基于值，顺序从后往前）。
      */
     fun getKeyPrefixes(element: PsiElement): List<String> {
@@ -135,8 +135,8 @@ object ParadoxScriptFileManager {
                 if (flag) {
                     val tokenType = n.tokenType
                     when (tokenType) {
-                        TokenType.WHITE_SPACE, COMMENT -> continue
-                        STRING -> {
+                        TokenType.WHITE_SPACE, ParadoxScriptElementTypes.COMMENT -> continue
+                        ParadoxScriptElementTypes.STRING -> {
                             val v = ParadoxScriptLightTreeUtil.getValueFromStringNode(n, tree) ?: break
                             this += v
                         }

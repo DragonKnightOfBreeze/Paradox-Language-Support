@@ -49,6 +49,7 @@ import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.util.dataFlow.options
@@ -62,16 +63,11 @@ import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.booleanValue
-import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.greenStub
 import icu.windea.pls.script.psi.properties
-import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.stringValue
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 import icu.windea.pls.script.psi.values
 
@@ -141,10 +137,10 @@ object ParadoxDefinitionManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
-        val elementPath = ParadoxScriptFileManager.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxScriptService.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
-        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptFileManager.getKeyPrefixes(element).firstOrNull() } else null
+        val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize(), gameType, configGroup)
     }
@@ -573,39 +569,6 @@ object ParadoxDefinitionManager {
         val aliases = aliasGroup[aliasSubName] ?: return false
         return aliases.any { alias ->
             doMatchProperty(definitionElement, propertyElement, alias.config, configGroup, matchOptions)
-        }
-    }
-
-    fun resolveNameFromTypeConfig(element: ParadoxScriptDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
-        // NOTE 2.0.6 inline logic is not applied here
-        return when {
-            // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // use type key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // force empty (aka anonymous)
-            typeConfig.nameField == "" -> ""
-            // from property value (which should be a string)
-            typeConfig.nameField == "-" -> element.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
-            // from specific property value in definition declaration (while the property name is declared by config property "name_field")
-            else -> element.findProperty(typeConfig.nameField)?.propertyValue<ParadoxScriptString>()?.stringValue.orEmpty()
-        }
-    }
-
-    fun resolveNameFromTypeConfig(node: LighterASTNode, tree: LighterAST, typeKey: String, typeConfig: CwtTypeConfig): String? {
-        // NOTE 2.0.6 inline logic is not applied here
-        return when {
-            // use type key (aka file name without extension), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameFromFile -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // use type key (aka property name), remove prefix if exists (while the prefix is declared by config property "starts_with")
-            typeConfig.nameField == null -> typeKey.removePrefix(typeConfig.startsWith.orEmpty())
-            // force empty (aka anonymous)
-            typeConfig.nameField == "" -> ""
-            // from property value (which should be a string)
-            typeConfig.nameField == "-" -> ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
-            // from specific property value in definition declaration (while the property name is declared by config property "name_field")
-            else -> ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, typeConfig.nameField!!)
-                ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
         }
     }
 

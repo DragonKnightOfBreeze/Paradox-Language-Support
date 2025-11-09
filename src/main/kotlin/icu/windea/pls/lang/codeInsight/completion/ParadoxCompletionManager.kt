@@ -90,7 +90,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.ParadoxScriptFileManager
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.PlsPatternConstants
@@ -147,9 +147,9 @@ object ParadoxCompletionManager {
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.isDefinitionOrMember()) {
-            val elementPath = ParadoxScriptFileManager.getElementPath(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+            val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
             if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
-            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptFileManager.getKeyPrefixes(it).firstOrNull() } }
+            val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptService.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
             completeKey(context, result, elementPath, typeKeyPrefix)
             return

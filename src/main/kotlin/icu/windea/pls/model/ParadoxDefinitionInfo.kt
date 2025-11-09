@@ -17,6 +17,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -72,7 +73,7 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetName(): String {
-        return ParadoxDefinitionManager.resolveNameFromTypeConfig(element, typeKey, typeConfig)
+        return ParadoxDefinitionService.resolveName(element, typeKey, typeConfig)
     }
 
     private fun doGetSubtypes(): List<String> {

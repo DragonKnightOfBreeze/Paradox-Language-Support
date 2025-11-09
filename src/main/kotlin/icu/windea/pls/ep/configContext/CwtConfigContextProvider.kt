@@ -9,7 +9,7 @@ import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxScriptFileManager
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -35,7 +35,7 @@ interface CwtConfigContextProvider {
 
         fun getContext(element: ParadoxScriptMember): CwtConfigContext? {
             val file = element.containingFile ?: return null
-            val elementPath = ParadoxScriptFileManager.getElementPath(element) ?: return null
+            val elementPath = ParadoxScriptService.getElementPath(element) ?: return null
             val gameType = selectGameType(file)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
