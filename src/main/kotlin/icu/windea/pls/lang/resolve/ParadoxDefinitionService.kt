@@ -16,6 +16,7 @@ import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
@@ -64,13 +65,13 @@ object ParadoxDefinitionService {
 
     fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
         val subtypesConfig = definitionInfo.typeConfig.subtypes
-        val result = buildList {
-            for (subtypeConfig in subtypesConfig.values) {
-                if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, definitionInfo.typeKey, subtypeConfig, this, definitionInfo.configGroup, matchOptions)) {
-                    this += subtypeConfig
-                }
+        val result = mutableListOf<CwtSubtypeConfig>()
+        for (subtypeConfig in subtypesConfig.values) {
+            if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, definitionInfo.typeKey, subtypeConfig, result, definitionInfo.configGroup, matchOptions)) {
+                result += subtypeConfig
             }
         }
+        processSubtypeConfigsFromInherit(definitionInfo, result)
         return result
     }
 
@@ -120,7 +121,11 @@ object ParadoxDefinitionService {
     }
 
     fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        // NOTE 2.0.7 如果存在父定义，则可能需要依赖所有可声明父定义的脚本文件
         // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
+
+        val fromInherit = getModificationTrackerFromInherit(definitionInfo)
+        if (fromInherit != null) return fromInherit
         return null
     }
 
@@ -132,6 +137,30 @@ object ParadoxDefinitionService {
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
             ep.getSuperDefinition(definitionInfo)
+        }
+    }
+
+    /**
+     * @see ParadoxDefinitionInheritSupport.getModificationTracker
+     */
+    fun getModificationTrackerFromInherit(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        val gameType = definitionInfo.gameType
+        return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.getModificationTracker(definitionInfo)
+        }
+    }
+
+    /**
+     * @see ParadoxDefinitionInheritSupport.getSuperDefinition
+     */
+    fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
+        val gameType = definitionInfo.gameType
+        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+            val superDefinition = ep.getSuperDefinition(definitionInfo) ?: return@f null
+            val superDefinitionInfo = superDefinition.definitionInfo ?: return@f null
+            ep.processSubtypeConfigs(definitionInfo, superDefinitionInfo, subtypeConfigs)
         }
     }
 
