@@ -232,7 +232,6 @@ object ParadoxModifierManager {
         return modifierInfo
     }
 
-    @Optimized
     fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierNameKeys) {
@@ -241,7 +240,6 @@ object ParadoxModifierManager {
         }
     }
 
-    @Optimized
     fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierDescKeys) {
@@ -250,7 +248,6 @@ object ParadoxModifierManager {
         }
     }
 
-    @Optimized
     fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierIconPaths) {

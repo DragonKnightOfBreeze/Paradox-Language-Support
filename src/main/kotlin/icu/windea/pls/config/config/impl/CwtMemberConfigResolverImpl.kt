@@ -1,8 +1,11 @@
+@file:Optimized
+
 package icu.windea.pls.config.config.impl
 
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.annotations.Optimized
 
 internal class CwtMemberConfigResolverImpl : CwtMemberConfig.Resolver {
     override fun postOptimize(config: CwtMemberConfig<*>) {

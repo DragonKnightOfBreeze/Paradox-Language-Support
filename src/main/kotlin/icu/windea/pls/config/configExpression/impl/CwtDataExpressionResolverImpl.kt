@@ -1,3 +1,5 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression.impl
 
 import com.intellij.openapi.util.UserDataHolderBase
@@ -5,6 +7,7 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 

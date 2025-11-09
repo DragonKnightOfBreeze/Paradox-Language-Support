@@ -20,7 +20,6 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
@@ -47,7 +46,6 @@ class ParadoxDefinitionInfo(
     private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
 
     val name: String by lazy { name0 ?: doGetName() }
-
     val type: String = typeConfig.name
     val subtypes: List<String> by lazy { doGetSubtypes() }
     val types: List<String> by lazy { doGetTypes() }

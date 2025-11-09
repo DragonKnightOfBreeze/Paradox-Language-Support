@@ -1,6 +1,9 @@
+@file:Optimized
+
 package icu.windea.pls.model.paths.impl
 
 import com.github.benmanes.caffeine.cache.Interner
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.model.paths.ParadoxElementPath

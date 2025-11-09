@@ -1,7 +1,10 @@
+@file:Optimized
+
 package icu.windea.pls.config.configExpression.impl
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
