@@ -17,18 +17,12 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInheritSupport {
-    fun getSuperDefinition(
-        definition: ParadoxScriptDefinitionElement,
-        definitionInfo: ParadoxDefinitionInfo
-    ): ParadoxScriptDefinitionElement?
+    fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
 
-        fun getSuperDefinition(
-            definition: ParadoxScriptDefinitionElement,
-            definitionInfo: ParadoxDefinitionInfo
-        ): ParadoxScriptDefinitionElement? {
+        fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
             val gameType = definitionInfo.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!PlsAnnotationManager.check(ep, gameType)) return@f null
