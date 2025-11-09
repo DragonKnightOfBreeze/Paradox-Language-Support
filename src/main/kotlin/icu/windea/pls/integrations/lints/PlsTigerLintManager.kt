@@ -66,8 +66,8 @@ object PlsTigerLintManager {
         val gameType = selectGameType(file) ?: return null
         return CachedValuesManager.getCachedValue(file, Keys.cachedTigerLintResult) {
             val value = doGetTigerLintResultForFile(file)
-            val trackers = mutableListOf(file, modificationTrackers.getValue(gameType))
-            value.withDependencyItems(trackers.toTypedArray())
+            val trackers = listOf(file, modificationTrackers.getValue(gameType))
+            value.withDependencyItems(trackers)
         }
     }
 
@@ -98,12 +98,16 @@ object PlsTigerLintManager {
         val gameType = selectGameType(rootDirectory) ?: return null
         return CachedValuesManager.getCachedValue(rootDirectory, Keys.cachedTigerLintResult) {
             val value = doGetTigerLintResultForRootDirectory(rootDirectory)
-            val trackers = mutableListOf(rootDirectory, modificationTrackers.getValue(gameType))
-            if (value == null || value.error != null) { // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
-                trackers += ParadoxModificationTrackers.ScriptFile
-                trackers += ParadoxModificationTrackers.LocalisationFile
+            val trackers = buildList {
+                this += rootDirectory
+                this += modificationTrackers.getValue(gameType)
+                // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
+                if (value == null || value.error != null) {
+                    this += ParadoxModificationTrackers.ScriptFile
+                    this += ParadoxModificationTrackers.LocalisationFile
+                }
             }
-            value.withDependencyItems(trackers.toTypedArray())
+            value.withDependencyItems(trackers)
         }
     }
 

@@ -271,10 +271,7 @@ object ParadoxScopeManager {
             ProgressManager.checkCanceled()
             val value = doGetSwitchedScopeContextOfDefinition(element)
                 ?: doGetSwitchedScopeContextOfDefinitionMember(element)
-            value.withDependencyItems(
-                element.containingFile,
-                ParadoxModificationTrackers.Scope,
-            )
+            value.withDependencyItems(element.containingFile, ParadoxModificationTrackers.Scope)
         }
     }
 

@@ -45,11 +45,10 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         val key = doGetDataKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetData(element, type)
-            value.withDependencyItems(
-                element,
-                ParadoxModificationTrackers.ScriptedVariables,
-                ParadoxModificationTrackers.InlineScripts,
-            )
+            val trackers = with(ParadoxModificationTrackers) {
+                listOf(element, ScriptedVariables, InlineScripts)
+            }
+            value.withDependencyItems(trackers)
         }
     }
 

@@ -62,7 +62,8 @@ object CwtConfigSymbolManager {
     private fun doGetInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedSymbolInfos) {
             val value = doGetInfos(element)
-            value.withDependencyItems(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
+            val trackers = listOf(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
+            value.withDependencyItems(trackers)
         }
     }
 

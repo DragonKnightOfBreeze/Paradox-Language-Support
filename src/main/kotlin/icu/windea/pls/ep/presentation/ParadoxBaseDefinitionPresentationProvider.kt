@@ -42,11 +42,10 @@ class ParadoxBaseDefinitionPresentationProvider : ParadoxDefinitionPresentationP
         val key = doGetPresentationKey(type)
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetPresentation(element, type)
-            value.withDependencyItems(
-                element,
-                ParadoxModificationTrackers.ScriptFile,
-                ParadoxModificationTrackers.LocalisationFile,
-            )
+            val trackers = with(ParadoxModificationTrackers) {
+                listOf(element, ScriptFile, LocalisationFile)
+            }
+            value.withDependencyItems(trackers)
         }
     }
 

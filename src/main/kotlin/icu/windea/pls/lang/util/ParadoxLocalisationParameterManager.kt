@@ -47,7 +47,10 @@ object ParadoxLocalisationParameterManager {
         // invalidated on element modification or ScriptFileTracker
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             val value = doGetParameters(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.ScriptFile)
+            val trackers = with(ParadoxModificationTrackers) {
+                listOf(element, ScriptFile)
+            }
+            value.withDependencyItems(trackers)
         }
     }
 
