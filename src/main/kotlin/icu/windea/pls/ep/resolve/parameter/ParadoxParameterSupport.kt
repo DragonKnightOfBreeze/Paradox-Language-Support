@@ -50,12 +50,14 @@ interface ParadoxParameterSupport {
 
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
+     *
      * @return 此扩展点是否适用。
      */
     fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
 
     /**
      * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
+     *
      * @return 此扩展点是否适用。
      */
     fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
@@ -64,6 +66,7 @@ interface ParadoxParameterSupport {
 
     /**
      * 构建参数的快速文档中的定义部分。
+     *
      * @return 此扩展点是否适用。
      */
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = false

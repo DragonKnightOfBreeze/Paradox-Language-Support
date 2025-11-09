@@ -23,7 +23,8 @@ interface ParadoxLocalisationParameterSupport {
 
     /**
      * 构建参数的快速文档中的定义部分。
-     * @return 此解析器是否适用。
+     *
+     * @return 此扩展点是否适用。
      */
     fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean = false
 

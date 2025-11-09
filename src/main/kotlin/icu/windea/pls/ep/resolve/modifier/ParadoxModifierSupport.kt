@@ -38,14 +38,14 @@ interface ParadoxModifierSupport {
     /**
      * 构建修正的快速文档中的定义部分。
      *
-     * @return 此解析器是否适用。
+     * @return 此扩展点是否适用。
      */
     fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = false
 
     /**
      * 构建定义的快速文档中的定义部分中的对应的生成的修正的那一部分。
      *
-     * @return 此解析器是否适用。
+     * @return 此扩展点是否适用。
      */
     fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = false
 

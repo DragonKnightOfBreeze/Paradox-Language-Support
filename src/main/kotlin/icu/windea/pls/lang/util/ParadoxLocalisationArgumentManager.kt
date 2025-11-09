@@ -38,8 +38,7 @@ object ParadoxLocalisationArgumentManager {
     }
 
     fun getFormattingTagInfos(text: String): Set<String> {
-        // see:
-        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137
+        // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137
 
         if (text.isEmpty()) return emptySet()
         val set = mutableSetOf<String>()

@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
@@ -78,6 +79,7 @@ class CwtConfigContext(
     object Keys : KeyRegistry()
 }
 
+@Optimized
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         // rootFile -> cacheKey -> configs

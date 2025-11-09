@@ -3,6 +3,7 @@ package icu.windea.pls.lang.match
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer
+import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 
 object ParadoxMatchPipeline {
@@ -92,9 +93,19 @@ object ParadoxMatchPipeline {
         var result = configs
         val context = ParadoxScriptExpressionMatchOptimizer.Context(element, expression, configGroup, matchOptions)
         for (optimizer in ParadoxScriptExpressionMatchOptimizer.EP_NAME.extensionList) {
-            result = optimizer.optimize(result, context)
+            val optimized = optimizer.optimize(result, context)
+            if (optimized == null) continue
+            if (optimizer.isDynamic(context)) markDynamicAfterOptimized()
+            result = optimized
             if (result.isEmpty()) break
         }
         return result
+    }
+
+    private fun markDynamicAfterOptimized() {
+        // see icu.windea.pls.config.configContext.CwtConfigContext.getConfigs
+        val s = PlsStates.dynamicContextConfigs
+        if (s.get() == null) return
+        s.set(true)
     }
 }

@@ -8,6 +8,7 @@
 
 ## 2.0.7-dev
 
+- [X] 优化：在 Stellaris 中，如果一个事件继承自另一个事件，那么此事件也会继承部分子类型 / OP: In Stellaris, if an event inherits from another event, then this event will also inherit specific subtypes
 - [ ] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 

@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
@@ -55,7 +54,6 @@ interface CwtOverriddenConfigProvider {
                         it.originalConfig = config
                         it.overriddenProvider = ep
                     }
-                    ?.also { PlsStates.dynamicContextConfigs.set(true) }
             }.orEmpty()
         }
     }

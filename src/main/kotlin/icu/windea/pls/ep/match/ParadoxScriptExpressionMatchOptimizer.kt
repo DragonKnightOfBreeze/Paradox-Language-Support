@@ -19,9 +19,16 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  */
 interface ParadoxScriptExpressionMatchOptimizer {
     /**
-     * 按匹配结果过滤了候选的一组成员规则后，进行后续优化。
+     * 优化逻辑是否依赖脚本文件中的上下文。
      */
-    fun optimize(configs: List<CwtMemberConfig<*>>, context: Context): List<CwtMemberConfig<*>>
+    fun isDynamic(context: Context): Boolean
+
+    /**
+     * 按匹配结果过滤了候选的一组成员规则后，进行后续优化。
+     *
+     * @return 优化后的候选规则列表。如果为 `null`，则表示此扩展点不适用。
+     */
+    fun optimize(configs: List<CwtMemberConfig<*>>, context: Context): List<CwtMemberConfig<*>>?
 
     /**
      * 优化上下文。
