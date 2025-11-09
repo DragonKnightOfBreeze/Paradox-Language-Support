@@ -108,8 +108,9 @@ class TrackingCache<K : Any, V : Any, C : Cache<K, V>>(
 
     override fun get(key: K, mappingFunction: Function<in K, out V>): V {
         val result = delegate.get(key, mappingFunction)
-        val newModificationCount = modificationTrackerProvider(result)?.modificationCount
-        if (newModificationCount == null) return result
+        val modificationTracker = modificationTrackerProvider(result)
+        if (modificationTracker == null || modificationTracker == ModificationTracker.NEVER_CHANGED) return result
+        val newModificationCount = modificationTracker.modificationCount
         val oldModificationCount = modificationCounts.get(key)
         if (oldModificationCount == newModificationCount) return result
         modificationCounts.put(key, newModificationCount)
