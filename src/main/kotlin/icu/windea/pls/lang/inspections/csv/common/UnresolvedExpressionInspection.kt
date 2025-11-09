@@ -21,7 +21,7 @@ import icu.windea.pls.csv.psi.isEmptyColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
 
 /**
@@ -40,7 +40,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val header = file.header
         if (header == null) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvFileManager.getRowConfig(file)
+        val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -50,8 +50,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
             private fun visitColumn(element: ParadoxCsvColumn) {
                 if (element.isHeaderColumn()) return
-                val columnConfig = ParadoxCsvFileManager.getColumnConfig(element, rowConfig) ?: return
-                if (ParadoxCsvFileManager.isMatchedColumnConfig(element, columnConfig)) return
+                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
+                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
                 val config = columnConfig.valueConfig ?: return
 
                 val locationElement = when {

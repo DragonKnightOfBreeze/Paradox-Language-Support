@@ -56,6 +56,7 @@ import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSuppor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -63,6 +64,7 @@ import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -82,15 +84,13 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withFileExtensions
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.Occurrence
 import icu.windea.pls.model.constants.PlsPatternConstants
@@ -259,7 +259,7 @@ object ParadoxCompletionManager {
             return
         }
 
-        val columnConfig = ParadoxCsvFileManager.getColumnConfig(columnElement) ?: return
+        val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
         val config = columnConfig.valueConfig ?: return
         context.config = config
         completeCsvExpression(context, result)
@@ -337,11 +337,11 @@ object ParadoxCompletionManager {
                 val typeKeyPrefix = typeConfig.typeKeyPrefix
                 if (typeKeyPrefix == null) return@run
                 if (rootKeyPrefix.value != null) return@run // avoid complete prefix again after an existing prefix
-                if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) return@run
+                if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) return@run
                 infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
             }
 
-            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
+            if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.isEmpty()) {
@@ -832,7 +832,7 @@ object ParadoxCompletionManager {
         if (!column.isHeaderColumn()) return
         val file = context.parameters?.originalFile ?: return
         if (file !is ParadoxCsvFile) return
-        val rowConfig = ParadoxCsvFileManager.getRowConfig(file) ?: return
+        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
         val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
         val existingHeaderNames = header.children()
             .mapNotNull { it as? ParadoxCsvColumn }

@@ -12,12 +12,12 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -109,7 +109,7 @@ object ParadoxScriptStubManager {
         val elementPath = ParadoxScriptService.getElementPath(node, tree, vFile, PlsFacade.getInternalSettings().maxDefinitionDepth)
         if (elementPath == null) return null
         val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(node, tree).firstOrNull() }
-        val typeConfig = ParadoxDefinitionManager.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
@@ -125,7 +125,7 @@ object ParadoxScriptStubManager {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
-            if (ParadoxDefinitionManager.matchesSubtypeFast(typeKey, subtypeConfig, result) ?: return null) {
+            if (ParadoxConfigMatchService.matchesSubtypeFast(typeKey, subtypeConfig, result) ?: return null) {
                 result.add(subtypeConfig)
             }
         }

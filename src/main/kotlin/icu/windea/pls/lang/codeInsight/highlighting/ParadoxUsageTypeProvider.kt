@@ -15,7 +15,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -105,7 +105,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             return ParadoxUsageTypes.HEADER_COLUMN
         }
 
-        val columnConfig = ParadoxCsvFileManager.getColumnConfig(element) ?: return null
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
         val config = columnConfig.valueConfig ?: return null
         val configExpression = config.configExpression
         return ParadoxUsageTypes.FROM_CONFIG_EXPRESSION(configExpression)

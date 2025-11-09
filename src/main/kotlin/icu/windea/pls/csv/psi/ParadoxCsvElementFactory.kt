@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findChild
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 
 object ParadoxCsvElementFactory {
     @JvmStatic
@@ -21,14 +21,14 @@ object ParadoxCsvElementFactory {
     @Suppress("unused")
     @JvmStatic
     fun createEmptyHeader(project: Project, length: Int): ParadoxCsvHeader {
-        val fileText = "\n" + ParadoxCsvFileManager.getSeparator().toString().repeat(length) + "\n"
+        val fileText = "\n" + ParadoxCsvManager.getSeparator().toString().repeat(length) + "\n"
         return createDummyFile(project, fileText)
             .findChild<ParadoxCsvHeader>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createEmptyRow(project: Project, length: Int): ParadoxCsvRow {
-        val fileText = "a\n" + ParadoxCsvFileManager.getSeparator().toString().repeat(length) + "\n"
+        val fileText = "a\n" + ParadoxCsvManager.getSeparator().toString().repeat(length) + "\n"
         return createDummyFile(project, fileText)
             .findChild<ParadoxCsvRow>() ?: throw IncorrectOperationException()
     }

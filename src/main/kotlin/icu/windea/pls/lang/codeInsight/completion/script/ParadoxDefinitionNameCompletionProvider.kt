@@ -37,6 +37,8 @@ import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -45,9 +47,7 @@ import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -98,7 +98,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue
+                    if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, typeKeyPrefix)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     // 需要考虑不指定子类型的情况

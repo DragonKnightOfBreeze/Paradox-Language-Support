@@ -5,9 +5,6 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
-import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.rows
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
@@ -23,11 +20,11 @@ import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
-import icu.windea.pls.model.paths.ParadoxPath
 
-object ParadoxCsvFileManager {
+object ParadoxCsvManager {
     object Keys : KeyRegistry() {
         val cachedRowConfig by createKey<CachedValue<CwtRowConfig>>(Keys)
     }
@@ -62,24 +59,8 @@ object ParadoxCsvFileManager {
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val rowConfig = getMatchedRowConfig(configGroup, path)
+        val rowConfig = ParadoxConfigMatchService.getMatchedRowConfig(configGroup, path)
         return rowConfig
-    }
-
-    fun getMatchedRowConfig(configGroup: CwtConfigGroup, path: ParadoxPath): CwtRowConfig? {
-        for (rowConfig in configGroup.rows.values) {
-            if (!matchesRow(rowConfig, path)) continue
-            return rowConfig
-        }
-        return null
-    }
-
-    fun matchesRow(rowConfig: CwtRowConfig, path: ParadoxPath?): Boolean {
-        if (path != null) {
-            if (!CwtConfigManager.matchesFilePathPattern(rowConfig, path)) return false
-        }
-
-        return true
     }
 
     fun getColumnConfig(column: ParadoxCsvColumn): CwtPropertyConfig? {

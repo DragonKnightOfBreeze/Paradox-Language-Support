@@ -16,6 +16,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
@@ -103,7 +104,7 @@ class ParadoxDefinitionInfo(
         val subtypesConfig = typeConfig.subtypes
         val result = buildList {
             for (subtypeConfig in subtypesConfig.values) {
-                if (ParadoxDefinitionManager.matchesSubtype(element, typeKey, subtypeConfig, this, configGroup, matchOptions)) {
+                if (ParadoxConfigMatchService.matchesSubtype(element, typeKey, subtypeConfig, this, configGroup, matchOptions)) {
                     this += subtypeConfig
                 }
             }

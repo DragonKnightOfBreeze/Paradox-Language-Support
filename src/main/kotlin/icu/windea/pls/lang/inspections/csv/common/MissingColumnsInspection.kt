@@ -8,7 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import javax.swing.JComponent
 
 /**
@@ -27,13 +27,13 @@ class MissingColumnsInspection : LocalInspectionTool() {
         if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
         val header = file.header
         if (header == null) return PsiElementVisitor.EMPTY_VISITOR
-        val rowConfig = ParadoxCsvFileManager.getRowConfig(file)
+        val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitFile(file: PsiFile) {
                 if (file !is ParadoxCsvFile) return
-                val rowConfig = ParadoxCsvFileManager.getRowConfig(file) ?: return
+                val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
                 val header = file.header ?: return
                 val headerColumns = header.columnList
                 val missingKeys = rowConfig.columns.keys.toMutableSet()

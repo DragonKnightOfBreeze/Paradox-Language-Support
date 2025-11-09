@@ -1,45 +1,17 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.lang.LighterAST
-import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.elementType
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.booleanValue
-import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.config.config.delegated.CwtTypeConfig
-import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.config.toOccurrence
-import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.config.configGroup.definitionTypesModel
-import icu.windea.pls.config.configGroup.singleAliases
 import icu.windea.pls.config.configGroup.types
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.firstChild
-import icu.windea.pls.core.isIncomplete
-import icu.windea.pls.core.isLeftQuoted
-import icu.windea.pls.core.match.PathMatcher
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runReadActionSmartly
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
@@ -47,29 +19,16 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxScriptService
-import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.constants.PlsConstants
-import icu.windea.pls.model.paths.ParadoxElementPath
-import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.script.psi.ParadoxScriptBoolean
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.greenStub
-import icu.windea.pls.script.psi.properties
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
-import icu.windea.pls.script.psi.values
 
 /**
  * 用于处理定义。
@@ -84,12 +43,6 @@ object ParadoxDefinitionManager {
         val cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
         val cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
         val cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(Keys)
-    }
-
-    private val CwtConfigGroup.typeConfigsCache by createKey(CwtConfigGroup.Keys) {
-        CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
-            types.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
-        }.cancelable()
     }
 
     // get info & match methods
@@ -141,7 +94,7 @@ object ParadoxDefinitionManager {
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
-        val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize(), gameType, configGroup)
     }
 
@@ -171,405 +124,6 @@ object ParadoxDefinitionManager {
 
     fun getStub(element: ParadoxScriptDefinitionElement): ParadoxScriptPropertyStub.Definition? {
         return element.castOrNull<ParadoxScriptProperty>()?.greenStub?.castOrNull()
-    }
-
-    fun getMatchedTypeConfig(
-        element: ParadoxScriptDefinitionElement,
-        configGroup: CwtConfigGroup,
-        path: ParadoxPath,
-        elementPath: ParadoxElementPath,
-        typeKey: String,
-        typeKeyPrefix: Lazy<String?>?
-    ): CwtTypeConfig? {
-        // 优先从基于文件路径的缓存中获取
-        val configs = configGroup.typeConfigsCache.get(path)
-        if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(element, config, null, elementPath, typeKey, typeKeyPrefix) }
-    }
-
-    fun getMatchedTypeConfig(
-        node: LighterASTNode,
-        tree: LighterAST,
-        configGroup: CwtConfigGroup,
-        path: ParadoxPath,
-        elementPath: ParadoxElementPath,
-        typeKey: String,
-        typeKeyPrefix: Lazy<String?>?
-    ): CwtTypeConfig? {
-        // 优先从基于文件路径的缓存中获取
-        val configs = configGroup.typeConfigsCache.get(path)
-        if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(node, tree, config, null, elementPath, typeKey, typeKeyPrefix) }
-    }
-
-    fun matchesType(
-        element: ParadoxScriptDefinitionElement,
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
-    ): Boolean {
-        // 判断definition是否需要是scriptFile还是scriptProperty
-        run {
-            if (typeConfig.typePerFile) {
-                if (element !is ParadoxScriptFile) return false
-            } else {
-                if (element !is ParadoxScriptProperty) return false
-            }
-        }
-
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
-        if (fastResult != null) return fastResult
-
-        // 判断definition的propertyValue是否需要是block
-        run {
-            val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
-            val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
-            // 兼容进行代码补全时用户输入未完成的情况
-            val isIncomplete = propertyValue.elementType == STRING
-                && propertyValue.text == PlsConstants.dummyIdentifier
-                && propertyValue.isIncomplete()
-            if (isIncomplete) return@run
-            val isBlock = propertyValue.elementType == BLOCK
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
-            if (isBlockConfig != isBlock) return false
-        }
-
-        return true
-    }
-
-    fun matchesType(
-        node: LighterASTNode,
-        tree: LighterAST,
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
-    ): Boolean {
-        // 判断definition是否需要是scriptFile还是scriptProperty
-        run {
-            val elementType = node.tokenType
-            if (typeConfig.typePerFile) {
-                if (elementType != ParadoxScriptFile.ELEMENT_TYPE) return false
-            } else {
-                if (elementType != PROPERTY) return false
-            }
-        }
-
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
-        if (fastResult != null) return fastResult
-
-        // 判断definition的propertyValue是否需要是block
-        run {
-            val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
-            val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
-            val isBlock = propertyValue.tokenType == BLOCK
-            val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block
-            if (isBlockConfig != isBlock) return false
-        }
-
-        return true
-    }
-
-    fun matchesTypeByUnknownDeclaration(
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
-    ): Boolean {
-        // 判断element是否需要是scriptFile还是scriptProperty
-        if (typeConfig.typePerFile) return false
-
-        val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
-        if (fastResult == false) return fastResult
-
-        return true
-    }
-
-    fun matchesTypeFast(
-        typeConfig: CwtTypeConfig,
-        path: ParadoxPath?,
-        elementPath: ParadoxElementPath?,
-        typeKey: String?,
-        typeKeyPrefix: Lazy<String?>?
-    ): Boolean? {
-        // 判断path是否匹配
-        if (path != null) {
-            if (!CwtConfigManager.matchesFilePathPattern(typeConfig, path)) return false
-        }
-
-        if (typeKey != null) {
-            // 如果选项starts_with存在，则要求type_key匹配这个前缀
-            val startsWithConfig = typeConfig.startsWith
-            if (!startsWithConfig.isNullOrEmpty()) {
-                val result = typeKey.startsWith(startsWithConfig)
-                if (!result) return false
-            }
-
-            // 如果type_key_regex存在，则要求type_key匹配
-            val typeKeyRegexConfig = typeConfig.typeKeyRegex
-            if (typeKeyRegexConfig != null) {
-                val result = typeKeyRegexConfig.matches(typeKey)
-                if (!result) return false
-            }
-
-            // 如果选项type_key_filter存在，则需要通过type_key进行过滤（忽略大小写）
-            val typeKeyFilterConfig = typeConfig.typeKeyFilter
-            if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-                val result = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
-                if (!result) return false
-            }
-
-            // 如果name_field存在，则要求type_key必须是由type_key_filter指定的所有可能的type_key之一，或者没有指定任何type_key
-            val nameFieldConfig = typeConfig.nameField
-            if (nameFieldConfig != null) {
-                val result = typeConfig.possibleTypeKeys.isEmpty() || typeConfig.possibleTypeKeys.contains(typeKey)
-                if (!result) return false
-            }
-        }
-
-        // 如果属性type_key_prefix存在，且有必要校验，则要求其与typeKeyPrefix必须一致（忽略大小写）
-        if (typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesModel.mayWithTypeKeyPrefix) {
-            val result = typeConfig.typeKeyPrefix.equals(typeKeyPrefix.value, ignoreCase = true)
-            if (!result) return false
-        }
-
-        if (elementPath != null) {
-            // 如果属性skip_root_key存在，则要判断是否需要跳过rootKey
-            // skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
-            // skip_root_key可以重复（其中之一匹配即可）
-            val skipRootKeyConfig = typeConfig.skipRootKey
-            if (skipRootKeyConfig.isNullOrEmpty()) {
-                if (elementPath.length > 1) return false
-            } else {
-                if (elementPath.isEmpty()) return false
-                val input = elementPath.subPaths.dropLast(1)
-                val result = skipRootKeyConfig.any { PathMatcher.matches(input, it, ignoreCase = true, useAny = true, usePattern = true) }
-                if (!result) return false
-            }
-        }
-
-        return null // 需要进一步匹配
-    }
-
-    fun matchesSubtype(
-        element: ParadoxScriptDefinitionElement,
-        typeKey: String,
-        subtypeConfig: CwtSubtypeConfig,
-        subtypeConfigs: MutableList<CwtSubtypeConfig>,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int = ParadoxMatchOptions.Default
-    ): Boolean {
-        val fastResult = matchesSubtypeFast(typeKey, subtypeConfig, subtypeConfigs)
-        if (fastResult != null) return fastResult
-
-        // 根据config对property进行内容匹配
-        val elementConfig = subtypeConfig.config
-        if (elementConfig.configs.isNullOrEmpty()) return true
-        return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
-    }
-
-    fun matchesSubtypeFast(
-        typeKey: String,
-        subtypeConfig: CwtSubtypeConfig,
-        subtypeConfigs: MutableList<CwtSubtypeConfig>
-    ): Boolean? {
-        // 如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
-        val onlyIfNotConfig = subtypeConfig.onlyIfNot
-        if (!onlyIfNotConfig.isNullOrEmpty()) {
-            val matchesAny = subtypeConfigs.any { it.name in onlyIfNotConfig }
-            if (matchesAny) return false
-        }
-
-        // 如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
-        val startsWithConfig = subtypeConfig.startsWith
-        if (!startsWithConfig.isNullOrEmpty()) {
-            val result = typeKey.startsWith(startsWithConfig, false)
-            if (!result) return false
-        }
-
-        // 如果type_key_regex存在，则要求type_key匹配
-        val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
-        if (typeKeyRegexConfig != null) {
-            val result = typeKeyRegexConfig.matches(typeKey)
-            if (!result) return false
-        }
-
-        // 如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-        val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
-        if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-            val filterResult = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
-            if (!filterResult) return false
-        }
-
-        // 根据config对property进行内容匹配
-        val elementConfig = subtypeConfig.config
-        if (elementConfig.configs.isNullOrEmpty()) return true
-
-        return null // 需要进一步匹配
-    }
-
-    private fun doMatchDefinition(
-        definitionElement: ParadoxScriptDefinitionElement,
-        propertyConfig: CwtPropertyConfig,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
-    ): Boolean {
-        // 这里不能基于内联后的声明结构，否则可能会导致SOE
-        // 也不要参数条件表达式中的声明结构判断，
-        val childValueConfigs = propertyConfig.values.orEmpty()
-        if (childValueConfigs.isNotEmpty()) {
-            // 匹配值列表
-            val blockElement = definitionElement.block
-            if (!doMatchValues(blockElement, childValueConfigs, configGroup, matchOptions)) return false // 继续匹配
-        }
-        val childPropertyConfigs = propertyConfig.properties.orEmpty()
-        if (childPropertyConfigs.isNotEmpty()) {
-            // 匹配属性列表
-            val blockElement = definitionElement.block
-            if (!doMatchProperties(definitionElement, blockElement, childPropertyConfigs, configGroup, matchOptions)) return false // 继续匹配
-        }
-        return true
-    }
-
-    private fun doMatchProperty(
-        definitionElement: ParadoxScriptDefinitionElement,
-        propertyElement: ParadoxScriptProperty,
-        propertyConfig: CwtPropertyConfig,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
-    ): Boolean {
-        val propValue = propertyElement.propertyValue
-        // 对于propertyValue同样这样判断（可能脚本没有写完）
-        if (propValue == null) return propertyConfig.optionData { cardinality }?.min == 0
-
-        when {
-            // 匹配布尔值
-            propertyConfig.booleanValue != null -> {
-                if (propValue !is ParadoxScriptBoolean || propValue.booleanValue != propertyConfig.booleanValue) return false
-            }
-            // 匹配值
-            propertyConfig.stringValue != null -> {
-                val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
-                return ParadoxMatchService.matchScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
-            }
-            // 匹配single_alias
-            ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
-                return doMatchSingleAlias(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
-            }
-            // 匹配alias
-            ParadoxExpressionManager.isAliasEntryConfig(propertyConfig) -> {
-                return doMatchAlias(definitionElement, propertyElement, propertyConfig, matchOptions)
-            }
-            propertyConfig.configs.orEmpty().isNotEmpty() -> {
-                val blockElement = propertyElement.block
-                // 匹配值列表
-                if (!doMatchValues(blockElement, propertyConfig.values.orEmpty(), configGroup, matchOptions)) return false
-                // 匹配属性列表
-                if (!doMatchProperties(definitionElement, blockElement, propertyConfig.properties.orEmpty(), configGroup, matchOptions)) return false
-            }
-        }
-        return true
-    }
-
-    private fun doMatchProperties(
-        definitionElement: ParadoxScriptDefinitionElement,
-        blockElement: ParadoxScriptBlockElement?,
-        propertyConfigs: List<CwtPropertyConfig>,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
-    ): Boolean {
-        if (propertyConfigs.isEmpty()) return true
-        if (blockElement == null) return false
-
-        val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.toOccurrence(definitionElement, configGroup.project) })
-
-        // NOTE 这里需要兼容内联
-        // NOTE propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-        val matched = blockElement.properties().options(inline = true).all p@{ propertyElement ->
-            val keyElement = propertyElement.propertyKey
-            val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
-            val propConfigs = propertyConfigs.filter {
-                ParadoxMatchService.matchScriptExpression(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
-            }
-
-            // 如果没有匹配的规则则忽略
-            if (propConfigs.isEmpty()) return@p true
-
-            val matched = propConfigs.any { propConfig ->
-                val matched = doMatchProperty(definitionElement, propertyElement, propConfig, configGroup, matchOptions)
-                if (matched) occurrenceMap.get(propConfig.key)?.let { it.actual++ }
-                matched
-            }
-            matched
-        }
-        if (!matched) return false
-
-        return occurrenceMap.values.all { it.isValid(relax = true) }
-    }
-
-    private fun doMatchValues(
-        blockElement: ParadoxScriptBlockElement?,
-        valueConfigs: List<CwtValueConfig>,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
-    ): Boolean {
-        if (valueConfigs.isEmpty()) return true
-        if (blockElement == null) return false
-
-        val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.toOccurrence(blockElement, configGroup.project) })
-
-        // NOTE 这里需要兼容内联
-        val matched = blockElement.values().options(inline = true).process p@{ valueElement ->
-            // 如果没有匹配的规则则忽略
-            val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
-
-            val matched = valueConfigs.any { valueConfig ->
-                val matched = ParadoxMatchService.matchScriptExpression(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
-                if (matched) occurrenceMap.get(valueConfig.value)?.let { it.actual++ }
-                matched
-            }
-            matched
-        }
-        if (!matched) return false
-
-        return occurrenceMap.values.all { it.isValid(relax = true) }
-    }
-
-    private fun doMatchSingleAlias(
-        definitionElement: ParadoxScriptDefinitionElement,
-        propertyElement: ParadoxScriptProperty,
-        propertyConfig: CwtPropertyConfig,
-        configGroup: CwtConfigGroup,
-        matchOptions: Int
-    ): Boolean {
-        val singleAliasName = propertyConfig.valueExpression.value ?: return false
-        val singleAlias = configGroup.singleAliases[singleAliasName] ?: return false
-        return doMatchProperty(definitionElement, propertyElement, singleAlias.config, configGroup, matchOptions)
-    }
-
-    private fun doMatchAlias(
-        definitionElement: ParadoxScriptDefinitionElement,
-        propertyElement: ParadoxScriptProperty,
-        propertyConfig: CwtPropertyConfig,
-        matchOptions: Int
-    ): Boolean {
-        // aliasName和aliasSubName需要匹配
-        val aliasName = propertyConfig.keyExpression.value ?: return false
-        val key = propertyElement.name
-        val quoted = propertyElement.propertyKey.text.isLeftQuoted()
-        val configGroup = propertyConfig.configGroup
-        val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, key, propertyElement, quoted, matchOptions) ?: return false
-        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
-        val aliases = aliasGroup[aliasSubName] ?: return false
-        return aliases.any { alias ->
-            doMatchProperty(definitionElement, propertyElement, alias.config, configGroup, matchOptions)
-        }
     }
 
     fun getLocalizedNames(element: ParadoxScriptDefinitionElement): Set<String> {

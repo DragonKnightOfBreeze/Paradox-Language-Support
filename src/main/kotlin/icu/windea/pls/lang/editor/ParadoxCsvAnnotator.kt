@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.util.ParadoxCsvFileManager
+import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 
 class ParadoxCsvAnnotator : Annotator {
@@ -21,7 +21,7 @@ class ParadoxCsvAnnotator : Annotator {
         if(element is ParadoxCsvColumn && element.isHeaderColumn()) return
 
         val columnConfig = when (element) {
-            is ParadoxCsvColumn -> ParadoxCsvFileManager.getColumnConfig(element)
+            is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
             else -> null
         }
         val config = columnConfig?.valueConfig ?: return
