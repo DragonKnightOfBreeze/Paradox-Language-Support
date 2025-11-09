@@ -107,7 +107,7 @@ class ParadoxDatabaseObjectDataNode(
         // filter out mismatched swap definition vs base definition
         val expectedSuperDefinitionName = expression.valueNode?.text?.orNull() ?: return false
         val expectedSuperDefinitionType = config.type ?: return false
-        val superDefinition = ParadoxDefinitionService.getSuperDefinition(element, definitionInfo) ?: return false
+        val superDefinition = ParadoxDefinitionService.getSuperDefinition(definitionInfo) ?: return false
         val superDefinitionInfo = superDefinition.definitionInfo ?: return false
         if (superDefinitionInfo.name.isEmpty()) return false
         return superDefinitionInfo.name == expectedSuperDefinitionName && ParadoxDefinitionTypeExpression.resolve(expectedSuperDefinitionType).matches(superDefinitionInfo)

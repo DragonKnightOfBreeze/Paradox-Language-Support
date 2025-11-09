@@ -21,7 +21,7 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
         val offset = editor.caretModel.offset
         val definition = ParadoxPsiFinder.findDefinition(file, offset) { BY_TYPE_KEY or BY_NAME or BY_REFERENCE } ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val superDefinition = ParadoxDefinitionService.getSuperDefinition(definition, definitionInfo) ?: return null
+        val superDefinition = ParadoxDefinitionService.getSuperDefinition(definitionInfo) ?: return null
         return superDefinition
     }
 

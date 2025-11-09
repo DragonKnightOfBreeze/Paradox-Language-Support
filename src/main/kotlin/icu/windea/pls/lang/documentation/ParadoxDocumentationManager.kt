@@ -568,7 +568,7 @@ object ParadoxDocumentationManager {
             addDefinitionInfo(element, definitionInfo)
 
             // 加上继承的定义信息
-            val superDefinition = ParadoxDefinitionService.getSuperDefinition(element, definitionInfo)
+            val superDefinition = ParadoxDefinitionService.getSuperDefinition(definitionInfo)
             val superDefinitionInfo = superDefinition?.definitionInfo
             if (superDefinitionInfo != null) {
                 appendBr()
@@ -748,7 +748,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = definitionInfo.gameType
-        val modifierCategories = ParadoxDefinitionService.getModifierCategories(element, definitionInfo) ?: return
+        val modifierCategories = ParadoxDefinitionService.getModifierCategories(definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
             sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)

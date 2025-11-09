@@ -22,7 +22,7 @@ import icu.windea.pls.script.psi.findParentProperty
  * 切换类型一般嵌套在基础类型的定义中，例如，`swapped_civic`。
  */
 class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
-    override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         val definition = definitionInfo.element
         val baseType = definitionInfo.typeConfig.baseType
         if (baseType == null) return null
@@ -41,7 +41,7 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     private val tEvent = ParadoxDefinitionTypes.Event
-    override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
         if (definitionInfo.type != tEvent || !definitionInfo.subtypes.contains("inherited")) return null
         val definition = definitionInfo.element

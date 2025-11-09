@@ -54,22 +54,22 @@ object ParadoxDefinitionService {
     /**
      * @see ParadoxDefinitionInheritSupport.getSuperDefinition
      */
-    fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+    fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getSuperDefinition(definition, definitionInfo)
+            ep.getSuperDefinition(definitionInfo)
         }
     }
 
     /**
      * @see ParadoxDefinitionModifierProvider.getModifierCategories
      */
-    fun getModifierCategories(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
+    fun getModifierCategories(definitionInfo: ParadoxDefinitionInfo): Map<String, CwtModifierCategoryConfig>? {
         val gameType = definitionInfo.gameType
         return ParadoxDefinitionModifierProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.getModifierCategories(definition, definitionInfo)
+            ep.getModifierCategories(definitionInfo)
         }
     }
 }
