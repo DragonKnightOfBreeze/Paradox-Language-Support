@@ -9,7 +9,9 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.declarations
+import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -17,6 +19,7 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 定义信息。
@@ -35,6 +38,9 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
+    private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
+
     val name: String by lazy { name0 ?: doGetName() }
     val type: String = typeConfig.name
     val subtypes: List<String> by lazy { doGetSubtypes() }
@@ -76,11 +82,20 @@ class ParadoxDefinitionInfo(
     }
 
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
-        return ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
+        if (subtypeConfigs.isEmpty()) return emptyList()
+        val cache = subtypeConfigsCache
+        val result = cache.getOrPut(matchOptions) {
+            ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
+        }
+        return result.optimized()
     }
 
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
-        return ParadoxDefinitionService.resolveDeclaration(this, matchOptions)
+        val cache = declarationConfigsCache
+        val result = cache.getOrPut(matchOptions) {
+            ParadoxDefinitionService.resolveDeclaration(this, matchOptions) ?: EMPTY_OBJECT
+        }
+        return result.castOrNull()
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
+import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -10,14 +11,7 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.declarations
 import icu.windea.pls.config.configGroup.type2ModifiersMap
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
@@ -35,13 +29,6 @@ import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxDefinitionService {
-    private val ParadoxDefinitionInfo.subtypeConfigsCache by createKey(ParadoxDefinitionInfo.Keys) {
-        CacheBuilder().build<Int, List<CwtSubtypeConfig>>().cancelable() // TODO may be trackable
-    }
-    private val ParadoxDefinitionInfo.declarationConfigsCache by createKey(ParadoxDefinitionInfo.Keys) {
-        CacheBuilder().build<Int, Any>().cancelable()
-    }
-
     fun resolveName(element: ParadoxScriptDefinitionElement, typeKey: String, typeConfig: CwtTypeConfig): String {
         // NOTE 2.0.6 inline logic is not applied here
         return when {
@@ -76,11 +63,6 @@ object ParadoxDefinitionService {
     }
 
     fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
-        if (definitionInfo.typeConfig.subtypes.isEmpty()) return emptyList()
-        return definitionInfo.subtypeConfigsCache.get(matchOptions) { doResolveSubtypeConfigs(definitionInfo, matchOptions) }
-    }
-
-    private fun doResolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int): List<CwtSubtypeConfig> {
         val subtypesConfig = definitionInfo.typeConfig.subtypes
         val result = buildList {
             for (subtypeConfig in subtypesConfig.values) {
@@ -89,14 +71,10 @@ object ParadoxDefinitionService {
                 }
             }
         }
-        return result.optimized() // optimized to optimize memory
+        return result
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
-        return definitionInfo.declarationConfigsCache.get(matchOptions) { doResolveDeclaration(definitionInfo, matchOptions) ?: EMPTY_OBJECT }.castOrNull()
-    }
-
-    private fun doResolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = definitionInfo.configGroup.declarations.get(definitionInfo.type) ?: return null
         val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }
         val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
@@ -139,6 +117,11 @@ object ParadoxDefinitionService {
             }
         }
         return result
+    }
+
+    fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
+        // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
+        return null
     }
 
     /**

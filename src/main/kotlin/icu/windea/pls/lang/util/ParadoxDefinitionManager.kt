@@ -20,6 +20,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -58,7 +59,11 @@ object ParadoxDefinitionManager {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = runReadActionSmartly { doGetInfo(element, file) }
-            value.withDependencyItems(file) // TODO 2.0.7+ 完善了定义信息的解析逻辑后，这里可能还需要依赖内联脚本文件
+            val trackers = buildList {
+                this += file
+                value?.let { v -> ParadoxDefinitionService.getModificationTracker(v)?.let { this += it } }
+            }
+            value.withDependencyItems(listOfNotNull(value, *trackers.toTypedArray()))
         }
     }
 

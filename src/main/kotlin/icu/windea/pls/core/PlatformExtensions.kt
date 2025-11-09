@@ -154,11 +154,6 @@ fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provide
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
-/**
- * 为缓存结果添加依赖项列表 [dependencyItems]。
- *
- * 当依赖为空时使用 [ModificationTracker.NEVER_CHANGED]，否则使用可变参数依赖。
- */
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
