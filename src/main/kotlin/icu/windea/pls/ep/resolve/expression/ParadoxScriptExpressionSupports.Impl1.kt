@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.util.TextRange

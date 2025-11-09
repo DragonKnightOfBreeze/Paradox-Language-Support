@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.resolve.expression
 
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtValueConfig

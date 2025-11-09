@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 /**
  * 脚本表达式，
  *
- * 脚本表达式用来记录脚本中的键与值（`LHS` & `RHS`）的值、类型、是否用引号括起，是否是键等信息。
+ * 脚本表达式用来记录脚本中的键与值（LHS & RHS）的值、类型、是否用引号括起，是否是键等信息。
  *
  * @see ParadoxScriptExpressionElement
  */

@@ -26,7 +26,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.configContext.inlineScriptHasConflict
 import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.match.findByPattern

@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle

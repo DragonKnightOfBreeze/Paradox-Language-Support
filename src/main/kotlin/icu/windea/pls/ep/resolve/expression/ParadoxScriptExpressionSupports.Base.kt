@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange

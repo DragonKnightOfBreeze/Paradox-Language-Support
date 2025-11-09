@@ -80,9 +80,9 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.configContext.CwtConfigContextProvider
-import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isInlineScriptUsage

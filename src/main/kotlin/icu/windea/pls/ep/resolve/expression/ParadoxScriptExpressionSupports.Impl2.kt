@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.resolve.expression
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
@@ -28,7 +28,7 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport.*
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport.*
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.keyword
@@ -54,6 +54,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
+import kotlin.collections.get
 
 // Core
 

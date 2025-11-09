@@ -10,7 +10,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.selector.contextSensitive

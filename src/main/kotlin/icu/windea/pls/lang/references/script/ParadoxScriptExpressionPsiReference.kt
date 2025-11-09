@@ -18,8 +18,8 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.util.ParadoxExpressionManager

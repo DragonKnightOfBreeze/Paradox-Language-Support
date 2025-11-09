@@ -52,10 +52,10 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
-import icu.windea.pls.ep.expression.ParadoxCsvExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
