@@ -7,18 +7,18 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
  * 用于得到定义的数据。
  */
 interface ParadoxDefinitionDataProvider {
-    fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>): Boolean
+    fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): Boolean
 
-    fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T?
+    fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider>("icu.windea.pls.definitionDataProvider")
 
-        fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
-            // if (element.definitionInfo == null) return null // NOTE 不能在这里判断，否则会出现 SOE
+        fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T? {
+            // NOTE 不能在这里判断是否存在 `definitionInfo`，否则会出现 SOE
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!ep.supports(element, type)) return@f null
-                ep.get(element, type)
+                if (!ep.supports(element, type, relax)) return@f null
+                ep.get(element, type, relax)
             }
         }
     }

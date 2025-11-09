@@ -101,8 +101,8 @@ fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScripte
     return scriptedVariableReference?.reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
 }
 
-inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(): T? {
-    return ParadoxDefinitionDataProvider.get(this, T::class.java)
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? {
+    return ParadoxDefinitionDataProvider.get(this, T::class.java, relax)
 }
 
 inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {

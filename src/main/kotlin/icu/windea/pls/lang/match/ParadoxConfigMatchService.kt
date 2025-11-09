@@ -287,7 +287,8 @@ object ParadoxConfigMatchService {
         // 根据config对property进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
-        return matchesDefinitionForSubtype(element, elementConfig, configGroup, matchOptions)
+        val finalMatchOptions = matchOptions or ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope
+        return matchesDefinitionForSubtype(element, elementConfig, configGroup, finalMatchOptions)
     }
 
     fun matchesSubtypeFast(

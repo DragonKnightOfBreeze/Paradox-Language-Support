@@ -96,12 +96,12 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     private fun getBaseName(definitionInfo: ParadoxDefinitionInfo): String? {
         // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
         if (definitionInfo.type != tEvent || !definitionInfo.subtypes.contains("inherited")) return null
-        val data = definitionInfo.element.getDefinitionData<StellarisEventData>() ?: return null
+        val data = definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true) ?: return null
         return data.base
     }
 
     private fun clearTrigger(definitionInfo: ParadoxDefinitionInfo): Boolean {
-        val data = definitionInfo.element.getDefinitionData<StellarisEventData>() ?: return false
+        val data = definitionInfo.element.getDefinitionData<StellarisEventData>(relax = true) ?: return false
         return data.triggerClear
     }
 

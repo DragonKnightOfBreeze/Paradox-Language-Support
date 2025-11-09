@@ -29,15 +29,16 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
         createKey("cached.paradox.definition.data:$shortKey")
     }
 
-    override fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>): Boolean {
+    override fun <T : ParadoxDefinitionData> supports(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean): Boolean {
         if (!ParadoxDefinitionDataBase::class.java.isAssignableFrom(type)) return false
+        if (relax) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (!PlsAnnotationManager.check(type, definitionInfo.gameType)) return false
         if (!PlsAnnotationManager.check(type, definitionInfo)) return false
         return true
     }
 
-    override fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
+    override fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean): T? {
         return doGetDataFromCache(element, type)
     }
 
