@@ -9,17 +9,13 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
-import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
@@ -93,65 +89,28 @@ class ParadoxDefinitionInfo(
         return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) ?: EMPTY_OBJECT }.castOrNull()
     }
 
-    private fun doGetSubtypeNames(matchOptions: Int): List<String> {
-        val result = getSubtypeConfigs(matchOptions).map { it.name }
-        return result.optimized() // optimized to optimize memory
-    }
-
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
-        val subtypesConfig = typeConfig.subtypes
-        val result = buildList {
-            for (subtypeConfig in subtypesConfig.values) {
-                if (ParadoxConfigMatchService.matchesSubtype(element, typeKey, subtypeConfig, this, configGroup, matchOptions)) {
-                    this += subtypeConfig
-                }
-            }
-        }
+        val result = ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
         return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
-        val declarationConfig = configGroup.declarations.get(type) ?: return null
-        val subtypes = doGetSubtypeNames(matchOptions)
-        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, name, type, subtypes, configGroup)
-        return declarationConfigContext?.getConfig(declarationConfig)
+        val result = ParadoxDefinitionService.resolveDeclaration(this, matchOptions)
+        return result
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
-        val mergedConfigs = typeConfig.localisation?.getConfigs(subtypes) ?: return emptyList()
-        val result = buildList(mergedConfigs.size) {
-            for (config in mergedConfigs) {
-                val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
-                val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
-                this += info
-            }
-        }
+        val result = ParadoxDefinitionService.resolveRelatedLocalisations(this)
         return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetImages(): List<RelatedImageInfo> {
-        val mergedConfigs = typeConfig.images?.getConfigs(subtypes) ?: return emptyList()
-        val result = buildList(mergedConfigs.size) {
-            for (config in mergedConfigs) {
-                val locationExpression = CwtImageLocationExpression.resolve(config.value)
-                val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
-                this += info
-            }
-        }
+        val result = ParadoxDefinitionService.resolveRelatedImages(this)
         return result.optimized() // optimized to optimize memory
     }
 
     private fun doGetModifiers(): List<ModifierInfo> {
-        val result = buildList {
-            configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) ->
-                this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)
-            }
-            for (subtype in subtypes) {
-                configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) ->
-                    this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)
-                }
-            }
-        }
+        val result = ParadoxDefinitionService.resolveModifiers(this)
         return result.optimized() // optimized to optimize memory
     }
 

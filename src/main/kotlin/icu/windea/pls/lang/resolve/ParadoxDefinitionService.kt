@@ -2,13 +2,24 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configExpression.CwtImageLocationExpression
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configGroup.declarations
+import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
+import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInfo.*
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -49,6 +60,63 @@ object ParadoxDefinitionService {
             else -> ParadoxScriptLightTreeUtil.findPropertyFromPropertyNode(node, tree, typeConfig.nameField!!)
                 ?.let { ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(it, tree) }
         }
+    }
+
+    fun resolveSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
+        val subtypesConfig = definitionInfo.typeConfig.subtypes
+        val result = buildList {
+            for (subtypeConfig in subtypesConfig.values) {
+                if (ParadoxConfigMatchService.matchesSubtype(definitionInfo.element, definitionInfo.typeKey, subtypeConfig, this, definitionInfo.configGroup, matchOptions)) {
+                    this += subtypeConfig
+                }
+            }
+        }
+        return result
+    }
+
+    fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
+        val declarationConfig = definitionInfo.configGroup.declarations.get(definitionInfo.type) ?: return null
+        val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }
+        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
+        return declarationConfigContext?.getConfig(declarationConfig)
+    }
+
+    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<RelatedLocalisationInfo> {
+        val mergedConfigs = definitionInfo.typeConfig.localisation?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
+        val result = buildList(mergedConfigs.size) {
+            for (config in mergedConfigs) {
+                val locationExpression = CwtLocalisationLocationExpression.resolve(config.value)
+                val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
+                this += info
+            }
+        }
+        return result
+    }
+
+    fun resolveRelatedImages(definitionInfo: ParadoxDefinitionInfo): List<RelatedImageInfo> {
+        val mergedConfigs = definitionInfo.typeConfig.images?.getConfigs(definitionInfo.subtypes) ?: return emptyList()
+        val result = buildList(mergedConfigs.size) {
+            for (config in mergedConfigs) {
+                val locationExpression = CwtImageLocationExpression.resolve(config.value)
+                val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
+                this += info
+            }
+        }
+        return result
+    }
+
+    fun resolveModifiers(definitionInfo: ParadoxDefinitionInfo): List<ModifierInfo> {
+        val result = buildList {
+            definitionInfo.configGroup.type2ModifiersMap.get(definitionInfo.type)?.forEach { (_, v) ->
+                this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, definitionInfo.name), v)
+            }
+            for (subtype in definitionInfo.subtypes) {
+                definitionInfo.configGroup.type2ModifiersMap.get("${definitionInfo.type}.$subtype")?.forEach { (_, v) ->
+                    this += ModifierInfo(CwtTemplateExpressionManager.extract(v.template, definitionInfo.name), v)
+                }
+            }
+        }
+        return result
     }
 
     /**
