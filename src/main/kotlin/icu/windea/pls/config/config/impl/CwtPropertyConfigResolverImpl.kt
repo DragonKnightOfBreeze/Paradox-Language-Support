@@ -298,7 +298,6 @@ private open class CwtPropertyConfigDelegate(
     override val properties: List<CwtPropertyConfig>? get() = delegate.properties
     override val values: List<CwtValueConfig>? get() = delegate.values
     override val optionConfigs: List<CwtOptionMemberConfig<*>> get() = delegate.optionConfigs
-    override val valueConfig: CwtValueConfig? get() = delegate.valueConfig
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
