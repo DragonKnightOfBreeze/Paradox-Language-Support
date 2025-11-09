@@ -11,8 +11,8 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.psi.PsiReferencesAware
-import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
@@ -31,7 +31,7 @@ class ParadoxLocalisationExpressionPsiReference(
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
 
-        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
+        val result = ParadoxLocalisationExpressionService.getReferences(element, rangeInElement, expressionText)
         return result.orNull()
     }
 

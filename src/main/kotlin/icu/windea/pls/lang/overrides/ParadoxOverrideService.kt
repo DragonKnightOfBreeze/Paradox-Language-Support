@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider
+import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -18,6 +19,7 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -32,7 +34,11 @@ object ParadoxOverrideService {
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(target: Any): ParadoxOverrideStrategy? {
-        return ParadoxOverrideStrategyProvider.get(target)
+        val gameType by lazy { selectGameType(target) }
+        return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (gameType != null && !PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.get(target)
+        }
     }
 
     /**
@@ -40,7 +46,11 @@ object ParadoxOverrideService {
      * 如果返回 `null`，则表示不适用覆盖方式。
      */
     fun getOverrideStrategy(searchParameters: ParadoxSearchParameters<*>): ParadoxOverrideStrategy? {
-        return ParadoxOverrideStrategyProvider.get(searchParameters)
+        val gameType = searchParameters.selector.gameType
+        return ParadoxOverrideStrategyProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            if (gameType != null && !PlsAnnotationManager.check(ep, gameType)) return@f null
+            ep.get(searchParameters)
+        }
     }
 
     /**

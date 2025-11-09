@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.definition
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.documentation.ParadoxDocumentationTarget
@@ -21,13 +20,5 @@ interface ParadoxDefinitionInheritSupport {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
-
-        fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
-            val gameType = definitionInfo.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getSuperDefinition(definition, definitionInfo)
-            }
-        }
     }
 }

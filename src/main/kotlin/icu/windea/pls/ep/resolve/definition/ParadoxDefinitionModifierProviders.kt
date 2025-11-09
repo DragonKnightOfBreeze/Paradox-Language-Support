@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.resolve.modifier
+package icu.windea.pls.ep.resolve.definition
 
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.lang.annotations.WithGameType

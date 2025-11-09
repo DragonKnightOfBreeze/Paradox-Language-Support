@@ -5,8 +5,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionInferredScopeContextProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -31,7 +31,7 @@ class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
             }
 
             private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-                val message = ParadoxDefinitionInferredScopeContextProvider.getErrorMessage(element, definitionInfo)
+                val message = ParadoxScopeService.getInferenceErrorMessage(element, definitionInfo)
                 if (message != null) {
                     val location = if (element is ParadoxScriptProperty) element.propertyKey else element
                     holder.registerProblem(location, message)

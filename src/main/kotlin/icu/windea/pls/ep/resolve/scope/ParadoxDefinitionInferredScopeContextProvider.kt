@@ -1,12 +1,8 @@
 package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
@@ -31,59 +27,6 @@ interface ParadoxDefinitionInferredScopeContextProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionInferredScopeContextProvider>("icu.windea.pls.definitionInferredScopeContextProvider")
-
-        fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
-            val gameType = definitionInfo.gameType
-            var map: Map<String, String>? = null
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                if (!ep.supports(definition, definitionInfo)) return@f
-                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
-                if (info.hasConflict) return null // 只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
-                if (map == null) {
-                    map = info.scopeContextMap
-                } else {
-                    map = ParadoxScopeManager.mergeScopeContextMap(map, info.scopeContextMap)
-                }
-            }
-            val resultMap = map ?: return null
-            val result = ParadoxScopeContext.get(resultMap)
-            return result
-        }
-
-        fun getErrorMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-            val gameType = definitionInfo.gameType
-            var errorMessage: String? = null
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                if (!ep.supports(definition, definitionInfo)) return@f
-                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
-                if (!info.hasConflict) return@f
-                if (errorMessage == null) {
-                    errorMessage = ep.getErrorMessage(definition, definitionInfo, info)
-                } else {
-                    return PlsBundle.message("script.annotator.scopeContext.conflict", definitionInfo.name)
-                }
-            }
-            return errorMessage
-        }
-
-        fun getMessage(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
-            val gameType = definitionInfo.gameType
-            var message: String? = null
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                if (!ep.supports(definition, definitionInfo)) return@f
-                val info = ep.getScopeContext(definition, definitionInfo) ?: return@f
-                if (info.hasConflict) return@f
-                if (message == null) {
-                    message = ep.getMessage(definition, definitionInfo, info)
-                } else {
-                    return PlsBundle.message("script.annotator.scopeContext", definitionInfo.name)
-                }
-            }
-            return message
-        }
     }
 }
 

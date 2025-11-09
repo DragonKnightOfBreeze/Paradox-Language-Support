@@ -56,6 +56,3 @@ interface ParadoxPathReferenceExpressionSupport {
         }
     }
 }
-
-
-

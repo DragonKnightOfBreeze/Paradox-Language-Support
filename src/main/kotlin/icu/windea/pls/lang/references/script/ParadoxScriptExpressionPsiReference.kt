@@ -19,9 +19,9 @@ import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -79,7 +79,7 @@ class ParadoxScriptExpressionPsiReference(
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
 
-        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
+        val result = ParadoxScriptExpressionService.getReferences(element, rangeInElement, expressionText, config, isKey)
         if(result.isNullOrEmpty()) return EMPTY_ARRAY
         return result
     }

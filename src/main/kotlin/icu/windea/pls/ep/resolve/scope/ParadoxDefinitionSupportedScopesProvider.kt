@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.resolve.scope
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -17,14 +16,5 @@ interface ParadoxDefinitionSupportedScopesProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionSupportedScopesProvider>("icu.windea.pls.definitionSupportedScopesProvider")
-
-        fun getSupportedScopes(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Set<String>? {
-            val gameType = definitionInfo.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                if (!ep.supports(definition, definitionInfo)) return@f null
-                ep.getSupportedScopes(definition, definitionInfo)
-            }
-        }
     }
 }

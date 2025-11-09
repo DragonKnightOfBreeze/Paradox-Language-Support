@@ -12,11 +12,11 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.resolve.ParadoxModifierService
+import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -81,7 +81,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     ProgressManager.checkCanceled()
                     val resolved = expressionElement.reference?.resolve() ?: return null
                     if (resolved !is ParadoxModifierElement) return null
-                    val modifierCategories = ParadoxModifierSupport.getModifierCategories(resolved)
+                    val modifierCategories = ParadoxModifierService.getModifierCategories(resolved)
                     return modifierCategories?.let { ParadoxScopeManager.getSupportedScopes(it) }
                 }
                 if (config.configExpression.type == CwtDataTypes.Definition) {
@@ -90,7 +90,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val resolved = expressionElement.reference?.resolve()
                     if (resolved !is ParadoxScriptDefinitionElement) return null
                     val definitionInfo = resolved.definitionInfo ?: return null
-                    val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(resolved, definitionInfo)
+                    val supportedScopes = ParadoxScopeService.getSupportedScopes(resolved, definitionInfo)
                     return supportedScopes
                 }
                 val supportedScopes = config.optionData { supportedScopes }

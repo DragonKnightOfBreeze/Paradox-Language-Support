@@ -20,7 +20,9 @@ import icu.windea.pls.config.configGroup.complexEnums
 import icu.windea.pls.config.configGroup.dynamicValueTypes
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.modifierCategories
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.CacheBuilder
@@ -32,13 +34,13 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.trackedBy
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
+import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -80,7 +82,7 @@ object ParadoxModifierManager {
     // 插件使用的modifiers.cwt中应当去除生成的修正
 
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        return ParadoxModifierSupport.matchModifier(name, element, configGroup)
+        return ParadoxModifierService.matchesModifier(name, element, configGroup)
     }
 
     fun resolveModifier(element: ParadoxScriptStringExpressionElement): ParadoxModifierElement? {
@@ -101,7 +103,7 @@ object ParadoxModifierManager {
         if (element !is ParadoxScriptStringExpressionElement) return
 
         val modifierNames = mutableSetOf<String>()
-        ParadoxModifierSupport.completeModifier(context, result, modifierNames)
+        ParadoxModifierService.completeModifier(context, result, modifierNames)
     }
 
     fun completeTemplateModifier(contextElement: PsiElement, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
@@ -195,7 +197,7 @@ object ParadoxModifierManager {
         val modifierInfo = cache.get(cacheKey) {
             // 进行代码补全时，可能需要使用指定的扩展点解析修正
             useSupport?.resolveModifier(name, element, configGroup)?.also { it.support = useSupport }
-                ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
+                ?: ParadoxModifierService.resolveModifier(name, element, configGroup)
                 ?: ParadoxModifierInfo.EMPTY
         }
         if (modifierInfo == ParadoxModifierInfo.EMPTY) return null
@@ -210,7 +212,7 @@ object ParadoxModifierManager {
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.get(cacheKey) {
-            ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
+            ParadoxModifierService.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
         }
         if (modifierInfo == ParadoxModifierInfo.EMPTY) return null
         return modifierInfo
@@ -230,24 +232,30 @@ object ParadoxModifierManager {
         return modifierInfo
     }
 
+    @Optimized
     fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierNameKeys) {
-            ParadoxModifierNameDescProvider.getModifierNameKeys(element, modifierInfo)
+            val result = ParadoxModifierService.getModifierNameKeys(element, modifierInfo)
+            result.optimized()
         }
     }
 
+    @Optimized
     fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierDescKeys) {
-            ParadoxModifierNameDescProvider.getModifierDescKeys(element, modifierInfo)
+            val result = ParadoxModifierService.getModifierDescKeys(element, modifierInfo)
+            result.optimized()
         }
     }
 
+    @Optimized
     fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierIconPaths) {
-            ParadoxModifierIconProvider.getModifierIconPaths(element, modifierInfo)
+            val result = ParadoxModifierService.getModifierIconPaths(element, modifierInfo)
+            result.optimized()
         }
     }
 

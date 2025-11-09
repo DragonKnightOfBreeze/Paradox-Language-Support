@@ -10,10 +10,10 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ep.resolve.ParadoxInlineSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettingsState
@@ -65,7 +65,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             override fun visitElement(element: PsiElement) {
                 // 兼容向下内联的情况（即使内联后为自身）
                 if (element is ParadoxScriptMember) {
-                    val inlined = ParadoxInlineSupport.getInlinedElement(element)
+                    val inlined = ParadoxInlineService.getInlinedElement(element)
                     if (inlined != null) {
                         searchElement(inlined, descriptor, descriptors)
                         return

@@ -40,11 +40,6 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionInferredScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueInferredScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxDynamicValueScopeContextProvider
-import icu.windea.pls.ep.resolve.scope.ParadoxOverriddenScopeContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
@@ -53,6 +48,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.resolve.ParadoxScopeService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDynamicValueExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxCommandFieldNode
@@ -289,11 +285,11 @@ object ParadoxScopeManager {
             element as ParadoxScriptDefinitionElement
 
             // 使用提供的作用域上下文
-            val scopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
+            val scopeContext = ParadoxScopeService.getScopeContext(element, definitionInfo)
             if (scopeContext != null && scopeContext.isExact) return scopeContext
 
             // 除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
-            val inferredScopeContext = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)
+            val inferredScopeContext = ParadoxScopeService.getInferredScopeContext(element, definitionInfo)
             if (inferredScopeContext != null) return mergeScopeContext(scopeContext, inferredScopeContext) ?: getAnyScopeContext()
 
             return scopeContext ?: getAnyScopeContext()
@@ -309,7 +305,7 @@ object ParadoxScopeManager {
         val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition)
         val config = configs.firstOrNull() ?: return null
 
-        val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)
+        val overriddenScopeContext = ParadoxScopeService.getOverriddenScopeContext(element, config, parentScopeContext)
         if (overriddenScopeContext != null) return overriddenScopeContext
 
         if (config is CwtPropertyConfig && config.configExpression.type == CwtDataTypes.ScopeField) {
@@ -346,11 +342,11 @@ object ParadoxScopeManager {
 
     private fun doGetSwitchedScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         // 使用提供的作用域上下文
-        val scopeContext = ParadoxDynamicValueScopeContextProvider.getScopeContext(element)
+        val scopeContext = ParadoxScopeService.getScopeContext(element)
         if (scopeContext != null && scopeContext.isExact) return scopeContext
 
         // 除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
-        val inferredScopeContext = ParadoxDynamicValueInferredScopeContextProvider.getScopeContext(element)
+        val inferredScopeContext = ParadoxScopeService.getInferredScopeContext(element)
         if (inferredScopeContext != null) return mergeScopeContext(scopeContext, inferredScopeContext) ?: getAnyScopeContext()
 
         return scopeContext ?: getAnyScopeContext()

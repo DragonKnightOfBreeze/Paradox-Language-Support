@@ -5,10 +5,10 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
@@ -22,6 +22,6 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
 
-        ParadoxLocalisationIconSupport.complete(context, result)
+        ParadoxLocalisationIconService.complete(context, result)
     }
 }

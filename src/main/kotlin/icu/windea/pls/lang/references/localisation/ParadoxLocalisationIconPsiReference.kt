@@ -7,7 +7,7 @@ import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
+import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 /**
@@ -47,7 +47,7 @@ class ParadoxLocalisationIconPsiReference(
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return null
-        val resolved = ParadoxLocalisationIconSupport.resolve(name, element, project)
+        val resolved = ParadoxLocalisationIconService.resolve(name, element, project)
         return resolved
     }
 
@@ -55,7 +55,7 @@ class ParadoxLocalisationIconPsiReference(
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return ResolveResult.EMPTY_ARRAY
-        val resolved = ParadoxLocalisationIconSupport.resolveAll(name, element, project)
+        val resolved = ParadoxLocalisationIconService.resolveAll(name, element, project)
         if (resolved.isEmpty()) return ResolveResult.EMPTY_ARRAY
         return resolved.mapToArray { PsiElementResolveResult(it) }
     }

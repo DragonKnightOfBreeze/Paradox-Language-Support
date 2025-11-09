@@ -52,17 +52,17 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
-import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
-import icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport
-import icu.windea.pls.ep.resolve.scope.ParadoxDefinitionSupportedScopesProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.resolve.ParadoxCsvExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxScopeService
+import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
@@ -458,7 +458,7 @@ object ParadoxCompletionManager {
             context.scopeMatched = scopeMatched1
         }
 
-        ParadoxScriptExpressionSupport.complete(context, result)
+        ParadoxScriptExpressionService.complete(context, result)
 
         context.scopeMatched = scopeMatched
         context.scopeContext = scopeContext
@@ -466,12 +466,12 @@ object ParadoxCompletionManager {
 
     fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        ParadoxLocalisationExpressionSupport.complete(context, result)
+        ParadoxLocalisationExpressionService.complete(context, result)
     }
 
     fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        ParadoxCsvExpressionSupport.complete(context, result)
+        ParadoxCsvExpressionService.complete(context, result)
     }
 
     fun completeLocalisation(context: ProcessingContext, result: CompletionResultSet) {
@@ -564,7 +564,7 @@ object ParadoxCompletionManager {
             if (context.extraFilter?.invoke(definition) == false) return@p true
 
             // 排除不匹配可能存在的 `supported_scopes` 的情况
-            val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
+            val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return@p true
 

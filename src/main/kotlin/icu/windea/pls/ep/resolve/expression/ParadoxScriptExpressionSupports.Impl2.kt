@@ -28,7 +28,6 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport.*
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.config
 import icu.windea.pls.lang.codeInsight.completion.keyword
@@ -36,6 +35,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
+import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -388,7 +388,7 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupportBa
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
         val aliasSubName = ParadoxExpressionManager.getMatchedAliasKey(configGroup, aliasName, expressionText, element, false) ?: return
         val aliasConfig = aliasMap[aliasSubName]?.first() ?: return
-        INSTANCE.annotate(element, rangeInElement, expressionText, holder, aliasConfig)
+        ParadoxScriptExpressionService.annotate(element, rangeInElement, expressionText, holder, aliasConfig)
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {

@@ -11,11 +11,11 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionErrorBuilder
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
@@ -107,7 +107,7 @@ class ParadoxDatabaseObjectDataNode(
         // filter out mismatched swap definition vs base definition
         val expectedSuperDefinitionName = expression.valueNode?.text?.orNull() ?: return false
         val expectedSuperDefinitionType = config.type ?: return false
-        val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo) ?: return false
+        val superDefinition = ParadoxDefinitionService.getSuperDefinition(element, definitionInfo) ?: return false
         val superDefinitionInfo = superDefinition.definitionInfo ?: return false
         if (superDefinitionInfo.name.isEmpty()) return false
         return superDefinitionInfo.name == expectedSuperDefinitionName && ParadoxDefinitionTypeExpression.resolve(expectedSuperDefinitionType).matches(superDefinitionInfo)

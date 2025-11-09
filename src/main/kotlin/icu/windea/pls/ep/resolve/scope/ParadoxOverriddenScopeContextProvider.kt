@@ -3,10 +3,8 @@ package icu.windea.pls.ep.resolve.scope
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.model.scope.ParadoxScopeContext
-import icu.windea.pls.model.scope.overriddenProvider
 
 /**
  * 用于基于上下文为某些特定的脚本表达式提供重载后的作用域上下文。
@@ -22,14 +20,5 @@ interface ParadoxOverriddenScopeContextProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
-
-        fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-            val gameType = config.configGroup.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
-                    ?.also { it.overriddenProvider = ep }
-            }
-        }
     }
 }

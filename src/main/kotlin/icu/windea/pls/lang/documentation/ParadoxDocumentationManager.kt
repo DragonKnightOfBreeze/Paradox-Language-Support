@@ -25,9 +25,6 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider
-import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
-import icu.windea.pls.ep.resolve.modifier.ParadoxDefinitionModifierProvider
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.definitionInfo
@@ -41,6 +38,8 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
@@ -370,7 +369,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifierElement) {
         val name = element.name
         definition {
-            val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
+            val r = ParadoxModifierService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -476,7 +475,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = configGroup.gameType
-        val modifierCategories = ParadoxModifierSupport.getModifierCategories(element) ?: return
+        val modifierCategories = ParadoxModifierService.getModifierCategories(element) ?: return
         val contextElement = element
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
@@ -569,7 +568,7 @@ object ParadoxDocumentationManager {
             addDefinitionInfo(element, definitionInfo)
 
             // 加上继承的定义信息
-            val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo)
+            val superDefinition = ParadoxDefinitionService.getSuperDefinition(element, definitionInfo)
             val superDefinitionInfo = superDefinition?.definitionInfo
             if (superDefinitionInfo != null) {
                 appendBr()
@@ -740,7 +739,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         if (!PlsFacade.getSettings().documentation.showGeneratedModifiers) return
 
-        ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
+        ParadoxModifierService.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
     }
 
     private fun DocumentationBuilder.addModifierScopeForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
@@ -749,7 +748,7 @@ object ParadoxDocumentationManager {
 
         val sections = getSections(SECTIONS_INFO) ?: return
         val gameType = definitionInfo.gameType
-        val modifierCategories = ParadoxDefinitionModifierProvider.getModifierCategories(element, definitionInfo) ?: return
+        val modifierCategories = ParadoxDefinitionService.getModifierCategories(element, definitionInfo) ?: return
         val categoryNames = modifierCategories.keys
         if (categoryNames.isNotEmpty()) {
             sections[PlsBundle.message("sectionTitle.categories")] = getModifierCategoriesText(categoryNames, gameType, element)

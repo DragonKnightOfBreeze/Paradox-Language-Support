@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util.manipulators
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.children
-import icu.windea.pls.ep.resolve.ParadoxInlineSupport
+import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -52,7 +52,7 @@ object ParadoxScriptManipulator {
     private suspend fun SequenceScope<ParadoxScriptMember>.doYieldMember(element: ParadoxScriptMember, options: MemberOptions) {
         yield(element)
         if (options.inline) {
-            val inlined = ParadoxInlineSupport.getInlinedElement(element)
+            val inlined = ParadoxInlineService.getInlinedElement(element)
             val finalInlined = when {
                 inlined is ParadoxScriptFile -> inlined.block
                 else -> inlined

@@ -8,14 +8,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.codeInsight.completion.config
-import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 
@@ -52,77 +47,5 @@ interface ParadoxScriptExpressionSupport {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
-
-        // 这里需要尝试避免SOE
-
-        fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
-            val gameType = config.configGroup.gameType
-            withRecursionGuard {
-                EP_NAME.extensionList.forEach f@{ ep ->
-                    if (!ep.supports(config)) return@f
-                    if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                    withRecursionCheck("${ep.javaClass.name}@annotate@${expressionText}") {
-                        ep.annotate(element, rangeInElement, expressionText, holder, config)
-                    }
-                }
-            }
-        }
-
-        fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
-            val gameType = config.configGroup.gameType
-            return withRecursionGuard {
-                EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                    if (!ep.supports(config)) return@f null
-                    if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                    val r = withRecursionCheck("${ep.javaClass.name}@resolve@${expressionText}") {
-                        ep.resolve(element, rangeInElement, expressionText, config, isKey, exact)
-                    }
-                    r
-                }
-            }
-        }
-
-        fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-            val gameType = config.configGroup.gameType
-            return withRecursionGuard {
-                EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                    if (!ep.supports(config)) return@f null
-                    if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                    val r = withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
-                        ep.multiResolve(element, rangeInElement, expressionText, config, isKey).orNull()
-                    }
-                    r
-                }
-            }.orEmpty()
-        }
-
-        fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
-            val gameType = config.configGroup.gameType
-            return withRecursionGuard {
-                EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                    if (!ep.supports(config)) return@f null
-                    if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                    val r = withRecursionCheck("${ep.javaClass.name}@multiResolve@${expressionText}") {
-                        ep.getReferences(element, rangeInElement, expressionText, config, isKey).orNull()
-                    }
-                    r
-                }
-            }
-        }
-
-        fun complete(context: ProcessingContext, result: CompletionResultSet) {
-            val config = context.config ?: return
-            val gameType = config.configGroup.gameType
-            withRecursionGuard {
-                EP_NAME.extensionList.forEach f@{ ep ->
-                    if (!ep.supports(config)) return@f
-                    if (!PlsAnnotationManager.check(ep, gameType)) return@f
-                    withRecursionCheck("${ep.javaClass.name}@complete${context.keyword}") {
-                        ep.complete(context, result)
-                    }
-                }
-            }
-        }
     }
 }
-

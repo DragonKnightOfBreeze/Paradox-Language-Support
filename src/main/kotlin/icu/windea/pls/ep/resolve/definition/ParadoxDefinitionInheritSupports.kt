@@ -23,6 +23,7 @@ import icu.windea.pls.script.psi.findParentProperty
  */
 class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
     override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
+        val definition = definitionInfo.element
         val baseType = definitionInfo.typeConfig.baseType
         if (baseType == null) return null
         val superDefinition = definition.findParentProperty()
@@ -39,11 +40,11 @@ class ParadoxSwappedTypeInheritSupport : ParadoxDefinitionInheritSupport {
  */
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
+    private val tEvent = ParadoxDefinitionTypes.Event
     override fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
-        val tEvent = ParadoxDefinitionTypes.Event
-
         // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
         if (definitionInfo.type != tEvent || !definitionInfo.subtypes.contains("inherited")) return null
+        val definition = definitionInfo.element
         val data = definition.getDefinitionData<StellarisEventData>() ?: return null
         val baseName = data.base ?: return null
         val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
