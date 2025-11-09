@@ -9,9 +9,7 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -19,7 +17,6 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 定义信息。
@@ -38,9 +35,6 @@ class ParadoxDefinitionInfo(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
-    private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
-    private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
-
     val name: String by lazy { name0 ?: doGetName() }
     val type: String = typeConfig.name
     val subtypes: List<String> by lazy { doGetSubtypes() }
@@ -60,11 +54,11 @@ class ParadoxDefinitionInfo(
     val project get() = configGroup.project
 
     fun getSubtypeConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
-        return doGetSubtypeConfigsFromCache(matchOptions)
+        return doGetSubtypeConfigs(matchOptions)
     }
 
     fun getDeclaration(matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
-        return doGetDeclarationFromCache(matchOptions)
+        return doGetDeclaration(matchOptions)
     }
 
     private fun doGetName(): String {
@@ -81,22 +75,12 @@ class ParadoxDefinitionInfo(
         return result.optimized() // optimized to optimize memory
     }
 
-    private fun doGetSubtypeConfigsFromCache(matchOptions: Int): List<CwtSubtypeConfig> {
-        return subtypeConfigsCache.getOrPut(matchOptions) { doGetSubtypeConfigs(matchOptions) }
-    }
-
-    private fun doGetDeclarationFromCache(matchOptions: Int): CwtPropertyConfig? {
-        return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) ?: EMPTY_OBJECT }.castOrNull()
-    }
-
     private fun doGetSubtypeConfigs(matchOptions: Int): List<CwtSubtypeConfig> {
-        val result = ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
-        return result.optimized() // optimized to optimize memory
+        return ParadoxDefinitionService.resolveSubtypeConfigs(this, matchOptions)
     }
 
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
-        val result = ParadoxDefinitionService.resolveDeclaration(this, matchOptions)
-        return result
+        return ParadoxDefinitionService.resolveDeclaration(this, matchOptions)
     }
 
     private fun doGetLocalisations(): List<RelatedLocalisationInfo> {
