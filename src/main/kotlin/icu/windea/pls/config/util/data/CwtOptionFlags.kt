@@ -101,7 +101,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
          * ```
          */
         fun from(config: CwtMemberConfig<*>): CwtOptionFlags {
-            val optionConfigs = config.optionConfigs ?: return EMPTY
+            val optionConfigs = config.optionConfigs
             val flags = optionConfigs.filterIsInstance<CwtOptionValueConfig>()
                 .mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull()?.takeIf { s -> s.isIdentifier() } }
             if (flags.isEmpty()) return EMPTY

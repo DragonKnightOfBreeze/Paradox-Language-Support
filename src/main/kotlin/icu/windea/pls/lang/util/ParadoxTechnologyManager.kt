@@ -10,6 +10,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
+import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.config.configGroup.enums
 import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.core.castOrNull
@@ -91,13 +92,13 @@ object ParadoxTechnologyManager {
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
             val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
-                eventConfig.subtypes.values.filter { it.group == "technology_attribute" }.map { it.name }.toSet()
+                eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
             val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
-            return eventConfig.subtypes.values.filter { it.group == "technology_attribute" }
+            return eventConfig.subtypes.values.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }
         }
 
         fun getTier(element: ParadoxScriptDefinitionElement): String? {
@@ -118,7 +119,7 @@ object ParadoxTechnologyManager {
 
         fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
             return definitionInfo.getOrPutUserData(Keys.technologyAttributes) {
-                definitionInfo.subtypeConfigs.filter { it.group == "technology_attribute" }.mapTo(mutableSetOf()) { it.name }
+                definitionInfo.subtypeConfigs.filter { it.inGroup(CwtSubtypeGroup.TechnologyAttribute) }.mapTo(mutableSetOf()) { it.name }
             }
         }
 

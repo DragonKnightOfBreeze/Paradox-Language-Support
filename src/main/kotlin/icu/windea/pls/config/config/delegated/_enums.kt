@@ -4,6 +4,20 @@ import icu.windea.pls.config.config.delegated.CwtLinkArgumentSeparator.*
 import icu.windea.pls.config.config.delegated.CwtLinkType.*
 
 /**
+ * 子规则分组。
+ *
+ * @see CwtSubtypeConfig
+ */
+enum class CwtSubtypeGroup(val id: String) {
+    EventAttribute("event_attribute"),
+    EventType("event_type"),
+    TechnologyAttribute("technology_attribute"),
+    ;
+
+    override fun toString() = id
+}
+
+/**
  * 链接类型。默认为 [Scope]。
  *
  * @see CwtLinkConfig

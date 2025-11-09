@@ -27,6 +27,9 @@ interface ParadoxDefinitionInheritSupport {
      */
     fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
 
+    /**
+     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。
+     */
     fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? = null
 
     /**
@@ -35,9 +38,9 @@ interface ParadoxDefinitionInheritSupport {
      *
      * 如果实现了这个方法，需要同时考虑实现 [getModificationTracker]。
      *
-     * **注意**：需要避免递归。
+     * **注意**：解析时需要避免递归。并且，不能直接访问 `definitionInfo.subtypeConfigs`。
      */
-    fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {}
+    fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean = true
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")

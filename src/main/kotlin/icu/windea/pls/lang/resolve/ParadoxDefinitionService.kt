@@ -12,6 +12,7 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.declarations
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
@@ -151,12 +152,12 @@ object ParadoxDefinitionService {
     }
 
     /**
-     * @see ParadoxDefinitionInheritSupport.getSuperDefinition
+     * @see ParadoxDefinitionInheritSupport.processSubtypeConfigs
      */
     fun processSubtypeConfigsFromInherit(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>) {
         val gameType = definitionInfo.gameType
-        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f null
+        ParadoxDefinitionInheritSupport.EP_NAME.extensionList.process p@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@p true
             ep.processSubtypeConfigs(definitionInfo, subtypeConfigs)
         }
     }
