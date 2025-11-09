@@ -40,7 +40,9 @@ class CwtBaseDeclarationConfigContextProvider : CwtDeclarationConfigContextProvi
         val subtypes = definitionSubtypes?.filter { it in subtypesToDistinct }.orEmpty()
         val typeString = buildString {
             append(context.definitionType)
-            append(subtypes.joinToString("."))
+            for (subtype in subtypes) {
+                append('.').append(subtype)
+            }
         }
         return "b@$gameTypeId#$typeString"
     }
