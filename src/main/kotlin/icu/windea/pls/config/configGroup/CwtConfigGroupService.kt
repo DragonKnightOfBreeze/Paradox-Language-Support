@@ -107,9 +107,10 @@ class CwtConfigGroupService(
 
     private fun createConfigGroups(): MutableMap<ParadoxGameType, CwtConfigGroup> {
         // 直接创建所有游戏类型的规则分组（之后再预加载规则数据）
-        val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>()
-        ParadoxGameType.getAll(withCore = true).forEach { gameType ->
-            configGroups.put(gameType, CwtConfigGroup(project, gameType))
+        val gameTypes = ParadoxGameType.getAll(withCore = true)
+        val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>(gameTypes.size)
+        for (gameType in gameTypes) {
+            configGroups[gameType] = CwtConfigGroup(project, gameType)
         }
         return configGroups
     }
