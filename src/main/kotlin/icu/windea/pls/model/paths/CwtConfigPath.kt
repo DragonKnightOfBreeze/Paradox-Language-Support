@@ -31,7 +31,6 @@ interface CwtConfigPath : Iterable<String> {
         fun resolveEmpty(): CwtConfigPath
         fun resolve(input: String): CwtConfigPath
         fun resolve(input: List<String>): CwtConfigPath
-        fun invalidateCache()
     }
 
     companion object : Resolver by CwtConfigPathResolverImpl()

@@ -4,15 +4,13 @@ package icu.windea.pls.model.paths.impl
 
 import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.model.paths.CwtConfigPath
 
-private val interner = Interner.newWeakInterner<String>()
-private val cacheForSingleton = CacheBuilder().build<String, CwtConfigPath> { NormalizedCwtConfigPath(it, true) }
-private val cache = CacheBuilder().build<String, CwtConfigPath> { NormalizedCwtConfigPath(it, false) }
+private val stringInterner = Interner.newWeakInterner<String>()
 
-private fun String.internPath() = interner.intern(this)
+private fun String.internPath() = stringInterner.intern(this)
 private fun String.splitSubPaths() = replace("\\/", "\u0000").splitFast('/').map { it.replace('\u0000', '/') }
 private fun List<String>.joinSubPaths() = joinToString("/") { it.replace("/", "\\/") }
 
@@ -26,13 +24,8 @@ internal class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
 
     override fun resolve(input: List<String>): CwtConfigPath {
         if (input.isEmpty()) return EmptyCwtConfigPath
-        if (input.size == 1) return cacheForSingleton.get(input.get(0))
+        if (input.size == 1) return NormalizedCwtConfigPath(input.get(0), true)
         return CwtConfigPathImplFromSubPaths(input)
-    }
-
-    override fun invalidateCache() {
-        cacheForSingleton.invalidateAll()
-        cache.invalidateAll()
     }
 }
 
@@ -42,8 +35,8 @@ private abstract class CwtConfigPathBase : CwtConfigPath {
     override fun normalize(): CwtConfigPath {
         if (this is NormalizedCwtConfigPath || this is EmptyCwtConfigPath) return this
         if (this.isEmpty()) return EmptyCwtConfigPath
-        if (this.subPaths.size == 1) return cacheForSingleton.get(this.subPaths.get(0))
-        return cache.get(this.path)
+        if (this.subPaths.size == 1) return NormalizedCwtConfigPath(subPaths.get(0), true)
+        return NormalizedCwtConfigPath(path, false)
     }
 
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
@@ -63,7 +56,7 @@ private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPath
 
 private class NormalizedCwtConfigPath(input: String, singleton: Boolean) : CwtConfigPathBase() {
     override val path: String = input.internPath()
-    override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.internPath() }
+    override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.internPath() }.optimized()
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

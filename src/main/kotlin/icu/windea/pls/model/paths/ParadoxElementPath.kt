@@ -42,7 +42,6 @@ interface ParadoxElementPath : Iterable<String> {
         fun resolveEmpty(): ParadoxElementPath
         fun resolve(input: String): ParadoxElementPath
         fun resolve(input: List<String>): ParadoxElementPath
-        fun invalidateCache()
     }
 
     companion object : Resolver by ParadoxElementPathResolverImpl()

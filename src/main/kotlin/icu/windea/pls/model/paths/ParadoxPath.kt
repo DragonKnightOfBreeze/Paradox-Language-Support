@@ -37,7 +37,6 @@ interface ParadoxPath : Iterable<String> {
         fun resolveEmpty(): ParadoxPath
         fun resolve(input: String): ParadoxPath
         fun resolve(input: List<String>): ParadoxPath
-        fun invalidateCache()
     }
 
     companion object : Resolver by ParadoxPathResolverImpl()
