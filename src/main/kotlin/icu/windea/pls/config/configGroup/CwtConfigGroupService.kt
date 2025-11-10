@@ -7,9 +7,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
-import com.intellij.platform.ide.progress.ModalTaskOwner
 import com.intellij.platform.ide.progress.TaskCancellation
-import com.intellij.platform.ide.progress.withModalProgress
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
@@ -67,17 +66,17 @@ class CwtConfigGroupService(
 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            if (!project.isDefault && PlsFacade.getInternalSettings().showModalOnInitConfigGroups) {
-                // 显示不可取消的模态进度条
-                val title = PlsBundle.message("configGroup.init.progressTitle")
-                withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.nonCancellable()) {
-                    init(configGroups, project)
-                }
-            } else {
+            if (project.isDefault) {
                 // 静默执行
                 init(configGroups, project)
+            } else {
+                // 显示不可取消的后台进度条
+                val title = PlsBundle.message("configGroup.init.progressTitle")
+                withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
+                    init(configGroups, project)
+                }
+                callback()
             }
-            callback()
         }
     }
 
@@ -121,9 +120,9 @@ class CwtConfigGroupService(
         if (configGroups.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            // 显示可以取消的模态进度条
+            // 显示可以取消的后台进度条
             val title = PlsBundle.message("configGroup.refresh.progressTitle")
-            withModalProgress(ModalTaskOwner.project(project), title, TaskCancellation.cancellable()) {
+            withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
                 refresh(configGroups, project)
             }
             // 重新解析已打开的文件
