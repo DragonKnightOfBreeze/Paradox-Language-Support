@@ -15,8 +15,6 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 object PlsKeys : KeyRegistry() {
-    /** 用于在应用级别或项目级别缓存规则分组数据。 */
-    val configGroups by createKey<Map<ParadoxGameType, CwtConfigGroup>>(this)
     /** 用于在项目级别缓存游戏目录和模组依赖目录对应的外部库。 */
     val library by createKey<ParadoxLibrary>(this)
     /** 用于在项目级别缓存非项目本地的规则目录对应的外部库。 */

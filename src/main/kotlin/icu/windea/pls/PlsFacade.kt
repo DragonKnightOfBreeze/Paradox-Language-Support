@@ -11,7 +11,6 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.settings.PlsConfigSettings
-import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.isClassPresent
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
@@ -45,7 +44,7 @@ object PlsFacade {
      */
     fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return service<CwtConfigGroupService>().getConfigGroup(getDefaultProject(), finalGameType)
+        return service<CwtConfigGroupService>().getConfigGroup(finalGameType)
     }
 
     /**
@@ -56,7 +55,7 @@ object PlsFacade {
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return service<CwtConfigGroupService>().getConfigGroup(project, finalGameType)
+        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
     }
 
     fun getSettings() = service<PlsSettings>().state

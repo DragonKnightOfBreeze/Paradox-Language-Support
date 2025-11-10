@@ -14,9 +14,9 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
-import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.images.ImageManager
+import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +38,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         // 在启动应用后，异步地初始化缓存数据
         initCachesAsync()
         // 在启动应用后，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
-        initConfigGroupsAsync(getDefaultProject())
+        initDefaultConfigGroupsAsync()
     }
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
@@ -90,10 +90,18 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         }
     }
 
+    private fun initDefaultConfigGroupsAsync() {
+        if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
+        service<CwtConfigGroupService>().initAsync()
+    }
+
     private fun initConfigGroupsAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         if (project.isDisposed) return
-        service<CwtConfigGroupService>().initAsync(project) {
+        project.service<CwtConfigGroupService>().initAsync {
+            // 重新解析已打开的文件
+            val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsAnalyzeManager.reparseFiles(openedFiles)
             // 规则数据加载完毕后，异步地刷新外部库的根目录
             refreshRootsForLibrariesAsync(project)
         }

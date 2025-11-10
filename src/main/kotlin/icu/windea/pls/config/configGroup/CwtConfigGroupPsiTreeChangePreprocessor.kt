@@ -22,7 +22,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (file !is CwtFile) return
         val vFile = file.virtualFile ?: return
         val project = file.project
-        val configGroupService = service<CwtConfigGroupService>()
+        val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = mutableSetOf<CwtConfigGroup>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
@@ -31,12 +31,12 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             configGroups.add(configGroup)
             if (configGroup.gameType == ParadoxGameType.Core) {
-                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(project, gameType)) }
+                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
             }
         }
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
         if (configGroupsToChange.isEmpty()) return
         configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-        configGroupService.updateRefreshFloatingToolbar(project)
+        configGroupService.updateRefreshFloatingToolbar()
     }
 }

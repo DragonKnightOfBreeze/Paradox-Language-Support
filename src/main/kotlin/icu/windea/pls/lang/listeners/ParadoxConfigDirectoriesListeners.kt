@@ -56,11 +56,11 @@ class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfig
     private fun doUpdate() {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
-            val configGroupService = service<CwtConfigGroupService>()
-            configGroupService.getConfigGroups(project).values.forEach { configGroup ->
+            val configGroupService = project.service<CwtConfigGroupService>()
+            configGroupService.getConfigGroups().values.forEach { configGroup ->
                 configGroup.changed.set(true)
             }
-            configGroupService.updateRefreshFloatingToolbar(project)
+            configGroupService.updateRefreshFloatingToolbar()
         }
     }
 }

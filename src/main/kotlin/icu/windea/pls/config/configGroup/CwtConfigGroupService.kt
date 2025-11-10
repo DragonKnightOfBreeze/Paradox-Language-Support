@@ -2,6 +2,7 @@ package icu.windea.pls.config.configGroup
 
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
@@ -14,8 +15,9 @@ import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
@@ -27,11 +29,41 @@ private val logger = logger<CwtConfigGroupService>()
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
  */
-@Service
+@Service(Service.Level.APP, Service.Level.PROJECT)
 @Suppress("UnstableApiUsage")
-class CwtConfigGroupService {
-    fun initAsync(project: Project, callback: () -> Unit = {}) {
-        val configGroups = getConfigGroups(project).values
+class CwtConfigGroupService(
+    private val project: Project = getDefaultProject()
+) : Disposable {
+    object Keys : KeyRegistry() {
+        val defaultConfigGroup = createKey<Map<ParadoxGameType, CwtConfigGroup>>("pls.default.configGroup")
+    }
+
+    private val cache = createConfigGroups()
+
+    suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        val start = System.currentTimeMillis()
+        configGroups.forEachConcurrent { configGroup ->
+            configGroup.init()
+            PlsFacade.getConfigGroup(configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
+        }
+        val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
+    }
+
+    suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
+        val start = System.currentTimeMillis()
+        configGroups.forEachConcurrent { configGroup ->
+            configGroup.init()
+            PlsFacade.getConfigGroup(configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
+        }
+        val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
+    }
+
+    fun initAsync(callback: () -> Unit = {}) {
+        val configGroups = getConfigGroups().values
 
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -45,59 +77,35 @@ class CwtConfigGroupService {
                 // 静默执行
                 init(configGroups, project)
             }
-            if (!project.isDefault) {
-                // 重新解析已打开的文件
-                val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-                PlsAnalyzeManager.reparseFiles(openedFiles)
-            }
             callback()
         }
-    }
-
-    suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
-        val start = System.currentTimeMillis()
-        configGroups.forEachConcurrent { configGroup ->
-            configGroup.init()
-            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
-        }
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
-    }
-
-    suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
-        val start = System.currentTimeMillis()
-        configGroups.forEachConcurrent { configGroup ->
-            configGroup.init()
-            getConfigGroup(getDefaultProject(), configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
-        }
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
     }
 
     /**
      * 得到指定项目与游戏类型的规则分组。
      */
-    fun getConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
-        return getConfigGroups(project).getValue(gameType)
+    fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
+        return getConfigGroups().getValue(gameType)
     }
 
     /**
      * 得到指定项目的所有规则分组。
      */
-    fun getConfigGroups(project: Project): Map<ParadoxGameType, CwtConfigGroup> {
+    fun getConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         // #184
         // 不能将规则数据缓存到默认项目的服务对象中，否则会被不定期清空
-        // 因此，目前改为缓存到应用（默认项目的规则数据）或项目（对应项目的规则数据）的用户数据中
-        val componentManager = if (project.isDefault) application else project
-        val configGroups = synchronized(this) { // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
-            componentManager.getOrPutUserData(PlsKeys.configGroups) { createConfigGroups(project) }
+        // 因此，目前改为缓存到应用的用户数据（默认项目的规则数据）或服务（对应项目的规则数据）中
+        if (project.isDefault) {
+            // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
+            val key = Keys.defaultConfigGroup
+            return synchronized(key) {
+                application.getOrPutUserData(key) { createConfigGroups() }
+            }
         }
-        return configGroups
+        return cache
     }
 
-    private fun createConfigGroups(project: Project): Map<ParadoxGameType, CwtConfigGroup> {
+    private fun createConfigGroups(): MutableMap<ParadoxGameType, CwtConfigGroup> {
         // 直接创建所有游戏类型的规则分组（之后再预加载规则数据）
         val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>()
         ParadoxGameType.getAll(withCore = true).forEach { gameType ->
@@ -107,7 +115,8 @@ class CwtConfigGroupService {
     }
 
     @Synchronized
-    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>, project: Project) {
+    fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+        if (project.isDefault) return
         if (configGroups.isEmpty()) return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -127,7 +136,7 @@ class CwtConfigGroupService {
                     ""
                 ).notify(project)
             } else if (e == null) {
-                updateRefreshFloatingToolbar(project)
+                updateRefreshFloatingToolbar()
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     reparseFilesInRootFilePaths(configGroups)
                 }
@@ -161,8 +170,14 @@ class CwtConfigGroupService {
         return rootFilePaths
     }
 
-    fun updateRefreshFloatingToolbar(project: Project) {
+    fun updateRefreshFloatingToolbar() {
+        if (project.isDefault) return
         val provider = FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java)
         provider.updateToolbarComponents(project)
+    }
+
+    override fun dispose() {
+        // 清理规则分组数据
+        cache.clear()
     }
 }

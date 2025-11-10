@@ -57,7 +57,7 @@ class CwtConfigFileListener : AsyncFileListener {
 
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
                 ProjectManager.getInstance().openProjects.forEach f1@{ project ->
-                    val configGroupService = service<CwtConfigGroupService>()
+                    val configGroupService = project.service<CwtConfigGroupService>()
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
                         if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2
@@ -66,14 +66,14 @@ class CwtConfigFileListener : AsyncFileListener {
                             val configGroup = fileProvider.getContainingConfigGroup(contextDirectory, project) ?: return@f3
                             configGroups.add(configGroup)
                             if (configGroup.gameType == ParadoxGameType.Core) {
-                                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(project, gameType)) }
+                                ParadoxGameType.getAll().forEach { gameType -> configGroups.add(configGroupService.getConfigGroup(gameType)) }
                             }
                         }
                     }
                     val configGroupsToChange = configGroups.filter { !it.changed.get() }
                     if (configGroupsToChange.isEmpty()) return@f1
                     configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-                    configGroupService.updateRefreshFloatingToolbar(project)
+                    configGroupService.updateRefreshFloatingToolbar()
                 }
             }
         }

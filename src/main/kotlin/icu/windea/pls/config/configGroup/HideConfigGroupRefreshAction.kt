@@ -27,16 +27,16 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         if (file?.fileInfo == null) return
         presentation.isVisible = true
         val project = e.project ?: return
-        val configGroupService = service<CwtConfigGroupService>()
-        val configGroups = configGroupService.getConfigGroups(project).values.filter { it.changed.get() }
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val configGroupService = service<CwtConfigGroupService>()
-        val configGroups = configGroupService.getConfigGroups(project).values.filter { it.changed.get() }
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
-        configGroupService.updateRefreshFloatingToolbar(project)
+        configGroupService.updateRefreshFloatingToolbar()
     }
 }

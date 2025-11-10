@@ -15,21 +15,21 @@ import kotlinx.coroutines.runBlocking
 
 object PlsTestUtil {
     fun initConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
-        val configGroupService = service<CwtConfigGroupService>()
-        val groups = configGroupService.getConfigGroups(project).values
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val groups = configGroupService.getConfigGroups().values
         runBlocking { configGroupService.init(groups, project) }
-        return configGroupService.getConfigGroup(project, gameType)
+        return configGroupService.getConfigGroup(gameType)
     }
 
     fun initConfigGroups(project: Project) {
-        val configGroupService = service<CwtConfigGroupService>()
-        val configGroups = configGroupService.getConfigGroups(project).values
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroups = configGroupService.getConfigGroups().values
         runBlocking { configGroupService.init(configGroups, project) }
     }
 
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        val configGroupService = service<CwtConfigGroupService>()
-        val configGroups = configGroupService.getConfigGroups(project).values
+        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroups = configGroupService.getConfigGroups().values
             .filter { it.gameType == ParadoxGameType.Core || it.gameType in gameTypes }
         runBlocking { configGroupService.init(configGroups, project) }
     }
