@@ -6,6 +6,8 @@ import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.singleton
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 private val stringInterner = Interner.newWeakInterner<String>()
@@ -56,7 +58,7 @@ private class ParadoxElementPathImplFromSubPaths(input: List<String>) : ParadoxE
 
 private class NormalizedParadoxElementPath(input: String, singleton: Boolean) : ParadoxElementPathBase() {
     override val path: String = input.internPath()
-    override val subPaths: List<String> = if (singleton) listOf(path) else path.splitSubPaths().map { it.internPath() }.optimized()
+    override val subPaths: List<String> = if (singleton) path.singleton.list() else path.splitSubPaths().map { it.internPath() }.optimized()
 }
 
 private object EmptyParadoxElementPath : ParadoxElementPathBase() {

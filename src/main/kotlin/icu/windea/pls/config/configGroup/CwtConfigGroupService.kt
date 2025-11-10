@@ -21,7 +21,6 @@ import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentHashMap
 
 private val logger = logger<CwtConfigGroupService>()
 
@@ -37,7 +36,7 @@ class CwtConfigGroupService(
         val defaultConfigGroup = createKey<Map<ParadoxGameType, CwtConfigGroup>>("pls.default.configGroup")
     }
 
-    private val cache = createConfigGroups()
+    private var cache = createConfigGroups()
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
@@ -88,7 +87,12 @@ class CwtConfigGroupService(
      * 得到指定项目与游戏类型的规则分组。
      */
     fun getConfigGroup(gameType: ParadoxGameType): CwtConfigGroup {
-        return getConfigGroups().getValue(gameType)
+        val configGroup = getConfigGroups().get(gameType)
+        if (configGroup == null) {
+            // return temporary empty config group to avoid NPE
+            return CwtConfigGroup(project, gameType)
+        }
+        return configGroup
     }
 
     /**
@@ -108,12 +112,13 @@ class CwtConfigGroupService(
         return cache
     }
 
-    private fun createConfigGroups(): MutableMap<ParadoxGameType, CwtConfigGroup> {
+    private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         // 直接创建所有游戏类型的规则分组（之后再预加载规则数据）
         val gameTypes = ParadoxGameType.getAll(withCore = true)
-        val configGroups = ConcurrentHashMap<ParadoxGameType, CwtConfigGroup>(gameTypes.size)
-        for (gameType in gameTypes) {
-            configGroups[gameType] = CwtConfigGroup(project, gameType)
+        val configGroups = buildMap(gameTypes.size) {
+            for (gameType in gameTypes) {
+                this[gameType] = CwtConfigGroup(project, gameType)
+            }
         }
         return configGroups
     }
@@ -183,6 +188,6 @@ class CwtConfigGroupService(
     override fun dispose() {
         // 清理规则分组数据
         cache.values.forEach { it.clear() }
-        cache.clear()
+        cache = emptyMap()
     }
 }
