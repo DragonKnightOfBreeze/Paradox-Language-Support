@@ -64,7 +64,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options(conditional, inline)?.process {
+    block?.properties()?.options(conditional = true, inline = true)?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -93,7 +93,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options(conditional, inline)?.process {
+    block?.properties()?.options(conditional = true, inline = true)?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false
