@@ -41,10 +41,12 @@ class CwtConfigGroupService(
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        configGroups.forEachConcurrent { configGroup ->
-            configGroup.init()
-            PlsFacade.getConfigGroup(configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
+        val configGroupsToInit = buildList(configGroups.size * 2) {
+            addAll(configGroups)
+            // 之后也要初始化默认项目的规则数据
+            configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
         }
+        configGroupsToInit.forEachConcurrent { configGroup -> configGroup.init() }
         val end = System.currentTimeMillis()
         val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Initialized config groups for $targetName in ${end - start} ms.")
@@ -52,10 +54,12 @@ class CwtConfigGroupService(
 
     suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        configGroups.forEachConcurrent { configGroup ->
-            configGroup.init()
-            PlsFacade.getConfigGroup(configGroup.gameType).init() // 之后也要刷新默认项目的规则数据
+        val configGroupsToInit = buildList(configGroups.size * 2) {
+            addAll(configGroups)
+            // 之后也要刷新默认项目的规则数据
+            configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
         }
+        configGroupsToInit.forEachConcurrent { configGroup -> configGroup.init() }
         val end = System.currentTimeMillis()
         val targetName = if (project.isDefault) "application" else "project '${project.name}'"
         logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
