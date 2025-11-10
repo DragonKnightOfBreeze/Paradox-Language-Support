@@ -5,20 +5,15 @@ import org.junit.Assert.*
 import org.junit.BeforeClass
 import org.junit.Test
 
-/**
- * 严格优化模式（PlsFacade.Capacities.strictOptimize=true）下的忽略策略测试。
- * 仅验证当输入已是 Kotlin/JDK 的不可变集合实现时，优化器应直接返回自身引用（忽略）。
- */
 @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
-class OptimizerStrictTest {
+class OptimizerRelaxTest {
     companion object {
-        private const val propName = "pls.strict.optimize"
+        private const val propName = "pls.relax.optimize"
         private var oldProp: String? = null
 
         @JvmStatic
         @BeforeClass
         fun beforeClass() {
-            // 在首次调用严格优化判断前设置系统属性
             oldProp = System.getProperty(propName)
             System.setProperty(propName, "true")
         }
