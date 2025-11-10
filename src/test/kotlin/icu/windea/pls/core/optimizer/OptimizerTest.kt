@@ -42,9 +42,9 @@ class OptimizerTest {
     // ========== List ==========
     @Test
     fun testListOptimizer_emptyLists_valueEquality_only() {
-        val optimizer = OptimizerRegistry.forList<String?>()
-        val input1 = emptyList<String?>()
-        val input2 = mutableListOf<String?>()
+        val optimizer = OptimizerRegistry.forList<String>()
+        val input1 = emptyList<String>()
+        val input2 = mutableListOf<String>()
         val r1 = optimizer.optimize(input1)
         val r2 = optimizer.optimize(input2)
         assertTrue(r1.isEmpty())
@@ -79,22 +79,6 @@ class OptimizerTest {
         assertSame("ImmutableList input should be returned as-is", input, result)
     }
 
-    @Test
-    fun testListOptimizer_nullElement_singleton_allowed() {
-        val optimizer = OptimizerRegistry.forList<String?>()
-        val input: List<String?> = listOf(null)
-        val result = optimizer.optimize(input)
-        assertEquals(1, result.size)
-        assertNull(result[0])
-    }
-
-    @Test
-    fun testListOptimizer_nullElement_multiple_throwsNpe() {
-        val optimizer = OptimizerRegistry.forList<String?>()
-        val input: List<String?> = listOf(null, "x")
-        assertThrows(NullPointerException::class.java) { optimizer.optimize(input) }
-    }
-
     // ========== Set ==========
     @Test
     fun testSetOptimizer_emptySets_valueEquality_only() {
@@ -127,13 +111,6 @@ class OptimizerTest {
         assertSame("ImmutableSet input should be returned as-is", input, result)
     }
 
-    @Test
-    fun testSetOptimizer_nullElement_throwsNpe() {
-        val optimizer = OptimizerRegistry.forSet<String?>()
-        val input: Set<String?> = setOf(null)
-        assertThrows(NullPointerException::class.java) { optimizer.optimize(input) }
-    }
-
     // ========== Map ==========
     @Test
     fun testMapOptimizer_emptyMaps_valueEquality_only() {
@@ -164,20 +141,6 @@ class OptimizerTest {
         val input = ImmutableMap.of("x", 2)
         val result = optimizer.optimize(input)
         assertSame("ImmutableMap input should be returned as-is", input, result)
-    }
-
-    @Test
-    fun testMapOptimizer_nullKey_throwsNpe() {
-        val optimizer = OptimizerRegistry.forMap<Any?, Any?>()
-        val input = hashMapOf<Any?, Any?>(null to 1)
-        assertThrows(NullPointerException::class.java) { optimizer.optimize(input) }
-    }
-
-    @Test
-    fun testMapOptimizer_nullValue_throwsNpe() {
-        val optimizer = OptimizerRegistry.forMap<String, Any?>()
-        val input = hashMapOf("a" to null)
-        assertThrows(NullPointerException::class.java) { optimizer.optimize(input) }
     }
 
     // ========== String List (small-size interning) ==========
