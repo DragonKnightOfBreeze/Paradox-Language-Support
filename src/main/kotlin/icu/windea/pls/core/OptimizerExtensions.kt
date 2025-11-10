@@ -32,8 +32,8 @@ inline fun <T : Any, R : Any> R.deoptimized(optimizerProvider: OptimizerRegistry
 /** @see Optimizer.optimize */
 inline fun String.optimized() = optimized(OptimizerRegistry.forString())
 /** @see Optimizer.optimize */
-inline fun <E> List<E>.optimized() = optimized(OptimizerRegistry.forList())
+inline fun <E : Any> List<E>.optimized() = optimized(OptimizerRegistry.forList())
 /** @see Optimizer.optimize */
-inline fun <E> Set<E>.optimized() = optimized(OptimizerRegistry.forSet())
+inline fun <E : Any> Set<E>.optimized() = optimized(OptimizerRegistry.forSet())
 /** @see Optimizer.optimize */
-inline fun <K, V> Map<K, V>.optimized() = optimized(OptimizerRegistry.forMap())
+inline fun <K : Any, V : Any> Map<K, V>.optimized() = optimized(OptimizerRegistry.forMap())
