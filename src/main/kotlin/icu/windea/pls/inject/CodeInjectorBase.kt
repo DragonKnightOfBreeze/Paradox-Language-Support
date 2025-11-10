@@ -38,6 +38,8 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
             targetClass.toClass(pluginClassLoader, null)
         }
         targetClass.detach()
+
+        putUserData(CodeInjectorService.targetClassKey, null)
     }
 
     private fun getCodeInjectorInfo(): CodeInjectorInfo? {
