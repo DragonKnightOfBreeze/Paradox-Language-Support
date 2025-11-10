@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang.util
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
@@ -20,6 +19,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.BitUtil
+import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
@@ -65,7 +65,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
@@ -130,8 +129,8 @@ object ParadoxExpressionManager {
         val cachedParameterRanges by createKey<CachedValue<List<TextRange>>>(Keys)
 
         val cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by createKey<CachedValue<Cache<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrenceMapCache by createKey<CachedValue<Cache<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
+        val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
+        val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
 
         val cachedExpressionReferences by createKey<CachedValue<Array<out PsiReference>>>(Keys)
         val cachedExpressionReferencesForMergedIndex by createKey<CachedValue<Array<out PsiReference>>>(Keys)
@@ -451,13 +450,13 @@ object ParadoxExpressionManager {
         val cache = doGetConfigsCacheFromCache(memberElement)
         // optimized to optimize memory
         val cacheKey = "${orDefault.toInt()},${matchOptions}".optimized()
-        return cache.get(cacheKey) {
+        return cache.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions)
             result.sortedByPriority({ it.configExpression }, { it.configGroup }).optimized()
         }
     }
 
-    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): Cache<String, List<CwtMemberConfig<*>>> {
+    private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
@@ -465,9 +464,10 @@ object ParadoxExpressionManager {
     }
 
     @Optimized
-    private fun doGetConfigsCache(): Cache<String, List<CwtMemberConfig<*>>> {
+    private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
+        // use concurrent map instead of cache for nested case to optimize memory
         // use soft values to optimize memory
-        return CacheBuilder().softValues().build()
+        return ContainerUtil.createConcurrentSoftValueMap()
     }
 
     private fun doGetConfigs(element: ParadoxScriptMember, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
@@ -545,16 +545,16 @@ object ParadoxExpressionManager {
         if (childConfigs.isEmpty()) return emptyMap()
 
         ProgressManager.checkCanceled()
-        val cache = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
+        val cache = doGetChildOccurrenceMapCacheFromCache(element)
         // optimized to optimize memory
         val cacheKey = childConfigs.joinToString("\n") { CwtConfigManipulator.getIdentifierKey(it, maxDepth = 1) }.optimized()
-        return cache.get(cacheKey) {
+        return cache.getOrPut(cacheKey) {
             val result = doGetChildOccurrenceMap(element, configs)
             result.optimized()
         }
     }
 
-    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): Cache<String, Map<CwtDataExpression, Occurrence>>? {
+    private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMember): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
@@ -562,9 +562,10 @@ object ParadoxExpressionManager {
     }
 
     @Optimized
-    private fun doGetChildOccurrenceMapCache(): Cache<String, Map<CwtDataExpression, Occurrence>> {
+    private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
+        // use concurrent map instead of cache for nested case to optimize memory
         // use soft values to optimize memory
-        return CacheBuilder().softValues().build()
+        return ContainerUtil.createConcurrentSoftValueMap()
     }
 
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
