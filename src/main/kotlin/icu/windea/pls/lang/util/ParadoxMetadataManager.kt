@@ -10,7 +10,7 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.ep.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
@@ -56,7 +56,7 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo {
-        return ObjectMappers.jsonMapper.readValue(file.inputStream)
+        return jsonMapper.readValue(file.inputStream)
     }
 
     fun getModDescriptorFile(rootFile: VirtualFile): VirtualFile? {
@@ -113,7 +113,7 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo {
-        return ObjectMappers.jsonMapper.readValue(file.inputStream)
+        return jsonMapper.readValue(file.inputStream)
     }
 
     // Get From Metadata
@@ -168,7 +168,7 @@ object ParadoxMetadataManager {
      */
     fun detectLauncherPlaylistPositionIsInt(file: VirtualFile): Boolean? {
         return try {
-            val root = ObjectMappers.jsonMapper.readTree(file.inputStream)
+            val root = jsonMapper.readTree(file.inputStream)
             val modsNode = root.get("mods") ?: return null
             val first = modsNode.firstOrNull() ?: return null
             first.get("position")?.isInt

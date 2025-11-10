@@ -2,7 +2,7 @@ package icu.windea.pls.ep.tools.exporter
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.ep.tools.model.LauncherJsonV3
 import icu.windea.pls.ep.tools.model.Playsets
@@ -79,7 +79,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = ObjectMappers.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV2::class.java)
+        val json = jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV2::class.java)
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })
@@ -98,7 +98,7 @@ class ParadoxModExporterTest : BasePlatformTestCase() {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = ObjectMappers.jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
+        val json = jsonMapper.readValue(Files.newInputStream(outFile), LauncherJsonV3::class.java)
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })

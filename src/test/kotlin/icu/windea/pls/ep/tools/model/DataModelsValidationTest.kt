@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.tools.model
 
-import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import org.junit.Test
@@ -29,7 +29,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV2_fromResources() {
         val ins = getResource("/tools/playlist_v2.json")
-        val model = ObjectMappers.jsonMapper.readValue(ins, LauncherJsonV2::class.java)
+        val model = jsonMapper.readValue(ins, LauncherJsonV2::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })
@@ -43,7 +43,7 @@ class DataModelsValidationTest {
     @Test
     fun parsePlaylistV3_fromResources() {
         val ins = getResource("/tools/playlist_v3.json")
-        val model = ObjectMappers.jsonMapper.readValue(ins, LauncherJsonV3::class.java)
+        val model = jsonMapper.readValue(ins, LauncherJsonV3::class.java)
         assert(model.game == "stellaris")
         assert(model.mods.size == 3)
         assert(model.mods.all { it.enabled })

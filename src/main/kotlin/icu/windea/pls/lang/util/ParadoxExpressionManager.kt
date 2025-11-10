@@ -55,7 +55,7 @@ import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.isEmpty

@@ -27,7 +27,6 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.text.StringUtilRt
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
@@ -59,15 +58,11 @@ import com.intellij.util.ArrayUtil
 import com.intellij.util.Processor
 import com.intellij.util.Query
 import com.intellij.util.application
-import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tupleOf
-import it.unimi.dsi.fastutil.Hash
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenCustomHashSet
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.reflect.KProperty
@@ -77,31 +72,6 @@ import kotlin.reflect.KProperty
 /** 忽略大小写的字符串比较。*/
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
-}
-
-/** 忽略大小写的字符串哈希与相等策略。*/
-object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
-    override fun hashCode(s: String?): Int {
-        return if (s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
-    }
-
-    override fun equals(s1: String?, s2: String?): Boolean {
-        return s1.equals(s2, ignoreCase = true)
-    }
-}
-
-// com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
-
-/** 创建忽略大小写的字符串集合。*/
-fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
-    return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
-}
-
-// com.intellij.util.containers.createCaseInsensitiveStringMap()
-
-/** 创建键为忽略大小写字符串的映射。*/
-fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
-    return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
 }
 
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {

@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized
 

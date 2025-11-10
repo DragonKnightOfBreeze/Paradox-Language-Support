@@ -28,7 +28,7 @@ import icu.windea.pls.config.configGroup.types
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
-import icu.windea.pls.core.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.takeWithOperator

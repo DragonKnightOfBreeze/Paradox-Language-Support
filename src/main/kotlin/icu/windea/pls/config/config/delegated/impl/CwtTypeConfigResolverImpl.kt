@@ -21,7 +21,7 @@ import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.collections.getAll
 import icu.windea.pls.core.collections.getOne
 import icu.windea.pls.core.optimized

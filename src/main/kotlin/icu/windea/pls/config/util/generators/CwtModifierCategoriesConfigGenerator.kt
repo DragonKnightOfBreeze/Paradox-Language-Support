@@ -4,7 +4,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
-import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.children
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.toFile

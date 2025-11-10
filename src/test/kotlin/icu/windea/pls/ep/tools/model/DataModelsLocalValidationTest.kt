@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.tools.model
 
-import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assume
@@ -38,7 +38,7 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.dlcLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = ObjectMappers.jsonMapper.readValue(file.toFile(), DlcLoadJson::class.java)
+        val model = jsonMapper.readValue(file.toFile(), DlcLoadJson::class.java)
         // 基本断言 + 更严格校验
         assert(model != null)
         assert(model.disabledDlcs.all { it.isNotBlank() })
@@ -54,7 +54,7 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.contentLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = ObjectMappers.jsonMapper.readValue(file.toFile(), ContentLoadJson::class.java)
+        val model = jsonMapper.readValue(file.toFile(), ContentLoadJson::class.java)
         // 基本断言 + 更严格校验：路径应当为 .mod 描述符
         assert(model != null)
         val modPaths = model.enabledMods.map { it.path }
@@ -73,7 +73,7 @@ class DataModelsLocalValidationTest {
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
         // 先用 readTree 探测 position 类型（V2: string, V3: int）。
-        val root = ObjectMappers.jsonMapper.readTree(file.toFile())
+        val root = jsonMapper.readTree(file.toFile())
         val modsNode = root.get("mods")
         val first = modsNode?.firstOrNull()
         val isV3 = first?.get("position")?.isInt == true
@@ -83,13 +83,13 @@ class DataModelsLocalValidationTest {
         assert(game == ParadoxGameType.Stellaris.gameId)
 
         if (isV3) {
-            val model = ObjectMappers.jsonMapper.readValue(file.toFile(), LauncherJsonV3::class.java)
+            val model = jsonMapper.readValue(file.toFile(), LauncherJsonV3::class.java)
             assert(model.mods.all { it.position >= 0 })
             // 每个 mod 应该至少有 steamId 或 pdxId
             assert(model.mods.all { (it.steamId != null && it.steamId.isNotEmpty()) || (it.pdxId != null && it.pdxId.isNotEmpty()) })
             println("playlist.json -> V3, mods=${model.mods.size}")
         } else {
-            val model = ObjectMappers.jsonMapper.readValue(file.toFile(), LauncherJsonV2::class.java)
+            val model = jsonMapper.readValue(file.toFile(), LauncherJsonV2::class.java)
             assert(model.mods.all { it.position.isNotEmpty() })
             assert(model.mods.all { (it.steamId != null && it.steamId.isNotEmpty()) || (it.pdxId != null && it.pdxId.isNotEmpty()) })
             println("playlist.json -> V2, mods=${model.mods.size}")

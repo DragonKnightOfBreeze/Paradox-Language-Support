@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import icu.windea.pls.core.util.ObjectMappers
+import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.lang.tools.PlsPathService
 import org.junit.Assume
 import org.junit.Test
@@ -55,7 +55,7 @@ class ParadoxLauncherSettingsInfoTest {
 }
     """.trimIndent()
 
-        val model = ObjectMappers.jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
+        val model = jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
         doAssert(model)
     }
 
@@ -71,7 +71,7 @@ class ParadoxLauncherSettingsInfoTest {
         val file = listOf(file1, file2).firstOrNull { it.exists() && it.isRegularFile() }
         Assume.assumeTrue("Skip: launcher-settings.json not found", file != null)
 
-        val model = ObjectMappers.jsonMapper.readValue(file!!.toFile(), ParadoxLauncherSettingsInfo::class.java)
+        val model = jsonMapper.readValue(file!!.toFile(), ParadoxLauncherSettingsInfo::class.java)
         doAssert(model)
     }
 

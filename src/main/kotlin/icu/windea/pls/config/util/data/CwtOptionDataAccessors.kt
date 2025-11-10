@@ -20,7 +20,7 @@ import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
 import icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
 import icu.windea.pls.core.annotations.CaseInsensitive
-import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
