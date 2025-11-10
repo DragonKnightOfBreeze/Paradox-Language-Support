@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.util.BitUtil
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -20,6 +19,7 @@ import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchUtil
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -73,7 +73,7 @@ object ParadoxDefinitionService {
             }
         }
         // to avoid to rely on non-indexed file data (like super definition) when indexing (through this may loss some information)
-        if (!BitUtil.isSet(matchOptions, ParadoxMatchOptions.SkipIndex)) {
+        if (!ParadoxMatchUtil.skipIndex(matchOptions)) {
             processSubtypeConfigsFromInherit(definitionInfo, result)
         }
         return result.distinctBy { it.name } // it's necessary to distinct by name

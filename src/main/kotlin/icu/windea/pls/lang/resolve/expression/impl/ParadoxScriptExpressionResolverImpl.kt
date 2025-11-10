@@ -1,12 +1,11 @@
 package icu.windea.pls.lang.resolve.expression.impl
 
-import com.intellij.util.BitUtil
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.match.ParadoxMatchUtil
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxType
@@ -79,10 +78,8 @@ private class ParadoxScriptExpressionLazyImpl(
 ) : ParadoxScriptExpressionBase() {
     // 1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
     val valueElement by lazy {
-        when {
-            BitUtil.isSet(matchOptions, ParadoxMatchOptions.SkipIndex) -> null
-            else -> element.resolved()?.scriptedVariableValue
-        }
+        if (ParadoxMatchUtil.skipIndex(matchOptions)) return@lazy null
+        element.resolved()?.scriptedVariableValue
     }
 
     override val value: String get() = valueElement?.value ?: PlsStringConstants.unknown
