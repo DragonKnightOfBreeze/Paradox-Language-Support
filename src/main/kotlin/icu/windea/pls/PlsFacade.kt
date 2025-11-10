@@ -120,8 +120,8 @@ object PlsFacade {
         /** 是否记录缓存状态。*/
         fun recordCacheStats() = System.getProperty("pls.cache.recordStats").toBoolean()
 
-        /** 是否启用更严格的优化策略。这适用于多数需要加入到缓存中的集合，进行更准确的忽略检查。 */
-        fun strictOptimize() = System.getProperty("pls.strict.optimize").toBoolean()
+        /** 是否启用更宽松的优化策略。这适用于多数需要加入到缓存中的集合，进行更详细的忽略检查。 */
+        fun relaxOptimize() = System.getProperty("pls.relax.optimize").toBoolean()
 
         /** 是否禁用在打开项目后，刷新内置规则目录（仅限一次）。 */
         fun suppressRefreshBuiltIn() = System.getProperty("pls.suppress.refreshBuiltIn").toBoolean()

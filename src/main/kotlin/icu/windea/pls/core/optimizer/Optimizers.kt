@@ -14,9 +14,9 @@ import java.util.*
 fun OptimizerRegistry.forString() = register(StringOptimizer)
 fun OptimizerRegistry.forStringList() = register(StringListOptimizer)
 fun OptimizerRegistry.forStringSet() = register(StringSetOptimizer)
-fun <E> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
-fun <E> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
-fun <K, V> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
+fun <E : Any> OptimizerRegistry.forList() = registerTyped<List<E>, _>(ListOptimizer)
+fun <E : Any> OptimizerRegistry.forSet() = registerTyped<Set<E>, _>(SetOptimizer)
+fun <K : Any, V : Any> OptimizerRegistry.forMap() = registerTyped<Map<K, V>, _>(MapOptimizer)
 
 private val stringInterner = Interner.newWeakInterner<String>()
 private inline fun String.internString() = stringInterner.intern(this)
@@ -62,77 +62,77 @@ private object StringSetOptimizer : Optimizer.Unary<Set<String>> {
     }
 }
 
-private object ListOptimizer : Optimizer.Unary<List<*>> {
-    override fun optimize(input: List<*>): List<*> {
+private object ListOptimizer : Optimizer.Unary<List<Any>> {
+    override fun optimize(input: List<Any>): List<Any> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: List<*>): Boolean {
+    private inline fun ignore(input: List<Any>): Boolean {
         if (input is ImmutableList) return true
-        if (PlsFacade.Capacities.strictOptimize()) {
+        if (PlsFacade.Capacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         return false
     }
 
-    private inline fun applyForEmpty(): List<Any?> {
+    private inline fun applyForEmpty(): List<Any> {
         return emptyList()
     }
 
-    private inline fun apply(input: List<*>): List<Any?> {
-        if (input.size == 1) return listOf(input.get(0))
+    private inline fun apply(input: List<Any>): List<Any> {
+        if (input.size == 1) return ImmutableList.of(input.get(0))
         return ImmutableList.copyOf(input)
     }
 }
 
-private object SetOptimizer : Optimizer.Unary<Set<*>> {
-    override fun optimize(input: Set<*>): Set<*> {
+private object SetOptimizer : Optimizer.Unary<Set<Any>> {
+    override fun optimize(input: Set<Any>): Set<Any> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: Set<*>): Boolean {
+    private inline fun ignore(input: Set<Any>): Boolean {
         if (input is ImmutableSet) return true
-        if (PlsFacade.Capacities.strictOptimize()) {
+        if (PlsFacade.Capacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash
         return false
     }
 
-    private inline fun applyForEmpty(): Set<Any?> {
+    private inline fun applyForEmpty(): Set<Any> {
         return emptySet()
     }
 
-    private inline fun apply(input: Set<*>): Set<Any?> {
+    private inline fun apply(input: Set<Any>): Set<Any> {
         return ImmutableSet.copyOf(input)
     }
 }
 
-private object MapOptimizer : Optimizer.Unary<Map<*, *>> {
-    override fun optimize(input: Map<*, *>): Map<*, *> {
+private object MapOptimizer : Optimizer.Unary<Map<Any, Any>> {
+    override fun optimize(input: Map<Any, Any>): Map<Any, Any> {
         if (input.isEmpty()) return applyForEmpty()
         if (ignore(input)) return input
         return apply(input)
     }
 
-    private inline fun ignore(input: Map<*, *>): Boolean {
+    private inline fun ignore(input: Map<*, Any>): Boolean {
         if (input is ImmutableMap) return true
-        if (PlsFacade.Capacities.strictOptimize()) {
+        if (PlsFacade.Capacities.relaxOptimize()) {
             if (isOptimizedByClass(input)) return true
         }
         if (input is Hash) return true // may be case-insensitive or custom hash
         return false
     }
 
-    private inline fun applyForEmpty(): Map<Any?, Any?> {
+    private inline fun applyForEmpty(): Map<Any, Any> {
         return emptyMap()
     }
 
-    private inline fun apply(input: Map<*, *>): Map<Any?, Any?> {
+    private inline fun apply(input: Map<Any, Any>): Map<Any, Any> {
         return ImmutableMap.copyOf(input)
     }
 }

@@ -13,5 +13,5 @@ object OptimizerRegistry {
     inline fun <T : Any> register(optimizer: Optimizer.Unary<T>): Optimizer.Unary<T> = optimizer
 
     @Suppress("NOTHING_TO_INLINE")
-    inline fun <T : T0, T0 : Any> registerTyped(optimizer: Optimizer.Unary<T0>): Optimizer.Unary<T> = optimizer.cast()
+    inline fun <T : Any/*T0*/, T0 : Any> registerTyped(optimizer: Optimizer.Unary<T0>): Optimizer.Unary<T> = optimizer.cast()
 }
