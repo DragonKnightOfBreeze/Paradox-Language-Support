@@ -76,7 +76,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val definitionInfo = context.definitionInfo ?: return null
-        val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
+        val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null // TODO 2.0.6+ 这里存在一定的耗时，需要考虑优化
         val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
         val declarationKey = declarationConfigCacheKey.replace("$gameTypeId#", "")
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected

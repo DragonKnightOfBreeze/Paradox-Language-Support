@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.util.BitUtil
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -71,7 +72,10 @@ object ParadoxDefinitionService {
                 result += subtypeConfig
             }
         }
-        processSubtypeConfigsFromInherit(definitionInfo, result)
+        // to avoid to rely on non-indexed file data (like super definition) when indexing (through this may loss some information)
+        if (!BitUtil.isSet(matchOptions, ParadoxMatchOptions.SkipIndex)) {
+            processSubtypeConfigsFromInherit(definitionInfo, result)
+        }
         return result.distinctBy { it.name } // it's necessary to distinct by name
     }
 
