@@ -70,6 +70,7 @@ private abstract class CwtOptionConfigBase : CwtOptionConfig {
     override fun toString() = "(option) $key $separatorType $value"
 }
 
+// 12 + 1 * 1 + 1 * 4 = 17 -> 24
 private abstract class CwtOptionConfigImplBase(
     key: String,
     separatorType: CwtSeparatorType,
@@ -80,6 +81,7 @@ private abstract class CwtOptionConfigImplBase(
     override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimized(OptimizerRegistry.forCwtSeparatorType())
 }
 
+// 12 + 2 * 1 + 2 * 4 = 22 -> 24
 private class CwtOptionConfigImpl(
     key: String,
     value: String,
@@ -93,6 +95,7 @@ private class CwtOptionConfigImpl(
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
+// 12 + 1 * 1 + 2 * 4 = 21 -> 24
 private class CwtOptionConfigImplNested(
     key: String,
     separatorType: CwtSeparatorType,

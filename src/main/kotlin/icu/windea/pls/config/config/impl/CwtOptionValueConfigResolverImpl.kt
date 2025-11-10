@@ -52,8 +52,10 @@ private abstract class CwtOptionValueConfigBase : CwtOptionValueConfig {
     override fun toString() = "(option value) $value"
 }
 
+// 12 = 12 -> 16
 private abstract class CwtOptionValueConfigImplBase : CwtOptionValueConfigBase()
 
+// 12 + 1 * 1 + 1 * 4 = 17 -> 24
 private class CwtOptionValueConfigImpl(
     value: String,
     valueType: CwtType,
@@ -65,6 +67,7 @@ private class CwtOptionValueConfigImpl(
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = if (valueTypeId == blockValueTypeId) emptyList() else null
 }
 
+// 12 + 1 * 4 = 16 -> 16
 private class CwtOptionValueConfigImplNested(
     override val optionConfigs: List<CwtOptionMemberConfig<*>>?,
 ) : CwtOptionValueConfigImplBase() {

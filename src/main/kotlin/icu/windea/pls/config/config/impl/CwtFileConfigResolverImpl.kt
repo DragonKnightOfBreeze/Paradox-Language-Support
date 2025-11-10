@@ -65,6 +65,7 @@ private abstract class CwtFileConfigBase : UserDataHolderBase(), CwtFileConfig {
     override fun toString() = "CwtFileConfig(name='$name', path='$path')"
 }
 
+// 12 + 4 * 4 = 28 -> 32
 private abstract class CwtFileConfigImplBase(
     override val pointer: SmartPsiElementPointer<CwtFile>,
     override val configGroup: CwtConfigGroup,
@@ -72,6 +73,7 @@ private abstract class CwtFileConfigImplBase(
     override val path: String,
 ) : CwtFileConfigBase()
 
+// 12 + 5 * 4 = 32 -> 32
 private class CwtFileConfigImpl(
     pointer: SmartPsiElementPointer<CwtFile>,
     configGroup: CwtConfigGroup,
@@ -81,6 +83,7 @@ private class CwtFileConfigImpl(
     override val configs: List<CwtMemberConfig<*>> get() = emptyList()
 }
 
+// 12 + 6 * 4 = 36 -> 40
 private open class CwtFileConfigImplWithConfigs(
     pointer: SmartPsiElementPointer<CwtFile>,
     configGroup: CwtConfigGroup,
@@ -89,6 +92,7 @@ private open class CwtFileConfigImplWithConfigs(
     override val configs: List<CwtMemberConfig<*>>,
 ) : CwtFileConfigImplBase(pointer, configGroup, name, path)
 
+// 12 + 6 * 4 = 36 -> 40
 private class CwtFileConfigImplWithPropertyConfigs(
     pointer: SmartPsiElementPointer<CwtFile>,
     configGroup: CwtConfigGroup,
@@ -100,6 +104,7 @@ private class CwtFileConfigImplWithPropertyConfigs(
     override val values: List<CwtValueConfig> get() = emptyList()
 }
 
+// 12 + 6 * 4 = 36 -> 40
 private class CwtFileConfigImplWithValueConfigs(
     pointer: SmartPsiElementPointer<CwtFile>,
     configGroup: CwtConfigGroup,
