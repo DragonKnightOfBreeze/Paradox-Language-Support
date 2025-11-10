@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.declarations
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Inferred
@@ -36,7 +35,6 @@ class ParadoxDefinitionInfo(
     val typeKey: String,
     val elementPath: ParadoxElementPath,
     val gameType: ParadoxGameType,
-    val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
     private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
@@ -57,6 +55,7 @@ class ParadoxDefinitionInfo(
     val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
 
     val declarationConfig get() = configGroup.declarations.get(type)
+    val configGroup get() = typeConfig.configGroup
     val project get() = configGroup.project
 
     fun getSubtypeConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
