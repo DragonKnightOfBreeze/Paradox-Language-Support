@@ -39,6 +39,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         }
         targetClass.detach()
 
+        // clean up
         putUserData(CodeInjectorService.targetClassKey, null)
     }
 

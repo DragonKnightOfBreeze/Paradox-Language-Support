@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.application
+import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
@@ -52,7 +53,9 @@ class CodeInjectorService {
             codeInjectors.put(codeInjector.id, codeInjector)
         }
 
+        // clean up
         application.putUserData(classPoolKey, null)
+        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
     private fun getClassPool(): ClassPool {
