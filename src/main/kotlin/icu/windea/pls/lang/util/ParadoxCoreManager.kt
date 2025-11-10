@@ -203,7 +203,7 @@ object ParadoxCoreManager {
     }
 
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        // 使用简单缓存与文件索引以优化性能（避免直接访问PSI）
+        // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
         // 首先尝试获取注入的localeConfig
         val injectedLocaleConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
@@ -218,7 +218,7 @@ object ParadoxCoreManager {
 
             val indexId = PlsIndexKeys.FileLocale
             val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-            val localeConfig = PlsFacade.getConfigGroup(project).localisationLocalesById.get(localeId)
+            val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
             file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
             return localeConfig
         }
