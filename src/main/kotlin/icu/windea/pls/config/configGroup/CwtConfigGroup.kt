@@ -49,8 +49,9 @@ class CwtConfigGroup(
             val start = System.currentTimeMillis()
             val configGroupOnInit = CwtConfigGroup(project, gameType)
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-            dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit) }
+            dataProviders.all { dataProvider -> dataProvider.process(configGroupOnInit, this) }
             configGroupOnInit.copyUserDataTo(this) // 直接一次性替换规则数据
+            configGroupOnInit.clearUserData() // 清空以避免内存泄露
             modificationTracker.incModificationCount() // 显式增加修改计数
             initialized.set(true) // 标记规则数据已全部加载完毕
             val end = System.currentTimeMillis()

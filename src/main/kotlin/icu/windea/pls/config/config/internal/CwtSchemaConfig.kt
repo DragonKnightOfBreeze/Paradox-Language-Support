@@ -22,7 +22,7 @@ data class CwtSchemaConfig(
     val constraints: Map<String, CwtPropertyConfig>
 ) : CwtDetachedConfig {
     interface Resolver {
-        fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup)
+        fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig)
     }
 
     companion object : Resolver by CwtSchemaConfigResolverImpl()

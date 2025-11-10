@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.getOne
 internal class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplateSettingsConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    override fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig) {
         val configs = fileConfig.properties
         for (groupProperty in configs) {
             val groupName = groupProperty.key
@@ -39,7 +39,7 @@ internal class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplate
                 val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key, example, variables, expression)
                 map.put(id, foldingSetting)
             }
-            configGroup.postfixTemplateSettings[groupName] = map
+            configGroupOnInit.postfixTemplateSettings[groupName] = map
         }
     }
 }

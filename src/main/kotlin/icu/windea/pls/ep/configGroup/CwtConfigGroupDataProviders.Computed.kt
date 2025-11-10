@@ -41,30 +41,30 @@ import kotlinx.coroutines.ensureActive
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(configGroupOnInit: CwtConfigGroup, configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
 
         // compute `generatedModifiers` and `predefinedModifiers`
         run {
             currentCoroutineContext.ensureActive()
-            configGroup.modifiers.values
+            configGroupOnInit.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
                 .sortedByDescending { it.template.snippetExpressions.size } // put xxx_<xxx>_xxx before xxx_<xxx>
-                .associateByTo(configGroup.generatedModifiers) { it.name }
-            configGroup.modifiers.values
+                .associateByTo(configGroupOnInit.generatedModifiers) { it.name }
+            configGroupOnInit.modifiers.values
                 .filter { it.template.expressionString.isEmpty() }
-                .associateByTo(configGroup.predefinedModifiers) { it.name }
+                .associateByTo(configGroupOnInit.predefinedModifiers) { it.name }
         }
 
         // compute `swappedTypes` and add missing declarations with swapped type
         run {
             currentCoroutineContext.ensureActive()
-            for (typeConfig in configGroup.types.values) {
+            for (typeConfig in configGroupOnInit.types.values) {
                 if (typeConfig.baseType == null) continue
                 val typeName = typeConfig.name
-                configGroup.swappedTypes[typeName] = typeConfig
+                configGroupOnInit.swappedTypes[typeName] = typeConfig
                 val baseTypeName = typeConfig.baseType!!.substringBefore('.')
-                val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
+                val baseDeclarationConfig = configGroupOnInit.declarations[baseTypeName] ?: continue
                 val rootKeysList = typeConfig.skipRootKey?.filter { it.isNotEmpty() }?.orNull() ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
                 val configPaths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey) }
@@ -72,27 +72,27 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val c = configPaths.firstNotNullOfOrNull { c0.findPropertyByPath(it, ignoreCase = true) } ?: continue
                 // read action is required here (for logging)
                 val declarationConfig = readAction { CwtDeclarationConfig.resolve(c, name = typeName) } ?: continue
-                configGroup.declarations[typeName] = declarationConfig
+                configGroupOnInit.declarations[typeName] = declarationConfig
             }
         }
 
         // add missing localisation links from links
         run {
             currentCoroutineContext.ensureActive()
-            val localisationLinksStatic = configGroup.localisationLinks.values.filter { it.dataSources.isEmpty() }
+            val localisationLinksStatic = configGroupOnInit.localisationLinks.values.filter { it.dataSources.isEmpty() }
             if (localisationLinksStatic.isNotEmpty()) return@run
-            val linksStatic = configGroup.links.values.filter { it.dataSources.isEmpty() }
+            val linksStatic = configGroupOnInit.links.values.filter { it.dataSources.isEmpty() }
             for (linkConfig in linksStatic) {
-                configGroup.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
+                configGroupOnInit.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
             }
         }
 
         // bind `categoryConfigMap` for modifier configs
         run {
             currentCoroutineContext.ensureActive()
-            for (modifier in configGroup.modifiers.values) {
+            for (modifier in configGroupOnInit.modifiers.values) {
                 for (category in modifier.categories) {
-                    val categoryConfig = configGroup.modifierCategories[category] ?: continue
+                    val categoryConfig = configGroupOnInit.modifierCategories[category] ?: continue
                     modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
                 }
             }
@@ -101,7 +101,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
         run {
             currentCoroutineContext.ensureActive()
-            for ((k, v) in configGroup.aliasGroups) {
+            for ((k, v) in configGroupOnInit.aliasGroups) {
                 var keysConst: MutableMap<String, String>? = null
                 var keysNoConst: MutableSet<String>? = null
                 for (key in v.keys) {
@@ -114,10 +114,10 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                 }
                 if (!keysConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupConst[k] = keysConst
+                    configGroupOnInit.aliasKeysGroupConst[k] = keysConst
                 }
                 if (!keysNoConst.isNullOrEmpty()) {
-                    configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup }).toMutableSet()
+                    configGroupOnInit.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroupOnInit }).toMutableSet()
                 }
             }
         }
@@ -125,9 +125,9 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `relatedLocalisationPatterns`
         run {
             currentCoroutineContext.ensureActive()
-            with(configGroup.relatedLocalisationPatterns) {
+            with(configGroupOnInit.relatedLocalisationPatterns) {
                 val r = mutableSetOf<String>()
-                configGroup.types.values.forEach { c ->
+                configGroupOnInit.types.values.forEach { c ->
                     c.localisation?.locationConfigs?.forEach { (_, lc) -> r += lc.value }
                 }
                 r.forEach { s ->
@@ -142,13 +142,13 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `linksModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(configGroup.linksModel) {
-                val staticLinks = configGroup.links.values.filter { it.isStatic }
+            with(configGroupOnInit.linksModel) {
+                val staticLinks = configGroupOnInit.links.values.filter { it.isStatic }
                 staticLinks.forEach { c ->
                     if (c.forScope()) forScopeStatic += c
                     if (c.forValue()) forValueStatic += c
                 }
-                val dynamicLinksSorted = configGroup.links.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
+                val dynamicLinksSorted = configGroupOnInit.links.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroupOnInit })
                 dynamicLinksSorted.forEach { c ->
                     if (c.forScope()) {
                         if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
@@ -168,13 +168,13 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `localisationLinksModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(configGroup.localisationLinksModel) {
-                val staticLinks = configGroup.localisationLinks.values.filter { it.isStatic }
+            with(configGroupOnInit.localisationLinksModel) {
+                val staticLinks = configGroupOnInit.localisationLinks.values.filter { it.isStatic }
                 staticLinks.forEach { c ->
                     if (c.forScope()) forScopeStatic += c
                     if (c.forValue()) forValueStatic += c
                 }
-                val dynamicLinksSorted = configGroup.localisationLinks.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroup })
+                val dynamicLinksSorted = configGroupOnInit.localisationLinks.values.filter { !it.isStatic }.sortedByPriority({ it.configExpression }, { configGroupOnInit })
                 dynamicLinksSorted.forEach { c ->
                     if (c.forScope()) {
                         if (c.fromArgument && c.prefix != null) forScopeFromArgumentSorted += c
@@ -193,9 +193,9 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         // compute `definitionTypesModel`
         run {
             currentCoroutineContext.ensureActive()
-            with(configGroup.definitionTypesModel) {
+            with(configGroupOnInit.definitionTypesModel) {
                 with(supportParameters) {
-                    for (parameterConfig in configGroup.parameterConfigs) {
+                    for (parameterConfig in configGroupOnInit.parameterConfigs) {
                         val propertyConfig = parameterConfig.parentConfig as? CwtPropertyConfig ?: continue
                         val aliasSubName = propertyConfig.key.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                         val contextExpression = if (aliasSubName.isNullOrEmpty()) propertyConfig.keyExpression
@@ -209,9 +209,9 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 // 按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
                 // based on file paths, in detail, based on file path patterns (has any same file path patterns)
                 with(mayWithTypeKeyPrefix) {
-                    val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
+                    val types = configGroupOnInit.types.values.filter { c -> c.typeKeyPrefix != null }
                     val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
-                    val types1 = configGroup.types.values.filter { c ->
+                    val types1 = configGroupOnInit.types.values.filter { c ->
                         val filePathPatterns1 = c.filePathPatterns
                         filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
                     }

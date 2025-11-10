@@ -66,7 +66,6 @@ class CwtConfigGroupService(
 
     fun initAsync(callback: () -> Unit = {}) {
         val configGroups = getConfigGroups().values
-
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             if (project.isDefault) {
@@ -106,14 +105,18 @@ class CwtConfigGroupService(
             // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
             val key = Keys.defaultConfigGroup
             return synchronized(key) {
-                application.getOrPutUserData(key) { createConfigGroups() }
+                application.getOrPutUserData(key) { buildConfigGroups() }
             }
         }
         return cache
     }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        // 直接创建所有游戏类型的规则分组（之后再预加载规则数据）
+        if (project.isDefault) return emptyMap()
+        return buildConfigGroups()
+    }
+
+    private fun buildConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         val gameTypes = ParadoxGameType.getAll(withCore = true)
         val configGroups = buildMap(gameTypes.size) {
             for (gameType in gameTypes) {

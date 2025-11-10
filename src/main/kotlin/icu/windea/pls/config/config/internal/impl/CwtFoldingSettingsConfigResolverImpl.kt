@@ -14,7 +14,7 @@ import icu.windea.pls.core.collections.getOne
 internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolveInFile(fileConfig: CwtFileConfig, configGroup: CwtConfigGroup) {
+    override fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig) {
         val configs = fileConfig.properties
         for (groupProperty in configs) {
             val groupName = groupProperty.key
@@ -38,7 +38,7 @@ internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.R
                 val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder)
                 map.put(id, foldingSetting)
             }
-            configGroup.foldingSettings[groupName] = map
+            configGroupOnInit.foldingSettings[groupName] = map
         }
     }
 }

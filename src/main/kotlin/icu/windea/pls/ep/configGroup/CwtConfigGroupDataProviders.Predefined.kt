@@ -8,13 +8,13 @@ import icu.windea.pls.config.configGroup.definitionTypesModel
  * 用于初始化规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(configGroup: CwtConfigGroup): Boolean {
-        with(configGroup.aliasNamesSupportScope) {
+    override suspend fun process(configGroupOnInit: CwtConfigGroup, configGroup: CwtConfigGroup): Boolean {
+        with(configGroupOnInit.aliasNamesSupportScope) {
             this += "modifier" // 也支持，但不能切换作用域
             this += "trigger"
             this += "effect"
         }
-        with(configGroup.definitionTypesModel) {
+        with(configGroupOnInit.definitionTypesModel) {
             with(supportScope) {
                 this += "scripted_effect"
                 this += "scripted_trigger"
