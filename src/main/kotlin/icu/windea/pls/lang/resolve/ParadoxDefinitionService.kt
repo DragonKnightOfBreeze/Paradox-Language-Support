@@ -13,6 +13,7 @@ import icu.windea.pls.config.configGroup.declarations
 import icu.windea.pls.config.configGroup.type2ModifiersMap
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.optimized
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
@@ -81,7 +82,7 @@ object ParadoxDefinitionService {
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
         val declarationConfig = definitionInfo.configGroup.declarations.get(definitionInfo.type) ?: return null
-        val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }
+        val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
         val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
