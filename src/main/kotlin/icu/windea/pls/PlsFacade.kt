@@ -122,5 +122,8 @@ object PlsFacade {
 
         /** 是否启用更严格的优化策略。这适用于多数需要加入到缓存中的集合，进行更准确的忽略检查。 */
         fun strictOptimize() = System.getProperty("pls.strict.optimize").toBoolean()
+
+        /** 是否禁用在打开项目后，刷新内置规则目录（仅限一次）。 */
+        fun suppressRefreshBuiltIn() = System.getProperty("pls.suppress.refreshBuiltIn").toBoolean()
     }
 }

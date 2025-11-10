@@ -35,9 +35,9 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
-        // 在应用启动时，异步地初始化缓存数据
+        // 在启动应用后，异步地初始化缓存数据
         initCachesAsync()
-        // 在应用启动时，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
+        // 在启动应用后，异步地预加载默认项目的规则数据（诸如设置页面等地方会用到）
         initConfigGroupsAsync(getDefaultProject())
     }
 
@@ -58,11 +58,11 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     override suspend fun execute(project: Project) {
         // 这些操作仅需执行一次（应用范围）
         mutex.withDoubleLock(runOncePerApplication) {
-            // 仅限一次，如果必要，刷新内置规则目录
+            // 在打开项目后，刷新内置规则目录（仅限一次 & 如有必要）
             refreshBuiltInConfigRootDirectoriesAsync(project)
         }
 
-        // 在项目启动时，异步地预加载规则数据
+        // 在打开项目后，异步地预加载规则数据
         initConfigGroupsAsync(project)
     }
 
@@ -73,6 +73,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     @Suppress("ObsoleteDispatchersEdt")
     private suspend fun refreshBuiltInConfigRootDirectoriesAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动刷新
+        if (PlsFacade.Capacities.suppressRefreshBuiltIn()) return // 被禁用时不自动刷新
         // 确保能读取到最新的内置规则文件（仅限开发中版本，或者调试环境）
         if (!PlsFacade.isDebug() && !PlsFacade.isDevVersion()) return
 
