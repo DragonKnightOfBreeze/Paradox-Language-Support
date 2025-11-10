@@ -179,6 +179,7 @@ class CwtConfigGroupService(
 
     override fun dispose() {
         // 清理规则分组数据
+        cache.values.forEach { it.clear() }
         cache.clear()
     }
 }
