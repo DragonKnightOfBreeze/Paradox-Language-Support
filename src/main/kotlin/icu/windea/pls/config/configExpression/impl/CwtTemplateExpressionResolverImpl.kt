@@ -7,6 +7,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.containsBlank
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
@@ -93,10 +94,10 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
 
 private class CwtTemplateExpressionImpl(
     override val expressionString: String,
-    override val snippetExpressions: List<CwtDataExpression>
+    snippetExpressions: List<CwtDataExpression>
 ) : CwtTemplateExpression {
-    // 过滤出“引用型”片段（非 Constant），用于后续引用解析/导航
-    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filter { it.type != CwtDataTypes.Constant }
+    override val snippetExpressions: List<CwtDataExpression> = snippetExpressions.optimized()
+    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filter { it.type != CwtDataTypes.Constant }.optimized()
 
     override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
