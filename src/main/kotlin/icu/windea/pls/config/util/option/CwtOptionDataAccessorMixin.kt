@@ -12,7 +12,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton
 
-@Suppress("unused")
 interface CwtOptionDataAccessorMixin {
     fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
         return optionConfigs.findLastIsInstance<CwtOptionConfig> { it.key == key }
@@ -26,10 +25,12 @@ interface CwtOptionDataAccessorMixin {
         return optionConfigs.filterIsInstance<CwtOptionConfig> { it.key == key }
     }
 
+    @Suppress("unused")
     fun CwtMemberConfig<*>.findOptions(vararg keys: String): List<CwtOptionConfig> {
         return optionConfigs.filterIsInstance<CwtOptionConfig> { it.key in keys }
     }
 
+    @Suppress("unused")
     fun CwtMemberConfig<*>.findOptionValues(): Set<String> {
         return optionConfigs.filterIsInstance<CwtOptionValueConfig>().mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull() }
     }

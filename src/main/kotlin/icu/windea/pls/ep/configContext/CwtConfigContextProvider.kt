@@ -14,7 +14,7 @@ import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
- * 用于提供脚本表达式所在的CWT规则上下文。
+ * 用于提供脚本表达式所在的规则上下文。
  *
  * @see CwtConfigContext
  */

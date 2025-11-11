@@ -5,7 +5,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
- * 用于得到CWT数据表达式的优先级。
+ * 用于得到数据表达式的优先级。
  *
  * 脚本表达式会优先匹配优先级更高的数据表达式。
  */

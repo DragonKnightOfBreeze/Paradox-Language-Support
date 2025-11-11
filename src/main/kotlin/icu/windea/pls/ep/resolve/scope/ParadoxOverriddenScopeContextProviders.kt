@@ -21,16 +21,10 @@ import icu.windea.pls.script.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
-    object Constants {
-        const val CASE_KEY = "scalar"
-        const val DEFAULT_KEY = "default"
-        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
-        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
-    }
+    // 重载 `switch = {...}` 中对应的规则为 `scalar` 的属性以及属性 `default` 对应的作用域上下文
+    // 重载 `inverted_switch = {...}` 中对应的规则为 `scalar` 的属性以及属性 `default 对应的作用域上下文
 
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-        // 重载switch = {...}中对应的CWT规则为scalar的属性以及属性default对应的作用域上下文
-        // 重载inverted_switch = {...}中对应的CWT规则为scalar的属性以及属性default对应的作用域上下文
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
         if (finalConfig.key != Constants.CASE_KEY && finalConfig.key != Constants.DEFAULT_KEY) return null
@@ -41,7 +35,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
             .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
-        // 基于trigger的值得到最终的scopeContext，然后推断目标属性的scopeContext
+        // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断目标属性的 `scopeContext`
         val triggerProperty = containerProperty.findProperty(inline = true) { it in Constants.TRIGGER_KEYS } ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
@@ -50,20 +44,21 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData { pushScope }
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
     }
+
+    object Constants {
+        const val CASE_KEY = "scalar"
+        const val DEFAULT_KEY = "default"
+        val TRIGGER_KEYS = arrayOf("trigger", "on_trigger")
+        val CONTEXT_NAMES = arrayOf("switch", "inverted_switch")
+    }
 }
 
 class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {
-    object Constants {
-        const val TRIGGER_KEY = "trigger"
-        const val TRIGGER_SCOPE_KEY = "trigger_scope"
-        const val PARAMETERS_KEY = "parameters"
-        val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
-    }
+    // 重载 `complex_trigger_modifier = {...}` 中属性 `trigger` 的值以及属性 `parameters` 对应的作用域上下文
+    // 重载 `export_trigger_value_to_variable = {...}` 中属性 `trigger` 的值以及属性 `parameters` 对应的作用域上下文
+    // 兼容 `trigger_scope` 的值对应的作用域与当前作用域上下文不匹配的情况
 
     override fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
-        // 重载complex_trigger_modifier = {...}中属性trigger的值以及属性parameters对应的作用域上下文
-        // 重载export_trigger_value_to_variable = {...}中属性trigger的值以及属性parameters对应的作用域上下文
-        // 兼容trigger_scope的值对应的作用域与当前作用域上下文不匹配的情况
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
         if (finalConfig.key != Constants.TRIGGER_KEY && finalConfig.key != Constants.PARAMETERS_KEY) return null
@@ -75,7 +70,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         if (finalConfig.key == Constants.TRIGGER_KEY) {
-            // 基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext
+            // 基于 `trigger_scope` 的值得到最终的 `scopeContext`，然后推断属性 `trigger` 的值的 `scopeContext`
             val triggerScopeProperty = containerProperty.findProperty(Constants.TRIGGER_SCOPE_KEY, inline = true) ?: return null
             val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(triggerScopeProperty) ?: return null
             val pv = triggerScopeProperty.propertyValue ?: return null
@@ -84,7 +79,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, null, configGroup) ?: return null
             return ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContext)
         }
-        // 基于trigger的值得到最终的scopeContext，然后推断属性parameters的scopeContext
+        // 基于 `trigger` 的值得到最终的 `scopeContext`，然后推断属性 `parameters` 的 `scopeContext`
         val triggerProperty = containerProperty.findProperty(Constants.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null
         if (CwtDataExpression.resolve(triggerName, false).type != CwtDataTypes.Constant) return null // must be a predefined trigger
@@ -92,5 +87,12 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return null
         val pushScope = resultTriggerConfigs.firstOrNull()?.config?.optionData { pushScope }
         return parentScopeContext?.resolveNext(pushScope) ?: ParadoxScopeManager.getAnyScopeContext().resolveNext(pushScope)
+    }
+
+    object Constants {
+        const val TRIGGER_KEY = "trigger"
+        const val TRIGGER_SCOPE_KEY = "trigger_scope"
+        const val PARAMETERS_KEY = "parameters"
+        val CONTEXT_NAMES = arrayOf("complex_trigger_modifier", "export_trigger_value_to_variable")
     }
 }

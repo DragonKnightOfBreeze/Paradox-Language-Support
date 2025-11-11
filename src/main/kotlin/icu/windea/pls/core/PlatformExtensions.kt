@@ -131,7 +131,7 @@ fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.
 
 fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
     if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
-    return CachedValueProvider.Result.create(this, *dependencyItems.toTypedArray())
+    return CachedValueProvider.Result.create(this, dependencyItems)
 }
 
 fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {

@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.config.configExpression.CwtDataExpression
 
 /**
- * 用于解析CWT数据表达式。
+ * 用于解析数据表达式。
  */
 interface CwtDataExpressionResolver {
     /**

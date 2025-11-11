@@ -179,6 +179,7 @@ object ParadoxInlineScriptManager {
      *
      * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
      */
+    @Suppress("unused")
     fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
         val v = usageElement.block ?: return emptyMap()
         return ParadoxPsiManager.getArgumentTupleList(v, "script").toMap()
