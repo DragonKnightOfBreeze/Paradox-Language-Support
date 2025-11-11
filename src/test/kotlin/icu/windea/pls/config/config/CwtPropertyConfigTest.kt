@@ -4,6 +4,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.cwt.psi.CwtFile
@@ -23,7 +24,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     private fun prepare(): Triple<CwtFile, CwtConfigGroup, String> {
         myFixture.configureByFile("features/config/property_config_cases.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val path = "common/test/property_config_cases.cwt"
         return Triple(file, group, path)
     }
@@ -100,7 +101,7 @@ class CwtPropertyConfigTest : BasePlatformTestCase() {
     fun testBoundaries_propertyOptions_and_NumberFormats() {
         myFixture.configureByFile("features/config/property_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val group = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val group = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
         val root = file.block!!
 
         // option value with space, with normal comment between option and property

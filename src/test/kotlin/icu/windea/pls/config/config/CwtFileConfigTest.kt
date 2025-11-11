@@ -2,7 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.model.CwtSeparatorType
 import icu.windea.pls.model.CwtType
@@ -20,7 +20,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
     fun testResolve_file_basic() {
         myFixture.configureByFile("features/config/file_config_basic.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/file_config_basic.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
@@ -53,7 +53,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
     fun testResolve_file_boundaries() {
         myFixture.configureByFile("features/config/file_config_boundaries.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/file_config_boundaries.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
@@ -119,7 +119,7 @@ class CwtFileConfigTest : BasePlatformTestCase() {
     fun testResolve_file_basic_rest() {
         myFixture.configureByFile("features/config/file_config_basic.test.cwt")
         val file = myFixture.file as CwtFile
-        val configGroup = CwtConfigGroup(project, ParadoxGameType.Stellaris)
+        val configGroup = CwtConfigGroupImpl(project, ParadoxGameType.Stellaris)
 
         val filePath = "common/test/file_config_basic.cwt"
         val fileConfig = CwtFileConfig.resolve(file, configGroup, filePath)
