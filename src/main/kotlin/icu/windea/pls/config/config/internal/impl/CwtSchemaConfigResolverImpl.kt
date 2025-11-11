@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.schemas
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 
 internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverMixin {

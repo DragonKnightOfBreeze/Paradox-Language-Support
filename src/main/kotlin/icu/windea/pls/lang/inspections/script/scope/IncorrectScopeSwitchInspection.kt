@@ -9,7 +9,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.data.definitionTypesModel
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode

@@ -1,20 +1,19 @@
 package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.aliasNamesSupportScope
-import icu.windea.pls.config.data.definitionTypesModel
+import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 
 /**
  * 用于初始化规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(configGroupOnInit: CwtConfigGroup, configGroup: CwtConfigGroup): Boolean {
-        with(configGroupOnInit.aliasNamesSupportScope) {
+    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup): Boolean {
+        with(initializer.aliasNamesSupportScope) {
             this += "modifier" // 也支持，但不能切换作用域
             this += "trigger"
             this += "effect"
         }
-        with(configGroupOnInit.definitionTypesModel) {
+        with(initializer.definitionTypesModel) {
             with(supportScope) {
                 this += "scripted_effect"
                 this += "scripted_trigger"

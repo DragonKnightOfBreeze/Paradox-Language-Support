@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.postfixTemplateSettings
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne

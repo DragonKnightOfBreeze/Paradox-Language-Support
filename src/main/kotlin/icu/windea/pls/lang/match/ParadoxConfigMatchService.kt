@@ -23,13 +23,6 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.aliasGroups
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.declarations
-import icu.windea.pls.config.data.definitionTypesModel
-import icu.windea.pls.config.data.rows
-import icu.windea.pls.config.data.singleAliases
-import icu.windea.pls.config.data.types
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process

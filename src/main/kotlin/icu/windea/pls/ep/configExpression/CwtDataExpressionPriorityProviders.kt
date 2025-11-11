@@ -4,8 +4,6 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.enums
 
 class CwtBaseDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {

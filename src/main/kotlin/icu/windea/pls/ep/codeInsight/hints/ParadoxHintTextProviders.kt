@@ -2,12 +2,6 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.data.extendedComplexEnumValues
-import icu.windea.pls.config.data.extendedDefinitions
-import icu.windea.pls.config.data.extendedDynamicValues
-import icu.windea.pls.config.data.extendedGameRules
-import icu.windea.pls.config.data.extendedOnActions
-import icu.windea.pls.config.data.extendedScriptedVariables
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
 import icu.windea.pls.lang.match.findByPattern

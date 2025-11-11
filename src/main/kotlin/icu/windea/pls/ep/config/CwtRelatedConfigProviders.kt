@@ -13,17 +13,6 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.dynamicValueTypes
-import icu.windea.pls.config.data.enums
-import icu.windea.pls.config.data.extendedComplexEnumValues
-import icu.windea.pls.config.data.extendedDefinitions
-import icu.windea.pls.config.data.extendedDynamicValues
-import icu.windea.pls.config.data.extendedGameRules
-import icu.windea.pls.config.data.extendedInlineScripts
-import icu.windea.pls.config.data.extendedOnActions
-import icu.windea.pls.config.data.extendedParameters
-import icu.windea.pls.config.data.extendedScriptedVariables
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.csv.psi.ParadoxCsvColumn

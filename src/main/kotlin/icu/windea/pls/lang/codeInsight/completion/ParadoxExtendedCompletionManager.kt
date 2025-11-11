@@ -7,14 +7,6 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.extendedComplexEnumValues
-import icu.windea.pls.config.data.extendedDefinitions
-import icu.windea.pls.config.data.extendedDynamicValues
-import icu.windea.pls.config.data.extendedGameRules
-import icu.windea.pls.config.data.extendedInlineScripts
-import icu.windea.pls.config.data.extendedOnActions
-import icu.windea.pls.config.data.extendedParameters
-import icu.windea.pls.config.data.extendedScriptedVariables
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton

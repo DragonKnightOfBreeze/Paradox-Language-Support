@@ -6,8 +6,8 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.removeSuffixOrNull
 import icu.windea.pls.core.toCommaDelimitedStringSet

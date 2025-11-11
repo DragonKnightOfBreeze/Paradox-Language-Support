@@ -2,7 +2,6 @@ package icu.windea.pls.lang.match
 
 import com.intellij.util.BitUtil
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.lang.PlsStates
 
 /**
  * 匹配结果。

@@ -4,8 +4,6 @@ import com.intellij.DynamicBundle
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.data.localisationLocalesByCode
-import icu.windea.pls.config.data.localisationLocalesById
 import icu.windea.pls.core.collections.pinned
 import icu.windea.pls.lang.PlsKeys
 

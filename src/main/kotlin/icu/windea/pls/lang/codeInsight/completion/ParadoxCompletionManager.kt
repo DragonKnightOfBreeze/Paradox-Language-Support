@@ -24,13 +24,6 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.isDefinitionOrMember
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.aliasGroups
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.declarations
-import icu.windea.pls.config.data.dynamicValueTypes
-import icu.windea.pls.config.data.enums
-import icu.windea.pls.config.data.inlineConfigGroup
-import icu.windea.pls.config.data.types
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull

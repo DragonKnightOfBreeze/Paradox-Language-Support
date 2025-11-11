@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
-import icu.windea.pls.config.data.foldingSettings
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty

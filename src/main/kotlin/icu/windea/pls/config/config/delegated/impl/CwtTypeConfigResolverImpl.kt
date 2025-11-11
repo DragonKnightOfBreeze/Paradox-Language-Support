@@ -16,8 +16,6 @@ import icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.config.data.modifiers
-import icu.windea.pls.config.data.type2ModifiersMap
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.optimizedPathExtension
 import icu.windea.pls.config.util.CwtConfigResolverMixin

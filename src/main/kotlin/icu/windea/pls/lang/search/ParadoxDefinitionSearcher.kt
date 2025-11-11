@@ -8,8 +8,6 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.swappedTypes
-import icu.windea.pls.config.data.types
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.definitionInfo

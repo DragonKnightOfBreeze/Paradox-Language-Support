@@ -18,9 +18,8 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.filePathExpressions
-import icu.windea.pls.config.data.parameterConfigs
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.FastList
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.optimized
@@ -34,7 +33,6 @@ import icu.windea.pls.cwt.psi.CwtOptionComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.model.CwtMemberType
-import it.unimi.dsi.fastutil.objects.ObjectArrayList
 
 object CwtConfigResolverUtil {
     private val currentLocation = ThreadLocal<String>()
@@ -56,7 +54,7 @@ object CwtConfigResolverUtil {
     @Optimized
     fun getConfigs(element: PsiElement?, file: CwtFile, configGroup: CwtConfigGroup): List<CwtMemberConfig<*>>? {
         if (element !is CwtBlockElement) return null
-        val configs: MutableList<CwtMemberConfig<*>> = ObjectArrayList()
+        val configs: MutableList<CwtMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
             when (e) {
                 is CwtProperty -> {
@@ -76,7 +74,7 @@ object CwtConfigResolverUtil {
 
     @Optimized
     fun getOptionConfigs(element: CwtMember): List<CwtOptionMemberConfig<*>> {
-        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
         var current: PsiElement = element
         while (true) {
             current = current.prevSibling ?: break
@@ -102,7 +100,7 @@ object CwtConfigResolverUtil {
     @Optimized
     fun getOptionConfigsInOption(element: CwtValue): List<CwtOptionMemberConfig<*>>? {
         if (element !is CwtBlock) return null
-        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = ObjectArrayList()
+        val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
             when (e) {
                 is CwtOption -> {

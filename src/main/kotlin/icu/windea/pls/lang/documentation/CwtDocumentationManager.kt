@@ -13,14 +13,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.aliasGroups
-import icu.windea.pls.config.data.aliasNamesSupportScope
-import icu.windea.pls.config.data.links
-import icu.windea.pls.config.data.localisationCommands
-import icu.windea.pls.config.data.localisationLinks
-import icu.windea.pls.config.data.localisationPromotions
-import icu.windea.pls.config.data.modifierCategories
-import icu.windea.pls.config.data.modifiers
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder

@@ -16,9 +16,6 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.aliasGroups
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.enums
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -54,7 +51,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
-import kotlin.collections.get
 
 // Core
 

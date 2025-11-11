@@ -6,7 +6,7 @@ import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -83,7 +83,7 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
         val text = withContext(Dispatchers.IO) { file.readText() }
         val psiFile = readAction { CwtElementFactory.createDummyFile(project, text) }
         return readAction {
-            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroup(project, gameType), file.name)
+            val fileConfig = CwtFileConfig.resolve(psiFile, CwtConfigGroupImpl(project, gameType), file.name)
             val configs = fileConfig.properties.mapNotNull { CwtAliasConfig.resolve(it) }
                 .filter { it.name == "trigger" && it.subName.isIdentifier() }
             configs.groupBy { it.subName }.mapValues { (_, v) -> parseConfigInfo(v) }

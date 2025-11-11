@@ -12,13 +12,6 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.databaseObjectTypes
-import icu.windea.pls.config.data.links
-import icu.windea.pls.config.data.linksModel
-import icu.windea.pls.config.data.localisationCommands
-import icu.windea.pls.config.data.localisationLinks
-import icu.windea.pls.config.data.localisationLinksModel
-import icu.windea.pls.config.data.systemScopes
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance

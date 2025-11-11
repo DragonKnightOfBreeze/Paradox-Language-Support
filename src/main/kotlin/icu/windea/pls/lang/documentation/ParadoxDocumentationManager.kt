@@ -8,9 +8,6 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.dynamicValueTypes
-import icu.windea.pls.config.data.extendedOnActions
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation

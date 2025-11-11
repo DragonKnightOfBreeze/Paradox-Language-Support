@@ -10,8 +10,6 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.filePathExpressions
-import icu.windea.pls.config.data.parameterConfigs
 import icu.windea.pls.core.pass
 
 object CwtConfigCollector {

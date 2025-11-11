@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.data.aliasGroups
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression

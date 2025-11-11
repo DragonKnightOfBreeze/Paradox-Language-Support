@@ -2,7 +2,6 @@ package icu.windea.pls.ep.resolve.scope
 
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.data.extendedDynamicValues
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.model.scope.ParadoxScopeContext

@@ -12,8 +12,6 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.data.definitionScopeContextModificationTracker
-import icu.windea.pls.config.data.extendedOnActions
-import icu.windea.pls.config.data.systemScopes
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry

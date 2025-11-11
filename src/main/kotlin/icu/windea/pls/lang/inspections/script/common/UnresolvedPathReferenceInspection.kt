@@ -11,7 +11,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.data.extendedInlineScripts
 import icu.windea.pls.core.matchesPattern
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.splitOptimized

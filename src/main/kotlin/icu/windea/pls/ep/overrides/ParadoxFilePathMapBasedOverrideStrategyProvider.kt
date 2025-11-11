@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.overrides
 
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.data.types
 import icu.windea.pls.config.filePathPatternsForPriority
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath

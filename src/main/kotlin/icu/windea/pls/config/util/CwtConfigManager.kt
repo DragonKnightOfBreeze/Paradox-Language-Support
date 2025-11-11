@@ -24,11 +24,6 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.aliasGroups
-import icu.windea.pls.config.data.aliasKeysGroupConst
-import icu.windea.pls.config.data.aliasKeysGroupNoConst
-import icu.windea.pls.config.data.enums
-import icu.windea.pls.config.data.singleAliases
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern

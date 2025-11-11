@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
-import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
+import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey

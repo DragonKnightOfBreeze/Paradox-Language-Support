@@ -1,9 +1,6 @@
 package icu.windea.pls.ep.resolve.scope
 
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.data.extendedDefinitions
-import icu.windea.pls.config.data.extendedGameRules
-import icu.windea.pls.config.data.extendedOnActions
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.ParadoxDefinitionInfo

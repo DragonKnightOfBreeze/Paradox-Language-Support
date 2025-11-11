@@ -2,8 +2,6 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.enums
 import icu.windea.pls.core.unquote
 import icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher.*
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver

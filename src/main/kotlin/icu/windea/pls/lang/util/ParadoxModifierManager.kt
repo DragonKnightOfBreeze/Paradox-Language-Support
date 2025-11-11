@@ -16,10 +16,6 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.complexEnums
-import icu.windea.pls.config.data.dynamicValueTypes
-import icu.windea.pls.config.data.enums
-import icu.windea.pls.config.data.modifierCategories
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass

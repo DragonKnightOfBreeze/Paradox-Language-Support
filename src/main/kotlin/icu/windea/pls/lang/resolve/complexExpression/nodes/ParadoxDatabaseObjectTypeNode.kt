@@ -7,7 +7,6 @@ import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.data.databaseObjectTypes
 import icu.windea.pls.core.psi.PsiResolvedReference
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.util.setOrEmpty
