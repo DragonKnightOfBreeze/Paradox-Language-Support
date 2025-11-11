@@ -32,7 +32,7 @@ internal class CwtTypeLocalisationConfigResolverImpl : CwtTypeLocalisationConfig
                 locationConfigs.add(null to locationConfig)
             }
         }
-        return CwtTypeLocalisationConfigImpl(config, locationConfigs)
+        return CwtTypeLocalisationConfigImpl(config, locationConfigs.optimized())
     }
 
 }

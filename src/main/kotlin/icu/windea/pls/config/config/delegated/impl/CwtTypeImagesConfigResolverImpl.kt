@@ -32,7 +32,7 @@ internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, C
                 locationConfigs.add(null to locationConfig)
             }
         }
-        return CwtTypeImagesConfigImpl(config, locationConfigs)
+        return CwtTypeImagesConfigImpl(config, locationConfigs.optimized())
     }
 }
 
