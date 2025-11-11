@@ -9,7 +9,6 @@ import icu.windea.pls.core.util.setValue
 
 // region CwtDataExpression Accessors
 
-var CwtDataExpression.value: String? by createKey(CwtDataExpression.Keys)
 var CwtDataExpression.intRange: IntRangeInfo? by createKey(CwtDataExpression.Keys)
 var CwtDataExpression.floatRange: FloatRangeInfo? by createKey(CwtDataExpression.Keys)
 var CwtDataExpression.ignoreCase: Boolean? by createKey(CwtDataExpression.Keys)

@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.trimFast

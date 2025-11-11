@@ -16,7 +16,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.FastList

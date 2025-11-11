@@ -3,7 +3,6 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier

@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.configExpression
 
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.CwtDataTypeGroups as TypeGroups
 import icu.windea.pls.config.CwtDataTypes as Types

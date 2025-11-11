@@ -2,33 +2,35 @@ package icu.windea.pls.config.configExpression
 
 import com.intellij.openapi.util.UserDataHolder
 import icu.windea.pls.config.CwtDataType
-import icu.windea.pls.config.CwtDataTypes.Constant
 import icu.windea.pls.config.configExpression.impl.CwtDataExpressionResolverImpl
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 
 /**
  * 数据表达式。
  *
- * 用于描述脚本文件中的键或值的取值形态，可为常量、基本数据类型、引用、解析为动态内容的表达式等情况。
+ * 用于描述脚本文件中的表达式（键或值）的匹配模式，基于数据类型以及数种元数据。
  *
  * 说明：
- * - `isKey` 指示表达式来源于键还是值，解析与缓存会区分两类以提升命中率。
- * - `type` 为解析后的数据类型（见 [CwtDataType]）。若无法匹配任何规则，通常会回退为 [Constant]。
- * - 该类型实现了 [UserDataHolder]，可通过扩展属性（见 `_extensions.kt`）附加额外元数据
- *  （例如 [value]、[intRange]、[floatRange]、[ignoreCase]。
+ * - 对应的数据类型可通过 [type] 获取。
+ * - 主要的元数据可通过 [value] 获取。
+ * - 额外的元数据会存储到 [UserDataHolder] 中，可通过扩展属性获取。
  *
  * 适用对象：定义成员对应的规则的键或值。
  *
  * CWTools 兼容性：兼容，但存在较多的扩展与改进。
  *
- * @property isKey 是否来源于“键”（true）或“值”（false）。
- * @property type 解析得到的表达式类型（即规则中的 dataType）。
+ * @property isKey 是否来源于作为键的表达式。
+ * @property type 解析得到的数据类型。
+ * @property value 主要的元数据。可用于存储定义类型、枚举名等信息。
  *
- * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+ * @see CwtDataType
+ * @see CwtDataExpressionResolver
  */
 interface CwtDataExpression : CwtConfigExpression, UserDataHolder {
     val isKey: Boolean
     val type: CwtDataType
+    var value: String?
 
     interface Resolver {
         fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression

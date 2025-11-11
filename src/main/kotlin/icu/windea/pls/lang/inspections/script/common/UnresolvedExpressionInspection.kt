@@ -21,7 +21,6 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isDefinition
 import icu.windea.pls.config.configContext.isDefinitionOrMember
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression

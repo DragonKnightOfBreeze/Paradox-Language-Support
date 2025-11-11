@@ -7,7 +7,6 @@ import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.intRange
 import icu.windea.pls.config.configExpression.suffixes
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull

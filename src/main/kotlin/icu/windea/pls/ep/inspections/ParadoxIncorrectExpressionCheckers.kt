@@ -14,7 +14,6 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.floatRange
 import icu.windea.pls.config.configExpression.intRange
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isExactDigit

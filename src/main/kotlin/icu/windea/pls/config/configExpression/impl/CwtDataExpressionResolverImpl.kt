@@ -6,7 +6,6 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
@@ -19,8 +18,8 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     private val cacheForTemplate = CacheBuilder("expireAfterAccess=30m")
         .build<String, CwtDataExpression> { doResolveTemplate(it) }
 
-    private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant).apply { value = "" }
-    private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant).apply { value = "" }
+    private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant, "")
+    private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant, "")
     private val blockExpression = CwtDataExpressionImpl("{...}", false, CwtDataTypes.Block)
 
     override fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
@@ -44,22 +43,21 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-        // 委托 EP 解析；若无匹配规则则回退为 Constant，并把原值写入扩展属性 value
         return CwtDataExpressionResolver.resolve(expressionString, isKey)
-            ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
+            ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant, expressionString)
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-        // 模板专用解析；同样支持回退为 Constant
         return CwtDataExpressionResolver.resolveTemplate(expressionString)
-            ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant).apply { value = expressionString }
+            ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant, expressionString)
     }
 }
 
 private class CwtDataExpressionImpl(
     override val expressionString: String,
     override val isKey: Boolean,
-    override val type: CwtDataType
+    override val type: CwtDataType,
+    override var value: String? = null,
 ) : UserDataHolderBase(), CwtDataExpression {
     override fun equals(other: Any?) = this === other || other is CwtDataExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()

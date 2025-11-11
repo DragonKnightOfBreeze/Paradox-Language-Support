@@ -15,7 +15,6 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.core.processQuery
