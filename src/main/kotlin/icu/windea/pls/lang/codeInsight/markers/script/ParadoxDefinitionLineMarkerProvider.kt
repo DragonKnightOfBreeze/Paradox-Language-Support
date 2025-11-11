@@ -45,12 +45,13 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         val icon = PlsIcons.Gutter.Definition
         val prefix = PlsStringConstants.definitionPrefix
         val name = definitionInfo.name
+        val type = definitionInfo.type
         val typeText = definitionInfo.typesText
         val tooltip = "<b>$prefix ${name.escapeXml().or.anonymous()}</b>: $typeText"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
+            ParadoxDefinitionSearch.search(name, type, selector).findAll()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
@@ -63,9 +64,9 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("script.gutterIcon.definition.action"),
-        	PlsActions.GotoDefinitions
+            lineMarkerInfo,
+            PlsBundle.message("script.gutterIcon.definition.action"),
+            PlsActions.GotoDefinitions
         )
     }
 }
