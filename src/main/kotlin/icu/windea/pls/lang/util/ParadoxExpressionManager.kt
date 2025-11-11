@@ -19,7 +19,6 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.BitUtil
-import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.bindConfig
@@ -48,6 +47,7 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
+import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
@@ -447,6 +447,11 @@ object ParadoxExpressionManager {
         }
     }
 
+    private fun getConfigsCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
+        return doGetConfigsCacheFromCache(element)
+    }
+
+    @Optimized
     private fun doGetConfigsCacheFromCache(element: ParadoxScriptMember): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
@@ -454,11 +459,9 @@ object ParadoxExpressionManager {
         }
     }
 
-    @Optimized
     private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
-        // use concurrent map instead of cache for nested case to optimize memory
-        // use soft values to optimize memory
-        return ContainerUtil.createConcurrentSoftValueMap()
+        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
+        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
     }
 
     private fun doGetConfigs(element: ParadoxScriptMember, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
@@ -554,9 +557,8 @@ object ParadoxExpressionManager {
 
     @Optimized
     private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
-        // use concurrent map instead of cache for nested case to optimize memory
-        // use soft values to optimize memory
-        return ContainerUtil.createConcurrentSoftValueMap()
+        // return ContainerUtil.createConcurrentSoftValueMap() // use concurrent soft value map to optimize memory
+        return SoftConcurrentHashMap() // use soft referenced concurrent map to optimize more memory
     }
 
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
