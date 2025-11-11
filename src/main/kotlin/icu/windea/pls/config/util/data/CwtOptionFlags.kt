@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.stringValue
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.isIdentifier
 
@@ -104,6 +105,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
             val optionConfigs = config.optionConfigs
             val flags = optionConfigs.filterIsInstance<CwtOptionValueConfig>()
                 .mapNotNullTo(mutableSetOf()) { it.stringValue?.orNull()?.takeIf { s -> s.isIdentifier() } }
+                .optimized()
             if (flags.isEmpty()) return EMPTY
             return CwtOptionFlags(flags)
         }
