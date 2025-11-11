@@ -69,8 +69,10 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
                 break
             }
         }
-        // 只有一个片段（纯常量或纯动态）不视为模板
+        // 只有一个片段时（纯常量或纯动态）不视为模板
         if (snippets.size <= 1) return emptyExpression
+        // 所有片段都是常量时不视为模板
+        if(snippets.all { it.type == CwtDataTypes.Constant }) return emptyExpression
         return CwtTemplateExpressionImpl(expressionString, snippets)
     }
 

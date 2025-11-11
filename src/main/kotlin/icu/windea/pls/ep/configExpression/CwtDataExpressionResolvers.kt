@@ -107,10 +107,11 @@ class CwtCoreDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
 }
 
 class CwtConstantDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
-    private val excludeCharacters = ":.@[]<>".toCharArray()
+    private val forceRegex = """\w*\[[\w:]*]""".toRegex() // `type[x]`, `alias[x:y]`, etc.
+    private val excludeCharacters = ":.@[]<>".toCharArray() // `x_<y>_enum[z]`, etc.
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString.any { c -> c in excludeCharacters }) return null
+        if (expressionString.any { c -> c in excludeCharacters } && !forceRegex.matches(expressionString)) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
     }
 }
