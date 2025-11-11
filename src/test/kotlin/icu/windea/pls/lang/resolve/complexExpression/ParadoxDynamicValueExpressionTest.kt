@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypeGroups
-import icu.windea.pls.config.configGroup.links
+import icu.windea.pls.config.data.links
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.dsl.ParadoxComplexExpressionDslBuilder.buildExpression
 import icu.windea.pls.lang.resolve.complexExpression.dsl.expression

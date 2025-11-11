@@ -16,9 +16,9 @@ import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.config.configGroup.complexEnums
-import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.config.data.aliasGroups
+import icu.windea.pls.config.data.complexEnums
+import icu.windea.pls.config.data.enums
 import icu.windea.pls.config.resolved
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isNotNullOrEmpty

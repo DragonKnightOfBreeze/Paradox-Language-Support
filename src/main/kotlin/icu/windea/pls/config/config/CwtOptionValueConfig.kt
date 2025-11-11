@@ -17,8 +17,8 @@ import icu.windea.pls.model.CwtType
  * @see CwtMember
  * @see CwtOptionComment
  * @see CwtValue
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessor
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessor
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors
  */
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtValue> {
     interface Resolver {

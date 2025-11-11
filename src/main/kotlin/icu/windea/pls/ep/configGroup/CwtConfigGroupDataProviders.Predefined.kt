@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.aliasNamesSupportScope
-import icu.windea.pls.config.configGroup.definitionTypesModel
+import icu.windea.pls.config.data.aliasNamesSupportScope
+import icu.windea.pls.config.data.definitionTypesModel
 
 /**
  * 用于初始化规则分组中预先定义的那些数据。

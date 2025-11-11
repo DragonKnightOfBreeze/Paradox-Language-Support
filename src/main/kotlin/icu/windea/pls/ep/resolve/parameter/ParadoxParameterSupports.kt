@@ -19,8 +19,8 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.configGroup.definitionParameterModificationTracker
-import icu.windea.pls.config.configGroup.definitionTypesModel
+import icu.windea.pls.config.data.definitionParameterModificationTracker
+import icu.windea.pls.config.data.definitionTypesModel
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.createPointer

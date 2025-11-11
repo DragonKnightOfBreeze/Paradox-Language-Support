@@ -13,7 +13,7 @@ import com.intellij.ui.JBColor
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.config.data.localisationLocalesById
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.letIf

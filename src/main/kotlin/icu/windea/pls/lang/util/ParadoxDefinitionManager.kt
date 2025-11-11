@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.data.types
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry

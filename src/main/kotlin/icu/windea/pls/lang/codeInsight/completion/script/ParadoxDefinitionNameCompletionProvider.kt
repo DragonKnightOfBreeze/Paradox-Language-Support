@@ -9,8 +9,8 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.configGroup.declarations
-import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.data.declarations
+import icu.windea.pls.config.data.types
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon

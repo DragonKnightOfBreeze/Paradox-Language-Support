@@ -13,7 +13,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.config.configGroup.localisationLocalesById
+import icu.windea.pls.config.data.localisationLocalesById
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import kotlinx.coroutines.launch

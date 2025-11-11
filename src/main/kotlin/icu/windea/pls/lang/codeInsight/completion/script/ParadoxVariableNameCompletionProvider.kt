@@ -7,7 +7,7 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.config.configGroup.mockVariableConfig
+import icu.windea.pls.config.data.mockVariableConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted

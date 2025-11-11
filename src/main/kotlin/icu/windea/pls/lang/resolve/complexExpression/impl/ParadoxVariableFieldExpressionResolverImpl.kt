@@ -2,7 +2,7 @@ package icu.windea.pls.lang.resolve.complexExpression.impl
 
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.linksModel
+import icu.windea.pls.config.data.linksModel
 import icu.windea.pls.core.cast
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isParameterAwareIdentifier

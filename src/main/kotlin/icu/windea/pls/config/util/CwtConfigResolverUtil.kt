@@ -18,8 +18,8 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.filePathExpressions
-import icu.windea.pls.config.configGroup.parameterConfigs
+import icu.windea.pls.config.data.filePathExpressions
+import icu.windea.pls.config.data.parameterConfigs
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.forEachChild

@@ -7,7 +7,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.delegated.CwtComplexEnumConfig
-import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.data.complexEnums
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.model.ParadoxGameType

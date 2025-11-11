@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.relatedLocalisationPatterns
+import icu.windea.pls.config.data.relatedLocalisationPatterns
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.orNull

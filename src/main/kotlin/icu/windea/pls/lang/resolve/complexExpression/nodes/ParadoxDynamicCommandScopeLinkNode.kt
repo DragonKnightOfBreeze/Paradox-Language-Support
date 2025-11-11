@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.localisationLinksModel
+import icu.windea.pls.config.data.localisationLinksModel
 import icu.windea.pls.core.collections.findIsInstance
 
 class ParadoxDynamicCommandScopeLinkNode(

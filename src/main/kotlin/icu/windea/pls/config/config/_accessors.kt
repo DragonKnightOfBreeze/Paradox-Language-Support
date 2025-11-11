@@ -7,8 +7,8 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
-import icu.windea.pls.config.util.data.CwtOptionDataAccessor
-import icu.windea.pls.config.util.data.CwtOptionDataAccessors
+import icu.windea.pls.config.util.option.CwtOptionDataAccessor
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue

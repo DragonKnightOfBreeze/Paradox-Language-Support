@@ -19,7 +19,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.data.types
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous

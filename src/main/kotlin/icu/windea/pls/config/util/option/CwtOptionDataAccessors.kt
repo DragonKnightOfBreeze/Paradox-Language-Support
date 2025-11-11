@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util.data
+package icu.windea.pls.config.util.option
 
 import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtDataTypeGroups
@@ -17,8 +17,8 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.options
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
-import icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
-import icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
+import icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.optimized

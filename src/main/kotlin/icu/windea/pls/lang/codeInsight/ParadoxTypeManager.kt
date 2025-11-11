@@ -5,7 +5,7 @@ import com.intellij.psi.util.parents
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.data.complexEnums
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty

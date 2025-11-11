@@ -7,8 +7,8 @@ import icu.windea.pls.config.config.memberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.ignoreCase
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.configGroup.complexEnums
-import icu.windea.pls.config.configGroup.enums
+import icu.windea.pls.config.data.complexEnums
+import icu.windea.pls.config.data.enums
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesRegex

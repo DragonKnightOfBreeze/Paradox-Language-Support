@@ -11,8 +11,8 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeGroup
-import icu.windea.pls.config.configGroup.enums
-import icu.windea.pls.config.configGroup.types
+import icu.windea.pls.config.data.enums
+import icu.windea.pls.config.data.types
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry

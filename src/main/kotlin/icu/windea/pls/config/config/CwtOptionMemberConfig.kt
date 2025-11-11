@@ -19,8 +19,8 @@ import icu.windea.pls.model.CwtType
  * @see CwtMember
  * @see CwtOptionComment
  * @see CwtOptionMember
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessor
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessor
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors
  */
 sealed interface CwtOptionMemberConfig<out T : CwtOptionMember> : CwtDetachedConfig {
     val value: String

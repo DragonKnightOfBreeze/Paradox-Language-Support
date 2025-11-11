@@ -3,7 +3,7 @@ package icu.windea.pls.lang.resolve.complexExpression
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
-import icu.windea.pls.config.configGroup.modifiers
+import icu.windea.pls.config.data.modifiers
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.PlsTestUtil

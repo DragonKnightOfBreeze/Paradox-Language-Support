@@ -1,4 +1,4 @@
-package icu.windea.pls.config.util.data
+package icu.windea.pls.config.util.option
 
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.config.CwtMemberConfig

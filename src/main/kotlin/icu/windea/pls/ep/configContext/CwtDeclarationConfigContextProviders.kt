@@ -8,8 +8,8 @@ import icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.extendedGameRules
-import icu.windea.pls.config.configGroup.extendedOnActions
+import icu.windea.pls.config.data.extendedGameRules
+import icu.windea.pls.config.data.extendedOnActions
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue

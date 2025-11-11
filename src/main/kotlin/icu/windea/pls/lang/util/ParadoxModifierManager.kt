@@ -16,11 +16,10 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.complexEnums
-import icu.windea.pls.config.configGroup.dynamicValueTypes
-import icu.windea.pls.config.configGroup.enums
-import icu.windea.pls.config.configGroup.modifierCategories
-import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.config.data.complexEnums
+import icu.windea.pls.config.data.dynamicValueTypes
+import icu.windea.pls.config.data.enums
+import icu.windea.pls.config.data.modifierCategories
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
@@ -34,7 +33,6 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.trackedBy
-import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.codeInsight.completion.contextElement

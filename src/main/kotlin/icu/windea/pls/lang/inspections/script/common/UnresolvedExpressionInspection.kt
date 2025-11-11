@@ -22,9 +22,9 @@ import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isDefinition
 import icu.windea.pls.config.configContext.isDefinitionOrMember
 import icu.windea.pls.config.configExpression.value
-import icu.windea.pls.config.configGroup.extendedDefinitions
-import icu.windea.pls.config.configGroup.extendedGameRules
-import icu.windea.pls.config.configGroup.extendedOnActions
+import icu.windea.pls.config.data.extendedDefinitions
+import icu.windea.pls.config.data.extendedGameRules
+import icu.windea.pls.config.data.extendedOnActions
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression

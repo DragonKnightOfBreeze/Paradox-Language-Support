@@ -34,8 +34,8 @@ import icu.windea.pls.cwt.psi.CwtMember
  * @property type 定义类型。
  * @property hint 提示文本（可选）。
  *
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
  */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMember, CwtMemberConfig<*>> {
     @FromKey

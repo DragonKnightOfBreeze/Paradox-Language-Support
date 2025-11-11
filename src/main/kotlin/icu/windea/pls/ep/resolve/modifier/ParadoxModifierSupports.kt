@@ -14,11 +14,11 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.complexEnums
-import icu.windea.pls.config.configGroup.dynamicValueTypes
-import icu.windea.pls.config.configGroup.enums
-import icu.windea.pls.config.configGroup.generatedModifiers
-import icu.windea.pls.config.configGroup.predefinedModifiers
+import icu.windea.pls.config.data.complexEnums
+import icu.windea.pls.config.data.dynamicValueTypes
+import icu.windea.pls.config.data.enums
+import icu.windea.pls.config.data.generatedModifiers
+import icu.windea.pls.config.data.predefinedModifiers
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.grayed
 import icu.windea.pls.core.escapeXml

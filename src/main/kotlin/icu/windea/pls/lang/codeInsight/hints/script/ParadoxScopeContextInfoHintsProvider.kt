@@ -17,8 +17,8 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.scopeAliasMap
-import icu.windea.pls.config.configGroup.systemScopes
+import icu.windea.pls.config.data.scopeAliasMap
+import icu.windea.pls.config.data.systemScopes
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized

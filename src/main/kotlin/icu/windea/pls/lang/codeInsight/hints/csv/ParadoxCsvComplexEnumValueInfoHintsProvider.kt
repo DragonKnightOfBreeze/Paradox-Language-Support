@@ -13,7 +13,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.complexEnums
+import icu.windea.pls.config.data.complexEnums
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement

@@ -15,8 +15,8 @@ import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.aliasGroups
-import icu.windea.pls.config.configGroup.singleAliases
+import icu.windea.pls.config.data.aliasGroups
+import icu.windea.pls.config.data.singleAliases
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull

@@ -1,4 +1,4 @@
-package icu.windea.pls.config.configGroup
+package icu.windea.pls.config.data
 
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 

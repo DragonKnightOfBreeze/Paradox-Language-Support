@@ -7,7 +7,7 @@ import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.systemScopes
+import icu.windea.pls.config.data.systemScopes
 import icu.windea.pls.core.psi.PsiResolvedReference
 import icu.windea.pls.core.util.set
 import icu.windea.pls.core.util.singleton

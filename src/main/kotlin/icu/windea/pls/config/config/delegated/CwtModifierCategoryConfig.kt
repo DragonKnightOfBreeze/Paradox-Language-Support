@@ -25,8 +25,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property supportedScopes 允许的作用域（类型）的集合。
  *
  * @see CwtModifierConfig
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.replaceScopes
- * @see icu.windea.pls.config.util.data.CwtOptionDataAccessors.pushScope
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
+ * @see icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
  * @see icu.windea.pls.lang.util.ParadoxModifierManager
  */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
