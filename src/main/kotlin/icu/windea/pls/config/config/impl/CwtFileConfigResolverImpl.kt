@@ -31,11 +31,11 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         filePath: String,
         configs: List<CwtMemberConfig<*>>,
     ): CwtFileConfig {
+        val configs = configs.optimized() // optimized to optimize memory
         val noConfigs = configs.isEmpty()
         if (noConfigs) {
             return CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
         }
-        val configs = configs.optimized() // optimized to optimize memory
         val memberType = CwtConfigResolverUtil.checkMemberType(configs)
         return when (memberType) {
             null -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
