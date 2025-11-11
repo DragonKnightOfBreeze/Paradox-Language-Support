@@ -36,8 +36,11 @@ class ParadoxScopeNode(
         return Reference(element, rangeInElement, resolved)
     }
 
-    class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :
-        PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved), ParadoxIdentifierNode.Reference
+    class Reference(
+        element: PsiElement,
+        rangeInElement: TextRange,
+        resolved: CwtProperty?
+    ) : PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved), ParadoxIdentifierNode.Reference
 
     open class Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxScopeNode? {

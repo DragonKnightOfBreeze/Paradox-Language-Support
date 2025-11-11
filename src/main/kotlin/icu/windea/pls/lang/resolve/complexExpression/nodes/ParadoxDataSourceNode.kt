@@ -77,10 +77,10 @@ class ParadoxDataSourceNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val node: ParadoxDataSourceNode
+        private val node: ParadoxDataSourceNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val name = node.text
-        private val project = node.configGroup.project
+        private val name get() = node.text
+        private val project get() = node.configGroup.project
         private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
         private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
 

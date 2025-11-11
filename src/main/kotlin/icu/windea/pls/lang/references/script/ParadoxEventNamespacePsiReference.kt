@@ -22,7 +22,7 @@ class ParadoxEventNamespacePsiReference(
     rangeInElement: TextRange,
     val event: SmartPsiElementPointer<ParadoxScriptProperty>
 ) : PsiPolyVariantReferenceBase<ParadoxScriptString>(element, rangeInElement) {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())

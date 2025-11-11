@@ -52,11 +52,11 @@ class ParadoxDefineNamespaceNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val node: ParadoxDefineNamespaceNode
+        private val node: ParadoxDefineNamespaceNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        val expression = node.expression
-        val project = expression.configGroup.project
-        val namespace = node.text
+        private val expression get() = node.expression
+        private val project get() = expression.configGroup.project
+        private val namespace get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
             throw IncorrectOperationException()

@@ -61,17 +61,17 @@ class ParadoxTemplateSnippetNode(
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, config, configGroup)
+        return Reference(element, rangeInElement, text, config)
     }
 
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val name: String,
-        val config: CwtValueConfig,
-        val configGroup: CwtConfigGroup
+        private val name: String,
+        private val config: CwtValueConfig,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        val project = configGroup.project
+        private val configGroup get() = config.configGroup
+        private val project get() = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
             val element = element

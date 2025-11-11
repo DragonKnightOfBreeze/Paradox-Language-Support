@@ -29,7 +29,7 @@ class ParadoxLocalisationTextFormatPsiReference(
     element: ParadoxLocalisationTextFormat,
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationTextFormat>(element, rangeInElement) {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setName(newElementName)

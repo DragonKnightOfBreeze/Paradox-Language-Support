@@ -16,7 +16,7 @@ class ParadoxLocalisationConceptPsiReference(
     element: ParadoxLocalisationConceptCommand,
     rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationConceptCommand>(element, rangeInElement) {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         // cannot rename when use alias

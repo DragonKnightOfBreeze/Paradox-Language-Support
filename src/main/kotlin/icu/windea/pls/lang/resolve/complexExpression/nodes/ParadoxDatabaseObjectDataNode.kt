@@ -126,10 +126,10 @@ class ParadoxDatabaseObjectDataNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val node: ParadoxDatabaseObjectDataNode
+        private val node: ParadoxDatabaseObjectDataNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        private val name = node.text
-        private val project = node.configGroup.project
+        private val name get() = node.text
+        private val project get() = node.configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
             return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)

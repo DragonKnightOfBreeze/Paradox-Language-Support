@@ -53,17 +53,15 @@ class ParadoxScriptValueNode(
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, config, configGroup)
+        return Reference(element, rangeInElement, config)
     }
 
     class Reference(
         element: ParadoxScriptStringExpressionElement,
         rangeInElement: TextRange,
-        val name: String,
-        val config: CwtConfig<*>,
-        val configGroup: CwtConfigGroup
+        private val config: CwtConfig<*>
     ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        val project = configGroup.project
+        private val project get() = config.configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())

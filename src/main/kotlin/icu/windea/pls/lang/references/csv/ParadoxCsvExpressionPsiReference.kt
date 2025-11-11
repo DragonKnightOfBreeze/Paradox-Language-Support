@@ -19,7 +19,7 @@ class ParadoxCsvExpressionPsiReference(
     rangeInElement: TextRange,
     val columnConfig: CwtPropertyConfig
 ) : PsiPolyVariantReferenceBase<ParadoxCsvExpressionElement>(element, rangeInElement) {
-    val project = columnConfig.configGroup.project
+    private val project get() = columnConfig.configGroup.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
@@ -45,24 +45,20 @@ class ParadoxCsvExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         val element = element
-
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) {
             return columnConfig.pointer.element
         }
-
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return null
         return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, config)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
-
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) {
             return columnConfig.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
         }
-
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
         return ParadoxExpressionManager.multiResolveCsvExpression(element, rangeInElement, config)
             .mapToArray { PsiElementResolveResult(it) }

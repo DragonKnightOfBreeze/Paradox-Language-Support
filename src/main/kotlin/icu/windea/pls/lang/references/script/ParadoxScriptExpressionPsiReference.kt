@@ -36,7 +36,7 @@ class ParadoxScriptExpressionPsiReference(
     val config: CwtMemberConfig<*>,
     val isKey: Boolean?
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
-    val project = config.configGroup.project
+    private val project get() = config.configGroup.project
 
     init {
         bindConfigForResolved()
@@ -79,7 +79,7 @@ class ParadoxScriptExpressionPsiReference(
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxScriptExpressionService.getReferences(element, rangeInElement, expressionText, config, isKey)
-        if(result.isNullOrEmpty()) return EMPTY_ARRAY
+        if (result.isNullOrEmpty()) return EMPTY_ARRAY
         return result
     }
 
@@ -102,12 +102,12 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     private fun doResolve(): PsiElement? {
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }

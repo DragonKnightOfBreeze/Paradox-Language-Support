@@ -29,7 +29,7 @@ class ParadoxLocalisationParameterPsiReference(
     element: ParadoxLocalisationParameter,
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationParameter>(element, rangeInElement) {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         // TODO 重命名关联的 definition

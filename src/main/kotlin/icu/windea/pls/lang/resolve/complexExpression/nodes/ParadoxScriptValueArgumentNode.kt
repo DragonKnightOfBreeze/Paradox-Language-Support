@@ -32,7 +32,7 @@ class ParadoxScriptValueArgumentNode(
         val reference = valueNode.getReference(element)
         if (reference == null) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, this)
+        return Reference(element, rangeInElement)
     }
 
     /**
@@ -40,8 +40,7 @@ class ParadoxScriptValueArgumentNode(
      */
     class Reference(
         element: ParadoxScriptStringExpressionElement,
-        rangeInElement: TextRange,
-        val node: ParadoxScriptValueArgumentNode
+        rangeInElement: TextRange
     ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())

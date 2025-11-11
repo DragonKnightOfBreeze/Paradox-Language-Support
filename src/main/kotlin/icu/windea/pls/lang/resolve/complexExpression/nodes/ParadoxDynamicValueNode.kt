@@ -57,12 +57,10 @@ class ParadoxDynamicValueNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val name: String,
-        val configs: List<CwtConfig<*>>,
-        val configGroup: CwtConfigGroup
+        private val name: String,
+        private val configs: List<CwtConfig<*>>,
+        private val configGroup: CwtConfigGroup
     ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        // val configExpressions = configs.mapNotNull { it.configExpression }
-
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }

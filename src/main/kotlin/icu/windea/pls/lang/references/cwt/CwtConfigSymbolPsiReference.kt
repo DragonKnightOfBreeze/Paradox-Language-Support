@@ -15,7 +15,7 @@ class CwtConfigSymbolPsiReference(
     rangeInElement: TextRange,
     val info: CwtConfigSymbolIndexInfo,
 ) : PsiReferenceBase<CwtStringExpressionElement>(element, rangeInElement) {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
@@ -28,8 +28,7 @@ class CwtConfigSymbolPsiReference(
     }
 
     override fun resolve(): PsiElement? {
-        val (name, type, readWriteAccess, _, _, gameType) = info
-        val configType = CwtConfigType.entries[type] ?: return null
-        return CwtConfigSymbolElement(element, name, configType, readWriteAccess, gameType, project)
+        val configType = CwtConfigType.entries[info.type] ?: return null
+        return CwtConfigSymbolElement(element, info.name, configType, info.readWriteAccess, info.gameType, project)
     }
 }

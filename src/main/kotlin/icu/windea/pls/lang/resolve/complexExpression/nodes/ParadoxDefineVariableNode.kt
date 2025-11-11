@@ -52,12 +52,12 @@ class ParadoxDefineVariableNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        node: ParadoxDefineVariableNode
+        private val node: ParadoxDefineVariableNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
-        val expression = node.expression
-        val project = expression.configGroup.project
-        val namespace = expression.namespaceNode?.text
-        val variableName = node.text
+        private val expression get() = node.expression
+        private val project get() = expression.configGroup.project
+        private val namespace get() = expression.namespaceNode?.text
+        private val variableName get() = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
             throw IncorrectOperationException()

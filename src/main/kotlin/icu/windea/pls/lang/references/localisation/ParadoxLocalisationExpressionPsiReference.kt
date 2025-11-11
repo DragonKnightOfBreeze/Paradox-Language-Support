@@ -21,7 +21,7 @@ class ParadoxLocalisationExpressionPsiReference(
     element: ParadoxLocalisationExpressionElement,
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationExpressionElement>(element, rangeInElement), PsiReferencesAware {
-    val project by lazy { element.project }
+    private val project get() = element.project
 
     override fun handleElementRename(newElementName: String): PsiElement {
         return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
@@ -54,12 +54,12 @@ class ParadoxLocalisationExpressionPsiReference(
     }
 
     private fun doResolve(): PsiElement? {
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         return ParadoxExpressionManager.resolveLocalisationExpression(element, rangeInElement)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
-        // 根据对应的expression进行解析
+        // 根据对应的 expression 进行解析
         return ParadoxExpressionManager.multiResolveLocalisationExpression(element, rangeInElement)
             .mapToArray { PsiElementResolveResult(it) }
     }
