@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.getOne
 internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig) {
+    override fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig) {
         val configs = fileConfig.properties
         for (groupProperty in configs) {
             val groupName = groupProperty.key
@@ -37,7 +37,7 @@ internal class CwtFoldingSettingsConfigResolverImpl : CwtFoldingSettingsConfig.R
                 val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder)
                 map.put(id, foldingSetting)
             }
-            configGroupOnInit.foldingSettings[groupName] = map
+            initializer.foldingSettings[groupName] = map
         }
     }
 }

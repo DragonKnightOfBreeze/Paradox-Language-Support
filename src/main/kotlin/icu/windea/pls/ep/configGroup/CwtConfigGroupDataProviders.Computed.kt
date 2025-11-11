@@ -5,6 +5,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
+import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -13,6 +14,7 @@ import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.takeWithOperator
@@ -27,6 +29,42 @@ import kotlinx.coroutines.ensureActive
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup): Boolean {
         val currentCoroutineContext = currentCoroutineContext()
+
+        // compute `type2ModifiersMap` and complete `modifiers`
+        run {
+            currentCoroutineContext.ensureActive()
+            for ((name, modifierConfig) in initializer.modifiers) {
+                for (snippetExpression in modifierConfig.template.snippetExpressions) {
+                    if (snippetExpression.type == CwtDataTypes.Definition) {
+                        val typeExpression = snippetExpression.value ?: continue
+                        initializer.type2ModifiersMap.getOrInit(typeExpression)[name] = modifierConfig
+                    }
+                }
+            }
+            // merge all properties named 'modifiers'
+            for ((name, typeConfig) in initializer.types) {
+                val modifiersProps = typeConfig.config.properties?.filter { it.key == "modifiers" }
+                if (modifiersProps.isNullOrEmpty()) continue
+                modifiersProps.forEach { prop ->
+                    for (p in prop.properties.orEmpty()) {
+                        val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
+                        if (subtypeName != null) {
+                            for (pp in p.properties.orEmpty()) {
+                                val typeExpression = "$name.$subtypeName"
+                                val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
+                                initializer.modifiers[modifierConfig.name] = modifierConfig
+                                initializer.type2ModifiersMap.getOrInit(typeExpression)[pp.key] = modifierConfig
+                            }
+                        } else {
+                            val typeExpression = name
+                            val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
+                            initializer.modifiers[modifierConfig.name] = modifierConfig
+                            initializer.type2ModifiersMap.getOrInit(typeExpression)[p.key] = modifierConfig
+                        }
+                    }
+                }
+            }
+        }
 
         // compute `generatedModifiers` and `predefinedModifiers`
         run {

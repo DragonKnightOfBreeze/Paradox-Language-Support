@@ -3,7 +3,6 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
@@ -37,7 +36,6 @@ import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.optimizedPath
@@ -243,12 +241,6 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val modifierName = config.key
                         val modifierConfig = CwtModifierConfig.resolve(config, modifierName) ?: continue
                         initializer.modifiers[modifierName] = modifierConfig
-                        for (snippetExpression in modifierConfig.template.snippetExpressions) {
-                            if (snippetExpression.type == CwtDataTypes.Definition) {
-                                val typeExpression = snippetExpression.value ?: continue
-                                initializer.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[modifierName] = modifierConfig
-                            }
-                        }
                     }
                 }
                 key == "scopes" -> {

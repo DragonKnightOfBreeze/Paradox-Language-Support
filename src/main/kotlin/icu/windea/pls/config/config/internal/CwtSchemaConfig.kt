@@ -4,7 +4,7 @@ import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 
 /**
  * 作为规则本身的架构（schema）的内部规则，不支持自定义。
@@ -22,7 +22,7 @@ data class CwtSchemaConfig(
     val constraints: Map<String, CwtPropertyConfig>
 ) : CwtDetachedConfig {
     interface Resolver {
-        fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig)
+        fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig)
     }
 
     companion object : Resolver by CwtSchemaConfigResolverImpl()

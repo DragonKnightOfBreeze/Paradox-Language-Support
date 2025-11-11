@@ -8,7 +8,6 @@ import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.booleanValue
-import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
@@ -66,26 +65,6 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
         val subtypes = propElements.mapNotNull { CwtSubtypeConfig.resolve(it) }.associateBy { it.name }.optimized()
         val localisation = propGroup.getOne("localisation")?.let { CwtTypeLocalisationConfig.resolve(it) }
         val images = propGroup.getOne("images")?.let { CwtTypeImagesConfig.resolve(it) }
-
-        // merge all properties named 'modifiers'
-        propGroup.getAll("modifiers").forEach { prop ->
-            for (p in prop.properties.orEmpty()) {
-                val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
-                if (subtypeName != null) {
-                    for (pp in p.properties.orEmpty()) {
-                        val typeExpression = "$name.$subtypeName"
-                        val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
-                        configGroup.modifiers[modifierConfig.name] = modifierConfig
-                        configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
-                    }
-                } else {
-                    val typeExpression = name
-                    val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
-                    configGroup.modifiers[modifierConfig.name] = modifierConfig
-                    configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
-                }
-            }
-        }
 
         logger.debug { "Resolved type config (name: $name).".withLocationPrefix(config) }
         return CwtTypeConfigImpl(

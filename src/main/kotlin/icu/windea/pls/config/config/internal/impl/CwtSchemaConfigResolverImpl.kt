@@ -4,13 +4,13 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
-import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 
 internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfigResolverMixin {
     // no logger here (unnecessary)
 
-    override fun resolveInFile(configGroupOnInit: CwtConfigGroup, fileConfig: CwtFileConfig) {
+    override fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig) {
         val properties = mutableListOf<CwtPropertyConfig>()
         val enums = mutableMapOf<String, CwtPropertyConfig>()
         val constraints = mutableMapOf<String, CwtPropertyConfig>()
@@ -23,6 +23,6 @@ internal class CwtSchemaConfigResolverImpl : CwtSchemaConfig.Resolver, CwtConfig
             }
         }
         val schemaConfig = CwtSchemaConfig(fileConfig, properties, enums, constraints)
-        configGroupOnInit.schemas += schemaConfig
+        initializer.schemas += schemaConfig
     }
 }
