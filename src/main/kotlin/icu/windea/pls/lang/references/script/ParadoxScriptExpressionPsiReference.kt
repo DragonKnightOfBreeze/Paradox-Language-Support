@@ -36,8 +36,7 @@ class ParadoxScriptExpressionPsiReference(
     val config: CwtMemberConfig<*>,
     val isKey: Boolean?
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
-    val project by lazy { config.configGroup.project }
-    // val project by lazy { element.project }
+    val project = config.configGroup.project
 
     init {
         bindConfigForResolved()
