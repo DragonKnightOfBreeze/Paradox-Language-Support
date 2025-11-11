@@ -141,11 +141,11 @@ interface CwtDataProvider {
     val relatedLocalisationPatterns: Set<Tuple2<String, String>>
 
     /** 获取符合特定条件的排序后的链接规则。 */
-    val linksModel: LinksModel
+    val linksModel: CwtLinksModel
     /** 获取符合特定条件的排序后的本地化的链接规则。 */
-    val localisationLinksModel: LinksModel
+    val localisationLinksModel: CwtLinksModel
     /** 获取符合特定条件的定义类型。 */
-    val definitionTypesModel: DefinitionTypesModel
+    val definitionTypesModel: CwtDefinitionTypesModel
 
     // endregion
 
@@ -156,33 +156,33 @@ interface CwtDataProvider {
 
     // endregion
 
-    /** 用于获取符合特定条件的链接规则。 */
-    interface LinksModel {
-        /** 变量对应的链接规则的列表。 */
-        val variable: List<CwtLinkConfig>
-        val forScopeStatic: List<CwtLinkConfig>
-        val forScopeFromArgumentSorted: List<CwtLinkConfig>
-        val forScopeFromDataSorted: List<CwtLinkConfig>
-        val forScopeFromDataNoPrefixSorted: List<CwtLinkConfig>
-        val forValueStatic: List<CwtLinkConfig>
-        val forValueFromArgumentSorted: List<CwtLinkConfig>
-        val forValueFromDataSorted: List<CwtLinkConfig>
-        val forValueFromDataNoPrefixSorted: List<CwtLinkConfig>
-    }
-
-    /** 用于获取符合特定条件的定义类型。 */
-    interface DefinitionTypesModel {
-        /** 必定支持作用域的定义类型。 */
-        val supportScope: Set<String>
-        /** 必定间接支持作用域的定义类型。 */
-        val indirectSupportScope: Set<String>
-        /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
-        val skipCheckSystemScope: Set<String>
-        /** 支持参数的定义类型。 */
-        val supportParameters: Set<String>
-        /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
-        val mayWithTypeKeyPrefix: Set<String>
-    }
-
     fun clear()
+}
+
+/** 用于获取符合特定条件的链接规则。 */
+interface CwtLinksModel {
+    /** 变量对应的链接规则的列表。 */
+    val variable: List<CwtLinkConfig>
+    val forScopeStatic: List<CwtLinkConfig>
+    val forScopeFromArgumentSorted: List<CwtLinkConfig>
+    val forScopeFromDataSorted: List<CwtLinkConfig>
+    val forScopeFromDataNoPrefixSorted: List<CwtLinkConfig>
+    val forValueStatic: List<CwtLinkConfig>
+    val forValueFromArgumentSorted: List<CwtLinkConfig>
+    val forValueFromDataSorted: List<CwtLinkConfig>
+    val forValueFromDataNoPrefixSorted: List<CwtLinkConfig>
+}
+
+/** 用于获取符合特定条件的定义类型。 */
+interface CwtDefinitionTypesModel {
+    /** 必定支持作用域的定义类型。 */
+    val supportScope: Set<String>
+    /** 必定间接支持作用域的定义类型。 */
+    val indirectSupportScope: Set<String>
+    /** 不需要检查系统作用域切换的定义类型（应当是固定的，不允许在检查选项中配置）。 */
+    val skipCheckSystemScope: Set<String>
+    /** 支持参数的定义类型。 */
+    val supportParameters: Set<String>
+    /** 可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算。 */
+    val mayWithTypeKeyPrefix: Set<String>
 }
