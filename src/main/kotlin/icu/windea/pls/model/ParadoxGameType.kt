@@ -44,7 +44,7 @@ enum class ParadoxGameType(
 
     private object Entries {
         val ofGame = setOf("game")
-        val ofJomini = setOf("jomini")
+        val ofCommonExtra = setOf("clausewitz", "jomini")
         val eu5GameMain = setOf(
             "game/in_game", "game/main_menu", "game/loading_screen",
             "game/dlc/*/in_game", "game/dlc/*/main_menu", "game/dlc/*/loading_screen"
@@ -59,8 +59,8 @@ enum class ParadoxGameType(
 
     private object EntryInfos {
         val empty = ParadoxEntryInfo()
-        val ofJomini = ParadoxEntryInfo(gameExtra = Entries.ofJomini)
-        val ofGameAndJomini = ParadoxEntryInfo(gameMain = Entries.ofGame, gameExtra = Entries.ofJomini)
+        val ofJomini = ParadoxEntryInfo(gameExtra = Entries.ofCommonExtra)
+        val ofGameAndJomini = ParadoxEntryInfo(gameMain = Entries.ofGame, gameExtra = Entries.ofCommonExtra)
         val stellaris = ParadoxEntryInfo(gameExtra = Entries.stellarisGameExtra)
         val eu5 = ParadoxEntryInfo(gameMain = Entries.eu5GameMain, gameExtra = Entries.eu5GameExtra, modMain = Entries.eu5ModMain)
     }
