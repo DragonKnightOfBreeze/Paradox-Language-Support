@@ -306,6 +306,9 @@ class CollectionExtensionsTest {
 
         // mismatch inside
         assertNull(base.removePrefixOrNull(listOf(1, 0)))
+
+        // with wildcard
+        assertEquals(listOf("c"), listOf("a", "b", "c").removePrefixOrNull(listOf("a", "*"), wildcard = "*"))
     }
 
     @Test
@@ -329,6 +332,9 @@ class CollectionExtensionsTest {
 
         // mismatch inside
         assertNull(base.removeSuffixOrNull(listOf(2, 4)))
+
+        // with wildcard
+        assertEquals(listOf("a"), listOf("a", "b", "c").removeSuffixOrNull(listOf("b", "*"), wildcard = "*"))
     }
 
     private class Holder {

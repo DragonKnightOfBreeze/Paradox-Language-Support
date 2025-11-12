@@ -189,21 +189,29 @@ inline fun <T> Iterable<T>.chunkedBy(keepEmpty: Boolean = true, predicate: (T) -
 //    return this
 // }
 
-/** 如果当前列表存在指定的作为后缀的子列表（可以为空），则去除并返回。否则，返回 `null`。*/
-fun <T> List<T>.removePrefixOrNull(prefix: List<T>): List<T>? {
+/**
+ * 如果当前列表存在指定的作为前缀的子列表 [prefix]（可以为空），则去除并返回。否则，返回 `null`。
+ * 如果指定了通配符 [wildcard]，则当前缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
+ */
+fun <T: Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): List<T>? {
     if (prefix.isEmpty()) return this
     if (prefix.size > this.size) return null
     for ((i, e) in prefix.withIndex()) {
+        if(wildcard != null && wildcard == e) continue
         if (e != this[i]) return null
     }
     return this.drop(prefix.size)
 }
 
-/** 如果当前列表存在指定的作为后缀的子列表（可以为空），则去除并返回，否则返回 `null`。*/
-fun <T> List<T>.removeSuffixOrNull(suffix: List<T>): List<T>? {
+/**
+ * 如果当前列表存在指定的作为后缀的子列表 [suffix]（可以为空），则去除并返回，否则返回 `null`。
+ * 如果指定了通配符 [wildcard]，则当后缀中的元素与其相等时，认为总是匹配当前列表中的对应索引的元素。
+ */
+fun <T: Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): List<T>? {
     if (suffix.isEmpty()) return this
     if (suffix.size > this.size) return null
     for ((i, e) in suffix.withIndex()) {
+        if(wildcard != null && wildcard == e) continue
         if (e != this[this.size - suffix.size + i]) return null
     }
     return this.dropLast(suffix.size)

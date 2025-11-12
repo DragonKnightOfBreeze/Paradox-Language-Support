@@ -9,7 +9,9 @@ package icu.windea.pls.model
  * @property title 标题（通常作为游戏名）。
  * @property gameId 官方启动器使用的游戏 ID。
  * @property steamId Steam 使用的游戏 ID。
- * @property entryInfo 入口信息。参见 [ParadoxEntryInfo]。
+ * @property entryInfo 入口信息。
+ *
+ * @see ParadoxEntryInfo
  */
 enum class ParadoxGameType(
     val id: String,
@@ -43,7 +45,14 @@ enum class ParadoxGameType(
     private object Entries {
         val ofGame = setOf("game")
         val ofJomini = setOf("jomini")
-        val eu5GameMain = setOf("game/in_game", "game/main_menu", "game/loading_screen")
+        val eu5GameMain = setOf(
+            "game/in_game", "game/main_menu", "game/loading_screen",
+            "game/dlc/*/in_game", "game/dlc/*/main_menu", "game/dlc/*/loading_screen"
+        )
+        val eu5GameExtra = setOf(
+            "clausewitz/main_menu", "clausewitz/loading_screen",
+            "jomini/main_menu", "jomini/loading_screen",
+        )
         val eu5ModMain = setOf("in_game", "main_menu", "loading_screen")
         val stellarisGameExtra = setOf("pdx_launcher/game", "pdx_launcher/common", "pdx_online_assets", "previewer_assets", "tweakergui_assets")
     }
@@ -53,7 +62,7 @@ enum class ParadoxGameType(
         val ofJomini = ParadoxEntryInfo(gameExtra = Entries.ofJomini)
         val ofGameAndJomini = ParadoxEntryInfo(gameMain = Entries.ofGame, gameExtra = Entries.ofJomini)
         val stellaris = ParadoxEntryInfo(gameExtra = Entries.stellarisGameExtra)
-        val eu5 = ParadoxEntryInfo(gameMain = Entries.eu5GameMain, modMain = Entries.eu5ModMain)
+        val eu5 = ParadoxEntryInfo(gameMain = Entries.eu5GameMain, gameExtra = Entries.eu5GameExtra, modMain = Entries.eu5ModMain)
     }
 
     companion object {

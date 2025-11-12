@@ -201,7 +201,7 @@ object ParadoxCoreManager {
         }
         if (entryMap.isEmpty()) return relPath to ""
         for ((entryName, entryPath) in entryMap) {
-            val resolved = relPath.subPaths.removePrefixOrNull(entryPath) ?: continue
+            val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
             return ParadoxPath.resolve(resolved) to entryName
         }
         return null // 2.0.7 null now
