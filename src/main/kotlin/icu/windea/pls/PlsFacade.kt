@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * 通用门面，用于获取协程作用域、各种服务以及各种插件设置。
  */
+@Suppress("unused")
 object PlsFacade {
     // from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
@@ -117,12 +118,12 @@ object PlsFacade {
         fun includeSqlite() = "org.sqlite.JDBC".isClassPresent()
 
         /** 是否记录缓存状态。*/
-        fun recordCacheStats() = System.getProperty("pls.cache.recordStats").toBoolean()
+        fun recordCacheStats() = System.getProperty("pls.record.cache.status").toBoolean()
 
         /** 是否启用更宽松的优化策略。这适用于多数需要加入到缓存中的集合，进行更详细的忽略检查。 */
         fun relaxOptimize() = System.getProperty("pls.relax.optimize").toBoolean()
 
-        /** 是否禁用在打开项目后，刷新内置规则目录（仅限一次）。 */
-        fun suppressRefreshBuiltIn() = System.getProperty("pls.suppress.refreshBuiltIn").toBoolean()
+        /** 是否在打开项目后，刷新内置规则目录（仅限一次）。 */
+        fun refreshBuiltIn() = System.getProperty("pls.refresh.builtIn").toBoolean()
     }
 }
