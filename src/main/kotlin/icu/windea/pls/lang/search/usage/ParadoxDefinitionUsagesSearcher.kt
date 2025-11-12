@@ -10,8 +10,8 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.data.StellarisGameConceptData
-import icu.windea.pls.ep.resolve.localisation.CompositeParadoxLocalisationIconSupport
-import icu.windea.pls.ep.resolve.localisation.DefinitionBasedParadoxLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.ParadoxCompositeLocalisationIconSupport
+import icu.windea.pls.ep.resolve.localisation.ParadoxDefinitionBasedLocalisationIconSupport
 import icu.windea.pls.ep.resolve.localisation.ParadoxLocalisationIconSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
@@ -82,10 +82,10 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
 
     private fun addToNameGetters(support: ParadoxLocalisationIconSupport, definitionInfo: ParadoxDefinitionInfo, nameGetters: MutableSet<(String) -> String?>) {
         when (support) {
-            is CompositeParadoxLocalisationIconSupport -> {
+            is ParadoxCompositeLocalisationIconSupport -> {
                 support.supports.forEach { s -> addToNameGetters(s, definitionInfo, nameGetters) }
             }
-            is DefinitionBasedParadoxLocalisationIconSupport -> {
+            is ParadoxDefinitionBasedLocalisationIconSupport -> {
                 if (ParadoxDefinitionTypeExpression.resolve(support.definitionType).matches(definitionInfo)) {
                     nameGetters.add(support.nameGetter)
                 }

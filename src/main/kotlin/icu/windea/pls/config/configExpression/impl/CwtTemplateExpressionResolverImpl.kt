@@ -11,7 +11,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
-import icu.windea.pls.ep.configExpression.RuleBasedCwtDataExpressionResolver
+import icu.windea.pls.ep.configExpression.CwtRuleBasedDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
@@ -43,7 +43,7 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
         while (true) {
             // 在剩余字符串中，计算所有动态规则的最早出现位置，选择最靠左者
             val tuple = rules.mapNotNull f@{ rule ->
-                if (rule !is RuleBasedCwtDataExpressionResolver.DynamicRule) return@f null
+                if (rule !is CwtRuleBasedDataExpressionResolver.DynamicRule) return@f null
                 if (rule.prefix.isEmpty() || rule.suffix.isEmpty()) return@f null
                 val i1 = expressionString.indexOf(rule.prefix, startIndex).takeIf { it != -1 } ?: return@f null
                 val i2 = expressionString.indexOf(rule.suffix, i1 + rule.prefix.length).takeIf { it != -1 } ?: return@f null

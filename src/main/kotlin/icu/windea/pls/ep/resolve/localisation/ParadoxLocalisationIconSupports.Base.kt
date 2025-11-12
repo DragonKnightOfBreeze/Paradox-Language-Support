@@ -27,19 +27,19 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")
-abstract class CompositeParadoxLocalisationIconSupport : ParadoxLocalisationIconSupport {
+abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
     val supports = mutableListOf<ParadoxLocalisationIconSupport>()
 
     protected fun fromDefinition(definitionType: String) {
-        supports += DefinitionBasedParadoxLocalisationIconSupport(definitionType, { it }, { it })
+        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
     }
 
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
-        supports += DefinitionBasedParadoxLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
+        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
     }
 
     protected fun fromImageFile(pathExpressionString: String) {
-        supports += ImageFileBasedParadoxLocalisationIconSupport(pathExpressionString)
+        supports += ParadoxImageFileBasedLocalisationIconSupport(pathExpressionString)
     }
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
@@ -64,7 +64,7 @@ abstract class CompositeParadoxLocalisationIconSupport : ParadoxLocalisationIcon
     }
 }
 
-class DefinitionBasedParadoxLocalisationIconSupport(
+class ParadoxDefinitionBasedLocalisationIconSupport(
     val definitionType: String,
     val definitionNameGetter: (name: String) -> String?,
     val nameGetter: (definitionName: String) -> String?,
@@ -108,7 +108,7 @@ class DefinitionBasedParadoxLocalisationIconSupport(
     }
 }
 
-class ImageFileBasedParadoxLocalisationIconSupport(
+class ParadoxImageFileBasedLocalisationIconSupport(
     pathExpressionString: String
 ) : ParadoxLocalisationIconSupport {
     val pathExpression = CwtDataExpression.resolve(pathExpressionString, false)

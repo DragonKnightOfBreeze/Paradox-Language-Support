@@ -6,7 +6,7 @@ import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
-class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSupport() {
+class ParadoxBaseLocalisationIconSupport : ParadoxCompositeLocalisationIconSupport() {
     init {
         fromDefinition(ParadoxDefinitionTypes.Sprite, { it.addPrefix("GFX_text_") }, { it.removePrefixOrNull("GFX_text_") })
         fromDefinition(ParadoxDefinitionTypes.Sprite, { it.addPrefix("GFX_") }, { it.removePrefixOrNull("GFX_") })
@@ -14,7 +14,7 @@ class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSuppo
     }
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Stellaris : CompositeParadoxLocalisationIconSupport() {
+    class Stellaris : ParadoxCompositeLocalisationIconSupport() {
         init {
             fromDefinition(ParadoxDefinitionTypes.Job, { it.removePrefixOrNull("job_") }, { it.addPrefix("job_") })
             fromDefinition(ParadoxDefinitionTypes.SwappedJob, { it.removePrefixOrNull("job_") }, { it.addPrefix("job_") })

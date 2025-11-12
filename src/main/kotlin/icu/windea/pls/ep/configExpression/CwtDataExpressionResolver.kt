@@ -31,7 +31,7 @@ interface CwtDataExpressionResolver {
          */
         fun resolveTemplate(expressionString: String): CwtDataExpression? {
             EP_NAME.extensionList.forEach f@{ ep ->
-                if (ep !is RuleBasedCwtDataExpressionResolver) return@f
+                if (ep !is CwtRuleBasedDataExpressionResolver) return@f
                 val r = ep.resolve(expressionString, false)
                 if (r != null) return r
             }
@@ -39,7 +39,7 @@ interface CwtDataExpressionResolver {
         }
 
         val allRules by lazy {
-            EP_NAME.extensionList.filterIsInstance<RuleBasedCwtDataExpressionResolver>().flatMap { it.rules }
+            EP_NAME.extensionList.filterIsInstance<CwtRuleBasedDataExpressionResolver>().flatMap { it.rules }
         }
     }
 }
