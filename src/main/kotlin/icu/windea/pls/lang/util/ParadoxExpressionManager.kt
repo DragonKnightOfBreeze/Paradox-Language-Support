@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -700,25 +701,44 @@ object ParadoxExpressionManager {
 
     fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
+        // 尝试兼容可能包含参数的情况
+        // if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
         return when (element) {
-            is ParadoxScriptExpressionElement -> doGetExpressionReferencesFromCache(element)
-            is ParadoxLocalisationExpressionElement -> doGetExpressionReferencesFromCache(element)
-            is ParadoxCsvExpressionElement -> doGetExpressionReferencesFromCache(element)
+            is ParadoxScriptExpressionElement -> {
+                if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+                doGetExpressionReferencesFromCache(element)
+            }
+            is ParadoxLocalisationExpressionElement -> {
+                if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
+                doGetExpressionReferencesFromCache(element)
+            }
+            is ParadoxCsvExpressionElement -> {
+                doGetExpressionReferencesFromCache(element)
+            }
             else -> PsiReference.EMPTY_ARRAY
         }
     }
 
-    private fun doGetExpressionReferencesFromCache(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
-        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
-
-        // 尝试兼容可能包含参数的情况
-        // if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
-
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
-        return CachedValuesManager.getCachedValue(element, key) {
+    private fun doGetExpressionReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
+        val cacheKey = doGetExpressionReferencesCacheKey()
+        return CachedValuesManager.getCachedValue(element, cacheKey) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
+        }
+    }
+
+    private fun doGetExpressionReferencesCacheKey(): Key<CachedValue<Array<out PsiReference>>> {
+        val processMergedIndex = PlsStates.processMergedIndex.get() == true
+        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
+        return key
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> doGetExpressionReferences(element)
+            is ParadoxLocalisationExpressionElement -> doGetExpressionReferences(element)
+            is ParadoxCsvExpressionElement -> doGetExpressionReferences(element)
+            else -> PsiReference.EMPTY_ARRAY
         }
     }
 
@@ -734,34 +754,12 @@ object ParadoxExpressionManager {
         return reference.collectReferences()
     }
 
-    private fun doGetExpressionReferencesFromCache(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
-        if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
-
-        // 尝试兼容可能包含参数的情况
-        // if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
-
-        val processMergedIndex = PlsStates.processMergedIndex.get() == true
-        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
-        return CachedValuesManager.getCachedValue(element, key) {
-            val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
-    }
-
     private fun doGetExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
         // 尝试解析为复杂表达式
         val value = element.value
         val textRange = TextRange.create(0, value.length)
         val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
         return reference.collectReferences()
-    }
-
-    private fun doGetExpressionReferencesFromCache(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
-        val key = Keys.cachedExpressionReferences
-        return CachedValuesManager.getCachedValue(element, key) {
-            val value = doGetExpressionReferences(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.Resolve)
-        }
     }
 
     private fun doGetExpressionReferences(element: ParadoxCsvExpressionElement): Array<out PsiReference> {
@@ -773,6 +771,11 @@ object ParadoxExpressionManager {
         val textRange = getExpressionTextRange(element) // unquoted text
         val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
         return arrayOf(reference)
+    }
+
+    fun cleanUpExpressionReferencesCache(element: ParadoxExpressionElement) {
+        val cacheKey = doGetExpressionReferencesCacheKey()
+        element.putUserData(cacheKey, null)
     }
 
     // endregion

@@ -116,6 +116,10 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                     element.putUserData(PlsIndexUtil.indexInfoMarkerKey, null)
                     definitionInfoStack.removeLastOrNull()
                 }
+                if(element is ParadoxScriptStringExpressionElement) {
+                    // clean up expression references cache
+                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                }
             }
         })
     }
@@ -131,6 +135,13 @@ class ParadoxMergedIndex : IndexInfoAwareFileBasedIndex<List<ParadoxIndexInfo>>(
                 }
                 if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return // optimize
                 super.visitElement(element)
+            }
+
+            override fun elementFinished(element: PsiElement?) {
+                if (element is ParadoxLocalisationExpressionElement) {
+                    // clean up expression references cache
+                    ParadoxExpressionManager.cleanUpExpressionReferencesCache(element)
+                }
             }
         })
     }
