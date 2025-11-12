@@ -2,6 +2,7 @@ package icu.windea.pls.config.util.manipulators
 
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.CwtOptionMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -36,25 +37,43 @@ import kotlin.contracts.contract
 object CwtConfigManipulator {
     // region Common Methods
 
-    fun getIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int): String {
+    fun getIdentifierKey(config: CwtOptionMemberConfig<*>): String {
+        return doGetIdentifierKey(config)
+    }
+
+    private fun doGetIdentifierKey(config: CwtOptionMemberConfig<*>): String {
+        val children = config.optionConfigs
+        return buildString {
+            if (config is CwtOptionConfig) append(config.key).append('=')
+            when {
+                children == null -> append(config.value)
+                children.isEmpty() -> append("{}")
+                else -> {
+                    append('{')
+                    append(children.map { doGetIdentifierKey(it) }.sorted().joinToString("\u0000"))
+                    append('}')
+                }
+            }
+        }
+    }
+
+    fun getIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int = -1): String {
         return doGetIdentifierKey(config, maxDepth)
     }
 
     private fun doGetIdentifierKey(config: CwtMemberConfig<*>, maxDepth: Int, depth: Int = 0): String {
-        if (maxDepth < depth) return ""
-        val childConfigs = config.configs
-        return when (config) {
-            is CwtPropertyConfig -> {
-                when {
-                    childConfigs == null -> "${config.key}=${config.value}"
-                    childConfigs.isEmpty() -> "${config.key}={}"
-                    else -> "${config.key}={${childConfigs.joinToString("\u0000") { doGetIdentifierKey(it, maxDepth, depth + 1) }}}"
+        if (maxDepth >= 0 && maxDepth < depth) return ""
+        val children = config.configs
+        return buildString {
+            if (config is CwtPropertyConfig) append(config.key).append('=')
+            when {
+                children == null -> append(config.value)
+                children.isEmpty() -> append("{}")
+                else -> {
+                    append('{')
+                    append(children.map { doGetIdentifierKey(it, maxDepth, depth + 1) }.sorted().joinToString("\u0000"))
+                    append('}')
                 }
-            }
-            is CwtValueConfig -> when {
-                childConfigs == null -> config.value
-                childConfigs.isEmpty() -> "{}"
-                else -> "{${childConfigs.joinToString("\u0000") { doGetIdentifierKey(it, maxDepth, depth + 1) }}}"
             }
         }
     }
@@ -73,19 +92,17 @@ object CwtConfigManipulator {
             if (!newGuardStack.add(guardKey)) return "..."
             return doGetDistinctKey(inlinedConfig, newGuardStack)
         }
-        val childConfigs = config.configs
-        return when (config) {
-            is CwtPropertyConfig -> {
-                when {
-                    childConfigs == null -> "${config.key}=${config.value}"
-                    childConfigs.isEmpty() -> "${config.key}={}"
-                    else -> "${config.key}={${childConfigs.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }}}"
+        val children = config.configs
+        return buildString {
+            if (config is CwtPropertyConfig) append(config.key).append('=')
+            when {
+                children == null -> append(config.value)
+                children.isEmpty() -> append("{}")
+                else -> {
+                    append('{')
+                    append(children.map { doGetDistinctKey(it, guardStack) }.sorted().joinToString("\u0000"))
+                    append('}')
                 }
-            }
-            is CwtValueConfig -> when {
-                childConfigs == null -> config.value
-                childConfigs.isEmpty() -> "{}"
-                else -> "{${childConfigs.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }}}"
             }
         }
     }

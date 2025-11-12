@@ -116,17 +116,17 @@ object CwtConfigResolverUtil {
     }
 
     @Optimized
-    fun checkMemberType(configs: List<CwtMemberConfig<*>>?): CwtMemberType? {
-        if (configs.isNullOrEmpty()) return null
-        var result: CwtMemberType? = null
-        configs.forEachFast { c ->
+    fun checkMemberType(configs: List<CwtMemberConfig<*>>?, noConfigs: Boolean = configs.isNullOrEmpty()): CwtMemberType {
+        if (noConfigs) return CwtMemberType.NONE
+        var result = CwtMemberType.NONE
+        configs?.forEachFast { c ->
             val r = when (c) {
                 is CwtPropertyConfig -> CwtMemberType.PROPERTY
                 is CwtValueConfig -> CwtMemberType.VALUE
             }
             when {
-                result == null -> result = r
-                result != r -> return null
+                result == CwtMemberType.NONE -> result = r
+                result != r -> return CwtMemberType.MIXED
             }
         }
         return result

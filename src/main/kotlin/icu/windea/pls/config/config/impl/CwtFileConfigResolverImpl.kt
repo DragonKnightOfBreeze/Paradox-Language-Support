@@ -32,13 +32,10 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         configs: List<CwtMemberConfig<*>>,
     ): CwtFileConfig {
         val configs = configs.optimized() // optimized to optimize memory
-        val noConfigs = configs.isEmpty()
-        if (noConfigs) {
-            return CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
-        }
         val memberType = CwtConfigResolverUtil.checkMemberType(configs)
         return when (memberType) {
-            null -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
+            CwtMemberType.NONE -> CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
+            CwtMemberType.MIXED -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
             CwtMemberType.PROPERTY -> CwtFileConfigImplWithPropertyConfigs(pointer, configGroup, fileName, filePath, configs)
             CwtMemberType.VALUE -> CwtFileConfigImplWithValueConfigs(pointer, configGroup, fileName, filePath, configs)
         }
