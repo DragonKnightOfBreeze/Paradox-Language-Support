@@ -12,8 +12,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.core.collections.FastMap
+import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
-import icu.windea.pls.core.collections.getOrInit
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.takeWithOperator
@@ -26,7 +27,7 @@ import kotlinx.coroutines.ensureActive
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 
         // compute `type2ModifiersMap` and complete `modifiers`
@@ -36,7 +37,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 for (snippetExpression in modifierConfig.template.snippetExpressions) {
                     if (snippetExpression.type == CwtDataTypes.Definition) {
                         val typeExpression = snippetExpression.value ?: continue
-                        initializer.type2ModifiersMap.getOrInit(typeExpression)[name] = modifierConfig
+                        initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[name] = modifierConfig
                     }
                 }
             }
@@ -52,13 +53,13 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                                 val typeExpression = "$name.$subtypeName"
                                 val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
                                 initializer.modifiers[modifierConfig.name] = modifierConfig
-                                initializer.type2ModifiersMap.getOrInit(typeExpression)[pp.key] = modifierConfig
+                                initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[pp.key] = modifierConfig
                             }
                         } else {
                             val typeExpression = name
                             val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
                             initializer.modifiers[modifierConfig.name] = modifierConfig
-                            initializer.type2ModifiersMap.getOrInit(typeExpression)[p.key] = modifierConfig
+                            initializer.type2ModifiersMap.computeIfAbsent(typeExpression) { FastMap() }[p.key] = modifierConfig
                         }
                     }
                 }
@@ -123,22 +124,23 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         run {
             currentCoroutineContext.ensureActive()
             for ((k, v) in initializer.aliasGroups) {
-                var keysConst: MutableMap<String, String>? = null
-                var keysNoConst: MutableSet<String>? = null
+                val keysConst = caseInsensitiveStringKeyMap<String>()
+                val keysNoConst = FastSet<String>()
                 for (key in v.keys) {
                     if (CwtDataExpression.resolve(key, true).type == CwtDataTypes.Constant) {
-                        if (keysConst == null) keysConst = caseInsensitiveStringKeyMap()
                         keysConst[key] = key
                     } else {
-                        if (keysNoConst == null) keysNoConst = mutableSetOf()
                         keysNoConst += key
                     }
                 }
-                if (!keysConst.isNullOrEmpty()) {
+                if (keysConst.isNotEmpty()) {
                     initializer.aliasKeysGroupConst[k] = keysConst
                 }
-                if (!keysNoConst.isNullOrEmpty()) {
-                    initializer.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { initializer }).toMutableSet()
+                if (keysNoConst.isNotEmpty()) {
+                    val sorted = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { initializer })
+                    val fastSet = FastSet<String>()
+                    fastSet.addAll(sorted)
+                    initializer.aliasKeysGroupNoConst[k] = fastSet
                 }
             }
         }
@@ -240,7 +242,9 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
+    }
 
-        return true
+    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+        // 2.0.7 nothing now (since it's not very necessary)
     }
 }

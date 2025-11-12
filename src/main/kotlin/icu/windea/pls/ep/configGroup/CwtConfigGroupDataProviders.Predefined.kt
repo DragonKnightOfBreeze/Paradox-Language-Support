@@ -7,7 +7,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
  * 用于初始化规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
         with(initializer.aliasNamesSupportScope) {
             this += "modifier" // 也支持，但不能切换作用域
             this += "trigger"
@@ -35,7 +35,9 @@ class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 // this += "inline_script" // 内联脚本也支持参数（但它不是定义）
             }
         }
+    }
 
-        return true
+    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+        // 2.0.7 nothing now (since it's not very necessary)
     }
 }

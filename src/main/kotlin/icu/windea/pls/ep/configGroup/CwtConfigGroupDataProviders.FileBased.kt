@@ -41,7 +41,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.optimizedPath
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverUtil
-import icu.windea.pls.core.collections.getOrInit
+import icu.windea.pls.core.collections.FastList
+import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
@@ -56,7 +57,7 @@ import kotlinx.coroutines.ensureActive
 class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     private val logger = thisLogger()
 
-    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup): Boolean {
+    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
 
         // 按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
@@ -107,8 +108,6 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 CwtConfigResolverUtil.resetLocation()
             }
         }
-
-        return true
     }
 
     private fun resolveAndProcessInternalFile(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup, file: VirtualFile, filePath: String) {
@@ -278,7 +277,8 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val definitionConfig = CwtExtendedDefinitionConfig.resolve(config) ?: continue
-                        initializer.extendedDefinitions.getOrPut(definitionConfig.name) { mutableListOf() } += definitionConfig
+                        // 使用 fast 列表作为默认值
+                        initializer.extendedDefinitions.computeIfAbsent(definitionConfig.name) { FastList() } += definitionConfig
                     }
                 }
                 key == "game_rules" -> {
@@ -306,7 +306,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     val configs = property.configs ?: continue
                     for (config in configs) {
                         val parameterConfig = CwtExtendedParameterConfig.resolve(config) ?: continue
-                        initializer.extendedParameters.getOrInit(parameterConfig.name) += parameterConfig
+                        initializer.extendedParameters.computeIfAbsent(parameterConfig.name) { FastList() } += parameterConfig
                     }
                 }
                 key == "complex_enum_values" -> {
@@ -317,7 +317,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val configs1 = config.configs ?: continue
                         for (config1 in configs1) {
                             val complexEnumValueConfig = CwtExtendedComplexEnumValueConfig.resolve(config1, type)
-                            initializer.extendedComplexEnumValues.getOrInit(type)[complexEnumValueConfig.name] = complexEnumValueConfig
+                            initializer.extendedComplexEnumValues.computeIfAbsent(type) { FastMap() }[complexEnumValueConfig.name] = complexEnumValueConfig
                         }
                     }
                 }
@@ -329,7 +329,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val configs1 = config.configs ?: continue
                         for (config1 in configs1) {
                             val dynamicValueConfig = CwtExtendedDynamicValueConfig.resolve(config1, type)
-                            initializer.extendedDynamicValues.getOrInit(type)[dynamicValueConfig.name] = dynamicValueConfig
+                            initializer.extendedDynamicValues.computeIfAbsent(type) { FastMap() }[dynamicValueConfig.name] = dynamicValueConfig
                         }
                     }
                 }
@@ -343,11 +343,11 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
                         if (CwtConfigManager.isRemoved(aliasConfig)) return@run
                         CwtAliasConfig.postProcess(aliasConfig)
-                        initializer.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
+                        initializer.aliasGroups.computeIfAbsent(aliasConfig.name) { FastMap() }.computeIfAbsent(aliasConfig.subName) { FastList() } += aliasConfig
                     }
                     run {
                         val inlineConfig = CwtInlineConfig.resolve(property) ?: return@run
-                        initializer.inlineConfigGroup.getOrInit(inlineConfig.name) += inlineConfig
+                        initializer.inlineConfigGroup.computeIfAbsent(inlineConfig.name) { FastList() } += inlineConfig
                     }
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run
@@ -356,5 +356,9 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 }
             }
         }
+    }
+
+    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+        // 2.0.7 nothing now (since it's not very necessary)
     }
 }

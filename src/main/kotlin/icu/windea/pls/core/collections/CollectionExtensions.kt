@@ -227,9 +227,3 @@ fun <K, V> Map<K, List<V>>.getOne(key: K): V? = get(key)?.lastOrNull()
 
 /** 得到指定键 [key] 对应的类型为 [List] 的值中的所有元素，如果不存在则返回空列表。 */
 fun <K, V> Map<K, List<V>>.getAll(key: K): List<V> = get(key).orEmpty()
-
-/** 得到指定键 [key] 对应的类型为 [MutableList] 的值，如果不存在则先初始化。*/
-fun <K, E, M : MutableMap<K, MutableList<E>>> M.getOrInit(key: K): MutableList<E> = getOrPut(key) { mutableListOf() }
-
-/** 得到指定键 [key] 对应的类型为 [MutableMap] 的值，如果不存在则先初始化。*/
-fun <K, K1, V1, M : MutableMap<K, MutableMap<K1, V1>>> M.getOrInit(key: K): MutableMap<K1, V1> = getOrPut(key) { mutableMapOf() }

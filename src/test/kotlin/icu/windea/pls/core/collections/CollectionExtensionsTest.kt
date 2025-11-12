@@ -347,18 +347,4 @@ class CollectionExtensionsTest {
         h.count = 7
         assertEquals(7, h.backing["count"])
     }
-
-    @Test
-    fun getOrInit_for_list_and_map() {
-        val m1 = mutableMapOf<String, MutableList<Int>>()
-        val l1 = m1.getOrInit("k")
-        l1 += 1
-        assertSame(l1, m1["k"])
-        assertEquals(listOf(1), m1["k"])
-
-        val m2 = mutableMapOf<String, MutableMap<String, Int>>()
-        val level2 = m2.getOrInit("outer")
-        level2["inner"] = 5
-        assertEquals(5, m2["outer"]?.get("inner"))
-    }
 }

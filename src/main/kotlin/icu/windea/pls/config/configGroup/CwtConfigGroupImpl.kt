@@ -38,7 +38,8 @@ class CwtConfigGroupImpl(
             val start = System.currentTimeMillis()
             val initializer = CwtConfigGroupInitializer(project, gameType)
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
-            dataProviders.all { dataProvider -> dataProvider.process(initializer, this) }
+            dataProviders.forEach { dataProvider -> dataProvider.process(initializer, this) }
+            dataProviders.forEach { dataProvider -> dataProvider.postOptimize(initializer, this) }
             initializer.copyUserDataTo(this) // 直接一次性替换规则数据
             initializer.clear() // 清空以避免内存泄露
             modificationTracker.incModificationCount() // 显式增加修改计数
