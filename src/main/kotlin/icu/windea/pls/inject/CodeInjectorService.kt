@@ -43,14 +43,16 @@ class CodeInjectorService {
         val codeInjectors = mutableMapOf<String, CodeInjector>()
         application.putUserData(codeInjectorsKey, codeInjectors)
         CodeInjector.EP_NAME.extensionList.forEach { codeInjector ->
+            val codeInjectorId = codeInjector.id
             try {
                 codeInjector.inject()
+                logger.info("Applied code injector: $codeInjectorId")
             } catch (e: Exception) {
                 // NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
-                logger.warn("ERROR when applying injector: ${codeInjector.id}")
+                logger.warn("ERROR when applying code injector: $codeInjectorId")
                 logger.warn(e.message, e)
             }
-            codeInjectors.put(codeInjector.id, codeInjector)
+            codeInjectors.put(codeInjectorId, codeInjector)
         }
 
         // clean up

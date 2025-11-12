@@ -10,7 +10,8 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
-    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldBasedCacheCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.OptimizedFieldCodeInjectorSupport"/>
+    <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldCacheCodeInjectorSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">
@@ -32,6 +33,9 @@
     <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
+
+    <!--code injectors to optimize memory-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.OptimizedFieldCodeInjectors$BasePresentation"/>
 
     <!--code injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.CwtPsiCodeInjectors$Property"/>

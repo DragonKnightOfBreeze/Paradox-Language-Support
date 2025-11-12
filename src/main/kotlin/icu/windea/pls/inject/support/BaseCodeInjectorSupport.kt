@@ -19,11 +19,13 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.javaMethod
 
 /**
- * 提供对基础的代码注入器的支持。
+ * 为基于 [InjectMethod] 的代码注入器提供支持。
  *
- * @see InjectMethod
+ * 这类代码注入器可以替换或修改指定的方法。
  */
 class BaseCodeInjectorSupport : CodeInjectorSupport {
+    private val logger = thisLogger()
+
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
 
@@ -32,12 +34,12 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         val injectMethodInfos = mutableMapOf<String, InjectMethodInfo>()
         var index = 0
         for (function in functions) {
-            val injectMethod = function.findAnnotation<InjectMethod>() ?: continue
+            val info = function.findAnnotation<InjectMethod>() ?: continue
             val method = function.javaMethod ?: continue
             val methodId = index.toString()
-            val name = injectMethod.value.ifEmpty { method.name }
-            val pointer = injectMethod.pointer
-            val static = injectMethod.static
+            val name = info.value.ifEmpty { method.name }
+            val pointer = info.pointer
+            val static = info.static
             val hasReceiver = function.extensionReceiverParameter != null
             val hasReturnValue = method.returnType != Void.TYPE && (pointer == InjectMethod.Pointer.AFTER || pointer == InjectMethod.Pointer.AFTER_FINALLY)
             val injectMethodInfo = InjectMethodInfo(method, name, pointer, static, hasReceiver, hasReturnValue)
@@ -52,7 +54,8 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
 
     private fun applyInjectMethods(codeInjector: CodeInjector, targetClass: CtClass, injectMethodInfos: Map<String, InjectMethodInfo>) {
         run {
-            val fieldCode = """private static volatile Method __invokeInjectMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("INVOKE_INJECT_METHOD_BY_WINDEA"));"""
+            val fieldInitCode = "(Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName(\"INVOKE_INJECT_METHOD_BY_WINDEA\"));"
+            val fieldCode = "private static volatile Method __invokeInjectMethod__ = $fieldInitCode"
             targetClass.addField(CtField.make(fieldCode, targetClass))
         }
 
@@ -60,7 +63,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val injectMethod = injectMethodInfo.method
             val targetMethod = findCtMethod(targetClass, injectMethod, injectMethodInfo)
             if (targetMethod == null) {
-                thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any method of ${targetClass.name}")
+                logger.warn("Inject method ${injectMethod.name} cannot be applied to any method of ${targetClass.name}")
                 return@f
             }
 

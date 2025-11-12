@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorService
 import icu.windea.pls.inject.CodeInjectorSupport
-import icu.windea.pls.inject.annotations.InjectFieldBasedCache
+import icu.windea.pls.inject.annotations.InjectFieldCache
 import javassist.CtClass
 import javassist.CtField
 import javassist.CtMethod
@@ -12,19 +12,21 @@ import javassist.CtPrimitiveType
 import kotlin.reflect.full.findAnnotations
 
 /**
- * 提供对字段缓存的代码注入器的支持。
+ * 为基于 [InjectFieldCache] 的代码注入器提供支持。
  *
- * @see InjectFieldBasedCache
+ * 这类代码注入器可以通过注入的字段缓存访问器方法的返回值，并指定可选的清理方法。
  */
-class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
+class FieldCacheCodeInjectorSupport : CodeInjectorSupport {
+    private val logger = thisLogger()
+
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        val injectFieldBasedCacheList = codeInjector::class.findAnnotations<InjectFieldBasedCache>()
-        if (injectFieldBasedCacheList.isEmpty()) return
+        val infos = codeInjector::class.findAnnotations<InjectFieldCache>()
+        if (infos.isEmpty()) return
 
         val methodNamesGroup = mutableMapOf<String, MutableSet<String>>()
-        injectFieldBasedCacheList.forEach { injectFieldBasedCache ->
-            methodNamesGroup.getOrPut(injectFieldBasedCache.cleanup) { mutableSetOf() }.add(injectFieldBasedCache.value)
+        infos.forEach { info ->
+            methodNamesGroup.getOrPut(info.cleanUp) { mutableSetOf() }.add(info.value)
         }
         if (methodNamesGroup.isEmpty()) return
 
@@ -41,13 +43,13 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                     }
                 }
                 if (method == null) {
-                    thisLogger().warn("Method ${methodName}() is not found in ${targetClass.name}")
+                    logger.warn("Method ${methodName}() not found in ${targetClass.name}")
                     continue
                 }
 
                 val returnType = method.returnType
                 if (returnType == null || returnType == CtClass.voidType) {
-                    thisLogger().warn("Method ${methodName}() returns nothing")
+                    logger.warn("Method ${methodName}() returns nothing")
                     continue
                 }
 
@@ -75,7 +77,7 @@ class FieldBasedCacheCodeInjectorSupport : CodeInjectorSupport {
                         targetClass.addMethod(m)
                         cleanupMethod = m
                     } else {
-                        thisLogger().warn("Clean up method ${cleanupMethodName}() is not found in ${targetClass.name}")
+                        logger.warn("Clean up method ${cleanupMethodName}() is not found in ${targetClass.name}")
                         return
                     }
                 }
