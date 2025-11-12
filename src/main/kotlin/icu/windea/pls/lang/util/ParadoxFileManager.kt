@@ -18,6 +18,7 @@ import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.model.ParadoxEntryInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
@@ -47,7 +48,7 @@ object ParadoxFileManager {
      */
     fun getPathInGameDirectory(path: String, gameType: ParadoxGameType): Path? {
         val gamePath = PlsPathService.getSteamGamePath(gameType.id, gameType.title) ?: return null
-        val mainEntryName = gameType.mainEntries.firstOrNull()
+        val mainEntryName = gameType.entryInfo.gameMain.firstOrNull()
         val mainEntryPath = if (mainEntryName != null) gamePath.resolve(mainEntryName) else gamePath
         val resultPath = mainEntryPath.resolve(path)
         return resultPath.formatted()
@@ -58,7 +59,7 @@ object ParadoxFileManager {
      *
      * 主要入口目录中的文件不能引用次要入口目录中的文件中的内容。
      *
-     * @see ParadoxGameType.Entries
+     * @see ParadoxEntryInfo
      */
     fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = file?.fileInfo ?: return true

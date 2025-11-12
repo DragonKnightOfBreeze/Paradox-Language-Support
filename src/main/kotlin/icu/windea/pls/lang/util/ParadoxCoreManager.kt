@@ -167,7 +167,7 @@ object ParadoxCoreManager {
     private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
+        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo) ?: return null
         val fileType = when {
             path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
             file.isDirectory -> ParadoxFileType.Other
@@ -181,7 +181,7 @@ object ParadoxCoreManager {
     private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
+        val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo) ?: return null
         val fileType = when {
             path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
             filePath.isDirectory -> ParadoxFileType.Other
@@ -192,13 +192,19 @@ object ParadoxCoreManager {
         return fileInfo
     }
 
-    private fun resolvePathAndEntryName(relPath: ParadoxPath, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String> {
-        if (rootInfo is ParadoxRootInfo.Mod) return relPath to ""
-        rootInfo.gameType.entryMap.forEach { (entryName, entryPath) ->
-            relPath.subPaths.removePrefixOrNull(entryPath)?.let { return ParadoxPath.resolve(it) to entryName }
+    private fun resolvePathAndEntryName(relPath: ParadoxPath, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
+        val entryInfo = rootInfo.gameType.entryInfo
+        val entryMap = when (rootInfo) {
+            is ParadoxRootInfo.Game -> entryInfo.gameEntryMap
+            is ParadoxRootInfo.Mod -> entryInfo.modEntryMap
+            else -> emptyMap()
         }
-        // relPath.subPaths.removePrefixOrNull(listOf("game"))?.let { return ParadoxPath.resolve(it) to "game" }
-        return relPath to ""
+        if (entryMap.isEmpty()) return relPath to ""
+        for ((entryName, entryPath) in entryMap) {
+            val resolved = relPath.subPaths.removePrefixOrNull(entryPath) ?: continue
+            return ParadoxPath.resolve(resolved) to entryName
+        }
+        return null // 2.0.7 null now
     }
 
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
