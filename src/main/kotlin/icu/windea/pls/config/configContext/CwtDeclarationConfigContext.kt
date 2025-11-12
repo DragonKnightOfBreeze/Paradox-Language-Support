@@ -13,7 +13,6 @@ import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 
@@ -30,6 +29,8 @@ class CwtDeclarationConfigContext(
     val definitionSubtypes: List<String>?,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    lateinit var provider: CwtDeclarationConfigContextProvider
+
     /**
      * 得到按子类型列表合并后的声明规则。
      */
@@ -43,11 +44,11 @@ class CwtDeclarationConfigContext(
     }
 
     private fun ooGetCacheKey(declarationConfig: CwtDeclarationConfig): String {
-        return provider!!.getCacheKey(this, declarationConfig)
+        return provider.getCacheKey(this, declarationConfig)
     }
 
     private fun doGetConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
-        return provider!!.getConfig(this, declarationConfig)
+        return provider.getConfig(this, declarationConfig)
     }
 
     object Keys : KeyRegistry()
@@ -61,5 +62,3 @@ private val CwtConfigGroup.declarationConfigCache by createKey(CwtDeclarationCon
         CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable().withDependencyItems()
     }
 }
-
-var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKey(CwtDeclarationConfigContext.Keys)

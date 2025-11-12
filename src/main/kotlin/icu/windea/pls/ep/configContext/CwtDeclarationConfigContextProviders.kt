@@ -9,19 +9,8 @@ import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.setValue
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-
-// region Extensions
-
-var CwtDeclarationConfigContext.gameRuleConfig: CwtExtendedGameRuleConfig? by createKey(CwtDeclarationConfigContext.Keys)
-var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by createKey(CwtDeclarationConfigContext.Keys)
-
-// endregion
 
 /**
  * 提供基础的声明规则上下文。

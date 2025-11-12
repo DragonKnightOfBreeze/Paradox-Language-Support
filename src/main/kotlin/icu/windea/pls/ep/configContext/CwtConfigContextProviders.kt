@@ -10,17 +10,12 @@ import icu.windea.pls.config.configContext.definitionInfo
 import icu.windea.pls.config.configContext.elementPathFromRoot
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.toInt
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.setValue
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isInlineScriptUsage
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -33,16 +28,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isPropertyValue
-
-// region Extensions
-
-var CwtConfigContext.inlineScriptExpression: String? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContext.Keys)
-
-// endregion
 
 /**
  * 提供基础的规则上下文。

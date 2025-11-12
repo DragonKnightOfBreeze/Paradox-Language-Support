@@ -38,6 +38,8 @@ class CwtConfigContext(
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
+    lateinit var provider: CwtConfigContextProvider
+
     fun getConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
@@ -61,19 +63,19 @@ class CwtConfigContext(
     }
 
     private fun doGetCacheKey(matchOptions: Int): String? {
-        return provider!!.getCacheKey(this, matchOptions)
+        return provider.getCacheKey(this, matchOptions)
     }
 
     private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>>? {
-        return provider!!.getConfigs(this, matchOptions)
+        return provider.getConfigs(this, matchOptions)
     }
 
     fun skipMissingExpressionCheck(): Boolean {
-        return provider!!.skipMissingExpressionCheck(this)
+        return provider.skipMissingExpressionCheck(this)
     }
 
     fun skipTooManyExpressionCheck(): Boolean {
-        return provider!!.skipTooManyExpressionCheck(this)
+        return provider.skipTooManyExpressionCheck(this)
     }
 
     object Keys : KeyRegistry()
@@ -88,16 +90,4 @@ private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
             CacheBuilder().softValues().build<String, List<CwtMemberConfig<*>>>().cancelable()
         }.withDependencyItems(ParadoxModificationTrackers.Match)
     }
-}
-
-var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.elementPathFromRoot: ParadoxElementPath? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.provider: CwtConfigContextProvider? by createKey(CwtConfigContext.Keys)
-
-fun CwtConfigContext.isDefinition(): Boolean {
-    return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }
-}
-
-fun CwtConfigContext.isDefinitionOrMember(): Boolean {
-    return elementPathFromRoot != null
 }
