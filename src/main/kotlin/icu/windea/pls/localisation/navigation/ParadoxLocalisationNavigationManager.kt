@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.navigation
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
@@ -24,8 +25,19 @@ object ParadoxLocalisationNavigationManager {
     }
 
     fun getIcon(element: PsiElement): Icon? {
-        // 直接复用 PSI 的图标
-        return element.icon
+        return getPatchedIcon(element) ?: element.icon
+    }
+
+    fun getPatchedIcon(element: PsiElement): Icon? {
+        when(element) {
+            is ParadoxLocalisationProperty -> {
+                run {
+                    if(element.type == null) return@run
+                    return PlsIcons.Nodes.Localisation
+                }
+            }
+        }
+        return null
     }
 
     fun getLongPresentableText(element: PsiElement): String? {

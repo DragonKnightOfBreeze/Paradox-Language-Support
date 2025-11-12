@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
@@ -24,7 +23,7 @@ class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFacto
             element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> {
                 ParadoxDefinitionFindUsagesHandler(element, this)
             }
-            element is ParadoxLocalisationProperty && element.localisationInfo != null -> {
+            element is ParadoxLocalisationProperty && element.type != null -> {
                 ParadoxLocalisationFindUsagesHandler(element, this)
             }
             else -> {

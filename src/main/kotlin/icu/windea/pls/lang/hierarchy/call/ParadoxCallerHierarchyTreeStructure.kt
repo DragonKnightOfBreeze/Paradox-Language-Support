@@ -13,7 +13,6 @@ import com.intellij.ui.tree.LeafState
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsSettingsState
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -72,9 +71,8 @@ class ParadoxCallerHierarchyTreeStructure(
         when (referenceElement.language) {
             is ParadoxScriptLanguage -> {
                 if (!settings.showDefinitionsInCallHierarchy) return // 不显示
-                val definition = referenceElement.findParentDefinition()
-                val definitionInfo = definition?.definitionInfo
-                if (definition == null || definitionInfo == null) return
+                val definition = referenceElement.findParentDefinition() ?: return
+                val definitionInfo = definition.definitionInfo ?: return
                 ProgressManager.checkCanceled()
                 if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return // 不显示
                 val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
@@ -89,11 +87,11 @@ class ParadoxCallerHierarchyTreeStructure(
             is ParadoxLocalisationLanguage -> {
                 if (!settings.showLocalisationsInCallHierarchy) return  // 不显示
                 // 兼容向上内联的情况
-                val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
-                val localisationInfo = localisation?.localisationInfo
-                if (localisation == null || localisationInfo == null) return
+                val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>() ?: return
+                val localisationType = localisation.type
+                if (localisationType == null) return
                 ProgressManager.checkCanceled()
-                val key = "l:${localisationInfo.name}"
+                val key = "l:${localisation.name}"
                 val d = synchronized(descriptors) {
                     descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
                 }

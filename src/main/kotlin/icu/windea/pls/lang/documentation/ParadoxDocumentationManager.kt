@@ -26,7 +26,6 @@ import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.PlsPsiManager
@@ -67,7 +66,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIconArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
-import icu.windea.pls.model.ParadoxLocalisationInfo
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -188,8 +186,8 @@ object ParadoxDocumentationManager {
     }
 
     private fun getLocalisationPropertyDoc(element: ParadoxLocalisationProperty, originalElement: PsiElement?, hint: Boolean): String {
-        val localisationInfo = element.localisationInfo
-        if (localisationInfo != null) return getLocalisationDoc(element, localisationInfo, originalElement, hint)
+        val localisationType = element.type
+        if (localisationType != null) return getLocalisationDoc(element, localisationType, originalElement, hint)
 
         return buildDocumentation {
             buildLocalisationPropertyDefinition(element)
@@ -203,10 +201,10 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo, originalElement: PsiElement?, hint: Boolean): String {
+    private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             if (!hint) initSections()
-            buildLocalisationDefinition(element, localisationInfo)
+            buildLocalisationDefinition(element, localisationType)
             if (hint) return@buildDocumentation
             buildLineCommentContent(element)
             addTextForLocalisation(element)
@@ -825,29 +823,29 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {
+    private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
 
             // 加上定义信息
-            addLocalisationInfo(localisationInfo)
+            addLocalisationInfo(element, localisationType)
 
             // 加上相关定义信息
-            addRelatedDefinitionsForLocalisation(element, localisationInfo)
+            addRelatedDefinitionsForLocalisation(element, localisationType)
         }
     }
 
-    private fun DocumentationBuilder.addLocalisationInfo(localisationInfo: ParadoxLocalisationInfo) {
-        val prefix = when (localisationInfo.type) {
+    private fun DocumentationBuilder.addLocalisationInfo(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
+        val prefix = when (localisationType) {
             ParadoxLocalisationType.Normal -> PlsStringConstants.localisationPrefix
             ParadoxLocalisationType.Synced -> PlsStringConstants.localisationSyncedPrefix
         }
         append(prefix).append(" ")
-        append("<b>").append(localisationInfo.name.or.unresolved()).append("</b>")
+        append("<b>").append(element.name.or.unresolved()).append("</b>")
     }
 
-    private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {
+    private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: ParadoxLocalisationProperty, localisationType: ParadoxLocalisationType) {
         val relatedDefinitions = ParadoxLocalisationManager.getRelatedDefinitions(element)
         if (relatedDefinitions.isEmpty()) return
         for (relatedDefinition in relatedDefinitions) {

@@ -3,6 +3,7 @@ package icu.windea.pls.model
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.paths.ParadoxPath
@@ -33,6 +34,7 @@ enum class ParadoxLocalisationType(val id: String) {
 
         @JvmStatic
         fun resolve(file: VirtualFile): ParadoxLocalisationType? {
+            if (file.fileType !is ParadoxLocalisationFileType) return null
             val root = file.fileInfo?.path ?: return null
             return resolve(root)
         }

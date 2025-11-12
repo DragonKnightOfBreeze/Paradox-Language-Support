@@ -16,7 +16,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceHintsProvider.*
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -59,8 +58,8 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxScriptHintsProvider<Set
         if (!ParadoxResolveConstraint.LocalisationReference.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
         if (resolved is ParadoxLocalisationProperty) {
-            val localisationInfo = resolved.localisationInfo
-            if (localisationInfo == null) return true
+            val localisationType = resolved.type
+            if (localisationType == null) return true
             val presentation = doCollect(resolved, editor, settings)
             val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
             val endOffset = element.endOffset

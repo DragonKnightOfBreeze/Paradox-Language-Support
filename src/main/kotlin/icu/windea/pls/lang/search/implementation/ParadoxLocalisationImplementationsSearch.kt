@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.localisationInfo
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.localisation
@@ -27,9 +27,8 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         // 得到解析后的PSI元素
         val sourceElement = queryParameters.element
         if (sourceElement !is ParadoxLocalisationProperty) return true
-        val localisationInfo = runReadAction { sourceElement.localisationInfo }
-        if (localisationInfo == null) return true
-        val name = localisationInfo.name
+        val name = runReadAction { sourceElement.name.orNull() } ?: return true
+        val type = runReadAction { sourceElement.type } ?: return true
         if (name.isEmpty()) return true
         val project = queryParameters.project
         val task = Callable {
@@ -37,7 +36,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             val selector = selector(project, sourceElement).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) // 限定语言环境
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
-            val query = when (localisationInfo.type) {
+            val query = when (type) {
                 ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(name, selector)
                 ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector)
             }

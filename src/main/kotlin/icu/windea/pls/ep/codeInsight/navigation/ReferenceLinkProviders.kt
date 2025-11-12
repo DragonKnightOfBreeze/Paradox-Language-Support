@@ -15,7 +15,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -250,10 +249,10 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxLocalisationProperty) return null
-        val localisationInfo = element.localisationInfo ?: return null
-        if (localisationInfo.type != ParadoxLocalisationType.Normal) return null
-        val name = localisationInfo.name
-        val gameType = localisationInfo.gameType
+        val localisationType = element.type ?: return null
+        if (localisationType != ParadoxLocalisationType.Normal) return null
+        val name = element.name
+        val gameType = selectGameType(element)
         val linkType = ReferenceLinkType.Localisation
         val link = linkType.createLink(name, gameType)
         val builder = StringBuilder()

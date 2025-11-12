@@ -20,7 +20,6 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.element
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyActions
 import icu.windea.pls.lang.hierarchy.ParadoxHierarchyManager
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.project
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -53,7 +52,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         val name = when {
             element is ParadoxScriptScriptedVariable -> element.name
             element is ParadoxScriptDefinitionElement -> element.definitionInfo?.name.or.anonymous()
-            element is ParadoxLocalisationProperty -> element.localisationInfo?.name.or.anonymous()
+            element is ParadoxLocalisationProperty -> element.name.or.anonymous()
             else -> return null
         }
         return MessageFormat.format(typeName, name)

@@ -8,7 +8,6 @@ import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
@@ -24,49 +23,12 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.localisation.psi.greenStub
-import icu.windea.pls.model.ParadoxLocalisationInfo
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
-        val cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(Keys)
         val cachedLocalizedName by createKey<CachedValue<String>>(Keys)
-    }
-
-    fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        return doGetInfoFromCache(element) // 从缓存中获取
-    }
-
-    private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedLocalisationInfo) {
-            ProgressManager.checkCanceled()
-            val value = runReadActionSmartly { doGetInfo(element) }
-            value.withDependencyItems(element)
-        }
-    }
-
-    private fun doGetInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        doGetInfoFromStub(element)?.let { return it }
-        return doGetInfoFromPsi(element)
-    }
-
-    private fun doGetInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = element.greenStub ?: return null
-        val name = stub.name
-        val type = stub.type
-        val gameType = stub.gameType
-        return ParadoxLocalisationInfo(name, type, gameType)
-    }
-
-    private fun doGetInfoFromPsi(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val file = element.containingFile.originalFile.virtualFile ?: return null
-        val name = element.name
-        val type = ParadoxLocalisationType.resolve(file) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        return ParadoxLocalisationInfo(name, type, gameType)
     }
 
     fun getLocalizedText(element: ParadoxLocalisationProperty): String? {

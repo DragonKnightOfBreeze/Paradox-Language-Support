@@ -6,7 +6,6 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.search.ParadoxDefineSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -59,8 +58,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 config.filePathPatternsForPriority
             }
             target is ParadoxLocalisationProperty -> {
-                val localisationInfo = target.localisationInfo ?: return null
-                val localisationType = localisationInfo.type
+                val localisationType = target.type ?: return null
                 val targetPath = target.fileInfo?.path?.path ?: return null
                 val p = when (localisationType) {
                     ParadoxLocalisationType.Normal -> "localisation"

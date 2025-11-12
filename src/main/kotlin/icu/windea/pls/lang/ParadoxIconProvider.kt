@@ -2,6 +2,8 @@ package icu.windea.pls.lang
 
 import com.intellij.ide.IconProvider
 import com.intellij.psi.PsiElement
+import icu.windea.pls.localisation.navigation.ParadoxLocalisationNavigationManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.navigation.ParadoxScriptNavigationManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -15,6 +17,7 @@ class ParadoxIconProvider : IconProvider() {
         return when (element) {
             is ParadoxScriptFile -> ParadoxScriptNavigationManager.getPatchedIcon(element)
             is ParadoxScriptProperty -> ParadoxScriptNavigationManager.getPatchedIcon(element)
+            is ParadoxLocalisationProperty -> ParadoxLocalisationNavigationManager.getPatchedIcon(element)
             else -> null
         }
     }

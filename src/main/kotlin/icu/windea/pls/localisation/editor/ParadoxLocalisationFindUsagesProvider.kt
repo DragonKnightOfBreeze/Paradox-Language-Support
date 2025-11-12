@@ -10,7 +10,6 @@ import com.intellij.usageView.UsageViewLongNameLocation
 import com.intellij.usageView.UsageViewNodeTextLocation
 import com.intellij.usageView.UsageViewTypeLocation
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -34,11 +33,11 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
         if (element is RefactoringDescriptionLocation) return null
         return when (element) {
             is ParadoxLocalisationProperty -> {
-                val localisationInfo = element.localisationInfo
-                if (localisationInfo != null) {
+                val type = element.type
+                if (type != null) {
                     when (location) {
                         UsageViewTypeLocation.INSTANCE -> {
-                            when (localisationInfo.type) {
+                            when (type) {
                                 ParadoxLocalisationType.Normal -> PlsBundle.message("localisation.description.localisation")
                                 ParadoxLocalisationType.Synced -> PlsBundle.message("localisation.description.syncedLocalisation")
                             }
@@ -75,7 +74,7 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
 
     override fun canFindUsagesFor(element: PsiElement): Boolean {
         return when (element) {
-            is ParadoxLocalisationProperty -> element.localisationInfo != null
+            is ParadoxLocalisationProperty -> element.type != null
             is ParadoxParameterElement -> true
             is ParadoxDynamicValueElement -> true
             else -> false

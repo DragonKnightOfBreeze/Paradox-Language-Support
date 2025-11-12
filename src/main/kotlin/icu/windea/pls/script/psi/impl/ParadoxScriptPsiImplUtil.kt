@@ -85,9 +85,10 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
         // name & gameType
-        return another is ParadoxScriptScriptedVariable
-            && element.name?.equals(another.name) == true
-            && selectGameType(element) == selectGameType(another)
+        if (another !is ParadoxScriptScriptedVariable) return false
+        if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
+        if (selectGameType(element) != selectGameType(another)) return false
+        return true
     }
 
     // endregion
@@ -181,7 +182,10 @@ object ParadoxScriptPsiImplUtil {
     fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement): Boolean {
         // for definition: definitionName & definitionType & gameType
         // for others: never
-        return another is ParadoxScriptProperty && element.definitionInfo?.equals(another.definitionInfo) == true
+        if (another !is ParadoxScriptProperty) return false
+        if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false
+        // if (selectGameType(element) != selectGameType(another)) return false // unnecessary
+        return true
     }
 
     // endregion

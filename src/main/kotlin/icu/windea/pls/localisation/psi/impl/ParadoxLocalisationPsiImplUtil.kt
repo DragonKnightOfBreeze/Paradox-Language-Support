@@ -76,7 +76,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationProperty, @Iconable.IconFlags flags: Int): Icon {
-        if (element.localisationInfo != null) return PlsIcons.Nodes.Localisation
         return PlsIcons.Nodes.LocalisationProperty
     }
 
@@ -107,7 +106,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getType(element: ParadoxLocalisationProperty): ParadoxLocalisationType? {
         element.stub?.type?.let { return it }
-        return element.localisationInfo?.type
+        return ParadoxLocalisationType.resolve(element)
     }
 
     @JvmStatic
@@ -135,8 +134,12 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
-        // name & category (localisation / synced_localisation) & gameType
-        return another is ParadoxLocalisationProperty && element.localisationInfo?.equals(another.localisationInfo) == true
+        // name & type & gameType
+        if (another !is ParadoxLocalisationProperty) return false
+        if (element.name.let { it.isEmpty() || it != another.name }) return false
+        if(element.type.let { it == null || it != another.type }) return false
+        if (selectGameType(element) != selectGameType(another)) return false
+        return true
     }
 
     // endregion

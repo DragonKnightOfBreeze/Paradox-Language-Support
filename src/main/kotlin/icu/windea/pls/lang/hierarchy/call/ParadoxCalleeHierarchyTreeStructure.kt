@@ -11,7 +11,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.localisationInfo
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.resolve.ParadoxInlineService
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
@@ -148,8 +147,9 @@ class ParadoxCalleeHierarchyTreeStructure(
             }
             is ParadoxLocalisationProperty -> {
                 if (!settings.showLocalisationsInCallHierarchy) return // 不显示
-                val localisationInfo = resolved.localisationInfo ?: return
-                val key = "l:${localisationInfo.name}"
+                val localisationType = resolved.type
+                if (localisationType == null) return
+                val key = "l:${resolved.name}"
                 if (descriptors.containsKey(key)) return // 去重
                 val resolvedFile = selectFile(resolved)
                 if (resolvedFile != null && !scope.contains(resolvedFile)) return
