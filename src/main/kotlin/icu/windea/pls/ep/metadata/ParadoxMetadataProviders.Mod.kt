@@ -89,7 +89,7 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
             return when (info.gameId) {
                 ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
                 ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
-                else -> ParadoxGameType.Vic3 // #134 by default vic3
+                else -> null // ~~#134 by default vic3~~ by default null to be compatible with eu5
             }
         }
 
