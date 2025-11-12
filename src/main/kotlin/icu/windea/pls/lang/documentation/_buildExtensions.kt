@@ -91,14 +91,15 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     if (rootInfo !is ParadoxRootInfo.MetadataBased) return this
+
     append("<span>")
-    // 描述符信息（模组名、版本等）
+    // 描述符信息 - 模组名、版本等
     append("[")
     append(rootInfo.qualifiedName.escapeXml())
     append("]")
     grayed {
         // 相关链接
-        // 通过这种方式获取需要的url，使用rootPath而非gameRootPath
+        // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
         val rootUri = rootInfo.rootPath.toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
@@ -122,9 +123,17 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     }
     append("</span>")
     appendBr()
-    // 文件信息（路径）
-    append("[").append(fileInfo.path).append("]")
+
+    // 文件信息 - 相对于入口目录的路径、入口名（如果不为空）
+    append("[").append(fileInfo.path.path.escapeXml()).append("]")
+    val entryName = fileInfo.entryName
+    if (entryName.isNotEmpty()) {
+        grayed {
+            append(" of ").append(entryName.escapeXml())
+        }
+    }
     appendBr()
+
     return this
 }
 
@@ -141,6 +150,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
         val filePath = relativePath.substringAfter('/', "").orNull() ?: return@f null
         tupleOf(fileProvider, configGroup, filePath)
     } ?: return this
+
     // 规则分组信息
     val gameType = configGroup.gameType
     append("[").append(gameType.title).append(" Config]")
@@ -151,9 +161,11 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
         }
     }
     appendBr()
-    // 文件信息（相对于规则分组根目录的路径）
+
+    // 文件信息 - 相对于规则分组根目录的路径
     append("[").append(filePath.escapeXml()).append("]")
     appendBr()
+
     return this
 }
 
