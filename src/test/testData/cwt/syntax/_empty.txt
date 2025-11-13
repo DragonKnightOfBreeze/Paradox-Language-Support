@@ -1,2 +1,0 @@
-CwtFile: _empty.test.cwt(0,0)
-  <empty list>

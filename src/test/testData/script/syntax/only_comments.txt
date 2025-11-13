@@ -1,0 +1,4 @@
+ParadoxScriptFile: only_comments.test.txt(0,33)
+  PsiComment(COMMENT)('# only comments')(0,15)
+  PsiWhiteSpace('\n')(15,16)
+  PsiComment(COMMENT)('# another comment')(16,33)

@@ -1,2 +1,0 @@
-ParadoxLocalisationFile: _empty.test.yml(0,0)
-  <empty list>

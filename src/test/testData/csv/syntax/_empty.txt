@@ -1,2 +1,0 @@
-ParadoxCsvFile: _empty.test.csv(0,0)
-  <empty list>

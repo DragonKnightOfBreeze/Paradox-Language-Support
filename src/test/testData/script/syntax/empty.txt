@@ -1,0 +1,2 @@
+ParadoxScriptFile: empty.test.txt(0,0)
+  <empty list>
