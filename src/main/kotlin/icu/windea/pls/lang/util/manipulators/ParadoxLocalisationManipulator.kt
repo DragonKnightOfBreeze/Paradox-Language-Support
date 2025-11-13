@@ -126,8 +126,9 @@ object ParadoxLocalisationManipulator {
 
     suspend fun searchTextFromLocale(context: ParadoxLocalisationContext, project: Project, locale: CwtLocaleConfig) {
         val newText = readAction {
+            val type = context.element?.type ?: return@readAction null
             val selector = selector(project, context.element).localisation().contextSensitive().locale(locale)
-            val e = ParadoxLocalisationSearch.search(context.key, selector).find()
+            val e = ParadoxLocalisationSearch.search(context.key, type, selector).find()
             e?.value
         }
         if (newText == null) return

@@ -31,24 +31,34 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
          * @see ParadoxScriptedVariableSearch.SearchParameters
          */
         @JvmStatic
-        fun search(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, null, selector))
+        fun search(
+            name: String?,
+            type: ParadoxScriptedVariableType?,
+            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
 
         /**
          * @see ParadoxScriptedVariableSearch.SearchParameters
          */
         @JvmStatic
-        fun searchLocal(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, ParadoxScriptedVariableType.Local, selector))
+        fun searchLocal(
+            name: String?,
+            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+            return search(name, ParadoxScriptedVariableType.Local, selector)
         }
 
         /**
          * @see ParadoxScriptedVariableSearch.SearchParameters
          */
         @JvmStatic
-        fun searchGlobal(name: String?, selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, ParadoxScriptedVariableType.Global, selector))
+        fun searchGlobal(
+            name: String?,
+            selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
+        ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
+            return search(name, ParadoxScriptedVariableType.Global, selector)
         }
     }
 }

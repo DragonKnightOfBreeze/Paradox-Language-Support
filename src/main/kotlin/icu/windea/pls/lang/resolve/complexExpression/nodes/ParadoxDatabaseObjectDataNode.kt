@@ -164,7 +164,7 @@ class ParadoxDatabaseObjectDataNode(
                 if (!node.isBase) return null
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
                 val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-                return ParadoxLocalisationSearch.search(name, selector).find()
+                return ParadoxLocalisationSearch.searchNormal(name, selector).find()
                     ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
             }
 
@@ -184,7 +184,7 @@ class ParadoxDatabaseObjectDataNode(
                 if (!node.isBase) return ResolveResult.EMPTY_ARRAY
                 val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
                 val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-                return ParadoxLocalisationSearch.search(name, selector).findAll()
+                return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
                     .filter { node.isValidDatabaseObject(it, typeToSearch) }
                     .mapToArray { PsiElementResolveResult(it) }
             }

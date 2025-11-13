@@ -13,6 +13,7 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.lang.search.selector.getConstraint
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 
 /**
@@ -30,18 +31,23 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if (SearchScope.isEmptyScope(scope)) return
 
         val name = queryParameters.name
+        val type = queryParameters.type
         val constraint = queryParameters.selector.getConstraint()
-        processQueryForLocalisations(name, project, scope, constraint) { element -> consumer.process(element) }
+        processQueryForLocalisations(name, type, project, scope, constraint) { element -> consumer.process(element) }
     }
 
     private fun processQueryForLocalisations(
         name: String?,
+        type: ParadoxLocalisationType,
         project: Project,
         scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxLocalisationProperty>?,
         processor: Processor<ParadoxLocalisationProperty>
     ): Boolean {
-        val indexKey = constraint?.indexKey ?: PlsIndexKeys.LocalisationName
+        val indexKey = constraint?.indexKey ?: when (type) {
+            ParadoxLocalisationType.Normal -> PlsIndexKeys.LocalisationName
+            ParadoxLocalisationType.Synced -> PlsIndexKeys.SyncedLocalisationName
+        }
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (finalName == null) {
@@ -53,7 +59,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
 
         // fallback for inferred constraints
         if (constraint != null && constraint.inferred) {
-            return processQueryForLocalisations(name, project, scope, null, processor)
+            return processQueryForLocalisations(name, type, project, scope, null, processor)
         }
 
         return true

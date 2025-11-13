@@ -96,7 +96,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                            ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
+                            ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)
                     }
@@ -106,7 +106,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(preferredLocale)
                                 .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                            ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
+                            ParadoxLocalisationSearch.searchNormal(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)
                     }

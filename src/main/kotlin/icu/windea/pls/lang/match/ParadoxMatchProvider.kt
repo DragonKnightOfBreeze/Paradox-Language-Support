@@ -13,7 +13,6 @@ import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.complexEnumValue
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.file
@@ -34,12 +33,12 @@ object ParadoxMatchProvider {
 
     fun matchesLocalisation(element: PsiElement, project: Project, name: String): Boolean {
         val selector = selector(project, element).localisation()
-        return ParadoxLocalisationSearch.search(name, selector).findFirst() != null
+        return ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() != null
     }
 
     fun matchesSyncedLocalisation(element: PsiElement, project: Project, name: String): Boolean {
         val selector = selector(project, element).localisation()
-        return ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
+        return ParadoxLocalisationSearch.searchSynced(name, selector).findFirst() != null
     }
 
     fun matchesPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): Boolean {

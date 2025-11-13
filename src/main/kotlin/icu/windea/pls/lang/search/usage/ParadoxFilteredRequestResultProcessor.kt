@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.search
+package icu.windea.pls.lang.search.usage
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference

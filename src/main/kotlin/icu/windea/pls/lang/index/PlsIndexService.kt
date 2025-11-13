@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.codeInsight.completion.PrefixMatcher
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -14,6 +15,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findFileBasedIndex
+import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.ParadoxGameType
@@ -177,6 +179,30 @@ object PlsIndexService {
             }
             true
         }, scope)
+    }
+
+    /**
+     * 根据指定的 [prefixMatcher] 和 [selector]，遍历所有变体。
+     *
+     * 用于优化代码补全的性能。
+     */
+    inline fun <reified T: PsiElement> processVariants(
+        indexKey: StubIndexKey<String, T>,
+        prefixMatcher: PrefixMatcher,
+        selector: ChainedParadoxSelector<T>,
+        processor: Processor<T>
+    ): Boolean {
+        // 保证返回结果的名字的唯一性
+        return processFirstElementByKeys(
+            indexKey,
+            selector.project,
+            selector.scope,
+            keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
+            predicate = { element -> selector.selectOne(element) },
+            getDefaultValue = { selector.defaultValue() },
+            resetDefaultValue = { selector.resetDefaultValue() },
+            processor = { processor.process(it) }
+        )
     }
 
     // endregion

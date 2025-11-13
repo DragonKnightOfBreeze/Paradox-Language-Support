@@ -78,7 +78,7 @@ object PlsDocBundle {
             val selector = selector(project, context).localisation().contextSensitive()
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val localisation = ParadoxLocalisationSearch.search(name.uppercase(), selector).find() ?: return@run
+            val localisation = ParadoxLocalisationSearch.searchNormal(name.uppercase(), selector).find() ?: return@run
             val text = ParadoxLocalisationManager.getLocalizedText(localisation) ?: return@run
             return text
         }

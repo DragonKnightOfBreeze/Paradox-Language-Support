@@ -9,6 +9,7 @@ import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxLocalisationType
 
 /**
  * 本地化的查询。
@@ -16,9 +17,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProperty, ParadoxLocalisationSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 本地化的名字。
+     * @property type 本地化的类型（所有/普通/同步）
      */
     class SearchParameters(
         val name: String?,
+        val type: ParadoxLocalisationType,
         override val selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ) : ParadoxSearchParameters<ParadoxLocalisationProperty>
 
@@ -34,34 +37,64 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         @JvmStatic
         fun search(
             name: String?,
+            type: ParadoxLocalisationType,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(name, type, selector))
         }
 
         /**
-         * 用于优化代码提示的性能。
+         *  @see ParadoxLocalisationSearch.SearchParameters
          */
         @JvmStatic
+        fun searchNormal(
+            name: String?,
+            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+            return search(name, ParadoxLocalisationType.Normal, selector)
+        }
+
+        /**
+         *  @see ParadoxLocalisationSearch.SearchParameters
+         */
+        @JvmStatic
+        fun searchSynced(
+            name: String?,
+            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+        ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
+            return search(name, ParadoxLocalisationType.Synced, selector)
+        }
+
+        @JvmStatic
         fun processVariants(
+            type: ParadoxLocalisationType,
             prefixMatcher: PrefixMatcher,
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
-            val project = selector.project
-            val scope = selector.scope
-            // 保证返回结果的名字的唯一性
-            return PlsIndexService.processFirstElementByKeys(
-                PlsIndexKeys.LocalisationName,
-                project,
-                scope,
-                keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
-                predicate = { element -> selector.selectOne(element) },
-                getDefaultValue = { selector.defaultValue() },
-                resetDefaultValue = { selector.resetDefaultValue() },
-                processor = { processor.process(it) }
-            )
+            val indexKey = when (type) {
+                ParadoxLocalisationType.Normal -> PlsIndexKeys.LocalisationName
+                ParadoxLocalisationType.Synced -> PlsIndexKeys.SyncedLocalisationName
+            }
+            return PlsIndexService.processVariants(indexKey, prefixMatcher, selector, processor)
+        }
+
+        @JvmStatic
+        fun processVariantsNormal(
+            prefixMatcher: PrefixMatcher,
+            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
+            processor: Processor<ParadoxLocalisationProperty>
+        ): Boolean {
+            return processVariants(ParadoxLocalisationType.Normal, prefixMatcher, selector, processor)
+        }
+
+        @JvmStatic
+        fun processVariantsSynced(
+            prefixMatcher: PrefixMatcher,
+            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
+            processor: Processor<ParadoxLocalisationProperty>
+        ): Boolean {
+            return processVariants(ParadoxLocalisationType.Synced, prefixMatcher, selector, processor)
         }
     }
 }
-

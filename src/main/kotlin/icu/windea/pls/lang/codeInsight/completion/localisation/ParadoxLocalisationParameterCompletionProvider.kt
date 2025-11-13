@@ -12,7 +12,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -59,10 +58,7 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
         }
         // 保证索引在此 readAction 中可用
         val task = Callable {
-            when (type) {
-                ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-                ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-            }
+            ParadoxLocalisationSearch.processVariants(type, result.prefixMatcher, selector, processor)
         }
         ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }

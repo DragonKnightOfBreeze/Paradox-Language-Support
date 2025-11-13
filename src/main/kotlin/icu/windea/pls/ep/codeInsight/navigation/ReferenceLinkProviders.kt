@@ -240,7 +240,7 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
         val project = contextElement.project
         val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(selectLocale(contextElement))
             .withGameType(gameType)
-        return ParadoxLocalisationSearch.search(name, selector).find()
+        return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
     override fun getUnresolvedMessage(link: String): String {

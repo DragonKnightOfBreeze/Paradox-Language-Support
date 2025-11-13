@@ -19,12 +19,7 @@ import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
- * 提供封装变量（scripted_variable）的相关本地化（relatedLocalisation，对应 localisation，不对应 localisation_synced）的装订线图标。
- *
- * 显示时机：当 [PsiElement] 为 [ParadoxScriptScriptedVariable]，且存在同名本地化时。
- *
- * 查找逻辑：通过 [ParadoxScriptedVariableManager.getNameLocalisations] 使用首选语言环境查找同名本地化。
- * 其中所用选择器会应用 `preferLocale(preferredLocale)` 策略：即优先使用该语言环境，并在必要时进行回退。
+ * 提供封装变量（scripted_variable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
 class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")

@@ -8,7 +8,6 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
 import icu.windea.pls.core.documentation.buildSections
@@ -38,7 +37,6 @@ import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxModifierService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.localisation
@@ -390,7 +388,7 @@ object ParadoxDocumentationManager {
                 val selector = selector(project, element).localisation().contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                ParadoxLocalisationSearch.search(key, selector).find()
+                ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
         val descLocalisation = run {
@@ -399,7 +397,7 @@ object ParadoxDocumentationManager {
                 val selector = selector(project, element).localisation().contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                ParadoxLocalisationSearch.search(key, selector).find()
+                ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
         // 如果没找到的话，不要在文档中显示相关信息
@@ -867,11 +865,8 @@ object ParadoxDocumentationManager {
             else -> {
                 val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
                 val type = element.type
-                when (type) {
-                    ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(element.name, selector).find()
-                    ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
-                    null -> element
-                }?.castOrNull<ParadoxLocalisationProperty>() ?: element
+                val found = type?.let { type -> ParadoxLocalisationSearch.search(element.name, type, selector).find() }
+                found ?: element
             }
         }
         val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(usedElement)

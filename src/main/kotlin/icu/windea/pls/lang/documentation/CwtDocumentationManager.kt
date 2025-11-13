@@ -225,7 +225,7 @@ object CwtDocumentationManager {
                 val selector = selector(project, contextElement).localisation().contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                ParadoxLocalisationSearch.search(key, selector).find()
+                ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
         val descLocalisation = run {
@@ -234,7 +234,7 @@ object CwtDocumentationManager {
                 val selector = selector(project, contextElement).localisation().contextSensitive()
                     .preferLocale(usedLocale)
                     .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                ParadoxLocalisationSearch.search(key, selector).find()
+                ParadoxLocalisationSearch.searchNormal(key, selector).find()
             }
         }
         // 如果没找到的话，不要在文档中显示相关信息

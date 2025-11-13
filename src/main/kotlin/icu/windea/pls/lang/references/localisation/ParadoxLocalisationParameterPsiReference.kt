@@ -10,7 +10,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
@@ -20,7 +19,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxLocalisationType
-import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
@@ -67,10 +65,7 @@ class ParadoxLocalisationParameterPsiReference(
 
         // 尝试解析成 localisation 或 synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
-        val resolved = when (type) {
-            Normal -> ParadoxLocalisationSearch.search(name, selector).find()
-            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
-        }
+        val resolved = ParadoxLocalisationSearch.search(name, type, selector).find()
         if (resolved != null) return resolved
 
         // 尝试解析成 localisation_parameter
@@ -89,10 +84,8 @@ class ParadoxLocalisationParameterPsiReference(
 
         // 尝试解析成 localisation 或 synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
-        val resolved = when (type) {
-            Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() // 查找所有语言环境的
-            Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() // 查找所有语言环境的
-        }
+        // 查找所有语言环境的
+        val resolved = ParadoxLocalisationSearch.search(name, type, selector).findAll()
         if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
 
         // 尝试解析成 localisation_parameter

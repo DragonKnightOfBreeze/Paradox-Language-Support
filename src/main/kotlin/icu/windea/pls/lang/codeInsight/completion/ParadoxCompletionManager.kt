@@ -62,7 +62,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxDynamicValueSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.complexEnumValue
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -498,7 +497,9 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        val task = Callable { ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor) }
+        val task = Callable {
+            ParadoxLocalisationSearch.processVariantsNormal(result.prefixMatcher, selector, processor)
+        }
         ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 
@@ -534,7 +535,9 @@ object ParadoxCompletionManager {
             true
         }
         // 保证索引在此 readAction 中可用
-        val task = Callable { ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor) }
+        val task = Callable {
+            ParadoxLocalisationSearch.processVariantsSynced(result.prefixMatcher, selector, processor)
+        }
         ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
     }
 

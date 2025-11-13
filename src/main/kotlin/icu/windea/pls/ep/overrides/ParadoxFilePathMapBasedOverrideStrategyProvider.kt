@@ -12,7 +12,6 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.ParadoxSearchParameters
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxGameType
@@ -86,11 +85,10 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
                 config.filePathPatternsForPriority
             }
             searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
-                val p = "localisation"
-                setOf(p)
-            }
-            searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
-                val p = "localisation_synced"
+                val p = when (searchParameters.type) {
+                    ParadoxLocalisationType.Normal -> "localisation"
+                    ParadoxLocalisationType.Synced -> "localisation_synced"
+                }
                 setOf(p)
             }
             // 额外兼容

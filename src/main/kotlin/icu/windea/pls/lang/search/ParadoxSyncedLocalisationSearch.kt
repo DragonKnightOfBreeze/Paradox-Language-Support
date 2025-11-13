@@ -1,12 +1,8 @@
 package icu.windea.pls.lang.search
 
-import com.intellij.codeInsight.completion.PrefixMatcher
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.search.searches.ExtensibleQueryFactory
-import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
-import icu.windea.pls.lang.index.PlsIndexKeys
-import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
@@ -39,28 +35,5 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
             return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
         }
 
-        /**
-         * 用于优化代码提示的性能。
-         */
-        @JvmStatic
-        fun processVariants(
-            prefixMatcher: PrefixMatcher,
-            selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
-            processor: Processor<ParadoxLocalisationProperty>
-        ): Boolean {
-            val project = selector.project
-            val scope = selector.scope
-            // 保证返回结果的名字的唯一性
-            return PlsIndexService.processFirstElementByKeys(
-                PlsIndexKeys.SyncedLocalisationName,
-                project,
-                scope,
-                keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
-                predicate = { element -> selector.selectOne(element) },
-                getDefaultValue = { selector.defaultValue() },
-                resetDefaultValue = { selector.resetDefaultValue() },
-                processor = { processor.process(it) }
-            )
-        }
     }
 }

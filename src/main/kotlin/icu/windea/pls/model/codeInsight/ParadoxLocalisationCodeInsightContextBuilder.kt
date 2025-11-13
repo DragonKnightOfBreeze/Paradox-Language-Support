@@ -260,7 +260,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
     private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocaleConfig): Boolean {
         val selector = selector(project, context).localisation().locale(locale)
-        val missing = ParadoxLocalisationSearch.search(name, selector).findFirst() == null
+        val missing = ParadoxLocalisationSearch.searchNormal(name, selector).findFirst() == null
         return missing
     }
 

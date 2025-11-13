@@ -20,20 +20,7 @@ import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 提供定义的相关本地化（relatedLocalisation，对应 localisation，不对应 localisation_synced）的装订线图标。
- *
- * 显示时机：当前 PSI 为 [ParadoxScriptProperty]，且其 `definitionInfo.localisations` 非空时。
- *
- * 解析逻辑：对 `definitionInfo.localisations` 的每一项 `(key, locationExpression)`，
- * 使用 [CwtLocationExpressionManager.resolve] 进行解析；解析时通过 `preferLocale(preferredLocale)`
- * 指定首选语言，该选择器会优先使用该语言环境，并按需要回退到其他可用结果。
- *
- * 目标与提示：
- * - 目标为解析出的 [ParadoxLocalisationProperty] 集合（基于引用去重）。
- * - 提示行规则：
- *   - 若有消息（`resolveResult.message`），显示 `relatedLocalisationPrefix key = message`；
- *   - 否则若存在元素且键名首次出现，显示 `relatedLocalisationPrefix key = name`。
- * - 图标落点：`propertyKey.idElement`。
+ * 提供定义（definition）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
 class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")

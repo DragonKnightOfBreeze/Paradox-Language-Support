@@ -259,7 +259,6 @@
     <scriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxScriptedVariableSearcher"/>
     <definitionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionSearcher"/>
     <localisationSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationSearcher"/>
-    <syncedLocalisationSearch implementation="icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearcher"/>
     <filePathSearch implementation="icu.windea.pls.lang.search.ParadoxFilePathSearcher"/>
     <complexEnumValueSearch implementation="icu.windea.pls.lang.search.ParadoxComplexEnumValueSearcher"/>
     <dynamicValueSearch implementation="icu.windea.pls.lang.search.ParadoxDynamicValueSearcher"/>

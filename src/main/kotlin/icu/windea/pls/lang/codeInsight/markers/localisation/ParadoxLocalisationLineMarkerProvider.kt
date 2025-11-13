@@ -12,25 +12,15 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
- * 提供本地化（localisation / localisation_synced）的装订线图标。
- *
- * 显示时机：当前 PSI 为 [ParadoxLocalisationProperty] 时显示。根据其类型：
- * - `Normal`：通过 [ParadoxLocalisationSearch] 搜索同名本地化；
- * - `Synced`：通过 [ParadoxSyncedLocalisationSearch] 搜索同名本地化。
- * 搜索时使用选择器 `selector(...).localisation().contextSensitive().preferLocale(...)`，
- * 其中 `preferLocale(locale)` 会优先选用指定语言环境，并兼容必要的回退策略。
- *
- * 导航目标：同名本地化属性集合（可能跨文件、跨模组）。图标落点为 `propertyKey.idElement`。
+ * 提供本地化（localisation 或 localisation_synced）的装订线图标。
  */
 class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("localisation.gutterIcon.localisation")
@@ -51,10 +41,7 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            when (type) {
-                Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
-                Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
-            }
+            ParadoxLocalisationSearch.search(name, type, selector).findAll()
         }
         val locationElement = element.propertyKey.idElement
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
@@ -68,9 +55,9 @@ class ParadoxLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvid
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("localisation.gutterIcon.localisation.action"),
-        	PlsActions.GotoLocalisations
+            lineMarkerInfo,
+            PlsBundle.message("localisation.gutterIcon.localisation.action"),
+            PlsActions.GotoLocalisations
         )
     }
 }

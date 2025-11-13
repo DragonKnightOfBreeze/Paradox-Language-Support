@@ -97,11 +97,11 @@ object CwtLocationExpressionManager {
             val selector = selector(project, definition).localisation().contextSensitive()
                 .withConstraint(constraint)
                 .apply(selectorBuilder)
-            ParadoxLocalisationSearch.search(name, selector).find()
+            ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }, {
             val selector = selector(project, definition).localisation().contextSensitive()
                 .apply(selectorBuilder)
-            ParadoxLocalisationSearch.search(name, selector).findAll()
+            ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
         })
     }
 

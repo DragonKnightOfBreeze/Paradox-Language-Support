@@ -13,14 +13,12 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import java.util.*
 
@@ -39,10 +37,8 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
             // need read actions here if necessary
             readAction {
                 val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                val resolved = when (type) {
-                    ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(element.name, selector).findAll()
-                    ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(element.name, selector).findAll()
-                }
+                ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
+                val resolved = ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
                 targets.addAll(resolved)
             }
         }

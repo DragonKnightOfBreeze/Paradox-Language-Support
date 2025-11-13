@@ -9,14 +9,12 @@ import com.intellij.util.Processor
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationType
 import java.util.concurrent.Callable
 
 /**
@@ -36,11 +34,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             val selector = selector(project, sourceElement).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) // 限定语言环境
                 .withSearchScope(GlobalSearchScope.allScope(project)) // 使用全部作用域
-            val query = when (type) {
-                ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(name, selector)
-                ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector)
-            }
-            query.forEach(consumer)
+            ParadoxLocalisationSearch.search(name, type, selector).forEach(consumer)
         }
         ReadAction.nonBlocking(task).inSmartMode(project).executeSynchronously()
         return true

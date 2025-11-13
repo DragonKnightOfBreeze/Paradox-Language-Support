@@ -84,7 +84,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                         if (!PlsPatternConstants.localisationName.matches(name)) return@run
                         val selector = selector(element.project, element).localisation().contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                        val result = ParadoxLocalisationSearch.search(name, selector).find() ?: return@run
+                        val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run
                         return result.asSymbol().singleton.set()
                     }
                     return emptySet()

@@ -85,13 +85,13 @@ class StellarisNameFormatLocalisationNode(
         private fun doResolve(): PsiElement? {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-            return ParadoxLocalisationSearch.search(name, selector).find()
+            return ParadoxLocalisationSearch.searchNormal(name, selector).find()
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-            return ParadoxLocalisationSearch.search(name, selector).findAll().mapToArray { PsiElementResolveResult(it) }
+            return ParadoxLocalisationSearch.searchNormal(name, selector).findAll().mapToArray { PsiElementResolveResult(it) }
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {

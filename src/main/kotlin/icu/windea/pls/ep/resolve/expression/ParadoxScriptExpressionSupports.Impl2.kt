@@ -36,7 +36,6 @@ import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.ParadoxSyncedLocalisationSearch
 import icu.windea.pls.lang.search.selector.complexEnumValue
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
@@ -130,7 +129,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
-        return ParadoxLocalisationSearch.search(name, selector).find()
+        return ParadoxLocalisationSearch.searchNormal(name, selector).find()
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
@@ -139,7 +138,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            ParadoxLocalisationSearch.search(fullName, selector).findAll()
+            ParadoxLocalisationSearch.searchNormal(fullName, selector).findAll()
         }
     }
 
@@ -177,7 +176,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
-        return ParadoxSyncedLocalisationSearch.search(name, selector).find()
+        return ParadoxLocalisationSearch.searchSynced(name, selector).find()
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
@@ -186,7 +185,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
         val project = configGroup.project
         return fullNames.flatMap { fullName ->
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            return ParadoxSyncedLocalisationSearch.search(fullName, selector).findAll()
+            return ParadoxLocalisationSearch.searchSynced(fullName, selector).findAll()
         }
     }
 
@@ -218,7 +217,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
-        return ParadoxLocalisationSearch.search(expressionText, selector).find()
+        return ParadoxLocalisationSearch.searchNormal(expressionText, selector).find()
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
@@ -226,7 +225,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        return ParadoxLocalisationSearch.search(expressionText, selector).findAll()
+        return ParadoxLocalisationSearch.searchNormal(expressionText, selector).findAll()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
