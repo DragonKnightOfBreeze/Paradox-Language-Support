@@ -16,6 +16,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
@@ -66,6 +67,15 @@ fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
     return this
 }
 
-fun String.optimizedPath() = removePrefix("game/").normalizePath().optimized()
+// in order to be compatible with eu5 config files
+private val pathPrefixes = arrayOf("game/", "game/in_game/", "game/main_menu/", "game/loading_screen/")
 
-fun String.optimizedPathExtension() = removePrefix(".").optimized()
+fun String.optimizedPath(): String {
+    val r = pathPrefixes.firstNotNullOfOrNull { removePrefixOrNull(it) } ?: this
+    return r.normalizePath().optimized()
+}
+
+fun String.optimizedPathExtension(): String {
+    val r = removePrefix(".")
+    return r.optimized()
+}

@@ -17,7 +17,7 @@ import kotlin.io.path.exists
  * 导出模组信息到游戏的 JSON 配置文件。
  *
  * 数据文件默认位于游戏数据目录下，且按照游戏使用的模组描述符文件，选用不同的文件：
- * - `.metadata/metadata.json`（VIC3）：`content_load.json`
+ * - `.metadata/metadata.json`（VIC3 / EU5）：`content_load.json`
  * - `descriptor.mod`（其他游戏）：`dlc_load.json`
  *
  * 参见：[JsonExporter.cs](https://github.com/bcssov/IronyModManager/blob/master/src/IronyModManager.IO/Mods/Exporter/JsonExporter.cs)
