@@ -16,4 +16,36 @@ class CwtSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefi
 
     @Test
     fun code_settings() = doTest(true)
+
+    @Test
+    fun advanced_nested() = doTest(true)
+    @Test
+    fun empty() = doTest(true)
+    @Test
+    fun only_comments() = doTest(true)
+    @Test
+    fun mixed_members() = doTest(true)
+    @Test
+    fun template_expression() = doTest(true)
+    @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_missing_option_value() = doTest(true)
+    @Test
+    fun error_unclosed_brace() = doTest(true)
+    @Test
+    fun error_unclosed_quote() = doTest(true)
+    @Test
+    fun option_comment_nested_eof() = doTest(true)
+    @Test
+    fun option_comments() = doTest(true)
+    @Test
+    fun option_value() = doTest(true)
+    @Test
+    fun option_value_on_value() = doTest(true)
+
+    @Test
+    fun snippet_alias() = doTest(true)
+    @Test
+    fun snippet_triggers_has_flag() = doTest(true)
 }

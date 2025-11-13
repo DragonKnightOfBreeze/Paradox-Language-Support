@@ -11,6 +11,9 @@
   elementTypeFactory="icu.windea.pls.cwt.psi.CwtElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
   parserUtilClass="icu.windea.pls.cwt.parser.CwtParserUtil"
+  tokens=[
+    EOL="<eol>"
+  ]
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
@@ -36,7 +39,6 @@ doc_comment ::= DOC_COMMENT_TOKEN {
   methods=[getTokenType getOwner]
 }
 option_comment ::= option_comment_root {
-  recoverWhile="#auto" // continue parsing
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType optionList="option" optionValueList="value"]
 }
@@ -44,7 +46,7 @@ private comment ::= COMMENT
 
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto" // continue parsing
+  recoverWhile=auto_recover // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"
@@ -109,23 +111,23 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   methods=[getIcon getName setName getValue setValue getMemberList getComponents]
 }
 private block_item ::= general_comment | property | option | value {
-  recoverWhile="#auto" // continue parsing
+  recoverWhile=auto_recover // continue parsing
 }
 
 // option comment rules
 // 2.0.7 DO NOT use lazy-parsing due to performance reasons
 
+// EOL is recognized by a dedicated lexer token
 private option_comment_root ::= OPTION_COMMENT_START option_comment_item * {
   pin=1
-  recoverWhile="#auto" // continue parsing
 }
-private option_comment_item ::= option | option_value {
-  recoverWhile="#auto" // continue parsing
+private option_comment_item ::= <<checkEol>> (option | option_value) {
+  recoverWhile=auto_recover // continue parsing
 }
 
 option ::= option_key option_separator option_value {
   pin=1
-  recoverWhile="#auto" // continue parsing
+  recoverWhile=auto_recover // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtOptionMember"
@@ -140,3 +142,9 @@ option_key ::= OPTION_KEY_TOKEN {
 }
 private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 private option_value ::= value
+
+// recover rules
+
+private auto_recover ::= !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE)

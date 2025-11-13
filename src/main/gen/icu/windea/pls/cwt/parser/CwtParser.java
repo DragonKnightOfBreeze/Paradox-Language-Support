@@ -42,6 +42,39 @@ public class CwtParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
+  // !( COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE)
+  static boolean auto_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "auto_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !auto_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // COMMENT | OPTION_COMMENT_START | DOC_COMMENT_TOKEN
+  //   | BOOLEAN_TOKEN | INT_TOKEN | FLOAT_TOKEN | STRING_TOKEN
+  //   | PROPERTY_KEY_TOKEN | OPTION_KEY_TOKEN | LEFT_BRACE | RIGHT_BRACE
+  private static boolean auto_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "auto_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMENT);
+    if (!r) r = consumeToken(b, OPTION_COMMENT_START);
+    if (!r) r = consumeToken(b, DOC_COMMENT_TOKEN);
+    if (!r) r = consumeToken(b, BOOLEAN_TOKEN);
+    if (!r) r = consumeToken(b, INT_TOKEN);
+    if (!r) r = consumeToken(b, FLOAT_TOKEN);
+    if (!r) r = consumeToken(b, STRING_TOKEN);
+    if (!r) r = consumeToken(b, PROPERTY_KEY_TOKEN);
+    if (!r) r = consumeToken(b, OPTION_KEY_TOKEN);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    return r;
+  }
+
+  /* ********************************************************** */
   // LEFT_BRACE block_item * RIGHT_BRACE
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
@@ -77,7 +110,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!r) r = property(b, l + 1);
     if (!r) r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
-    exit_section_(b, l, m, r, false, block_item_auto_recover_);
+    exit_section_(b, l, m, r, false, CwtParser::auto_recover);
     return r;
   }
 
@@ -128,11 +161,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean general_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "general_comment")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = doc_comment(b, l + 1);
     if (!r) r = option_comment(b, l + 1);
     if (!r) r = comment(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -158,7 +189,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, option_separator(b, l + 1));
     r = p && option_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, option_auto_recover_);
+    exit_section_(b, l, m, r, p, CwtParser::auto_recover);
     return r || p;
   }
 
@@ -166,22 +197,34 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_comment_root
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
+    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, "<option comment>");
+    Marker m = enter_section_(b);
     r = option_comment_root(b, l + 1);
-    exit_section_(b, l, m, r, false, option_comment_auto_recover_);
+    exit_section_(b, m, OPTION_COMMENT, r);
     return r;
   }
 
   /* ********************************************************** */
-  // option | option_value
+  // <<checkEol>> (option | option_value)
   static boolean option_comment_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
+    r = checkEol(b, l + 1);
+    r = r && option_comment_item_1(b, l + 1);
+    exit_section_(b, l, m, r, false, CwtParser::auto_recover);
+    return r;
+  }
+
+  // option | option_value
+  private static boolean option_comment_item_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "option_comment_item_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
     r = option(b, l + 1);
     if (!r) r = option_value(b, l + 1);
-    exit_section_(b, l, m, r, false, option_comment_item_auto_recover_);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -189,12 +232,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // OPTION_COMMENT_START option_comment_item *
   static boolean option_comment_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root")) return false;
+    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, OPTION_COMMENT_START);
     p = r; // pin = 1
     r = r && option_comment_root_1(b, l + 1);
-    exit_section_(b, l, m, r, p, option_comment_root_auto_recover_);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -248,7 +292,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, property_separator(b, l + 1));
     r = p && property_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, property_auto_recover_);
+    exit_section_(b, l, m, r, p, CwtParser::auto_recover);
     return r || p;
   }
 
@@ -346,12 +390,4 @@ public class CwtParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
-    DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_START, OPTION_KEY_TOKEN,
-    PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
-  static final Parser option_auto_recover_ = block_item_auto_recover_;
-  static final Parser option_comment_auto_recover_ = block_item_auto_recover_;
-  static final Parser option_comment_item_auto_recover_ = block_item_auto_recover_;
-  static final Parser option_comment_root_auto_recover_ = block_item_auto_recover_;
-  static final Parser property_auto_recover_ = block_item_auto_recover_;
 }

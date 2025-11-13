@@ -7,6 +7,6 @@ yes
 ident
 
 {
-  a = 1
-  val1
+    a = 1
+    val1
 }

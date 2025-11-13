@@ -34,7 +34,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %unicode
 
-EOL=\s*\R
+EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
@@ -61,7 +61,7 @@ OPTION_KEY_TRAILING=\s*(==|=|\!=|<>)
 
 // top level option text (value in option comment, or option value of some option in option comment)
 // inner whitespaces are permitted and required
-OPTION_TEXT_TOKEN=[^#={}\s\"]([^#={}\r\n]*[^#={}\s])+
+OPTION_TEXT_TOKEN=[^#=!<>{}\s\"]([^#=!<>{}\r\n]*[^#=!<>{}\s])+
 
 %%
 
@@ -73,16 +73,16 @@ OPTION_TEXT_TOKEN=[^#={}\s\"]([^#={}\r\n]*[^#={}\s])+
     {OPTION_COMMENT} { yypushback(yylength() - 2); yybegin(IN_OPTION); return OPTION_COMMENT_START; }
     {COMMENT} { return COMMENT; }
 }
+<IN_PROPERTY_SEPARATOR> {
+    "=="|"=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
+    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
+}
 <YYINITIAL, IN_PROPERTY_VALUE> {
     {PROPERTY_KEY_TOKEN} / {PROPERTY_KEY_TRAILING} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
     {BOOLEAN_TOKEN} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { yybegin(YYINITIAL); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(YYINITIAL); return STRING_TOKEN; }
-}
-<IN_PROPERTY_SEPARATOR> {
-    "=="|"=" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
 }
 
 <IN_OPTION, IN_OPTION_VALUE, IN_OPTION_SEPARATOR> {
@@ -93,9 +93,13 @@ OPTION_TEXT_TOKEN=[^#={}\s\"]([^#={}\r\n]*[^#={}\s])+
         return LEFT_BRACE;
     }
     "}" { return RIGHT_BRACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {EOL} { yybegin(YYINITIAL); return EOL; }
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
+}
+<IN_OPTION_SEPARATOR> {
+    "="|"==" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
+    "!="|"<>" { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
 }
 <IN_OPTION, IN_OPTION_VALUE> {
     {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
@@ -105,17 +109,17 @@ OPTION_TEXT_TOKEN=[^#={}\s\"]([^#={}\r\n]*[^#={}\s])+
     {FLOAT_TOKEN} { yybegin(IN_OPTION); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(IN_OPTION); return STRING_TOKEN; }
 }
-<IN_OPTION_SEPARATOR> {
-    "="|"==" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
-}
 
 <IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED, IN_OPTION_SEPARATOR_NESTED> {
     "{" { return LEFT_BRACE; }
     "}" { return RIGHT_BRACE; }
-    {EOL} { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {EOL} { yybegin(YYINITIAL); return EOL; }
     {WHITE_SPACE} { return WHITE_SPACE; }
-    {COMMENT} { return COMMENT; }
+    {COMMENT} { yybegin(YYINITIAL);  return COMMENT; }
+}
+<IN_OPTION_SEPARATOR_NESTED> {
+    "="|"==" { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
+    "!="|"<>" { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
 }
 <IN_OPTION_NESTED, IN_OPTION_VALUE_NESTED> {
     {OPTION_KEY_TOKEN} / {OPTION_KEY_TRAILING} { yybegin(IN_OPTION_SEPARATOR_NESTED); return OPTION_KEY_TOKEN; }
@@ -123,10 +127,6 @@ OPTION_TEXT_TOKEN=[^#={}\s\"]([^#={}\r\n]*[^#={}\s])+
     {INT_TOKEN} { yybegin(IN_OPTION_NESTED); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(IN_OPTION_NESTED); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(IN_OPTION_NESTED); return STRING_TOKEN; }
-}
-<IN_OPTION_SEPARATOR_NESTED> {
-    "="|"==" { yybegin(IN_OPTION_VALUE_NESTED); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_OPTION_VALUE_NESTED); return NOT_EQUAL_SIGN; }
 }
 
 [^] { return BAD_CHARACTER; }

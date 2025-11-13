@@ -92,7 +92,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %unicode
 
-EOL=\s*\R
+EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 

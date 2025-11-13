@@ -1,0 +1,7 @@
+CwtFile: option_value.test.cwt(0,6)
+  CwtRootBlock(0,6)
+    CwtOptionComment(0,6)
+      PsiElement(OPTION_COMMENT_START)('##')(0,2)
+      PsiWhiteSpace(' ')(2,3)
+      CwtString: tag(3,6)
+        PsiElement(STRING_TOKEN)('tag')(3,6)

@@ -86,21 +86,21 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_BLOCKS = zzUnpackcmap_blocks();
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
-    "\11\0\1\1\1\2\2\3\1\2\22\0\1\1\1\0"+
-    "\1\4\1\5\3\0\1\6\5\0\2\6\1\0\12\7"+
-    "\1\10\6\0\32\6\4\0\1\11\1\0\32\11\12\0"+
-    "\1\3\32\0\1\1\u01bf\0\12\12\206\0\12\12\306\0"+
-    "\12\12\234\0\12\12\166\0\12\12\140\0\12\12\166\0"+
-    "\12\12\106\0\12\12\u0116\0\12\12\106\0\12\12\346\0"+
-    "\1\1\u015f\0\12\12\46\0\12\12\u012c\0\12\12\200\0"+
-    "\12\12\246\0\12\12\6\0\12\12\266\0\12\12\126\0"+
-    "\12\12\206\0\12\12\6\0\12\12\246\0\13\1\35\0"+
-    "\2\3\5\0\1\1\57\0\1\1\240\0\1\1\u01cf\0"+
-    "\12\12\46\0\12\12\306\0\12\12\26\0\12\12\126\0"+
-    "\12\12\u0196\0\12\12\246\0\12\12\206\0\12\12\u012c\0"+
-    "\12\12\200\0\12\12\74\0\12\12\220\0\12\12\166\0"+
-    "\12\12\146\0\12\12\206\0\12\12\106\0\12\12\266\0"+
-    "\12\12\u0164\0\62\12\100\0\12\12\266\0";
+    "\11\0\1\1\1\2\2\1\1\2\22\0\1\1\1\0"+
+    "\1\3\1\4\3\0\1\5\5\0\2\5\1\0\12\6"+
+    "\1\7\6\0\32\5\4\0\1\10\1\0\32\10\12\0"+
+    "\1\1\32\0\1\1\u01bf\0\12\11\206\0\12\11\306\0"+
+    "\12\11\234\0\12\11\166\0\12\11\140\0\12\11\166\0"+
+    "\12\11\106\0\12\11\u0116\0\12\11\106\0\12\11\346\0"+
+    "\1\1\u015f\0\12\11\46\0\12\11\u012c\0\12\11\200\0"+
+    "\12\11\246\0\12\11\6\0\12\11\266\0\12\11\126\0"+
+    "\12\11\206\0\12\11\6\0\12\11\246\0\13\1\35\0"+
+    "\2\1\5\0\1\1\57\0\1\1\240\0\1\1\u01cf\0"+
+    "\12\11\46\0\12\11\306\0\12\11\26\0\12\11\126\0"+
+    "\12\11\u0196\0\12\11\246\0\12\11\206\0\12\11\u012c\0"+
+    "\12\11\200\0\12\11\74\0\12\11\220\0\12\11\166\0"+
+    "\12\11\146\0\12\11\206\0\12\11\106\0\12\11\266\0"+
+    "\12\11\u0164\0\62\11\100\0\12\11\266\0";
 
   private static int [] zzUnpackcmap_blocks() {
     int [] result = new int[7680];
@@ -128,10 +128,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\7\0\1\1\1\2\1\3\1\4\2\5\1\6\1\7"+
-    "\1\10\1\11\2\12\1\13\1\0\1\14";
+    "\1\10\1\11\2\12\1\13\1\14";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[22];
+    int [] result = new int[21];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -156,12 +156,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
-    "\0\130\0\143\0\156\0\171\0\204\0\115\0\115\0\115"+
-    "\0\217\0\232\0\245\0\115\0\143\0\115";
+    "\0\0\0\12\0\24\0\36\0\50\0\62\0\74\0\106"+
+    "\0\120\0\132\0\144\0\156\0\170\0\106\0\106\0\106"+
+    "\0\202\0\214\0\226\0\106\0\106";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[22];
+    int [] result = new int[21];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -184,21 +184,19 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\10\1\11\1\12\1\11\1\10\1\13\2\14\1\10"+
-    "\1\14\2\10\1\11\1\12\1\11\1\10\1\13\2\14"+
-    "\1\10\1\15\2\10\1\11\1\12\1\11\1\10\1\13"+
-    "\2\10\1\16\3\10\1\11\1\12\1\11\1\10\1\13"+
-    "\6\10\1\11\1\12\1\11\1\10\1\13\2\10\1\17"+
-    "\3\10\1\11\1\12\1\11\1\20\1\13\1\10\1\21"+
-    "\2\10\1\21\1\22\1\23\1\12\1\23\1\24\6\22"+
-    "\14\0\1\11\1\12\1\11\10\0\1\25\2\12\7\0"+
-    "\2\13\1\0\10\13\6\0\2\14\1\0\1\14\7\0"+
-    "\2\14\1\26\1\15\10\0\1\21\2\0\1\21\2\22"+
-    "\1\0\1\22\1\0\7\22\1\23\1\12\1\23\1\0"+
-    "\6\22";
+    "\1\10\1\11\1\12\1\10\1\13\2\14\1\10\1\14"+
+    "\2\10\1\11\1\12\1\10\1\13\2\14\1\10\1\15"+
+    "\2\10\1\11\1\12\1\10\1\13\2\10\1\16\3\10"+
+    "\1\11\1\12\1\10\1\13\6\10\1\11\1\12\1\10"+
+    "\1\13\2\10\1\17\3\10\1\11\1\12\1\20\1\13"+
+    "\1\10\1\21\2\10\1\21\1\22\1\23\1\12\1\24"+
+    "\6\22\13\0\1\11\1\12\10\0\2\12\7\0\2\13"+
+    "\1\0\7\13\5\0\2\14\1\0\1\14\6\0\2\14"+
+    "\1\25\1\15\7\0\1\21\2\0\1\21\2\22\2\0"+
+    "\7\22\1\23\1\12\1\0\6\22";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[176];
+    int [] result = new int[160];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -236,10 +234,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\7\0\1\11\5\1\3\11\3\1\1\11\1\0\1\11";
+    "\7\0\1\11\5\1\3\11\3\1\2\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[22];
+    int [] result = new int[21];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -311,9 +309,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
 
     private IElementType handleLocaleToken() {
-        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml)
-        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line
-        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key
+        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
+        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
         try {
             // Start scanning right after the matched text (token + ':')

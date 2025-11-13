@@ -112,7 +112,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
 %unicode
 
-EOL=\s*\R
+EOL=\s*\R\s*
 WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*

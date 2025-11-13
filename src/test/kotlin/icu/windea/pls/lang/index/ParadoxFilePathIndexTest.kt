@@ -27,8 +27,8 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testFilePathIndex_Basic() {
-        myFixture.configureByFile("script/syntax/_code_settings.test.txt")
-        val relPath = "common/scripted_variables/_code_settings.test.txt"
+        myFixture.configureByFile("script/syntax/code_settings.test.txt")
+        val relPath = "common/scripted_variables/code_settings.test.txt"
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, relPath, ParadoxGameType.Stellaris)
 
         val project = project
@@ -47,8 +47,8 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testFilePathSearcher_ExactPath() {
-        myFixture.configureByFile("script/syntax/_code_settings.test.txt")
-        val relPath = "common/scripted_variables/_code_settings.test.txt"
+        myFixture.configureByFile("script/syntax/code_settings.test.txt")
+        val relPath = "common/scripted_variables/code_settings.test.txt"
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, relPath, ParadoxGameType.Stellaris)
 
         val project = project

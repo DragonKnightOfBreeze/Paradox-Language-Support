@@ -32,7 +32,9 @@ private property_item_list_with_locale ::= locale property_item * {
   pin=1
 }
 private property_item_list ::= property_item +
-private property_item ::= COMMENT | property
+private property_item ::= COMMENT | property {
+  recoverWhile="#auto" // continue parsing
+}
 
 locale ::= LOCALE_TOKEN COLON {
   pin=1
@@ -44,7 +46,6 @@ locale ::= LOCALE_TOKEN COLON {
 
 property ::= property_key COLON property_number? property_value {
   pin=1
-  recoverWhile="#auto" // continue parsing
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"

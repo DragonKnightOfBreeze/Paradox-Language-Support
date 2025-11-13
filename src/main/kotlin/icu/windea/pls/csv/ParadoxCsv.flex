@@ -44,7 +44,7 @@ import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
 
 %unicode
 
-EOL=\R
+EOL=\s*\R\s*
 BLANK=[\s&&[^\r\n]]+
 COMMENT=#[^\r\n]*
 SEPARATOR=;

@@ -6,7 +6,7 @@ ident_val
 .5
 007
 " spaced "
-{ }
+{}
 
 ## meta = { inner = 1 foo }
 { a = 1 }

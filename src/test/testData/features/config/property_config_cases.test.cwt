@@ -6,8 +6,8 @@ not_equal2 <> 3
 str_prop = "s v"
 
 block_prop = {
-  a = 1
-  val1
+    a = 1
+    val1
 }
 
 ## required

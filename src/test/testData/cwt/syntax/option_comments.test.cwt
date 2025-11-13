@@ -1,0 +1,10 @@
+## scopes = { country ship }
+## replace_scopes = { this = any root = any }
+## key = value
+## title = This is a title
+## Some text
+
+## scopes <> { country ship }
+## replace_scopes <> { this == any root != any }
+## key <> value
+## title <> This is a title

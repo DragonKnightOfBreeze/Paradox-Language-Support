@@ -75,8 +75,8 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_BLOCKS = zzUnpackcmap_blocks();
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
-    "\11\0\1\1\1\2\2\3\1\4\22\0\1\1\1\0"+
-    "\1\5\1\6\27\0\1\7\40\0\1\10\50\0\1\3"+
+    "\11\0\1\1\1\2\2\3\1\2\22\0\1\1\1\0"+
+    "\1\4\1\5\27\0\1\6\40\0\1\7\50\0\1\3"+
     "\32\0\1\1\u01df\0\1\1\177\0\13\1\35\0\2\3"+
     "\5\0\1\1\57\0\1\1\240\0\1\1\377\0";
 
@@ -105,11 +105,11 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\3\3\1\1\1\4\1\5\1\0"+
+    "\1\0\1\1\1\2\1\3\1\1\1\4\1\5\1\0"+
     "\1\1\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[12];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -134,11 +134,11 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\11\0\22\0\33\0\22\0\44\0\55\0\66"+
-    "\0\33\0\11\0\33\0\77";
+    "\0\0\0\10\0\20\0\30\0\40\0\50\0\60\0\10"+
+    "\0\60\0\70";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[12];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -161,14 +161,13 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11"+
-    "\2\2\1\12\1\0\1\12\1\0\1\13\2\0\1\2"+
-    "\1\0\1\3\1\0\1\3\20\0\1\4\6\0\2\7"+
-    "\1\0\1\7\1\0\1\13\2\7\1\14\2\10\1\0"+
-    "\1\10\1\0\4\10\11\7";
+    "\1\2\1\3\2\4\1\5\1\6\1\7\2\2\1\10"+
+    "\1\0\1\10\1\11\2\0\1\2\1\0\1\3\2\4"+
+    "\5\0\3\4\4\0\2\5\1\0\1\5\1\11\2\5"+
+    "\1\12\2\6\1\0\5\6\10\0\10\5";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[72];
+    int [] result = new int[64];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -206,10 +205,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\1\1\11\4\1\1\11\1\0\1\11\1\0";
+    "\1\0\5\1\1\11\1\0\1\11\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[12];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;

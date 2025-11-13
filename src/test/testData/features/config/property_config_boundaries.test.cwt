@@ -1,4 +1,4 @@
-"empty_block_prop" = { }
+"empty_block_prop" = {}
 
 # plain comment should be ignored by option parser
 ## label with space

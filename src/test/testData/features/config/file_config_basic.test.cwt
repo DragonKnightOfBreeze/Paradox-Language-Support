@@ -1,20 +1,20 @@
 ## tag
- top_value1
+top_value1
 
- "top quoted"
- 
- prop_int = 1
- prop_float = 1.5
- prop_string = "abc"
- prop_ident = int
- prop_bool_yes = yes
- prop_bool_no = no
- 
- ## required
- ## severity = warning
- prop_block = {
-   inner_prop = scalar
-   inner_val
-   ## info = abc
-   nested_opt_target = 1
- }
+"top quoted"
+
+prop_int = 1
+prop_float = 1.5
+prop_string = "abc"
+prop_ident = int
+prop_bool_yes = yes
+prop_bool_no = no
+
+## required
+## severity = warning
+prop_block = {
+    inner_prop = scalar
+    inner_val
+    ## info = abc
+    nested_opt_target = 1
+}
