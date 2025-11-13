@@ -14,14 +14,13 @@
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
-// Grammar for CWT (Clausewitz Text) configuration files.
+// Grammar for CWT.
 // Notes:
 // - Supports properties, blocks, and special option/doc comments with lazy parsing.
 
 // core rules
 
 root ::= root_block ?
-
 root_block ::= root_block_item + {
   hooks=[wsBinders="GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER"]
   implements=[
@@ -37,14 +36,15 @@ doc_comment ::= DOC_COMMENT_TOKEN {
   methods=[getTokenType getOwner]
 }
 option_comment ::= option_comment_root {
+  recoverWhile="#auto" // continue parsing
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType option="option" optionValue="value"]
+  methods=[getTokenType optionList="option" optionValueList="value"]
 }
 private comment ::= COMMENT
 
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto" // On property parse failure, skip to the next property
+  recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMember"
@@ -109,19 +109,23 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   methods=[getIcon getName setName getValue setValue getMemberList getComponents]
 }
 private block_item ::= general_comment | property | option | value {
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
 }
 
 // option comment rules
 // 2.0.7 DO NOT use lazy-parsing due to performance reasons
 
-private option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
-  methods=[option="option" option_value="value"]
+private option_comment_root ::= OPTION_COMMENT_START option_comment_item * {
+  pin=1
+  recoverWhile="#auto" // continue parsing
 }
-private option_comment_item ::= option | option_value
+private option_comment_item ::= option | option_value {
+  recoverWhile="#auto" // continue parsing
+}
 
 option ::= option_key option_separator option_value {
   pin=1
+  recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtOptionMember"

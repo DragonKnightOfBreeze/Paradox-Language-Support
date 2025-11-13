@@ -138,7 +138,6 @@ types = {
 
 Notes:
 
-- An option comment only affects the single member immediately following it (or the content within that member, depending on implementation).
 - Avoid including whitespace and reserved symbols in unquoted keys and strings; use double quotes for complex content.
 - Both equals and not-equals symbols can be used for options and properties; choose based on semantics.
 

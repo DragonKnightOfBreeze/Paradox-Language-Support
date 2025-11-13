@@ -37,7 +37,7 @@ private root_block_value ::= scripted_variable_reference | boolean | int | float
 // scripted_variable
 scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
   pin=1
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub"
   implements=[
@@ -64,7 +64,7 @@ private scripted_variable_value ::= boolean | int | float | string | inline_math
 // property related
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto" // 当前属性解析失败时，需要跳过继续解析下一个
+  recoverWhile="#auto" // continue parsing
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub"
   implements=[
@@ -170,7 +170,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   methods=[getIcon getValue getReference getReferences getMemberList getComponents]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
 }
 private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
@@ -229,7 +229,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
 // should in definition declaration (script_value / scripted_effect / scripted_trigger)
 parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET {
   pin=1
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptMemberContainer"
     "com.intellij.psi.PsiListLikeElement"
@@ -245,7 +245,7 @@ parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
   methods=[getIdElement getIcon getName setName getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition {
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
 }
 private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 

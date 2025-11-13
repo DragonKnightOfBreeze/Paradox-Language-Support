@@ -12,7 +12,7 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
-// Lexer for Paradox Localisation (headers, keys, numbers, quoted values).
+// Lexer for Paradox Localisation.
 // Notes:
 // - Locale header vs property key is distinguished by scanning after ':' on the same line.
 // - Right-quote heuristic: if another '"' exists before EOL, current '"' is text; otherwise it closes the value.
@@ -311,13 +311,13 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
     }
 
     private IElementType handleLocaleToken() {
-        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml).
-        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line.
-        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
+        // Locale headers may be absent or appear multiple times (e.g. localisation/languages.yml)
+        // This rule matched: ^ {LOCALE_TOKEN} ":" (no trailing part). We now check the remainder of the line
+        // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key
 
         try {
-            // Start scanning right after the matched text (token + ':').
-            int i = zzCurrentPos + yylength();
+            // Start scanning right after the matched text (token + ':')
+            int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
             while (i < length) {
@@ -327,19 +327,16 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 i++;
             }
 
-            // Push back just ':' so it can be emitted next as COLON.
-            yypushback(1);
             if (onlyWhitespaceToEol) {
                 yybegin(IN_LOCALE_COLON);
                 return LOCALE_TOKEN;
             } else {
-                // Not a locale header: interpret as a property key followed by ':'
+                // Not a locale header: interpret as a property key
                 yybegin(IN_PROPERTY_COLON);
                 return PROPERTY_KEY_TOKEN;
             }
         } catch (Exception e) {
-            // Be lenient on unexpected conditions: assume a locale header.
-            yypushback(1);
+            // Be lenient on unexpected conditions: assume a locale header
             yybegin(IN_LOCALE_COLON);
             return LOCALE_TOKEN;
         }
@@ -699,6 +696,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 23: break;
           case 12:
+            // lookahead expression with fixed lookahead length
+            zzMarkedPos = Character.offsetByCodePoints
+                (zzBufferL, zzMarkedPos, -1);
             { return handleLocaleToken();
             }
           // fall through

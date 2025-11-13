@@ -37,15 +37,15 @@ public class CwtOptionCommentImpl extends ASTWrapperPsiElement implements CwtOpt
   }
 
   @Override
-  @Nullable
-  public CwtOption getOption() {
-    return findChildByClass(CwtOption.class);
+  @NotNull
+  public List<CwtOption> getOptionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtOption.class);
   }
 
   @Override
-  @Nullable
-  public CwtValue getOptionValue() {
-    return findChildByClass(CwtValue.class);
+  @NotNull
+  public List<CwtValue> getOptionValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtValue.class);
   }
 
   @Override

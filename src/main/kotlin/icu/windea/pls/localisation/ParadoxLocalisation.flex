@@ -27,8 +27,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         // If only whitespace remains until EOL/EOF, treat as a locale header; otherwise, treat as a property key.
 
         try {
-            // Start scanning right after the matched text (token + ':').
-            int i = zzCurrentPos + yylength();
+            // Start scanning right after the matched text (token + ':')
+            int i = zzCurrentPos + 1 + yylength();
             int length = zzBuffer.length();
             boolean onlyWhitespaceToEol = true;
             while (i < length) {
@@ -38,19 +38,16 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
                 i++;
             }
 
-            // Push back just ':' so it can be emitted next as COLON.
-            yypushback(1);
             if (onlyWhitespaceToEol) {
                 yybegin(IN_LOCALE_COLON);
                 return LOCALE_TOKEN;
             } else {
-                // Not a locale header: interpret as a property key followed by ':'
+                // Not a locale header: interpret as a property key
                 yybegin(IN_PROPERTY_COLON);
                 return PROPERTY_KEY_TOKEN;
             }
         } catch (Exception e) {
-            // Be lenient on unexpected conditions: assume a locale header.
-            yypushback(1);
+            // Be lenient on unexpected conditions: assume a locale header
             yybegin(IN_LOCALE_COLON);
             return LOCALE_TOKEN;
         }
@@ -112,7 +109,7 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
     {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
     // Locale header candidate: start-of-line locale id followed by ':'
-    ^ {LOCALE_TOKEN} ":" { return handleLocaleToken(); }
+    ^ {LOCALE_TOKEN} / ":" { return handleLocaleToken(); }
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
 <IN_LOCALE_COLON>{

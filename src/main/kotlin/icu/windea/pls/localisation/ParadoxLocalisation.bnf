@@ -13,7 +13,7 @@
   methods(".*")=[getResolveScope getUseScope getPresentation toString]
 }
 
-// Grammar for Paradox localisation files (.yml style with locale headers and properties).
+// Grammar for Paradox Localisation.
 // Notes:
 // - Locale header vs property is resolved by the lexer (see ParadoxLocalisation.flex).
 // - Property values are lazy-parsed to support rich text features without over-tokenizing at top level.
@@ -44,7 +44,7 @@ locale ::= LOCALE_TOKEN COLON {
 
 property ::= property_key COLON property_number? property_value {
   pin=1
-  recoverWhile="#auto"
+  recoverWhile="#auto" // continue parsing
   extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"

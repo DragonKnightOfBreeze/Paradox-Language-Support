@@ -23,6 +23,10 @@ class CwtMoreSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParser
     @Test
     fun template_expression() = doTest(true)
     @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
+    fun error_missing_option_value() = doTest(true)
+    @Test
     fun error_unclosed_brace() = doTest(true)
     @Test
     fun error_unclosed_quote() = doTest(true)

@@ -23,6 +23,8 @@ class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "test.tx
     @Test
     fun only_comments() = doTest(true)
     @Test
+    fun error_missing_property_value() = doTest(true)
+    @Test
     fun error_unclosed_brace() = doTest(true)
 
     @Test

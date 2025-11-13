@@ -128,9 +128,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean general_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "general_comment")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = doc_comment(b, l + 1);
     if (!r) r = option_comment(b, l + 1);
     if (!r) r = comment(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -150,14 +152,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_key option_separator option_value
   public static boolean option(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option")) return false;
-    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
+    Marker m = enter_section_(b, l, _NONE_, OPTION, "<option>");
     r = option_key(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, option_separator(b, l + 1));
     r = p && option_value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, option_auto_recover_);
     return r || p;
   }
 
@@ -165,11 +166,10 @@ public class CwtParser implements PsiParser, LightPsiParser {
   // option_comment_root
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
-    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, "<option comment>");
     r = option_comment_root(b, l + 1);
-    exit_section_(b, m, OPTION_COMMENT, r);
+    exit_section_(b, l, m, r, false, option_comment_auto_recover_);
     return r;
   }
 
@@ -178,36 +178,34 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean option_comment_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_item")) return false;
     boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
     r = option(b, l + 1);
     if (!r) r = option_value(b, l + 1);
+    exit_section_(b, l, m, r, false, option_comment_item_auto_recover_);
     return r;
   }
 
   /* ********************************************************** */
-  // OPTION_COMMENT_START option_comment_item ? comment ?
+  // OPTION_COMMENT_START option_comment_item *
   static boolean option_comment_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root")) return false;
-    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, OPTION_COMMENT_START);
+    p = r; // pin = 1
     r = r && option_comment_root_1(b, l + 1);
-    r = r && option_comment_root_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, option_comment_root_auto_recover_);
+    return r || p;
   }
 
-  // option_comment_item ?
+  // option_comment_item *
   private static boolean option_comment_root_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root_1")) return false;
-    option_comment_item(b, l + 1);
-    return true;
-  }
-
-  // comment ?
-  private static boolean option_comment_root_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_comment_root_2")) return false;
-    comment(b, l + 1);
+    while (true) {
+      int c = current_position_(b);
+      if (!option_comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "option_comment_root_1", c)) break;
+    }
     return true;
   }
 
@@ -351,5 +349,9 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static final Parser block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
     DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_START, OPTION_KEY_TOKEN,
     PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
+  static final Parser option_auto_recover_ = block_item_auto_recover_;
+  static final Parser option_comment_auto_recover_ = block_item_auto_recover_;
+  static final Parser option_comment_item_auto_recover_ = block_item_auto_recover_;
+  static final Parser option_comment_root_auto_recover_ = block_item_auto_recover_;
   static final Parser property_auto_recover_ = block_item_auto_recover_;
 }

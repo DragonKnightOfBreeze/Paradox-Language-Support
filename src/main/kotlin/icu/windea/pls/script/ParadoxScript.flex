@@ -117,23 +117,15 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-// Separator characters between scripted variable name and value
-SCRIPTED_VARIABLE_REFERENCE_CHECK=[A-Za-z_$\[][^@#={}\\s\"]*
+SCRIPTED_VARIABLE_NAME_PATTERN=[A-Za-z_$\[][^@#={}\s\"]* // leading number is not permitted
+SCRIPTED_VARIABLE_NAME_TRAILING=\s*=
+SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+ // leading number is not permitted
 
-// Separator characters between key and value
-PROPERTY_SEPARATOR_CHECK=[=<>!?]
-PROPERTY_KEY_CHECK=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{PROPERTY_SEPARATOR_CHECK}
-
-// leading number is not permitted for parameter names
-PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
-
-// leading number is not permitted for scripted variable names
-SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+
-SCRIPTED_VARIABLE_NAME_CHECK=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
-
-WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
-WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
-PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
+PROPERTY_KEY_PATTERN={UNQUOTED_PROPERTY_KEY_PATTERN}|{QUOTED_PROPERTY_KEY_PATTERN}
+PROPERTY_KEY_TRAILING=\s*[=<>!?]
+UNQUOTED_PROPERTY_KEY_PATTERN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
+QUOTED_PROPERTY_KEY_PATTERN=\"([^\"\r\n\\]|\\.)*\"?
+UNQUOTED_PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without surrounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
@@ -143,12 +135,14 @@ FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
-STRING_CHECK={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
-WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
-WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
-STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
+STRING_PATTERN={UNQUOTED_STRING_PATTERN}|{QUOTED_STRING_PATTERN}
+UNQUOTED_STRING_PATTERN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
+QUOTED_STRING_PATTERN=\"([^\"\\]|\\[\s\S])*\"?
+UNQUOTED_STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without surrounding quotes
 
+// leading number is not permitted for parameter names
+PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 // compatible with leading '@'
 ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+
 
@@ -170,17 +164,15 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {SCRIPTED_VARIABLE_NAME_CHECK} {
-        // If the matched text ends with '=', parse as a scripted variable; otherwise parse as a scripted variable reference.
-        if(yycharat(yylength() -1) == '='){
-            yypushback(yylength());
-            enterState(templateStateRef, yystate());
-            yybegin(IN_SCRIPTED_VARIABLE_NAME);
-        } else {
-            yypushback(yylength());
-            enterState(templateStateRef, yystate());
-            yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
-        }
+    {SCRIPTED_VARIABLE_NAME_PATTERN} / {SCRIPTED_VARIABLE_NAME_TRAILING} {
+        yypushback(yylength());
+        enterState(templateStateRef, yystate());
+        yybegin(IN_SCRIPTED_VARIABLE_NAME);
+    }
+    {SCRIPTED_VARIABLE_NAME_PATTERN} {
+        yypushback(yylength());
+        enterState(templateStateRef, yystate());
+        yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
     }
     {COMMENT} { return COMMENT; }
 }
@@ -207,7 +199,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    {SCRIPTED_VARIABLE_REFERENCE_CHECK} {
+    {SCRIPTED_VARIABLE_NAME_PATTERN} {
         yypushback(yylength());
         enterState(templateStateRef, yystate());
         yybegin(IN_SCRIPTED_VARIABLE_REFERENCE_NAME);
@@ -317,8 +309,8 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {BOOLEAN_TOKEN} { enterState(templateStateRef, yystate()); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { enterState(templateStateRef, yystate()); return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate()); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
-    {WILDCARD_QUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
+    {UNQUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
+    {QUOTED_STRING_PATTERN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
 }
 
 // property separator
@@ -339,7 +331,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }
-    {PROPERTY_KEY_CHECK} {
+    {PROPERTY_KEY_PATTERN} / {PROPERTY_KEY_TRAILING} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);
@@ -356,7 +348,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     {INT_TOKEN} { enterState(templateStateRef, yystate());  return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate());  return FLOAT_TOKEN; }
     {COLOR_TOKEN} { enterState(templateStateRef, yystate());  return COLOR_TOKEN; }
-    {STRING_CHECK} {
+    {STRING_PATTERN} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {
             yypushback(yylength() - 1);
@@ -377,7 +369,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    {PROPERTY_KEY_TOKEN} { return PROPERTY_KEY_TOKEN; }
+    {UNQUOTED_PROPERTY_KEY_TOKEN} { return PROPERTY_KEY_TOKEN; }
     {COMMENT} { return COMMENT; }
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
 }
@@ -399,7 +391,7 @@ INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    {STRING_TOKEN} { return STRING_TOKEN; }
+    {UNQUOTED_STRING_TOKEN} { return STRING_TOKEN; }
     {COMMENT} { return COMMENT; }
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
 }

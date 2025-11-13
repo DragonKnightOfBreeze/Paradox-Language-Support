@@ -79,14 +79,17 @@ object CwtConfigResolverUtil {
             current = current.prevSibling ?: break
             when (current) {
                 is CwtOptionComment -> {
-                    val option = current.option
-                    if (option != null) {
-                        val resolved = CwtOptionConfig.resolve(option) ?: continue
-                        optionConfigs.add(0, resolved)
-                    } else {
-                        val optionValue = current.optionValue ?: continue
-                        val resolved = CwtOptionValueConfig.resolve(optionValue)
-                        optionConfigs.add(0, resolved)
+                    current.forEachChild f@{ e ->
+                        when (e) {
+                            is CwtOption -> {
+                                val resolved = CwtOptionConfig.resolve(e) ?: return@f
+                                optionConfigs.add(0, resolved)
+                            }
+                            is CwtValue -> {
+                                val resolved = CwtOptionValueConfig.resolve(e)
+                                optionConfigs.add(0, resolved)
+                            }
+                        }
                     }
                 }
                 is PsiWhiteSpace, is PsiComment -> continue

@@ -1,0 +1,19 @@
+@v1 = 1
+@v2 = yes
+@v3 = abc
+@v4 = "abc"
+@v5 = "hello word"
+
+k1 = {
+    @v1 = 1
+    @v2 = yes
+    @v3 = abc
+    @v4 = "abc"
+    @v5 = "hello word"
+
+    k2 = @v1
+    k2 = @v2
+    k2 = @v3
+    k2 = @v4
+    k2 = @v5
+}
