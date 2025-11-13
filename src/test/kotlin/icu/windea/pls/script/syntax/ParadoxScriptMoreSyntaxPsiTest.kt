@@ -1,9 +1,10 @@
-package icu.windea.pls.script
+package icu.windea.pls.script.syntax
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.script.ParadoxScriptParserDefinition
 
-@TestDataPath("\$CONTENT_ROOT/testData")
+@TestDataPath("/testData")
 class ParadoxScriptMoreSyntaxPsiTest : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 

@@ -1,9 +1,10 @@
-package icu.windea.pls.localisation
+package icu.windea.pls.localisation.syntax
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.localisation.ParadoxLocalisationParserDefinition
 
-@TestDataPath("\$CONTENT_ROOT/testData")
+@TestDataPath("/testData")
 class ParadoxLocalisationMoreSyntaxPsiTest : ParsingTestCase("localisation/syntax", "test.yml", ParadoxLocalisationParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 

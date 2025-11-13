@@ -1,10 +1,11 @@
-package icu.windea.pls.csv
+package icu.windea.pls.script.syntax
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.script.ParadoxScriptParserDefinition
 
-@TestDataPath("\$CONTENT_ROOT/testData")
-class ParadoxCsvSyntaxPsiTest : ParsingTestCase("csv/syntax", "test.csv", ParadoxCsvParserDefinition()) {
+@TestDataPath("/testData")
+class ParadoxScriptSyntaxPsiTest  : ParsingTestCase("script/syntax", "test.txt", ParadoxScriptParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true

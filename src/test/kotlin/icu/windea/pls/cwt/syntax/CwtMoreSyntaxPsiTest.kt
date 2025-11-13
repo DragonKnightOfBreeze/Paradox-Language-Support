@@ -1,9 +1,10 @@
-package icu.windea.pls.cwt
+package icu.windea.pls.cwt.syntax
 
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
+import icu.windea.pls.cwt.CwtParserDefinition
 
-@TestDataPath("\$CONTENT_ROOT/testData")
+@TestDataPath("/testData")
 class CwtMoreSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParserDefinition()) {
     override fun getTestDataPath() = "src/test/testData"
 
@@ -14,9 +15,7 @@ class CwtMoreSyntaxPsiTest : ParsingTestCase("cwt/syntax", "test.cwt", CwtParser
     fun test_only_comments() = doTest(true)
     fun test_template_expression() = doTest(true)
     fun test_error_unclosed_brace() = doTest(true)
-
     fun test_error_unclosed_quote() = doTest(true)
-
     fun test_option_comment_nested_eof() = doTest(true)
     fun test_option_values() = doTest(true)
 
