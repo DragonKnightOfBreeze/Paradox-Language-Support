@@ -24,6 +24,7 @@ interface CwtConfigGroup : CwtDataProvider, UserDataHolder {
 
     val initialized: AtomicBoolean
     val changed: AtomicBoolean
+    val initializer: CwtConfigGroupInitializer
     val modificationTracker: SimpleModificationTracker
 
     suspend fun init()

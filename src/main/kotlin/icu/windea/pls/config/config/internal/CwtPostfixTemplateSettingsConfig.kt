@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.internal
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 
 /**
  * 作为后缀模板设置的内部规则，目前尚不支持自定义。
@@ -20,7 +19,7 @@ data class CwtPostfixTemplateSettingsConfig(
     val expression: String
 ) : CwtDetachedConfig {
     interface Resolver {
-        fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig)
+        fun resolveInFile(fileConfig: CwtFileConfig)
     }
 
     companion object : Resolver by CwtPostfixTemplateSettingsConfigResolverImpl()

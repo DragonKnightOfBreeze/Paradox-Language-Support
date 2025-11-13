@@ -29,6 +29,7 @@ import kotlinx.coroutines.ensureActive
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
+        val initializer = configGroup.initializer
 
         // compute `type2ModifiersMap` and complete `modifiers`
         run {
@@ -244,7 +245,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+    override suspend fun postOptimize(configGroup: CwtConfigGroup) {
         // 2.0.7 nothing now (since it's not very necessary)
     }
 }

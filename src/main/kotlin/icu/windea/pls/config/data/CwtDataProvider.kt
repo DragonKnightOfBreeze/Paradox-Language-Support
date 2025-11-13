@@ -151,7 +151,7 @@ interface CwtDataProvider {
 
     // region Collected
 
-    val filePathExpressions: MutableSet<CwtDataExpression>
+    val filePathExpressions: Set<CwtDataExpression>
     val parameterConfigs: MutableSet<CwtMemberConfig<*>>
 
     // endregion

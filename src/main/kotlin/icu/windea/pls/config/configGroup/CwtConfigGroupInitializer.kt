@@ -17,6 +17,7 @@ class CwtConfigGroupInitializer(
 ) : CwtDataProviderBase(), CwtConfigGroup {
     override val changed: AtomicBoolean get() = throw UnsupportedOperationException()
     override val initialized: AtomicBoolean get() = throw UnsupportedOperationException()
+    override val initializer: CwtConfigGroupInitializer get() = throw UnsupportedOperationException()
     override val modificationTracker: SimpleModificationTracker get() = throw UnsupportedOperationException()
 
     override suspend fun init() = throw UnsupportedOperationException()

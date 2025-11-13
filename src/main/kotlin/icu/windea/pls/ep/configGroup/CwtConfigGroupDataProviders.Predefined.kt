@@ -8,6 +8,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+        val initializer = configGroup.initializer
         with(initializer.aliasNamesSupportScope) {
             this += "modifier" // 也支持，但不能切换作用域
             this += "trigger"
@@ -31,13 +32,15 @@ class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 this += "game_rule"
             }
             with(supportParameters) {
+                // this += "scripted_trigger" // 来自具体的规则（`alias[trigger:<scripted_trigger>] = ...`）
+                // this += "scripted_effect" // 来自具体的规则（`alias[effect:<scripted_effect>] = ...`）
                 this += "script_value"
                 // this += "inline_script" // 内联脚本也支持参数（但它不是定义）
             }
         }
     }
 
-    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+    override suspend fun postOptimize(configGroup: CwtConfigGroup) {
         // 2.0.7 nothing now (since it's not very necessary)
     }
 }

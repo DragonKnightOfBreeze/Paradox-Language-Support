@@ -3,7 +3,6 @@ package icu.windea.pls.config.config.internal
 import icu.windea.pls.config.config.CwtDetachedConfig
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 
 /**
  * 作为折叠设置的内部规则，目前尚不支持自定义。
@@ -19,7 +18,7 @@ data class CwtFoldingSettingsConfig(
     val placeholder: String
 ) : CwtDetachedConfig {
     interface Resolver {
-        fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig)
+        fun resolveInFile(fileConfig: CwtFileConfig)
     }
 
     companion object : Resolver by CwtFoldingSettingsConfigResolverImpl()

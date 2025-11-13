@@ -5,7 +5,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.stringValue
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.collections.caseInsensitiveStringKeyMap
 import icu.windea.pls.core.collections.getOne
@@ -13,7 +12,8 @@ import icu.windea.pls.core.collections.getOne
 internal class CwtPostfixTemplateSettingsConfigResolverImpl : CwtPostfixTemplateSettingsConfig.Resolver, CwtConfigResolverMixin {
     private val logger = thisLogger()
 
-    override fun resolveInFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig) {
+    override fun resolveInFile(fileConfig: CwtFileConfig) {
+        val initializer = fileConfig.configGroup.initializer
         val configs = fileConfig.properties
         for (groupProperty in configs) {
             val groupName = groupProperty.key

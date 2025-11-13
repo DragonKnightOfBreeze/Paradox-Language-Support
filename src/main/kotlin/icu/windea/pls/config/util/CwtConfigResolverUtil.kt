@@ -186,20 +186,21 @@ object CwtConfigResolverUtil {
 
     fun collectFromConfigExpression(config: CwtConfig<*>, configExpression: CwtDataExpression) {
         val configGroup = config.configGroup
+        val initializer = configGroup.initializer
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
                 if (configExpression.value != null) {
-                    configGroup.filePathExpressions += configExpression
+                    initializer.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Icon -> {
                 if (configExpression.value != null) {
-                    configGroup.filePathExpressions += configExpression
+                    initializer.filePathExpressions += configExpression
                 }
             }
             CwtDataTypes.Parameter -> {
                 if (config is CwtPropertyConfig) {
-                    configGroup.parameterConfigs += config
+                    initializer.parameterConfigs += config
                 }
             }
             else -> pass()

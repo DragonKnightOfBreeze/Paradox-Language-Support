@@ -24,6 +24,7 @@ class CwtConfigGroupImpl(
 
     override val initialized = AtomicBoolean()
     override val changed = AtomicBoolean()
+    override val initializer = CwtConfigGroupInitializer(project, gameType)
     override val modificationTracker = SimpleModificationTracker()
 
     override suspend fun init() {
@@ -36,10 +37,10 @@ class CwtConfigGroupImpl(
     private suspend fun initInLock() {
         try {
             val start = System.currentTimeMillis()
-            val initializer = CwtConfigGroupInitializer(project, gameType)
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
+            initializer.clear() // 清空以避免数据残留
             dataProviders.forEach { dataProvider -> dataProvider.process(initializer, this) }
-            dataProviders.forEach { dataProvider -> dataProvider.postOptimize(initializer, this) }
+            dataProviders.forEach { dataProvider -> dataProvider.postOptimize(this) }
             initializer.copyUserDataTo(this) // 直接一次性替换规则数据
             initializer.clear() // 清空以避免内存泄露
             modificationTracker.incModificationCount() // 显式增加修改计数

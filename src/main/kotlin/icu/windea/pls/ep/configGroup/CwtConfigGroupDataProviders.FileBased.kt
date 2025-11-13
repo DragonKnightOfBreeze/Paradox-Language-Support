@@ -97,12 +97,12 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 allInternalFiles.forEach f@{ (filePath, file) ->
                     currentCoroutineContext.ensureActive()
                     CwtConfigResolverUtil.setLocation(filePath, configGroup)
-                    resolveAndProcessInternalFile(initializer, configGroup, file, filePath)
+                    resolveAndProcessInternalFile(configGroup, file, filePath)
                 }
                 allFiles.forEach f@{ (filePath, file) ->
                     currentCoroutineContext.ensureActive()
                     CwtConfigResolverUtil.setLocation(filePath, configGroup)
-                    resolveAndProcessFile(initializer, configGroup, file, filePath)
+                    resolveAndProcessFile(configGroup, file, filePath)
                 }
             } finally {
                 CwtConfigResolverUtil.resetLocation()
@@ -110,33 +110,34 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    private fun resolveAndProcessInternalFile(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup, file: VirtualFile, filePath: String) {
+    private fun resolveAndProcessInternalFile(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String) {
         val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }
             .onFailure { logger.warn(it) }
             .getOrNull()
         if (psiFile !is CwtFile) return
         val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
-        processInternalFile(initializer, fileConfig, filePath)
+        processInternalFile(fileConfig, filePath)
     }
 
-    private fun resolveAndProcessFile(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup, file: VirtualFile, filePath: String) {
+    private fun resolveAndProcessFile(configGroup: CwtConfigGroup, file: VirtualFile, filePath: String) {
         val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }
             .onFailure { logger.warn(it) }
             .getOrNull()
         if (psiFile !is CwtFile) return
         val fileConfig = CwtFileConfig.resolve(psiFile, configGroup, filePath)
-        processFile(initializer, fileConfig)
+        processFile(fileConfig)
     }
 
-    private fun processInternalFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig, filePath: String) {
+    private fun processInternalFile(fileConfig: CwtFileConfig, filePath: String) {
         when (filePath) {
-            "internal/schema.cwt" -> CwtSchemaConfig.resolveInFile(initializer, fileConfig)
-            "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(initializer, fileConfig)
-            "internal/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(initializer, fileConfig)
+            "internal/schema.cwt" -> CwtSchemaConfig.resolveInFile(fileConfig)
+            "internal/folding_settings.cwt" -> CwtFoldingSettingsConfig.resolveInFile(fileConfig)
+            "internal/postfix_template_settings.cwt" -> CwtPostfixTemplateSettingsConfig.resolveInFile(fileConfig)
         }
     }
 
-    private fun processFile(initializer: CwtConfigGroupInitializer, fileConfig: CwtFileConfig) {
+    private fun processFile(fileConfig: CwtFileConfig) {
+        val initializer = fileConfig.configGroup.initializer
         for (property in fileConfig.properties) {
             val key = property.key
             when {
@@ -358,7 +359,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    override suspend fun postOptimize(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+    override suspend fun postOptimize(configGroup: CwtConfigGroup) {
         // 2.0.7 nothing now (since it's not very necessary)
     }
 }
