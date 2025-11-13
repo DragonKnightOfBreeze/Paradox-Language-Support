@@ -2,7 +2,6 @@
 
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.util.elementType
 import icu.windea.pls.core.toBooleanYesNo
 
 // region Predicates
@@ -24,7 +23,7 @@ fun CwtValue.isOptionValue(): Boolean {
 
 fun CwtValue.isOptionBlockValue(): Boolean {
     val parent = parent
-    return parent.elementType == CwtElementTypes.OPTION_COMMENT_TOKEN || (parent is CwtBlock && parent.parent is CwtOption)
+    return parent is CwtOptionComment || (parent is CwtBlock && parent.parent is CwtOption)
 }
 
 fun CwtExpressionElement.isExpression(): Boolean {

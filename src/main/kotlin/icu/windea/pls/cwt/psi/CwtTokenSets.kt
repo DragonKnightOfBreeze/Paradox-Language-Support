@@ -15,7 +15,7 @@ object CwtTokenSets {
     @JvmField
     val IDENTIFIER_TOKENS = TokenSet.create(OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN)
     @JvmField
-    val COMMENT_TOKENS = TokenSet.create(COMMENT, OPTION_COMMENT_TOKEN, DOC_COMMENT_TOKEN)
+    val COMMENT_TOKENS = TokenSet.create(COMMENT, DOC_COMMENT_TOKEN)
     @JvmField
     val LITERAL_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
 
@@ -26,4 +26,7 @@ object CwtTokenSets {
 
     @JvmField
     val MEMBER_CONTEXT = TokenSet.create(PROPERTY, ROOT_BLOCK, BLOCK)
+
+    @JvmField
+    val TOKENS_TO_MERGE = TokenSet.create(TokenType.WHITE_SPACE)
 }

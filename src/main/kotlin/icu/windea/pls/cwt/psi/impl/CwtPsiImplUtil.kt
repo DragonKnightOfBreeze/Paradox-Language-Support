@@ -263,21 +263,6 @@ object CwtPsiImplUtil {
         return OPTION_COMMENT
     }
 
-    @JvmStatic
-    fun getTokenElement(element: CwtOptionComment): PsiElement? {
-        return element.findChild { it.elementType == OPTION_COMMENT_TOKEN }
-    }
-
-    @JvmStatic
-    fun getOption(element: CwtOptionComment): CwtOption? {
-        return element.tokenElement?.findChild<_>()
-    }
-
-    @JvmStatic
-    fun getOptionValue(element: CwtOptionComment): CwtValue? {
-        return element.tokenElement?.findChild<_>()
-    }
-
     // endregion
 
     @JvmStatic

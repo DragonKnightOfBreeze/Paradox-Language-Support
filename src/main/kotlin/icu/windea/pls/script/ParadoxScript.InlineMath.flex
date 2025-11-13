@@ -10,7 +10,7 @@ import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
-// Lexer for inline math fragments used in Paradox Script (e.g. @[ ... ]).
+// Lexer for inline math of Paradox Script.
 // Notes:
 // - Tracks a simple state for the absolute-value operator using a left/right '|' toggle.
 

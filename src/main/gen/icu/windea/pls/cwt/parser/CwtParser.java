@@ -33,14 +33,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   static boolean parse_root_(IElementType t, PsiBuilder b, int l) {
-    boolean r;
-    if (t == OPTION_COMMENT_ROOT) {
-      r = option_comment_root(b, l + 1);
-    }
-    else {
-      r = root(b, l + 1);
-    }
-    return r;
+    return root(b, l + 1);
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
@@ -169,13 +162,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // OPTION_COMMENT_TOKEN
+  // option_comment_root
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
-    if (!nextTokenIs(b, OPTION_COMMENT_TOKEN)) return false;
+    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, OPTION_COMMENT_TOKEN);
+    r = option_comment_root(b, l + 1);
     exit_section_(b, m, OPTION_COMMENT, r);
     return r;
   }
@@ -192,7 +185,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // OPTION_COMMENT_START option_comment_item ? comment ?
-  public static boolean option_comment_root(PsiBuilder b, int l) {
+  static boolean option_comment_root(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_root")) return false;
     if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r;
@@ -200,7 +193,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, OPTION_COMMENT_START);
     r = r && option_comment_root_1(b, l + 1);
     r = r && option_comment_root_2(b, l + 1);
-    exit_section_(b, m, OPTION_COMMENT_ROOT, r);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -356,7 +349,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
-    DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_TOKEN, OPTION_KEY_TOKEN,
+    DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_START, OPTION_KEY_TOKEN,
     PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
   static final Parser property_auto_recover_ = block_item_auto_recover_;
 }

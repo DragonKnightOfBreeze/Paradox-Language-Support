@@ -17,5 +17,5 @@ CwtFile: _error_unclosed_brace.test.cwt(0,18)
           PsiWhiteSpace(' ')(16,17)
           CwtString: b(17,18)
             PsiElement(STRING_TOKEN)('b')(17,18)
-        PsiErrorElement:<value>, COMMENT, DOC_COMMENT_TOKEN, OPTION_COMMENT_TOKEN, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN or RIGHT_BRACE expected(18,18)
+        PsiErrorElement:<value>, COMMENT, DOC_COMMENT_TOKEN, OPTION_COMMENT_START, OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN or RIGHT_BRACE expected(18,18)
           <empty list>

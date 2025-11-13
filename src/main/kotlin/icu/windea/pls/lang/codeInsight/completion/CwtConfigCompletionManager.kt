@@ -195,7 +195,7 @@ object CwtConfigCompletionManager {
     private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {
         if (element is CwtOptionKey || (element is CwtString && (element.isOptionValue() || element.isOptionBlockValue()))) {
             val parentElementType = element.parent.elementType ?: return null
-            if (parentElementType != CwtElementTypes.OPTION_COMMENT_TOKEN && parentElementType != CwtElementTypes.OPTION) return null
+            if (parentElementType != CwtElementTypes.OPTION_COMMENT && parentElementType != CwtElementTypes.OPTION) return null
             val memberElement = element.parentOfType<CwtOptionComment>()?.siblings(withSelf = false)?.findIsInstance<CwtMember>() ?: return null
             return when (memberElement) {
                 is CwtProperty -> memberElement.propertyKey

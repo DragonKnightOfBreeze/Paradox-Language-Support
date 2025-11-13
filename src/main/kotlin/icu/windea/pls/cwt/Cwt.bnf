@@ -36,9 +36,9 @@ doc_comment ::= DOC_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiDocCommentBase"]
   methods=[getTokenType getOwner]
 }
-option_comment ::= OPTION_COMMENT_TOKEN { // lazy-parsing OPTION_COMMENT_TOKEN
+option_comment ::= option_comment_root {
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType getTokenElement getOption getOptionValue]
+  methods=[getTokenType option="option" optionValue="value"]
 }
 private comment ::= COMMENT
 
@@ -112,12 +112,10 @@ private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"
 }
 
-// ------
+// option comment rules
+// 2.0.7 DO NOT use lazy-parsing due to performance reasons
 
-// option comment rules (lazy-parsing, from OPTION_COMMENT_TOKEN)
-
-option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
-  extraRoot=true
+private option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
   methods=[option="option" option_value="value"]
 }
 private option_comment_item ::= option | option_value

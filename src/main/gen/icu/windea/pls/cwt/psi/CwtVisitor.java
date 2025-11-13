@@ -43,10 +43,6 @@ public class CwtVisitor extends PsiElementVisitor {
     visitPsiComment(o);
   }
 
-  public void visitOptionCommentRoot(@NotNull CwtOptionCommentRoot o) {
-    visitPsiElement(o);
-  }
-
   public void visitOptionKey(@NotNull CwtOptionKey o) {
     visitPsiElement(o);
   }

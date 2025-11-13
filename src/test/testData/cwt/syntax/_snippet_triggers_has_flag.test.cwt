@@ -1,0 +1,20 @@
+### Checks if the empire has a specific flag
+## scopes = { country }
+## severity = warning
+alias[trigger:has_country_flag] = value[country_flag]
+### Checks if the planet has a specific flag
+## scopes = { planet }
+## severity = warning
+alias[trigger:has_planet_flag] = value[planet_flag]
+### Checks if the pop_group faction has a specific flag
+## scopes = { pop_group pop_faction }
+## severity = warning
+alias[trigger:has_pop_faction_flag] = value[pop_faction_flag]
+### Checks if the solar system has a specific flag
+## scopes = { galactic_object dlc_recommendation }
+## severity = warning
+alias[trigger:has_star_flag] = value[star_flag]
+### Checks if the solar system has a specific flag
+## scopes = { galactic_object dlc_recommendation }
+## severity = warning
+alias[trigger:has_star_flag] = <precursors>

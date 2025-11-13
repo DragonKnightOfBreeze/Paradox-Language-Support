@@ -1,0 +1,14 @@
+alias[name:name] = localisation
+alias[name:name] = scalar
+alias[name:name] = {
+    key = localisation
+    ## cardinality = 0..inf
+    variable_string = scalar
+}
+
+### Applies the value of the static modifier X right hand side factor
+alias[modifier:<static_modifier>] = float
+### Applies the value of a scripted modifier from common/scripted_modifiers
+alias[modifier:<scripted_modifier>] = float
+### Applies the value of a modifier
+alias[modifier:<modifier>] = float

@@ -11,7 +11,7 @@ import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
-// Lexer for localisation rich text (color codes, parameters, icons, commands, concepts, text formats, text icons).
+// Lexer for localisation rich text of Paradox Localisation.
 // Notes:
 // - Uses a small stack to remember the state to return to after nested constructs (e.g., §...§!, $, [, £, #, @).
 // - Feature gates are controlled by ParadoxSyntaxConstraint.*.supports(this).

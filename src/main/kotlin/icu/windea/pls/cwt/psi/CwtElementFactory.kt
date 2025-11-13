@@ -24,7 +24,7 @@ object CwtElementFactory {
     @JvmStatic
     fun createOption(project: Project, text: String): CwtOption {
         return createRootBlock(project, "## $text")
-            .findChild<CwtOptionComment>()?.tokenElement
+            .findChild<CwtOptionComment>()
             ?.findChild<_>() ?: throw IncorrectOperationException()
     }
 

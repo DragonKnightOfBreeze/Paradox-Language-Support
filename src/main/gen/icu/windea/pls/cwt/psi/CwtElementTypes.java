@@ -15,7 +15,6 @@ public interface CwtElementTypes {
   IElementType INT = CwtElementTypeFactory.getElementType("INT");
   IElementType OPTION = CwtElementTypeFactory.getElementType("OPTION");
   IElementType OPTION_COMMENT = CwtElementTypeFactory.getElementType("OPTION_COMMENT");
-  IElementType OPTION_COMMENT_ROOT = CwtElementTypeFactory.getElementType("OPTION_COMMENT_ROOT");
   IElementType OPTION_KEY = CwtElementTypeFactory.getElementType("OPTION_KEY");
   IElementType PROPERTY = CwtElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = CwtElementTypeFactory.getElementType("PROPERTY_KEY");
@@ -32,7 +31,6 @@ public interface CwtElementTypes {
   IElementType LEFT_BRACE = CwtElementTypeFactory.getTokenType("LEFT_BRACE");
   IElementType NOT_EQUAL_SIGN = CwtElementTypeFactory.getTokenType("NOT_EQUAL_SIGN");
   IElementType OPTION_COMMENT_START = CwtElementTypeFactory.getTokenType("OPTION_COMMENT_START");
-  IElementType OPTION_COMMENT_TOKEN = CwtElementTypeFactory.getTokenType("OPTION_COMMENT_TOKEN");
   IElementType OPTION_KEY_TOKEN = CwtElementTypeFactory.getTokenType("OPTION_KEY_TOKEN");
   IElementType PROPERTY_KEY_TOKEN = CwtElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType RIGHT_BRACE = CwtElementTypeFactory.getTokenType("RIGHT_BRACE");
@@ -61,9 +59,6 @@ public interface CwtElementTypes {
       }
       else if (type == OPTION_COMMENT) {
         return new CwtOptionCommentImpl(node);
-      }
-      else if (type == OPTION_COMMENT_ROOT) {
-        return new CwtOptionCommentRootImpl(node);
       }
       else if (type == OPTION_KEY) {
         return new CwtOptionKeyImpl(node);

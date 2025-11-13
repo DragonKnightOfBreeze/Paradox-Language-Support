@@ -5,10 +5,7 @@ import com.intellij.psi.tree.IElementType
 object CwtElementTypeFactory {
     @JvmStatic
     fun getTokenType(debugName: String): IElementType {
-        return when (debugName) {
-            "OPTION_COMMENT_TOKEN" -> CwtOptionCommentElementType(debugName)
-            else -> CwtTokenType(debugName)
-        }
+        return CwtTokenType(debugName)
     }
 
     @JvmStatic
