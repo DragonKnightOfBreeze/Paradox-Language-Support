@@ -9,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
@@ -40,28 +41,29 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val icon = PlsIcons.Gutter.RelatedLocalisations
         val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()
-        val keys = mutableSetOf<String>()
-        val targets = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
+        val keys0 = mutableSetOf<String>()
+        val targets0 = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
             if (resolveResult.elements.isNotEmpty()) {
-                targets.addAll(resolveResult.elements)
+                targets0.addAll(resolveResult.elements)
             }
             if (resolveResult.message != null) {
                 tooltipLines.add("$prefix $key = ${resolveResult.message}")
-            } else if (resolveResult.elements.isNotEmpty() && keys.add(key)) {
+            } else if (resolveResult.elements.isNotEmpty() && keys0.add(key)) {
                 tooltipLines.add("$prefix $key = ${resolveResult.name}")
             }
         }
-        if (keys.isEmpty()) return
-        if (targets.isEmpty()) return
+        if (keys0.isEmpty()) return
+        if (targets0.isEmpty()) return
+        val targets = targets0.optimized()
         ProgressManager.checkCanceled()
-        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
+        val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets0) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))
-            .setTargets { targets }
+            .setTargets { targets0 }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)

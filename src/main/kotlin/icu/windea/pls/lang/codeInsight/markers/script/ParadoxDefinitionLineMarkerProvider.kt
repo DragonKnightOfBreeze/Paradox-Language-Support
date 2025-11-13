@@ -9,6 +9,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.actions.PlsActions
@@ -45,7 +46,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()
-            ParadoxDefinitionSearch.search(name, type, selector).findAll()
+            ParadoxDefinitionSearch.search(name, type, selector).findAll().optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)

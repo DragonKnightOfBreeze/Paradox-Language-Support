@@ -9,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
@@ -37,7 +38,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedIt
         val type = element.type
         if (type != ParadoxLocalisationType.Normal) return
         // 目标：相关定义
-        val targets = ParadoxLocalisationManager.getRelatedDefinitions(element)
+        val targets = ParadoxLocalisationManager.getRelatedDefinitions(element).optimized()
         if (targets.isEmpty()) return
         ProgressManager.checkCanceled()
         val prefix = PlsStringConstants.relatedDefinitionPrefix

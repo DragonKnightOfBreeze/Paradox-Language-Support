@@ -10,6 +10,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
+import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
@@ -48,7 +49,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
             ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { targets.addAll(it) }
             // 查找全局的
             ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { targets.addAll(it) }
-            targets
+            targets.optimized()
         }
         ProgressManager.checkCanceled()
         val icon = PlsIcons.Gutter.ScriptedVariable
@@ -63,9 +64,9 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
-        	lineMarkerInfo,
-        	PlsBundle.message("script.gutterIcon.scriptedVariable.action"),
-        	PlsActions.GotoScriptedVariables
+            lineMarkerInfo,
+            PlsBundle.message("script.gutterIcon.scriptedVariable.action"),
+            PlsActions.GotoScriptedVariables
         )
     }
 }

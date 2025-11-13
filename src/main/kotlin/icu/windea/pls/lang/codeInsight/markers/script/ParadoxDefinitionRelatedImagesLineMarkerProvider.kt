@@ -9,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
@@ -37,22 +38,23 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
         val icon = PlsIcons.Gutter.RelatedImages
         val prefix = PlsStringConstants.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()
-        val keys = mutableSetOf<String>()
-        val targets = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
+        val keys0 = mutableSetOf<String>()
+        val targets0 = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue
             if (resolveResult.elements.isNotEmpty()) {
-                targets.addAll(resolveResult.elements)
+                targets0.addAll(resolveResult.elements)
             }
             if (resolveResult.message != null) {
                 tooltipLines.add("$prefix $key = ${resolveResult.message}")
-            } else if (resolveResult.elements.isNotEmpty() && keys.add(key)) {
+            } else if (resolveResult.elements.isNotEmpty() && keys0.add(key)) {
                 tooltipLines.add("$prefix $key = ${resolveResult.nameOrFilePath}")
             }
         }
-        if (keys.isEmpty()) return
-        if (targets.isEmpty()) return
+        if (keys0.isEmpty()) return
+        if (targets0.isEmpty()) return
+        val targets = targets0.optimized()
         ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
