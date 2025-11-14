@@ -15,7 +15,6 @@ interface ParadoxDefinitionDataProvider {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider>("icu.windea.pls.definitionDataProvider")
 
         fun <T : ParadoxDefinitionData> get(element: ParadoxScriptDefinitionElement, type: Class<T>, relax: Boolean = false): T? {
-            // NOTE 不能在这里判断是否存在 `definitionInfo`，否则会出现 SOE
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!ep.supports(element, type, relax)) return@f null
                 ep.get(element, type, relax)

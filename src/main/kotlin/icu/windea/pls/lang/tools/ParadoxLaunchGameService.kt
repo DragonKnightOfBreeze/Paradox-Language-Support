@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 object ParadoxLaunchGameService {
     fun launchGameInSteam(rootInfo: ParadoxRootInfo) {
+        // MCP，基于 Steam 超链接协议
         val gameType = rootInfo.gameType
         val steamId = gameType.steamId
         val url = PlsUrlService.getSteamGameLaunchUrl(steamId)
@@ -31,7 +32,7 @@ object ParadoxLaunchGameService {
     }
 
     fun exitIde() {
-        // NOTE 2.0.7 可能需要添加一些额外的处理逻辑
+        // NOTE 2.0.7 后续可能需要添加一些额外的处理逻辑
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             withContext(Dispatchers.EDT) {
