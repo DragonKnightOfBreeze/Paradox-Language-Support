@@ -492,6 +492,14 @@
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>
 
+    <group id="Pls.LaunchGame">
+      <action id="Pls.LaunchGame.InSteam" class="icu.windea.pls.lang.actions.tools.LaunchGameActions$InSteam" icon="AllIcons.Actions.Execute">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt F10"/>
+        <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenModSettings" anchor="after"/>
+      </action>
+      <action id="Pls.LaunchGame.InSteam.WithExit" class="icu.windea.pls.lang.actions.tools.LaunchGameActions$InSteamWithExit" icon="AllIcons.Actions.Execute"/>
+    </group>
+
     <group id="Pls.OpenPath">
       <action id="Pls.OpenPath.Steam" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$Steam"/>
       <action id="Pls.OpenPath.SteamGame" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$SteamGame"/>
@@ -502,11 +510,11 @@
     </group>
     <group id="Pls.OpenUrl">
       <action id="Pls.OpenUrl.GameStorePageInSteam" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameStorePageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.GameStorePageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameStorePageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
       <action id="Pls.OpenUrl.GameWorkshopPageInSteam" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameWorkshopPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.GameWorkshopPageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameWorkshopPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
       <action id="Pls.OpenUrl.ModPageInSteam" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$ModPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
-      <action id="Pls.OpenUrl.ModPageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$ModPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameStorePage" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.ModPage" class="icu.windea.pls.lang.actions.tools.OpenPathOrUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
     </group>
     <group id="Pls.CopyPath">
       <action id="Pls.CopyPath.Steam" class="icu.windea.pls.lang.actions.tools.CopyPathOrUrlActions$Steam"/>
@@ -534,6 +542,11 @@
       <reference ref="Pls.OpenGameSettings"/>
       <reference ref="Pls.OpenModSettings"/>
       <reference ref="Pls.SyncConfigGroupFromRemote"/>
+
+      <reference ref="Pls.LaunchGame.InSteam"/> <!--put the most commonly used launch strategy outside-->
+      <group id="Pls.Tools.LaunchGame" popup="true">
+        <reference ref="Pls.LaunchGame"/>
+      </group>
 
       <group id="Pls.Tools.OpenPathOrUrl" popup="true">
         <reference ref="Pls.OpenPath"/>

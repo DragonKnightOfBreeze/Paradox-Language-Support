@@ -32,7 +32,7 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
         consumer: Processor<in PsiElement>
     ) {
         // 检查是否启用
-        if (!PlsFacade.getSettings().navigation.seForTextBasedTarget) return
+        if (!PlsFacade.getSettings().navigation.seForTextBasedTargets) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsStates.resolveForMergedIndex.get() == true) return

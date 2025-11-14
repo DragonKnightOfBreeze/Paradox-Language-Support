@@ -118,7 +118,8 @@ object CwtConfigRepositoryManager {
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = PlsBundle.message("config.repo.sync.createDirectoryFailed")
-            PlsFacade.createNotification(NotificationType.ERROR, PlsBundle.message("config.repo.sync.result.title"), warningMessage).notify(project)
+            val notification = PlsFacade.createNotification(NotificationType.ERROR, PlsBundle.message("config.repo.sync.result.title"), warningMessage)
+            notification.notify(project)
             return
         }
 

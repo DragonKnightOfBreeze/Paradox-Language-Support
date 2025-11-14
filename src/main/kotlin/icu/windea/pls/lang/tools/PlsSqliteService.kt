@@ -1,37 +1,13 @@
 package icu.windea.pls.lang.tools
 
+import icu.windea.pls.lang.tools.impl.PlsSqliteServiceImpl
 import org.ktorm.database.Database
 import java.nio.file.Path
-import java.sql.DriverManager
-import java.sql.Statement
-import java.util.*
 
-object PlsSqliteService {
-    fun executeSql(dbPath: Path, sql: String) {
-        val conn = DriverManager.getConnection("jdbc:sqlite:${dbPath.toAbsolutePath()}")
-        conn.autoCommit = false
-        conn.createStatement().use { executeSql(it, sql) }
-        conn.commit()
-        conn.close()
-    }
+interface PlsSqliteService {
+    fun executeSql(dbPath: Path, sql: String)
 
-    fun executeSql(db: Database, sql: String) {
-        db.useConnection { conn ->
-            conn.autoCommit = false
-            conn.createStatement().use { executeSql(it, sql) }
-            conn.commit()
-            conn.autoCommit = true
-        }
-    }
+    fun executeSql(db: Database, sql: String)
 
-    @Suppress("SqlSourceToSinkFlow")
-    private fun executeSql(statement: Statement, sql: String) {
-        // 简单按 ';' 分割执行；自行管理事务，忽略脚本中的 BEGIN/COMMIT 语句
-        val stmts = sql.split(';').map { it.trim() }.filter { it.isNotEmpty() }
-        for (stmt in stmts) {
-            val upper = stmt.uppercase(Locale.ROOT)
-            if (upper == "BEGIN" || upper == "BEGIN TRANSACTION" || upper == "COMMIT") continue
-            statement.execute(stmt)
-        }
-    }
+    companion object : PlsSqliteService by PlsSqliteServiceImpl()
 }

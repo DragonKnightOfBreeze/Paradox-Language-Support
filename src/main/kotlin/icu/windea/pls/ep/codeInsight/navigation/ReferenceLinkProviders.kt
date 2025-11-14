@@ -130,7 +130,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
     }
 
     override fun getUnresolvedMessage(link: String): String {
-        return PlsBundle.message("path.reference.unresolved.cwt", link)
+        return PlsBundle.message("path.reference.unresolved.config", link)
     }
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {

@@ -56,14 +56,14 @@ class PlsSettingsState : BaseState() {
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
-     * @property renderRelatedLocalisationsForScriptedVariables 是否需要为脚本变量渲染相关本地化文本到文档中（同名的本地化。
+     * @property renderRelatedLocalisationsForScriptedVariables 是否需要为脚本变量渲染相关本地化文本到文档中（同名的本地化）。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
      * @property renderRelatedImagesForDefinitions 是否需要为定义渲染相关图片到文档中。
      * @property renderNameDescForModifiers 是否需要为修正渲染相关本地化文本到文档中。
      * @property renderIconForModifiers 是否需要为修正渲染图标到文档中。
      * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
-     * @property renderRelatedLocalisationsForComplexEnumValues 是否需要为复杂枚举值渲染相关本地化文本到文档中（使用同名的本地化）。
-     * @property renderRelatedLocalisationsForDynamicValues 是否需要为动态值渲染相关本地化文本到文档中（使用同名的本地化）。
+     * @property renderRelatedLocalisationsForComplexEnumValues 是否需要为复杂枚举值渲染相关本地化文本到文档中（同名的本地化）。
+     * @property renderRelatedLocalisationsForDynamicValues 是否需要为动态值渲染相关本地化文本到文档中（同名的本地化）。
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
@@ -245,24 +245,23 @@ class PlsSettingsState : BaseState() {
      * @property seForDefinitions 是否可在随处搜索中搜索定义（作为符号）。
      * @property seForLocalisations 是否可在随处搜索中搜索本地化（作为符号）。
      * @property seForSyncedLocalisations 是否可在随处搜索中搜索同步本地化（作为符号）。
-     * @property seForCwtTypeConfigs 是否可在随处搜索中搜索 CWT 类型规则（作为符号）。
-     * @property seForCwtComplexEnumConfigs 是否可在随处搜索中搜索 CWT 复杂枚举规则（作为符号）。
-     * @property seForCwtTriggerConfigs 是否可在随处搜索中搜索 CWT 触发器规则（作为符号）。
-     * @property seForCwtEffectConfigs 是否可在随处搜索中搜索 CWT 效果规则（作为符号）。
-     * @property seForTextBasedTarget 是否可在随处搜索中基于本地化片段搜索各种目标（作为符号）。
+     * @property seForTypeConfigs 是否可在随处搜索中搜索类型规则（作为符号）。
+     * @property seForComplexEnumConfigs 是否可在随处搜索中搜索复杂枚举规则（作为符号）。
+     * @property seForTriggerConfigs 是否可在随处搜索中搜索触发器规则（作为符号）。
+     * @property seForEffectConfigs 是否可在随处搜索中搜索效果规则（作为符号）。
+     * @property seForTextBasedTargets 是否可在随处搜索中基于本地化片段搜索各种目标（作为符号）。
      */
     class NavigationState : BaseState() {
         var seForScriptedVariables by property(true)
         var seForDefinitions by property(true)
         var seForLocalisations by property(true)
         var seForSyncedLocalisations by property(true)
+        var seForTextBasedTargets by property(true)
 
-        var seForCwtTypeConfigs by property(false)
-        var seForCwtComplexEnumConfigs by property(false)
-        var seForCwtTriggerConfigs by property(true)
-        var seForCwtEffectConfigs by property(true)
-
-        var seForTextBasedTarget by property(true)
+        var seForTypeConfigs by property(false)
+        var seForComplexEnumConfigs by property(false)
+        var seForTriggerConfigs by property(true)
+        var seForEffectConfigs by property(true)
     }
 
     /**
@@ -293,6 +292,7 @@ class PlsSettingsState : BaseState() {
 
     /**
      * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
+     * @property showLaunchGameActionInEditorContextToolbar 是否在编辑器上下文工具栏中显示启动游戏的动作。
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
      * @property renderLocalisationColorfulText 是否用对应的颜色渲染本地化彩色文本。
@@ -301,6 +301,7 @@ class PlsSettingsState : BaseState() {
     @Tag("others")
     class OthersState : BaseState() {
         var showEditorContextToolbar by property(true)
+        var showLaunchGameActionInEditorContextToolbar by property(true)
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
         var renderLocalisationColorfulText by property(true)

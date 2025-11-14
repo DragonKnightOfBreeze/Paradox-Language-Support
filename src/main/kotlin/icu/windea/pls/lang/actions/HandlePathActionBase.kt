@@ -2,8 +2,11 @@ package icu.windea.pls.lang.actions
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import java.nio.file.Path
 import javax.swing.Icon
 
@@ -31,6 +34,13 @@ abstract class HandlePathActionBase(
     protected open fun isEnabled(e: AnActionEvent): Boolean = true
 
     protected abstract fun getTargetPath(e: AnActionEvent): Path?
+
+    protected fun getGameType(e: AnActionEvent): ParadoxGameType? {
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
+        val gameType = selectGameType(file) ?: return null
+        if (gameType == ParadoxGameType.Core) return null
+        return gameType
+    }
 
     protected fun openPath(e: AnActionEvent) {
         val targetPath = getTargetPath(e) ?: return

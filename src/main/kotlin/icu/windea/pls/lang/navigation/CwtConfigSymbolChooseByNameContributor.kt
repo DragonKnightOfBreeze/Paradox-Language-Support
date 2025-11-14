@@ -31,10 +31,10 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
 
     private fun getTypes(): Set<String> = buildSet {
         val settings = PlsFacade.getSettings().navigation
-        if (settings.seForCwtTypeConfigs) add(CwtConfigTypes.Type.id)
-        if (settings.seForCwtComplexEnumConfigs) add(CwtConfigTypes.ComplexEnum.id)
-        if (settings.seForCwtTriggerConfigs) add(CwtConfigTypes.Trigger.id)
-        if (settings.seForCwtEffectConfigs) add(CwtConfigTypes.Effect.id)
+        if (settings.seForTypeConfigs) add(CwtConfigTypes.Type.id)
+        if (settings.seForComplexEnumConfigs) add(CwtConfigTypes.ComplexEnum.id)
+        if (settings.seForTriggerConfigs) add(CwtConfigTypes.Trigger.id)
+        if (settings.seForEffectConfigs) add(CwtConfigTypes.Effect.id)
     }
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {

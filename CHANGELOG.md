@@ -9,7 +9,8 @@
 ## 2.0.7-dev
 
 - [X] 优化：在 Stellaris 中，如果一个事件继承自另一个事件，那么此事件也会继承部分子类型 / OP: In Stellaris, if an event inherits from another event, then this event will also inherit specific subtypes
-- [X] 优化：优化对游戏和模组的入口目录的识别，并修复相关BUG / OP: Optimize detection for game and mod entry directories, with related bug fixes 
+- [X] 优化：优化对游戏和模组的入口目录的识别，并修复相关BUG / OP: Optimize detection for game and mod entry directories, with related bug fixes
+- [X] 新功能：支持通过工具菜单在 Steam 中启动游戏 / NEW: Support to launch game in Steam via tool menu
 - [X] [IN_PROGRESS] 优化：继续优化索引与解析时的性能和内存占用 / OP: Continue to optimize performance and memory usage during indexing and resolving
 - [X] [IN_PROGRESS] 其他优化与BUG修复 / Other optimizations and bug fixes
 

@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
 
-@Service
 class PlsPathServiceImpl : PlsPathService {
     private val steamPathCache = ConcurrentHashMap<String, Path>()
     private val emptyPath = Path.of("")

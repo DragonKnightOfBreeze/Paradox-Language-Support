@@ -109,8 +109,8 @@ abstract class ConvertImageFormatAction(
                     files.size -> PlsBundle.message("convertImageFormat.error.1", targetFormatName)
                     else -> PlsBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                PlsFacade.createNotification(NotificationType.WARNING, content)
-                    .notify(targetDirectory.project)
+                val notification = PlsFacade.createNotification(NotificationType.WARNING, content)
+                notification.notify(targetDirectory.project)
             }
         } catch (e: Exception) {
             Messages.showErrorDialog(project, e.message, PlsBundle.message("error.title"))

@@ -266,7 +266,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
                         .bindSelected(completionSettings::completeByExtendedConfigs)
-                    PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tip")
+                    PlsBundle.message("settings.completion.completeByExtendedConfigs.tip")
                 }
             }
             // folding
@@ -497,10 +497,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             collapsibleGroup(PlsBundle.message("settings.navigation")) {
                 val navigationSettings = settings.navigation
 
-                // seForSymbols
+                // seForTargets
                 row {
-                    label(PlsBundle.message("settings.navigation.seForSymbols"))
-                    contextHelp(PlsBundle.message("settings.navigation.seForSymbols.tip"))
+                    label(PlsBundle.message("settings.navigation.seForTargets"))
+                    contextHelp(PlsBundle.message("settings.navigation.seForTargets.tip"))
                 }
                 indent {
                     row {
@@ -516,21 +516,27 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 }
                 indent {
                     row {
-                        checkBox(PlsBundle.message("settings.navigation.seForCwtTypeConfigs"))
-                            .bindSelected(navigationSettings::seForCwtTypeConfigs)
-                        checkBox(PlsBundle.message("settings.navigation.seForCwtComplexEnumConfigs"))
-                            .bindSelected(navigationSettings::seForCwtComplexEnumConfigs)
-                        checkBox(PlsBundle.message("settings.navigation.seForCwtTriggerConfigs"))
-                            .bindSelected(navigationSettings::seForCwtTriggerConfigs)
-                        checkBox(PlsBundle.message("settings.navigation.seForCwtEffectConfigs"))
-                            .bindSelected(navigationSettings::seForCwtEffectConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForTextBasedTargets"))
+                            .bindSelected(navigationSettings::seForTextBasedTargets)
+                        contextHelp(PlsBundle.message("settings.navigation.seForTextBasedTargets.tip"))
                     }
+                }
+
+                // seForConfigs
+                row {
+                    label(PlsBundle.message("settings.navigation.seForConfigs"))
+                    contextHelp(PlsBundle.message("settings.navigation.seForConfigs.tip"))
                 }
                 indent {
                     row {
-                        checkBox(PlsBundle.message("settings.navigation.seForTextBasedTarget"))
-                            .bindSelected(navigationSettings::seForTextBasedTarget)
-                        contextHelp(PlsBundle.message("settings.navigation.seForTextBasedTarget.tip"))
+                        checkBox(PlsBundle.message("settings.navigation.seForTypeConfigs"))
+                            .bindSelected(navigationSettings::seForTypeConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForComplexEnumConfigs"))
+                            .bindSelected(navigationSettings::seForComplexEnumConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForTriggerConfigs"))
+                            .bindSelected(navigationSettings::seForTriggerConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForEffectConfigs"))
+                            .bindSelected(navigationSettings::seForEffectConfigs)
                     }
                 }
             }
@@ -612,6 +618,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
                         .bindSelected(otherSettings::showEditorContextToolbar)
+                }
+                // showLaunchGameActionInEditorContextToolbar
+                row {
+                    checkBox(PlsBundle.message("settings.others.showLaunchGameActionInEditorContextToolbar"))
+                        .bindSelected(otherSettings::showLaunchGameActionInEditorContextToolbar)
                 }
                 // showLocalisationFloatingToolbar
                 row {
