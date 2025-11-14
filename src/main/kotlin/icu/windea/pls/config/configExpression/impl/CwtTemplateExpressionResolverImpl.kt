@@ -72,18 +72,19 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
         // 只有一个片段时（纯常量或纯动态）不视为模板
         if (snippets.size <= 1) return emptyExpression
         // 所有片段都是常量时不视为模板
-        if(snippets.all { it.type == CwtDataTypes.Constant }) return emptyExpression
+        if (snippets.all { it.type == CwtDataTypes.Constant }) return emptyExpression
         return CwtTemplateExpressionImpl(expressionString, snippets)
     }
 
     private fun addToSnippets(expressionString: String, snippets: MutableList<CwtDataExpression>, isConstant: Boolean) {
         if (expressionString.isEmpty()) return
         if (isConstant) {
-            // #129 如果常量片段包含特殊符号，应将之后的部分拆分出来，避免误判
+            // #129 #232 如果常量片段包含特殊符号，应将之前和之后的部分拆分出来，避免误判（之后的部分还要继续判断）
             val i = expressionString.indexOfFirst { !it.isIdentifierChar() }
             if (i != -1) {
-                addToSnippets(expressionString.substring(0, i + 1), snippets, false)
-                addToSnippets(expressionString.substring(i + 1), snippets, false)
+                addToSnippets(expressionString.substring(0, i), snippets, false)
+                addToSnippets(expressionString.substring(i, i + 1), snippets, false)
+                addToSnippets(expressionString.substring(i + 1), snippets, true)
                 return
             }
         }
