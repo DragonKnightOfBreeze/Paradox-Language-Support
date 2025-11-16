@@ -28,10 +28,7 @@ import kotlinx.coroutines.launch
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
  */
 @Service(Service.Level.APP, Service.Level.PROJECT)
-@Suppress("UnstableApiUsage")
-class CwtConfigGroupService(
-    private val project: Project = getDefaultProject()
-) : Disposable {
+class CwtConfigGroupService(private val project: Project = getDefaultProject()) : Disposable {
     private var cache = createConfigGroups()
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {

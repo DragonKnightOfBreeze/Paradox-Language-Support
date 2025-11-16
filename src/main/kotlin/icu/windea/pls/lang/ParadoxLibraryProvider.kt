@@ -11,10 +11,13 @@ import icu.windea.pls.core.util.singleton
 
 class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {
-        return project.paradoxLibrary.takeIf { it.roots.isNotEmpty() }.singleton.setOrEmpty()
+        val library = ParadoxLibraryService.getInstance(project).library
+        if (library.roots.isEmpty()) return emptySet()
+        return library.singleton.setOrEmpty()
     }
 
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {
-        return project.paradoxLibrary.roots
+        val library = ParadoxLibraryService.getInstance(project).library
+        return library.roots
     }
 }

@@ -10,8 +10,8 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroupLibraryService
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.images.ImageManager
@@ -109,7 +109,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun refreshRootsForLibrariesAsync(project: Project) {
         if (project.isDefault) return
         if (project.isDisposed) return
-        project.configGroupLibrary.refreshRootsAsync()
-        project.paradoxLibrary.refreshRootsAsync()
+        CwtConfigGroupLibraryService.getInstance(project).refreshRootsAsync()
+        ParadoxLibraryService.getInstance(project).refreshRootsAsync()
     }
 }

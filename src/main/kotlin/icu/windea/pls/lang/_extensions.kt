@@ -1,29 +1,25 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "NOTHING_TO_INLINE")
 
 package icu.windea.pls.lang
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationParameterPsiReference
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxLocaclisationParameterManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -67,43 +63,6 @@ fun String.isInlineScriptUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-val Project.paradoxLibrary: ParadoxLibrary
-    get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
-
-// 注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
-// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
-
-val VirtualFile.rootInfo: ParadoxRootInfo?
-    get() = ParadoxCoreManager.getRootInfo(this)
-
-val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreManager.getFileInfo(this)
-
-val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreManager.getFileInfo(this)
-
-val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
-    get() = ParadoxDefinitionManager.getInfo(this)
-
-val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
-    get() = ParadoxComplexEnumValueManager.getInfo(this)
-
-fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
-    return reference?.castOrNull<ParadoxLocalisationParameterPsiReference>()?.resolveLocalisation()
-}
-
-fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScriptedVariable? {
-    return scriptedVariableReference?.reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
-}
-
-inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? {
-    return ParadoxDefinitionDataProvider.get(this, T::class.java, relax)
-}
-
-inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {
-    return ParadoxDefinitionPresentationProvider.get(this, T::class.java)
-}
-
 inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
     try {
         state.set(true)
@@ -118,3 +77,37 @@ inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> 
 }
 
 val String?.errorDetails get() = this?.orNull()?.let { PlsBundle.message("error.details", it) }.orEmpty()
+
+// 注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
+// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
+
+inline val VirtualFile.rootInfo: ParadoxRootInfo?
+    get() = ParadoxCoreManager.getRootInfo(this)
+
+inline val VirtualFile.fileInfo: ParadoxFileInfo?
+    get() = ParadoxCoreManager.getFileInfo(this)
+
+inline val PsiElement.fileInfo: ParadoxFileInfo?
+    get() = ParadoxCoreManager.getFileInfo(this)
+
+inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
+    get() = ParadoxDefinitionManager.getInfo(this)
+
+inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
+    get() = ParadoxComplexEnumValueManager.getInfo(this)
+
+inline fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
+    return ParadoxLocaclisationParameterManager.resolveLocalisation(this)
+}
+
+inline fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScriptedVariable? {
+    return ParadoxLocaclisationParameterManager.resolveScriptedVariable(this)
+}
+
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? {
+    return ParadoxDefinitionDataProvider.get(this, T::class.java, relax)
+}
+
+inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {
+    return ParadoxDefinitionPresentationProvider.get(this, T::class.java)
+}

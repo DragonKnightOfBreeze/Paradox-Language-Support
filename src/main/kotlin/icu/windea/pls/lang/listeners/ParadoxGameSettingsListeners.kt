@@ -7,8 +7,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxLibrary
-import icu.windea.pls.lang.ParadoxLibraryProvider
-import icu.windea.pls.lang.paradoxLibrary
+import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 
@@ -16,7 +15,6 @@ import icu.windea.pls.lang.util.PlsAnalyzeManager
  * 当添加或更改游戏配置后，刷新库信息。
  *
  * @see ParadoxLibrary
- * @see ParadoxLibraryProvider
  */
 class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsListener {
     override fun onAdd(gameSettings: ParadoxGameSettingsState) {
@@ -35,8 +33,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
             if (project.isDisposed) continue
             val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
             if (!isInProject) continue
-            val paradoxLibrary = project.paradoxLibrary
-            paradoxLibrary.refreshRootsAsync()
+            ParadoxLibraryService.getInstance(project).refreshRootsAsync()
         }
 
         // 重新解析根目录下已打开的文件（IDE之后会自动请求重新索引）

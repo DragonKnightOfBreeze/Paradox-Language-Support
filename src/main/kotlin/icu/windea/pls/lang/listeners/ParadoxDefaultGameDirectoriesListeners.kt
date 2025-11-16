@@ -3,9 +3,8 @@ package icu.windea.pls.lang.listeners
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.EditorNotifications
 import icu.windea.pls.lang.ParadoxLibrary
-import icu.windea.pls.lang.ParadoxLibraryProvider
+import icu.windea.pls.lang.ParadoxLibraryService
 import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
-import icu.windea.pls.lang.paradoxLibrary
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 
 /**
@@ -23,7 +22,6 @@ class ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener : 
  * 当更改默认游戏目录映射后，刷新库信息。
  *
  * @see ParadoxLibrary
- * @see ParadoxLibraryProvider
  */
 class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefaultGameDirectoriesListener {
     override fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>) {
@@ -35,8 +33,7 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
     private fun doUpdate() {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
-            val library = project.paradoxLibrary
-            library.refreshRootsAsync()
+            ParadoxLibraryService.getInstance(project).refreshRootsAsync()
         }
 
         // 重新解析已打开的文件（IDE之后会自动请求重新索引）

@@ -16,7 +16,6 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.EMPTY_OBJECT
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
@@ -44,43 +43,55 @@ import java.nio.file.Path
 import kotlin.io.path.notExists
 
 object ParadoxCoreManager {
+    private val logger = thisLogger()
+
     fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
 
-        // 首先尝试获取注入的rootInfo
-        val injectedRootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
-        if (injectedRootInfo != null) return injectedRootInfo
+        // try to get injected root info first
+        doGetInjectedRootInfo(rootFile)?.let { return it }
 
-        val cachedRootInfo = rootFile.getUserData(PlsKeys.rootInfo)
-        if (cachedRootInfo != null) return cachedRootInfo.castOrNull()
-
+        doGetRootInfoFromCache(rootFile)?.let { return it }
         synchronized(rootFile) {
-            val cachedRootInfo1 = rootFile.getUserData(PlsKeys.rootInfo)
-            if (cachedRootInfo1 != null) return cachedRootInfo1.castOrNull()
-
-            // resolve rootInfo
-            try {
-                val rootInfo = doGetRootInfo(rootFile)
-                rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
-                if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
-                    application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-                }
-                return rootInfo
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                thisLogger().warn(e)
-                rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
-                return null
-            }
+            doGetRootInfoFromCache(rootFile)?.let { return it }
+            return doGetRootInfo(rootFile)
         }
     }
 
+    private fun doGetInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+        val rootInfo = rootFile.getUserData(PlsKeys.injectedRootInfo)
+        return rootInfo
+    }
+
+    private fun doGetRootInfoFromCache(rootFile: VirtualFile): ParadoxRootInfo? {
+        val rootInfo = rootFile.getUserData(PlsKeys.rootInfo)
+        if (rootInfo !is ParadoxRootInfo) return null
+        return rootInfo
+    }
+
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+        try {
+            val rootInfo = doResolveRootInfo(rootFile)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
+            if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
+                application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+            }
+            return rootInfo
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
+            logger.warn(e)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
+            return null
+        }
+    }
+
+    private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
-        return when (metadata) {
+        val rootInfo = when (metadata) {
             is ParadoxMetadata.Game -> ParadoxRootInfo.Game(metadata)
             is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
         }
+        return rootInfo
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
@@ -89,47 +100,65 @@ object ParadoxCoreManager {
     }
 
     fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        // 首先尝试获取注入的fileInfo
-        val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
-        if (injectedFileInfo != null) return injectedFileInfo
-
-        // no fileInfo for VirtualFileWindow (injected PSI)
+        // no fileInfo for `VirtualFileWindow` (injected PSI)
         if (PlsFileManager.isInjectedFile(file)) return null
 
-        val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
-        if (cachedFileInfo != null) return cachedFileInfo.castOrNull()
+        // try to get injected file info first
+        doGetInjectedFileInfo(file)?.let { return it }
 
+        doGetCachedFileInfo(file)?.let { return it }
         synchronized(file) {
-            val cachedFileInfo1 = file.getUserData(PlsKeys.fileInfo)
-            if (cachedFileInfo1 != null) return cachedFileInfo1.castOrNull()
-
-            // resolve fileInfo by file path
-            try {
-                val filePath = file.path
-                var currentFilePath = filePath.toPathOrNull() ?: return null
-                var currentFile = doGetFile(file, currentFilePath)
-                while (true) {
-                    val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
-                    if (rootInfo != null) {
-                        val fileInfo = doGetFileInfo(file, filePath, rootInfo)
-                        file.tryPutUserData(PlsKeys.fileInfo, fileInfo ?: EMPTY_OBJECT)
-                        return fileInfo
-                    }
-                    currentFilePath = currentFilePath.parent ?: break
-                    currentFile = doGetFile(currentFile?.parent, currentFilePath)
-                }
-                file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
-                return null
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                thisLogger().warn(e)
-                file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
-                return null
-            }
+            doGetCachedFileInfo(file)?.let { return it }
+            return doGetFileInfo(file)
         }
     }
 
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
+        return doGetFileInfo(filePath)
+    }
+
+    private fun doGetInjectedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        val fileInfo = file.getUserData(PlsKeys.injectedFileInfo)
+        return fileInfo
+    }
+
+    private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        val fileInfo = file.getUserData(PlsKeys.fileInfo)
+        if (fileInfo !is ParadoxFileInfo) return null
+        if (fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
+            // consistency check
+            val expectedRootInfo = doGetRootInfoFromCache(fileInfo.rootInfo.rootFile)
+            if (expectedRootInfo != fileInfo.rootInfo) return null
+        }
+        return fileInfo
+    }
+
+    private fun doGetFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        try {
+            val filePath = file.path
+            var currentFilePath = filePath.toPathOrNull() ?: return null
+            var currentFile = doGetFile(file, currentFilePath)
+            while (true) {
+                val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
+                if (rootInfo != null) {
+                    val fileInfo = doResolveFileInfo(file, filePath, rootInfo)
+                    file.tryPutUserData(PlsKeys.fileInfo, fileInfo ?: EMPTY_OBJECT)
+                    return fileInfo
+                }
+                currentFilePath = currentFilePath.parent ?: break
+                currentFile = doGetFile(currentFile?.parent, currentFilePath)
+            }
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
+            return null
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
+            logger.warn(e)
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
+            return null
+        }
+    }
+
+    private fun doGetFileInfo(filePath: FilePath): ParadoxFileInfo? {
         try {
             // 直接尝试通过filePath获取fileInfo
             var currentFilePath = filePath.path.toPathOrNull() ?: return null
@@ -137,7 +166,7 @@ object ParadoxCoreManager {
             while (true) {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
-                    val newFileInfo = doGetFileInfo(filePath, rootInfo)
+                    val newFileInfo = doResolveFileInfo(filePath, rootInfo)
                     return newFileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
@@ -146,7 +175,7 @@ object ParadoxCoreManager {
             return null
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
+            logger.warn(e)
             return null
         }
     }
@@ -162,12 +191,12 @@ object ParadoxCoreManager {
             return file
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
+            logger.warn(e)
             return null
         }
     }
 
-    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+    private fun doResolveFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = file.isDirectory
         val (path, entryName) = doResolvePathAndEntryName(filePath, isDirectory, rootInfo) ?: return null
         val fileType = when {
@@ -180,7 +209,7 @@ object ParadoxCoreManager {
         return fileInfo
     }
 
-    private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+    private fun doResolveFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = filePath.isDirectory
         val (path, entryName) = doResolvePathAndEntryName(filePath.path, isDirectory, rootInfo) ?: return null
         val fileType = when {
@@ -214,27 +243,39 @@ object ParadoxCoreManager {
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
-        // 首先尝试获取注入的localeConfig
-        val injectedLocaleConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
-        if (injectedLocaleConfig != null) return injectedLocaleConfig
+        // try to get injected locale config first
+        doGetInjectedLocaleConfig(file)?.let { return it }
 
-        val cachedLocaleConfig = file.getUserData(PlsKeys.localeConfig)
-        if (cachedLocaleConfig != null) return cachedLocaleConfig.castOrNull()
-
+        doGetCachedLocaleConfig(file)?.let { return it }
         synchronized(file) {
-            val cachedLocaleConfig1 = file.getUserData(PlsKeys.localeConfig)
-            if (cachedLocaleConfig1 != null) return cachedLocaleConfig1.castOrNull()
-
-            val indexId = PlsIndexKeys.FileLocale
-            val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-            val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
-            file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
-            return localeConfig
+            doGetCachedLocaleConfig(file)?.let { return it }
+            return doResolveLocaleConfig(file, project)
         }
     }
 
+    private fun doGetInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
+        val localeConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
+        return localeConfig
+    }
+
+    private fun doGetCachedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
+        val localeConfig = file.getUserData(PlsKeys.localeConfig)
+        if (localeConfig !is CwtLocaleConfig) return null
+        return localeConfig
+    }
+
+    private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+        val indexId = PlsIndexKeys.FileLocale
+        val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
+        val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
+        file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
+        return localeConfig
+    }
+
     fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
-        return ParadoxInferredGameTypeProvider.getGameType(rootFile)
+        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+            ep.getGameType(rootFile)
+        }
     }
 
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {

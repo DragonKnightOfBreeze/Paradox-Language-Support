@@ -22,9 +22,6 @@ import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
 import icu.windea.pls.lang.PlsKeys
 
-val Project.configGroupLibrary: CwtConfigGroupLibrary
-    get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }
-
 /**
  * 解析为被内联的CWT规则，或者返回自身。
  */
