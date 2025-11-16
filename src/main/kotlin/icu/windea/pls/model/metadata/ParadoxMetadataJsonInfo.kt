@@ -1,8 +1,11 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.metadata
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class ParadoxModMetadataInfo(
+/**
+ * 模组元数据信息（`.metadata/metadata.json`）。
+ */
+data class ParadoxMetadataJsonInfo(
     val name: String,
     val id: String,
     val version: String? = null,
@@ -17,7 +20,7 @@ data class ParadoxModMetadataInfo(
     val relationships: Set<Relationship> = emptySet(),
     @JsonProperty("game_custom_data")
     val gameCustomData: Map<String, Any?> = emptyMap()
-) {
+) : ParadoxMetadataInfo {
     data class Relationship(
         @JsonProperty("rel_type")
         val relType: String = "dependency",

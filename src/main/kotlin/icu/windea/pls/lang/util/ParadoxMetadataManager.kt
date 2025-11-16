@@ -1,49 +1,35 @@
 package icu.windea.pls.lang.util
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.ep.data.ParadoxModDescriptorData
+import icu.windea.pls.lang.analyze.ParadoxMetadataService
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
-import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxLauncherSettingsInfo
-import icu.windea.pls.model.ParadoxModDescriptorInfo
-import icu.windea.pls.model.ParadoxModMetadataInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory
+import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
+import icu.windea.pls.model.metadata.ParadoxLauncherSettingsJsonInfo
+import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 
 object ParadoxMetadataManager {
-    val metadataFileNames = setOf("launcher-settings.json", "descriptor.mod", "metadata.json")
+    // Files and Infos
 
-    fun getLauncherSettingsFile(rootFile: VirtualFile): VirtualFile? {
-        // relative paths:
-        // - launcher-settings.json
-        // - launcher/launcher-settings.json
-
-        if (rootFile.name == "launcher") return null
-        rootFile.findChild("launcher-settings.json")
-            ?.takeIf { it.isFile }?.let { return it }
-        rootFile.findFileByRelativePath("launcher/launcher-settings.json")
-            ?.takeIf { it.isFile }?.let { return it }
-        return null
+    fun getLauncherSettingsJsonFile(rootFile: VirtualFile): VirtualFile? {
+        return runReadActionSmartly { ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile) }
     }
 
-    fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
+    fun getLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo? {
         try {
-            return runReadActionSmartly { doGetLauncherSettingsInfo(file) }
+            return runReadActionSmartly { ParadoxMetadataService.resolveLauncherSettingsJsonInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -51,22 +37,13 @@ object ParadoxMetadataManager {
         }
     }
 
-    private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo {
-        return jsonMapper.readValue(file.inputStream)
+    fun getDescriptorModFile(rootFile: VirtualFile): VirtualFile? {
+        return runReadActionSmartly { ParadoxMetadataService.getDescriptorModFile(rootFile) }
     }
 
-    fun getModDescriptorFile(rootFile: VirtualFile): VirtualFile? {
-        // relative paths:
-        // - descriptor.mod
-
-        rootFile.findChild("descriptor.mod")
-            ?.takeIf { it.isFile }?.let { return it }
-        return null
-    }
-
-    fun getModDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
+    fun getDescriptorModInfo(file: VirtualFile): ParadoxDescriptorModInfo? {
         try {
-            return runReadActionSmartly { doGetModDescriptorInfo(file) }
+            return runReadActionSmartly { ParadoxMetadataService.resolveDescriptorModInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -74,33 +51,13 @@ object ParadoxMetadataManager {
         }
     }
 
-    private fun doGetModDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
-        // 需要先创建 dummyFile 再解析（直接解析的话会导致 StackOverflowError）
-        // createDummyFile -> ParadoxScriptData -> ParadoxModDescriptorData -> ParadoxModDescriptorInfo
-        val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
-        val data = ParadoxScriptDataResolver.DEFAULT.resolveFile(psiFile)?.let { ParadoxModDescriptorData(it) }
-        val name = data?.name ?: file.parent?.name ?: "" // 作为回退，使用模组目录名作为模组名
-        val version = data?.version
-        val picture = data?.picture
-        val tags = data?.tags.orEmpty()
-        val supportedVersion = data?.supportedVersion
-        val remoteFileId = data?.remoteFileId
-        val path = data?.path
-        return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
+    fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
+        return runReadActionSmartly { ParadoxMetadataService.getMetadataJsonFile(rootFile) }
     }
 
-    fun getModMetadataFile(rootFile: VirtualFile): VirtualFile? {
-        // relative paths:
-        // - .metadata/metadata.json
-
-        rootFile.findFileByRelativePath(".metadata/metadata.json")
-            ?.takeIf { it.isFile }?.let { return it }
-        return null
-    }
-
-    fun getModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo? {
+    fun getMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo? {
         try {
-            return runReadActionSmartly { doGetModMetadataInfo(file) }
+            return runReadActionSmartly { ParadoxMetadataService.resolveMetadataJsonInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -108,16 +65,18 @@ object ParadoxMetadataManager {
         }
     }
 
-    private fun doGetModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo {
-        return jsonMapper.readValue(file.inputStream)
+    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
+        if (gameType == ParadoxGameType.Core) return false
+        return gameType !in ParadoxGameType.getAllUseMetadataJson()
+    }
+
+    @Suppress("unused")
+    fun useMetadataJson(gameType: ParadoxGameType): Boolean {
+        if (gameType == ParadoxGameType.Core) return false
+        return gameType in ParadoxGameType.getAllUseMetadataJson()
     }
 
     // Get From Metadata
-
-    fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
-        // TODO 2.0.5+ 提取 ModDescriptorType，避免硬编码
-        return gameType != ParadoxGameType.Vic3 && gameType != ParadoxGameType.Eu5
-    }
 
     fun getModDirectoryFromSteamId(steamId: String?, workshopDirPath: Path): String? {
         if (steamId.isNullOrEmpty()) return null
@@ -135,7 +94,7 @@ object ParadoxMetadataManager {
         val descriptorPath = gameDataDirPath.resolve(path)
         if (!descriptorPath.exists()) return null
         val descriptorFile = descriptorPath.toVirtualFile(true) ?: return null
-        val descriptorInfo = getModDescriptorInfo(descriptorFile) ?: return null
+        val descriptorInfo = getDescriptorModInfo(descriptorFile) ?: return null
         val modPath = descriptorInfo.path ?: return null
         val modDir = modPath.toVirtualFile() ?: return null
         val rootInfo = modDir.rootInfo
@@ -229,7 +188,7 @@ object ParadoxMetadataManager {
             Files.newDirectoryStream(modDir) { it.fileName.toString().endsWith(".mod", ignoreCase = true) }.use { ds ->
                 for (p in ds) {
                     val vf = p.toVirtualFile(true) ?: continue
-                    val info = getModDescriptorInfo(vf) ?: continue
+                    val info = getDescriptorModInfo(vf) ?: continue
                     val modPath = info.path ?: continue
                     result[modPath.normalizePath()] = "mod/${vf.name}"
                 }

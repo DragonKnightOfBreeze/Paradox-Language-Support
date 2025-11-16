@@ -60,7 +60,7 @@ interface OpenPathOrUrlActions {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            return fileInfo.rootInfo.rootPath
+            return fileInfo.rootInfo.rootFile.toNioPath()
         }
     }
 
@@ -77,7 +77,7 @@ interface OpenPathOrUrlActions {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            return fileInfo.rootInfo.rootPath
+            return fileInfo.rootInfo.rootFile.toNioPath()
         }
     }
 
@@ -114,7 +114,7 @@ interface OpenPathOrUrlActions {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val steamId = fileInfo.rootInfo.steamId1?.orNull() ?: return null
+            val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
             return PlsUrlService.getSteamWorkshopUrlInSteam(steamId)
         }
     }
@@ -152,7 +152,7 @@ interface OpenPathOrUrlActions {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val steamId = fileInfo.rootInfo.steamId1?.orNull() ?: return null
+            val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
             return PlsUrlService.getSteamWorkshopUrl(steamId)
         }
     }

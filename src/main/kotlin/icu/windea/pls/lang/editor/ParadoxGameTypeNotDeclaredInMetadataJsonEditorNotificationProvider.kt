@@ -11,7 +11,7 @@ import com.intellij.ui.EditorNotificationProvider
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.ep.metadata.ParadoxMetadataJsonBasedModMetadataProvider
+import icu.windea.pls.ep.analyze.ParadoxMetadataJsonBasedModMetadataProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo

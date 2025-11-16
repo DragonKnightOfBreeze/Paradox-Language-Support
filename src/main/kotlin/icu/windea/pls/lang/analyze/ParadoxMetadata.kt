@@ -1,14 +1,16 @@
-package icu.windea.pls.model
+package icu.windea.pls.lang.analyze
 
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.ep.metadata.ParadoxMetadataProvider
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxModSource
 
 /**
- * 游戏或模组的元数据。用于获取游戏或模组的包括名称、版本、游戏类型在内的各种信息。
+ * 游戏或模组的元数据。
  *
- * 拥有多种来源。
+ * 用于检测游戏目录与模组目录，以及获取包括名称、版本、游戏类型在内的各种信息。
+ * 基于类别（游戏/模组）以及游戏类型（[ParadoxGameType]），可以有多种不同的来源。
  *
- * @see ParadoxMetadataProvider
+ * @see ParadoxMetadataService
  */
 sealed interface ParadoxMetadata {
     val name: String

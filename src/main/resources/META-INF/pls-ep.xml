@@ -1,5 +1,7 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analyze.ParadoxInferredGameTypeProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.metadataProvider" interface="icu.windea.pls.ep.analyze.ParadoxMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.hintTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider" dynamic="true"/>
@@ -21,8 +23,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatchOptimizer" interface="icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.metadata.ParadoxInferredGameTypeProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.metadataProvider" interface="icu.windea.pls.ep.metadata.ParadoxMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overrideStrategyProvider" interface="icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
@@ -50,6 +50,14 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
+    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analyze.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
+    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analyze.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
+
+    <metadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.analyze.Eu5GameMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
+    <metadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxMetadataJsonBasedModMetadataProvider"/>
+
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptStringColorProvider"/>
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptBlockColorProvider"/>
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorColorProvider"/>
@@ -164,14 +172,6 @@
 
     <csvExpressionMatcher id="base" implementation="icu.windea.pls.ep.match.ParadoxBaseCsvExpressionMatcher"/>
     <csvExpressionMatcher id="core" implementation="icu.windea.pls.ep.match.ParadoxCoreCsvExpressionMatcher"/>
-
-    <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
-    <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
-
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.Eu5GameMetadataProvider"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxMetadataJsonBasedModMetadataProvider"/>
 
     <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>
     <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider"/>

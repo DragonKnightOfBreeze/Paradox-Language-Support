@@ -11,9 +11,9 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.util.tryPutUserData
+import icu.windea.pls.lang.analyze.ParadoxMetadataService
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 
 /**
@@ -21,6 +21,8 @@ import icu.windea.pls.lang.util.PlsAnalyzeManager
  */
 class ParadoxFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
+        val metadataFileNames = ParadoxMetadataService.metadataFileNames
+
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()
         val filesToClearLocaleConfig = mutableSetOf<VirtualFile>()
@@ -38,7 +40,7 @@ class ParadoxFileListener : AsyncFileListener {
                         if (shouldRefreshForFilePaths(event.parent)) refreshFilePaths = true
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(event.parent)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
                     }
@@ -55,7 +57,7 @@ class ParadoxFileListener : AsyncFileListener {
                         if (shouldRefreshForFilePaths(file.parent)) refreshFilePaths = true
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(file.parent)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
                     }
@@ -66,7 +68,7 @@ class ParadoxFileListener : AsyncFileListener {
                         if (shouldRefreshForFilePaths(event.newParent)) refreshFilePaths = true
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(event.newParent)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
                     }
@@ -84,7 +86,7 @@ class ParadoxFileListener : AsyncFileListener {
                         if (shouldRefreshForInlineScripts(file)) refreshInlineScripts = true
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(event.oldParent)?.let { filesToClearRootInfo.add(it) }
                         selectRootFile(event.newParent)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
@@ -105,7 +107,7 @@ class ParadoxFileListener : AsyncFileListener {
                         if (shouldRefreshForInlineScripts(file)) refreshInlineScripts = true
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { newFileName.equals(it, true) || oldFileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { newFileName.equals(it, true) || oldFileName.equals(it, true) }) return@run
                         selectRootFile(file)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
                     }
@@ -118,7 +120,7 @@ class ParadoxFileListener : AsyncFileListener {
                         filesToClearSliceInfos.add(file)
                     }
                     run {
-                        if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
+                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(file)?.let { filesToClearRootInfo.add(it) }
                         reparseOpenedFiles = true
                     }

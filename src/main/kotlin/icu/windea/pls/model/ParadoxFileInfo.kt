@@ -21,12 +21,12 @@ class ParadoxFileInfo(
     val rootPath: Path?
         get() {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            return rootInfo.rootPath
+            return rootInfo.rootFile.toNioPath()
         }
     val entryPath: Path?
         get() {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val rootPath = rootInfo.rootPath
+            val rootPath = rootInfo.rootFile.toNioPath()
             return if (entryName.isEmpty()) rootPath else rootPath.resolve(entryName)
         }
 

@@ -98,11 +98,11 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     grayed {
         // 相关链接
         // 通过这种方式获取需要的 url，使用 rootPath 而非 `gameRootPath`
-        val rootUri = rootInfo.rootPath.toUri().toString()
+        val rootUri = rootInfo.rootFile.toNioPath().toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
 
-        val steamId = rootInfo.steamId1
+        val steamId = rootInfo.steamId
         if (steamId != null) {
             append(" | ")
             val workshopUrlInSteam = when (rootInfo) {

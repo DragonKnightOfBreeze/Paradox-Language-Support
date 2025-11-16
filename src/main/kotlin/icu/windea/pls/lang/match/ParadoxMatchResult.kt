@@ -5,6 +5,8 @@ import icu.windea.pls.core.runCatchingCancelable
 
 /**
  * 匹配结果。
+ *
+ * @see ParadoxMatchService
  */
 sealed class ParadoxMatchResult {
     abstract fun get(options: Int = ParadoxMatchOptions.Default): Boolean

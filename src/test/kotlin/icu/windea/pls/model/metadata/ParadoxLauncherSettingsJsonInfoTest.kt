@@ -1,14 +1,15 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.metadata
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import org.junit.Assume
 import org.junit.Test
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 
-class ParadoxLauncherSettingsInfoTest {
+class ParadoxLauncherSettingsJsonInfoTest {
     @Test
     fun readLauncherSettings_fromString() {
         val launcherSettingsJson = """
@@ -55,7 +56,7 @@ class ParadoxLauncherSettingsInfoTest {
 }
     """.trimIndent()
 
-        val model = jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
+        val model = jsonMapper.readValue<ParadoxLauncherSettingsJsonInfo>(launcherSettingsJson)
         doAssert(model)
     }
 
@@ -71,11 +72,11 @@ class ParadoxLauncherSettingsInfoTest {
         val file = listOf(file1, file2).firstOrNull { it.exists() && it.isRegularFile() }
         Assume.assumeTrue("Skip: launcher-settings.json not found", file != null)
 
-        val model = jsonMapper.readValue(file!!.toFile(), ParadoxLauncherSettingsInfo::class.java)
+        val model = jsonMapper.readValue(file!!.toFile(), ParadoxLauncherSettingsJsonInfo::class.java)
         doAssert(model)
     }
 
-    private fun doAssert(model: ParadoxLauncherSettingsInfo) {
+    private fun doAssert(model: ParadoxLauncherSettingsJsonInfo) {
         // 基本断言：gameId 和路径存在（不必验证有效性）
         assert(model.gameId.isNotEmpty())
         println("launcher-settings.json -> gameId=${model.gameId}, version=${model.version}, dataPath=${model.gameDataPath}")

@@ -11,34 +11,24 @@ import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
-import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.EMPTY_OBJECT
-import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
-import icu.windea.pls.core.trimFast
-import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.tryPutUserData
-import icu.windea.pls.ep.metadata.ParadoxInferredGameTypeProvider
-import icu.windea.pls.ep.metadata.ParadoxMetadataProvider
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeService
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxMetadata
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 import kotlin.io.path.notExists
 
@@ -71,7 +61,7 @@ object ParadoxAnalyzeManager {
 
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         try {
-            val rootInfo = doResolveRootInfo(rootFile)
+            val rootInfo = ParadoxAnalyzeService.resolveRootInfo(rootFile)
             rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
             if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                 application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
@@ -83,15 +73,6 @@ object ParadoxAnalyzeManager {
             rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
             return null
         }
-    }
-
-    private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
-        val rootInfo = when (metadata) {
-            is ParadoxMetadata.Game -> ParadoxRootInfo.Game(metadata)
-            is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
-        }
-        return rootInfo
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
@@ -141,7 +122,7 @@ object ParadoxAnalyzeManager {
             while (true) {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
-                    val fileInfo = doResolveFileInfo(file, filePath, rootInfo)
+                    val fileInfo = ParadoxAnalyzeService.resolveFileInfo(file, rootInfo)
                     file.tryPutUserData(PlsKeys.fileInfo, fileInfo ?: EMPTY_OBJECT)
                     return fileInfo
                 }
@@ -166,7 +147,7 @@ object ParadoxAnalyzeManager {
             while (true) {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
-                    val newFileInfo = doResolveFileInfo(filePath, rootInfo)
+                    val newFileInfo = ParadoxAnalyzeService.resolveFileInfo(filePath, rootInfo)
                     return newFileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
@@ -196,50 +177,6 @@ object ParadoxAnalyzeManager {
         }
     }
 
-    private fun doResolveFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
-        val isDirectory = file.isDirectory
-        val (path, entryName) = doResolvePathAndEntryName(filePath, isDirectory, rootInfo) ?: return null
-        val fileType = when {
-            isDirectory -> ParadoxFileType.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
-            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path)
-        }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
-        return fileInfo
-    }
-
-    private fun doResolveFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
-        val isDirectory = filePath.isDirectory
-        val (path, entryName) = doResolvePathAndEntryName(filePath.path, isDirectory, rootInfo) ?: return null
-        val fileType = when {
-            isDirectory -> ParadoxFileType.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
-            ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path)
-        }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
-        return fileInfo
-    }
-
-    private fun doResolvePathAndEntryName(filePath: String, isDirectory: Boolean, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String>? {
-        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
-        val entryInfo = rootInfo.gameType.entryInfo
-        val entryMap = when (rootInfo) {
-            is ParadoxRootInfo.Game -> entryInfo.gameEntryMap
-            is ParadoxRootInfo.Mod -> entryInfo.modEntryMap
-        }
-        if (entryMap.isEmpty()) return relPath to ""
-        for ((entryName, entryPath) in entryMap) {
-            val resolved = relPath.subPaths.removePrefixOrNull(entryPath, wildcard = "*") ?: continue
-            return ParadoxPath.resolve(resolved) to entryName
-        }
-        if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
-        if (filePath == rootInfo.infoFile?.path) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
-        return null // 2.0.7 null now
-    }
-
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
@@ -249,7 +186,7 @@ object ParadoxAnalyzeManager {
         doGetCachedLocaleConfig(file)?.let { return it }
         synchronized(file) {
             doGetCachedLocaleConfig(file)?.let { return it }
-            return doResolveLocaleConfig(file, project)
+            return doGetLocaleConfig(file, project)
         }
     }
 
@@ -264,18 +201,10 @@ object ParadoxAnalyzeManager {
         return localeConfig
     }
 
-    private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val indexId = PlsIndexKeys.FileLocale
-        val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
-        val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
+    private fun doGetLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+        val localeConfig = ParadoxAnalyzeService.resolveLocaleConfig(file, project)
         file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
         return localeConfig
-    }
-
-    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
-        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getGameType(rootFile)
-        }
     }
 
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {

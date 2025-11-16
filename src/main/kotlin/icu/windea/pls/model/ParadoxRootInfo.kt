@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import java.nio.file.Path
+import icu.windea.pls.lang.analyze.ParadoxMetadata
 
 /**
  * 游戏或模组信息。
@@ -15,12 +15,8 @@ sealed class ParadoxRootInfo {
     abstract val gameType: ParadoxGameType
 
     open val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
-    open val steamId1: String? get() = null
+    open val steamId: String? get() = null
 
-    /**
-     * @property rootFile 游戏或模组目录。
-     * @property rootPath 游戏根目录。
-     */
     sealed class MetadataBased(open val metadata: ParadoxMetadata) : ParadoxRootInfo() {
         override val gameType: ParadoxGameType get() = metadata.gameType
 
@@ -28,9 +24,6 @@ sealed class ParadoxRootInfo {
         val version: String? get() = metadata.version
         val rootFile: VirtualFile get() = metadata.rootFile
         val infoFile: VirtualFile? get() = metadata.infoFile
-
-        val rootPath: Path get() = rootFile.toNioPath()
-        val infoPath: Path? get() = infoFile?.toNioPath()
     }
 
     class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata) {
@@ -41,7 +34,7 @@ sealed class ParadoxRootInfo {
                     append("@").append(version)
                 }
             }
-        override val steamId1: String?
+        override val steamId: String
             get() = gameType.steamId
     }
 
@@ -61,7 +54,7 @@ sealed class ParadoxRootInfo {
                     append("@").append(version)
                 }
             }
-        override val steamId1: String?
+        override val steamId: String?
             get() = if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
     }
 
