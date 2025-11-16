@@ -26,7 +26,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.unscramble.AnalyzeStacktraceUtil.Companion.EP_NAME
+import com.intellij.unscramble.AnalyzeStacktraceUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
@@ -109,6 +109,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     private fun showHintInToolWindow(
         project: Project,
         generator: CwtConfigGenerator,
@@ -116,7 +117,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         hint: CwtConfigGenerator.Hint
     ) {
         val builder = TextConsoleBuilderFactory.getInstance().createBuilder(project)
-        builder.filters(EP_NAME.getExtensions(project))
+        builder.filters(AnalyzeStacktraceUtil.EP_NAME.getExtensions(project))
 
         val consoleView = builder.console
         val toolbarActions = DefaultActionGroup()

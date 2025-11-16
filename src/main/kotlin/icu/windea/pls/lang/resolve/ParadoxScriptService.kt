@@ -58,7 +58,7 @@ object ParadoxScriptService {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.Companion.resolve(subPaths)
+        return ParadoxElementPath.resolve(subPaths)
     }
 
     /**
@@ -85,14 +85,14 @@ object ParadoxScriptService {
             if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = tree.getParent(current) ?: break
         }
-        if (current.tokenType == ParadoxScriptFile.Companion.ELEMENT_TYPE) {
+        if (current.tokenType == ParadoxScriptFile.ELEMENT_TYPE) {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 subPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
-        return ParadoxElementPath.Companion.resolve(subPaths)
+        return ParadoxElementPath.resolve(subPaths)
     }
 
     /**

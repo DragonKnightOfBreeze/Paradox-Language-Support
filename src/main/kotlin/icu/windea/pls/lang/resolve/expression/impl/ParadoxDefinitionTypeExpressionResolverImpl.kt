@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.resolve.expression.impl
 
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression.Companion.resolve
 import icu.windea.pls.model.ParadoxDefinitionInfo
 
 internal class ParadoxDefinitionTypeExpressionResolverImpl : ParadoxDefinitionTypeExpression.Resolver {
@@ -27,7 +26,7 @@ private class ParadoxDefinitionTypeExpressionImpl(
     }
 
     override fun matches(typeExpression: String): Boolean {
-        return matches(resolve(typeExpression))
+        return matches(ParadoxDefinitionTypeExpression.resolve(typeExpression))
     }
 
     override fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {

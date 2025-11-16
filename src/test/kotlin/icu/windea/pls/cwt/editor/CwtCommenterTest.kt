@@ -5,9 +5,6 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.cwt.editor.CwtCommenter.Companion.DOC_COMMENT_PREFIX
-import icu.windea.pls.cwt.editor.CwtCommenter.Companion.LINE_COMMENT_PREFIX
-import icu.windea.pls.cwt.editor.CwtCommenter.Companion.OPTION_COMMENT_PREFIX
 import icu.windea.pls.cwt.psi.CwtElementTypes
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,17 +18,17 @@ class CwtCommenterTest : BasePlatformTestCase() {
     @Test
     fun testCommentPrefixes() {
         val commenter = CwtCommenter()
-        assertEquals(LINE_COMMENT_PREFIX, commenter.lineCommentPrefix)
-        assertEquals(DOC_COMMENT_PREFIX, commenter.documentationCommentPrefix)
-        assertEquals(DOC_COMMENT_PREFIX, commenter.documentationCommentLinePrefix)
+        assertEquals(CwtCommenter.LINE_COMMENT_PREFIX, commenter.lineCommentPrefix)
+        assertEquals(CwtCommenter.DOC_COMMENT_PREFIX, commenter.documentationCommentPrefix)
+        assertEquals(CwtCommenter.DOC_COMMENT_PREFIX, commenter.documentationCommentLinePrefix)
         assertNull(commenter.blockCommentPrefix)
         assertNull(commenter.blockCommentSuffix)
         assertNull(commenter.commentedBlockCommentPrefix)
         assertNull(commenter.commentedBlockCommentSuffix)
         // Companion constants
-        assertEquals("#", LINE_COMMENT_PREFIX)
-        assertEquals("##", OPTION_COMMENT_PREFIX)
-        assertEquals("###", DOC_COMMENT_PREFIX)
+        assertEquals("#", CwtCommenter.LINE_COMMENT_PREFIX)
+        assertEquals("##", CwtCommenter.OPTION_COMMENT_PREFIX)
+        assertEquals("###", CwtCommenter.DOC_COMMENT_PREFIX)
     }
 
     @Test
