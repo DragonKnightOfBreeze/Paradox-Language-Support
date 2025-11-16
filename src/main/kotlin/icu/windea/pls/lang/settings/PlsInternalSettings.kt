@@ -3,7 +3,6 @@ package icu.windea.pls.lang.settings
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.registry.Registry
-import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
 
 /**

@@ -2,7 +2,6 @@
 
 package icu.windea.pls.config
 
-import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -11,13 +10,11 @@ import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
 import icu.windea.pls.lang.PlsKeys

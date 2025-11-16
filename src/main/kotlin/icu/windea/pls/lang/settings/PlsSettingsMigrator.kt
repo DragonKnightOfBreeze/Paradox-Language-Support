@@ -10,7 +10,6 @@ import java.nio.file.Paths
 import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import kotlin.math.log
 
 class PlsSettingsMigrator : AppLifecycleListener {
     private val logger = thisLogger()

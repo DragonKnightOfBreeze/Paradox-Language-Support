@@ -19,7 +19,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 import kotlin.io.path.extension
 import kotlin.io.path.isDirectory

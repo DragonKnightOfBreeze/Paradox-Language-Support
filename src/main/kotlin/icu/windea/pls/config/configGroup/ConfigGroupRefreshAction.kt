@@ -4,10 +4,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.fileInfo
 

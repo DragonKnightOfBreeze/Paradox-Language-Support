@@ -1,6 +1,5 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.service
 import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor

@@ -6,7 +6,6 @@ import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
-import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.model.constants.PlsConstants
 
 /**

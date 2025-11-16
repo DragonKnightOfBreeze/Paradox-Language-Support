@@ -14,8 +14,8 @@ import icu.windea.pls.ep.data.ParadoxDefinitionData
 import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
-import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
+import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager

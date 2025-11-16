@@ -8,7 +8,6 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
-import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.model.constants.PlsConstants

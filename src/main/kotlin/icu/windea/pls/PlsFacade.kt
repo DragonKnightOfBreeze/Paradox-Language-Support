@@ -10,12 +10,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.isClassPresent
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
