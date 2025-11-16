@@ -59,6 +59,7 @@ object PlsStringConstants {
     const val loadingMarker = "<loading...>"
 
     const val commentFolder = "# ..."
+    const val quotedFolder = "\"...\""
     const val blockFolder = "{...}"
     val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val inlineMathFolder = "@[...]"

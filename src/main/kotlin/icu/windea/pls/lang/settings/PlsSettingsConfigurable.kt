@@ -272,10 +272,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             collapsibleGroup(PlsBundle.message("settings.folding")) {
                 val foldingSettings = settings.folding
 
-                // comment & commentByDefault
+                // comments & commentsByDefault
                 row {
                     lateinit var cb: JBCheckBox
-                    checkBox(PlsBundle.message("settings.folding.comment"))
+                    checkBox(PlsBundle.message("settings.folding.comments"))
                         .bindSelected(foldingSettings::comments)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
@@ -298,7 +298,17 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
                         .bindSelected(foldingSettings::inlineMathBlocksByDefault)
                 }
-                // localisationReferencesFully & localisationReferencesFullyByDefault
+                // localisationTexts & localisationTextsByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationTexts"))
+                        .bindSelected(foldingSettings::localisationTexts)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(foldingSettings::localisationTextsByDefault)
+                        .enabledIf(cb.selected)
+                }
+                // localisationParametersFully & localisationParametersFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationParametersFully"))

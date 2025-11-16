@@ -23,6 +23,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
             COMMENT -> PlsStringConstants.commentFolder
+            PROPERTY_VALUE -> PlsStringConstants.quotedFolder
             PARAMETER -> ""
             ICON -> ""
             COMMAND -> PlsStringConstants.commandFolder
@@ -36,6 +37,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         val settings = PlsSettings.getInstance().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentsByDefault
+            PROPERTY_VALUE -> settings.localisationTextsByDefault
             PARAMETER -> settings.localisationParametersFullyByDefault
             ICON -> settings.localisationIconsFullyByDefault
             COMMAND -> settings.localisationCommandsByDefault
@@ -71,6 +73,11 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState): Boolean {
         when (element.elementType) {
+            PROPERTY_VALUE -> run {
+                if(!settings.localisationTexts) {
+                    descriptors.add(FoldingDescriptor(element.node, element.textRange))
+                }
+            }
             PARAMETER -> run {
                 if (!settings.localisationParametersFully) return@run
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
