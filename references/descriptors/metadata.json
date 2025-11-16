@@ -1,0 +1,14 @@
+{
+  "name" : "Mod name",
+  "id" : "mod.id",
+  "version" : "1.0",
+  "game_id" : "victoria3",
+  "picture" : "thumbnail.png",
+  "supported_game_version" : "*",
+  "short_description" : "Mod shot description",
+  "tags" : [],
+  "relationships" : [],
+  "game_custom_data" : {
+    "multiplayer_synchronized" : true
+  }
+}

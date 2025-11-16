@@ -26,11 +26,7 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 
 object ParadoxMetadataManager {
-    val metadataFileNames = setOf(
-        "launcher-settings.json",
-        "descriptor.mod",
-        "metadata.json",
-    )
+    val metadataFileNames = setOf("launcher-settings.json", "descriptor.mod", "metadata.json")
 
     fun getLauncherSettingsFile(rootFile: VirtualFile): VirtualFile? {
         // relative paths:

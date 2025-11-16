@@ -4,7 +4,6 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
@@ -46,7 +45,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
                 ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsSettings.getInstance().state.defaultGameType
+                ?: ParadoxGameType.getDefault()
         }
     }
 }
@@ -81,23 +80,17 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
         override val source: ParadoxModSource get() = ParadoxModSource.Local
 
         private fun doGetInferredGameType(): ParadoxGameType? {
-            val gameTypeFromInfo = doGetInferredGameTypeFromInfo()
-            if (gameTypeFromInfo != null) return gameTypeFromInfo
-            return ParadoxCoreManager.getInferredGameType(rootFile)
-        }
-
-        private fun doGetInferredGameTypeFromInfo(): ParadoxGameType? {
             return when (info.gameId) {
                 ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
                 ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
-                else -> null // ~~#134 by default vic3~~ by default null to be compatible with eu5
+                else -> ParadoxCoreManager.getInferredGameType(rootFile)
             }
         }
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
                 ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsSettings.getInstance().state.defaultGameType
+                ?: ParadoxGameType.getDefault()
         }
     }
 }

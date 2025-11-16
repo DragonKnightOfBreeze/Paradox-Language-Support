@@ -75,7 +75,7 @@ class ParadoxGameDescriptorSettingsState : BaseState() {
     var gameVersion: String? by string()
     var gameDirectory: String? by string()
 
-    val finalGameType: ParadoxGameType get() = gameType ?: PlsSettings.getInstance().state.defaultGameType
+    val finalGameType: ParadoxGameType get() = gameType ?: ParadoxGameType.getDefault()
 
     fun fromRootInfo(rootInfo: ParadoxRootInfo.Game) {
         gameDirectory = rootInfo.rootFile.path
@@ -100,7 +100,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
 
-    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsSettings.getInstance().state.defaultGameType
+    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: ParadoxGameType.getDefault()
 
     fun fromRootInfo(rootInfo: ParadoxRootInfo.Mod) {
         modDirectory = rootInfo.rootFile.path
@@ -141,7 +141,7 @@ interface ParadoxGameDescriptorAwareSettingsState {
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
 
-    val finalGameType: ParadoxGameType get() = gameType ?: PlsSettings.getInstance().state.defaultGameType
+    val finalGameType: ParadoxGameType get() = gameType ?: ParadoxGameType.getDefault()
 }
 
 interface ParadoxModDescriptorAwareSettingsState {
@@ -160,7 +160,7 @@ interface ParadoxModDescriptorAwareSettingsState {
     val gameType: ParadoxGameType? get() = modDescriptorSettings?.gameType
     val source: ParadoxModSource? get() = modDescriptorSettings?.source
 
-    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsSettings.getInstance().state.defaultGameType
+    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: ParadoxGameType.getDefault()
 }
 
 @Tag("settings")
@@ -173,7 +173,7 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState, Par
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 
-    override val finalGameType: ParadoxGameType get() = gameType ?: PlsSettings.getInstance().state.defaultGameType
+    override val finalGameType: ParadoxGameType get() = gameType ?: ParadoxGameType.getDefault()
 }
 
 /**
@@ -192,7 +192,7 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState, Para
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 
-    override val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsSettings.getInstance().state.defaultGameType
+    override val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: ParadoxGameType.getDefault()
     val finalGameDirectory: String? get() = gameDirectory?.orNull() ?: PlsSettings.getInstance().state.defaultGameDirectories[finalGameType.id]?.orNull()
 }
 

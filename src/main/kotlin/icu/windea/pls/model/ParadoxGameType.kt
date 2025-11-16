@@ -1,5 +1,7 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.lang.settings.PlsSettings
+
 /**
  * 游戏类型。
  *
@@ -67,11 +69,13 @@ enum class ParadoxGameType(
 
     companion object {
         @JvmStatic
+        private val map = entries.associateBy { it.id }
+        @JvmStatic
         private val values = entries.toList()
         @JvmStatic
         private val valuesNoCore = values - Core
         @JvmStatic
-        private val map = entries.associateBy { it.id }
+        private val valuesForMetadataJson = listOf(Vic3, Eu5)
 
         /**
          * 得到 [id] 对应的游戏类型。
@@ -91,6 +95,22 @@ enum class ParadoxGameType(
         @JvmStatic
         fun getAll(withCore: Boolean = false): List<ParadoxGameType> {
             return if (withCore) values else valuesNoCore
+        }
+
+        /**
+         * 得到（使用 `.metadata/metdata.json` 作为模组描述符的）所有游戏类型。
+         */
+        @JvmStatic
+        fun getAllUseMetadataJson(): List<ParadoxGameType> {
+            return valuesForMetadataJson
+        }
+
+        /**
+         * 得到默认的游戏类型。
+         */
+        @JvmStatic
+        fun getDefault(): ParadoxGameType {
+            return PlsSettings.getInstance().state.defaultGameType
         }
     }
 }

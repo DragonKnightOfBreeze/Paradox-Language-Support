@@ -120,6 +120,7 @@ class ParadoxFileListener : AsyncFileListener {
                     run {
                         if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
                         selectRootFile(file)?.let { filesToClearRootInfo.add(it) }
+                        reparseOpenedFiles = true
                     }
                 }
             }

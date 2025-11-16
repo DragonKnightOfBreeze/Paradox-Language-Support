@@ -15,6 +15,7 @@ import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
+import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
@@ -24,7 +25,8 @@ import java.util.function.Function
 import javax.swing.JComponent
 
 /**
- * 如果游戏目录未配置，则为模组文件提供通知，以便快速配置。仅适用于项目中的文本文件。
+ * 如果游戏目录未配置，则为模组文件提供通知，以便快速配置。
+ * 仅适用于项目中的文本文件。
  */
 class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotificationProvider {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
@@ -45,26 +47,34 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
             val message = PlsBundle.message("editor.notification.1.text")
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning).text(message)
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.1")) {
-                val dialog = ParadoxModSettingsDialog(project, modSettings)
-                dialog.show()
+                showModSettingsDialog(project, modSettings)
             }
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
-                val settings = PlsSettings.getInstance().state
-                val defaultGameDirectories = settings.defaultGameDirectories
-                ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
-                val defaultList = defaultGameDirectories.toMutableEntryList()
-                var list = defaultList.mapTo(mutableListOf()) { it.copy() }
-                val dialog = DefaultGameDirectoriesDialog(list)
-                if (dialog.showAndGet()) {
-                    list = dialog.resultList
-                    val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
-                    val newDefaultGameDirectories = list.toMutableMap()
-                    if (oldDefaultGameDirectories == newDefaultGameDirectories) return@action
-                    settings.defaultGameDirectories = newDefaultGameDirectories
-                    application.messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
-                }
+                configureDefaultGameDirectories()
             }
             panel
+        }
+    }
+
+    private fun showModSettingsDialog(project: Project, modSettings: ParadoxModSettingsState) {
+        val dialog = ParadoxModSettingsDialog(project, modSettings)
+        dialog.show()
+    }
+
+    private fun configureDefaultGameDirectories() {
+        val settings = PlsSettings.getInstance().state
+        val defaultGameDirectories = settings.defaultGameDirectories
+        ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+        val defaultList = defaultGameDirectories.toMutableEntryList()
+        var list = defaultList.mapTo(mutableListOf()) { it.copy() }
+        val dialog = DefaultGameDirectoriesDialog(list)
+        if (dialog.showAndGet()) {
+            list = dialog.resultList
+            val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
+            val newDefaultGameDirectories = list.toMutableMap()
+            if (oldDefaultGameDirectories == newDefaultGameDirectories) return
+            settings.defaultGameDirectories = newDefaultGameDirectories
+            application.messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
         }
     }
 }
