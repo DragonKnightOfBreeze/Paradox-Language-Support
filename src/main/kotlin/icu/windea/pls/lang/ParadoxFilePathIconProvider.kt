@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vcs.changes.FilePathIconProvider
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.model.ParadoxFileType
 import javax.swing.Icon
 
@@ -16,7 +16,7 @@ class ParadoxFilePathIconProvider : FilePathIconProvider {
         val possibleFileType = ParadoxFileType.resolvePossible(filePath.name)
         if (possibleFileType == ParadoxFileType.Other) return null
 
-        val fileInfo = ParadoxCoreManager.getFileInfo(filePath) ?: return null
+        val fileInfo = ParadoxAnalyzeManager.getFileInfo(filePath) ?: return null
         val fileType = fileInfo.fileType
         return getIcon(fileType)
     }

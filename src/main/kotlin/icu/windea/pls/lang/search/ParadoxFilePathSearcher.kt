@@ -13,7 +13,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 /**
@@ -37,7 +37,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = FileBasedIndex.getInstance().getAllKeys(PlsIndexKeys.FilePath, project)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+                    val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
                     if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
                     consumer.process(file)
@@ -46,7 +46,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = getFilePaths(filePath, queryParameters)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+                    val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
                     if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
                     consumer.process(file)
@@ -62,7 +62,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }, scope, null)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+                    val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
                     if (fileInfo == null) return@p true
                     if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
                     consumer.process(file)
@@ -73,7 +73,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val keys = resolvedPaths
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(PlsIndexKeys.FilePath, keys, scope, null, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+                        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
                         if (fileInfo == null) return@p true
                         if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
                         consumer.process(file)
@@ -85,7 +85,7 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val resolvedFiles = sortedSetOf<VirtualFile>(compareBy { it.path })
                     FilenameIndex.processFilesByNames(resolvedFileNames, false, scope, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        val fileInfo = ParadoxCoreManager.getFileInfo(file) // ensure file info is resolved here
+                        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
                         if (fileInfo == null) return@p true
                         if (gameType != null && selectGameType(file) != gameType) return@p true // check game type at file level
                         if (!support.matches(configExpression, contextElement, fileInfo.path.path)) return@p true

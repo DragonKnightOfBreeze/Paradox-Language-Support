@@ -4,7 +4,7 @@ import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxMetadata
@@ -38,7 +38,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
         override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
 
         private fun doGetInferredGameType(): ParadoxGameType? {
-            return ParadoxCoreManager.getInferredGameType(rootFile)
+            return ParadoxAnalyzeManager.getInferredGameType(rootFile)
         }
 
         private fun doGetGameType(): ParadoxGameType {
@@ -81,7 +81,7 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
             return when (info.gameId) {
                 ParadoxGameType.Vic3.gameId -> ParadoxGameType.Vic3
                 ParadoxGameType.Eu5.gameId -> ParadoxGameType.Eu5
-                else -> ParadoxCoreManager.getInferredGameType(rootFile)
+                else -> ParadoxAnalyzeManager.getInferredGameType(rootFile)
             }
         }
 

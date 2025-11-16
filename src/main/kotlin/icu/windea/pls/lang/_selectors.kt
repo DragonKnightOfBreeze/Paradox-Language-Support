@@ -15,7 +15,7 @@ import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -86,7 +86,7 @@ tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
     if (from is UserDataHolder) from.getUserData(PlsKeys.injectedLocaleConfig)?.let { return it }
     return when {
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
-        from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
+        from is PsiFile -> ParadoxAnalyzeManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocaleAwareStub<*> -> {
             val element = from.containingFileStub?.psi ?: return null
             val id = from.locale ?: return null

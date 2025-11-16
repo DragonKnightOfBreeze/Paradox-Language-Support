@@ -15,7 +15,7 @@ import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
-import icu.windea.pls.lang.util.ParadoxCoreManager
+import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -82,13 +82,13 @@ val String?.errorDetails get() = this?.orNull()?.let { PlsBundle.message("error.
 // 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 inline val VirtualFile.rootInfo: ParadoxRootInfo?
-    get() = ParadoxCoreManager.getRootInfo(this)
+    get() = ParadoxAnalyzeManager.getRootInfo(this)
 
 inline val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreManager.getFileInfo(this)
+    get() = ParadoxAnalyzeManager.getFileInfo(this)
 
 inline val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxCoreManager.getFileInfo(this)
+    get() = ParadoxAnalyzeManager.getFileInfo(this)
 
 inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionManager.getInfo(this)

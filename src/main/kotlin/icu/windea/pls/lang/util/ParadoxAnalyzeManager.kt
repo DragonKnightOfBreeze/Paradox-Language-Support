@@ -42,7 +42,7 @@ import icu.windea.pls.model.paths.ParadoxPath
 import java.nio.file.Path
 import kotlin.io.path.notExists
 
-object ParadoxCoreManager {
+object ParadoxAnalyzeManager {
     private val logger = thisLogger()
 
     fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
