@@ -17,10 +17,10 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS设置。可以在插件的对应设置页面中进行配置。
+ * PLS 设置。可以在插件的对应设置页面中进行配置。
  */
 @Service(Service.Level.APP)
-@State(name = "ParadoxSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
+@State(name = "PlsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     /**
      * @property defaultGameType 默认的游戏类型。
