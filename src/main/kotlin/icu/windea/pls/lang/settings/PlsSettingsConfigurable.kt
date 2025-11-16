@@ -276,10 +276,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.comment"))
-                        .bindSelected(foldingSettings::comment)
+                        .bindSelected(foldingSettings::comments)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(foldingSettings::commentByDefault)
+                        .bindSelected(foldingSettings::commentsByDefault)
                         .enabledIf(cb.selected)
                 }
                 // parameterConditionBlocks & parameterConditionBlocksByDefault

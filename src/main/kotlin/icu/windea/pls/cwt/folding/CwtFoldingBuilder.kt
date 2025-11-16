@@ -30,7 +30,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         val settings = PlsSettings.getInstance().state.folding
         return when (node.elementType) {
-            COMMENT -> settings.commentByDefault
+            COMMENT -> settings.commentsByDefault
             else -> false
         }
     }
@@ -48,7 +48,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
-        if (!settings.comment) return
+        if (!settings.comments) return
         val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
         allSiblingLineComments.forEach {

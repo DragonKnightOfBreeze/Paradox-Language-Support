@@ -15,16 +15,16 @@ class ParadoxCsvFoldingBuilderTest : BasePlatformTestCase() {
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {
         val folding = PlsSettings.getInstance().state.folding
-        folding.comment = true
-        folding.commentByDefault = false
+        folding.comments = true
+        folding.commentsByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/csv/folding/folding_comment_expand_true.test.csv")
     }
 
     @Test
     fun testCommentFolding_expand_false_whenCollapsedByDefault() {
         val folding = PlsSettings.getInstance().state.folding
-        folding.comment = true
-        folding.commentByDefault = true
+        folding.comments = true
+        folding.commentsByDefault = true
         myFixture.testFoldingWithCollapseStatus("$testDataPath/csv/folding/folding_comment_expand_false.test.csv")
     }
 }

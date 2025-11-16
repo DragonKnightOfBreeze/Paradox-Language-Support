@@ -131,8 +131,8 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
     /**
      * 注意：某些折叠规则总是启用，不可配置。
      *
-     * @property comment 是否允许折叠多行注释。
-     * @property commentByDefault 是否默认折叠多行注释。
+     * @property comments 是否允许折叠多行注释。
+     * @property commentsByDefault 是否默认折叠多行注释。
      * @property parameterConditionBlocks 是否允许折叠参数条件表达式块。
      * @property parameterConditionBlocksByDefault 是否默认折叠参数条件表达式块。
      * @property inlineMathBlocks 是否允许折叠内联数学表达式块。
@@ -154,8 +154,8 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
      */
     @Tag("folding")
     class FoldingState : BaseState() {
-        var comment by property(false)
-        var commentByDefault by property(false)
+        var comments by property(false)
+        var commentsByDefault by property(false)
         var parameterConditionBlocks by property(true)
         var parameterConditionBlocksByDefault by property(true)
         var inlineMathBlocks by property(true)
