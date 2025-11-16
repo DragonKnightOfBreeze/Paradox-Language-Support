@@ -15,6 +15,7 @@ import com.intellij.util.application
 import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
@@ -94,7 +95,7 @@ object CwtConfigRepositoryManager {
     }
 
     fun isValidToSync(): Boolean {
-        val settings = PlsFacade.getConfigSettings().state
+        val settings = PlsConfigSettings.getInstance().state
         val valid = settings.enableRemoteConfigGroups
             && settings.remoteConfigDirectory.isNotNullOrEmpty()
             && settings.configRepositoryUrls.values.any { it.isNotNullOrEmpty() }
@@ -110,7 +111,7 @@ object CwtConfigRepositoryManager {
         // NOTE 这里需要先验证是否真的需要刷新
         if (!isValidToSync()) return
 
-        val settings = PlsFacade.getConfigSettings().state
+        val settings = PlsConfigSettings.getInstance().state
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 

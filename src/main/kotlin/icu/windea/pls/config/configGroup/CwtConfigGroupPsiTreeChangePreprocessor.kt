@@ -22,7 +22,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (file !is CwtFile) return
         val vFile = file.virtualFile ?: return
         val project = file.project
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = mutableSetOf<CwtConfigGroup>()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->

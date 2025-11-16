@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search.selector
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.thenPossible
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -10,6 +9,7 @@ import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.function.Function
 
@@ -31,8 +31,8 @@ class ChainedParadoxSelector<T>(
     val settings: ParadoxGameOrModSettingsState? by lazy {
         val rootInfo = file?.fileInfo?.rootInfo
         when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().state.gameSettings.get(rootInfo.rootFile.path)
-            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().state.modSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Game -> PlsProfilesSettings.getInstance().state.gameSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootInfo.rootFile.path)
             else -> null
         }
     }

@@ -1,13 +1,13 @@
 package icu.windea.pls.integrations.images.tools
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.quoteIfNecessary
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.util.OS
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.annotations.WithOS
 import icu.windea.pls.model.constants.PlsPathConstants
 import java.nio.file.Path
@@ -22,7 +22,7 @@ import kotlin.io.path.notExists
 @WithOS(OS.Windows, OS.Linux)
 class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
-        return PlsFacade.getIntegrationsSettings().state.image.enableMagick
+        return PlsIntegrationsSettings.getInstance().state.image.enableMagick
     }
 
     override fun isSupported(): Boolean {
@@ -30,7 +30,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     override fun isValid(): Boolean {
-        val toolPath = PlsFacade.getIntegrationsSettings().state.image.magickPath?.trim()
+        val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) return false
         return validatePath(toolPath)
     }
@@ -70,7 +70,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val toolPath = PlsFacade.getIntegrationsSettings().state.image.magickPath?.trim()
+        val toolPath = PlsIntegrationsSettings.getInstance().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) throw IllegalStateException()
 
         val tempParentPath = PlsPathConstants.imagesTemp

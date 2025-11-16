@@ -9,7 +9,6 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.core.util.toMutableEntryList
@@ -28,7 +27,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
 
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getConfigSettings().state
+        val settings = PlsConfigSettings.getInstance().state
         return panel {
             lateinit var cbRemote: JBCheckBox
             lateinit var cbLocal: JBCheckBox

@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.lang.psi.PlsPsiManager
@@ -37,7 +36,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsFacade.getSettings().state.folding
+        val settings = PlsSettings.getInstance().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
             BLOCK -> false
@@ -48,7 +47,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsFacade.getSettings().state.folding
+        val settings = PlsSettings.getInstance().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 

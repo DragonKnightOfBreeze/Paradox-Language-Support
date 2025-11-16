@@ -31,6 +31,7 @@ import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsStrategies
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
@@ -71,7 +72,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val fileDocumentManager = FileDocumentManager.getInstance()
                 val documentManager = PsiDocumentManager.getInstance(project)
 
-                val generationSettings = PlsFacade.getSettings().state.generation
+                val generationSettings = PlsSettings.getInstance().state.generation
                 val strategy = generationSettings.localisationStrategy
 
                 val specificText = generationSettings.localisationStrategyText.orEmpty()

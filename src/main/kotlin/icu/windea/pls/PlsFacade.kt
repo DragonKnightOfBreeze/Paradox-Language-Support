@@ -30,40 +30,30 @@ object PlsFacade {
     @Service(Service.Level.APP, Service.Level.PROJECT)
     private class CoroutineScopeService(val coroutineScope: CoroutineScope)
 
-    fun getCoroutineScope() = service<CoroutineScopeService>().coroutineScope
+    fun getCoroutineScope(): CoroutineScope = service<CoroutineScopeService>().coroutineScope
 
-    fun getCoroutineScope(project: Project) = project.service<CoroutineScopeService>().coroutineScope
+    fun getCoroutineScope(project: Project): CoroutineScope = project.service<CoroutineScopeService>().coroutineScope
 
     /**
-     * 得到默认项目的指定游戏类型的规则分组。不能用来访问 PSI。
+     * 得到默认项目的指定游戏类型的规则分组。不能用于 访问 PSI。
      *
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
     fun getConfigGroup(gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+        return CwtConfigGroupService.getInstance().getConfigGroup(finalGameType)
     }
 
     /**
      * 得到指定项目与游戏类型的规则分组。
      *
-     * @param project 指定的项目。如果是默认项目，则不能用来访问 PSI。
+     * @param project 指定的项目。如果是默认项目，则不能用于访问 PSI。
      * @param gameType 指定的游戏类型。如果是 `null` 或 [ParadoxGameType.Core]，则会得到共享的规则分组。
      */
     fun getConfigGroup(project: Project, gameType: ParadoxGameType? = null): CwtConfigGroup {
         val finalGameType = gameType ?: ParadoxGameType.Core
-        return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
+        return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
     }
-
-    fun getSettings() = service<PlsSettings>()
-
-    fun getConfigSettings() = service<PlsConfigSettings>()
-
-    fun getIntegrationsSettings() = service<PlsIntegrationsSettings>()
-
-    fun getProfilesSettings() = service<PlsProfilesSettings>()
-
-    fun getInternalSettings() = service<PlsInternalSettings>()
 
     fun createNotification(notificationType: NotificationType, content: String): Notification {
         return NotificationGroupManager.getInstance().getNotificationGroup("pls")

@@ -13,9 +13,9 @@ import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportRawProgress
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsAiFacade.isEnabled()
+        return super.isAvailable(e, project) && PlsAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {

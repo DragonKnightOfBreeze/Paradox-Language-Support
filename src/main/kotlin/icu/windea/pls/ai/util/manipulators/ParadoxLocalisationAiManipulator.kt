@@ -11,12 +11,14 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
 import icu.windea.pls.ai.providers.ChatModelProviderType
+import icu.windea.pls.ai.services.PolishLocalisationAiService
+import icu.windea.pls.ai.services.TranslateLocalisationAiService
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.smaller
 import icu.windea.pls.core.smallerFont
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
@@ -27,13 +29,13 @@ import kotlin.contracts.contract
 
 object ParadoxLocalisationAiManipulator {
     suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        val aiService = PlsAiFacade.getTranslateLocalisationService()
+        val aiService = TranslateLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
         collectResultFlow(request, resultFlow, callback)
     }
 
     suspend fun handleTextWithAiPolishing(request: PolishLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        val aiService = PlsAiFacade.getPolishLocalisationService()
+        val aiService = PolishLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
         collectResultFlow(request, resultFlow, callback)
     }
@@ -77,7 +79,7 @@ object ParadoxLocalisationAiManipulator {
         val textField = JBTextField().apply { addActionListener { submitted.set(true) } } // 目前不使用 TextFieldWithStoredHistory
 
         // 需要在 UI 发生变化时就更新设置
-        val settings = PlsAiFacade.getSettings().state
+        val settings = PlsAiSettings.getInstance().state
         val providerType = AtomicProperty(settings.providerType).apply { afterChange { settings.providerType = it } }
 
         val panel = panel {

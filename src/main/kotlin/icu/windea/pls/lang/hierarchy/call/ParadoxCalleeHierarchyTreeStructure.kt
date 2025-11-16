@@ -9,7 +9,6 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.tree.LeafState
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.resolve.ParadoxInlineService
@@ -54,7 +53,7 @@ class ParadoxCalleeHierarchyTreeStructure(
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
+        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)

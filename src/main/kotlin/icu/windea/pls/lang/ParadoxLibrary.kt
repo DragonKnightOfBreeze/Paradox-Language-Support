@@ -12,6 +12,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 import kotlinx.coroutines.launch
 import javax.swing.Icon
@@ -37,7 +38,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         // 这里仅需要收集不在项目中的游戏目录和模组目录
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val profilesSettings = PlsFacade.getProfilesSettings().state
+        val profilesSettings = PlsProfilesSettings.getInstance().state
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
             val modFile = modDirectory.toVirtualFile(false) ?: return@f

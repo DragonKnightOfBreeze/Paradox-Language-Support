@@ -3,6 +3,7 @@
 package icu.windea.pls.ai.services
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.logger
 import dev.langchain4j.data.message.SystemMessage
@@ -22,8 +23,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-
-private val logger = logger<TranslateLocalisationAiService>()
 
 @Service
 class TranslateLocalisationAiService : ManipulateLocalisationAiService<TranslateLocalisationAiRequest>() {
@@ -71,5 +70,12 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
         val text = PlsPrompts.fromLocalisationContexts(chunk)
         logger.debug { "${request.logPrefix} User message: \n$text" }
         return UserMessage.from(text)
+    }
+
+    companion object {
+        private val logger = logger<TranslateLocalisationAiService>()
+
+        @JvmStatic
+        fun getInstance(): TranslateLocalisationAiService = service()
     }
 }

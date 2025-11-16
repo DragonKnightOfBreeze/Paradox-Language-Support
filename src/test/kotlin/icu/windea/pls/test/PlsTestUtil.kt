@@ -1,6 +1,5 @@
 package icu.windea.pls.test
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -15,20 +14,20 @@ import kotlinx.coroutines.runBlocking
 
 object PlsTestUtil {
     fun initConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val groups = configGroupService.getConfigGroups().values
         runBlocking { configGroupService.init(groups, project) }
         return configGroupService.getConfigGroup(gameType)
     }
 
     fun initConfigGroups(project: Project) {
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values
         runBlocking { configGroupService.init(configGroups, project) }
     }
 
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values
             .filter { it.gameType == ParadoxGameType.Core || it.gameType in gameTypes }
         runBlocking { configGroupService.init(configGroups, project) }

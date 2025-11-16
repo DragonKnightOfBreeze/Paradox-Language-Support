@@ -11,7 +11,6 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
@@ -28,7 +27,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getIntegrationsSettings().state
+        val settings = PlsIntegrationsSettings.getInstance().state
         return panel {
             // image tools
             group(PlsBundle.message("settings.integrations.image")) {

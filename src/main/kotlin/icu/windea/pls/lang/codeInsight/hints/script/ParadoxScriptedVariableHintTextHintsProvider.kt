@@ -14,11 +14,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider.*
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import javax.swing.JComponent
@@ -33,8 +33,8 @@ import javax.swing.JComponent
  */
 class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimitForInlay,
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay,
+        var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
+        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxScriptedVariableLocalizedNameHintsSettingsKey")

@@ -1,7 +1,6 @@
 package icu.windea.pls.csv.navigation
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.truncate
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -10,6 +9,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.csv.psi.ParadoxCsvRowElement
 import icu.windea.pls.csv.psi.getHeaderColumn
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.model.constants.PlsStringConstants
 import javax.swing.Icon
 
@@ -60,7 +60,7 @@ object ParadoxCsvNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsFacade.getInternalSettings().textLengthLimitForPresentation)
+            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

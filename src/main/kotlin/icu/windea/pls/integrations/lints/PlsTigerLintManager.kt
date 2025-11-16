@@ -18,11 +18,13 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.reflect.KMutableProperty0
@@ -35,7 +37,7 @@ object PlsTigerLintManager {
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     val modificationTrackers = mutableMapOf<ParadoxGameType, SimpleModificationTracker>().withDefault { SimpleModificationTracker() }
 
-    fun isEnabled(): Boolean = PlsFacade.getIntegrationsSettings().state.lint.enableTiger
+    fun isEnabled(): Boolean = PlsIntegrationsSettings.getInstance().state.lint.enableTiger
 
     fun findTigerTool(gameType: ParadoxGameType): PlsTigerLintToolProvider? {
         if (!isEnabled()) return null
@@ -48,7 +50,7 @@ object PlsTigerLintManager {
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）
-        val settings = PlsFacade.getProfilesSettings().getGameOrModSettings(rootInfo)
+        val settings = PlsProfilesSettings.getInstance().getGameOrModSettings(rootInfo)
         if (settings?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         return findTigerTool(gameType) != null
@@ -152,7 +154,7 @@ object PlsTigerLintManager {
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
     fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<PlsLintHighlightSeverity> {
-        val mapping = PlsFacade.getIntegrationsSettings().state.lint.tigerHighlight
+        val mapping = PlsIntegrationsSettings.getInstance().state.lint.tigerHighlight
         return when (severity) {
             Severity.TIPS -> when (confidence) {
                 Confidence.WEAK -> mapping::tipsWeak

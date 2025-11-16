@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
@@ -38,6 +37,7 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -191,7 +191,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
-        if (!PlsFacade.getSettings().state.inference.configContextForInlineScripts) return emptyList()
+        if (!PlsSettings.getInstance().state.inference.configContextForInlineScripts) return emptyList()
         return withRecursionGuard {
             withRecursionCheck(expression) {
                 context.inlineScriptHasConflict = false
@@ -219,7 +219,7 @@ object ParadoxInlineScriptManager {
 
     private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
-        val fastInference = PlsFacade.getSettings().state.inference.configContextForInlineScriptsFast
+        val fastInference = PlsSettings.getInstance().state.inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()

@@ -14,7 +14,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.lang.isParameterized
@@ -24,6 +23,7 @@ import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -40,8 +40,8 @@ import javax.swing.JComponent
  */
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimitForInlay,
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay,
+        var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
+        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")

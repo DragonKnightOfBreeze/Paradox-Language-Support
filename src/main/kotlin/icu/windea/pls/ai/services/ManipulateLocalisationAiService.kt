@@ -2,20 +2,20 @@ package icu.windea.pls.ai.services
 
 import dev.langchain4j.memory.ChatMemory
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.settings.PlsAiSettings
 import kotlinx.coroutines.flow.Flow
 
 abstract class ManipulateLocalisationAiService<R : ManipulateLocalisationAiRequest> : AiService {
     abstract fun manipulate(request: R): Flow<LocalisationAiResult>?
 
     protected fun getChunkSize(): Int {
-        return PlsAiFacade.getSettings().state.features.localisationChunkSize.coerceAtLeast(1)
+        return PlsAiSettings.getInstance().state.features.localisationChunkSize.coerceAtLeast(1)
     }
 
     protected fun getMemorySize(): Int {
-        return PlsAiFacade.getSettings().state.features.localisationMemorySize.coerceAtLeast(0)
+        return PlsAiSettings.getInstance().state.features.localisationMemorySize.coerceAtLeast(0)
     }
 
     protected fun getMemory(): ChatMemory {

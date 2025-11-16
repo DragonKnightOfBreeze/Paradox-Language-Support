@@ -5,8 +5,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
+import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.model.constants.PlsConstants
@@ -17,6 +19,11 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.APP)
 @State(name = "PlsIntegrationsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSettings.State>(State()) {
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsIntegrationsSettings = service()
+    }
+
     /**
      * @property image 图片工具的设置。
      * @property lint 检查工具的设置。

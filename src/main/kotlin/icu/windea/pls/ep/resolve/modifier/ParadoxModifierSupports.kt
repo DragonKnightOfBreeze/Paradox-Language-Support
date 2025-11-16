@@ -50,6 +50,7 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -113,7 +114,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 
             // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
@@ -183,7 +184,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
             // 排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
@@ -393,7 +394,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name

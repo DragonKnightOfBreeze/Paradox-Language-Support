@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.data.mockVariableConfig
 import icu.windea.pls.core.castOrNull
@@ -24,6 +23,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.findParentProperty
@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.isBlockMember
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().state.completion.completeVariableNames) return
+        if (!PlsSettings.getInstance().state.completion.completeVariableNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return

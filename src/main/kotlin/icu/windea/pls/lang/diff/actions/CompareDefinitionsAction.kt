@@ -47,6 +47,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
@@ -90,7 +91,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }

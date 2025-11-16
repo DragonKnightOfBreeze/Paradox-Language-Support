@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.listeners
 
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.ParadoxGameDescriptorSettingsState
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
@@ -21,7 +21,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     }
 
     private fun addGameSettings(rootInfo: ParadoxRootInfo.Game) {
-        val settings = PlsFacade.getProfilesSettings().state
+        val settings = PlsProfilesSettings.getInstance().state
         val gameFile = rootInfo.rootFile
         val gameDirectory = gameFile.path
         var gameDescriptorSettings = settings.gameDescriptorSettings.get(gameDirectory)
@@ -48,7 +48,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     }
 
     private fun addModSettings(rootInfo: ParadoxRootInfo.Mod) {
-        val settings = PlsFacade.getProfilesSettings().state
+        val settings = PlsProfilesSettings.getInstance().state
         val modFile = rootInfo.rootFile
         val modDirectory = modFile.path
         var modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)

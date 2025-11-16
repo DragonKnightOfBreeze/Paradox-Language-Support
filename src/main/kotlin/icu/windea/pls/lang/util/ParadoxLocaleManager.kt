@@ -6,6 +6,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.pinned
 import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.settings.PlsSettings
 
 object ParadoxLocaleManager {
     const val ID_AUTO = "auto"
@@ -14,7 +15,7 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocaleConfig {
-        return getResolvedLocaleConfig(PlsFacade.getSettings().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
+        return getResolvedLocaleConfig(PlsSettings.getInstance().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {

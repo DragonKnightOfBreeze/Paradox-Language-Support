@@ -9,13 +9,14 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.toMutableEntryList
 import icu.windea.pls.core.util.toMutableMap
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.settings.DefaultGameDirectoriesDialog
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -36,7 +37,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
         if (!isInProject) return null
 
-        val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path) ?: return null
+        val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path) ?: return null
         if (modSettings.finalGameDirectory.isNotNullOrEmpty()) return null
 
         return Function f@{ fileEditor ->
@@ -48,7 +49,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
                 dialog.show()
             }
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
-                val settings = PlsFacade.getSettings().state
+                val settings = PlsSettings.getInstance().state
                 val defaultGameDirectories = settings.defaultGameDirectories
                 ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = defaultGameDirectories.toMutableEntryList()

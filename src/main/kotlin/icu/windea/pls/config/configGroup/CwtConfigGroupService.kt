@@ -4,6 +4,7 @@ import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
 import com.intellij.openapi.project.Project
@@ -17,12 +18,11 @@ import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-
-private val logger = logger<CwtConfigGroupService>()
 
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
@@ -32,10 +32,6 @@ private val logger = logger<CwtConfigGroupService>()
 class CwtConfigGroupService(
     private val project: Project = getDefaultProject()
 ) : Disposable {
-    object Keys : KeyRegistry() {
-        val defaultConfigGroup = createKey<Map<ParadoxGameType, CwtConfigGroup>>("pls.default.configGroup")
-    }
-
     private var cache = createConfigGroups()
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
@@ -173,10 +169,10 @@ class CwtConfigGroupService(
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
-        PlsFacade.getProfilesSettings().state.gameDescriptorSettings.values
+        PlsProfilesSettings.getInstance().state.gameDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.gameDirectory }
-        PlsFacade.getProfilesSettings().state.modDescriptorSettings.values
+        PlsProfilesSettings.getInstance().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
         return rootFilePaths
@@ -192,5 +188,19 @@ class CwtConfigGroupService(
         // 清理规则分组数据
         cache.values.forEach { it.clear() }
         cache = emptyMap()
+    }
+
+    object Keys : KeyRegistry() {
+        val defaultConfigGroup = createKey<Map<ParadoxGameType, CwtConfigGroup>>("pls.default.configGroup")
+    }
+
+    companion object {
+        private val logger = logger<CwtConfigGroupService>()
+
+        @JvmStatic
+        fun getInstance(): CwtConfigGroupService = service()
+
+        @JvmStatic
+        fun getInstance(project: Project): CwtConfigGroupService = project.service()
     }
 }

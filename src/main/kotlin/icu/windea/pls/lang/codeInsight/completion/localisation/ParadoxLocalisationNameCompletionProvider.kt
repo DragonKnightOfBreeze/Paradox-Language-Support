@@ -7,7 +7,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.LimitedCompletionProcessor
 import icu.windea.pls.core.icon
@@ -17,6 +16,7 @@ import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -29,7 +29,7 @@ import java.util.concurrent.Callable
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().state.completion.completeLocalisationNames) return
+        if (!PlsSettings.getInstance().state.completion.completeLocalisationNames) return
 
         val position = parameters.position
         if (ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return

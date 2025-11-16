@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  * 规则分组会在获取时就保证已经被创建，而其中的规则数据的初始化是在打开 IDE 或项目时异步进行的。
  *
- * @property project 对应的项目。如果是默认项目，则不能用来访问 PSI。
+ * @property project 对应的项目。如果是默认项目，则不能用于访问 PSI。
  * @property gameType 对应的游戏类型。如果是 [ParadoxGameType.Core]，则为共享的规则分组。
  *
  * @see CwtConfigGroupService

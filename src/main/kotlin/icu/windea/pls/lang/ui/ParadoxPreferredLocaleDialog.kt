@@ -3,7 +3,7 @@ package icu.windea.pls.lang.ui
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
@@ -14,7 +14,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
 
     override fun createCenterPanel() = panel {
         row {
-            val settings = PlsFacade.getSettings().state
+            val settings = PlsSettings.getInstance().state
             localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     refreshForOpenedFiles()

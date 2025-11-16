@@ -8,8 +8,8 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.PlsStates
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -32,7 +32,7 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
         consumer: Processor<in PsiElement>
     ) {
         // 检查是否启用
-        if (!PlsFacade.getSettings().state.navigation.seForTextBasedTargets) return
+        if (!PlsSettings.getInstance().state.navigation.seForTextBasedTargets) return
 
         // #141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
         if (PlsStates.resolveForMergedIndex.get() == true) return
@@ -98,7 +98,7 @@ abstract class ParadoxTextBasedTargetSearcher : QueryExecutorBase<PsiElement, Pa
         val processedTargets: MutableSet<ParadoxTargetInfo> = ConcurrentHashMap.newKeySet()
 
         val types = queryParameters.types
-        val settings = PlsFacade.getSettings().state.navigation
+        val settings = PlsSettings.getInstance().state.navigation
         val includeScriptedVariables = types == null || ParadoxSearchTargetType.ScriptedVariable in types
         val includeDefinitions = types == null || ParadoxSearchTargetType.Definition in types
         val includeLocalisations = types == null || ParadoxSearchTargetType.Localisation in types

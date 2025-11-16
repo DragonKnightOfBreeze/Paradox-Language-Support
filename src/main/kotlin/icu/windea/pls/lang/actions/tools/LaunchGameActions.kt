@@ -3,7 +3,7 @@ package icu.windea.pls.lang.actions.tools
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.tools.ParadoxLaunchGameService
 
 interface LaunchGameActions {
@@ -15,7 +15,7 @@ interface LaunchGameActions {
         override fun update(e: AnActionEvent) {
             // 判断是否需要显示在编辑器工具栏中
             if (e.place == ActionPlaces.EDITOR_TOOLBAR) {
-                val show = PlsFacade.getSettings().state.others.showLaunchGameActionInEditorContextToolbar
+                val show = PlsSettings.getInstance().state.others.showLaunchGameActionInEditorContextToolbar
                 e.presentation.isEnabledAndVisible = show
                 if (!show) return
             }

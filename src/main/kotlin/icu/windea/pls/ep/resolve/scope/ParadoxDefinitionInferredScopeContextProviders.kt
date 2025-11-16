@@ -8,7 +8,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.data.definitionScopeContextModificationTracker
@@ -28,6 +27,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.lang.util.dataFlow.options
@@ -57,7 +57,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().state.inference.scopeContext) return null
+        if (!PlsSettings.getInstance().state.inference.scopeContext) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -163,7 +163,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().state.inference.scopeContextForEvents) return null
+        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -272,7 +272,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().state.inference.scopeContextForEvents) return null
+        if (!PlsSettings.getInstance().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -419,7 +419,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().state.inference.scopeContextForOnActions) return null
+        if (!PlsSettings.getInstance().state.inference.scopeContextForOnActions) return null
         return doGetScopeContextFromCache(definition)
     }
 

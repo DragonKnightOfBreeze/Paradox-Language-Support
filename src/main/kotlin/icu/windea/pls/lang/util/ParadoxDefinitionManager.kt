@@ -22,6 +22,7 @@ import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -94,7 +95,7 @@ object ParadoxDefinitionManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
-        val elementPath = ParadoxScriptService.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null

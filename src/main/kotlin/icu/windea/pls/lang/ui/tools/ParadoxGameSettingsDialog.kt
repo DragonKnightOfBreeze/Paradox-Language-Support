@@ -9,13 +9,13 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.listeners.ParadoxGameSettingsListener
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
@@ -95,7 +95,7 @@ class ParadoxGameSettingsDialog(
         super.doOKAction()
 
         settings.modDependencies = modDependencies
-        PlsFacade.getProfilesSettings().state.updateSettings()
+        PlsProfilesSettings.getInstance().state.updateSettings()
         application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 

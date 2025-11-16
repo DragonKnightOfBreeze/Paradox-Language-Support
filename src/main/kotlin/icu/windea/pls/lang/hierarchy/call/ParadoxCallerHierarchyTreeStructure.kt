@@ -10,7 +10,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.parentOfType
 import com.intellij.ui.tree.LeafState
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
@@ -50,7 +49,7 @@ class ParadoxCallerHierarchyTreeStructure(
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
+        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)

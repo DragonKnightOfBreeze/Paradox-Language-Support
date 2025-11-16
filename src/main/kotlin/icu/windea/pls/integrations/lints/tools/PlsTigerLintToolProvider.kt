@@ -3,7 +3,6 @@ package icu.windea.pls.integrations.lints.tools
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.quote
@@ -11,7 +10,9 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toUuidString
 import icu.windea.pls.integrations.lints.PlsTigerLintResult
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
 import icu.windea.pls.lang.rootInfo
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsPathConstants
@@ -31,7 +32,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     abstract val confPath: String?
 
     final override fun isEnabled(): Boolean {
-        return PlsFacade.getIntegrationsSettings().state.lint.enableTiger
+        return PlsIntegrationsSettings.getInstance().state.lint.enableTiger
     }
 
     final override fun isSupported(gameType: ParadoxGameType?): Boolean {
@@ -80,7 +81,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         if (rootInfo !is ParadoxRootInfo.Mod) return null
         val rootFile = rootInfo.rootFile
         val rootPath = rootFile.path
-        val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootPath)
+        val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootPath)
         val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote('\'')
         val argConfPath = confPath?.orNull()?.quote('\'')
         val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
@@ -107,21 +108,21 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     class Ck3 : PlsTigerLintToolProvider() {
         override val name: String = "ck3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.ck3TigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.ck3TigerConfPath
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.ck3TigerConfPath
     }
 
     class Ir : PlsTigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.irTigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.irTigerConfPath
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.irTigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.irTigerConfPath
     }
 
     class Vic3 : PlsTigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.vic3TigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.vic3TigerConfPath
+        override val exePath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.vic3TigerPath
+        override val confPath: String? get() = PlsIntegrationsSettings.getInstance().state.lint.vic3TigerConfPath
     }
 }

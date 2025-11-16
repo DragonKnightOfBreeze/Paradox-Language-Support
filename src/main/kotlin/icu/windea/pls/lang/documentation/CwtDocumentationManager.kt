@@ -53,6 +53,7 @@ import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -214,7 +215,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsFacade.getSettings().state.documentation.renderNameDescForModifiers
+        val render = PlsSettings.getInstance().state.documentation.renderNameDescForModifiers
         val contextElement = referenceElement
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -269,7 +270,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsFacade.getSettings().state.documentation.renderIconForModifiers
+        val render = PlsSettings.getInstance().state.documentation.renderIconForModifiers
         val contextElement = referenceElement
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -303,7 +304,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
         // 即使是在CWT文件中，如果可以推断得到规则分组，也显示作用域信息
 
-        if (!PlsFacade.getSettings().state.documentation.showScopes) return
+        if (!PlsSettings.getInstance().state.documentation.showScopes) return
 
         // 为 `link` 提示名字、描述、输入作用域、输出作用域的文档注释
         // 为 `alias` `modifier` `localisation_command` 等提供分类、支持的作用域的文档注释
@@ -392,7 +393,7 @@ object CwtDocumentationManager {
         // @Suppress("DEPRECATION")
         // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        if (!PlsFacade.getSettings().state.documentation.showScopeContext) return
+        if (!PlsSettings.getInstance().state.documentation.showScopeContext) return
 
         val sections = getSections(0) ?: return
         val gameType = configGroup.gameType

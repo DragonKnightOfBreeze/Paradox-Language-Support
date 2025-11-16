@@ -2,8 +2,9 @@ package icu.windea.pls.ep.metadata
 
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
@@ -44,8 +45,8 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsFacade.getSettings().state.defaultGameType
+                ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsSettings.getInstance().state.defaultGameType
         }
     }
 }
@@ -95,8 +96,8 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsFacade.getSettings().state.defaultGameType
+                ?: PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsSettings.getInstance().state.defaultGameType
         }
     }
 }

@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.actions.tools
 
 import com.intellij.openapi.project.Project
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.ParadoxGameSettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.ui.tools.ParadoxGameSettingsDialog
 import icu.windea.pls.lang.ui.tools.ParadoxModSettingsDialog
 import icu.windea.pls.model.ParadoxRootInfo
@@ -23,7 +23,7 @@ interface OpenSettingsActions {
         override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return
             val rootPath = rootInfo.rootFile.path
-            val gameSettings = PlsFacade.getProfilesSettings().state.gameSettings.get(rootPath) ?: return
+            val gameSettings = PlsProfilesSettings.getInstance().state.gameSettings.get(rootPath) ?: return
             val dialog = ParadoxGameSettingsDialog(project, gameSettings)
             dialog.show()
         }
@@ -43,7 +43,7 @@ interface OpenSettingsActions {
         override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return
             val rootPath = rootInfo.rootFile.path
-            val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootPath) ?: return
+            val modSettings = PlsProfilesSettings.getInstance().state.modSettings.get(rootPath) ?: return
             val dialog = ParadoxModSettingsDialog(project, modSettings)
             dialog.show()
         }

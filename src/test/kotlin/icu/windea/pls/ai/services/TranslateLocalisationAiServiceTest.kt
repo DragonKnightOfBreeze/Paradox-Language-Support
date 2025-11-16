@@ -3,7 +3,6 @@ package icu.windea.pls.ai.services
 import com.intellij.openapi.application.runReadAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
@@ -44,7 +43,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
         val elements = ParadoxLocalisationManipulator.buildSequence(file)
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
         val request = TranslateLocalisationAiRequest(file.project, file, contexts, CwtLocaleConfig.resolveFallback(), null)
-        val aiService = PlsAiFacade.getTranslateLocalisationService()
+        val aiService = TranslateLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
         runBlocking {
             ParadoxLocalisationAiManipulator.collectResultFlow(request, resultFlow)

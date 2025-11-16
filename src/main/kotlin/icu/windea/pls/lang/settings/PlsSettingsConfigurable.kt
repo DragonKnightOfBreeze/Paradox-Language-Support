@@ -10,7 +10,6 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.selected
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toCommaDelimitedString
 import icu.windea.pls.core.toCommaDelimitedStringList
 import icu.windea.pls.core.util.CallbackLock
@@ -34,7 +33,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     @Suppress("AssignedValueIsNeverRead")
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getSettings().state
+        val settings = PlsSettings.getInstance().state
         val gameTypes = ParadoxGameType.getAll()
         return panel {
             // general

@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
@@ -19,6 +18,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -140,7 +140,7 @@ class ParadoxLocalisationTextInlayRenderer(
         // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
         return renderWithColorTo(color) {
             var continueProcess = true
             for (richText in richTextList) {
@@ -157,7 +157,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
             // 如果处理文本失败，则使用原始文本
             // 直接解析为本地化（或者封装变量）以优化性能
@@ -236,7 +236,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
             // 直接显示命令文本，适用对应的颜色高亮
             // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）

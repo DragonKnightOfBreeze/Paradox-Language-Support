@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createPointer
@@ -19,6 +18,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
@@ -85,7 +85,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsFacade.getSettings().state.hierarchy.eventTreeGrouping
+        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.eventTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -120,7 +120,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsFacade.getSettings().state.hierarchy.techTreeGrouping
+        val groupingStrategy = PlsSettings.getInstance().state.hierarchy.techTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {

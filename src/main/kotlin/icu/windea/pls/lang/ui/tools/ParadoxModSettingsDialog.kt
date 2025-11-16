@@ -10,7 +10,6 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.PlsIntegrationConstants
@@ -20,6 +19,8 @@ import icu.windea.pls.lang.listeners.ParadoxModGameTypeListener
 import icu.windea.pls.lang.listeners.ParadoxModSettingsListener
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxCoreManager
 import icu.windea.pls.model.ParadoxGameType
 
@@ -32,7 +33,7 @@ class ParadoxModSettingsDialog(
 
     val oldGameType = settings.finalGameType
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
-    val defaultGameDirectory get() = PlsFacade.getSettings().state.defaultGameDirectories[oldGameType.id]
+    val defaultGameDirectory get() = PlsSettings.getInstance().state.defaultGameDirectories[oldGameType.id]
 
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(oldGameType)
@@ -165,7 +166,7 @@ class ParadoxModSettingsDialog(
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
-        PlsFacade.getProfilesSettings().state.updateSettings()
+        PlsProfilesSettings.getInstance().state.updateSettings()
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
         if (oldGameType != settings.gameType) {

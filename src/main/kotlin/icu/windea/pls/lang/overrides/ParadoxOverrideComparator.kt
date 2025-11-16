@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.overrides
 
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxSearchParameters
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -31,8 +31,8 @@ class ParadoxOverrideComparator<T>(
         val rootFile = searchParameters.selector.rootFile
         val rootInfo = rootFile?.fileInfo?.rootInfo
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().state.gameSettings.get(rootFile.path)
-            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path)
+            is ParadoxRootInfo.Game -> PlsProfilesSettings.getInstance().state.gameSettings.get(rootFile.path)
+            is ParadoxRootInfo.Mod -> PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
             else -> null
         }
     }

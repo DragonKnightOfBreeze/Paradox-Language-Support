@@ -1,13 +1,13 @@
 package icu.windea.pls.cwt.navigation
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.truncate
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import javax.swing.Icon
 
 object CwtNavigationManager {
@@ -50,7 +50,7 @@ object CwtNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsFacade.getInternalSettings().textLengthLimitForPresentation)
+            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

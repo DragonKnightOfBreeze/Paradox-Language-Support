@@ -13,7 +13,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
@@ -25,6 +24,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -38,7 +38,7 @@ import javax.swing.JComponent
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay
+        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")

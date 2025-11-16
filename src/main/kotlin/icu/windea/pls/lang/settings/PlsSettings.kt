@@ -5,6 +5,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.core.toCommaDelimitedStringSet
@@ -22,6 +23,11 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.APP)
 @State(name = "PlsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsSettings = service()
+    }
+
     /**
      * @property defaultGameType 默认的游戏类型。
      * @property defaultGameDirectories 默认的游戏目录映射。

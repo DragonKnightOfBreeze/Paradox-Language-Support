@@ -8,8 +8,8 @@ import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ai.PlsAiConstants
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.providers.ChatModelProvider.*
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope
@@ -120,7 +120,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
         )
 
         class AtomicProperties {
-            private val settings = PlsAiFacade.getSettings().state.anthropic
+            private val settings = PlsAiSettings.getInstance().state.anthropic
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

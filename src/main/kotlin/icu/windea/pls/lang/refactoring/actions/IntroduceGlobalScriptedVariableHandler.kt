@@ -12,12 +12,12 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -47,7 +47,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
 
         // 打开对话框
         val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return true // 不期望的结果
-        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsFacade.getInternalSettings().defaultScriptedVariableName)
+        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsInternalSettings.getInstance().defaultScriptedVariableName)
         if (!dialog.showAndGet()) return true // 取消
 
         val variableName = dialog.variableName

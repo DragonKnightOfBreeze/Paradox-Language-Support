@@ -17,7 +17,6 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
@@ -25,6 +24,7 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
@@ -44,7 +44,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        val name = PlsFacade.getInternalSettings().defaultScriptedVariableName
+        val name = PlsInternalSettings.getInstance().defaultScriptedVariableName
 
         // 将光标移到所在PSI元素的结束位置并选中
         editor.caretModel.moveToOffset(element.endOffset)

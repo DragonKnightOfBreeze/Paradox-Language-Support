@@ -4,7 +4,6 @@ import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.plugins.DynamicPluginListener
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VfsUtil
@@ -90,13 +89,13 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     private fun initDefaultConfigGroupsAsync() {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
-        service<CwtConfigGroupService>().initAsync()
+        CwtConfigGroupService.getInstance().initAsync()
     }
 
     private fun initConfigGroupsAsync(project: Project) {
         if (PlsFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         if (project.isDisposed) return
-        project.service<CwtConfigGroupService>().initAsync {
+        CwtConfigGroupService.getInstance(project).initAsync {
             // 重新解析已打开的文件
             val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
             PlsAnalyzeManager.reparseFiles(openedFiles)

@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.TextAttributes
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.lang.settings.PlsSettings
 import java.awt.Color
 
 object ParadoxLocalisationAttributesKeys {
@@ -86,7 +86,7 @@ object ParadoxLocalisationAttributesKeys {
 
     @JvmStatic
     fun getColorKey(color: Color): TextAttributesKey? {
-        if (!PlsFacade.getSettings().state.others.highlightLocalisationColorId) return null
+        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
         return colorKeyCache.get(color)
     }
 
@@ -98,7 +98,7 @@ object ParadoxLocalisationAttributesKeys {
 
     @JvmStatic
     fun getColorOnlyKey(color: Color): TextAttributesKey? {
-        if (!PlsFacade.getSettings().state.others.highlightLocalisationColorId) return null
+        if (!PlsSettings.getInstance().state.others.highlightLocalisationColorId) return null
         return colorOnlyKeyCache.get(color)
     }
 }

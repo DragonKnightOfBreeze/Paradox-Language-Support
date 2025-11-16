@@ -13,13 +13,13 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -33,7 +33,7 @@ import javax.swing.JComponent
  */
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimitForInlay
+        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")

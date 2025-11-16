@@ -2,11 +2,11 @@ package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
@@ -24,7 +24,7 @@ abstract class ManipulateLocalisationAiRequest(
         variables["index"] = index
         variables["total"] = localisationContexts.size
 
-        val gameType = selectGameType(file) ?: PlsFacade.getSettings().state.defaultGameType
+        val gameType = selectGameType(file) ?: PlsSettings.getInstance().state.defaultGameType
         val fileInfo: ParadoxFileInfo? by lazy { selectFile(file)?.fileInfo }
         variables["game_type_id"] = gameType.id
         variables["game_type_title"] = gameType.title

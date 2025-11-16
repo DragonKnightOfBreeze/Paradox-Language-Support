@@ -10,13 +10,13 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.locale
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
@@ -168,7 +168,7 @@ object ParadoxLocalisationGenerator {
         append(indent)
         append(localisationName)
         append(": \"")
-        val generationSettings = PlsFacade.getSettings().state.generation
+        val generationSettings = PlsSettings.getInstance().state.generation
         val strategy = generationSettings.localisationStrategy
         val text = when (strategy) {
             LocalisationGenerationStrategy.EmptyText -> ""

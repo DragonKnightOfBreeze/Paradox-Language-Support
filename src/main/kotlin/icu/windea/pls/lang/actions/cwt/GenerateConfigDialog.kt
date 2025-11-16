@@ -13,13 +13,13 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.util.generators.CwtConfigGenerator
 import icu.windea.pls.config.util.generators.CwtConfigGeneratorUtil
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
@@ -44,7 +44,7 @@ class GenerateConfigDialog(
     private val inputPathRecentKeys = "Pls.ConfigGeneration.inputPath.RECENT_KEYS.${generator.getName()}"
     private val outputPathRecentKeys = "Pls.ConfigGeneration.outputPath.RECENT_KEYS.${generator.getName()}"
 
-    private val gameTypeProperty = AtomicProperty(PlsFacade.getSettings().state.defaultGameType)
+    private val gameTypeProperty = AtomicProperty(PlsSettings.getInstance().state.defaultGameType)
     private val inputPathProperty = AtomicProperty(getDefaultInputPath())
     private val outputPathProperty = AtomicProperty(getDefaultOutputPath())
 

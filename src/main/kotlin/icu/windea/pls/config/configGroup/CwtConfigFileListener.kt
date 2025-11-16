@@ -57,7 +57,7 @@ class CwtConfigFileListener : AsyncFileListener {
 
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
                 ProjectManager.getInstance().openProjects.forEach f1@{ project ->
-                    val configGroupService = project.service<CwtConfigGroupService>()
+                    val configGroupService = CwtConfigGroupService.getInstance(project)
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
                         if (fileProvider is CwtBuiltInConfigGroupFileProvider) return@f2

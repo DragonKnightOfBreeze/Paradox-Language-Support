@@ -8,7 +8,6 @@ import com.intellij.openapi.util.Comparing
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.PlsDocBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.orNull
@@ -17,6 +16,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
@@ -50,7 +50,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
+        val hierarchySettings = PlsSettings.getInstance().state.hierarchy
         val name = name.or.anonymous()
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {

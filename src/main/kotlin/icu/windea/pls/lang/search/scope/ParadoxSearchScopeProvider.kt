@@ -7,11 +7,11 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.SearchScopeProvider
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.injection.PlsInjectionManager
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
@@ -30,7 +30,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(contextFile)
         when {
             rootInfo is ParadoxRootInfo.Game -> {
-                val settings = PlsFacade.getProfilesSettings().state.gameSettings.get(rootFile.path)
+                val settings = PlsProfilesSettings.getInstance().state.gameSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val gameDirectory = rootFile
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
@@ -42,7 +42,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 return result
             }
             rootInfo is ParadoxRootInfo.Mod -> {
-                val settings = PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path)
+                val settings = PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.finalGameDirectory?.toVirtualFile(false)

@@ -17,11 +17,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.Processor
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.psi.mock.NavigationPsiElement
 import icu.windea.pls.lang.search.target.ParadoxTextBasedTargetSearch
+import icu.windea.pls.lang.settings.PlsSettings
 
 /**
  * 提供基于本地化文本片段的随处搜索（Search Everywhere）。
@@ -95,7 +95,7 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {
-        override fun isAvailable(project: Project?) = PlsFacade.getSettings().state.navigation.seForTextBasedTargets
+        override fun isAvailable(project: Project?) = PlsSettings.getInstance().state.navigation.seForTextBasedTargets
 
         override fun createContributor(initEvent: AnActionEvent): ParadoxTextBasedTargetSearchContributor {
             return ParadoxTextBasedTargetSearchContributor(initEvent)

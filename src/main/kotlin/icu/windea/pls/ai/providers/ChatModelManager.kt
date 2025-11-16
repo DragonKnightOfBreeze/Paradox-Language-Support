@@ -3,14 +3,14 @@ package icu.windea.pls.ai.providers
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.StreamingChatModel
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.settings.PlsAiSettings
 
 @Suppress("unused")
 object ChatModelManager {
     fun getProviderType(): ChatModelProviderType {
         return when {
             PlsFacade.isUnitTestMode() -> ChatModelProviderType.resolve(System.getProperty("pls.ai.providerType", "OPEN_AI"))
-            else -> PlsAiFacade.getSettings().state.providerType
+            else -> PlsAiSettings.getInstance().state.providerType
         }
     }
 

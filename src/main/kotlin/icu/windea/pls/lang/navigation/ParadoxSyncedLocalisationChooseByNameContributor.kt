@@ -7,8 +7,8 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.index.PlsIndexKeys
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
@@ -19,7 +19,7 @@ class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributor
 
     private val indexKey = PlsIndexKeys.SyncedLocalisationName
 
-    private fun isEnabled() = PlsFacade.getSettings().state.navigation.seForSyncedLocalisations
+    private fun isEnabled() = PlsSettings.getInstance().state.navigation.seForSyncedLocalisations
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

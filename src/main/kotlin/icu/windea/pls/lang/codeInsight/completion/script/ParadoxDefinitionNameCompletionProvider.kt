@@ -45,6 +45,8 @@ import icu.windea.pls.lang.search.selector.filterBy
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -60,7 +62,7 @@ import icu.windea.pls.script.psi.isDefinitionName
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().state.completion.completeDefinitionNames) return
+        if (!PlsSettings.getInstance().state.completion.completeDefinitionNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
@@ -91,7 +93,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
-                val elementPath = ParadoxScriptService.getElementPath(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+                val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
                 if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
                 val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {

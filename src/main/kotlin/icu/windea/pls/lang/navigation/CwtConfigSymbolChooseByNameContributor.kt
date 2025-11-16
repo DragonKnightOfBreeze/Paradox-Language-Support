@@ -10,7 +10,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.util.Processor
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.core.getCurrentProject
@@ -19,6 +18,7 @@ import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolNavigationElement
 import icu.windea.pls.lang.search.CwtConfigSymbolSearch
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -30,7 +30,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.CwtConfigSymbolChooseByNameContributor
 
     private fun getTypes(): Set<String> = buildSet {
-        val settings = PlsFacade.getSettings().state.navigation
+        val settings = PlsSettings.getInstance().state.navigation
         if (settings.seForTypeConfigs) add(CwtConfigTypes.Type.id)
         if (settings.seForComplexEnumConfigs) add(CwtConfigTypes.ComplexEnum.id)
         if (settings.seForTriggerConfigs) add(CwtConfigTypes.Trigger.id)

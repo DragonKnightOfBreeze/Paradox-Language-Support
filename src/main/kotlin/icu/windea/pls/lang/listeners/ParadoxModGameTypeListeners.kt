@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.ParadoxGameType
 
@@ -16,7 +16,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
 
         // 更新游戏类型信息缓存
-        PlsFacade.getProfilesSettings().state.updateSettings()
+        PlsProfilesSettings.getInstance().state.updateSettings()
 
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
@@ -28,7 +28,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     }
 
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {
-        val settings = PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(modDirectory) ?: return
+        val settings = PlsProfilesSettings.getInstance().state.modDescriptorSettings.get(modDirectory) ?: return
         settings.gameType = gameType
     }
 }

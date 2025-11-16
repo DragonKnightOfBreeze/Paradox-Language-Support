@@ -11,10 +11,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.application
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 abstract class OpenSettingsAction : DumbAwareAction() {
@@ -22,7 +22,7 @@ abstract class OpenSettingsAction : DumbAwareAction() {
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().state.others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsSettings.getInstance().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }

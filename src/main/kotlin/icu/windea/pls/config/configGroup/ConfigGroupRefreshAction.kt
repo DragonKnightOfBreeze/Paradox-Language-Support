@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.fileInfo
 
@@ -28,14 +29,14 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         if (file?.fileInfo == null) return
         presentation.isVisible = true
         val project = e.project ?: return
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         presentation.isEnabled = configGroups.isNotEmpty()
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val configGroupService = project.service<CwtConfigGroupService>()
+        val configGroupService = CwtConfigGroupService.getInstance(project)
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
         configGroupService.refreshConfigGroups(configGroups)

@@ -16,6 +16,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxEntryInfo
@@ -154,7 +155,7 @@ object ParadoxFileManager {
     }
 
     fun isIgnoredFile(fileName: String): Boolean {
-        return PlsFacade.getSettings().state.ignoredFileNameSet.contains(fileName)
+        return PlsSettings.getInstance().state.ignoredFileNameSet.contains(fileName)
     }
 
     fun getFileType(fileType: ParadoxFileType): FileType? {

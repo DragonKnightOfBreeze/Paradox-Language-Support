@@ -8,7 +8,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.prevLeaf
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.FloatingToolbar
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
@@ -76,6 +76,6 @@ class ParadoxLocalisationFloatingToolbar(
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return PlsFacade.getSettings().state.others.showLocalisationFloatingToolbar
+        return PlsSettings.getInstance().state.others.showLocalisationFloatingToolbar
     }
 }

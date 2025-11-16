@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.registry.Registry
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.core.orNull
 
 /**
@@ -60,4 +62,9 @@ class PlsInternalSettings {
      * 默认的封装变量的名字（执行重构与生成操作时会用到）。
      */
     val defaultScriptedVariableName get() = Registry.stringValue("pls.settings.defaultScriptedVariableName").orNull() ?: "var"
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsInternalSettings = service()
+    }
 }

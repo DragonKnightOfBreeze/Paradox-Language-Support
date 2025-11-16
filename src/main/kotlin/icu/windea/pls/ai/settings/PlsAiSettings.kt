@@ -6,6 +6,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.annotations.Property
 import com.intellij.util.xmlb.annotations.Tag
 import icu.windea.pls.ai.PlsAiConstants
@@ -20,6 +21,13 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.APP)
 @State(name = "PlsAiSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettings.State>(State()) {
+    fun isEnabled() = state.enable
+
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsAiSettings = service()
+    }
+
     /**
      * @property enable 是否启用基于 AI 的各种功能。
      * @property providerType 当前使用的 AI 服务提供者的类型。

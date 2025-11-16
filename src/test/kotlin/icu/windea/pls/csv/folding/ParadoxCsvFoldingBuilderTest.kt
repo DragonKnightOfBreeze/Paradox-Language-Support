@@ -2,7 +2,7 @@ package icu.windea.pls.csv.folding
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.lang.settings.PlsSettings
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -14,7 +14,7 @@ class ParadoxCsvFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().state.folding
+        val folding = PlsSettings.getInstance().state.folding
         folding.comment = true
         folding.commentByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/csv/folding/folding_comment_expand_true.test.csv")
@@ -22,7 +22,7 @@ class ParadoxCsvFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_false_whenCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().state.folding
+        val folding = PlsSettings.getInstance().state.folding
         folding.comment = true
         folding.commentByDefault = true
         myFixture.testFoldingWithCollapseStatus("$testDataPath/csv/folding/folding_comment_expand_false.test.csv")

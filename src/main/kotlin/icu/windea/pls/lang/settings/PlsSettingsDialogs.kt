@@ -6,7 +6,6 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.lang.PlsDataKeys
@@ -104,7 +103,7 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     }
 
     override fun createCenterPanel(): JComponent {
-        val settings = PlsFacade.getSettings().state.completion.clauseTemplate
+        val settings = PlsSettings.getInstance().state.completion.clauseTemplate
         return panel {
             // maxExpressionCountInOneLine
             row {

@@ -1,7 +1,6 @@
 package icu.windea.pls.script.navigation
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.optimized
@@ -11,6 +10,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
@@ -149,7 +149,7 @@ object ParadoxScriptNavigationManager {
     private fun String.formatted(): String {
         return when {
             isEmpty() -> "\"\""
-            else -> truncate(PlsFacade.getInternalSettings().textLengthLimitForPresentation)
+            else -> truncate(PlsInternalSettings.getInstance().textLengthLimitForPresentation)
         }
     }
 }

@@ -15,13 +15,13 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.TextTransferable
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.registerClickListener
 import icu.windea.pls.lang.actions.PlsActionPlaces
 import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
 
@@ -127,7 +127,7 @@ class ParadoxModDependenciesTable(
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
                 val modDirectory = element.modDirectory.orEmpty()
-                val modDescriptorSettings = PlsFacade.getProfilesSettings().state.modDescriptorSettings.getValue(modDirectory)
+                val modDescriptorSettings = PlsProfilesSettings.getInstance().state.modDescriptorSettings.getValue(modDirectory)
                 modDescriptorSettings.name.orEmpty()
             }
 

@@ -31,6 +31,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -232,7 +233,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     private fun getMessage(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
             showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                .truncate(PlsFacade.getInternalSettings().itemLimit).joinToString()
+                .truncate(PlsInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
         val message = when (element) {

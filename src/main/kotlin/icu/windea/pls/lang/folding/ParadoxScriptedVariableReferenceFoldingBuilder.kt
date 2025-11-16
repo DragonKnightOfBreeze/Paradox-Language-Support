@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -25,12 +25,12 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return PlsFacade.getSettings().state.folding.scriptedVariableReferencesByDefault
+        return PlsSettings.getInstance().state.folding.scriptedVariableReferencesByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (!PlsFacade.getSettings().state.folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
+        if (!PlsSettings.getInstance().state.folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = Constants.FOLDING_GROUP
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

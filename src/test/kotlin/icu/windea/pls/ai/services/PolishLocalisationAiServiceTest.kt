@@ -3,7 +3,6 @@ package icu.windea.pls.ai.services
 import com.intellij.openapi.application.runReadAction
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
@@ -44,7 +43,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
         val description = "用华丽而夸张的文字，强调生体荒野（即共生智能）是完美的"
         val request = PolishLocalisationAiRequest(file.project, file, contexts, description)
-        val aiService = PlsAiFacade.getPolishLocalisationService()
+        val aiService = PolishLocalisationAiService.getInstance()
         val resultFlow = aiService.manipulate(request)
         runBlocking {
             ParadoxLocalisationAiManipulator.collectResultFlow(request, resultFlow)

@@ -5,6 +5,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
@@ -13,6 +15,11 @@ import icu.windea.pls.model.constants.PlsConstants
 @Service(Service.Level.APP)
 @State(name = "PlsConfigSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State>(State()) {
+    companion object {
+        @JvmStatic
+        fun getInstance(): PlsConfigSettings = service()
+    }
+
     /**
      * @property enableBuiltInConfigGroups 是否启用内置的规则分组。
      * @property enableRemoteConfigGroups 是否启用远程的规则分组（不建议与内置的规则分组同时启用）。

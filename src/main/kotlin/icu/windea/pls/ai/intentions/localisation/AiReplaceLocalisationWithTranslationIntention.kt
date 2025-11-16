@@ -13,9 +13,9 @@ import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.settings.PlsAiSettings
 import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -32,7 +32,7 @@ class AiReplaceLocalisationWithTranslationIntention : ManipulateLocalisationInte
     override fun getFamilyName() = PlsBundle.message("ai.intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return super.isAvailable(project, editor, file) && PlsAiFacade.isEnabled()
+        return super.isAvailable(project, editor, file) && PlsAiSettings.getInstance().isEnabled()
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {

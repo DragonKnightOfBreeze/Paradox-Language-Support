@@ -66,6 +66,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -364,7 +365,7 @@ object ParadoxParameterManager {
         val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
         if (fromConfig.isNotEmpty()) return fromConfig
 
-        if (!PlsFacade.getSettings().state.inference.configContextForParameters) return emptyList()
+        if (!PlsSettings.getInstance().state.inference.configContextForParameters) return emptyList()
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
             ProgressManager.checkCanceled()
@@ -391,7 +392,7 @@ object ParadoxParameterManager {
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fastInference = PlsFacade.getSettings().state.inference.configContextForParametersFast
+        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
@@ -407,7 +408,7 @@ object ParadoxParameterManager {
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
-        val fastInference = PlsFacade.getSettings().state.inference.configContextForParametersFast
+        val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return emptyList()
         val result = Ref.create<List<CwtMemberConfig<*>>>()

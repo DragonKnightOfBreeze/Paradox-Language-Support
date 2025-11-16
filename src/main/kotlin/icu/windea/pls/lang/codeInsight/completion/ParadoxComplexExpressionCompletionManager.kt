@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
@@ -63,6 +62,7 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByExpression
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -274,7 +274,7 @@ object ParadoxComplexExpressionCompletionManager {
                     context.keywordOffset = node.rangeInExpression.startOffset
                     ParadoxParameterManager.completeArguments(element, context, resultToUse)
                 }
-            } else if (node is ParadoxScriptValueArgumentValueNode && PlsFacade.getSettings().state.inference.configContextForParameters) {
+            } else if (node is ParadoxScriptValueArgumentValueNode && PlsSettings.getInstance().state.inference.configContextForParameters) {
                 if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
                     // 尝试提示传入参数的值
                     run {
@@ -922,7 +922,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linksConfigs = configGroup.linksModel.forScopeStatic
         for (linkConfig in linksConfigs) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -948,7 +948,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromArgument = configGroup.linksModel.forScopeFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -967,7 +967,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromData = configGroup.linksModel.forScopeFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1025,7 +1025,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             // 排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1050,7 +1050,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromArgument = configGroup.linksModel.forValueFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1069,7 +1069,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromData = configGroup.linksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1253,7 +1253,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigs = configGroup.localisationLinksModel.forScopeStatic
         for (linkConfig in linkConfigs) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             // optimize: make first char uppercase (e.g., owner -> Owner)
             val name = linkConfig.name.replaceFirstChar { it.uppercaseChar() }
@@ -1280,7 +1280,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromArgument = configGroup.localisationLinksModel.forScopeFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1300,7 +1300,7 @@ object ParadoxComplexExpressionCompletionManager {
             .sortedByPriority({ it.configExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1350,7 +1350,7 @@ object ParadoxComplexExpressionCompletionManager {
         val localisationCommands = configGroup.localisationCommands
         for (localisationCommand in localisationCommands.values) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = localisationCommand.name
             val element = localisationCommand.pointer.element ?: continue
@@ -1377,7 +1377,7 @@ object ParadoxComplexExpressionCompletionManager {
             ProgressManager.checkCanceled()
             // 排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1402,7 +1402,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromArgument = configGroup.localisationLinksModel.forValueFromArgumentSorted
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1421,7 +1421,7 @@ object ParadoxComplexExpressionCompletionManager {
         val linkConfigsFromData = configGroup.localisationLinksModel.forValueFromDataSorted
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue

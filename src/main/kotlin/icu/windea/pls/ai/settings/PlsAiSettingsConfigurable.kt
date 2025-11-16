@@ -13,7 +13,6 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.PlsAiConstants
-import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.providers.AnthropicChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProvider
 import icu.windea.pls.ai.providers.ChatModelProviderType
@@ -26,7 +25,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
     override fun getHelpTopic() = "icu.windea.pls.ai.settings"
 
     override fun createPanel(): DialogPanel {
-        val settings = PlsAiFacade.getSettings().state
+        val settings = PlsAiSettings.getInstance().state
         return panel {
             // enable
             row {

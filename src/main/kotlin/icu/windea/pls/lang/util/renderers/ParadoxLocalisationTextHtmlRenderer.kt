@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
@@ -25,6 +24,8 @@ import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -117,7 +118,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
         renderWithColorTo(color) {
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
@@ -130,7 +131,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则使用原始文本
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) {
             // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
@@ -192,8 +193,8 @@ class ParadoxLocalisationTextHtmlRenderer(
             // 如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             // 实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
-            val locFontSize = PlsFacade.getInternalSettings().localisationFontSize
-            val locMaxTextIconSize = PlsFacade.getInternalSettings().localisationTextIconSizeLimit
+            val locFontSize = PlsInternalSettings.getInstance().localisationFontSize
+            val locMaxTextIconSize = PlsInternalSettings.getInstance().localisationTextIconSizeLimit
             val scaleByDocFontSize = when {
                 originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
                 else -> docFontSize.toFloat() / locFontSize
@@ -219,7 +220,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则使用原始文本
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (PlsFacade.getSettings().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) r@{
             // 直接显示命令文本，适用对应的颜色高亮
             // （仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接

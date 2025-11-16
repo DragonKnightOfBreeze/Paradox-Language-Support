@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
@@ -24,6 +23,7 @@ import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.notSamePosition
 import icu.windea.pls.lang.search.selector.scriptedVariable
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
  */
 class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().state.completion.completeScriptedVariableNames) return
+        if (!PlsSettings.getInstance().state.completion.completeScriptedVariableNames) return
 
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptScriptedVariable>() ?: return

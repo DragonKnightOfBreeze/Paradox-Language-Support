@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
@@ -20,6 +19,7 @@ import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.resolved
  */
 class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().state.completion.completeInlineScriptInvocations) return
+        if (!PlsSettings.getInstance().state.completion.completeInlineScriptInvocations) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return

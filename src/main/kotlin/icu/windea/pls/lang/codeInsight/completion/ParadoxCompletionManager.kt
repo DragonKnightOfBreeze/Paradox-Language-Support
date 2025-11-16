@@ -75,6 +75,8 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withFileExtensions
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
@@ -138,7 +140,7 @@ object ParadoxCompletionManager {
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.isDefinitionOrMember()) {
-            val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
+            val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
             if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
             val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptService.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
@@ -445,7 +447,7 @@ object ParadoxCompletionManager {
                 scopeContext == null -> true
                 else -> ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             }
-            if (!scopeMatched1 && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return
+            if (!scopeMatched1 && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return
             context.scopeMatched = scopeMatched1
         }
 
@@ -561,7 +563,7 @@ object ParadoxCompletionManager {
             // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && PlsSettings.getInstance().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val name = definitionInfo.name
             val typeFile = definition.containingFile
