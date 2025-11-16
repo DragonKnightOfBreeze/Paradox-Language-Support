@@ -74,9 +74,8 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState): Boolean {
         when (element.elementType) {
             PROPERTY_VALUE -> run {
-                if(!settings.localisationTexts) {
-                    descriptors.add(FoldingDescriptor(element.node, element.textRange))
-                }
+                if (!settings.localisationTexts) return@run
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
             PARAMETER -> run {
                 if (!settings.localisationParametersFully) return@run
