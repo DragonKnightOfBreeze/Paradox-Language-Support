@@ -42,7 +42,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.qualifiedName
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon
@@ -178,16 +177,20 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
+        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, qualifiedName, entryPath)
     }
 
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, qualifiedName, entryPath)
+            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, qualifiedName, entryPath)
         }
     }
 
@@ -211,10 +214,16 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val isCurrent: Boolean
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
-            val fileInfo = otherFile.fileInfo ?: return super.getName()
+            return doGetName() ?: super.name
+        }
+
+        private fun doGetName(): String? {
+            val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val qualifiedName = rootInfo.qualifiedName
+            val entryPath = fileInfo.entryPath ?: return null
+            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, qualifiedName, entryPath)
         }
     }
 

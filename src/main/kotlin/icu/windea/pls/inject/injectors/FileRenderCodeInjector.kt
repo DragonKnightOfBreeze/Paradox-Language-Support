@@ -12,7 +12,6 @@ import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectTarget
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.qualifiedName
 
 /**
  * @see com.intellij.openapi.fileChooser.tree.FileRenderer

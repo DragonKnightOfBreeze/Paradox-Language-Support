@@ -37,9 +37,9 @@ import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.ParadoxMetadata
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
-import icu.windea.pls.model.toRootInfo
 import java.nio.file.Path
 import kotlin.io.path.notExists
 
@@ -77,7 +77,10 @@ object ParadoxCoreManager {
 
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
-        return metadata.toRootInfo()
+        return when (metadata) {
+            is ParadoxMetadata.Game -> ParadoxRootInfo.Game(this)
+            is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(this)
+        }
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
@@ -204,6 +207,10 @@ object ParadoxCoreManager {
             return ParadoxPath.resolve(resolved) to entryName
         }
         if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
+        if(relPath.path == rootInfo.metadata)
+        if (rootInfo.gameType in ParadoxGameType.getAllUseMetadataJson() && relPath.path == ".metadata/metadata.json") {
+            return relPath to ""
+        }
         return null // 2.0.7 null now
     }
 

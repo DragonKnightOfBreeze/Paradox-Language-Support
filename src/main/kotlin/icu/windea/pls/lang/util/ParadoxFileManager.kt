@@ -36,12 +36,14 @@ object ParadoxFileManager {
     const val scriptedVariablesPath = "common/scripted_variables"
 
     fun getScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
-        val rootInfo = contextFile.fileInfo?.rootInfo
+        val fileInfo = contextFile.fileInfo ?: return null
+        val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val entryFile = rootInfo.entryFile
-        val path = scriptedVariablesPath
-        VfsUtil.createDirectoryIfMissing(entryFile, path)
-        return entryFile.findFileByRelativePath(path)
+        val entryPath = if(fileInfo.entryName.isEmpty()) rootInfo.rootPath.resolve(fileInfo.entryName)
+        val rootFile = rootInfo.rootFile
+        val path = fileInfo.entryName + "/" + scriptedVariablesPath
+        VfsUtil.createDirectoryIfMissing(rootFile, path)
+        return rootFile.findFileByRelativePath(path)
     }
 
     /**
@@ -65,7 +67,7 @@ object ParadoxFileManager {
     fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = file?.fileInfo ?: return true
         val other = otherFile?.fileInfo ?: return true
-        if (target.inMainEntry() && !other.inMainEntry()) return false
+        if (target.inMainEntries() && !other.inMainEntries()) return false
         return true
     }
 

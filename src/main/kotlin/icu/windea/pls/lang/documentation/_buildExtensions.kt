@@ -25,10 +25,8 @@ import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.codeInsight.ReferenceLinkType
-import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.toScopeMap
-import icu.windea.pls.model.steamId
 
 fun DocumentationBuilder.appendBr(): DocumentationBuilder {
     append("<br>")
@@ -104,7 +102,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
 
-        val steamId = rootInfo.steamId
+        val steamId = rootInfo.steamId1
         if (steamId != null) {
             append(" | ")
             val workshopUrlInSteam = when (rootInfo) {

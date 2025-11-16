@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.model.paths.ParadoxPath
+import java.nio.file.Path
 import java.util.*
 
 /**
@@ -17,18 +18,24 @@ class ParadoxFileInfo(
     val fileType: ParadoxFileType,
     val rootInfo: ParadoxRootInfo
 ) {
+    val entryPath: Path?
+        get() {
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val rootPath = rootInfo.rootPath
+            return if (entryName.isEmpty()) rootPath else rootPath.resolve(entryName)
+        }
+
     /**
      * 是否位于主要入口目录中。参见 [ParadoxEntryInfo]。
      */
-    fun inMainEntry(): Boolean {
+    fun inMainEntries(): Boolean {
         val entryInfo = rootInfo.gameType.entryInfo
         val mainEntries = when (rootInfo) {
             is ParadoxRootInfo.Game -> entryInfo.gameMain
             is ParadoxRootInfo.Mod -> entryInfo.modMain
             else -> emptySet()
         }
-        if (mainEntries.isEmpty()) return true
-        return entryName in mainEntries
+        return mainEntries.isEmpty() || entryName in mainEntries
     }
 
     override fun equals(other: Any?): Boolean {

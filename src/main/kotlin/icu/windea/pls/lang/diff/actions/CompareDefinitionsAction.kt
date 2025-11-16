@@ -52,7 +52,6 @@ import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath
-import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.awt.Color
@@ -228,7 +227,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
+        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
     }
 
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
@@ -236,9 +237,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.or.anonymous(), definitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
         }
     }
 
@@ -263,10 +266,16 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val isCurrent: Boolean
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
-            val fileInfo = otherFile.fileInfo ?: return super.getName()
+            return doGetName() ?: super.name
+        }
+
+        private fun doGetName(): String? {
+            val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
-            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.or.anonymous(), otherDefinitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val qualifiedName = rootInfo.qualifiedName
+            val entryPath = fileInfo.entryPath ?: return null
+            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.or.anonymous(), otherDefinitionInfo.typesText, fileInfo.path, qualifiedName, entryPath)
         }
     }
 

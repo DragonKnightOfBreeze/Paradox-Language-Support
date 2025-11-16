@@ -52,7 +52,6 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.qualifiedName
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon
@@ -223,7 +222,9 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, qualifiedName, entryPath)
     }
 
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
@@ -232,9 +233,11 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val fileInfo = file.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        val qualifiedName = rootInfo.qualifiedName
+        val entryPath = fileInfo.entryPath ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, qualifiedName, entryPath)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, qualifiedName, entryPath)
         }
     }
 
@@ -260,10 +263,16 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val isCurrent: Boolean
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
-            val fileInfo = otherFile.fileInfo ?: return super.getName()
+            return doGetName() ?: super.name
+        }
+
+        private fun doGetName(): String? {
+            val fileInfo = otherFile.fileInfo ?: return null
             val rootInfo = fileInfo.rootInfo
-            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale.id, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            val qualifiedName = rootInfo.qualifiedName
+            val entryPath = fileInfo.entryPath ?: return null
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale.id, fileInfo.path, qualifiedName, entryPath)
         }
     }
 

@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.qualifiedName
 
 class NavigateToOverridingDefinitionsFix(
     private val key: String,

@@ -14,11 +14,12 @@ import java.nio.file.Path
 sealed class ParadoxRootInfo {
     abstract val gameType: ParadoxGameType
 
+    open val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
+    open val steamId1: String? get() = null
+
     /**
      * @property rootFile 游戏或模组目录。
-     * @property entryFile 入口目录。注意入口目录不一定等同于游戏或模组目录。
      * @property rootPath 游戏根目录。
-     * @property entryPath 作为主要入口的根目录。
      */
     sealed class MetadataBased(open val metadata: ParadoxMetadata) : ParadoxRootInfo() {
         override val gameType: ParadoxGameType get() = metadata.gameType
@@ -26,13 +27,20 @@ sealed class ParadoxRootInfo {
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
         val rootFile: VirtualFile get() = metadata.rootFile
-        val entryFile: VirtualFile get() = metadata.entryFile
-
-       val rootPath: Path by lazy { rootFile.toNioPath() }
-       val entryPath: Path by lazy { entryFile.toNioPath() }
+        val rootPath: Path get() = rootFile.toNioPath()
     }
 
-    class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata)
+    class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata) {
+        override val qualifiedName: String
+            get() = buildString {
+                append(gameType.title)
+                if (version.isNotNullOrEmpty()) {
+                    append("@").append(version)
+                }
+            }
+        override val steamId1: String?
+            get() = gameType.steamId
+    }
 
     class Mod(override val metadata: ParadoxMetadata.Mod) : MetadataBased(metadata) {
         val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
@@ -41,39 +49,18 @@ sealed class ParadoxRootInfo {
         val tags: Set<String> get() = metadata.tags
         val remoteId: String? get() = metadata.remoteId
         val source: ParadoxModSource get() = metadata.source
+
+        override val qualifiedName: String
+            get() = buildString {
+                append(gameType.title).append(" Mod: ")
+                append(name.orNull() ?: PlsBundle.message("root.name.unnamed"))
+                if (version.isNotNullOrEmpty()) {
+                    append("@").append(version)
+                }
+            }
+        override val steamId1: String?
+            get() = if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
     }
 
     class Injected(override val gameType: ParadoxGameType) : ParadoxRootInfo()
 }
-
-fun ParadoxMetadata.toRootInfo(): ParadoxRootInfo {
-    return when (this) {
-        is ParadoxMetadata.Game -> ParadoxRootInfo.Game(this)
-        is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(this)
-    }
-}
-
-val ParadoxRootInfo.qualifiedName: String
-    get() = when (this) {
-        is ParadoxRootInfo.Game -> buildString {
-            append(gameType.title)
-            if (version.isNotNullOrEmpty()) {
-                append("@").append(version)
-            }
-        }
-        is ParadoxRootInfo.Mod -> buildString {
-            append(gameType.title).append(" Mod: ")
-            append(name.orNull() ?: PlsBundle.message("root.name.unnamed"))
-            if (version.isNotNullOrEmpty()) {
-                append("@").append(version)
-            }
-        }
-        else -> PlsBundle.message("root.name.unnamed")
-    }
-
-val ParadoxRootInfo.steamId: String?
-    get() = when (this) {
-        is ParadoxRootInfo.Game -> gameType.steamId
-        is ParadoxRootInfo.Mod -> if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
-        else -> null
-    }

@@ -8,7 +8,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.steamId
 
 class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
     // 仅限游戏或模组的根目录
@@ -23,7 +22,7 @@ class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
 
     private fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val rootInfo = fileInfo.rootInfo
-        val steamId = rootInfo.steamId ?: return null
+        val steamId = rootInfo.steamId1 ?: return null
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> PlsUrlService.getSteamGameStoreUrl(steamId)
             is ParadoxRootInfo.Mod -> PlsUrlService.getSteamWorkshopUrl(steamId)

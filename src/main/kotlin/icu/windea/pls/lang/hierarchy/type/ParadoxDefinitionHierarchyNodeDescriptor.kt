@@ -21,7 +21,6 @@ import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.awt.Color
 import java.awt.Font

@@ -8,7 +8,6 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.model.qualifiedName
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: String) : GotoRelatedItem(element, group) {

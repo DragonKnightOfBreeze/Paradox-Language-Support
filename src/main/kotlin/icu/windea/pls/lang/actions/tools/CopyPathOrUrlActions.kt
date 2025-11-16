@@ -9,7 +9,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsUrlService
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.steamId
 import java.nio.file.Path
 
 interface CopyPathOrUrlActions {
@@ -115,7 +114,7 @@ interface CopyPathOrUrlActions {
             val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
             val fileInfo = file.fileInfo ?: return null
             if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
-            val steamId = fileInfo.rootInfo.steamId?.orNull() ?: return null
+            val steamId = fileInfo.rootInfo.steamId1?.orNull() ?: return null
             return PlsUrlService.getSteamWorkshopUrl(steamId)
         }
     }
