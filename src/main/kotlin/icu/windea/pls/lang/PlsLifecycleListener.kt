@@ -15,6 +15,7 @@ import icu.windea.pls.config.configGroupLibrary
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.images.ImageManager
+import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.util.PlsAnalyzeManager
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
@@ -67,6 +68,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     private fun initCachesAsync() {
         PlsPathConstants.initAsync()
+        PlsPathService.initAsync()
     }
 
     @Suppress("ObsoleteDispatchersEdt")

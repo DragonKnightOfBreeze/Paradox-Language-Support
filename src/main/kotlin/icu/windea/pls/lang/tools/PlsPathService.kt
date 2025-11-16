@@ -4,6 +4,8 @@ import icu.windea.pls.lang.tools.impl.PlsPathServiceImpl
 import java.nio.file.Path
 
 interface PlsPathService {
+    fun initAsync()
+
     /**
      * 得到 Steam 目录的路径。
      */

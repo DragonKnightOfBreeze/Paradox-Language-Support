@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.tools.impl
 
 import com.intellij.ide.actions.RevealFileAction
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.ide.CopyPasteManager
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.formatted
@@ -11,7 +11,9 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.OS
 import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsPathConstants
+import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
@@ -27,6 +29,14 @@ class PlsPathServiceImpl : PlsPathService {
     // Steam游戏的默认安装路径：steamapps/common（其子目录是游戏名）
     // 创意工坊安装目录：steamapps/common/content（其子目录是游戏的steamId）
     // 游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
+
+    override fun initAsync() {
+        val coroutineScope = PlsFacade.getCoroutineScope()
+        coroutineScope.launch { getSteamPath() }
+        ParadoxGameType.getAll().forEach { gameType ->
+            coroutineScope.launch { getSteamGamePath(gameType.gameId, gameType.title) }
+        }
+    }
 
     override fun getSteamPath(): Path? {
         return steamPathCache.getOrPut("") { doGetSteamPath() ?: emptyPath }.takeIf { it !== emptyPath }
