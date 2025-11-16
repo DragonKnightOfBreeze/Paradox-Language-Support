@@ -15,7 +15,7 @@ sealed interface ParadoxMetadata {
     val version: String?
     val gameType: ParadoxGameType
     val rootFile: VirtualFile
-    val entryFile: VirtualFile
+    val infoFile: VirtualFile?
 
     interface Game : ParadoxMetadata
 

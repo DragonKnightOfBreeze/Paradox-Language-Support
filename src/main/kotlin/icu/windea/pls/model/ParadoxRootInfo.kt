@@ -27,7 +27,10 @@ sealed class ParadoxRootInfo {
         val name: String get() = metadata.name
         val version: String? get() = metadata.version
         val rootFile: VirtualFile get() = metadata.rootFile
+        val infoFile: VirtualFile? get() = metadata.infoFile
+
         val rootPath: Path get() = rootFile.toNioPath()
+        val infoPath: Path? get() = infoFile?.toNioPath()
     }
 
     class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata) {

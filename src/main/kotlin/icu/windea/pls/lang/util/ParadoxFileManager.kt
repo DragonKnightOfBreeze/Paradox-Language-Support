@@ -39,11 +39,10 @@ object ParadoxFileManager {
         val fileInfo = contextFile.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
-        val entryPath = if(fileInfo.entryName.isEmpty()) rootInfo.rootPath.resolve(fileInfo.entryName)
-        val rootFile = rootInfo.rootFile
-        val path = fileInfo.entryName + "/" + scriptedVariablesPath
-        VfsUtil.createDirectoryIfMissing(rootFile, path)
-        return rootFile.findFileByRelativePath(path)
+        val entryPath = fileInfo.entryPath ?: return null
+        val path = entryPath.resolve(scriptedVariablesPath)
+        VfsUtil.createDirectoryIfMissing(path.toString())
+        return VfsUtil.findFile(path, true)
     }
 
     /**

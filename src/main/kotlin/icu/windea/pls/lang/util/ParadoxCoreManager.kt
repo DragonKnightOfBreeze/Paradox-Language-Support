@@ -78,8 +78,8 @@ object ParadoxCoreManager {
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
         return when (metadata) {
-            is ParadoxMetadata.Game -> ParadoxRootInfo.Game(this)
-            is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(this)
+            is ParadoxMetadata.Game -> ParadoxRootInfo.Game(metadata)
+            is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
         }
     }
 
@@ -207,10 +207,7 @@ object ParadoxCoreManager {
             return ParadoxPath.resolve(resolved) to entryName
         }
         if (isDirectory) return relPath to "" // 2.0.7 directories without a matched entry are allowed
-        if(relPath.path == rootInfo.metadata)
-        if (rootInfo.gameType in ParadoxGameType.getAllUseMetadataJson() && relPath.path == ".metadata/metadata.json") {
-            return relPath to ""
-        }
+        if (filePath == rootInfo.infoFile?.path) return relPath to "" // 2.0.7 info files (e.g., `descriptor.mod`) are allowed
         return null // 2.0.7 null now
     }
 

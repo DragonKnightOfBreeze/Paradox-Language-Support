@@ -18,6 +18,11 @@ class ParadoxFileInfo(
     val fileType: ParadoxFileType,
     val rootInfo: ParadoxRootInfo
 ) {
+    val rootPath: Path?
+        get() {
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+            return rootInfo.rootPath
+        }
     val entryPath: Path?
         get() {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null

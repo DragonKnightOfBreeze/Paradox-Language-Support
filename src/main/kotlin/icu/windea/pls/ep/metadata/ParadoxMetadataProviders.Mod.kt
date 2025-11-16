@@ -23,14 +23,13 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
 
     class Metadata(
         override val rootFile: VirtualFile,
-        val infoFile: VirtualFile,
+        override val infoFile: VirtualFile,
         val info: ParadoxModDescriptorInfo
     ) : ParadoxMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
         override val inferredGameType: ParadoxGameType? = doGetInferredGameType()
         override val gameType: ParadoxGameType = doGetGameType()
-        override val entryFile: VirtualFile get() = rootFile
 
         override val supportedVersion: String? get() = info.supportedVersion
         override val picture: String? get() = info.picture?.orNull()
@@ -64,14 +63,13 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
 
     class Metadata(
         override val rootFile: VirtualFile,
-        val infoFile: VirtualFile,
+        override val infoFile: VirtualFile,
         val info: ParadoxModMetadataInfo,
     ) : ParadoxMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
         override val inferredGameType: ParadoxGameType? = doGetInferredGameType()
         override val gameType: ParadoxGameType = doGetGameType()
-        override val entryFile: VirtualFile get() = rootFile
 
         override val supportedVersion: String? get() = info.supportedGameVersion
         override val picture: String? get() = info.picture?.orNull()?.let { ".metadata/$it" }
