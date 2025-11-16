@@ -145,7 +145,7 @@ class LocalChatModelProvider : ChatModelProviderBase<LocalChatModelProvider.Opti
         )
 
         class AtomicProperties {
-            private val settings = PlsAiFacade.getSettings().local
+            private val settings = PlsAiFacade.getSettings().state.local
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

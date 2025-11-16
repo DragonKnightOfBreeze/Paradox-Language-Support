@@ -24,7 +24,7 @@ abstract class ManipulateLocalisationAiRequest(
         variables["index"] = index
         variables["total"] = localisationContexts.size
 
-        val gameType = selectGameType(file) ?: PlsFacade.getSettings().defaultGameType
+        val gameType = selectGameType(file) ?: PlsFacade.getSettings().state.defaultGameType
         val fileInfo: ParadoxFileInfo? by lazy { selectFile(file)?.fileInfo }
         variables["game_type_id"] = gameType.id
         variables["game_type_title"] = gameType.title

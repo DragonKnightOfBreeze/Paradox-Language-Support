@@ -154,7 +154,7 @@ object ParadoxFileManager {
     }
 
     fun isIgnoredFile(fileName: String): Boolean {
-        return PlsFacade.getSettings().ignoredFileNameSet.contains(fileName)
+        return PlsFacade.getSettings().state.ignoredFileNameSet.contains(fileName)
     }
 
     fun getFileType(fileType: ParadoxFileType): FileType? {

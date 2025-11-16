@@ -8,7 +8,7 @@ import com.intellij.openapi.components.Storage
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS规则设置。可以在插件的对应设置页面中进行配置。
+ * PLS 规则设置。可以在插件的对应设置页面中进行配置。
  */
 @Service(Service.Level.APP)
 @State(name = "PlsConfigSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
@@ -32,7 +32,5 @@ class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State
         var localConfigDirectory by string()
         var enableProjectLocalConfigGroups by property(true)
         var projectLocalConfigDirectoryName by string(".config")
-
-        fun updateSettings() = incrementModificationCount()
     }
 }

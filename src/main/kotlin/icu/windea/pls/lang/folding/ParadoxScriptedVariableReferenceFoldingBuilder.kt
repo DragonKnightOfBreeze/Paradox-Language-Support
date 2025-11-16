@@ -25,12 +25,12 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return PlsFacade.getSettings().folding.scriptedVariableReferencesByDefault
+        return PlsFacade.getSettings().state.folding.scriptedVariableReferencesByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (!PlsFacade.getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
+        if (!PlsFacade.getSettings().state.folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = Constants.FOLDING_GROUP
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
@@ -26,7 +26,7 @@ class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsFacade.getSettings().folding
+        val settings = PlsFacade.getSettings().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
             else -> false
@@ -34,15 +34,15 @@ class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsFacade.getSettings().folding
+        val settings = PlsFacade.getSettings().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         collectCommentDescriptors(element, descriptors, settings)
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         if (!settings.comment) return
         val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return

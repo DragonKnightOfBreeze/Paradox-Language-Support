@@ -44,7 +44,7 @@ class GenerateConfigDialog(
     private val inputPathRecentKeys = "Pls.ConfigGeneration.inputPath.RECENT_KEYS.${generator.getName()}"
     private val outputPathRecentKeys = "Pls.ConfigGeneration.outputPath.RECENT_KEYS.${generator.getName()}"
 
-    private val gameTypeProperty = AtomicProperty(PlsFacade.getSettings().defaultGameType)
+    private val gameTypeProperty = AtomicProperty(PlsFacade.getSettings().state.defaultGameType)
     private val inputPathProperty = AtomicProperty(getDefaultInputPath())
     private val outputPathProperty = AtomicProperty(getDefaultOutputPath())
 

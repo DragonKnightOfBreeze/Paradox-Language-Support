@@ -95,7 +95,7 @@ class ParadoxTextBasedTargetSearchContributor(val event: AnActionEvent) : Weight
     }
 
     class Factory : SearchEverywhereContributorFactory<PsiElement> {
-        override fun isAvailable(project: Project?) = PlsFacade.getSettings().navigation.seForTextBasedTargets
+        override fun isAvailable(project: Project?) = PlsFacade.getSettings().state.navigation.seForTextBasedTargets
 
         override fun createContributor(initEvent: AnActionEvent): ParadoxTextBasedTargetSearchContributor {
             return ParadoxTextBasedTargetSearchContributor(initEvent)

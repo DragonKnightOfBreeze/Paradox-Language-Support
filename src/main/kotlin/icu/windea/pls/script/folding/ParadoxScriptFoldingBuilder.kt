@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.lang.psi.PlsPsiManager
-import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -37,7 +37,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = PlsFacade.getSettings().folding
+        val settings = PlsFacade.getSettings().state.folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
             BLOCK -> false
@@ -48,18 +48,18 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = PlsFacade.getSettings().folding
+        val settings = PlsFacade.getSettings().state.folding
         collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         collectCommentDescriptors(element, descriptors, settings)
         val r = collectOtherDescriptors(element, descriptors, settings)
         if (!r) return
         element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState) {
         if (!settings.comment) return
         val allSiblingLineComments = PlsPsiManager.findAllSiblingCommentsIn(element) { it.elementType == COMMENT }
         if (allSiblingLineComments.isEmpty()) return
@@ -71,7 +71,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
     }
 
-    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
+    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettings.FoldingState): Boolean {
         when (element.elementType) {
             BLOCK -> {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))

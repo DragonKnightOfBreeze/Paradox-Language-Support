@@ -32,7 +32,7 @@ class ParadoxModSettingsDialog(
 
     val oldGameType = settings.finalGameType
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
-    val defaultGameDirectory get() = PlsFacade.getSettings().defaultGameDirectories[oldGameType.id]
+    val defaultGameDirectory get() = PlsFacade.getSettings().state.defaultGameDirectories[oldGameType.id]
 
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(oldGameType)
@@ -165,7 +165,7 @@ class ParadoxModSettingsDialog(
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
-        PlsFacade.getProfilesSettings().updateSettings()
+        PlsFacade.getProfilesSettings().state.updateSettings()
         val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
         if (oldGameType != settings.gameType) {

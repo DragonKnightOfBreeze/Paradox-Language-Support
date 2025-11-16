@@ -40,7 +40,7 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return PlsFacade.getSettings().others.showLocalisationFloatingToolbar
+        return PlsFacade.getSettings().state.others.showLocalisationFloatingToolbar
     }
 
     private fun isParadoxScratchFile(file: VirtualFile, project: Project): Boolean {

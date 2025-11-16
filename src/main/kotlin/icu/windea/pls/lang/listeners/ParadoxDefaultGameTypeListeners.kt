@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
     override fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType) {
         val modDirectories = mutableSetOf<String>()
-        PlsFacade.getProfilesSettings().modDescriptorSettings.values.forEach { settings ->
+        PlsFacade.getProfilesSettings().state.modDescriptorSettings.values.forEach { settings ->
             if (settings.gameType == null) {
                 // 这里可能包含不在项目中（以及库中）的根目录
                 settings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }

@@ -51,7 +51,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = PlsFacade.getSettings().hierarchy
+        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
                 val name = element.name.or.anonymous()

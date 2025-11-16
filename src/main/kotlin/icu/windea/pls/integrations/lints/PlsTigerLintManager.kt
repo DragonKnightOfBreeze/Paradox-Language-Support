@@ -35,7 +35,7 @@ object PlsTigerLintManager {
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     val modificationTrackers = mutableMapOf<ParadoxGameType, SimpleModificationTracker>().withDefault { SimpleModificationTracker() }
 
-    fun isEnabled(): Boolean = PlsFacade.getIntegrationsSettings().lint.enableTiger
+    fun isEnabled(): Boolean = PlsFacade.getIntegrationsSettings().state.lint.enableTiger
 
     fun findTigerTool(gameType: ParadoxGameType): PlsTigerLintToolProvider? {
         if (!isEnabled()) return null
@@ -48,7 +48,8 @@ object PlsTigerLintManager {
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）
-        if (PlsFacade.getGameOrModSettings(rootInfo)?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
+        val settings = PlsFacade.getProfilesSettings().getGameOrModSettings(rootInfo)
+        if (settings?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         return findTigerTool(gameType) != null
     }
@@ -134,7 +135,7 @@ object PlsTigerLintManager {
      *
      * 优先使用用户在设置中配置的 Tiger 高亮映射（Severity x Confidence），否则回退到默认映射。
      *
-     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsState.TigerHighlightState
+     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings.TigerHighlightState
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
@@ -146,12 +147,12 @@ object PlsTigerLintManager {
     /**
      * 按严重度（[severity]）和置信度（[confidence]），得到代码检查使用的已配置的高亮级别对应的配置项的 Kotlin 属性。
      *
-     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettingsState.TigerHighlightState
+     * @see icu.windea.pls.integrations.settings.PlsIntegrationsSettings.TigerHighlightState
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator
      * @see icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection
      */
     fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<PlsLintHighlightSeverity> {
-        val mapping = PlsFacade.getIntegrationsSettings().lint.tigerHighlight
+        val mapping = PlsFacade.getIntegrationsSettings().state.lint.tigerHighlight
         return when (severity) {
             Severity.TIPS -> when (confidence) {
                 Confidence.WEAK -> mapping::tipsWeak

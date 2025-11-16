@@ -102,7 +102,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
 
-    override val isEnabled get() = PlsFacade.getConfigSettings().enableBuiltInConfigGroups
+    override val isEnabled get() = PlsFacade.getConfigSettings().state.enableBuiltInConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return rootDirectory
@@ -134,14 +134,14 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Remote
 
-    override val isEnabled get() = PlsFacade.getConfigSettings().enableRemoteConfigGroups
+    override val isEnabled get() = PlsFacade.getConfigSettings().state.enableRemoteConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val directory = PlsFacade.getConfigSettings().remoteConfigDirectory
+        val directory = PlsFacade.getConfigSettings().state.remoteConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
@@ -151,7 +151,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getDirectoryName(project: Project, gameType: ParadoxGameType): String {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
-        val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls[gameType.id]?.orNull()
+        val fromConfig = PlsFacade.getConfigSettings().state.configRepositoryUrls[gameType.id]?.orNull()
             ?.let { PlsGitService.getRepositoryPathFromUrl(it) }
         if (fromConfig != null) return fromConfig
         val fromDefault = CwtConfigRepositoryManager.getDefaultDirectoryName(gameType)
@@ -162,7 +162,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         if (directoryName == "core") return directoryName
         val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
-        val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls.entries
+        val fromConfig = PlsFacade.getConfigSettings().state.configRepositoryUrls.entries
             .find { PlsGitService.getRepositoryPathFromUrl(it.value) == directoryName }
             ?.key
         return fromConfig
@@ -182,14 +182,14 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
 
-    override val isEnabled get() = PlsFacade.getConfigSettings().enableLocalConfigGroups
+    override val isEnabled get() = PlsFacade.getConfigSettings().state.enableLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory()
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        val directory = PlsFacade.getConfigSettings().localConfigDirectory
+        val directory = PlsFacade.getConfigSettings().state.localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
@@ -210,7 +210,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
 
-    override val isEnabled get() = PlsFacade.getConfigSettings().enableProjectLocalConfigGroups
+    override val isEnabled get() = PlsFacade.getConfigSettings().state.enableProjectLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return doGetRootDirectory(project)
@@ -218,7 +218,7 @@ class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(project: Project): VirtualFile? {
         val projectRootDirectory = project.guessProjectDir() ?: return null
-        val rootPath = PlsFacade.getConfigSettings().projectLocalConfigDirectoryName?.orNull() ?: ".config"
+        val rootPath = PlsFacade.getConfigSettings().state.projectLocalConfigDirectoryName?.orNull() ?: ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
         return file?.takeIf { it.isDirectory }
     }

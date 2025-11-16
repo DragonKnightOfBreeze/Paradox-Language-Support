@@ -94,7 +94,7 @@ object CwtConfigRepositoryManager {
     }
 
     fun isValidToSync(): Boolean {
-        val settings = PlsFacade.getConfigSettings()
+        val settings = PlsFacade.getConfigSettings().state
         val valid = settings.enableRemoteConfigGroups
             && settings.remoteConfigDirectory.isNotNullOrEmpty()
             && settings.configRepositoryUrls.values.any { it.isNotNullOrEmpty() }
@@ -110,7 +110,7 @@ object CwtConfigRepositoryManager {
         // NOTE 这里需要先验证是否真的需要刷新
         if (!isValidToSync()) return
 
-        val settings = PlsFacade.getConfigSettings()
+        val settings = PlsFacade.getConfigSettings().state
         val urlMap = settings.configRepositoryUrls.orNull() ?: return
         val parentDirectory = settings.remoteConfigDirectory?.orNull() ?: return
 

@@ -26,7 +26,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
     override fun getHelpTopic() = "icu.windea.pls.ai.settings"
 
     override fun createPanel(): DialogPanel {
-        val settings = PlsAiFacade.getSettings()
+        val settings = PlsAiFacade.getSettings().state
         return panel {
             // enable
             row {

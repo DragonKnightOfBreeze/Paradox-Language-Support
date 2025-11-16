@@ -14,7 +14,7 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocaleConfig {
-        return getResolvedLocaleConfig(PlsFacade.getSettings().preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
+        return getResolvedLocaleConfig(PlsFacade.getSettings().state.preferredLocale.orEmpty()) ?: CwtLocaleConfig.resolveFallback()
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocaleConfig? {

@@ -44,8 +44,8 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: PlsFacade.getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsFacade.getSettings().defaultGameType
+                ?: PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsFacade.getSettings().state.defaultGameType
         }
     }
 }
@@ -95,8 +95,8 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: PlsFacade.getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: PlsFacade.getSettings().defaultGameType
+                ?: PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsFacade.getSettings().state.defaultGameType
         }
     }
 }

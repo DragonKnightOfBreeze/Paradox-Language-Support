@@ -173,10 +173,10 @@ class CwtConfigGroupService(
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
-        PlsFacade.getProfilesSettings().gameDescriptorSettings.values
+        PlsFacade.getProfilesSettings().state.gameDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.gameDirectory }
-        PlsFacade.getProfilesSettings().modDescriptorSettings.values
+        PlsFacade.getProfilesSettings().state.modDescriptorSettings.values
             .filter { it.finalGameType in gameTypes }
             .mapNotNullTo(rootFilePaths) { it.modDirectory }
         return rootFilePaths

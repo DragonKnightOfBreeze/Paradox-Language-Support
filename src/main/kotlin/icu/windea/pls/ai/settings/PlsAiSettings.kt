@@ -15,37 +15,35 @@ import icu.windea.pls.core.setValue
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS AI设置。可以在插件的对应设置页面中进行配置。
+ * PLS AI 设置。可以在插件的对应设置页面中进行配置。
  */
 @Service(Service.Level.APP)
 @State(name = "PlsAiSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
-class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettingsState>(PlsAiSettingsState())
+class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettings.State>(State()) {
+    /**
+     * @property enable 是否启用基于 AI 的各种功能。
+     * @property providerType 当前使用的 AI 服务提供者的类型。
+     * @property withContext 是否向提示中注入上下文信息。
+     */
+    class State : BaseState() {
+        var enable by property(false)
+        var providerType by enum<ChatModelProviderType>(ChatModelProviderType.OPEN_AI)
+        var withContext by property(false)
 
-/**
- * @property enable 是否启用基于 AI 的各种功能。
- * @property providerType 当前使用的 AI 服务提供者的类型。
- * @property withContext 是否向提示中注入上下文信息。
- */
-class PlsAiSettingsState : BaseState() {
-    var enable by property(false)
-    var providerType by enum<ChatModelProviderType>(ChatModelProviderType.OPEN_AI)
-    var withContext by property(false)
+        @get:Property(surroundWithTag = false)
+        var features by property(FeaturesState())
 
-    @get:Property(surroundWithTag = false)
-    var features by property(FeaturesState())
+        @get:Property(surroundWithTag = false)
+        var openAI by property(OpenAiState())
 
-    @get:Property(surroundWithTag = false)
-    var openAI by property(OpenAiState())
+        @get:Property(surroundWithTag = false)
+        var anthropic by property(AnthropicState())
 
-    @get:Property(surroundWithTag = false)
-    var anthropic by property(AnthropicState())
-
-    @get:Property(surroundWithTag = false)
-    var local by property(LocalState())
+        @get:Property(surroundWithTag = false)
+        var local by property(LocalState())
+    }
 
     /**
-     * 功能的相关设置。
-     *
      * @property localisationChunkSize 本地化条目的分块大小。即每次输入的本地化条目的最大数量。
      * @property localisationMemorySize 本地化条目的记忆大小。即会话记忆中本地化条目的最大数值。（TODO 更加精确的实现）
      */
@@ -56,8 +54,6 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * OPEN AI API 的相关设置。
-     *
      * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiEndpoint API 端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiKey API 密钥。密文保存。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
@@ -92,8 +88,6 @@ class PlsAiSettingsState : BaseState() {
     }
 
     /**
-     * 本地模型（Ollama）的相关设置。
-     *
      * @property modelName 模型名称。
      * @property apiEndpoint API 端点。
      */

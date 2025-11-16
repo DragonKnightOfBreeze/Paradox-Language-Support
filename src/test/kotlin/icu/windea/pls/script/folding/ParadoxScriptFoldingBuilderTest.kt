@@ -14,7 +14,7 @@ class ParadoxScriptFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().folding
+        val folding = PlsFacade.getSettings().state.folding
         folding.comment = true
         folding.commentByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/script/folding/folding_comment_expand_true.test.txt")
@@ -22,7 +22,7 @@ class ParadoxScriptFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_false_whenCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().folding
+        val folding = PlsFacade.getSettings().state.folding
         folding.comment = true
         folding.commentByDefault = true
         myFixture.testFoldingWithCollapseStatus("$testDataPath/script/folding/folding_comment_expand_false.test.txt")
@@ -30,7 +30,7 @@ class ParadoxScriptFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testBlockFolding_expand_true_byDefault() {
-        val folding = PlsFacade.getSettings().folding
+        val folding = PlsFacade.getSettings().state.folding
         folding.comment = false
         folding.commentByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/script/folding/folding_block_expand_true.test.txt")

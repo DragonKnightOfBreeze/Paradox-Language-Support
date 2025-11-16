@@ -445,7 +445,7 @@ object ParadoxCompletionManager {
                 scopeContext == null -> true
                 else -> ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             }
-            if (!scopeMatched1 && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return
+            if (!scopeMatched1 && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return
             context.scopeMatched = scopeMatched1
         }
 
@@ -561,7 +561,7 @@ object ParadoxCompletionManager {
             // 排除不匹配可能存在的 `supported_scopes` 的情况
             val supportedScopes = ParadoxScopeService.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return@p true
 
             val name = definitionInfo.name
             val typeFile = definition.containingFile

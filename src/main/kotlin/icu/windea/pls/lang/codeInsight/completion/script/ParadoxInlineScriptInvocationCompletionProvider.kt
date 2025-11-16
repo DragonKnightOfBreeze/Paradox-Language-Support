@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.resolved
  */
 class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeInlineScriptInvocations) return
+        if (!PlsFacade.getSettings().state.completion.completeInlineScriptInvocations) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return

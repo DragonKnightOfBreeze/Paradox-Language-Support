@@ -10,7 +10,7 @@ object ChatModelManager {
     fun getProviderType(): ChatModelProviderType {
         return when {
             PlsFacade.isUnitTestMode() -> ChatModelProviderType.resolve(System.getProperty("pls.ai.providerType", "OPEN_AI"))
-            else -> PlsAiFacade.getSettings().providerType
+            else -> PlsAiFacade.getSettings().state.providerType
         }
     }
 

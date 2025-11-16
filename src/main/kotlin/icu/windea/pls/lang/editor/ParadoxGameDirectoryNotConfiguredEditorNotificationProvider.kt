@@ -36,7 +36,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
         if (!isInProject) return null
 
-        val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootFile.path) ?: return null
+        val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path) ?: return null
         if (modSettings.finalGameDirectory.isNotNullOrEmpty()) return null
 
         return Function f@{ fileEditor ->
@@ -48,7 +48,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
                 dialog.show()
             }
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
-                val settings = PlsFacade.getSettings()
+                val settings = PlsFacade.getSettings().state
                 val defaultGameDirectories = settings.defaultGameDirectories
                 ParadoxGameType.getAll().forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = defaultGameDirectories.toMutableEntryList()

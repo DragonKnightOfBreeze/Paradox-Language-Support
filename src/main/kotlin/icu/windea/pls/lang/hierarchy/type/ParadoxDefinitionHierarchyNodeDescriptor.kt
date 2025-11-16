@@ -50,7 +50,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = PlsFacade.getSettings().hierarchy
+        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
         val name = name.or.anonymous()
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {

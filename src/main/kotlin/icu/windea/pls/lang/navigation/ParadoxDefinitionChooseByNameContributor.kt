@@ -19,7 +19,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
 
     private val indexKey = PlsIndexKeys.DefinitionName
 
-    private fun isEnabled() = PlsFacade.getSettings().navigation.seForDefinitions
+    private fun isEnabled() = PlsFacade.getSettings().state.navigation.seForDefinitions
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

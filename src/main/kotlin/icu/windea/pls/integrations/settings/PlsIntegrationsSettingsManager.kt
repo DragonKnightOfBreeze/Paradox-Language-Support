@@ -29,7 +29,7 @@ object PlsIntegrationsSettingsManager {
 
     // Lint Tools
 
-    fun getTigerSettingsMap(settings: PlsIntegrationsSettingsState) = buildMap {
+    fun getTigerSettingsMap(settings: PlsIntegrationsSettings.State) = buildMap {
         put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
         put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
         put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))

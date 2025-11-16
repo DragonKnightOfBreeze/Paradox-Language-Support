@@ -22,7 +22,7 @@ abstract class OpenSettingsAction : DumbAwareAction() {
 
     override fun update(e: AnActionEvent) {
         // 基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().state.others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }

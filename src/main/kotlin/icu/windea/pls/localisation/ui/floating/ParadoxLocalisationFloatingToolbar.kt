@@ -76,6 +76,6 @@ class ParadoxLocalisationFloatingToolbar(
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return PlsFacade.getSettings().others.showLocalisationFloatingToolbar
+        return PlsFacade.getSettings().state.others.showLocalisationFloatingToolbar
     }
 }

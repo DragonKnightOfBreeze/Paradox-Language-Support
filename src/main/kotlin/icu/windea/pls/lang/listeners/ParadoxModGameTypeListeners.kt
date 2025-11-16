@@ -16,7 +16,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
 
         // 更新游戏类型信息缓存
-        PlsFacade.getProfilesSettings().updateSettings()
+        PlsFacade.getProfilesSettings().state.updateSettings()
 
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
@@ -28,7 +28,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     }
 
     private fun refreshGameType(modDirectory: String, gameType: ParadoxGameType?) {
-        val settings = PlsFacade.getProfilesSettings().modDescriptorSettings.get(modDirectory) ?: return
+        val settings = PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(modDirectory) ?: return
         settings.gameType = gameType
     }
 }

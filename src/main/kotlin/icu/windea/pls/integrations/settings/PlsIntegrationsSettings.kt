@@ -12,27 +12,27 @@ import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.model.constants.PlsConstants
 
 /**
- * PLS集成设置。可以在插件的对应设置页面中进行配置。
+ * PLS 集成设置。可以在插件的对应设置页面中进行配置。
  */
 @Service(Service.Level.APP)
 @State(name = "PlsIntegrationsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
-class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSettingsState>(PlsIntegrationsSettingsState())
-
-/**
- * @property image 图片工具的设置。
- * @property lint 检查工具的设置。
- */
-class PlsIntegrationsSettingsState : BaseState() {
-    @get:Property(surroundWithTag = false)
-    var image by property(ImageState())
-    // @get:FromProperty(surroundWithTag = false)
-    // var translation by property(TranslationState())
-    @get:Property(surroundWithTag = false)
-    var lint by property(LintState())
+class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSettings.State>(State()) {
+    /**
+     * @property image 图片工具的设置。
+     * @property lint 检查工具的设置。
+     */
+    class State : BaseState() {
+        @get:Property(surroundWithTag = false)
+        var image by property(ImageState())
+        // @get:FromProperty(surroundWithTag = false)
+        // var translation by property(TranslationState())
+        @get:Property(surroundWithTag = false)
+        var lint by property(LintState())
+    }
 
     /**
-     * @property enableTexconv 是否使用 <a href="https://github.com/microsoft/DirectXTex/wiki/Texconv">Texconv</a> 作为图片处理工具。
-     * @property enableMagick 是否使用 <a href="https://www.imagemagick.org">Image Magick</a> 作为图片处理工具。
+     * @property enableTexconv 是否使用 [Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv) 作为图片处理工具。
+     * @property enableMagick 是否使用 [Image Magick](https://www.imagemagick.org) 作为图片处理工具。
      * @property magickPath Image Magick 的可执行文件的路径。
      */
     @Tag("image")
@@ -49,7 +49,7 @@ class PlsIntegrationsSettingsState : BaseState() {
     // }
 
     /**
-     * @property enableTiger 是否启用 <a href="https://github.com/amtep/tiger">Tiger</a> 检查工具。
+     * @property enableTiger 是否启用 [Tiger](https://github.com/amtep/tiger) 检查工具。
      * @property ck3TigerPath ck3-tiger 的可执行文件的路径。
      * @property ck3TigerConfPath ck3-tiger 的.conf配置文件的路径。如果不指定，默认使用模组目录下的`ck3-tiger.conf`。
      * @property irTigerPath imperator-tiger 的可执行文件的路径。
@@ -75,8 +75,8 @@ class PlsIntegrationsSettingsState : BaseState() {
      * Tiger 高亮级别（IDE 严重度）的映射矩阵（Severity x Confidence）。
      *
      * 这些默认值遵循当前实现的直觉映射，并在强置信度时适度提升严重度。具体而言：
-     * - TIPS/UNTIDY/WARNING/ERROR/FATAL 分别对应 INFORMATION/WEAK_WARNING/WARNING/ERROR/ERROR
-     * - 对于 TIPS/UNTIDY，如果置信度为 STRONG，则提高一级
+     * - TIPS/UNTIDY/WARNING/ERROR/FATAL 分别对应 INFORMATION/WEAK_WARNING/WARNING/ERROR/ERROR。
+     * - 对于 TIPS/UNTIDY，如果置信度为 STRONG，则提高一级。
      */
     @Tag("tigerHighlight")
     class TigerHighlightState : BaseState() {
@@ -104,4 +104,3 @@ class PlsIntegrationsSettingsState : BaseState() {
         private fun from(confidence: Confidence, severity: Severity) = PlsTigerLintManager.getDefaultHighlightSeverity(confidence, severity)
     }
 }
-

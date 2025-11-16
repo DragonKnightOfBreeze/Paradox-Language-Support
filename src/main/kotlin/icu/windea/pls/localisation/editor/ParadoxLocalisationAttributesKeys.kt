@@ -86,7 +86,7 @@ object ParadoxLocalisationAttributesKeys {
 
     @JvmStatic
     fun getColorKey(color: Color): TextAttributesKey? {
-        if (!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
+        if (!PlsFacade.getSettings().state.others.highlightLocalisationColorId) return null
         return colorKeyCache.get(color)
     }
 
@@ -98,7 +98,7 @@ object ParadoxLocalisationAttributesKeys {
 
     @JvmStatic
     fun getColorOnlyKey(color: Color): TextAttributesKey? {
-        if (!PlsFacade.getSettings().others.highlightLocalisationColorId) return null
+        if (!PlsFacade.getSettings().state.others.highlightLocalisationColorId) return null
         return colorOnlyKeyCache.get(color)
     }
 }

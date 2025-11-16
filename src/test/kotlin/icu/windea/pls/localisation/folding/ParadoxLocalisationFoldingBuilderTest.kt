@@ -14,7 +14,7 @@ class ParadoxLocalisationFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().folding
+        val folding = PlsFacade.getSettings().state.folding
         folding.comment = true
         folding.commentByDefault = false
         myFixture.testFoldingWithCollapseStatus("$testDataPath/localisation/folding/folding_comment_expand_true.test.yml")
@@ -22,7 +22,7 @@ class ParadoxLocalisationFoldingBuilderTest : BasePlatformTestCase() {
 
     @Test
     fun testCommentFolding_expand_false_whenCollapsedByDefault() {
-        val folding = PlsFacade.getSettings().folding
+        val folding = PlsFacade.getSettings().state.folding
         folding.comment = true
         folding.commentByDefault = true
         myFixture.testFoldingWithCollapseStatus("$testDataPath/localisation/folding/folding_comment_expand_false.test.yml")

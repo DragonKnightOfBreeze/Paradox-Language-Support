@@ -21,7 +21,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     }
 
     private fun addGameSettings(rootInfo: ParadoxRootInfo.Game) {
-        val settings = PlsFacade.getProfilesSettings()
+        val settings = PlsFacade.getProfilesSettings().state
         val gameFile = rootInfo.rootFile
         val gameDirectory = gameFile.path
         var gameDescriptorSettings = settings.gameDescriptorSettings.get(gameDirectory)
@@ -48,7 +48,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     }
 
     private fun addModSettings(rootInfo: ParadoxRootInfo.Mod) {
-        val settings = PlsFacade.getProfilesSettings()
+        val settings = PlsFacade.getProfilesSettings().state
         val modFile = rootInfo.rootFile
         val modDirectory = modFile.path
         var modDescriptorSettings = settings.modDescriptorSettings.get(modDirectory)

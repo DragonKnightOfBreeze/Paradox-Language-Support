@@ -4,12 +4,11 @@ import com.intellij.openapi.components.service
 import icu.windea.pls.ai.services.PolishLocalisationAiService
 import icu.windea.pls.ai.services.TranslateLocalisationAiService
 import icu.windea.pls.ai.settings.PlsAiSettings
-import icu.windea.pls.ai.settings.PlsAiSettingsState
 
 object PlsAiFacade {
-    fun getSettings(): PlsAiSettingsState = service<PlsAiSettings>().state
+    fun getSettings() = service<PlsAiSettings>()
 
-    fun isEnabled(): Boolean = getSettings().enable
+    fun isEnabled() = getSettings().state.enable
 
     fun getTranslateLocalisationService() = service<TranslateLocalisationAiService>()
 

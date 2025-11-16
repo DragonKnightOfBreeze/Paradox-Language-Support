@@ -31,8 +31,8 @@ class ParadoxOverrideComparator<T>(
         val rootFile = searchParameters.selector.rootFile
         val rootInfo = rootFile?.fileInfo?.rootInfo
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().gameSettings.get(rootFile.path)
-            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().modSettings.get(rootFile.path)
+            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().state.gameSettings.get(rootFile.path)
+            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path)
             else -> null
         }
     }

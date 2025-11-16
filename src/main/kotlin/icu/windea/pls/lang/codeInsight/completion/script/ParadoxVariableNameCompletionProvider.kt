@@ -35,7 +35,7 @@ import icu.windea.pls.script.psi.isBlockMember
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeVariableNames) return
+        if (!PlsFacade.getSettings().state.completion.completeVariableNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return

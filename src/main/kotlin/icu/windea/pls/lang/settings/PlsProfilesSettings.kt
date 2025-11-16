@@ -25,24 +25,40 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 @Service(Service.Level.APP)
 @State(name = "ParadoxProfilesSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
-class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettingsState>(PlsProfilesSettingsState())
+class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettings.State>(State()) {
+    class State : BaseState() {
+        @get:Property(surroundWithTag = false)
+        @get:MapAnnotation(entryTagName = "gameDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
+        val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> by linkedMap()
+        @get:Property(surroundWithTag = false)
+        @get:MapAnnotation(entryTagName = "modDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
+        val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> by linkedMap()
 
-class PlsProfilesSettingsState : BaseState() {
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "gameDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> by linkedMap()
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "modDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> by linkedMap()
+        @get:Property(surroundWithTag = false)
+        @get:MapAnnotation(entryTagName = "gameSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
+        val gameSettings: MutableMap<String, ParadoxGameSettingsState> by linkedMap()
+        @get:Property(surroundWithTag = false)
+        @get:MapAnnotation(entryTagName = "modSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
+        val modSettings: MutableMap<String, ParadoxModSettingsState> by linkedMap()
 
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "gameSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val gameSettings: MutableMap<String, ParadoxGameSettingsState> by linkedMap()
-    @get:Property(surroundWithTag = false)
-    @get:MapAnnotation(entryTagName = "modSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
-    val modSettings: MutableMap<String, ParadoxModSettingsState> by linkedMap()
+        fun updateSettings() = incrementModificationCount()
+    }
 
-    fun updateSettings() = incrementModificationCount()
+    fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {
+        return state.gameSettings.get(rootInfo.rootFile.path)
+    }
+
+    fun getModSettings(rootInfo: ParadoxRootInfo.Mod): ParadoxModSettingsState? {
+        return state.modSettings.get(rootInfo.rootFile.path)
+    }
+
+    fun getGameOrModSettings(rootInfo: ParadoxRootInfo): ParadoxGameOrModSettingsState? {
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> getGameSettings(rootInfo)
+            is ParadoxRootInfo.Mod -> getModSettings(rootInfo)
+            else -> null
+        }
+    }
 }
 
 /**
@@ -54,7 +70,7 @@ class ParadoxGameDescriptorSettingsState : BaseState() {
     var gameVersion: String? by string()
     var gameDirectory: String? by string()
 
-    val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().defaultGameType
+    val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().state.defaultGameType
 
     fun fromRootInfo(rootInfo: ParadoxRootInfo.Game) {
         gameDirectory = rootInfo.rootFile.path
@@ -79,7 +95,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
 
-    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
+    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().state.defaultGameType
 
     fun fromRootInfo(rootInfo: ParadoxRootInfo.Mod) {
         modDirectory = rootInfo.rootFile.path
@@ -115,19 +131,19 @@ interface ParadoxGameDescriptorAwareSettingsState {
     val gameDirectory: String?
 
     val gameDescriptorSettings: ParadoxGameDescriptorSettingsState?
-        get() = gameDirectory?.let { PlsFacade.getProfilesSettings().gameDescriptorSettings.get(it) }
+        get() = gameDirectory?.let { PlsFacade.getProfilesSettings().state.gameDescriptorSettings.get(it) }
 
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
 
-    val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().defaultGameType
+    val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().state.defaultGameType
 }
 
 interface ParadoxModDescriptorAwareSettingsState {
     val modDirectory: String?
 
     val modDescriptorSettings: ParadoxModDescriptorSettingsState?
-        get() = modDirectory?.orNull()?.let { PlsFacade.getProfilesSettings().modDescriptorSettings.get(it) }
+        get() = modDirectory?.orNull()?.let { PlsFacade.getProfilesSettings().state.modDescriptorSettings.get(it) }
 
     val name: String? get() = modDescriptorSettings?.name
     val version: String? get() = modDescriptorSettings?.version
@@ -139,7 +155,7 @@ interface ParadoxModDescriptorAwareSettingsState {
     val gameType: ParadoxGameType? get() = modDescriptorSettings?.gameType
     val source: ParadoxModSource? get() = modDescriptorSettings?.source
 
-    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
+    val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().state.defaultGameType
 }
 
 @Tag("settings")
@@ -152,7 +168,7 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState, Par
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 
-    override val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().defaultGameType
+    override val finalGameType: ParadoxGameType get() = gameType ?: PlsFacade.getSettings().state.defaultGameType
 }
 
 /**
@@ -171,8 +187,8 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState, Para
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 
-    override val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
-    val finalGameDirectory: String? get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().defaultGameDirectories[finalGameType.id]?.orNull()
+    override val finalGameType: ParadoxGameType get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().state.defaultGameType
+    val finalGameDirectory: String? get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().state.defaultGameDirectories[finalGameType.id]?.orNull()
 }
 
 /**
@@ -209,7 +225,7 @@ val ParadoxGameOrModSettingsState.qualifiedName: String
 /**
  * 游戏或模组的额外选项配置。
  *
- * @property disableTiger 在游戏或模组级别，是否禁用 <a href="https://github.com/amtep/tiger">Tiger</a> 检查工具。
+ * @property disableTiger 在游戏或模组级别，是否禁用 [Tiger](https://github.com/amtep/tiger) 检查工具。
  */
 @Tag("options")
 class ParadoxGameOrModOptionsSettingsState : BaseState() {

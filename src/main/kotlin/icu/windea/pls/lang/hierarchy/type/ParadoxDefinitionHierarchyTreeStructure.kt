@@ -85,7 +85,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsFacade.getSettings().hierarchy.eventTreeGrouping
+        val groupingStrategy = PlsFacade.getSettings().state.hierarchy.eventTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -120,7 +120,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = PlsFacade.getSettings().hierarchy.techTreeGrouping
+        val groupingStrategy = PlsFacade.getSettings().state.hierarchy.techTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {

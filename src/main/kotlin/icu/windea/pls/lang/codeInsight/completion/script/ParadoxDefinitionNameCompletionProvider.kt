@@ -60,7 +60,7 @@ import icu.windea.pls.script.psi.isDefinitionName
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeDefinitionNames) return
+        if (!PlsFacade.getSettings().state.completion.completeDefinitionNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return

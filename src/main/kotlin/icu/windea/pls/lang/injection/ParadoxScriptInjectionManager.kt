@@ -56,7 +56,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForArgumentValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxScriptString) return
-        if (!PlsFacade.getSettings().inference.injectionForParameterValue) return
+        if (!PlsFacade.getSettings().state.inference.injectionForParameterValue) return
 
         val argumentName = host.propertyKey?.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!PlsPatternConstants.argumentName.matches(argumentName)) return  // 参数名必须合法
@@ -96,7 +96,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyParameterValueInjectionForParameterDefaultValue(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxParameter) return
-        if (!PlsFacade.getSettings().inference.injectionForParameterValue) return
+        if (!PlsFacade.getSettings().state.inference.injectionForParameterValue) return
 
         val parameterName = host.name?.orNull() ?: return  // 排除参数名不存在或为空的情况
         if (!PlsPatternConstants.parameterName.matches(parameterName)) return  // 参数名必须合法
@@ -127,7 +127,7 @@ object ParadoxScriptInjectionManager {
 
     private fun applyLocalisationTextInjection(host: PsiLanguageInjectionHost, injectionInfos: MutableList<ParadoxLocalisationTextInjectionInfo>) {
         if (host !is ParadoxScriptString) return
-        if (!PlsFacade.getSettings().inference.injectionForLocalisationText) return
+        if (!PlsFacade.getSettings().state.inference.injectionForLocalisationText) return
 
         val text = host.text
         if (!shouldApplyLocalisationTextInjection(text)) return

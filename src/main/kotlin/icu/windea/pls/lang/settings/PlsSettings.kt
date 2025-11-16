@@ -21,38 +21,38 @@ import icu.windea.pls.model.constants.PlsConstants
  */
 @Service(Service.Level.APP)
 @State(name = "ParadoxSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
-class PlsSettings : SimplePersistentStateComponent<PlsSettingsState>(PlsSettingsState())
+class PlsSettings : SimplePersistentStateComponent<PlsSettings.State>(State()) {
+    /**
+     * @property defaultGameType 默认的游戏类型。
+     * @property defaultGameDirectories 默认的游戏目录映射。
+     * @property preferredLocale 偏好的语言环境。
+     * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
+     */
+    class State : BaseState() {
+        var defaultGameType by enum(ParadoxGameType.Stellaris)
+        var defaultGameDirectories by map<String, String>()
+        var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
+        var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
 
-/**
- * @property defaultGameType 默认的游戏类型。
- * @property defaultGameDirectories 默认的游戏目录映射。
- * @property preferredLocale 偏好的语言环境。
- * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
- */
-class PlsSettingsState : BaseState() {
-    var defaultGameType by enum(ParadoxGameType.Stellaris)
-    var defaultGameDirectories by map<String, String>()
-    var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
-    var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
+        val ignoredFileNameSet by ::ignoredFileNames.fromCommandDelimitedString(true)
 
-    val ignoredFileNameSet by ::ignoredFileNames.fromCommandDelimitedString(true)
-
-    @get:Property(surroundWithTag = false)
-    var documentation by property(DocumentationState())
-    @get:Property(surroundWithTag = false)
-    var completion by property(CompletionState())
-    @get:Property(surroundWithTag = false)
-    var folding by property(FoldingState())
-    @get:Property(surroundWithTag = false)
-    var generation by property(GenerationState())
-    @get:Property(surroundWithTag = false)
-    var hierarchy by property(HierarchyState())
-    @get:Property(surroundWithTag = false)
-    var navigation by property(NavigationState())
-    @get:Property(surroundWithTag = false)
-    var inference by property(InferenceState())
-    @get:Property(surroundWithTag = false)
-    var others by property(OthersState())
+        @get:Property(surroundWithTag = false)
+        var documentation by property(DocumentationState())
+        @get:Property(surroundWithTag = false)
+        var completion by property(CompletionState())
+        @get:Property(surroundWithTag = false)
+        var folding by property(FoldingState())
+        @get:Property(surroundWithTag = false)
+        var generation by property(GenerationState())
+        @get:Property(surroundWithTag = false)
+        var hierarchy by property(HierarchyState())
+        @get:Property(surroundWithTag = false)
+        var navigation by property(NavigationState())
+        @get:Property(surroundWithTag = false)
+        var inference by property(InferenceState())
+        @get:Property(surroundWithTag = false)
+        var others by property(OthersState())
+    }
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。

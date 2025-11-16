@@ -19,7 +19,7 @@ class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
 
     private val indexKey = PlsIndexKeys.LocalisationName
 
-    private fun isEnabled() = PlsFacade.getSettings().navigation.seForLocalisations
+    private fun isEnabled() = PlsFacade.getSettings().state.navigation.seForLocalisations
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

@@ -28,7 +28,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getIntegrationsSettings()
+        val settings = PlsFacade.getIntegrationsSettings().state
         return panel {
             // image tools
             group(PlsBundle.message("settings.integrations.image")) {

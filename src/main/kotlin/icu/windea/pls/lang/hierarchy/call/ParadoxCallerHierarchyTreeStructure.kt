@@ -14,7 +14,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
-import icu.windea.pls.lang.settings.PlsSettingsState
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -50,7 +50,7 @@ class ParadoxCallerHierarchyTreeStructure(
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val hierarchySettings = PlsFacade.getSettings().hierarchy
+        val hierarchySettings = PlsFacade.getSettings().state.hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
@@ -65,7 +65,7 @@ class ParadoxCallerHierarchyTreeStructure(
         reference: PsiReference,
         descriptor: HierarchyNodeDescriptor,
         descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>,
-        settings: PlsSettingsState.HierarchyState
+        settings: PlsSettings.HierarchyState
     ) {
         val referenceElement = reference.element
         when (referenceElement.language) {

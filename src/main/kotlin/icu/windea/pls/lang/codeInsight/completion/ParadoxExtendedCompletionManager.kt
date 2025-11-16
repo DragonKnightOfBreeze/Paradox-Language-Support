@@ -15,7 +15,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 object ParadoxExtendedCompletionManager {
     fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup ?: return
@@ -35,7 +35,7 @@ object ParadoxExtendedCompletionManager {
     }
 
     fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -102,7 +102,7 @@ object ParadoxExtendedCompletionManager {
     }
 
     fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -125,7 +125,7 @@ object ParadoxExtendedCompletionManager {
     }
 
     fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup ?: return
@@ -151,7 +151,7 @@ object ParadoxExtendedCompletionManager {
     }
 
     fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -175,7 +175,7 @@ object ParadoxExtendedCompletionManager {
     }
 
     fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().state.completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config

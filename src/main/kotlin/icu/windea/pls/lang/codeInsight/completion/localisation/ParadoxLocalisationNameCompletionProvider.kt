@@ -29,7 +29,7 @@ import java.util.concurrent.Callable
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsFacade.getSettings().completion.completeLocalisationNames) return
+        if (!PlsFacade.getSettings().state.completion.completeLocalisationNames) return
 
         val position = parameters.position
         if (ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return

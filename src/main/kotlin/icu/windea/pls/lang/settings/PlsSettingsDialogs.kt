@@ -104,7 +104,7 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     }
 
     override fun createCenterPanel(): JComponent {
-        val settings = PlsFacade.getSettings().completion.clauseTemplate
+        val settings = PlsFacade.getSettings().state.completion.clauseTemplate
         return panel {
             // maxExpressionCountInOneLine
             row {

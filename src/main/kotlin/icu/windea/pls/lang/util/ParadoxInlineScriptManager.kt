@@ -191,7 +191,7 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInferredContextConfigs(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
-        if (!PlsFacade.getSettings().inference.configContextForInlineScripts) return emptyList()
+        if (!PlsFacade.getSettings().state.inference.configContextForInlineScripts) return emptyList()
         return withRecursionGuard {
             withRecursionCheck(expression) {
                 context.inlineScriptHasConflict = false
@@ -219,7 +219,7 @@ object ParadoxInlineScriptManager {
 
     private fun doGetInferredContextConfigsFromUsages(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
-        val fastInference = PlsFacade.getSettings().inference.configContextForInlineScriptsFast
+        val fastInference = PlsFacade.getSettings().state.inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()

@@ -30,7 +30,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(contextFile)
         when {
             rootInfo is ParadoxRootInfo.Game -> {
-                val settings = PlsFacade.getProfilesSettings().gameSettings.get(rootFile.path)
+                val settings = PlsFacade.getProfilesSettings().state.gameSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val gameDirectory = rootFile
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
@@ -42,7 +42,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 return result
             }
             rootInfo is ParadoxRootInfo.Mod -> {
-                val settings = PlsFacade.getProfilesSettings().modSettings.get(rootFile.path)
+                val settings = PlsFacade.getProfilesSettings().state.modSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.finalGameDirectory?.toVirtualFile(false)

@@ -77,7 +77,7 @@ object ParadoxLocalisationAiManipulator {
         val textField = JBTextField().apply { addActionListener { submitted.set(true) } } // 目前不使用 TextFieldWithStoredHistory
 
         // 需要在 UI 发生变化时就更新设置
-        val settings = PlsAiFacade.getSettings()
+        val settings = PlsAiFacade.getSettings().state
         val providerType = AtomicProperty(settings.providerType).apply { afterChange { settings.providerType = it } }
 
         val panel = panel {

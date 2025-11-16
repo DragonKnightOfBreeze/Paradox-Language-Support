@@ -31,7 +31,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     abstract val confPath: String?
 
     final override fun isEnabled(): Boolean {
-        return PlsFacade.getIntegrationsSettings().lint.enableTiger
+        return PlsFacade.getIntegrationsSettings().state.lint.enableTiger
     }
 
     final override fun isSupported(gameType: ParadoxGameType?): Boolean {
@@ -80,7 +80,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         if (rootInfo !is ParadoxRootInfo.Mod) return null
         val rootFile = rootInfo.rootFile
         val rootPath = rootFile.path
-        val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootPath)
+        val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootPath)
         val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote('\'')
         val argConfPath = confPath?.orNull()?.quote('\'')
         val argPath = rootPath.quote('\'') // 这里应该都可以直接输入模组目录
@@ -107,21 +107,21 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     class Ck3 : PlsTigerLintToolProvider() {
         override val name: String = "ck3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.ck3TigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.ck3TigerConfPath
+        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.ck3TigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.ck3TigerConfPath
     }
 
     class Ir : PlsTigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.irTigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.irTigerConfPath
+        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.irTigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.irTigerConfPath
     }
 
     class Vic3 : PlsTigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
-        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.vic3TigerPath
-        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.vic3TigerConfPath
+        override val exePath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.vic3TigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().state.lint.vic3TigerConfPath
     }
 }

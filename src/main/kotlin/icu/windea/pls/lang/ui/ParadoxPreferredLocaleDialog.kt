@@ -14,7 +14,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
 
     override fun createCenterPanel() = panel {
         row {
-            val settings = PlsFacade.getSettings()
+            val settings = PlsFacade.getSettings().state
             localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     refreshForOpenedFiles()

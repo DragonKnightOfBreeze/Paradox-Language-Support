@@ -19,7 +19,7 @@ class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx
 
     private val indexKey = PlsIndexKeys.ScriptedVariableName
 
-    private fun isEnabled() = PlsFacade.getSettings().navigation.seForScriptedVariables
+    private fun isEnabled() = PlsFacade.getSettings().state.navigation.seForScriptedVariables
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

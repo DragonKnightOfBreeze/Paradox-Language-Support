@@ -11,11 +11,11 @@ abstract class ManipulateLocalisationAiService<R : ManipulateLocalisationAiReque
     abstract fun manipulate(request: R): Flow<LocalisationAiResult>?
 
     protected fun getChunkSize(): Int {
-        return PlsAiFacade.getSettings().features.localisationChunkSize.coerceAtLeast(1)
+        return PlsAiFacade.getSettings().state.features.localisationChunkSize.coerceAtLeast(1)
     }
 
     protected fun getMemorySize(): Int {
-        return PlsAiFacade.getSettings().features.localisationMemorySize.coerceAtLeast(0)
+        return PlsAiFacade.getSettings().state.features.localisationMemorySize.coerceAtLeast(0)
     }
 
     protected fun getMemory(): ChatMemory {

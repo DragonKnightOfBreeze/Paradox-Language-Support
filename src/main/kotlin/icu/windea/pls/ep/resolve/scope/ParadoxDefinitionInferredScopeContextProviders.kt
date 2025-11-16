@@ -57,7 +57,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().inference.scopeContext) return null
+        if (!PlsFacade.getSettings().state.inference.scopeContext) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -163,7 +163,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().inference.scopeContextForEvents) return null
+        if (!PlsFacade.getSettings().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -272,7 +272,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().inference.scopeContextForEvents) return null
+        if (!PlsFacade.getSettings().state.inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -419,7 +419,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!PlsFacade.getSettings().inference.scopeContextForOnActions) return null
+        if (!PlsFacade.getSettings().state.inference.scopeContextForOnActions) return null
         return doGetScopeContextFromCache(definition)
     }
 

@@ -168,7 +168,7 @@ object ParadoxLocalisationGenerator {
         append(indent)
         append(localisationName)
         append(": \"")
-        val generationSettings = PlsFacade.getSettings().generation
+        val generationSettings = PlsFacade.getSettings().state.generation
         val strategy = generationSettings.localisationStrategy
         val text = when (strategy) {
             LocalisationGenerationStrategy.EmptyText -> ""

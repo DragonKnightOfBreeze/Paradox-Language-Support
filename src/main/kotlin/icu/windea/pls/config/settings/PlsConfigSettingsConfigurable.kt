@@ -28,7 +28,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
 
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getConfigSettings()
+        val settings = PlsFacade.getConfigSettings().state
         return panel {
             lateinit var cbRemote: JBCheckBox
             lateinit var cbLocal: JBCheckBox

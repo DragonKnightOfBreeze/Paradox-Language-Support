@@ -22,7 +22,7 @@ import kotlin.io.path.notExists
 @WithOS(OS.Windows, OS.Linux)
 class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
-        return PlsFacade.getIntegrationsSettings().image.enableMagick
+        return PlsFacade.getIntegrationsSettings().state.image.enableMagick
     }
 
     override fun isSupported(): Boolean {
@@ -30,7 +30,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     override fun isValid(): Boolean {
-        val toolPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()
+        val toolPath = PlsFacade.getIntegrationsSettings().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) return false
         return validatePath(toolPath)
     }
@@ -70,7 +70,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val toolPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()
+        val toolPath = PlsFacade.getIntegrationsSettings().state.image.magickPath?.trim()
         if (toolPath.isNullOrEmpty()) throw IllegalStateException()
 
         val tempParentPath = PlsPathConstants.imagesTemp

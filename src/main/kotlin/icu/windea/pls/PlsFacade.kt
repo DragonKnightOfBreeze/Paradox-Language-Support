@@ -13,14 +13,10 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.core.isClassPresent
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.settings.ParadoxGameOrModSettingsState
-import icu.windea.pls.lang.settings.ParadoxGameSettingsState
-import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
 import kotlinx.coroutines.CoroutineScope
 
@@ -59,29 +55,13 @@ object PlsFacade {
         return project.service<CwtConfigGroupService>().getConfigGroup(finalGameType)
     }
 
-    fun getSettings() = service<PlsSettings>().state
+    fun getSettings() = service<PlsSettings>()
 
-    fun getConfigSettings() = service<PlsConfigSettings>().state
+    fun getConfigSettings() = service<PlsConfigSettings>()
 
-    fun getIntegrationsSettings() = service<PlsIntegrationsSettings>().state
+    fun getIntegrationsSettings() = service<PlsIntegrationsSettings>()
 
-    fun getProfilesSettings() = service<PlsProfilesSettings>().state
-
-    fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {
-        return getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
-    }
-
-    fun getModSettings(rootInfo: ParadoxRootInfo.Mod): ParadoxModSettingsState? {
-        return getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
-    }
-
-    fun getGameOrModSettings(rootInfo: ParadoxRootInfo): ParadoxGameOrModSettingsState? {
-        return when (rootInfo) {
-            is ParadoxRootInfo.Game -> getGameSettings(rootInfo)
-            is ParadoxRootInfo.Mod -> getModSettings(rootInfo)
-            else -> null
-        }
-    }
+    fun getProfilesSettings() = service<PlsProfilesSettings>()
 
     fun getInternalSettings() = service<PlsInternalSettings>()
 

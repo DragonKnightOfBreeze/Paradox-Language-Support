@@ -214,7 +214,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsFacade.getSettings().documentation.renderNameDescForModifiers
+        val render = PlsFacade.getSettings().state.documentation.renderNameDescForModifiers
         val contextElement = referenceElement
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -269,7 +269,7 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-        val render = PlsFacade.getSettings().documentation.renderIconForModifiers
+        val render = PlsFacade.getSettings().state.documentation.renderIconForModifiers
         val contextElement = referenceElement
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -303,7 +303,7 @@ object CwtDocumentationManager {
     private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
         // 即使是在CWT文件中，如果可以推断得到规则分组，也显示作用域信息
 
-        if (!PlsFacade.getSettings().documentation.showScopes) return
+        if (!PlsFacade.getSettings().state.documentation.showScopes) return
 
         // 为 `link` 提示名字、描述、输入作用域、输出作用域的文档注释
         // 为 `alias` `modifier` `localisation_command` 等提供分类、支持的作用域的文档注释
@@ -392,7 +392,7 @@ object CwtDocumentationManager {
         // @Suppress("DEPRECATION")
         // if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-        if (!PlsFacade.getSettings().documentation.showScopeContext) return
+        if (!PlsFacade.getSettings().state.documentation.showScopeContext) return
 
         val sections = getSections(0) ?: return
         val gameType = configGroup.gameType

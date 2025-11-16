@@ -26,11 +26,11 @@ class ParadoxVariableOperationExpressionFoldingBuilder : ParadoxExpressionFoldin
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return PlsFacade.getSettings().folding.variableOperationExpressionsByDefault
+        return PlsFacade.getSettings().state.folding.variableOperationExpressionsByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!PlsFacade.getSettings().folding.variableOperationExpressions) return FoldingDescriptor.EMPTY_ARRAY
+        if (!PlsFacade.getSettings().state.folding.variableOperationExpressions) return FoldingDescriptor.EMPTY_ARRAY
 
         return super.buildFoldRegions(root, document, quick)
     }

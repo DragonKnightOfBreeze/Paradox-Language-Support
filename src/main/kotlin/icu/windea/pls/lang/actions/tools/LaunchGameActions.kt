@@ -15,7 +15,7 @@ interface LaunchGameActions {
         override fun update(e: AnActionEvent) {
             // 判断是否需要显示在编辑器工具栏中
             if (e.place == ActionPlaces.EDITOR_TOOLBAR) {
-                val show = PlsFacade.getSettings().others.showLaunchGameActionInEditorContextToolbar
+                val show = PlsFacade.getSettings().state.others.showLaunchGameActionInEditorContextToolbar
                 e.presentation.isEnabledAndVisible = show
                 if (!show) return
             }

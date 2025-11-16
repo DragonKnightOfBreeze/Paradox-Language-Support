@@ -71,7 +71,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val fileDocumentManager = FileDocumentManager.getInstance()
                 val documentManager = PsiDocumentManager.getInstance(project)
 
-                val generationSettings = PlsFacade.getSettings().generation
+                val generationSettings = PlsFacade.getSettings().state.generation
                 val strategy = generationSettings.localisationStrategy
 
                 val specificText = generationSettings.localisationStrategyText.orEmpty()

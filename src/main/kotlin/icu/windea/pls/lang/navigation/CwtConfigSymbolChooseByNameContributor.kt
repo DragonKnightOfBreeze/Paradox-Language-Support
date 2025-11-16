@@ -30,7 +30,7 @@ class CwtConfigSymbolChooseByNameContributor : ChooseByNameContributorEx {
     // com.intellij.ide.util.gotoByName.CwtConfigSymbolChooseByNameContributor
 
     private fun getTypes(): Set<String> = buildSet {
-        val settings = PlsFacade.getSettings().navigation
+        val settings = PlsFacade.getSettings().state.navigation
         if (settings.seForTypeConfigs) add(CwtConfigTypes.Type.id)
         if (settings.seForComplexEnumConfigs) add(CwtConfigTypes.ComplexEnum.id)
         if (settings.seForTriggerConfigs) add(CwtConfigTypes.Trigger.id)

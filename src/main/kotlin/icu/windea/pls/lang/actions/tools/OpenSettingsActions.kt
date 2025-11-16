@@ -23,7 +23,7 @@ interface OpenSettingsActions {
         override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return
             val rootPath = rootInfo.rootFile.path
-            val gameSettings = PlsFacade.getProfilesSettings().gameSettings.get(rootPath) ?: return
+            val gameSettings = PlsFacade.getProfilesSettings().state.gameSettings.get(rootPath) ?: return
             val dialog = ParadoxGameSettingsDialog(project, gameSettings)
             dialog.show()
         }
@@ -43,7 +43,7 @@ interface OpenSettingsActions {
         override fun showSettingsDialog(rootInfo: ParadoxRootInfo, project: Project) {
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return
             val rootPath = rootInfo.rootFile.path
-            val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootPath) ?: return
+            val modSettings = PlsFacade.getProfilesSettings().state.modSettings.get(rootPath) ?: return
             val dialog = ParadoxModSettingsDialog(project, modSettings)
             dialog.show()
         }

@@ -127,7 +127,7 @@ class ParadoxModDependenciesTable(
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
                 val modDirectory = element.modDirectory.orEmpty()
-                val modDescriptorSettings = PlsFacade.getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
+                val modDescriptorSettings = PlsFacade.getProfilesSettings().state.modDescriptorSettings.getValue(modDirectory)
                 modDescriptorSettings.name.orEmpty()
             }
 

@@ -34,7 +34,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     @Suppress("AssignedValueIsNeverRead")
     override fun createPanel(): DialogPanel {
         callbackLock.reset()
-        val settings = PlsFacade.getSettings()
+        val settings = PlsFacade.getSettings().state
         val gameTypes = ParadoxGameType.getAll()
         return panel {
             // general

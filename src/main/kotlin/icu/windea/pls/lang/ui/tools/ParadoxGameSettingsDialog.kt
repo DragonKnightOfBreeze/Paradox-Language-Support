@@ -95,7 +95,7 @@ class ParadoxGameSettingsDialog(
         super.doOKAction()
 
         settings.modDependencies = modDependencies
-        PlsFacade.getProfilesSettings().updateSettings()
+        PlsFacade.getProfilesSettings().state.updateSettings()
         application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 

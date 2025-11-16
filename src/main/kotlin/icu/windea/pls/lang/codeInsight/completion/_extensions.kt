@@ -193,7 +193,7 @@ fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boo
 }
 
 fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
-    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
+    if (PlsFacade.getSettings().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxScriptedVariableManager.getLocalizedName(element).singleton.setOrEmpty()
     }
@@ -201,7 +201,7 @@ fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: 
 }
 
 fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxScriptDefinitionElement): LookupElementBuilder {
-    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
+    if (PlsFacade.getSettings().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)
     }
@@ -209,7 +209,7 @@ fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: Parado
 }
 
 fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: PsiElement): LookupElementBuilder {
-    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
+    if (PlsFacade.getSettings().state.completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)
     }
@@ -218,10 +218,10 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
 
 fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): LookupElement? {
     // check whether scope is matched again here
-    if ((!scopeMatched || !context.scopeMatched) && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return null
+    if ((!scopeMatched || !context.scopeMatched) && PlsFacade.getSettings().state.completion.completeOnlyScopeIsMatched) return null
 
     val config = context.config
-    val completeWithValue = PlsFacade.getSettings().completion.completeWithValue
+    val completeWithValue = PlsFacade.getSettings().state.completion.completeWithValue
     val targetConfig = when {
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
@@ -286,7 +286,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     val extraElements = mutableListOf<LookupElement>()
 
     // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (isKey && !isKeyElement && isBlockConfig && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
+    if (isKey && !isKeyElement && isBlockConfig && config != null && PlsFacade.getSettings().state.completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {
             val extraTailText = buildString {
@@ -377,7 +377,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
             val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
 
             val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
-            val multiline = descriptors.size > PlsFacade.getSettings().completion.clauseTemplate.maxMemberCountInOneLine
+            val multiline = descriptors.size > PlsFacade.getSettings().state.completion.clauseTemplate.maxMemberCountInOneLine
             val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
 
             val documentManager = PsiDocumentManager.getInstance(project)
@@ -476,7 +476,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
     addElement(lookupElement)
 
     // 进行提示并在提示后插入子句内联模板（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (PlsFacade.getSettings().completion.completeWithClauseTemplate) {
+    if (PlsFacade.getSettings().state.completion.completeWithClauseTemplate) {
         val config = context.config!!
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {

@@ -141,7 +141,7 @@ class OpenAiChatModelProvider : ChatModelProviderBase<OpenAiChatModelProvider.Op
         )
 
         class AtomicProperties {
-            private val settings = PlsAiFacade.getSettings().openAI
+            private val settings = PlsAiFacade.getSettings().state.openAI
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

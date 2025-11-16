@@ -82,8 +82,8 @@ interface ParadoxHierarchyActions {
         override fun update(e: AnActionEvent) {
             val type = browser.castOrNull<ParadoxDefinitionHierarchyBrowser>()?.type
             val strategy = when (type) {
-                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsFacade.getSettings().hierarchy.eventTreeGrouping
-                Type.TechTreePre, Type.TechTreePost -> PlsFacade.getSettings().hierarchy.techTreeGrouping
+                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsFacade.getSettings().state.hierarchy.eventTreeGrouping
+                Type.TechTreePre, Type.TechTreePost -> PlsFacade.getSettings().state.hierarchy.techTreeGrouping
                 else -> null
             }
 
@@ -124,8 +124,8 @@ interface ParadoxHierarchyActions {
         private inner class MenuAction(val strategy: PlsStrategies.Grouping) : AnAction(strategy.text) {
             override fun actionPerformed(e: AnActionEvent) {
                 when (strategy) {
-                    is PlsStrategies.EventTreeGrouping -> PlsFacade.getSettings().hierarchy.eventTreeGrouping = strategy
-                    is PlsStrategies.TechTreeGrouping -> PlsFacade.getSettings().hierarchy.techTreeGrouping = strategy
+                    is PlsStrategies.EventTreeGrouping -> PlsFacade.getSettings().state.hierarchy.eventTreeGrouping = strategy
+                    is PlsStrategies.TechTreeGrouping -> PlsFacade.getSettings().state.hierarchy.techTreeGrouping = strategy
                 }
 
                 // invokeLater is called to update state of button before long tree building operation

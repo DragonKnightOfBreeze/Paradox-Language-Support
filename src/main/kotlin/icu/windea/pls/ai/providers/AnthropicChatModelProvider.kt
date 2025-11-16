@@ -120,7 +120,7 @@ class AnthropicChatModelProvider : ChatModelProviderBase<AnthropicChatModelProvi
         )
 
         class AtomicProperties {
-            private val settings = PlsAiFacade.getSettings().anthropic
+            private val settings = PlsAiFacade.getSettings().state.anthropic
 
             val modelName = AtomicProperty(settings.modelName.orEmpty())
             val apiEndpoint = AtomicProperty(settings.apiEndpoint.orEmpty())

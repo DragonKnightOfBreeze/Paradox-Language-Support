@@ -19,7 +19,7 @@ class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributor
 
     private val indexKey = PlsIndexKeys.SyncedLocalisationName
 
-    private fun isEnabled() = PlsFacade.getSettings().navigation.seForSyncedLocalisations
+    private fun isEnabled() = PlsFacade.getSettings().state.navigation.seForSyncedLocalisations
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         if (!isEnabled()) return

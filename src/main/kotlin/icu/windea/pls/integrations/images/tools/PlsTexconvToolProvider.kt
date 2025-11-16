@@ -25,7 +25,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private val texconvExeWd by lazy { PlsPathConstants.texconvExe.parent?.toFile() }
 
     override fun isEnabled(): Boolean {
-        return PlsFacade.getIntegrationsSettings().image.enableTexconv
+        return PlsFacade.getIntegrationsSettings().state.image.enableTexconv
     }
 
     override fun isSupported(): Boolean {
