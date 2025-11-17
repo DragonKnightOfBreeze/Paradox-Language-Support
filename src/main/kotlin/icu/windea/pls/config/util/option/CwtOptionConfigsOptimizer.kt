@@ -36,8 +36,12 @@ object CwtOptionConfigsOptimizer : Optimizer<List<CwtOptionMemberConfig<*>>, Int
     }
 
     private fun computeId(optionConfigs: List<CwtOptionMemberConfig<*>>): Int {
-        val keys = optionConfigs.mapTo(FastList(optionConfigs.size)) { CwtConfigManipulator.getIdentifierKey(it) }
-        val key = keys.sorted().joinToString("\u0000")
+        val size = optionConfigs.size
+        val key = when (size) {
+            0 -> return 0
+            1 -> CwtConfigManipulator.getIdentifierKey(optionConfigs.get(0))
+            else -> optionConfigs.mapTo(FastList(size)) { CwtConfigManipulator.getIdentifierKey(it) }.sorted().joinToString("\u0000")
+        }
         return key2IdMap.computeIfAbsent(key) {
             val id = counter.incrementAndGet()
             id2CacheMap.put(id, optionConfigs)
