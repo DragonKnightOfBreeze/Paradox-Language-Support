@@ -2,26 +2,20 @@
 
 package icu.windea.pls.core.collections
 
-/** 过滤为 [R] 类型并附加谓词 [predicate]。*/
+/** 将类型为 [R] 且满足 [predicate] 的元素过滤为序列。 */
 inline fun <reified R> Sequence<*>.filterIsInstance(noinline predicate: (R) -> Boolean): Sequence<R> {
-    return filterIsInstance(R::class.java, predicate)
+    return filter { it is R && predicate(it) } as Sequence<R>
 }
 
-/** 过滤为 [klass] 类型并附加谓词 [predicate]。*/
-inline fun <R> Sequence<*>.filterIsInstance(klass: Class<R>, noinline predicate: (R) -> Boolean): Sequence<R> {
-    return filterIsInstance(klass).filter(predicate)
+/** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */
+inline fun <reified R, C : MutableCollection<in R>> Sequence<*>.filterIsInstanceTo(destination: C, noinline predicate: (R) -> Boolean): C {
+    for (element in this) if (element is R && predicate(element)) destination.add(element)
+    return destination
 }
 
-/** 查找第一个为 [R] 类型且满足 [predicate] 的元素。*/
+/** 查找第一个类型为 [R] 且满足 [predicate] 的元素。*/
 inline fun <reified R> Sequence<*>.findIsInstance(predicate: (R) -> Boolean = { true }): R? {
-    return findIsInstance(R::class.java, predicate)
-}
-
-@Suppress("UNCHECKED_CAST")
-/** 查找第一个为 [klass] 类型且满足 [predicate] 的元素。*/
-inline fun <R> Sequence<*>.findIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
-    for (element in this) if (klass.isInstance(element) && predicate(element as R)) return element
-    return null
+    return find { it is R && predicate(it) } as R?
 }
 
 /** 将当前序列映射为数组。注意：会先转为列表。*/

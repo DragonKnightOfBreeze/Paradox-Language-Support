@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused", "ERROR_SUPPRESSION")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.core.collections
 
@@ -36,37 +36,25 @@ inline fun <T> Collection<T>.toListOrThis(): List<T> = this as? List ?: this.toL
 /** 如果当前集合已是 [Set]，则直接返回，否则转化为新的 [Set]。*/
 inline fun <T> Collection<T>.toSetOrThis(): Set<T> = this as? Set ?: this.toSet()
 
-/** 过滤为 [R] 类型并附加谓词 [predicate]。*/
+/** 将类型为 [R] 且满足 [predicate] 的元素过滤为列表。 */
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
-    return filterIsInstance(R::class.java, predicate)
+    return filterIsInstanceTo(ArrayList<R>(), predicate)
 }
 
-/** 过滤为 [klass] 类型并附加谓词 [predicate]。*/
-inline fun <R> Iterable<*>.filterIsInstance(klass: Class<R>, predicate: (R) -> Boolean): List<R> {
-    val result = ArrayList<R>()
-    for (element in this) if (klass.isInstance(element) && predicate(element as R)) result.add(element)
-    return result
+/** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */
+inline fun <reified R, C: MutableCollection<in R>> Iterable<*>.filterIsInstanceTo(destination: C, predicate: (R) -> Boolean): C {
+    for (element in this) if (element is R && predicate(element)) destination.add(element)
+    return destination
 }
 
-/** 查找第一个为 [R] 类型且满足 [predicate] 的元素。*/
+/** 查找第一个类型为 [R] 且满足 [predicate] 的元素。*/
 inline fun <reified R> Iterable<*>.findIsInstance(predicate: (R) -> Boolean = { true }): R? {
     return find { it is R && predicate(it) } as R?
 }
 
-/** 查找第一个为 [klass] 类型且满足 [predicate] 的元素。*/
-inline fun <R> Iterable<*>.findIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
-    return find { klass.isInstance(it) && predicate(it as R) } as R?
-}
-
-/** 查找最后一个为 [R] 类型且满足 [predicate] 的元素。*/
+/** 查找最后一个类型为 [R] 且满足 [predicate] 的元素。*/
 inline fun <reified R> List<*>.findLastIsInstance(predicate: (R) -> Boolean = { true }): R? {
     return findLast { it is R && predicate(it) } as R?
-}
-
-/** 查找最后一个为 [klass] 类型且满足 [predicate] 的元素。*/
-@Suppress("UNCHECKED_CAST")
-inline fun <R> List<*>.findLastIsInstance(klass: Class<R>, predicate: (R) -> Boolean = { true }): R? {
-    return findLast { klass.isInstance(it) && predicate(it as R) } as R?
 }
 
 /** 将当前列表映射为数组。*/
