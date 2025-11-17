@@ -5,8 +5,8 @@ import icu.windea.pls.model.ParadoxGameType
 
 data class ParadoxFilePathIndexInfo(
     val directory: String,
-    override val gameType: ParadoxGameType,
     val included: Boolean,
+    override val gameType: ParadoxGameType,
 ) : ParadoxIndexInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null

@@ -14,6 +14,8 @@ import icu.windea.pls.lang.analyze.ParadoxMetadata
 sealed class ParadoxRootInfo {
     abstract val gameType: ParadoxGameType
 
+    open val mainEntries: Set<String> get() = emptySet()
+    open val extraEntries: Set<String> get() = emptySet()
     open val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
     open val steamId: String? get() = null
 
@@ -27,6 +29,10 @@ sealed class ParadoxRootInfo {
     }
 
     class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata) {
+        override val mainEntries: Set<String>
+            get() = gameType.entryInfo.gameMain
+        override val extraEntries: Set<String>
+            get() = gameType.entryInfo.gameExtra
         override val qualifiedName: String
             get() = buildString {
                 append(gameType.title)
@@ -46,6 +52,10 @@ sealed class ParadoxRootInfo {
         val remoteId: String? get() = metadata.remoteId
         val source: ParadoxModSource get() = metadata.source
 
+        override val mainEntries: Set<String>
+            get() = gameType.entryInfo.modMain
+        override val extraEntries: Set<String>
+            get() = gameType.entryInfo.modExtra
         override val qualifiedName: String
             get() = buildString {
                 append(gameType.title).append(" Mod: ")

@@ -124,7 +124,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
 
     // 文件信息 - 相对于入口目录的路径、入口名（如果不为空）
     append("[").append(fileInfo.path.path.escapeXml()).append("]")
-    val entryName = fileInfo.entryName
+    val entryName = fileInfo.entry
     if (entryName.isNotEmpty()) {
         grayed {
             append(" of ").append(entryName.escapeXml())

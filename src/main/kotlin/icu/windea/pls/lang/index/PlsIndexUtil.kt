@@ -8,14 +8,16 @@ import icu.windea.pls.model.constants.PlsConstants
 object PlsIndexUtil {
     private val excludeDirectoriesForFilePathIndex = listOf(
         "_CommonRedist",
+        "binaries",
+        "clausewitz",
         "crash_reporter",
         "curated_save_games",
+        "jomini",
         "pdx_browser",
         "pdx_launcher",
         "pdx_online_assets",
         "previewer_assets",
         "tweakergui_assets",
-        "jomini",
     )
 
     fun includeForFilePathIndex(file: VirtualFile): Boolean {
