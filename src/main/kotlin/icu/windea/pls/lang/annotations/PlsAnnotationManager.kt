@@ -32,6 +32,7 @@ object PlsAnnotationManager {
 
     private fun doCheck(targetType: Class<*>, definitionInfo: ParadoxDefinitionInfo): Boolean {
         val types = definitionTypesCache.get(targetType)
+        if (types.isEmpty()) return true
         return types.any { ParadoxDefinitionTypeExpression.resolve(it).matches(definitionInfo) }
     }
 
@@ -53,6 +54,7 @@ object PlsAnnotationManager {
 
     private fun doCheck(targetType: Class<*>, gameType: ParadoxGameType): Boolean {
         val gameTypes = gameTypesCache.get(targetType)
+        if (gameTypes.isEmpty()) return true
         return gameType in gameTypes
     }
 }
