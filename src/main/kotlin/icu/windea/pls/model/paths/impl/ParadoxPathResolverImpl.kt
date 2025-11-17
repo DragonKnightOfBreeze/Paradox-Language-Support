@@ -28,7 +28,6 @@ internal class ParadoxPathResolverImpl : ParadoxPath.Resolver {
 
     override fun resolve(input: List<String>): ParadoxPath {
         if (input.isEmpty()) return EmptyParadoxPath
-        if (input.size == 1) return NormalizedParadoxPath(input.get(0), true)
         return ParadoxPathImplFromSubPaths(input)
     }
 }

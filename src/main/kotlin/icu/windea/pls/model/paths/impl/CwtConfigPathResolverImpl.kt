@@ -26,7 +26,6 @@ internal class CwtConfigPathResolverImpl : CwtConfigPath.Resolver {
 
     override fun resolve(input: List<String>): CwtConfigPath {
         if (input.isEmpty()) return EmptyCwtConfigPath
-        if (input.size == 1) return NormalizedCwtConfigPath(input.get(0), true)
         return CwtConfigPathImplFromSubPaths(input)
     }
 }
