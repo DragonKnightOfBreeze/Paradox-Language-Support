@@ -4,6 +4,7 @@ import icu.windea.pls.config.CwtApiStatus
 import icu.windea.pls.config.CwtDataTypeGroups
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtOptionConfig
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig
@@ -14,13 +15,16 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.config.options
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.config.util.option.CwtOptionDataAccessors.pushScope
 import icu.windea.pls.config.util.option.CwtOptionDataAccessors.replaceScopes
 import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.FastMap
+import icu.windea.pls.core.collections.FastSet
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -43,6 +47,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * @see CwtOptionDataAccessor
  */
+@Optimized
 object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     fun <T> create(cached: Boolean = false, action: CwtMemberConfig<*>.() -> T): CwtOptionDataAccessorProvider<T> {
         return CwtOptionDataAccessorProvider(cached, action)
@@ -136,9 +141,18 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * 示例：`## predicate = { scope = fleet type != country }`
      */
-    val predicate: CwtOptionDataAccessor<Map<String, ReversibleValue<String>>> by create(cached = true) {
-        val option = findOption("predicate") ?: return@create emptyMap()
-        option.options?.associate { it.key to ReversibleValue(it.separatorType == CwtSeparatorType.EQUAL, it.value) }?.optimized().orEmpty()
+    val predicate: CwtOptionDataAccessor<Map<String, ReversibleValue<String>>?> by create(cached = true) {
+        val option = findOption("predicate") ?: return@create null
+        val optionConfigs = option.optionConfigs ?: return@create null
+        if (optionConfigs.isEmpty()) return@create emptyMap()
+        val r = FastMap<String, ReversibleValue<String>>()
+        optionConfigs.forEachFast f@{ optionConfig ->
+            if (optionConfig !is CwtOptionConfig) return@f
+            val k = optionConfig.key
+            val v = ReversibleValue(optionConfig.separatorType == CwtSeparatorType.EQUAL, optionConfig.value)
+            r[k] = v
+        }
+        r.optimized()
     }
 
     /**
@@ -157,17 +171,18 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * @see ParadoxScopeManager
      */
     val replaceScopes: CwtOptionDataAccessor<Map<String, String>?> by create(cached = true) {
-        val option = findOption("replace_scope", "replace_scopes")
-        if (option == null) return@create null
-        val options1 = option.options ?: return@create null
-        buildMap {
-            for (option1 in options1) {
-                // ignore case for both system scopes and scopes (to lowercase)
-                val k = option1.key.lowercase()
-                val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
-                put(k, v)
-            }
-        }.optimized()
+        val option = findOption("replace_scope", "replace_scopes") ?: return@create null
+        val optionConfigs = option.optionConfigs ?: return@create null
+        if (optionConfigs.isEmpty()) return@create emptyMap()
+        val r = FastMap<String, String>()
+        optionConfigs.forEachFast f@{ optionConfig ->
+            if (optionConfig !is CwtOptionConfig) return@f
+            // ignore case for both system scopes and scopes (to lowercase)
+            val k = optionConfig.key.lowercase()
+            val v = optionConfig.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: return@f
+            r[k] = v
+        }
+        r.optimized()
     }
 
     /**
@@ -223,8 +238,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     val supportedScopes: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
         // ignore case for scopes (to lowercase)
         val option = findOption("scope", "scopes")
-        val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }?.optimized()
-        if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
+        val r = option?.getOptionValueOrValues()?.mapTo(FastSet()) { ParadoxScopeManager.getScopeId(it) }
+        if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r.optimized()
     }
 
     /**
@@ -381,7 +396,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * 示例：`## only_if_not = { simple complex }`
      */
     val onlyIfNot: CwtOptionDataAccessor<Set<String>?> by create {
-        findOption("only_if_not")?.getOptionValueOrValues()?.optimized()
+        val r = findOption("only_if_not")?.getOptionValueOrValues()
+        r?.optimized()
     }
 
     /**
@@ -394,7 +410,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * CWTools 兼容性：PLS 未实现相关功能。
      */
     val graphRelatedTypes: CwtOptionDataAccessor<Set<String>?> by create {
-        findOption("graph_related_types")?.getOptionValues()?.optimized()
+        val r = findOption("graph_related_types")?.getOptionValues()
+        r?.optimized()
     }
 
     /**
@@ -412,7 +429,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * @see icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager.completePathReference
      */
     val fileExtensions: CwtOptionDataAccessor<Set<String>> by create(cached = true) {
-        findOption("file_extensions")?.getOptionValueOrValues()?.optimized().orEmpty()
+        val r = findOption("file_extensions")?.getOptionValueOrValues()
+        r?.optimized().orEmpty()
     }
 
     /**
@@ -427,7 +445,8 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * @see icu.windea.pls.lang.util.ParadoxModifierManager.resolveModifierCategory
      */
     val modifierCategories: CwtOptionDataAccessor<Set<String>?> by create(cached = true) {
-        findOption("modifier_categories")?.getOptionValues()?.optimized()
+        val r = findOption("modifier_categories")?.getOptionValues()
+        r?.optimized()
     }
 
     /**
@@ -462,6 +481,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor
      */
     val suppressSet: CwtOptionDataAccessor<Set<String>> by create {
-        findOptions("suppress").mapNotNullTo(mutableSetOf()) { it.stringValue }.optimized()
+        val r = findOptions("suppress").mapNotNullTo(FastSet()) { it.stringValue }
+        r.optimized()
     }
 }

@@ -65,7 +65,7 @@ object ParadoxMatchProvider {
     fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         run {
             val predicate = config.optionData { predicate }
-            if (predicate.isEmpty()) return@run
+            if (predicate.isNullOrEmpty()) return@run
             val parentBlock = element.parentOfType<ParadoxScriptBlockElement>(withSelf = false) ?: return@run
             predicate.forEach f@{ (pk, pv) ->
                 val p1 = parentBlock.findProperty(pk, inline = true)

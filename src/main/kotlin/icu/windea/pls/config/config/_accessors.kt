@@ -78,10 +78,4 @@ val CwtOptionMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType
 /** 将选项值解析为字符串。如果值类型非 [CwtType.String]，则返回 `null`。*/
 val CwtOptionMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 
-/** 过滤并返回当前选项块下的选项规则（[CwtOptionConfig]）列表。*/
-val CwtOptionMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
-
-/** 过滤并返回当前选项块下的选项值规则（[CwtOptionValueConfig]）列表。*/
-val CwtOptionMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
-
 // endregion
