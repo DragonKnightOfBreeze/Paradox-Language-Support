@@ -31,7 +31,6 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
-import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -112,9 +111,6 @@ object ParadoxMatchResultProvider {
     }
 
     fun getCached(element: PsiElement, key: KeyForCache, cacheKey: String, predicate: () -> Boolean): ParadoxMatchResult {
-        // indexing -> should not visit indices -> treat as exact match
-        if (PlsStates.processMergedIndex.get() == true) return ParadoxMatchResult.ExactMatch
-
         ProgressManager.checkCanceled()
         val rootFile = selectRootFile(element) ?: return ParadoxMatchResult.NotMatch
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(rootFile))
@@ -123,6 +119,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forDefinition(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val typeExpression = configExpression.value ?: return ParadoxMatchResult.NotMatch // invalid cwt config
         val suffixes = configExpression.suffixes.orEmpty()
         val key = Keys.cacheForDefinitions
@@ -139,6 +138,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val suffixes = configExpression.suffixes.orEmpty()
         val key = Keys.cacheForLocalisations
         val cacheKey = when {
@@ -154,6 +156,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forSyncedLocalisation(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val suffixes = configExpression.suffixes.orEmpty()
         val key = Keys.cacheForSyncedLocalisations
         val cacheKey = when {
@@ -169,6 +174,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forPathReference(element: PsiElement, project: Project, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val pathReference = expression.normalizePath()
         val key = Keys.cacheForPathReferences
         val cacheKey = "${pathReference}#${configExpression}"
@@ -178,6 +186,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forComplexEnumValue(element: PsiElement, project: Project, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val searchScopeType = complexEnumConfig.searchScopeType
         if (searchScopeType != null) {
             return ParadoxMatchResult.LazyIndexAwareMatch {
@@ -192,6 +203,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forModifier(element: PsiElement, configGroup: CwtConfigGroup, name: String): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val key = Keys.cacheForModifiers
         val cacheKey = name
         return getCached(element, key, cacheKey) {
@@ -200,6 +214,9 @@ object ParadoxMatchResultProvider {
     }
 
     fun forTemplate(element: PsiElement, configGroup: CwtConfigGroup, expression: String, configExpression: CwtDataExpression): ParadoxMatchResult {
+        // indexing -> should not visit indices -> treat as exact match
+        if (ParadoxMatchUtil.skipIndex()) return ParadoxMatchResult.ExactMatch
+
         val template = configExpression.expressionString
         val key = Keys.cacheForTemplates
         val cacheKey = "${template}#${expression}"
