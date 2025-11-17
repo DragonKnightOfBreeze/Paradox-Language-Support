@@ -314,8 +314,6 @@ object ParadoxExpressionManager {
 
         val subPaths = elementPathFromRoot.subPaths
         subPaths.forEachIndexed f1@{ i, subPath ->
-            ProgressManager.checkCanceled()
-
             // 如果整个过程中得到的某个 propertyConfig 的 valueExpressionType 是 `single_alias_right` 或 `alias_matches_left` ，则需要内联子规则
             // 如果整个过程中的某个 key 匹配内联规则的名字（如，`inline_script`），则需要内联此内联规则
 
@@ -336,6 +334,7 @@ object ParadoxExpressionManager {
             }
 
             run r1@{
+                ProgressManager.checkCanceled()
                 result.forEach f2@{ parentConfig ->
                     val configs = parentConfig.configs
                     if (configs.isNullOrEmpty()) return@f2
