@@ -92,10 +92,10 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
 
             private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
-                val name = codeInsightInfo.name ?: return null
-                val from = PlsBundle.message("inspection.localisation.missingLocalisation.from", name)
                 val localeId = codeInsightInfo.locale.id
-                return PlsBundle.message("inspection.localisation.missingLocalisation.desc", from, localeId)
+                codeInsightInfo.name
+                    ?.let { return PlsBundle.message("inspection.localisation.missingLocalisation.desc.1", localeId, it) }
+                return null
             }
         }
     }

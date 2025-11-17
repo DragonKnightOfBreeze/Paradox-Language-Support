@@ -123,13 +123,13 @@ class MissingLocalisationInspection : LocalInspectionTool() {
             }
 
             private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
-                val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
-                val fromProperty = locationExpression?.takeUnless { it.isPlaceholder }?.location
-                val from = fromProperty?.let { PlsBundle.message("inspection.script.missingLocalisation.from.2", it) }
-                    ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.missingLocalisation.from.1", it) }
-                    ?: return null
                 val localeId = codeInsightInfo.locale.id
-                return PlsBundle.message("inspection.script.missingLocalisation.desc", from, localeId)
+                val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
+                locationExpression?.takeUnless { it.isPlaceholder }?.location
+                    ?.let { return PlsBundle.message("inspection.script.missingLocalisation.desc.2", localeId, it) }
+                codeInsightInfo.name
+                    ?.let { return PlsBundle.message("inspection.script.missingLocalisation.desc.1", localeId, it) }
+                return null
             }
         }
     }
