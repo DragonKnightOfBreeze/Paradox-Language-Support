@@ -5,7 +5,7 @@
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:x = {...}`） / NEW: Support injection syntax in VIC3 and EU5 (e.g, `inject:x = {...}`)
 - [ ] 新功能：支持内联定义（即通过内联脚本声明的定义） / NEW: Support inline definitions (aka definitions declared by inline scripts) #194
 
-## 2.0.7-dev
+## 2.0.7
 
 - [X] 优化：在 Stellaris 中，如果一个事件继承自另一个事件，那么此事件也会继承部分子类型 / OP: In Stellaris, if an event inherits from another event, then this event will also inherit specific subtypes
 - [X] 优化：优化对游戏和模组的入口目录的识别，并修复相关BUG / OP: Optimize detection for game and mod entry directories, with related bug fixes
