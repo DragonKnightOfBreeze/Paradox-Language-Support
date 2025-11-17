@@ -77,7 +77,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     }
 
     override fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean {
-        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs) ?: return true
+        val baseName = getBaseName(definitionInfo, subtypeConfigs) ?: return true
         val superDefinition = getSuperDefinition(definitionInfo, baseName, subtypeConfigs) ?: return true
         val superDefinitionInfo = superDefinition.definitionInfo ?: return true
         superDefinitionInfo.subtypeConfigs.filterTo(subtypeConfigs) { it.inGroup(CwtSubtypeGroup.EventAttribute) }
