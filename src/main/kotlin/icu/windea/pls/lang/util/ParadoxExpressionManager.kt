@@ -52,6 +52,7 @@ import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toInt
@@ -803,7 +804,7 @@ object ParadoxExpressionManager {
         if (expressionText.isParameterized()) return emptySet() // 排除引用文本带参数的情况
 
         val result = ParadoxScriptExpressionService.multiResolve(element, rangeInElement, expressionText, config, isKey)
-        if (result.isNotEmpty()) return result
+        if (result.isNotNullOrEmpty()) return result
 
         if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).singleton.setOrEmpty()
 

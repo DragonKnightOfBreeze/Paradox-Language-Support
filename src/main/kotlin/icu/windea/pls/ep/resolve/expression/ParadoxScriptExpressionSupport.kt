@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.util.setOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.annotations.WithGameTypeEP
@@ -23,7 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxScriptExpressionSupport {
-    fun supports(config: CwtConfig<*>): Boolean
+    fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean
 
     fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
 

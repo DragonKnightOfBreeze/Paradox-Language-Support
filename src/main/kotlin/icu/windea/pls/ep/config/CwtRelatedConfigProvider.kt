@@ -18,7 +18,7 @@ import icu.windea.pls.lang.selectGameType
 @WithGameTypeEP
 interface CwtRelatedConfigProvider {
     /**
-     * 得到相关规则列表。
+     * 得到相关的规则列表。
      *
      * @param file 指定的 PSI 文件。
      * @param offset 指定的偏移。

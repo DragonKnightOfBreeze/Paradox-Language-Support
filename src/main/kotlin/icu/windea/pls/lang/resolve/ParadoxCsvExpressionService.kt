@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport
@@ -17,9 +18,10 @@ object ParadoxCsvExpressionService {
      * @see ParadoxCsvExpressionSupport.annotate
      */
     fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
+        val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(config)) return@f
+            if (!ep.supports(config, configExpression)) return@f
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
             ep.annotate(element, rangeInElement, expressionText, holder, config)
         }
@@ -29,9 +31,10 @@ object ParadoxCsvExpressionService {
      * @see ParadoxCsvExpressionSupport.resolve
      */
     fun resolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): PsiElement? {
+        val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(config)) return@f null
+            if (!ep.supports(config, configExpression)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
             val r = ep.resolve(element, rangeInElement, expressionText, config)
             r
@@ -42,9 +45,10 @@ object ParadoxCsvExpressionService {
      * @see ParadoxCsvExpressionSupport.multiResolve
      */
     fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
+        val configExpression = config.configExpression
         val gameType = config.configGroup.gameType
         return ParadoxCsvExpressionSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-            if (!ep.supports(config)) return@f null
+            if (!ep.supports(config, configExpression)) return@f null
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
             val r = ep.multiResolve(element, rangeInElement, expressionText, config).orNull()
             r
@@ -55,11 +59,11 @@ object ParadoxCsvExpressionService {
      * @see ParadoxCsvExpressionSupport.complete
      */
     fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val config = context.config ?: return
-        if (config !is CwtValueConfig) return
+        val config = context.config?.castOrNull<CwtValueConfig>() ?: return
+        val configExpression = config.configExpression ?: return
         val gameType = config.configGroup.gameType
         ParadoxCsvExpressionSupport.EP_NAME.extensionList.forEach f@{ ep ->
-            if (!ep.supports(config)) return@f
+            if (!ep.supports(config, configExpression)) return@f
             if (!PlsAnnotationManager.check(ep, gameType)) return@f
             ep.complete(context, result)
         }

@@ -5,15 +5,15 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 abstract class ParadoxScriptExpressionSupportBase : ParadoxScriptExpressionSupport {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        val dataType = config.configExpression?.type ?: return false
-        return supports(dataType)
+    override fun supports(config: CwtConfig<*>, configExpression: CwtDataExpression): Boolean {
+        return supports(configExpression.type)
     }
 
     protected open fun supports(dataType: CwtDataType): Boolean = false
