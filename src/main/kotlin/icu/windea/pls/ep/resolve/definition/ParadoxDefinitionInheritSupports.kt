@@ -66,18 +66,18 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
     // 子事件应当有子类型 `inherited`，并且父事件应当和子事件有相同的事件类型
 
     override fun getSuperDefinition(definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
-        val baseName = getBaseName(definitionInfo) ?: return null
+        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs) ?: return null
         return getSuperDefinition(definitionInfo, baseName, definitionInfo.subtypeConfigs)
     }
 
     override fun getModificationTracker(definitionInfo: ParadoxDefinitionInfo): ModificationTracker? {
-        val baseName = getBaseName(definitionInfo)
+        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs)
         if (baseName == null) return null
         return ParadoxModificationTrackers.ScriptFile("events/**/*.txt") // 任意事件脚本文件
     }
 
     override fun processSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: MutableList<CwtSubtypeConfig>): Boolean {
-        val baseName = getBaseName(definitionInfo) ?: return true
+        val baseName = getBaseName(definitionInfo, definitionInfo.subtypeConfigs) ?: return true
         val superDefinition = getSuperDefinition(definitionInfo, baseName, subtypeConfigs) ?: return true
         val superDefinitionInfo = superDefinition.definitionInfo ?: return true
         superDefinitionInfo.subtypeConfigs.filterTo(subtypeConfigs) { it.inGroup(CwtSubtypeGroup.EventAttribute) }
@@ -88,9 +88,9 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         return false
     }
 
-    private fun getBaseName(definitionInfo: ParadoxDefinitionInfo): String? {
-        // 这里不用检测是否包含子类型 `inherited`
+    private fun getBaseName(definitionInfo: ParadoxDefinitionInfo, subtypeConfigs: List<CwtSubtypeConfig>): String? {
         if (definitionInfo.type != T.Event) return null
+        if (subtypeConfigs.none { it.name == "inherited" }) return null
         val data = getData(definitionInfo) ?: return null
         return data.base
     }
