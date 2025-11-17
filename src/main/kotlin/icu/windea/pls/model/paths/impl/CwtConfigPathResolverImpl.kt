@@ -6,8 +6,6 @@ import com.github.benmanes.caffeine.cache.Interner
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
 import icu.windea.pls.model.paths.CwtConfigPath
 
 private val stringInterner = Interner.newWeakInterner<String>()
@@ -36,8 +34,7 @@ private abstract class CwtConfigPathBase : CwtConfigPath {
     override fun normalize(): CwtConfigPath {
         if (this is NormalizedCwtConfigPath || this is EmptyCwtConfigPath) return this
         if (this.isEmpty()) return EmptyCwtConfigPath
-        if (this.subPaths.size == 1) return NormalizedCwtConfigPath(subPaths.get(0), true)
-        return NormalizedCwtConfigPath(path, false)
+        return NormalizedCwtConfigPath(this)
     }
 
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
@@ -55,9 +52,9 @@ private class CwtConfigPathImplFromSubPaths(input: List<String>) : CwtConfigPath
     override val subPaths: List<String> = input
 }
 
-private class NormalizedCwtConfigPath(input: String, singleton: Boolean) : CwtConfigPathBase() {
-    override val path: String = input.internPath()
-    override val subPaths: List<String> = if (singleton) path.singleton.list() else path.splitSubPaths().map { it.internPath() }.optimized()
+private class NormalizedCwtConfigPath(input: CwtConfigPath) : CwtConfigPathBase() {
+    override val path: String = input.path.internPath()
+    override val subPaths: List<String> = input.subPaths.map { it.internPath() }.optimized()
 }
 
 private object EmptyCwtConfigPath : CwtConfigPathBase() {

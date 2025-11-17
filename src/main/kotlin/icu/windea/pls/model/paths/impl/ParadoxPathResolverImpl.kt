@@ -7,8 +7,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitFast
-import icu.windea.pls.core.util.list
-import icu.windea.pls.core.util.singleton
 import icu.windea.pls.model.paths.ParadoxPath
 
 private val stringInterner = Interner.newWeakInterner<String>()
@@ -41,8 +39,7 @@ private abstract class ParadoxPathBase : ParadoxPath {
     override fun normalize(): ParadoxPath {
         if (this is NormalizedParadoxPath || this is EmptyParadoxPath) return this
         if (this.isEmpty()) return EmptyParadoxPath
-        if (this.subPaths.size == 1) return NormalizedParadoxPath(subPaths.get(0), true)
-        return NormalizedParadoxPath(path, false)
+        return NormalizedParadoxPath(this)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
@@ -62,10 +59,10 @@ private class ParadoxPathImplFromSubPaths(input: List<String>) : ParadoxPathBase
     override val parent: String = path.getParent()
 }
 
-private class NormalizedParadoxPath(input: String, singleton: Boolean) : ParadoxPathBase() {
-    override val path: String = input.internPath()
-    override val subPaths: List<String> = if (singleton) path.singleton.list() else path.splitSubPaths().map { it.internPath() }.optimized()
-    override val parent: String = if (singleton) "" else path.getParent().internPath()
+private class NormalizedParadoxPath(input: ParadoxPath) : ParadoxPathBase() {
+    override val path: String = input.path.internPath()
+    override val subPaths: List<String> = input.subPaths.map { it.internPath() }.optimized()
+    override val parent: String = if (input.length == 1) "" else input.parent.internPath()
 }
 
 private object EmptyParadoxPath : ParadoxPathBase() {
