@@ -7,7 +7,6 @@ import com.intellij.util.indexing.FileContent
 import com.intellij.util.indexing.PsiDependentFileContent
 import com.intellij.util.indexing.ScalarIndexExtension
 import com.intellij.util.io.EnumeratorStringDescriptor
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLightTreeUtil
@@ -41,7 +40,7 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
             // use lighter AST if possible to optimize performance
             val tree = inputData.lighterAST
             val locale = ParadoxLocalisationLightTreeUtil.getLocaleFromRootNode(tree)
-            if (locale.isNotNullOrEmpty()) return emptyMap()
+            if (locale.isNullOrEmpty()) return emptyMap()
             return Collections.singletonMap(locale, null)
         } else {
             // fallback to PSI
