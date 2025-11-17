@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.references.script
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -75,9 +74,7 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun getReferences(): Array<out PsiReference>? {
-        ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-
         val result = ParadoxScriptExpressionService.getReferences(element, rangeInElement, expressionText, config, isKey)
         if (result.isNullOrEmpty()) return EMPTY_ARRAY
         return result

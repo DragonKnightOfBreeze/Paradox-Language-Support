@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.references.localisation
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -28,9 +27,7 @@ class ParadoxLocalisationExpressionPsiReference(
     }
 
     override fun getReferences(): Array<out PsiReference>? {
-        ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-
         val result = ParadoxLocalisationExpressionService.getReferences(element, rangeInElement, expressionText)
         return result.orNull()
     }

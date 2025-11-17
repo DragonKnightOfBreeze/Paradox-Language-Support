@@ -22,6 +22,7 @@ import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.ModificationTracker
@@ -548,6 +549,7 @@ private fun doCollectReferences(sourceReference: PsiReference, result: MutableLi
         val references = sourceReference.getReferences()
         if (references.isNotNullOrEmpty()) {
             references.forEach { reference ->
+                ProgressManager.checkCanceled()
                 doCollectReferences(reference, result)
             }
             return
