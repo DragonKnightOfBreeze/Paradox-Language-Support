@@ -1,6 +1,7 @@
 package icu.windea.pls.core
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProcessCanceledException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.atomic.AtomicBoolean
@@ -21,6 +22,7 @@ inline fun <T> Any.withDoubleLock(flag: AtomicBoolean, action: () -> T) {
             action()
             flag.set(true)
         } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             flag.thisLogger().warn(e)
         }
     }
@@ -41,6 +43,7 @@ suspend inline fun <T> Mutex.withDoubleLock(flag: AtomicBoolean, action: () -> T
             action()
             flag.set(true)
         } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             flag.thisLogger().warn(e)
         }
     }

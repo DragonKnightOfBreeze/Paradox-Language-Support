@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -32,6 +33,7 @@ import kotlin.reflect.KMutableProperty0
 object PlsTigerLintManager {
     object Keys : KeyRegistry() {
         val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
+        val tigerLintResultLock by createKey<Any>(Keys)
     }
 
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
@@ -80,7 +82,8 @@ object PlsTigerLintManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val rootFile = rootInfo.rootFile
         val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
-        val allResult = synchronized(rootDirectory.virtualFile) { // 这里需要加锁
+        val lock = getTigerLintResultLock(rootDirectory)
+        val allResult = synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
             doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
         } ?: return null
         val result = allResult.fromPath(fileInfo.path.path)
@@ -90,7 +93,8 @@ object PlsTigerLintManager {
     @Suppress("unused")
     fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
         if (!isEnabled()) return null
-        return synchronized(rootDirectory.virtualFile) { // 这里需要加锁
+        val lock = getTigerLintResultLock(rootDirectory)
+        return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
             doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
         }
     }
@@ -122,6 +126,10 @@ object PlsTigerLintManager {
             notifyWarningNotification(rootDirectory, tool, result.error)
         }
         return result
+    }
+
+    private fun getTigerLintResultLock(rootDirectory: PsiDirectory): Any {
+        return rootDirectory.virtualFile.getOrPutUserData(Keys.tigerLintResultLock) { Any() }
     }
 
     private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: PlsTigerLintToolProvider, e: Throwable) {

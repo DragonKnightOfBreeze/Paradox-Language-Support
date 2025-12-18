@@ -5,11 +5,9 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileType
 
 /**
@@ -28,7 +26,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         }
 
         runCatchingCancelable r@{
-            val fileInfo = file.getUserData(PlsKeys.fileInfo)?.castOrNull<ParadoxFileInfo>() ?: return@r
+            val fileInfo = file.getUserData(PlsKeys.cachedFileInfo)?.value ?: return@r
             return ParadoxFileManager.getFileType(fileInfo.fileType)
         }
 
@@ -40,11 +38,10 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         val possibleFileType = ParadoxFileType.resolvePossible(file.name)
         if (possibleFileType == ParadoxFileType.Other) return null
 
-        if(ParadoxFileManager.isTestDataFile(file)) {
+        if (ParadoxFileManager.isTestDataFile(file)) {
             return ParadoxFileManager.getFileType(possibleFileType)
         }
 
-        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
-        return ParadoxFileManager.getFileType(fileInfo.fileType)
+        return null // #242
     }
 }
