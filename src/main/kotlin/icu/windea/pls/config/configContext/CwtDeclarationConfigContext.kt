@@ -1,5 +1,6 @@
 package icu.windea.pls.config.configContext
 
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.declarationConfigCacheKey
@@ -59,6 +60,7 @@ private val CwtConfigGroup.declarationConfigCache by createKey(CwtDeclarationCon
     createCachedValue(project) {
         // cacheKey -> declarationConfig
         // use soft values to optimize memory
-        CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable().withDependencyItems()
+        CacheBuilder().softValues().build<String, CwtPropertyConfig>().cancelable()
+            .withDependencyItems(ModificationTracker.NEVER_CHANGED)
     }
 }

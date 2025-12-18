@@ -25,7 +25,6 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VfsUtil
@@ -126,12 +125,10 @@ fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provide
 }
 
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
-    if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
 }
 
 fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
-    if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, dependencyItems)
 }
 
