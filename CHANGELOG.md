@@ -8,6 +8,7 @@
 ## 2.1.0-dev
 
 - [x] 同步规则文件 / Synchronize config files
+- [x] #241 Expection in version 2.0.7
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
 - [x] #243 生成本地化时，某些缺失的本地化未被包含
 - [ ] #244 IDE lags and crashes involves to recursive invication of inline script in a specific situation, possible SOF

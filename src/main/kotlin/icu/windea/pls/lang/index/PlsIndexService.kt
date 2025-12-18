@@ -14,6 +14,7 @@ import com.intellij.util.Processor
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.lang.selectGameType
@@ -106,6 +107,7 @@ object PlsIndexService {
         crossinline processor: (T) -> Boolean
     ): Boolean {
         if (DumbService.isDumb(project)) return true
+
         return StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
             ProgressManager.checkCanceled()
             processor(element)
@@ -127,16 +129,24 @@ object PlsIndexService {
         crossinline processor: (key: K, element: T) -> Boolean
     ): Boolean {
         if (DumbService.isDumb(project)) return true
-        return StubIndex.getInstance().processAllKeys(indexKey, p@{ key ->
+
+        // #241 try to avoid:
+        // java.lang.IllegalStateException: Nesting processElements call under other stub index operation can lead to a deadlock.
+
+        val keys = mutableSetOf<K>()
+        StubIndex.getInstance().processAllKeys(indexKey, { key ->
             ProgressManager.checkCanceled()
-            if (keyPredicate(key)) {
-                StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
-                    ProgressManager.checkCanceled()
-                    processor(key, element)
-                }
-            }
+            if (keyPredicate(key)) keys.add(key)
             true
         }, scope)
+        return keys.process { key ->
+            ProgressManager.checkCanceled()
+            StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
+                ProgressManager.checkCanceled()
+                processor(key, element)
+            }
+            true
+        }
     }
 
     /**
@@ -157,28 +167,36 @@ object PlsIndexService {
         crossinline processor: (element: T) -> Boolean
     ): Boolean {
         if (DumbService.isDumb(project)) return true
-        var value: T?
-        return StubIndex.getInstance().processAllKeys(indexKey, p@{ key ->
+
+        // #241 try to avoid:
+        // java.lang.IllegalStateException: Nesting processElements call under other stub index operation can lead to a deadlock.
+
+        val keys = mutableSetOf<K>()
+        StubIndex.getInstance().processAllKeys(indexKey, { key ->
             ProgressManager.checkCanceled()
-            if (keyPredicate(key)) {
-                value = null
-                resetDefaultValue()
-                StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
-                    ProgressManager.checkCanceled()
-                    if (predicate(element)) {
-                        value = element
-                        return@processElements false
-                    }
-                    true
-                }
-                val finalValue = value ?: getDefaultValue()
-                if (finalValue != null) {
-                    val result = processor(finalValue)
-                    if (!result) return@p false
-                }
-            }
+            if (keyPredicate(key)) keys.add(key)
             true
         }, scope)
+        var value: T?
+        return keys.process { key ->
+            ProgressManager.checkCanceled()
+            value = null
+            resetDefaultValue()
+            StubIndex.getInstance().processElements(indexKey, key, project, scope, T::class.java) { element ->
+                ProgressManager.checkCanceled()
+                if (predicate(element)) {
+                    value = element
+                    return@processElements false
+                }
+                true
+            }
+            val finalValue = value ?: getDefaultValue()
+            if (finalValue != null) {
+                val result = processor(finalValue)
+                if (!result) return@process false
+            }
+            true
+        }
     }
 
     /**
@@ -186,7 +204,7 @@ object PlsIndexService {
      *
      * 用于优化代码补全的性能。
      */
-    inline fun <reified T: PsiElement> processVariants(
+    inline fun <reified T : PsiElement> processVariants(
         indexKey: StubIndexKey<String, T>,
         prefixMatcher: PrefixMatcher,
         selector: ChainedParadoxSelector<T>,
