@@ -21,6 +21,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isDefinition
 import icu.windea.pls.config.configContext.isDefinitionOrMember
+import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
@@ -232,7 +233,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
     private fun getMessage(element: ParadoxScriptExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): String {
         val expect = when {
-            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
+            showExpectInfo -> expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString.quote('`') }
                 .truncate(PlsInternalSettings.getInstance().itemLimit).joinToString()
             else -> null
         }
