@@ -1,5 +1,6 @@
 package icu.windea.pls.lang
 
+import com.intellij.psi.util.CachedValue
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.util.KeyRegistry
@@ -13,12 +14,12 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 object PlsKeys : KeyRegistry() {
-    /** 用于在根目录级别保存根信息（[ParadoxRootInfo]）。 */
-    val rootInfo by createKey<Any>(this)
-    /** 用于在文件级别保存文件信息（[ParadoxFileInfo]）。 */
-    val fileInfo by createKey<Any>(this)
-    /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
-    val localeConfig by createKey<Any>(this)
+    /** 用于在根目录级别缓存根信息（[ParadoxRootInfo]）。 */
+    val cachedRootInfo by createKey<Any>(this)
+    /** 用于在文件级别缓存文件信息（[ParadoxFileInfo]）。 */
+    val cachedFileInfo by createKey<Any>(this)
+    /** 用于在文件级别缓存语言环境规则（[CwtLocaleConfig]）。 */
+    val cachedLocaleConfig by createKey<Any>(this)
 
     /** 用于为临时文件注入根信息（[ParadoxRootInfo]）。 */
     val injectedRootInfo by createKey<ParadoxRootInfo>(this)

@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.lints
 
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
@@ -9,6 +10,7 @@ import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.core.coroutines.SmartLazyLoader
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
@@ -30,9 +32,17 @@ import icu.windea.pls.model.ParadoxRootInfo
 import kotlin.reflect.KMutableProperty0
 
 object PlsTigerLintManager {
-    object Keys : KeyRegistry() {
-        val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
-    }
+    private val logger = thisLogger()
+
+    private val tigerLintLoader = SmartLazyLoader<String, PlsTigerLintResult>(
+        coroutineScopeProvider = { PlsFacade.getCoroutineScope() },
+        // 这里的目的是“并发去重”而不是“快速返回”，因此同步等待时间应足够覆盖一次 Tiger 执行
+        awaitTimeoutMs = 30_000L,
+        jobTimeoutMs = 30_000L,
+        onFailure = { key, error ->
+            logger.warn("Failed to run tiger for '$key'.", error)
+        }
+    )
 
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     val modificationTrackers = mutableMapOf<ParadoxGameType, SimpleModificationTracker>().withDefault { SimpleModificationTracker() }
@@ -80,9 +90,7 @@ object PlsTigerLintManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val rootFile = rootInfo.rootFile
         val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
-        val allResult = synchronized(rootDirectory.virtualFile) { // 这里需要加锁
-            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
-        } ?: return null
+        val allResult = doGetTigerLintResultForRootDirectoryFromCache(rootDirectory) ?: return null
         val result = allResult.fromPath(fileInfo.path.path)
         return result
     }
@@ -90,9 +98,7 @@ object PlsTigerLintManager {
     @Suppress("unused")
     fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): PlsTigerLintResult? {
         if (!isEnabled()) return null
-        return synchronized(rootDirectory.virtualFile) { // 这里需要加锁
-            doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
-        }
+        return doGetTigerLintResultForRootDirectoryFromCache(rootDirectory)
     }
 
     private fun doGetTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): PlsTigerLintResult? {
@@ -100,7 +106,14 @@ object PlsTigerLintManager {
 
         val gameType = selectGameType(rootDirectory) ?: return null
         return CachedValuesManager.getCachedValue(rootDirectory, Keys.cachedTigerLintResult) {
-            val value = doGetTigerLintResultForRootDirectory(rootDirectory)
+            val key = rootDirectory.virtualFile.path
+            val value = tigerLintLoader.getOrNull(
+                key = key,
+                tryLoad = true,
+                // CachedValuesManager 本身是缓存层，这里仅用于并发去重，因此 cache 永远视为未命中
+                cache = { SmartLazyLoader.CachedValue(isCached = false, value = null) },
+                loader = { doGetTigerLintResultForRootDirectory(rootDirectory) }
+            )
             val trackers = buildList {
                 this += rootDirectory
                 this += modificationTrackers.getValue(gameType)
@@ -222,5 +235,9 @@ object PlsTigerLintManager {
             Severity.ERROR -> PlsBundle.message("lint.tiger.severity.error")
             Severity.FATAL -> PlsBundle.message("lint.tiger.severity.fatal")
         }
+    }
+
+    object Keys : KeyRegistry() {
+        val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
     }
 }

@@ -130,9 +130,9 @@ class ParadoxFileListener : AsyncFileListener {
 
         return object : AsyncFileListener.ChangeApplier {
             override fun beforeVfsChange() {
-                filesToClearRootInfo.forEach { file -> file.tryPutUserData(PlsKeys.rootInfo, null) }
-                filesToClearFileInfo.forEach { file -> file.tryPutUserData(PlsKeys.fileInfo, null) }
-                filesToClearLocaleConfig.forEach { file -> file.tryPutUserData(PlsKeys.localeConfig, null) }
+                filesToClearRootInfo.forEach { file -> file.tryPutUserData(PlsKeys.cachedRootInfo, null) }
+                filesToClearFileInfo.forEach { file -> file.tryPutUserData(PlsKeys.cachedFileInfo, null) }
+                filesToClearLocaleConfig.forEach { file -> file.tryPutUserData(PlsKeys.cachedLocaleConfig, null) }
                 filesToClearSliceInfos.forEach { file -> file.tryPutUserData(ParadoxImageManager.Keys.sliceInfos, null) }
             }
 
