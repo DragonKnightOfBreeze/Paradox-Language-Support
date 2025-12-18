@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match.similarity
 
 import com.google.common.hash.Hashing
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 import java.util.*
 import kotlin.math.roundToInt
 

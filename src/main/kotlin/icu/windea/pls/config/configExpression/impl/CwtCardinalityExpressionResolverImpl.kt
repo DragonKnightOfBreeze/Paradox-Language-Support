@@ -5,7 +5,7 @@ package icu.windea.pls.config.configExpression.impl
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()

@@ -6,10 +6,10 @@ import icu.windea.pls.config.config.declarationConfigCacheKey
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.createCachedValue
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate

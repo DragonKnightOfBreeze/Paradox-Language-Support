@@ -4,8 +4,8 @@ package icu.windea.pls.config.configExpression.impl
 
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.toCommaDelimitedStringSet
-import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
     private val cache = CacheBuilder("expireAfterAccess=30m")

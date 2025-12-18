@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.TextAttributes
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.lang.settings.PlsSettings
 import java.awt.Color
 

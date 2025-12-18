@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.prompts
 
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.CacheBuilder
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files

@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.model.ParadoxTextColorInfo

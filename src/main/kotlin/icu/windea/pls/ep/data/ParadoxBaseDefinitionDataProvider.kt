@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers

@@ -6,11 +6,11 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.indicesOf
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.CacheBuilder
 
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     private val logger = thisLogger()

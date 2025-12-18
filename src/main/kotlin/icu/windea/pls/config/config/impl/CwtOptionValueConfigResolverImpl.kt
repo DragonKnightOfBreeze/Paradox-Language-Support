@@ -7,10 +7,10 @@ import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.deoptimized
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.optimizer.OptimizerRegistry
-import icu.windea.pls.core.util.CacheBuilder
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.lang.codeInsight.type
 import icu.windea.pls.model.CwtType

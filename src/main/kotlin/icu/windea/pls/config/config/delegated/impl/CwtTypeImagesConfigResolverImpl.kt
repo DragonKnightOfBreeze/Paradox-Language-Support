@@ -5,10 +5,10 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtLocationConfig
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.config.util.CwtConfigResolverMixin
+import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 
 internal class CwtTypeImagesConfigResolverImpl : CwtTypeImagesConfig.Resolver, CwtConfigResolverMixin {

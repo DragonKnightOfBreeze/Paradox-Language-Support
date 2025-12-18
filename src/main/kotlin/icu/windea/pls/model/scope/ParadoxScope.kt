@@ -3,7 +3,7 @@ package icu.windea.pls.model.scope
 import icu.windea.pls.config.config.delegated.CwtScopeConfig
 import icu.windea.pls.config.config.delegated.CwtScopeGroupConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 
 /**
  * 作用域。

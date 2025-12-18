@@ -1,6 +1,6 @@
 package icu.windea.pls.core.match
 
-import icu.windea.pls.core.util.CacheBuilder
+import icu.windea.pls.core.cache.CacheBuilder
 
 /**
  * 基于正则的匹配器。

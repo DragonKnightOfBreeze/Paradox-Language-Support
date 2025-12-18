@@ -23,6 +23,8 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
@@ -30,8 +32,6 @@ import icu.windea.pls.core.isIncomplete
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.util.CacheBuilder
-import icu.windea.pls.core.util.cancelable
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
