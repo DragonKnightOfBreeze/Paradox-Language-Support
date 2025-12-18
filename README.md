@@ -46,7 +46,7 @@ Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计�
 
 - **多语言支持**：完整支持模组开发所需的脚本语言、本地化语言与 CSV 语言，以及用于编写规则的 CWT 语言。
 - **丰富的语言功能**：提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模板、代码层级、图表和差异比较等多项功能。
-- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TAG）之间互相转换。
+- **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TGA）之间互相转换。
 - **信息增强提示**：通过快速文档和内嵌提示，直观展示本地化文本、图片、作用域和参数等关键信息。
 - **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、内联脚本及复杂表达式。
 - **可扩展的规则系统**：支持自定义和导入规则文件，强化代码导航、代码补全、文档提示等功能。
@@ -137,6 +137,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
+- [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
 **教程与百科：**
@@ -147,7 +148,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 ## 贡献与支持
 
-我们欢迎任何形式的支持与贡献，包括但不限于：
+欢迎任何形式的支持与贡献，包括但不限于：
 
 - ⭐ 在 GitHub 上收藏项目。
 - 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
