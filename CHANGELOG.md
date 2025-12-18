@@ -5,8 +5,9 @@
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:x = {...}`） / NEW: Support injection syntax in VIC3 and EU5 (e.g, `inject:x = {...}`)
 - [ ] 新功能：支持内联定义（即通过内联脚本声明的定义） / NEW: Support inline definitions (aka definitions declared by inline scripts) #194
 
-## 2.1.0
+## 2.1.0-dev
 
+- [x] 同步规则文件 / Synchronize config files
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
 - [x] #243 生成本地化时，某些缺失的本地化未被包含
 - [ ] #244 IDE lags and crashes involves to recursive invication of inline script in a specific situation, possible SOF
