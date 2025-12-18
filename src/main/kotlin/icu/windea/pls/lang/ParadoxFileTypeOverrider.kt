@@ -33,18 +33,18 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         }
 
         if (file is VirtualFileWindow) {
-            val fileInfo = ParadoxAnalyzeManager.getFileInfo(file, tryLoad = false) ?: return null
+            val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
             return ParadoxFileManager.getFileType(fileInfo.fileType)
         }
 
         val possibleFileType = ParadoxFileType.resolvePossible(file.name)
         if (possibleFileType == ParadoxFileType.Other) return null
 
-        if (ParadoxFileManager.isTestDataFile(file)) {
+        if(ParadoxFileManager.isTestDataFile(file)) {
             return ParadoxFileManager.getFileType(possibleFileType)
         }
 
-        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file, tryLoad = false) ?: return null
+        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
         return ParadoxFileManager.getFileType(fileInfo.fileType)
     }
 }
