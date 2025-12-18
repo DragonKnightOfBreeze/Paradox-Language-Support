@@ -28,7 +28,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         }
 
         runCatchingCancelable r@{
-            val fileInfo = file.getUserData(PlsKeys.cachedFileInfo)?.castOrNull<ParadoxFileInfo>() ?: return@r
+            val fileInfo = file.getUserData(PlsKeys.fileInfo)?.castOrNull<ParadoxFileInfo>() ?: return@r
             return ParadoxFileManager.getFileType(fileInfo.fileType)
         }
 

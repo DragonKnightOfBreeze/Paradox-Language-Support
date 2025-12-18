@@ -12,10 +12,8 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.EMPTY_OBJECT
-import icu.windea.pls.core.coroutines.SmartLazyLoader
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitByBlank
@@ -37,41 +35,17 @@ import kotlin.io.path.notExists
 object ParadoxAnalyzeManager {
     private val logger = thisLogger()
 
-    private val rootInfoLoader = SmartLazyLoader<String, ParadoxRootInfo>(
-        coroutineScopeProvider = { PlsFacade.getCoroutineScope() },
-        onFailure = { key, error ->
-            logger.warn("Failed to load root info for '$key'.", error)
-        }
-    )
-
-    private val fileInfoLoader = SmartLazyLoader<String, ParadoxFileInfo>(
-        coroutineScopeProvider = { PlsFacade.getCoroutineScope() },
-        onFailure = { key, error ->
-            logger.warn("Failed to load file info for '$key'.", error)
-        }
-    )
-
-    private val localeConfigLoader = SmartLazyLoader<String, CwtLocaleConfig>(
-        coroutineScopeProvider = { PlsFacade.getCoroutineScope() },
-        onFailure = { key, error ->
-            logger.warn("Failed to load locale config for '$key'.", error)
-        }
-    )
-
-    @JvmOverloads
-    fun getRootInfo(rootFile: VirtualFile, tryLoad: Boolean = true): ParadoxRootInfo? {
+    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
 
         // try to get injected root info first
         doGetInjectedRootInfo(rootFile)?.let { return it }
 
-        val key = rootFile.path
-        return rootInfoLoader.getOrNull(
-            key = key,
-            tryLoad = tryLoad,
-            cache = { doGetRootInfoFromCache(rootFile) },
-            loader = { doGetRootInfo(rootFile) }
-        )
+        doGetRootInfoFromCache(rootFile)?.let { return it }
+        synchronized(rootFile) {
+            doGetRootInfoFromCache(rootFile)?.let { return it }
+            return doGetRootInfo(rootFile)
+        }
     }
 
     private fun doGetInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -79,20 +53,16 @@ object ParadoxAnalyzeManager {
         return rootInfo
     }
 
-    private fun doGetRootInfoFromCache(rootFile: VirtualFile): SmartLazyLoader.CachedValue<ParadoxRootInfo> {
-        val data = rootFile.getUserData(PlsKeys.cachedRootInfo)
-        return when (data) {
-            null -> SmartLazyLoader.CachedValue(isCached = false, value = null)
-            EMPTY_OBJECT -> SmartLazyLoader.CachedValue(isCached = true, value = null)
-            is ParadoxRootInfo -> SmartLazyLoader.CachedValue(isCached = true, value = data)
-            else -> SmartLazyLoader.CachedValue(isCached = false, value = null)
-        }
+    private fun doGetRootInfoFromCache(rootFile: VirtualFile): ParadoxRootInfo? {
+        val rootInfo = rootFile.getUserData(PlsKeys.rootInfo)
+        if (rootInfo !is ParadoxRootInfo) return null
+        return rootInfo
     }
 
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         try {
             val rootInfo = ParadoxAnalyzeService.resolveRootInfo(rootFile)
-            rootFile.tryPutUserData(PlsKeys.cachedRootInfo, rootInfo ?: EMPTY_OBJECT)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
             if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                 application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
             }
@@ -100,32 +70,28 @@ object ParadoxAnalyzeManager {
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             logger.warn(e)
-            rootFile.tryPutUserData(PlsKeys.cachedRootInfo, EMPTY_OBJECT)
+            rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
             return null
         }
     }
 
-    @JvmOverloads
-    fun getFileInfo(element: PsiElement, tryLoad: Boolean = true): ParadoxFileInfo? {
+    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
         val file = selectFile(element) ?: return null
-        return getFileInfo(file, tryLoad)
+        return getFileInfo(file)
     }
 
-    @JvmOverloads
-    fun getFileInfo(file: VirtualFile, tryLoad: Boolean = true): ParadoxFileInfo? {
+    fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
         // no fileInfo for `VirtualFileWindow` (injected PSI)
         if (PlsFileManager.isInjectedFile(file)) return null
 
         // try to get injected file info first
         doGetInjectedFileInfo(file)?.let { return it }
 
-        val key = file.path
-        return fileInfoLoader.getOrNull(
-            key = key,
-            tryLoad = tryLoad,
-            cache = { doGetFileInfoFromCache(file) },
-            loader = { doGetFileInfo(file) }
-        )
+        doGetCachedFileInfo(file)?.let { return it }
+        synchronized(file) {
+            doGetCachedFileInfo(file)?.let { return it }
+            return doGetFileInfo(file)
+        }
     }
 
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
@@ -137,26 +103,15 @@ object ParadoxAnalyzeManager {
         return fileInfo
     }
 
-    private fun doGetFileInfoFromCache(file: VirtualFile): SmartLazyLoader.CachedValue<ParadoxFileInfo> {
-        val data = file.getUserData(PlsKeys.cachedFileInfo)
-        return when (data) {
-            null -> SmartLazyLoader.CachedValue(isCached = false, value = null)
-            EMPTY_OBJECT -> SmartLazyLoader.CachedValue(isCached = true, value = null)
-            is ParadoxFileInfo -> {
-                if (data.rootInfo is ParadoxRootInfo.MetadataBased) {
-                    // consistency check
-                    val expectedRootInfo = doGetRootInfoFromCache(data.rootInfo.rootFile)
-                    if (!expectedRootInfo.isCached || expectedRootInfo.value != data.rootInfo) {
-                        SmartLazyLoader.CachedValue(isCached = false, value = null)
-                    } else {
-                        SmartLazyLoader.CachedValue(isCached = true, value = data)
-                    }
-                } else {
-                    SmartLazyLoader.CachedValue(isCached = true, value = data)
-                }
-            }
-            else -> SmartLazyLoader.CachedValue(isCached = false, value = null)
+    private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        val fileInfo = file.getUserData(PlsKeys.fileInfo)
+        if (fileInfo !is ParadoxFileInfo) return null
+        if (fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
+            // consistency check
+            val expectedRootInfo = doGetRootInfoFromCache(fileInfo.rootInfo.rootFile)
+            if (expectedRootInfo != fileInfo.rootInfo) return null
         }
+        return fileInfo
     }
 
     private fun doGetFileInfo(file: VirtualFile): ParadoxFileInfo? {
@@ -168,18 +123,18 @@ object ParadoxAnalyzeManager {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
                     val fileInfo = ParadoxAnalyzeService.resolveFileInfo(file, rootInfo)
-                    file.tryPutUserData(PlsKeys.cachedFileInfo, fileInfo ?: EMPTY_OBJECT)
+                    file.tryPutUserData(PlsKeys.fileInfo, fileInfo ?: EMPTY_OBJECT)
                     return fileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
                 currentFile = doGetFile(currentFile?.parent, currentFilePath)
             }
-            file.tryPutUserData(PlsKeys.cachedFileInfo, EMPTY_OBJECT)
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
             return null
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             logger.warn(e)
-            file.tryPutUserData(PlsKeys.cachedFileInfo, EMPTY_OBJECT)
+            file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
             return null
         }
     }
@@ -222,20 +177,17 @@ object ParadoxAnalyzeManager {
         }
     }
 
-    @JvmOverloads
-    fun getLocaleConfig(file: VirtualFile, project: Project, tryLoad: Boolean = true): CwtLocaleConfig? {
+    fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
         // try to get injected locale config first
         doGetInjectedLocaleConfig(file)?.let { return it }
 
-        val key = file.path
-        return localeConfigLoader.getOrNull(
-            key = key,
-            tryLoad = tryLoad,
-            cache = { doGetLocaleConfigFromCache(file) },
-            loader = { doGetLocaleConfig(file, project) }
-        )
+        doGetCachedLocaleConfig(file)?.let { return it }
+        synchronized(file) {
+            doGetCachedLocaleConfig(file)?.let { return it }
+            return doGetLocaleConfig(file, project)
+        }
     }
 
     private fun doGetInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
@@ -243,19 +195,15 @@ object ParadoxAnalyzeManager {
         return localeConfig
     }
 
-    private fun doGetLocaleConfigFromCache(file: VirtualFile): SmartLazyLoader.CachedValue<CwtLocaleConfig> {
-        val data = file.getUserData(PlsKeys.cachedLocaleConfig)
-        return when (data) {
-            null -> SmartLazyLoader.CachedValue(isCached = false, value = null)
-            EMPTY_OBJECT -> SmartLazyLoader.CachedValue(isCached = true, value = null)
-            is CwtLocaleConfig -> SmartLazyLoader.CachedValue(isCached = true, value = data)
-            else -> SmartLazyLoader.CachedValue(isCached = false, value = null)
-        }
+    private fun doGetCachedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
+        val localeConfig = file.getUserData(PlsKeys.localeConfig)
+        if (localeConfig !is CwtLocaleConfig) return null
+        return localeConfig
     }
 
     private fun doGetLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         val localeConfig = ParadoxAnalyzeService.resolveLocaleConfig(file, project)
-        file.tryPutUserData(PlsKeys.cachedLocaleConfig, localeConfig ?: EMPTY_OBJECT)
+        file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
         return localeConfig
     }
 
