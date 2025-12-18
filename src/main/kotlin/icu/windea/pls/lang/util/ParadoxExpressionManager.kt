@@ -500,9 +500,9 @@ object ParadoxExpressionManager {
                 val candidates = ParadoxMatchPipeline.collectCandidates(resultForKey) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
-                val filteredResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
-                if (filteredResult.isEmpty() && orDefault) return resultForKey // 如果无结果且需要使用默认值，则返回所有匹配键的规则
-                return filteredResult
+                val finalResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
+                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果且需要使用默认值，则返回所有候选规则
+                return finalResult // 返回最终匹配的规则
             }
             else -> {
                 // 匹配文件或单独的值
@@ -519,16 +519,16 @@ object ParadoxExpressionManager {
                 val candidates = ParadoxMatchPipeline.collectCandidates(result) { config ->
                     ParadoxMatchService.matchScriptExpression(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
                 }
-                val filteredResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
-                val optimizedResult = ParadoxMatchPipeline.optimize(element, valueExpression, filteredResult, matchOptions)
-                if (optimizedResult.isEmpty() && orDefault) return result // 如果无结果且需要使用默认值，则返回所有上下文值规则
-                return filteredResult
+                val finalResult = ParadoxMatchPipeline.filter(candidates, matchOptions)
+                    .let { ParadoxMatchPipeline.optimize(element, valueExpression, it, matchOptions) }
+                if (finalResult.isEmpty() && orDefault) return candidates.map { it.value } // 如果无结果且需要使用默认值，则返回所有候选规则
+                return finalResult // 返回最终匹配的规则
             }
         }
     }
 
     // 兼容需要考虑内联的情况（如内联脚本）
-    // 这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
+    // 这里需要兼容匹配键的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
 
     /**
      * 得到指定的 [element] 的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）

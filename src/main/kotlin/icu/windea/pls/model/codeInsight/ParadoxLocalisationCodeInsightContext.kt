@@ -11,7 +11,7 @@ data class ParadoxLocalisationCodeInsightContext(
         File,
         Definition,
         Modifier,
-        LocalisationReference,
+        LocalisationReference, // 注意：可以与定义的相关本地化重复
         SyncedLocalisationReference,
         Localisation,
     }
