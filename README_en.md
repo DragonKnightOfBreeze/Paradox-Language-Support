@@ -134,6 +134,7 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 - [cwtools/cwtools-vscode: A VS Code extension providing language server support for paradox script files using cwtools](https://github.com/cwtools/cwtools-vscode)
 - [bcssov/IronyModManager: Mod Manager for Paradox Games. Official Discord: https://discord.gg/t9JmY8KFrV](https://github.com/bcssov/IronyModManager)
 - [amtep/tiger: Checks game mod files for common mistakes and warns about them. Supports Crusader Kings 3, Victoria 3, and Imperator: Rome.](https://github.com/amtep/tiger)
+- [nickbabcock/jomini: Parses Paradox files into javascript objects](https://github.com/nickbabcock/jomini)
 - [OldEnt/stellaris-triggers-modifiers-effects-list: List of Stellaris triggers, modifiers and effects for most game versions since launch.](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
 
 **Tutorials & Wikis:**
@@ -144,7 +145,7 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 ## Contribution & Support
 
-We welcome all forms of support and contribution, including but not limited to:
+All forms of support and contribution are welcomed, including but not limited to:
 
 - ⭐ Star the project on GitHub.
 - 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).
