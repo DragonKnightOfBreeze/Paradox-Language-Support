@@ -17,7 +17,7 @@ import javax.swing.Icon
 class ParadoxFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {
         if (project == null) return null
-        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
+        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file, tryLoad = false) ?: return null
         if (file.isDirectory) {
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
