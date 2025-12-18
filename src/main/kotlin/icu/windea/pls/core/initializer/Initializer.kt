@@ -1,31 +1,21 @@
-package icu.windea.pls.core
+package icu.windea.pls.core.initializer
 
-import com.intellij.openapi.application.UI
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.io.createDirectories
-import com.intellij.util.io.createParentDirectories
+import icu.windea.pls.core.runCatchingCancelable
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 
 /**
- * 智能初始化器。
+ * 初始化器。
  *
  * - 允许在启动阶段收集多个异步初始化任务并并行执行（见 [initialize]）；
  * - 提供 `await(...)` 族方法生成懒加载值，在所有初始化任务完成后读取；
  * - 适用于需要在 UI 可用后，后台准备资源（目录/文件/缓存等）的场景。
  */
-class SmartInitializer(
+class Initializer(
     private val completableDeferred: CompletableDeferred<Unit> = CompletableDeferred(),
     private val initializeActions: MutableList<suspend () -> Unit> = mutableListOf()
 ) {
@@ -78,27 +68,3 @@ class SmartInitializer(
         }
     }
 }
-
-/** 收集一个“创建目录”的初始化任务并返回对应的懒值。*/
-fun SmartInitializer.awaitDirectory(value: Path): Lazy<Path> {
-    return await(value) { withContext(Dispatchers.IO) { it.createDirectories() } }
-}
-
-/** 收集一个“从 VirtualFile 复制到 Path 并返回 VirtualFile” 的初始化任务并返回懒值。*/
-fun SmartInitializer.awaitFileFromVirtualFile(value: Path, sourceUrl: URL): Lazy<VirtualFile> {
-    return await(value, { it.createFileFromVirtualFile(VfsUtil.findFileByURL(sourceUrl)!!) }, { VfsUtil.findFile(it, false)!! })
-}
-
-/** 将给定 [virtualFile] 的内容复制到当前 [Path]，并刷新 VFS 返回对应的 `VirtualFile`。*/
-private suspend fun Path.createFileFromVirtualFile(virtualFile: VirtualFile): VirtualFile? {
-    val path = this
-    this.createParentDirectories()
-    withContext(Dispatchers.IO) {
-        Files.copy(virtualFile.inputStream, path, StandardCopyOption.REPLACE_EXISTING)
-    }
-    val file = withContext(Dispatchers.UI) {
-        VfsUtil.findFile(path, true)
-    }
-    return file
-}
-
