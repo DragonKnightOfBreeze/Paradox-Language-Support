@@ -38,7 +38,7 @@ object ParadoxMetadataService {
     }
 
     fun resolveLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo {
-        return jsonMapper.readValue(file.inputStream)
+        return file.inputStream.use { jsonMapper.readValue(it) }
     }
 
     fun getDescriptorModFile(rootFile: VirtualFile): VirtualFile? {
@@ -51,7 +51,7 @@ object ParadoxMetadataService {
     fun resolveDescriptorModInfo(file: VirtualFile): ParadoxDescriptorModInfo {
         // 需要先创建 `dummyFile` 再解析（直接解析的话会导致 `StackOverflowError`）
         // `createDummyFile` -> `ParadoxScriptData` -> `ParadoxModDescriptorData` -> `ParadoxDescriptorModInfo`
-        val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
+        val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.use { it.reader().readText() })
         val data = ParadoxScriptDataResolver.DEFAULT.resolveFile(psiFile)?.let { ParadoxModDescriptorData(it) }
         val name = data?.name ?: file.parent?.name ?: "" // 作为回退，使用模组目录名作为模组名
         val version = data?.version
@@ -71,6 +71,6 @@ object ParadoxMetadataService {
     }
 
     fun resolveMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo {
-        return jsonMapper.readValue(file.inputStream)
+        return file.inputStream.use { jsonMapper.readValue(it) }
     }
 }

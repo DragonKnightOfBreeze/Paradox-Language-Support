@@ -123,7 +123,7 @@ object ParadoxMetadataManager {
      */
     fun detectLauncherPlaylistPositionIsInt(file: VirtualFile): Boolean? {
         return try {
-            val root = jsonMapper.readTree(file.inputStream)
+            val root = file.inputStream.use { jsonMapper.readTree(it) }
             val modsNode = root.get("mods") ?: return null
             val first = modsNode.firstOrNull() ?: return null
             first.get("position")?.isInt

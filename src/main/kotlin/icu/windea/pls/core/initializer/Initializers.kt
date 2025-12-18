@@ -27,7 +27,7 @@ private suspend fun Path.createFileFromVirtualFile(virtualFile: VirtualFile): Vi
     val path = this
     this.createParentDirectories()
     withContext(Dispatchers.IO) {
-        Files.copy(virtualFile.inputStream, path, StandardCopyOption.REPLACE_EXISTING)
+        virtualFile.inputStream.use { Files.copy(it, path, StandardCopyOption.REPLACE_EXISTING) }
     }
     val file = withContext(Dispatchers.UI) {
         VfsUtil.findFile(path, true)

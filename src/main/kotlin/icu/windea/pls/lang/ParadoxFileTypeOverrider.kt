@@ -42,6 +42,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
             return ParadoxFileManager.getFileType(possibleFileType)
         }
 
-        return null // #242
+        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
+        return ParadoxFileManager.getFileType(fileInfo.fileType)
     }
 }

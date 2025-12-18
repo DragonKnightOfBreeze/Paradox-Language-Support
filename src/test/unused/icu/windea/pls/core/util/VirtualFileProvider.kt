@@ -34,7 +34,7 @@ class VirtualFileProvider(
         }
         if (file == null || !file.exists()) {
             filePath.createParentDirectories()
-            Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
+            sourceFile.inputStream.use { Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING) }
             file = VfsUtil.findFile(filePath, refresh)
             if (file == null) throw IllegalStateException()
             this.file = file
@@ -42,12 +42,12 @@ class VirtualFileProvider(
             return file
         }
         if (timeStamp != -1L && timeStamp < file.timeStamp) {
-            Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
+            sourceFile.inputStream.use { Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING) }
             timeStamp = file.timeStamp
         } else if (timeStamp == -1L) {
             // check whether is same file only if timestamp is not set
             if (!isSameFile()) {
-                Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
+                sourceFile.inputStream.use { Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING) }
             }
             timeStamp = file.timeStamp
         } else {
