@@ -152,8 +152,8 @@ class ParadoxFileListener : AsyncFileListener {
         }
     }
 
-    private fun shouldRefreshForFilePaths(file: VirtualFile): Boolean {
-        return file.fileInfo != null
+    private fun shouldRefreshForFilePaths(file: VirtualFile?): Boolean {
+        return file?.fileInfo != null
     }
 
     private fun refreshForFilePaths() {
