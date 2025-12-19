@@ -18,8 +18,6 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
 
     fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
-
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, configs: List<CwtMemberConfig<*>>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun indexLocalisationExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}

@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.presentation
+package icu.windea.pls.ep.util.presentation
 
 import javax.swing.JComponent
 

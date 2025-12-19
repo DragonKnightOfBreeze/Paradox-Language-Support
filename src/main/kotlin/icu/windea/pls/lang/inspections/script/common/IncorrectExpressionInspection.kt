@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -39,11 +39,10 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
 
                 // 开始检查
-                ParadoxIncorrectExpressionChecker.check(element, config, holder)
+                PlsInspectionService.checkIncorrectExpression(element, config, holder)
 
                 // TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }
         }
     }
 }
-

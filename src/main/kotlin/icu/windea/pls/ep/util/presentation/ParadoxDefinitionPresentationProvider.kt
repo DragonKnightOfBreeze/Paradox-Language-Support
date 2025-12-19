@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.presentation
+package icu.windea.pls.ep.util.presentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -13,12 +13,5 @@ interface ParadoxDefinitionPresentationProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
-
-        fun <T : ParadoxDefinitionPresentation> get(element: ParadoxScriptDefinitionElement, type: Class<T>): T? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!ep.supports(element, type)) return@f null
-                ep.get(element, type)
-            }
-        }
     }
 }

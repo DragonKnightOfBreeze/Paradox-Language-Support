@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import icu.windea.pls.ep.data.ParadoxSpriteData
+import icu.windea.pls.ep.util.data.ParadoxSpriteData
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.data
+package icu.windea.pls.ep.util.data
 
 /**
  * 定义的数据。

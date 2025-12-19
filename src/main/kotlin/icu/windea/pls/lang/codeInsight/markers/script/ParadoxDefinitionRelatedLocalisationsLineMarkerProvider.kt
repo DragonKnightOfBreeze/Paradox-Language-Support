@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtLocationExpressionManager
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.optimized
@@ -14,7 +15,6 @@ import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.PlsStringConstants

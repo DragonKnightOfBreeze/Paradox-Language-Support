@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.ui
+package icu.windea.pls.lang.util.presentation
 
 import com.intellij.ui.Gray
 import icu.windea.pls.core.resize
@@ -7,15 +7,13 @@ import icu.windea.pls.core.toLabel
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.withLocation
-import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxPresentationManager
 import icu.windea.pls.lang.util.ParadoxTextColorManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -149,6 +147,6 @@ class StellarisTechnologyCardBuilder(
     }
 
     private fun selector(): ChainedParadoxSelector<ParadoxScriptDefinitionElement> {
-        return selector(definitionInfo.project, element).definition().contextSensitive()
+        return icu.windea.pls.lang.search.selector.selector(definitionInfo.project, element).definition().contextSensitive()
     }
 }

@@ -13,7 +13,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.data.ParadoxDefinitionDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionMerger" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider" dynamic="true"/>
@@ -24,7 +23,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatchOptimizer" interface="icu.windea.pls.ep.match.ParadoxScriptExpressionMatchOptimizer" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionMatcher" interface="icu.windea.pls.ep.match.ParadoxCsvExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overrideStrategyProvider" interface="icu.windea.pls.ep.overrides.ParadoxOverrideStrategyProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.csvExpressionSupport" interface="icu.windea.pls.ep.resolve.expression.ParadoxCsvExpressionSupport" dynamic="true"/>
@@ -47,6 +45,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.importer.ParadoxModImporter" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.exporter.ParadoxModExporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.util.data.ParadoxDefinitionDataProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -119,8 +119,6 @@
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtProjectConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.CwtTestConfigGroupFileProvider"/>
 
-    <definitionDataProvider implementation="icu.windea.pls.ep.data.ParadoxBaseDefinitionDataProvider"/>
-
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.configExpression.CwtConstantDataExpressionResolver" order="last"/>
@@ -176,8 +174,6 @@
     <overrideStrategyProvider id="forcedFile" implementation="icu.windea.pls.ep.overrides.ParadoxForcedFileOverrideStrategyProvider"/>
     <overrideStrategyProvider id="forcedDefinition" implementation="icu.windea.pls.ep.overrides.ParadoxForcedDefinitionOverrideStrategyProvider"/>
     <overrideStrategyProvider id="base" implementation="icu.windea.pls.ep.overrides.ParadoxBaseOverrideStrategyProvider"/>
-
-    <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.ParadoxBaseDefinitionPresentationProvider"/>
 
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBoolExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.resolve.expression.ParadoxScriptBlockExpressionSupport"/>
@@ -276,5 +272,9 @@
     <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV3Exporter"/>
     <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherDbExporter"/>
     <modExporter implementation="icu.windea.pls.ep.tools.exporter.ParadoxLauncherBetaDbExporter"/>
+
+    <definitionDataProvider implementation="icu.windea.pls.ep.util.data.ParadoxBaseDefinitionDataProvider"/>
+
+    <definitionPresentationProvider implementation="icu.windea.pls.ep.util.presentation.ParadoxBaseDefinitionPresentationProvider"/>
   </extensions>
 </idea-plugin>

@@ -1,6 +1,6 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.util.presentation
 
-import com.intellij.diagram.DiagramElementManager.*
+import com.intellij.diagram.DiagramElementManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -14,6 +14,9 @@ import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextUIRenderer
@@ -60,7 +63,7 @@ object ParadoxPresentationManager {
 
     fun getPropertyText(property: ParadoxScriptProperty, detail: Boolean = false): SimpleColoredText {
         val rendered = ParadoxScriptTextRenderer(renderInBlock = detail).render(property)
-        val propertyText = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+        val propertyText = SimpleColoredText(rendered, DiagramElementManager.DEFAULT_TEXT_ATTR)
         val propertyValue = property.propertyValue
         if (propertyValue is ParadoxScriptScriptedVariableReference) {
             val sv = propertyValue.text

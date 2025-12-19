@@ -11,6 +11,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtLocationExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
@@ -27,7 +28,6 @@ import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
-import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager

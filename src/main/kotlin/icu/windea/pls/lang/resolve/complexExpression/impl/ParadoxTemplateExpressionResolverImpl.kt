@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionBase
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -13,7 +14,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetConstantNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 
 internal class ParadoxTemplateExpressionResolverImpl : ParadoxTemplateExpression.Resolver {
     override fun resolve(text: String, range: TextRange?, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxTemplateExpression? {

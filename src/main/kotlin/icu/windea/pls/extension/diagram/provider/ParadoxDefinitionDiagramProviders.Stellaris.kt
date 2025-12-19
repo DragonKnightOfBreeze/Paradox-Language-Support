@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extension.diagram.settings.StellarisEventTreeDiagramSettings

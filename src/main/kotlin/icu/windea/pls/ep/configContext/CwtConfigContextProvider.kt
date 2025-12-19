@@ -4,11 +4,8 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiFile
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.resolve.ParadoxScriptService
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
@@ -31,15 +28,5 @@ interface CwtConfigContextProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
-
-        fun getContext(element: ParadoxScriptMember): CwtConfigContext? {
-            val file = element.containingFile ?: return null
-            val elementPath = ParadoxScriptService.getElementPath(element) ?: return null
-            val gameType = selectGameType(file)
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getContext(element, elementPath, file)?.also { it.provider = ep }
-            }
-        }
     }
 }

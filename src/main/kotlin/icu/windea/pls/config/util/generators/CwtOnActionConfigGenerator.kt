@@ -6,6 +6,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
@@ -15,7 +16,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.properties

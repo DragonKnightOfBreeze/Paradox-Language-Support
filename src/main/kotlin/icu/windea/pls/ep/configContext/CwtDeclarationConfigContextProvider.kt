@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtDeclarationConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
@@ -25,13 +24,5 @@ interface CwtDeclarationConfigContextProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
-
-        fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
-            val gameType = configGroup.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getContext(element, definitionName, definitionType, definitionSubtypes, configGroup)?.also { it.provider = ep }
-            }
-        }
     }
 }

@@ -18,7 +18,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.ep.data.StellarisTechnologyData
+import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData

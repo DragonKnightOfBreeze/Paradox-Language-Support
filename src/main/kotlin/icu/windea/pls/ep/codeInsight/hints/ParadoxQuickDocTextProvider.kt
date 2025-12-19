@@ -2,8 +2,6 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 import icu.windea.pls.lang.documentation.ParadoxDocumentationManager
 import icu.windea.pls.lang.documentation.ParadoxDocumentationTarget
@@ -11,7 +9,6 @@ import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
@@ -50,21 +47,5 @@ interface ParadoxQuickDocTextProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxQuickDocTextProvider>("icu.windea.pls.quickDocTextProvider")
-
-        fun getQuickDocText(element: PsiElement): String? {
-            val gameType = selectGameType(element)
-            return EP_NAME.extensionList.reversed().firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getQuickDocText(element)?.orNull()
-            }
-        }
-
-        fun listQuickDocText(element: PsiElement): List<String> {
-            val gameType = selectGameType(element)
-            return EP_NAME.extensionList.mapNotNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getQuickDocText(element)?.orNull()
-            }
-        }
     }
 }

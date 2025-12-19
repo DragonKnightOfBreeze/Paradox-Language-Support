@@ -3,7 +3,7 @@ package icu.windea.pls.lang.util.data
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.ep.data.ParadoxDefinitionData
+import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.script.psi.booleanValue
 import icu.windea.pls.script.psi.colorValue
 import icu.windea.pls.script.psi.floatValue

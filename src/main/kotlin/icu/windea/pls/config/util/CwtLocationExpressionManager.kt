@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.config.util
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -26,6 +26,9 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes

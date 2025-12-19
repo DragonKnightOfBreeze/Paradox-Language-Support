@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.config.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement

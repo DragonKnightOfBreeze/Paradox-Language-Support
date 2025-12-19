@@ -24,6 +24,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configContext.isDefinitionOrMember
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.resolved
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
@@ -42,8 +43,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvHeader
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
-import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -168,7 +167,7 @@ object ParadoxCompletionManager {
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
             for (config in configsWithSameKey) {
                 if (shouldComplete(config, occurrenceMap)) {
-                    val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
+                    val overriddenConfigs = CwtConfigService.getOverriddenConfigs(context.contextElement!!, config)
                     if (overriddenConfigs.isNotEmpty()) {
                         for (overriddenConfig in overriddenConfigs) {
                             context.config = overriddenConfig
@@ -209,7 +208,7 @@ object ParadoxCompletionManager {
 
         for (config in configs) {
             if (shouldComplete(config, occurrenceMap)) {
-                val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(context.contextElement!!, config)
+                val overriddenConfigs = CwtConfigService.getOverriddenConfigs(context.contextElement!!, config)
                 if (overriddenConfigs.isNotEmpty()) {
                     for (overriddenConfig in overriddenConfigs) {
                         context.config = overriddenConfig
@@ -402,7 +401,7 @@ object ParadoxCompletionManager {
                 if (typeToUse == null) return@run null
                 if (typeConfigToUse.typeKeyPrefix != null) return@run typeConfigToUse.typeKeyPrefixConfig
                 val declarationConfig = configGroup.declarations.get(typeToUse) ?: return@run null
-                val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
+                val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(context.contextElement!!, null, typeToUse, subtypesToUse, configGroup)
                 declarationConfigContext?.getConfig(declarationConfig)
             }
             val element = config?.pointer?.element

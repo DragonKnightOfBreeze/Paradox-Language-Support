@@ -11,8 +11,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.configContext.inlineScriptHasRecursion
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.ParadoxScriptLanguage

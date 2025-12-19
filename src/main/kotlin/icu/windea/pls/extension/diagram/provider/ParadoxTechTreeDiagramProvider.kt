@@ -26,8 +26,8 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.ep.data.StellarisTechnologyData
-import icu.windea.pls.ep.presentation.StellarisTechnologyCardPresentation
+import icu.windea.pls.ep.util.data.StellarisTechnologyData
+import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extension.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.extension.diagram.settings.ParadoxTechTreeDiagramSettings
@@ -35,8 +35,8 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.getDefinitionPresentation
-import icu.windea.pls.lang.util.ParadoxPresentationManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.lang.util.presentation.ParadoxPresentationManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

@@ -16,6 +16,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
+import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider.*
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
@@ -77,7 +78,7 @@ class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<
     }
 
     private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: Settings): InlayPresentation? {
-        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)
     }

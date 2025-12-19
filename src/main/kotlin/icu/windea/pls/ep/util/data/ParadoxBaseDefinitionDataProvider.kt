@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.data
+package icu.windea.pls.ep.util.data
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException

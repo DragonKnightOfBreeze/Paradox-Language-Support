@@ -32,7 +32,7 @@ import icu.windea.pls.extension.diagram.settings.ParadoxEventTreeDiagramSettings
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.lang.util.ParadoxPresentationManager
+import icu.windea.pls.lang.util.presentation.ParadoxPresentationManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement

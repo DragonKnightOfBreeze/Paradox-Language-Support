@@ -11,6 +11,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
+import icu.windea.pls.config.configContext.inlineScriptHasConflict
+import icu.windea.pls.config.configContext.inlineScriptHasRecursion
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
@@ -22,8 +24,6 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.configContext.inlineScriptHasConflict
-import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage

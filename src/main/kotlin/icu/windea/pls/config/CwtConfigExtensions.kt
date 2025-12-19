@@ -10,13 +10,13 @@ import icu.windea.pls.config.config.delegated.CwtFilePathMatchableConfig
 import icu.windea.pls.config.config.inlineConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
 import icu.windea.pls.lang.PlsKeys
 
 /**
@@ -52,7 +52,7 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
     return sortedByDescending s@{
         val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
         val configGroup = configGroupProvider(it)
-        CwtDataExpressionPriorityProvider.getPriority(expression, configGroup)
+        CwtConfigExpressionService.getPriority(expression, configGroup)
     }
 }
 

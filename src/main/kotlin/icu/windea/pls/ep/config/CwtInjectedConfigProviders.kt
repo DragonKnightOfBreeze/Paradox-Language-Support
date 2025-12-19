@@ -5,7 +5,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.declarationConfigContext
 import icu.windea.pls.config.config.memberConfig
-import icu.windea.pls.ep.configContext.onActionConfig
+import icu.windea.pls.config.configContext.onActionConfig
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxGameType

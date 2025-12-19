@@ -9,17 +9,17 @@ import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.util.CwtConfigService
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.optimized
-import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionInheritSupport
 import icu.windea.pls.ep.resolve.definition.ParadoxDefinitionModifierProvider
 import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchUtil
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
@@ -81,7 +81,7 @@ object ParadoxDefinitionService {
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
         val declarationConfig = definitionInfo.configGroup.declarations.get(definitionInfo.type) ?: return null
         val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
-        val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
+        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

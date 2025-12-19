@@ -3,11 +3,7 @@ package icu.windea.pls.ep.config
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.originalConfig
-import icu.windea.pls.config.config.overriddenProvider
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.lang.annotations.PlsAnnotationManager
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
@@ -44,17 +40,5 @@ interface CwtOverriddenConfigProvider {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
-
-        fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
-            val gameType = config.configGroup.gameType
-            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-                ep.getOverriddenConfigs(contextElement, config).orNull()
-                    ?.onEach {
-                        it.originalConfig = config
-                        it.overriddenProvider = ep
-                    }
-            }.orEmpty()
-        }
     }
 }

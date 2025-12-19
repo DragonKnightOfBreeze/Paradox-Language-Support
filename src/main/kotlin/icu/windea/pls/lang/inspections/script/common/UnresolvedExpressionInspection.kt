@@ -21,9 +21,9 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.isDefinition
 import icu.windea.pls.config.configContext.isDefinitionOrMember
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
-import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.inspections.PlsInspectionUtil
 import icu.windea.pls.lang.inspections.disabledElement
@@ -167,7 +167,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         contextConfig.configs?.forEach f1@{ c1 ->
                             val c = c1 as? CwtPropertyConfig ?: return@f1
                             // 优先使用重载后的规则
-                            val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                            val overriddenConfigs = CwtConfigService.getOverriddenConfigs(element, c)
                             if (overriddenConfigs.isNotEmpty()) {
                                 addAll(overriddenConfigs)
                             } else {
@@ -183,7 +183,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     val contextConfigs = configContext.getConfigs()
                     contextConfigs.forEach f@{ contextConfig ->
                         val c = contextConfig as? CwtValueConfig ?: return@f
-                        val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, c)
+                        val overriddenConfigs = CwtConfigService.getOverriddenConfigs(element, c)
                         if (overriddenConfigs.isNotEmpty()) {
                             addAll(overriddenConfigs)
                         } else {

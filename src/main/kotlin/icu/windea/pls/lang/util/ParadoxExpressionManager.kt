@@ -42,6 +42,7 @@ import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.sortedByPriority
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
@@ -70,7 +71,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.configContext.CwtConfigContextProvider
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
 import icu.windea.pls.lang.isInlineScriptUsage
@@ -296,7 +296,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetConfigContext(element: ParadoxScriptMember): CwtConfigContext? {
-        return CwtConfigContextProvider.getContext(element)
+        return CwtConfigService.getConfigContext(element)
     }
 
     fun getConfigsForConfigContext(

@@ -15,7 +15,9 @@ import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.FastList
@@ -26,8 +28,6 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
-import icu.windea.pls.ep.config.CwtInjectedConfigProvider
-import icu.windea.pls.ep.configExpression.CwtDataExpressionMerger
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
@@ -140,7 +140,7 @@ object CwtConfigManipulator {
             CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
             result += delegatedConfig
         }
-        CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
+        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
         result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result // 这里需要直接返回可变列表
     }
@@ -169,7 +169,7 @@ object CwtConfigManipulator {
             CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
             result += delegatedConfig
         }
-        CwtInjectedConfigProvider.injectConfigs(parentConfig, result) // 注入规则
+        CwtConfigService.injectConfigs(parentConfig, result) // 注入规则
         result.forEach { it.parentConfig = parentConfig } // 确保绑定了父规则
         return result // 这里需要直接返回可变列表
     }
@@ -244,7 +244,7 @@ object CwtConfigManipulator {
             }
         }
         val parentConfig = config.parentConfig
-        if (parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        if (parentConfig != null) CwtConfigService.injectConfigs(parentConfig, result)
         return result.optimized()
     }
 
@@ -378,7 +378,7 @@ object CwtConfigManipulator {
         if (config1 === config2) return config1 // reference equality
         if (config1.pointer == config2.pointer) return config1 // value equality (should be)
         if (config1.configExpression.type == CwtDataTypes.Block || config2.configExpression.type == CwtDataTypes.Block) return null // cannot merge non-same clauses
-        val expressionString = CwtDataExpressionMerger.merge(config1.configExpression, config2.configExpression, config1.configGroup)
+        val expressionString = CwtConfigExpressionService.merge(config1.configExpression, config2.configExpression, config1.configGroup)
         if (expressionString == null) return null
         return CwtValueConfig.create(
             pointer = emptyPointer(),
@@ -393,7 +393,7 @@ object CwtConfigManipulator {
         for (config in configs) {
             val e1 = configExpression // expect
             val e2 = config.configExpression // actual (e.g., from parameterized key)
-            val e3 = CwtDataExpressionMerger.merge(e1, e2, config.configGroup) ?: continue // merged
+            val e3 = CwtConfigExpressionService.merge(e1, e2, config.configGroup) ?: continue // merged
             if (e3 == e2.expressionString) return true
         }
         return false

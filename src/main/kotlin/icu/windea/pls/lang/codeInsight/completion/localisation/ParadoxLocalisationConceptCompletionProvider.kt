@@ -9,7 +9,7 @@ import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.processQueryAsync
-import icu.windea.pls.ep.data.StellarisGameConceptData
+import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
 import icu.windea.pls.lang.codeInsight.completion.withCompletionId

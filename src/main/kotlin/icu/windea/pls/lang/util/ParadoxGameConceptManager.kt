@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.ep.data.StellarisGameConceptData
+import icu.windea.pls.ep.util.data.StellarisGameConceptData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch

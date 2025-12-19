@@ -14,32 +14,5 @@ interface CwtDataExpressionResolver {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
-
-        /**
-         * @see CwtDataExpressionResolver.resolve
-         */
-        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-            EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.resolve(expressionString, isKey)
-                if (r != null) return r
-            }
-            return null
-        }
-
-        /**
-         * @see CwtDataExpressionResolver.resolve
-         */
-        fun resolveTemplate(expressionString: String): CwtDataExpression? {
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (ep !is CwtRuleBasedDataExpressionResolver) return@f
-                val r = ep.resolve(expressionString, false)
-                if (r != null) return r
-            }
-            return null
-        }
-
-        val allRules by lazy {
-            EP_NAME.extensionList.filterIsInstance<CwtRuleBasedDataExpressionResolver>().flatMap { it.rules }
-        }
     }
 }

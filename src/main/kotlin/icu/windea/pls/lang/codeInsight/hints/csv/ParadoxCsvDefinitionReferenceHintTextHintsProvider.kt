@@ -17,6 +17,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
+import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceHintTextHintsProvider.*
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
@@ -72,7 +73,7 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxCsvHintsProvid
     }
 
     private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
-        val primaryLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(primaryLocalisation)
     }

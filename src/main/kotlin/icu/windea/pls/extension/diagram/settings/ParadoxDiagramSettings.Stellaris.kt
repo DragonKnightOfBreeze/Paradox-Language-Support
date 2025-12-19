@@ -11,8 +11,8 @@ import icu.windea.pls.PlsDocBundle
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.lang.util.ParadoxPresentationManager
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
+import icu.windea.pls.lang.util.presentation.ParadoxPresentationManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.PlsConstants
 

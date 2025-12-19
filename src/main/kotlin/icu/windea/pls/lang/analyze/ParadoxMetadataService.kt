@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.isFile
 import icu.windea.pls.core.getDefaultProject
 import icu.windea.pls.core.util.jsonMapper
 import icu.windea.pls.ep.analyze.ParadoxMetadataProvider
-import icu.windea.pls.ep.data.ParadoxModDescriptorData
+import icu.windea.pls.ep.util.data.ParadoxModDescriptorData
 import icu.windea.pls.lang.util.data.ParadoxScriptDataResolver
 import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
 import icu.windea.pls.model.metadata.ParadoxLauncherSettingsJsonInfo

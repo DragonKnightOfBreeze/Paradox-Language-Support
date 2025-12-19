@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.config.util.generators.CwtConfigGenerator.*
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
@@ -20,7 +21,6 @@ import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.lang.isIdentifier
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

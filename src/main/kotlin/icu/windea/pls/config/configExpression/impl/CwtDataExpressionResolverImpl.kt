@@ -6,9 +6,9 @@ import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 
 internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     private val cacheForKey = CacheBuilder("expireAfterAccess=30m")
@@ -43,12 +43,12 @@ internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
     }
 
     private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-        return CwtDataExpressionResolver.resolve(expressionString, isKey)
+        return CwtConfigExpressionService.resolve(expressionString, isKey)
             ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant, expressionString)
     }
 
     private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-        return CwtDataExpressionResolver.resolveTemplate(expressionString)
+        return CwtConfigExpressionService.resolveTemplate(expressionString)
             ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant, expressionString)
     }
 }

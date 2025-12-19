@@ -5,7 +5,7 @@ import com.intellij.openapi.paths.PathReferenceProviderBase
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 
 // org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 
@@ -18,7 +18,7 @@ import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 class ParadoxPathReferenceProvider : PathReferenceProviderBase() {
     override fun createReferences(element: PsiElement, offset: Int, text: String?, references: MutableList<in PsiReference>, soft: Boolean): Boolean {
         val link = text ?: return true
-        if (!ReferenceLinkProvider.supports(link)) return true
+        if (!ReferenceLinkService.supports(link)) return true
         val rangeInElement = TextRange.create(offset, offset + text.length)
         val reference = ParadoxPathReference(element, rangeInElement, link)
         references.add(reference)

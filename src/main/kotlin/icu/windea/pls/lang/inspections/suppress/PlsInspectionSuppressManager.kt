@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.siblings
-import icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.inspections.PlsInspectionService
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.util.regex.Pattern
 
@@ -47,7 +47,7 @@ object PlsInspectionSuppressManager {
     fun isSuppressedForDefinition(element: PsiElement, toolId: String): Boolean {
         if (element !is ParadoxScriptDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
-        val suppressedToolIds = ParadoxDefinitionInspectionSuppressionProvider.getSuppressedToolIds(element, definitionInfo)
+        val suppressedToolIds = PlsInspectionService.getSuppressedToolIds(element, definitionInfo)
         return toolId in suppressedToolIds
     }
 }

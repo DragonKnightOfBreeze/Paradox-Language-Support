@@ -1,8 +1,5 @@
 package icu.windea.pls.config.config.delegated
 
-import icu.windea.pls.config.config.delegated.CwtLinkArgumentSeparator.*
-import icu.windea.pls.config.config.delegated.CwtLinkType.*
-
 /**
  * 子规则分组。
  *

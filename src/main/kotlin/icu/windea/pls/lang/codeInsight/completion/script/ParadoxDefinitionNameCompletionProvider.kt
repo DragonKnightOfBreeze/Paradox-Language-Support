@@ -9,13 +9,13 @@ import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.processQueryAsync
-import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -102,7 +102,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     // 需要考虑不指定子类型的情况
-                    val declarationConfigContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, configGroup)
+                    val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(element, null, type, null, configGroup)
                     val config = declarationConfigContext?.getConfig(declarationConfig) ?: continue
 
                     context.config = config

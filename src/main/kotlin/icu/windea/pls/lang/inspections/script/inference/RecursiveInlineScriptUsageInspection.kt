@@ -6,7 +6,7 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.configContext.inlineScriptHasRecursion
+import icu.windea.pls.config.configContext.inlineScriptHasRecursion
 import icu.windea.pls.lang.quickfix.GotoInlineScriptUsagesFix
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager

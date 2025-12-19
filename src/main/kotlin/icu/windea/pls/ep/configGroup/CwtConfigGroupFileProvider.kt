@@ -42,10 +42,6 @@ interface CwtConfigGroupFileProvider {
 
     fun getNotificationMessage(configGroup: CwtConfigGroup): String? = null
 
-    enum class Type {
-        BuiltIn, Remote, Local
-    }
-
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
     }

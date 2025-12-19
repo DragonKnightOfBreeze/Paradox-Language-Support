@@ -5,7 +5,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 
 /**
  * @see ParadoxPathReferenceProvider
@@ -20,10 +20,10 @@ class ParadoxPathReference(
     }
 
     override fun resolve(): PsiElement? {
-        return ReferenceLinkProvider.resolve(link, element)
+        return ReferenceLinkService.resolve(link, element)
     }
 
     override fun getUnresolvedMessagePattern(): String {
-        return ReferenceLinkProvider.getUnresolvedMessage(link)
+        return ReferenceLinkService.getUnresolvedMessage(link)
     }
 }

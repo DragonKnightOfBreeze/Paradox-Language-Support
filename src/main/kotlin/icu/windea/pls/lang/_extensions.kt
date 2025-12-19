@@ -10,16 +10,16 @@ import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.ep.data.ParadoxDefinitionData
-import icu.windea.pls.ep.data.ParadoxDefinitionDataProvider
-import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentation
-import icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider
+import icu.windea.pls.ep.util.data.ParadoxDefinitionData
+import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaclisationParameterManager
+import icu.windea.pls.lang.util.data.ParadoxDataService
+import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -105,9 +105,9 @@ inline fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScript
 }
 
 inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? {
-    return ParadoxDefinitionDataProvider.get(this, T::class.java, relax)
+    return ParadoxDataService.get(this, relax)
 }
 
 inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {
-    return ParadoxDefinitionPresentationProvider.get(this, T::class.java)
+    return ParadoxPresentationService.get(this)
 }

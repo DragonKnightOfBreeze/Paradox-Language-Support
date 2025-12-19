@@ -6,10 +6,10 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
+import icu.windea.pls.config.configContext.parameterValueQuoted
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
-import icu.windea.pls.ep.configContext.parameterValueQuoted
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.contextElement
 import icu.windea.pls.lang.codeInsight.completion.expressionOffset

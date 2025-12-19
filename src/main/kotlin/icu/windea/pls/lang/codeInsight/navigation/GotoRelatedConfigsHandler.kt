@@ -10,8 +10,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.findElementAt
-import icu.windea.pls.ep.config.CwtRelatedConfigProvider
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
 
@@ -27,7 +27,7 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
         val element = file.findElementAt(offset) {
             it.takeIf { e -> e !is PsiWhiteSpace && e !is PsiComment }
         } ?: return null
-        val relatedConfigs = CwtRelatedConfigProvider.getRelatedConfigs(file, offset)
+        val relatedConfigs = CwtConfigService.getRelatedConfigs(file, offset)
         val targets = relatedConfigs.mapNotNull { it.pointer.element }
         return GotoData(element, targets.distinct().toTypedArray(), emptyList())
     }

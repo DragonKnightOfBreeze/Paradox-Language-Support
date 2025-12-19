@@ -13,6 +13,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.grayed
 import icu.windea.pls.core.escapeXml
@@ -51,7 +52,6 @@ import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.distinctByName
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxEconomicCategoryManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager

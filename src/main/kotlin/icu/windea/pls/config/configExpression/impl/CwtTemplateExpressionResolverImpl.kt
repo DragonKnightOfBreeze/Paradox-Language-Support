@@ -5,12 +5,12 @@ package icu.windea.pls.config.configExpression.impl
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.util.CwtConfigExpressionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.configExpression.CwtRuleBasedDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
@@ -37,7 +37,7 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
 
     private fun doResolve(expressionString: String): CwtTemplateExpression {
         // 收集所有“具有前后缀”的动态规则，用于匹配拆分
-        val rules = CwtDataExpressionResolver.allRules
+        val rules = CwtConfigExpressionService.allRules
         val snippets = mutableListOf<CwtDataExpression>()
         var startIndex = 0
         while (true) {

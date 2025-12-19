@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -19,7 +20,6 @@ import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
-import icu.windea.pls.lang.util.CwtTemplateExpressionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.findProperty

@@ -15,8 +15,8 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.tools.PlsUrlService
@@ -60,7 +60,7 @@ fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink
 }
 
 fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
-    if (context != null && ReferenceLinkProvider.resolve(refText, context) == null) return appendUnresolvedLink(label)
+    if (context != null && ReferenceLinkService.resolve(refText, context) == null) return appendUnresolvedLink(label)
     DocumentationManagerUtil.createHyperlink(this.content, refText, label, plainLink)
     return this
 }

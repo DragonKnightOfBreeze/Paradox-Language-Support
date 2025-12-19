@@ -15,8 +15,8 @@ import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.ReferenceLinkService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.documentation.appendImgTag
 import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
@@ -325,7 +325,7 @@ class ParadoxLocalisationTextHtmlRenderer(
                 val s = reference.rangeInElement.substring(text)
                 builder.append(s.escapeXml())
             } else {
-                val link = ReferenceLinkProvider.createPsiLink(resolved)
+                val link = ReferenceLinkService.createPsiLink(resolved)
                 if (link != null) {
                     // 如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val usedColor = if (colorStack.isEmpty()) defaultColor else null

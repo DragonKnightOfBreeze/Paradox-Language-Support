@@ -8,6 +8,7 @@ import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.util.CwtLocationExpressionManager
 import icu.windea.pls.core.documentation.DocumentationBuilder
 import icu.windea.pls.core.documentation.buildDocumentation
 import icu.windea.pls.core.documentation.buildSections
@@ -20,9 +21,9 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
-import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
@@ -46,7 +47,6 @@ import icu.windea.pls.lang.search.selector.withConstraint
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.CwtLocationExpressionManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -905,7 +905,7 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val contents = ParadoxQuickDocTextProvider.listQuickDocText(element)
+        val contents = PlsCodeInsightService.listQuickDocText(element)
         if (contents.isEmpty()) return
         contents.forEach { content { append(it) } }
     }

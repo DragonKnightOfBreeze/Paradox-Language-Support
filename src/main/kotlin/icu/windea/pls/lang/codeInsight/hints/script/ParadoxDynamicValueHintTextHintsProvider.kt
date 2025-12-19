@@ -16,6 +16,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
+import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider.*
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
@@ -81,7 +82,7 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxScriptHintsProvider<Sett
         val name = element.name
         if (name.isEmpty()) return null
         if (name.isParameterized()) return null
-        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)
     }
