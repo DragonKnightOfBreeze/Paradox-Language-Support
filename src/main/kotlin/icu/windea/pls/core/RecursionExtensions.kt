@@ -7,8 +7,8 @@ import com.intellij.openapi.util.StackOverflowPreventedException
 /**
  * 执行一段代码，并通过 [SmartRecursionGuard] 尝试避免递归导致的堆栈溢出。
  *
- * - 为当前线程维护一个命名的递归守卫实例（见 [SmartRecursionGuard.cache]）；
- * - 捕获 [StackOverflowError] 与 [StackOverflowPreventedException] 并返回 `null`；
+ * - 为当前线程维护一个命名的递归守卫实例。
+ * - 捕获 [StackOverflowError] 与 [StackOverflowPreventedException] 并返回 `null`。
  * - 调用方可在 [action] 内使用 [SmartRecursionGuard.withRecursionCheck] 做细粒度的重入检测。
  */
 fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
