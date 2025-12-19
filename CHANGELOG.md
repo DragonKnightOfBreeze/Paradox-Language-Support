@@ -12,6 +12,9 @@
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
 - [x] #243 生成本地化时，某些缺失的本地化未被包含
 - [ ] #244 IDE lags and crashes involves to recursive invication of inline script in a specific situation, possible SOF
+- [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
+- [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:xxx = {...}` ） / NEW: Support the injection syntax in VIC3 and EU5 (e.g., `inject:xxx = {...}`)
+- [ ] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.txt#some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.txt#some/property`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.7
