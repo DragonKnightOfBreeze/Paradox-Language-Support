@@ -1,0 +1,6 @@
+inline_script = {
+    script = meta/repeat_script_select
+    TARGET_SCRIPT = $TARGET_SCRIPT$
+    SELECTOR = @[ -1 * ((-1 * (($NUM$*$NUM$) / (($NUM$*$NUM$)+1))) - ((((-1 * (($NUM$*$NUM$) / (($NUM$*$NUM$)+1))) % 1) + 1) % 1)) ]
+    NUM = $NUM$
+}

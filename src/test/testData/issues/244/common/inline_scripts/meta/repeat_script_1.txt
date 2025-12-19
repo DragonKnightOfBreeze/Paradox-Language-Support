@@ -1,0 +1,10 @@
+inline_script = {
+    script = $TARGET_SCRIPT$
+    NUM = $NUM$
+}
+
+inline_script = {
+    script = meta/repeat_script
+    TARGET_SCRIPT = $TARGET_SCRIPT$
+    NUM = @[ $NUM$ - 1 ]
+}

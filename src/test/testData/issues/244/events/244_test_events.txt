@@ -1,0 +1,15 @@
+event = {
+    id = test.10
+    hide_window = yes
+    is_triggered_only = yes
+
+    immediate = {
+        log = "running script test"
+        inline_script = {
+            script = meta/repeat_script
+            TARGET_SCRIPT = meta/test_script
+            NUM = 5
+        }
+        log = "finished script test"
+    }
+}

@@ -1,0 +1,5 @@
+inline_script = {
+    script = meta/repeat_script_$SELECTOR$
+    TARGET_SCRIPT = $TARGET_SCRIPT$
+    NUM = $NUM$
+}
