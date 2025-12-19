@@ -34,7 +34,7 @@ Reference links:
 
 After you change the settings, PLS will automatically clone and pull these config groups from the configured remote repositories.
 
-#### Local Config Groups {#config-group-local}
+#### Global Local Config Groups {#config-group-local}
 
 - Location: `{configDir}/{gameType}`
 - `{configDir}` is the parent directory that contains all global local config group directories and can be customized in the plugin settings.

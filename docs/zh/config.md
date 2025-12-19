@@ -19,33 +19,33 @@ PLS 基于由 CWT 规则文件组成的规则分组，实现了诸多语言功�
 
 ### 来源 {#config-group-sources}
 
-#### 内置的规则分组 {#config-group-builtin}
+#### 内置规则分组 {#config-group-builtin}
 
 - 位置：`config/{gameType}`
 - 位于插件压缩包中的插件 jar 包中。
 - `{gameType}` 为游戏类型 ID[^1]，对于共享的规则分组则为 `core`。
 - 共享的内置规则分组总是会被启用。
 
-#### 远程的规则分组 {#config-group-remote}
+#### 远程规则分组 {#config-group-remote}
 
 - 位置：`{configDir}/{dirName}`
-- `{configDir}` 为包含所有远程的规则分组目录的父目录，可在插件设置页面中自定义。
+- `{configDir}` 为包含所有远程规则分组目录的父目录，可在插件设置页面中自定义。
 - `{dirName}` 为仓库目录的名字，对于共享的规则分组则为 `core`。
 
 更改配置后，PLS 会自动从配置的远程仓库中克隆和拉取这些规则分组。
 
-#### 本地的规则分组 {#config-group-local}
+#### 全局的本地规则分组 {#config-group-local}
 
 - 位置：`{configDir}/{gameType}`
-- `{configDir}` 为包含所有本地的规则分组目录的父目录，可在插件设置页面中自定义。
+- `{configDir}` 为包含所有本地规则分组目录的父目录，可在插件设置页面中自定义。
 - `{gameType}` 为游戏类型 ID[^1]，对于共享的规则分组则为 `core`。
 
 其中的规则文件由用户自定义，适用于所有项目。对它们的更改需要手动确认导入。
 
-#### 项目本地的规则分组 {#config-group-project-local}
+#### 项目的本地规则分组 {#config-group-project-local}
 
 - 位置：`{configDirName}/{gameType}`
-- `{configDirName}` 为项目本地的规则目录的名字，直接位于项目根目录下，默认为 `.config`，可在插件设置页面中自定义。
+- `{configDirName}` 为项目的本地规则目录的名字，直接位于项目根目录下，默认为 `.config`，可在插件设置页面中自定义。
 - `{gameType}` 为游戏类型 ID[^1]，对于共享的规则分组则为 `core`。
 
 其中的规则文件由用户自定义，仅适用于当前项目。对它们的更改需要手动确认导入。
@@ -54,7 +54,7 @@ PLS 基于由 CWT 规则文件组成的规则分组，实现了诸多语言功�
 
 规则会按照文件路径和规则 ID 进行后序覆盖。
 
-读取规则时，插件会依次遍历内置的规则分组、本地的规则分组以及项目本地的规则分组。
+读取规则时，插件会依次遍历内置规则分组、全局的本地规则分组以及项目的本地规则分组。
 共享的规则分组由所有游戏类型共享，会在对应游戏类型的规则分组之前被遍历。
 
 例如，如果你在项目根目录下的规则文件 `.config/stellaris/modifiers.cwt` 中编写了自定义的规则，它将完全覆盖插件内置的修正规则。
@@ -103,8 +103,8 @@ prop = {
 
 ### 导入规则文件 {#import-config-files}
 
-你可以选择启用[远程的规则分组](#config-group-remote)，其中的规则文件来自各个远程规则仓库。
-或者，你也可以选择启用[本地的规则分组](#config-group-local)或[项目本地的规则分组](#config-group-project-local)，并在对应的规则目录下编写自定义规则文件。  
+你可以选择启用[远程规则分组](#config-group-remote)，其中的规则文件来自各个远程规则仓库。
+或者，你也可以选择启用[本地规则分组](#config-group-local)或[项目的本地规则分组](#config-group-project-local)，并在对应的规则目录下编写自定义规则文件。  
 这些文件可用于完善插件内置的规则，或是增强插件功能。
 
 当检测到有变更时，编辑器右上角的悬浮工具栏会出现刷新按钮。  

@@ -20,8 +20,8 @@ class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State
     }
 
     /**
-     * @property enableBuiltInConfigGroups 是否启用内置的规则分组。
-     * @property enableRemoteConfigGroups 是否启用远程的规则分组（不建议与内置的规则分组同时启用）。
+     * @property enableBuiltInConfigGroups 是否启用内置规则分组（共享的内置规则分组总是会被启用）。
+     * @property enableRemoteConfigGroups 是否启用远程规则分组（不建议与内置规则分组同时启用）。
      * @property remoteConfigDirectory 远程规则分组所在的根目录。
      * @property configRepositoryUrls 远程规则分组的仓库地址。
      * @property enableLocalConfigGroups 是否启用全局的本地规则分组。

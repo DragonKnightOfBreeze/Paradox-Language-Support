@@ -39,6 +39,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindSelected(settings::enableBuiltInConfigGroups)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
+                comment(PlsBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
             // enableRemoteConfigGroups
             row {
@@ -47,7 +48,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                     .applyToComponent { cbRemote = this }
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
-                comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment", MAX_LINE_LENGTH_WORD_WRAP))
+                comment(PlsBundle.message("settings.config.enableRemoteConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
             // remoteConfigDirectory
             row {

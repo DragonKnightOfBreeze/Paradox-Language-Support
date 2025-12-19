@@ -89,7 +89,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 }
 
 /**
- * 用于提供插件内置的规则分组。
+ * 用于提供插件的内置规则分组。
  *
  * 位置：`config/{gameType}`
  *
@@ -120,7 +120,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 }
 
 /**
- * 用于提供来自远程仓库的规则分组。
+ * 用于提供远程规则分组。来自远程规则仓库。
  *
  * 位置：`{remoteConfigDirectory}/{directoryName}`
  *
@@ -228,7 +228,7 @@ class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 }
 
 /**
- * 可在单元测试中使用的规则分组。
+ * 用于提供可在单元测试中使用的规则分组。
  *
  * 位置：`config/{gameType}`
  *
