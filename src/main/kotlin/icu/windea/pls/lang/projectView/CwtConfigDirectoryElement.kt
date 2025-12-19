@@ -19,7 +19,7 @@ class CwtConfigDirectoryElement(
         fileProviders.forEach f@{ fileProvider ->
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val relativePaths = "$directoryName/$path".split('/').toTypedArray()
             val file = VfsUtil.findRelativeFile(rootDirectory, *relativePaths) ?: return@f
             if (file.isDirectory) roots += file

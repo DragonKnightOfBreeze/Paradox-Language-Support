@@ -41,6 +41,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.enableBuiltInConfigGroups.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
+
             // enableRemoteConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
@@ -88,6 +89,13 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .onReset { list = defaultList }
                     .onIsModified { list != defaultList }
             }.enabledIf(cbRemote.selected)
+            // overrideBuiltIn
+            row {
+                checkBox(PlsBundle.message("settings.config.overrideBuiltIn"))
+                    .bindSelected(settings::overrideBuiltIn)
+                    .onApply { PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock) }
+            }.enabledIf(cbRemote.selected)
+
             // enableLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
@@ -108,6 +116,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .align(Align.FILL)
                     .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             }.enabledIf(cbLocal.selected)
+
             // enableProjectLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))

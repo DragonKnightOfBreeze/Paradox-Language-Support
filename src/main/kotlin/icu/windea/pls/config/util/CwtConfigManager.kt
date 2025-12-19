@@ -23,6 +23,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupSource
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.matchesAntPattern
@@ -128,7 +129,7 @@ object CwtConfigManager {
 
     fun getBuiltInConfigRootDirectories(project: Project): List<VirtualFile> {
         return CwtConfigGroupFileProvider.EP_NAME.extensionList
-            .filter { it.type == CwtConfigGroupFileProvider.Type.BuiltIn }
+            .filter { it.source == CwtConfigGroupSource.BuiltIn }
             .mapNotNull { it.getRootDirectory(project) }
     }
 
@@ -160,7 +161,7 @@ object CwtConfigManager {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val directory = rootDirectory.findChild(directoryName) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, directory) ?: return@f
             return relativePath

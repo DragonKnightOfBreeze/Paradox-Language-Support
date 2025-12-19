@@ -24,6 +24,7 @@ class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State
      * @property enableRemoteConfigGroups 是否启用远程规则分组（不建议与内置规则分组同时启用）。
      * @property remoteConfigDirectory 远程规则分组所在的根目录。
      * @property configRepositoryUrls 远程规则分组的仓库地址。
+     * @property overrideBuiltIn 如果远程仓库地址已配置，覆盖相关的内置规则分组。
      * @property enableLocalConfigGroups 是否启用全局的本地规则分组。
      * @property localConfigDirectory 全局的本地规则分组所在的根目录。
      * @property enableProjectLocalConfigGroups 是否启用项目的本地规则分组。
@@ -34,6 +35,7 @@ class PlsConfigSettings : SimplePersistentStateComponent<PlsConfigSettings.State
         var enableRemoteConfigGroups by property(false)
         var remoteConfigDirectory by string()
         var configRepositoryUrls by map<String, String>()
+        var overrideBuiltIn by property(false)
         var enableLocalConfigGroups by property(true)
         var localConfigDirectory by string()
         var enableProjectLocalConfigGroups by property(true)

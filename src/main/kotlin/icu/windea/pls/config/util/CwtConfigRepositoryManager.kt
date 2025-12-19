@@ -98,7 +98,7 @@ object CwtConfigRepositoryManager {
         val settings = PlsConfigSettings.getInstance().state
         val valid = settings.enableRemoteConfigGroups
             && settings.remoteConfigDirectory.isNotNullOrEmpty()
-            && settings.configRepositoryUrls.values.any { it.isNotNullOrEmpty() }
+            && settings.configRepositoryUrls.isNotEmpty()
         return valid
     }
 

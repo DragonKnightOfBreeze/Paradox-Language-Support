@@ -33,7 +33,7 @@ class CwtConfigGameElementNode(
         fileProviders.forEach f@{ fileProvider ->
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
             if (!nodeFile.isDirectory) return@f
             if (nodeFile == file) return true
@@ -47,7 +47,7 @@ class CwtConfigGameElementNode(
         fileProviders.forEach f@{ fileProvider ->
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
             if (!nodeFile.isDirectory) return@f
             if (VfsUtil.isAncestor(nodeFile, file, false)) return true
@@ -64,7 +64,7 @@ class CwtConfigGameElementNode(
         fileProviders.forEach f@{ fileProvider ->
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val nodeFile = VfsUtil.findRelativeFile(rootDirectory, directoryName) ?: return@f
             if (!nodeFile.isDirectory) return@f
             nodeFile.children.forEach { file ->

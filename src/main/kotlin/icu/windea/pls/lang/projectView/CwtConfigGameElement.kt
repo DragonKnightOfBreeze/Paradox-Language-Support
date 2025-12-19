@@ -17,7 +17,7 @@ class CwtConfigGameElement(
         fileProviders.forEach f@{ fileProvider ->
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
             val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
             if (nodeFile.isDirectory) roots += nodeFile
         }

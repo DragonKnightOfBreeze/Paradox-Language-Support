@@ -38,7 +38,9 @@ import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
+import icu.windea.pls.config.configGroup.CwtConfigGroupSource
 import icu.windea.pls.config.optimizedPath
+import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigResolverUtil
 import icu.windea.pls.core.collections.FastList
@@ -46,8 +48,12 @@ import icu.windea.pls.core.collections.FastMap
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.Tuple3
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
+import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -68,38 +74,48 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvidersAndRootDirectories = mutableMapOf<CwtConfigGroupFileProvider, VirtualFile>()
         readAction {
-            fileProviders.forEach f@{ fileProvider ->
+            for (fileProvider in fileProviders) {
                 currentCoroutineContext.ensureActive()
-                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: return@f
+                val rootDirectory = fileProvider.getRootDirectory(configGroup.project) ?: continue
                 fileProvidersAndRootDirectories[fileProvider] = rootDirectory
             }
         }
 
         currentCoroutineContext.ensureActive()
-        val allInternalFiles = mutableMapOf<String, VirtualFile>()
-        val allFiles = mutableMapOf<String, VirtualFile>()
+        val allInternalFiles = mutableListOf<Tuple2<String, VirtualFile>>()
+        val allFiles = mutableListOf<Tuple3<String, VirtualFile, CwtConfigGroupSource>>()
         readAction {
             fileProvidersAndRootDirectories.all { (fileProvider, rootDirectory) ->
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) p@{ filePath, file ->
                     if (filePath.startsWith("internal/")) {
-                        if (fileProvider.type != CwtConfigGroupFileProvider.Type.BuiltIn) return@p true // 不允许覆盖内部规则文件
-                        allInternalFiles.putIfAbsent(filePath, file)
-                        return@p true
+                        if (fileProvider.source != CwtConfigGroupSource.BuiltIn) return@p true // 不允许覆盖内部规则文件
+                        allInternalFiles.add(tupleOf(filePath, file))
+                    } else {
+                        allFiles.add(tupleOf(filePath, file, fileProvider.source))
                     }
-                    allFiles[filePath] = file
                     true
                 }
             }
         }
+
+        val overrideBuiltIn = configGroup.gameType != ParadoxGameType.Core
+            && PlsConfigSettings.getInstance().state.overrideBuiltIn
+            && allFiles.any { it.third == CwtConfigGroupSource.Remote }
+        if (overrideBuiltIn) allFiles.removeIf { it.third == CwtConfigGroupSource.BuiltIn }
+
+        val internalFileKeys = mutableSetOf<String>()
+        val fileKeys = mutableSetOf<String>()
         readAction {
             try {
-                allInternalFiles.forEach f@{ (filePath, file) ->
+                for ((filePath, file) in allInternalFiles) {
+                    if (!internalFileKeys.add(filePath)) continue
                     currentCoroutineContext.ensureActive()
                     CwtConfigResolverUtil.setLocation(filePath, configGroup)
                     resolveAndProcessInternalFile(configGroup, file, filePath)
                 }
-                allFiles.forEach f@{ (filePath, file) ->
+                for ((filePath, file) in allFiles) {
+                    if (!fileKeys.add(filePath)) continue
                     currentCoroutineContext.ensureActive()
                     CwtConfigResolverUtil.setLocation(filePath, configGroup)
                     resolveAndProcessFile(configGroup, file, filePath)
@@ -161,7 +177,7 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for (config in configs) {
                         val localeConfig = CwtLocaleConfig.resolve(config)
                         initializer.localisationLocalesById[localeConfig.id] = localeConfig
-                        localeConfig.codes.forEach { code ->
+                        for (code in localeConfig.codes) {
                             initializer.localisationLocalesByCode[code] = localeConfig
                         }
                     }

@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFileVisitor
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupSource
 import icu.windea.pls.config.settings.PlsConfigSettings
 import icu.windea.pls.config.util.CwtConfigRepositoryManager
 import icu.windea.pls.core.normalizePath
@@ -28,24 +29,26 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        // 已启用，或者是内置且共享的规则分组
-        if (!isEnabled && type != CwtConfigGroupFileProvider.Type.BuiltIn) return true
         doProcessInRootDirectory(configGroup, rootDirectory, consumer)
         return true
     }
 
     private fun doProcessInRootDirectory(configGroup: CwtConfigGroup, rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
+        if (!isEnabled && source != CwtConfigGroupSource.BuiltIn) return
         if (!rootDirectory.isDirectory) return
-        val configDirectories = mutableSetOf<VirtualFile>()
         val gameType = configGroup.gameType
         val project = configGroup.project
-        val coreDirectoryName = getDirectoryName(project, ParadoxGameType.Core)
-        rootDirectory.findChild(coreDirectoryName)?.let { configDirectories.add(it) }
-        if (isEnabled && gameType != ParadoxGameType.Core) {
-            val directoryName = getDirectoryName(project, gameType)
-            rootDirectory.findChild(directoryName)?.let { configDirectories.add(it) }
+        run {
+            val coreDirectoryName = getDirectoryName(project, ParadoxGameType.Core) ?: return@run
+            val coreDirectory = rootDirectory.findChild(coreDirectoryName) ?: return@run
+            doProcessInConfigDirectory(coreDirectory, consumer)
         }
-        configDirectories.forEach { configDirectory -> doProcessInConfigDirectory(configDirectory, consumer) }
+        run {
+            if (!isEnabled || gameType == ParadoxGameType.Core) return@run
+            val directoryName = getDirectoryName(project, gameType) ?: return@run
+            val directory = rootDirectory.findChild(directoryName) ?: return@run
+            doProcessInConfigDirectory(directory, consumer)
+        }
     }
 
     private fun doProcessInConfigDirectory(configDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
@@ -73,7 +76,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
         val gameType = configGroup.gameType
-        val isBuiltIn = type == CwtConfigGroupFileProvider.Type.BuiltIn
+        val isBuiltIn = source == CwtConfigGroupSource.BuiltIn
         val isShared = gameType != ParadoxGameType.Core
         val title = when {
             isShared -> PlsBundle.message("configGroup.title.shared", messageIndex)
@@ -101,7 +104,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
-    override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
+    override val source get() = CwtConfigGroupSource.BuiltIn
 
     override val isEnabled get() = PlsConfigSettings.getInstance().state.enableBuiltInConfigGroups
 
@@ -133,7 +136,7 @@ class CwtBuiltInConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * @see CwtConfigRepositoryManager
  */
 class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override val type get() = CwtConfigGroupFileProvider.Type.Remote
+    override val source get() = CwtConfigGroupSource.Remote
 
     override val isEnabled get() = PlsConfigSettings.getInstance().state.enableRemoteConfigGroups
 
@@ -149,14 +152,12 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return file?.takeIf { it.isDirectory }
     }
 
-    override fun getDirectoryName(project: Project, gameType: ParadoxGameType): String {
+    override fun getDirectoryName(project: Project, gameType: ParadoxGameType): String? {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == ParadoxGameType.Core) return "core"
         val fromConfig = PlsConfigSettings.getInstance().state.configRepositoryUrls[gameType.id]?.orNull()
             ?.let { PlsGitService.getRepositoryPathFromUrl(it) }
-        if (fromConfig != null) return fromConfig
-        val fromDefault = CwtConfigRepositoryManager.getDefaultDirectoryName(gameType)
-        return fromDefault
+        return fromConfig
     }
 
     override fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
@@ -181,7 +182,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
 class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override val type get() = CwtConfigGroupFileProvider.Type.Local
+    override val source get() = CwtConfigGroupSource.Local
 
     override val isEnabled get() = PlsConfigSettings.getInstance().state.enableLocalConfigGroups
 
@@ -209,7 +210,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{gameType}` 为游戏类型 ID，对于共享的规则分组则为 `core`。
  */
 class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override val type get() = CwtConfigGroupFileProvider.Type.Local
+    override val source get() = CwtConfigGroupSource.Local
 
     override val isEnabled get() = PlsConfigSettings.getInstance().state.enableProjectLocalConfigGroups
 
@@ -238,7 +239,7 @@ class CwtProjectConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class CwtTestConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
-    override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
+    override val source get() = CwtConfigGroupSource.BuiltIn
 
     override val isEnabled get() = PlsFacade.isUnitTestMode()
 
