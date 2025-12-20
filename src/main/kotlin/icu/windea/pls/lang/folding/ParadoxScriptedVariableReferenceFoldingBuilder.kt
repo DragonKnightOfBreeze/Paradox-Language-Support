@@ -12,6 +12,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
@@ -34,11 +35,16 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
         val foldingGroup = Constants.FOLDING_GROUP
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+            var inInlineMath = false
+
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
                 // optimize performance
+                if (element is ParadoxScriptInlineMath) {
+                    inInlineMath = true
+                }
                 val r = when (element.language) {
-                    ParadoxScriptLanguage -> ParadoxScriptPsiUtil.isMemberContextElement(element)
+                    ParadoxScriptLanguage -> inInlineMath || ParadoxScriptPsiUtil.isMemberContextElement(element)
                     ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContextElement(element)
                     else -> false
                 }
@@ -50,6 +56,12 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                 val resolvedValue = referenceValue.value
                 val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, resolvedValue)
                 allDescriptors.add(descriptor)
+            }
+
+            override fun elementFinished(element: PsiElement?) {
+                if (element is ParadoxScriptInlineMath) {
+                    inInlineMath = false
+                }
             }
         })
         return allDescriptors.toTypedArray()
