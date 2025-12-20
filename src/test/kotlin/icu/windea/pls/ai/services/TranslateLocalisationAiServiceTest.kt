@@ -7,6 +7,7 @@ import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -40,7 +41,7 @@ class TranslateLocalisationAiServiceTest : BasePlatformTestCase() {
     private fun doTest() {
         myFixture.configureByFile("ai/wilderness_l_simp_chinese_stellaris.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
-        val elements = ParadoxLocalisationManipulator.buildSequence(file)
+        val elements = ParadoxPsiSequenceBuilder.localisations(file)
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
         val request = TranslateLocalisationAiRequest(file.project, file, contexts, CwtLocaleConfig.resolveFallback(), null)
         val aiService = TranslateLocalisationAiService.getInstance()

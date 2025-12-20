@@ -6,6 +6,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
 import icu.windea.pls.ai.providers.ChatModelManager
 import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -39,7 +40,7 @@ class PolishLocalisationAiServiceTest : BasePlatformTestCase() {
     private fun doTest() {
         myFixture.configureByFile("ai/wilderness_l_simp_chinese_stellaris.test.yml")
         val file = myFixture.file as ParadoxLocalisationFile
-        val elements = ParadoxLocalisationManipulator.buildSequence(file)
+        val elements = ParadoxPsiSequenceBuilder.localisations(file)
         val contexts = runReadAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
         val description = "用华丽而夸张的文字，强调生体荒野（即共生智能）是完美的"
         val request = PolishLocalisationAiRequest(file.project, file, contexts, description)
