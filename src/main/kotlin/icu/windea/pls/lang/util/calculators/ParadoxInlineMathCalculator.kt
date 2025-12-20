@@ -12,7 +12,6 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxInlineMathCalculator {
     data class Argument(
@@ -52,14 +51,7 @@ class ParadoxInlineMathCalculator {
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull() ?: return
                         val resolvedValue = element.resolved()?.scriptedVariableValue
-                        val defaultValue = run {
-                            val v1 = resolvedValue?.value
-                            if (!v1.isNullOrBlank()) return@run v1
-                            if (!id.all { it.isLetterOrDigit() || it == '_' }) return@run ""
-                            val file = element.containingFile ?: return@run ""
-                            val local = PsiTreeUtil.findChildrenOfType(file, ParadoxScriptScriptedVariable::class.java).firstOrNull { it.name == id }
-                            local?.value.orEmpty()
-                        }
+                        val defaultValue = resolvedValue?.value.orEmpty()
                         result[expression] = Argument(expression, id, defaultValue)
                     }
                 }

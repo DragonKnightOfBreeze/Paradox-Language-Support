@@ -2,9 +2,12 @@ package icu.windea.pls.lang.util.calculators
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -141,6 +144,8 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
     @Test
     fun simpleWithSv() {
         myFixture.configureByFile("features/calculators/calculator_simple_with_sv.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_simple_with_sv.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val calculator = ParadoxInlineMathCalculator()
