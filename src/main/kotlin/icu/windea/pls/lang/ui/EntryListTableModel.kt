@@ -22,6 +22,10 @@ class EntryListTableModel<K, V>(
 ) : ListTableModel<Entry<K, V>>(
     arrayOf(
         object : ColumnInfo<Entry<K, V>, String>("") {
+            override fun isCellEditable(item: Entry<K, V>?): Boolean {
+                return keySetter != null
+            }
+
             override fun getName(): String {
                 return keyName
             }
@@ -34,12 +38,12 @@ class EntryListTableModel<K, V>(
                 if (keySetter == null) return
                 item.key = keySetter(value)
             }
-
-            override fun isCellEditable(item: Entry<K, V>?): Boolean {
-                return keySetter != null
-            }
         },
         object : ColumnInfo<Entry<K, V>, String>("") {
+            override fun isCellEditable(item: Entry<K, V>?): Boolean {
+                return valueSetter != null
+            }
+
             override fun getName(): String {
                 return valueName
             }
@@ -51,10 +55,6 @@ class EntryListTableModel<K, V>(
             override fun setValue(item: Entry<K, V>, value: String) {
                 if (valueSetter == null) return
                 item.value = valueSetter(value)
-            }
-
-            override fun isCellEditable(item: Entry<K, V>?): Boolean {
-                return valueSetter != null
             }
         }
     ),

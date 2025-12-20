@@ -4,7 +4,7 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.modcommand.ActionContext
 import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.PsiBasedModCommandAction
-import com.intellij.openapi.application.UI
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.DumbAware
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -21,7 +21,7 @@ class CalculateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlin
         val project = context.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            withContext(Dispatchers.UI) {
+            withContext(Dispatchers.EDT) {
                 val dialog = ParadoxInlineMathCalculatorDialog(project, element)
                 dialog.show()
             }
@@ -30,6 +30,6 @@ class CalculateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlin
     }
 
     override fun generatePreview(context: ActionContext?, element: ParadoxScriptInlineMath?): IntentionPreviewInfo {
-        return IntentionPreviewInfo.EMPTY
+        return IntentionPreviewInfo.Html(PlsBundle.message("intention.calculateInlineMath.desc"))
     }
 }

@@ -4,7 +4,9 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.TableSpeedSearch
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
@@ -15,8 +17,10 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import java.awt.Dimension
+import javax.swing.DefaultCellEditor
 import javax.swing.JComponent
 import javax.swing.JTextArea
+import javax.swing.table.TableCellEditor
 
 class ParadoxInlineMathCalculatorDialog(
     val project: Project,
@@ -29,6 +33,8 @@ class ParadoxInlineMathCalculatorDialog(
     private var currentOutputText: String = ""
 
     private lateinit var resultTextArea: JTextArea
+
+    val result: String get() = currentOutputText
 
     init {
         title = PlsBundle.message("ui.dialog.calculator.inlineMath.title")
@@ -49,6 +55,13 @@ class ParadoxInlineMathCalculatorDialog(
             // default show 5 rows height
             preferredScrollableViewportSize = Dimension(-1, rowHeight * 5)
         }
+
+        // 快速搜索
+        TableSpeedSearch.installOn(table) { e ->
+            val element = e as ParadoxInlineMathCalculator.Argument
+            element.expression
+        }
+
         val tablePane = JBScrollPane(table)
 
         val panel = panel {
@@ -137,12 +150,16 @@ class ParadoxInlineMathCalculatorDialog(
                 override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.expression
             },
             object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.value")) {
-                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.value
-
                 override fun isCellEditable(item: ParadoxInlineMathCalculator.Argument?): Boolean = true
+
+                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.value
 
                 override fun setValue(item: ParadoxInlineMathCalculator.Argument, value: String?) {
                     item.value = value.orEmpty()
+                }
+
+                override fun getEditor(item: ParadoxInlineMathCalculator.Argument?): TableCellEditor {
+                    return DefaultCellEditor(JBTextField())
                 }
             },
             object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.defaultValue")) {

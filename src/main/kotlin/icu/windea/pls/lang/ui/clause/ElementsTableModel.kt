@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.ui.clause
 
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.ComboBoxTableRenderer
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.EditableModel
@@ -8,7 +7,6 @@ import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.pass
 import icu.windea.pls.model.ParadoxSeparatorType
-import javax.swing.DefaultCellEditor
 import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 
@@ -17,8 +15,8 @@ import javax.swing.table.TableCellRenderer
 class ElementsTableModel(
     val context: ElementsContext
 ) : ListTableModel<ElementDescriptor>(
-    arrayOf(NameColumn(context), SeparatorColumn(context), ValueColumn(context)),
-    context.descriptorsInfo.resultDescriptors,
+    arrayOf(NameColumn(context), SeparatorColumn(), ValueColumn(context)),
+    context.descriptorsInfo.resultDescriptors
 ), EditableModel {
     override fun addRow() {
         addRow(PropertyDescriptor())
@@ -55,7 +53,7 @@ class ElementsTableModel(
         }
     }
 
-    class SeparatorColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
+    class SeparatorColumn : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor
         }
@@ -125,7 +123,7 @@ class ElementsTableModel(
                 is PropertyDescriptor -> {
                     val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
                     val items = constantValues.ifEmpty { arrayOf("") }
-                    DefaultCellEditor(ComboBox(items))
+                    ComboBoxTableRenderer(items)
                 }
             }
         }

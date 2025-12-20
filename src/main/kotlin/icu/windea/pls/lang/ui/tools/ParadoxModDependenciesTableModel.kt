@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.ui.tools
 
+import com.intellij.ui.BooleanTableCellEditor
+import com.intellij.ui.BooleanTableCellRenderer
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 import icu.windea.pls.PlsBundle
@@ -42,33 +44,46 @@ class ParadoxModDependenciesTableModel(
 
     object EnabledItem : ColumnInfo<ParadoxModDependencySettingsState, Boolean>(PlsBundle.message("mod.dependencies.column.name.enabled")) {
         const val columnIndex = 0
-        override fun valueOf(item: ParadoxModDependencySettingsState) = item.enabled
-        override fun getColumnClass() = Boolean::class.java
 
         override fun isCellEditable(item: ParadoxModDependencySettingsState) = true
+
+        override fun valueOf(item: ParadoxModDependencySettingsState) = item.enabled
+
+        override fun getColumnClass() = Boolean::class.java
+
         override fun setValue(item: ParadoxModDependencySettingsState, value: Boolean) {
             item.enabled = value
         }
+
+        override fun getRenderer(item: ParadoxModDependencySettingsState) = BooleanTableCellRenderer()
+
+        override fun getEditor(item: ParadoxModDependencySettingsState) = BooleanTableCellEditor()
     }
 
     object NameItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.name.name")) {
         const val columnIndex = 1
-        private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.name.orEmpty() }
+        private val defaultComparator = compareBy<ParadoxModDependencySettingsState> { item -> item.name.orEmpty() }
+
         override fun valueOf(item: ParadoxModDependencySettingsState) = item.name.orEmpty()
-        override fun getComparator() = _comparator
+
+        override fun getComparator() = defaultComparator
     }
 
     object VersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.version.name")) {
         const val columnIndex = 2
-        private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.version.orEmpty() }
+        private val defaultComparator = compareBy<ParadoxModDependencySettingsState> { item -> item.version.orEmpty() }
+
         override fun valueOf(item: ParadoxModDependencySettingsState) = item.version.orEmpty()
-        override fun getComparator() = _comparator
+
+        override fun getComparator() = defaultComparator
     }
 
     object SupportedVersionItem : ColumnInfo<ParadoxModDependencySettingsState, String>(PlsBundle.message("mod.dependencies.column.supportedVersion.name")) {
         const val columnIndex = 3
-        private val _comparator = compareBy<ParadoxModDependencySettingsState> { item -> item.supportedVersion.orEmpty() }
+        private val defaultComparator = compareBy<ParadoxModDependencySettingsState> { item -> item.supportedVersion.orEmpty() }
+
         override fun valueOf(item: ParadoxModDependencySettingsState) = item.supportedVersion.orEmpty()
-        override fun getComparator() = _comparator
+
+        override fun getComparator() = defaultComparator
     }
 }

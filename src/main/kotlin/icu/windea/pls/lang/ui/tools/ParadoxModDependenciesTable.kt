@@ -6,8 +6,6 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
-import com.intellij.ui.BooleanTableCellEditor
-import com.intellij.ui.BooleanTableCellRenderer
 import com.intellij.ui.DoubleClickListener
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.TableSpeedSearch
@@ -93,14 +91,13 @@ class ParadoxModDependenciesTable(
             val fontMetrics = table.getFontMetrics(table.font)
             val headerGap = JBUIScale.scale(20)
 
+            // 调整尺寸
             run {
                 val columnInfo = ParadoxModDependenciesTableModel.EnabledItem
                 val column = table.columnModel.getColumn(columnInfo.columnIndex)
                 val columnWidth = fontMetrics.stringWidth(columnInfo.name) + headerGap
                 column.preferredWidth = columnWidth
                 column.minWidth = columnWidth
-                column.cellRenderer = BooleanTableCellRenderer()
-                column.cellEditor = BooleanTableCellEditor()
             }
             run {
                 val columnInfo = ParadoxModDependenciesTableModel.NameItem
@@ -123,7 +120,6 @@ class ParadoxModDependenciesTable(
             }
 
             // 快速搜索
-
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
                 val modDirectory = element.modDirectory.orEmpty()
