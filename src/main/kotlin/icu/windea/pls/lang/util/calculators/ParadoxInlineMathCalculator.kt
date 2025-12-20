@@ -100,7 +100,7 @@ class ParadoxInlineMathCalculator {
 
             val defaultValue = argument.defaultValue.trim()
             if (defaultValue.isNotEmpty()) {
-                // 这里的默认值用于展示，因此可能是无效值
+                // 这里的默认值是用于展示的，因此可以是无效值
                 if (parseNumberOrNull(defaultValue) != null) {
                     argument.value = defaultValue
                 }

@@ -54,7 +54,7 @@ class ParadoxInlineMathCalculatorDialog(
     }
 
     override fun createCenterPanel(): DialogPanel {
-        val expressionText = getInlineExpressionText(element)
+        val expressionText = getExpressionText(element)
         val inlineMathPrefix = "@[ "
         val inlineMathSuffix = " ]"
         val inlineMathText = inlineMathPrefix + expressionText + inlineMathSuffix
@@ -62,16 +62,7 @@ class ParadoxInlineMathCalculatorDialog(
         val expressionField = EditorTextField(expressionDocument, project, ParadoxScriptFileType, true, true).apply {
             setPreferredWidth(PREFERRED_TEXT_WIDTH)
             addSettingsProvider { editor ->
-                // 不显示折叠边栏，避免用户看到“被折叠”但又不知道发生了什么
-                editor.settings.isFoldingOutlineShown = false
-                editor.settings.isLineNumbersShown = false
-                editor.settings.isLineMarkerAreaShown = false
-                editor.settings.isIndentGuidesShown = false
-                editor.settings.isCaretRowShown = false
-                editor.settings.isRightMarginShown = false
-                editor.settings.additionalColumnsCount = 0
-                editor.settings.additionalLinesCount = 0
-
+                // 折叠前后缀，不显示
                 editor.foldingModel.runBatchFoldingOperation {
                     editor.foldingModel.clearFoldRegions()
                     editor.foldingModel.addFoldRegion(0, inlineMathPrefix.length, "")?.apply { isExpanded = false }
@@ -159,7 +150,7 @@ class ParadoxInlineMathCalculatorDialog(
         }
     }
 
-    private fun getInlineExpressionText(element: ParadoxScriptInlineMath): String {
+    private fun getExpressionText(element: ParadoxScriptInlineMath): String {
         val tokenText = element.tokenElement?.text?.trim().orEmpty()
         if (tokenText.startsWith("@[")) {
             val noPrefix = tokenText.removePrefix("@[")
