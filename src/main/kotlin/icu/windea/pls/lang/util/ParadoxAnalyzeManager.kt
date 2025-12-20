@@ -15,6 +15,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -50,23 +51,22 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = rootFile.getOrPutUserData(PlsKeys.cachedRootInfo) { StatefulValue() }
+        val cachedRootInfo = runCatchingCancelable {
+            rootFile.getOrPutUserData(PlsKeys.cachedRootInfo) { StatefulValue() }
+        }.getOrNull() ?: return null
         if (cachedRootInfo.isInitialized) return cachedRootInfo.value
         synchronized(cachedRootInfo) {
             if (cachedRootInfo.isInitialized) return cachedRootInfo.value
-            try {
+            runCatchingCancelable {
                 val rootInfo = ParadoxAnalyzeService.resolveRootInfo(rootFile)
                 cachedRootInfo.value = rootInfo
                 if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                     application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                logger.warn(e)
-                cachedRootInfo.value = null
-                return null
-            }
+            }.onFailure { e -> logger.warn(e) }
+            cachedRootInfo.value = null
+            return null
         }
     }
 
@@ -95,11 +95,13 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = file.getOrPutUserData(PlsKeys.cachedFileInfo) { StatefulValue() }
+        val cachedFileInfo = runCatchingCancelable {
+            file.getOrPutUserData(PlsKeys.cachedFileInfo) { StatefulValue() }
+        }.getOrNull() ?: return null
         if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
         synchronized(cachedFileInfo) {
             if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
-            try {
+             runCatchingCancelable {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null
                 var currentFile = doGetFile(file, currentFilePath)
@@ -113,14 +115,9 @@ object ParadoxAnalyzeManager {
                     currentFilePath = currentFilePath.parent ?: break
                     currentFile = doGetFile(currentFile?.parent, currentFilePath)
                 }
-                cachedFileInfo.value = null
-                return null
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                logger.warn(e)
-                cachedFileInfo.value = null
-                return null
-            }
+             }.onFailure { e -> logger.warn(e) }
+            cachedFileInfo.value = null
+            return null
         }
     }
 
@@ -189,13 +186,19 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val cachedLocaleConfig = file.getOrPutUserData(PlsKeys.cachedLocaleConfig) { StatefulValue() }
+        val cachedLocaleConfig = runCatchingCancelable {
+            file.getOrPutUserData(PlsKeys.cachedLocaleConfig) { StatefulValue() }
+        }.getOrNull() ?: return null
         if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
         synchronized(cachedLocaleConfig) {
             if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
-            val localeConfig = ParadoxAnalyzeService.resolveLocaleConfig(file, project)
-            cachedLocaleConfig.value = localeConfig
-            return localeConfig
+            runCatchingCancelable {
+                val localeConfig = ParadoxAnalyzeService.resolveLocaleConfig(file, project)
+                cachedLocaleConfig.value = localeConfig
+                return localeConfig
+            }.onFailure { e -> logger.warn(e) }
+            cachedLocaleConfig.value = null
+            return null
         }
     }
 
