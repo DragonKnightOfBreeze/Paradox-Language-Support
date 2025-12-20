@@ -75,20 +75,21 @@ class ParadoxInlineMathCalculator {
     private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): Result {
         val arguments = resolveArguments(element)
 
-        val parameterGroups = arguments.values
-            .filter { it.expression.surroundsWith('$', '$') }
-            .groupBy { it.id }
+        // val parameterGroups = arguments.values
+        //     .filter { it.expression.surroundsWith('$', '$') }
+        //     .groupBy { it.id }
 
         for (argument in arguments.values) {
-            val id = argument.id
-            val isParameter = argument.expression.surroundsWith('$', '$')
-            val group = parameterGroups[id]
-            val isAmbiguousParameter = isParameter && (group?.count { it.expression != id } ?: 0) > 1
-            if (isAmbiguousParameter && args.containsKey(id) && !args.containsKey(argument.expression)) {
-                throw IllegalArgumentException("Ambiguous argument '$id': ${group.orEmpty().joinToString(", ") { it.expression }}")
-            }
+            // 不检查歧义参数
+            // val isParameter = argument.expression.surroundsWith('$', '$')
+            // val group = parameterGroups[argument.id]
+            // val isAmbiguousParameter = isParameter && (group?.count { it.expression != argument.id } ?: 0) > 1
+            // if (isAmbiguousParameter && args.containsKey(argument.id) && !args.containsKey(argument.expression)) {
+            //     throw IllegalArgumentException("Ambiguous argument '${argument.id}': ${group.orEmpty().joinToString(", ") { it.expression }}")
+            // }
 
-            val value = args[argument.expression]?.trim() ?: args[id]?.trim() ?: ""
+            // 优先使用带相同默认值的，其次使用不带默认值的
+            val value = args[argument.expression]?.trim() ?: args[argument.id]?.trim() ?: ""
             if (value.isNotEmpty()) {
                 if (parseNumberOrNull(value) == null) {
                     throw IllegalArgumentException("Invalid argument value for '${argument.expression}': '$value'")
@@ -99,7 +100,7 @@ class ParadoxInlineMathCalculator {
 
             val defaultValue = argument.defaultValue.trim()
             if (defaultValue.isNotEmpty()) {
-                // defaultValue is only for display; only literal default values are accepted for calculation.
+                // 这里的默认值用于展示，因此可能是无效值
                 if (parseNumberOrNull(defaultValue) != null) {
                     argument.value = defaultValue
                 }

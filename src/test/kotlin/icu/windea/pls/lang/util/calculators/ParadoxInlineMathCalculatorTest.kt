@@ -87,7 +87,7 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
         assertResult(2) { calculator.calculate(map.getValue("k1")) }
         assertResult(3) { calculator.calculate(map.getValue("k2")) }
         assertResult(3) { calculator.calculate(map.getValue("k3")) }
-        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k3"), mapOf("\$NUM$" to "1")) }
+        assertResult(2) { calculator.calculate(map.getValue("k3"), mapOf("\$NUM$" to "1")) }
         assertResult(30) { calculator.calculate(map.getValue("k3"), mapOf("\$NUM|1$" to "10", "\$NUM|2$" to "20")) }
 
         assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k4")) }
