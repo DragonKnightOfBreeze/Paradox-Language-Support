@@ -37,6 +37,55 @@ class ParadoxInlineMathCalculatorWithSvTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun overrideWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_override.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_override.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(2) { calculator.calculate(map.getValue("k1")) }
+        assertResult(3) { calculator.calculate(map.getValue("k2")) }
+    }
+
+    @Test
+    fun multiOverrideWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_multi_override.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_multi_override.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(2.5f) { calculator.calculate(map.getValue("k1")) }
+        assertResult(3) { calculator.calculate(map.getValue("k2")) }
+        assertResult(5) { calculator.calculate(map.getValue("k3")) }
+    }
+
+    @Test
+    fun crossFileNotVisibleWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_cross_file_main.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_cross_file_main.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val otherVirtualFile = myFixture.copyFileToProject(
+            "features/calculators/calculator_sv_cross_file_other.test.txt",
+            "common/calculator_sv_cross_file_other.test.txt"
+        )
+        PlsTestUtil.injectFileInfo(otherVirtualFile, "common/calculator_sv_cross_file_other.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(otherVirtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k1")) }
+    }
+
+    @Test
     fun beforeOnlyWithSv() {
         myFixture.configureByFile("features/calculators/calculator_sv_before_only.test.txt")
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_before_only.test.txt", ParadoxGameType.Stellaris)
@@ -94,55 +143,6 @@ class ParadoxInlineMathCalculatorWithSvTest : BasePlatformTestCase() {
         myFixture.configureByFile("features/calculators/calculator_sv_inline_math_recursion.test.txt")
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_inline_math_recursion.test.txt", ParadoxGameType.Stellaris)
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
-
-        val file = myFixture.file as ParadoxScriptFile
-        val map = toInlineMathMap(file)
-        val calculator = ParadoxInlineMathCalculator()
-
-        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k1")) }
-    }
-
-    @Test
-    fun overrideWithSv() {
-        myFixture.configureByFile("features/calculators/calculator_sv_override.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_override.test.txt", ParadoxGameType.Stellaris)
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
-
-        val file = myFixture.file as ParadoxScriptFile
-        val map = toInlineMathMap(file)
-        val calculator = ParadoxInlineMathCalculator()
-
-        assertResult(2) { calculator.calculate(map.getValue("k1")) }
-        assertResult(3) { calculator.calculate(map.getValue("k2")) }
-    }
-
-    @Test
-    fun multiOverrideWithSv() {
-        myFixture.configureByFile("features/calculators/calculator_sv_multi_override.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_multi_override.test.txt", ParadoxGameType.Stellaris)
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
-
-        val file = myFixture.file as ParadoxScriptFile
-        val map = toInlineMathMap(file)
-        val calculator = ParadoxInlineMathCalculator()
-
-        assertResult(2.5f) { calculator.calculate(map.getValue("k1")) }
-        assertResult(3) { calculator.calculate(map.getValue("k2")) }
-        assertResult(5) { calculator.calculate(map.getValue("k3")) }
-    }
-
-    @Test
-    fun crossFileNotVisibleWithSv() {
-        myFixture.configureByFile("features/calculators/calculator_sv_cross_file_main.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_cross_file_main.test.txt", ParadoxGameType.Stellaris)
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
-
-        val otherVirtualFile = myFixture.copyFileToProject(
-            "features/calculators/calculator_sv_cross_file_other.test.txt",
-            "common/calculator_sv_cross_file_other.test.txt"
-        )
-        PlsTestUtil.injectFileInfo(otherVirtualFile, "common/calculator_sv_cross_file_other.test.txt", ParadoxGameType.Stellaris)
-        FileBasedIndex.getInstance().requestReindex(otherVirtualFile)
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
