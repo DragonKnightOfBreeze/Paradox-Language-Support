@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.ui.calculators
 
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.EditorTextField
 import com.intellij.ui.TableSpeedSearch
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
@@ -15,6 +17,7 @@ import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
+import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import java.awt.Dimension
 import javax.swing.DefaultCellEditor
@@ -28,11 +31,18 @@ class ParadoxInlineMathCalculatorDialog(
 ) : DialogWrapper(project, true) {
     private val calculator = ParadoxInlineMathCalculator()
     private val argumentList = calculator.resolveArguments(element).values.toMutableList()
-
-    private var hasEverCalculatedSuccessfully = false
-    private var currentOutputText: String = ""
-
-    private lateinit var resultTextArea: JTextArea
+    private var initialized = false
+    private var currentOutputText = ""
+    private val resultTextArea by lazy {
+        JTextArea().apply {
+            minimumSize = Dimension(PREFERRED_TEXT_WIDTH, minimumSize.height)
+            preferredSize = Dimension(PREFERRED_TEXT_WIDTH, preferredSize.height)
+            lineWrap = true
+            wrapStyleWord = true
+            isEditable = false
+            isOpaque = false
+        }
+    }
 
     val result: String get() = currentOutputText
 
@@ -45,6 +55,30 @@ class ParadoxInlineMathCalculatorDialog(
 
     override fun createCenterPanel(): DialogPanel {
         val expressionText = getInlineExpressionText(element)
+        val inlineMathPrefix = "@[ "
+        val inlineMathSuffix = " ]"
+        val inlineMathText = inlineMathPrefix + expressionText + inlineMathSuffix
+        val expressionDocument = EditorFactory.getInstance().createDocument(inlineMathText)
+        val expressionField = EditorTextField(expressionDocument, project, ParadoxScriptFileType, true, true).apply {
+            setPreferredWidth(PREFERRED_TEXT_WIDTH)
+            addSettingsProvider { editor ->
+                // 不显示折叠边栏，避免用户看到“被折叠”但又不知道发生了什么
+                editor.settings.isFoldingOutlineShown = false
+                editor.settings.isLineNumbersShown = false
+                editor.settings.isLineMarkerAreaShown = false
+                editor.settings.isIndentGuidesShown = false
+                editor.settings.isCaretRowShown = false
+                editor.settings.isRightMarginShown = false
+                editor.settings.additionalColumnsCount = 0
+                editor.settings.additionalLinesCount = 0
+
+                editor.foldingModel.runBatchFoldingOperation {
+                    editor.foldingModel.clearFoldRegions()
+                    editor.foldingModel.addFoldRegion(0, inlineMathPrefix.length, "")?.apply { isExpanded = false }
+                    editor.foldingModel.addFoldRegion(inlineMathText.length - inlineMathSuffix.length, inlineMathText.length, "")?.apply { isExpanded = false }
+                }
+            }
+        }
 
         val tableModel = ArgumentsTableModel(argumentList)
         val table = JBTable(tableModel).apply {
@@ -52,8 +86,8 @@ class ParadoxInlineMathCalculatorDialog(
             rowSelectionAllowed = false
             columnSelectionAllowed = false
             intercellSpacing = Dimension(0, 0)
-            // default show 5 rows height
-            preferredScrollableViewportSize = Dimension(-1, rowHeight * 5)
+            val visibleRowCount = argumentList.size.coerceIn(1, PREFERRED_ARGUMENT_SIZE)
+            preferredScrollableViewportSize = Dimension(0, rowHeight * visibleRowCount)
         }
 
         // 快速搜索
@@ -62,36 +96,28 @@ class ParadoxInlineMathCalculatorDialog(
             element.expression
         }
 
-        val tablePane = JBScrollPane(table)
-
         val panel = panel {
             row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.expression")) {
-                textField()
-                    .text(expressionText)
+                cell(expressionField)
                     .align(Align.FILL)
-                    .applyToComponent { isEditable = false }
             }
 
             row {
-                cell(tablePane).align(Align.FILL)
+                val scrollPane = JBScrollPane(table)
+                cell(scrollPane)
+                    .align(Align.FILL)
             }.resizableRow()
 
             row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.result")) {
-                resultTextArea = JTextArea().apply {
-                    lineWrap = true
-                    wrapStyleWord = true
-                    isEditable = false
-                    isOpaque = false
-                }
-                cell(JBScrollPane(resultTextArea).apply { border = null }).align(Align.FILL)
+                val scrollPane = JBScrollPane().apply { setViewportView(resultTextArea) }
+                cell(scrollPane)
+                    .align(Align.FILL)
             }
-        }
+        }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
 
-        // realtime compute
-        tableModel.addTableModelListener {
-            updateResultText(initial = false)
-        }
-        updateResultText(initial = true)
+        // 实时计算
+        tableModel.addTableModelListener { updateResultText() }
+        updateResultText()
 
         return panel
     }
@@ -100,15 +126,11 @@ class ParadoxInlineMathCalculatorDialog(
         CopyPasteManager.getInstance().setContents(TextTransferable(currentOutputText as CharSequence))
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? {
-        return try {
-            resultTextArea
-        } catch (_: UninitializedPropertyAccessException) {
-            null
-        }
+    override fun getPreferredFocusedComponent(): JComponent {
+        return resultTextArea
     }
 
-    private fun updateResultText(initial: Boolean) {
+    private fun updateResultText() {
         val args = argumentList
             .mapNotNull { a ->
                 val v = a.value.trim().orNull() ?: return@mapNotNull null
@@ -116,21 +138,24 @@ class ParadoxInlineMathCalculatorDialog(
             }
             .toMap()
 
-        val output = try {
+        val output = getOutput(args)
+        resultTextArea.text = output
+        currentOutputText = output
+    }
+
+    private fun getOutput(args: Map<String, String>): String {
+        try {
             val result = calculator.calculate(element, args)
-            hasEverCalculatedSuccessfully = true
-            result.resolveValue().toString()
+            initialized = true
+            return result.resolveValue().toString()
         } catch (e: Throwable) {
             val message = e.message.orEmpty().ifEmpty { e::class.java.simpleName }
-            val isMissingArgs = e is IllegalArgumentException && message.startsWith("Missing arguments:")
-            when {
-                initial && isMissingArgs && !hasEverCalculatedSuccessfully -> ""
-                else -> message
+            if (!initialized && e is IllegalArgumentException && message.startsWith("Missing arguments:")) {
+                // 存在缺失的传参，此时仍然显示为空字符串
+                return ""
             }
-        }
-        currentOutputText = output
-        if (this::resultTextArea.isInitialized) {
-            resultTextArea.text = output
+            initialized = true
+            return message
         }
     }
 
@@ -146,7 +171,7 @@ class ParadoxInlineMathCalculatorDialog(
 
     override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathCalculatorDialog"
 
-    private class ArgumentsTableModel(items: MutableList<ParadoxInlineMathCalculator.Argument>) : ListTableModel<ParadoxInlineMathCalculator.Argument>(
+    class ArgumentsTableModel(items: MutableList<ParadoxInlineMathCalculator.Argument>) : ListTableModel<ParadoxInlineMathCalculator.Argument>(
         arrayOf(
             object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.expression")) {
                 override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.expression
@@ -170,4 +195,10 @@ class ParadoxInlineMathCalculatorDialog(
         ),
         items
     )
+
+    companion object {
+        private const val PREFERRED_DIALOG_WIDTH = 600
+        private const val PREFERRED_TEXT_WIDTH = 200
+        private const val PREFERRED_ARGUMENT_SIZE = 5
+    }
 }

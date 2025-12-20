@@ -35,7 +35,7 @@ class ParadoxInlineMathCalculator {
 
     fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, Argument> {
         val tokenElement = element.tokenElement ?: return emptyMap()
-        val result = mutableMapOf<String, Argument>()
+        val result = sortedMapOf<String, Argument>()
         buildArgumentMap(tokenElement, result)
         return result
     }
@@ -49,16 +49,18 @@ class ParadoxInlineMathCalculator {
                         val id = element.name?.trim()?.orNull()?.let { "$$it$" } ?: return
                         val defaultValue = element.defaultValue.orEmpty()
                         result[expression] = Argument(expression, id, defaultValue)
+                        if (id != expression) result[id] = Argument(id, id, defaultValue)
                     }
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
-                        val id = element.name?.trim()?.orNull() ?: return
+                        val id = element.name?.trim()?.orNull() ?: return // = expression
                         val resolvedValue = when {
                             DumbService.isDumb(tokenElement.project) -> null
                             else -> element.resolved()?.scriptedVariableValue
                         }
                         val defaultValue = resolvedValue?.text.orEmpty()
                         result[expression] = Argument(expression, id, defaultValue, resolvedValue)
+                        // if (id != expression) result[id] = Argument(id, id, defaultValue)
                     }
                 }
                 super.visitElement(element)
@@ -78,18 +80,18 @@ class ParadoxInlineMathCalculator {
             .groupBy { it.id }
 
         for (argument in arguments.values) {
-            val rawArg = args[argument.expression] ?: run {
-                val id = argument.id
-                val isAmbiguousParameter = argument.expression.surroundsWith('$', '$') && (parameterGroups[id]?.size ?: 0) > 1
-                if (isAmbiguousParameter && args.containsKey(id)) {
-                    throw IllegalArgumentException("Ambiguous argument '$id': ${parameterGroups.getValue(id).joinToString(", ") { it.expression }}")
-                }
-                args[id]
-            } ?: ""
-            val value = rawArg.trim()
+            val id = argument.id
+            val isParameter = argument.expression.surroundsWith('$', '$')
+            val group = parameterGroups[id]
+            val isAmbiguousParameter = isParameter && (group?.count { it.expression != id } ?: 0) > 1
+            if (isAmbiguousParameter && args.containsKey(id) && !args.containsKey(argument.expression)) {
+                throw IllegalArgumentException("Ambiguous argument '$id': ${group.orEmpty().joinToString(", ") { it.expression }}")
+            }
+
+            val value = args[argument.expression]?.trim() ?: args[id]?.trim() ?: ""
             if (value.isNotEmpty()) {
                 if (parseNumberOrNull(value) == null) {
-                    throw IllegalArgumentException("Invalid argument value for '${argument.expression}': '$rawArg'")
+                    throw IllegalArgumentException("Invalid argument value for '${argument.expression}': '$value'")
                 }
                 argument.value = value
                 continue
