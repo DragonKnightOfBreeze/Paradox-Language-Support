@@ -50,6 +50,59 @@ class ParadoxInlineMathCalculatorWithSvTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun inlineMathValueWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_inline_math_basic.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_inline_math_basic.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(8) { calculator.calculate(map.getValue("k1")) }
+    }
+
+    @Test
+    fun inlineMathValueWithParamWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_inline_math_with_param.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_inline_math_with_param.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k1")) }
+        assertResult(8) { calculator.calculate(map.getValue("k1"), mapOf("\$NUM$" to "2")) }
+    }
+
+    @Test
+    fun inlineMathValueMultiLevelWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_inline_math_multi_level.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_inline_math_multi_level.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(4) { calculator.calculate(map.getValue("k1")) }
+    }
+
+    @Test
+    fun inlineMathValueRecursionWithSv() {
+        myFixture.configureByFile("features/calculators/calculator_sv_inline_math_recursion.test.txt")
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_inline_math_recursion.test.txt", ParadoxGameType.Stellaris)
+        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k1")) }
+    }
+
+    @Test
     fun overrideWithSv() {
         myFixture.configureByFile("features/calculators/calculator_sv_override.test.txt")
         PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_sv_override.test.txt", ParadoxGameType.Stellaris)

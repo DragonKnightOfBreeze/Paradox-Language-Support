@@ -2,12 +2,9 @@ package icu.windea.pls.lang.util.calculators
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-import icu.windea.pls.test.PlsTestUtil
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -93,7 +90,7 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
         assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k3"), mapOf("\$NUM$" to "1")) }
         assertResult(30) { calculator.calculate(map.getValue("k3"), mapOf("\$NUM|1$" to "10", "\$NUM|2$" to "20")) }
 
-        assertResult(IllegalStateException::class.java) { calculator.calculate(map.getValue("k4")) }
+        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k4")) }
 
         assertResult(3) { calculator.calculate(map.getValue("k5"), mapOf("\$NUM|1$" to "2")) }
         assertResult(3) { calculator.calculate(map.getValue("k6"), mapOf("\$NUM$" to "2")) }

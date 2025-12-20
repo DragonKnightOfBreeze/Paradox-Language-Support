@@ -7,6 +7,7 @@ import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
+import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
@@ -18,6 +19,7 @@ class ParadoxInlineMathCalculator {
         val expression: String,
         val id: String,
         val defaultValue: String,
+        val resolvedValueElement: PsiElement? = null,
         var value: String = "",
     )
 
@@ -50,9 +52,12 @@ class ParadoxInlineMathCalculator {
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull() ?: return
-                        val resolvedValue = element.resolved()?.scriptedVariableValue
-                        val defaultValue = resolvedValue?.value.orEmpty()
-                        result[expression] = Argument(expression, id, defaultValue)
+                        val resolvedVariable = element.resolved()
+                        val resolvedValue = resolvedVariable?.takeIf { v ->
+                            v.containingFile == element.containingFile && v.textOffset < element.textOffset
+                        }?.scriptedVariableValue
+                        val defaultValue = resolvedValue?.text.orEmpty()
+                        result[expression] = Argument(expression, id, defaultValue, resolvedValue)
                     }
                 }
                 super.visitElement(element)
@@ -61,6 +66,12 @@ class ParadoxInlineMathCalculator {
     }
 
     fun calculate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): Result {
+        return withRecursionGuard {
+            calculateInternal(element, args, this)
+        } ?: throw IllegalArgumentException("Cannot calculate inline math: recursion detected.")
+    }
+
+    private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>, recursionGuard: icu.windea.pls.core.SmartRecursionGuard): Result {
         val arguments = resolveArguments(element)
 
         val parameterGroups = arguments.values
@@ -87,21 +98,27 @@ class ParadoxInlineMathCalculator {
 
             val defaultValue = argument.defaultValue.trim()
             if (defaultValue.isNotEmpty()) {
-                if (parseNumberOrNull(defaultValue) == null) {
-                    throw IllegalStateException("Invalid default value for '${argument.expression}': '${argument.defaultValue}'")
+                // defaultValue is only for display; only literal default values are accepted for calculation.
+                if (parseNumberOrNull(defaultValue) != null) {
+                    argument.value = defaultValue
                 }
-                argument.value = defaultValue
             }
         }
-        val missingArguments = arguments.values.filter { it.value.isEmpty() }
+        val missingArguments = arguments.values.filter { a ->
+            if (a.expression.surroundsWith('$', '$')) {
+                a.value.isEmpty()
+            } else {
+                a.value.isEmpty() && a.resolvedValueElement == null
+            }
+        }
         if (missingArguments.isNotEmpty()) {
             throw IllegalArgumentException("Missing arguments: ${missingArguments.joinToString(", ") { it.expression }}")
         }
         val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate inline math: token element is missing.")
-        return calculateItems(tokenElement, arguments)
+        return calculateItems(tokenElement, arguments, args, recursionGuard)
     }
 
-    private fun calculateItems(tokenElement: PsiElement, arguments: Map<String, Argument>): Result {
+    private fun calculateItems(tokenElement: PsiElement, arguments: Map<String, Argument>, args: Map<String, String>, recursionGuard: icu.windea.pls.core.SmartRecursionGuard): Result {
         PsiTreeUtil.findChildOfType(tokenElement, PsiErrorElement::class.java)?.let { error ->
             val errorText = error.errorDescription.ifEmpty { "Syntax error" }
             throw IllegalStateException("Cannot calculate inline math: $errorText")
@@ -109,12 +126,18 @@ class ParadoxInlineMathCalculator {
 
         val tokens = mutableListOf<CalculatorExpressionToken>()
         val node = tokenElement.node ?: throw IllegalStateException("Cannot calculate inline math: token element node is missing.")
-        collectTokens(node, tokens, arguments)
+        collectTokens(node, tokens, arguments, args, recursionGuard)
         if (tokens.isEmpty()) throw IllegalStateException("Cannot calculate inline math: empty expression.")
         return evaluateTokens(tokens)
     }
 
-    private fun collectTokens(node: ASTNode, tokens: MutableList<CalculatorExpressionToken>, arguments: Map<String, Argument>) {
+    private fun collectTokens(
+        node: ASTNode,
+        tokens: MutableList<CalculatorExpressionToken>,
+        arguments: Map<String, Argument>,
+        args: Map<String, String>,
+        recursionGuard: icu.windea.pls.core.SmartRecursionGuard,
+    ) {
         val element = node.psi
 
         when (element) {
@@ -127,7 +150,7 @@ class ParadoxInlineMathCalculator {
                 return
             }
             is ParadoxScriptInlineMathParameter -> {
-                val expression = element.text.orNull() ?: throw IllegalStateException(
+                val expression = element.text?.trim()?.orNull() ?: throw IllegalStateException(
                     "Cannot calculate inline math: parameter text is missing."
                 )
                 val argument = arguments[expression] ?: throw IllegalStateException(
@@ -140,16 +163,40 @@ class ParadoxInlineMathCalculator {
                 return
             }
             is ParadoxScriptInlineMathScriptedVariableReference -> {
-                val expression = element.text.orNull() ?: throw IllegalStateException(
+                val expression = element.text?.trim()?.orNull() ?: throw IllegalStateException(
                     "Cannot calculate inline math: scripted variable reference text is missing."
                 )
                 val argument = arguments[expression] ?: throw IllegalStateException(
                     "Cannot calculate inline math: scripted variable reference '$expression' is not resolved."
                 )
-                val number = parseNumberOrNull(argument.value) ?: throw IllegalArgumentException(
-                    "Invalid argument value for '$expression': '${argument.value}'"
-                )
-                tokens.add(CalculatorOperandToken(number))
+                val resolvedNumber = when {
+                    argument.value.isNotEmpty() -> {
+                        parseNumberOrNull(argument.value) ?: throw IllegalArgumentException(
+                            "Invalid argument value for '$expression': '${argument.value}'"
+                        )
+                    }
+                    else -> {
+                        val resolvedValueElement = argument.resolvedValueElement
+                            ?: throw IllegalArgumentException("Missing arguments: $expression")
+                        when (resolvedValueElement) {
+                            is ParadoxScriptInlineMath -> {
+                                val key = "sv:${argument.id}"
+                                recursionGuard.withRecursionCheck(key) {
+                                    calculateInternal(resolvedValueElement, args, recursionGuard)
+                                } ?: throw IllegalArgumentException(
+                                    "Cannot calculate inline math: recursive scripted variable reference '$expression'."
+                                )
+                            }
+                            else -> {
+                                val valueText = resolvedValueElement.text?.trim().orEmpty()
+                                parseNumberOrNull(valueText) ?: throw IllegalStateException(
+                                    "Cannot calculate inline math: invalid scripted variable value '$valueText' for '$expression'."
+                                )
+                            }
+                        }
+                    }
+                }
+                tokens.add(CalculatorOperandToken(resolvedNumber))
                 return
             }
         }
@@ -167,7 +214,7 @@ class ParadoxInlineMathCalculator {
         }
 
         for (child in node.getChildren(null)) {
-            collectTokens(child, tokens, arguments)
+            collectTokens(child, tokens, arguments, args, recursionGuard)
         }
     }
 
