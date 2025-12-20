@@ -69,14 +69,6 @@ class ParadoxInlineMathCalculator {
     }
 
     fun calculate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): Result {
-        for ((k, v) in args) {
-            val value = v.trim()
-            if (value.isEmpty()) continue
-            if (parseNumberOrNull(value) == null) {
-                throw IllegalArgumentException("Invalid argument value for '$k': '$v'")
-            }
-        }
-
         val arguments = resolveArguments(element)
 
         val parameterGroups = arguments.values
@@ -123,41 +115,14 @@ class ParadoxInlineMathCalculator {
             throw IllegalStateException("Cannot calculate inline math: $errorText")
         }
 
-        val tokens = mutableListOf<Token>()
+        val tokens = mutableListOf<CalculatorExpressionToken>()
         val node = tokenElement.node ?: throw IllegalStateException("Cannot calculate inline math: token element node is missing.")
         collectTokens(node, tokens, arguments)
         if (tokens.isEmpty()) throw IllegalStateException("Cannot calculate inline math: empty expression.")
         return evaluateTokens(tokens)
     }
 
-    private interface Token
-
-    private data class OperandToken(val operand: Result) : Token
-
-    private sealed interface OperatorToken : Token {
-        val precedence: Int
-        val rightAssociative: Boolean
-    }
-
-    private data class UnaryOperatorToken(val operator: CalculatorOperator.Unary) : OperatorToken {
-        override val precedence: Int = 3
-        override val rightAssociative: Boolean = true
-    }
-
-    private data class BinaryOperatorToken(val operator: CalculatorOperator.Binary) : OperatorToken {
-        override val precedence: Int = when (operator) {
-            CalculatorOperator.Binary.Times, CalculatorOperator.Binary.Div, CalculatorOperator.Binary.Mod -> 2
-            CalculatorOperator.Binary.Plus, CalculatorOperator.Binary.Minus -> 1
-        }
-        override val rightAssociative: Boolean = false
-    }
-
-    private data object LeftParenToken : Token
-    private data object RightParenToken : Token
-    private data object LeftAbsToken : Token
-    private data object RightAbsToken : Token
-
-    private fun collectTokens(node: ASTNode, tokens: MutableList<Token>, arguments: Map<String, Argument>) {
+    private fun collectTokens(node: ASTNode, tokens: MutableList<CalculatorExpressionToken>, arguments: Map<String, Argument>) {
         val element = node.psi
 
         when (element) {
@@ -166,7 +131,7 @@ class ParadoxInlineMathCalculator {
                 val number = parseNumberOrNull(valueText) ?: throw IllegalStateException(
                     "Cannot calculate inline math: invalid number '$valueText'."
                 )
-                tokens.add(OperandToken(number))
+                tokens.add(CalculatorOperandToken(number))
                 return
             }
             is ParadoxScriptInlineMathParameter -> {
@@ -179,7 +144,7 @@ class ParadoxInlineMathCalculator {
                 val number = parseNumberOrNull(argument.value) ?: throw IllegalArgumentException(
                     "Invalid argument value for '$expression': '${argument.value}'"
                 )
-                tokens.add(OperandToken(number))
+                tokens.add(CalculatorOperandToken(number))
                 return
             }
             is ParadoxScriptInlineMathScriptedVariableReference -> {
@@ -192,21 +157,21 @@ class ParadoxInlineMathCalculator {
                 val number = parseNumberOrNull(argument.value) ?: throw IllegalArgumentException(
                     "Invalid argument value for '$expression': '${argument.value}'"
                 )
-                tokens.add(OperandToken(number))
+                tokens.add(CalculatorOperandToken(number))
                 return
             }
         }
 
         when (node.elementType) {
-            PLUS_SIGN -> tokens.add(PlusOpToken)
-            MINUS_SIGN -> tokens.add(MinusOpToken)
-            TIMES_SIGN -> tokens.add(TimesOpToken)
-            DIV_SIGN -> tokens.add(DivOpToken)
-            MOD_SIGN -> tokens.add(ModOpToken)
-            LP_SIGN -> tokens.add(LeftParenToken)
-            RP_SIGN -> tokens.add(RightParenToken)
-            LABS_SIGN -> tokens.add(LeftAbsToken)
-            RABS_SIGN -> tokens.add(RightAbsToken)
+            PLUS_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Plus))
+            MINUS_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Minus))
+            TIMES_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Times))
+            DIV_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Div))
+            MOD_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Mod))
+            LP_SIGN -> tokens.add(CalculatorLeftParenToken)
+            RP_SIGN -> tokens.add(CalculatorRightParenToken)
+            LABS_SIGN -> tokens.add(CalculatorLeftAbsToken)
+            RABS_SIGN -> tokens.add(CalculatorRightAbsToken)
         }
 
         for (child in node.getChildren(null)) {
@@ -214,176 +179,52 @@ class ParadoxInlineMathCalculator {
         }
     }
 
-    private data object PlusOpToken : Token
-    private data object MinusOpToken : Token
-    private data object TimesOpToken : Token
-    private data object DivOpToken : Token
-    private data object ModOpToken : Token
-
-    private enum class PrevTokenKind { None, Operand, Operator, LeftParen, LeftAbs }
-
-    private fun evaluateTokens(tokens: List<Token>): Result {
-        val values = ArrayDeque<Result>()
-        val operators = ArrayDeque<Token>()
-
-        var prevKind = PrevTokenKind.None
-
-        fun popOperator() {
-            val op = operators.removeLast()
-            when (op) {
-                is UnaryOperatorToken -> {
-                    val value = values.removeLastOrNull()
-                        ?: throw IllegalStateException("Cannot calculate inline math: missing operand for unary operator.")
-                    val result = op.operator.calculate { value } as Result
-                    result.isInt = value.isInt
-                    values.addLast(result)
+    private fun evaluateTokens(tokens: List<CalculatorExpressionToken>): Result {
+        val evaluator = CalculatorInfixExpressionEvaluator<Result>(
+            toUnaryOperator = {
+                when (it) {
+                    CalculatorOperatorSymbol.Plus -> CalculatorOperator.Unary.Plus
+                    CalculatorOperatorSymbol.Minus -> CalculatorOperator.Unary.Minus
+                    else -> null
                 }
-                is BinaryOperatorToken -> {
-                    val right = values.removeLastOrNull()
-                        ?: throw IllegalStateException("Cannot calculate inline math: missing right operand for binary operator.")
-                    val left = values.removeLastOrNull()
-                        ?: throw IllegalStateException("Cannot calculate inline math: missing left operand for binary operator.")
-                    ensureArithmeticValid(op.operator, right)
-                    val result = op.operator.calculate({ left }, { right }) as Result
-                    result.isInt = resolveIsIntAfterBinary(op.operator, left, right, result.value)
-                    values.addLast(result)
+            },
+            toBinaryOperator = {
+                when (it) {
+                    CalculatorOperatorSymbol.Plus -> CalculatorOperator.Binary.Plus
+                    CalculatorOperatorSymbol.Minus -> CalculatorOperator.Binary.Minus
+                    CalculatorOperatorSymbol.Times -> CalculatorOperator.Binary.Times
+                    CalculatorOperatorSymbol.Div -> CalculatorOperator.Binary.Div
+                    CalculatorOperatorSymbol.Mod -> CalculatorOperator.Binary.Mod
                 }
-                LeftParenToken, LeftAbsToken -> {
-                    throw IllegalStateException("Cannot calculate inline math: mismatched parentheses/abs.")
-                }
-                else -> {
-                    throw IllegalStateException("Cannot calculate inline math: unexpected operator token.")
-                }
-            }
-        }
-
-        fun pushOperator(op: OperatorToken) {
-            while (true) {
-                val top = operators.lastOrNull()
-                if (top !is OperatorToken) break
-                val shouldPop = if (op.rightAssociative) top.precedence > op.precedence else top.precedence >= op.precedence
-                if (!shouldPop) break
-                popOperator()
-            }
-            operators.addLast(op)
-        }
-
-        fun toBinaryOperator(token: Token): CalculatorOperator.Binary? = when (token) {
-            PlusOpToken -> CalculatorOperator.Binary.Plus
-            MinusOpToken -> CalculatorOperator.Binary.Minus
-            TimesOpToken -> CalculatorOperator.Binary.Times
-            DivOpToken -> CalculatorOperator.Binary.Div
-            ModOpToken -> CalculatorOperator.Binary.Mod
-            else -> null
-        }
-
-        fun toUnaryOperator(token: Token): CalculatorOperator.Unary? = when (token) {
-            PlusOpToken -> CalculatorOperator.Unary.Plus
-            MinusOpToken -> CalculatorOperator.Unary.Minus
-            else -> null
-        }
-
-        for (token in tokens) {
-            when (token) {
-                is OperandToken -> {
-                    values.addLast(token.operand)
-                    prevKind = PrevTokenKind.Operand
-                }
-                LeftParenToken -> {
-                    operators.addLast(LeftParenToken)
-                    prevKind = PrevTokenKind.LeftParen
-                }
-                RightParenToken -> {
-                    while (true) {
-                        val top = operators.lastOrNull() ?: throw IllegalStateException("Cannot calculate inline math: mismatched parentheses.")
-                        if (top == LeftParenToken) {
-                            operators.removeLast()
-                            break
-                        }
-                        popOperator()
+            },
+            validateBinary = { operator, right ->
+                ensureArithmeticValid(operator, right)
+            },
+            onUnaryApplied = { _, operand, result ->
+                result.isInt = operand.isInt
+            },
+            onBinaryApplied = { operator, left, right, result ->
+                result.isInt = resolveIsIntAfterBinary(operator, left, right, result.value)
+            },
+            tokenToDebugString = {
+                when (it) {
+                    is CalculatorOperandToken<*> -> (it.operand as? Result)?.resolveValue()?.toString().orEmpty()
+                    is CalculatorOperatorSymbolToken -> when (it.symbol) {
+                        CalculatorOperatorSymbol.Plus -> "+"
+                        CalculatorOperatorSymbol.Minus -> "-"
+                        CalculatorOperatorSymbol.Times -> "*"
+                        CalculatorOperatorSymbol.Div -> "/"
+                        CalculatorOperatorSymbol.Mod -> "%"
                     }
-                    prevKind = PrevTokenKind.Operand
-                }
-                LeftAbsToken -> {
-                    operators.addLast(LeftAbsToken)
-                    prevKind = PrevTokenKind.LeftAbs
-                }
-                RightAbsToken -> {
-                    while (true) {
-                        val top = operators.lastOrNull() ?: throw IllegalStateException("Cannot calculate inline math: mismatched abs operator.")
-                        if (top == LeftAbsToken) {
-                            operators.removeLast()
-                            break
-                        }
-                        popOperator()
-                    }
-
-                    val value = values.removeLastOrNull()
-                        ?: throw IllegalStateException("Cannot calculate inline math: missing operand for abs operator.")
-                    val result = CalculatorOperator.Unary.Abs.calculate { value } as Result
-                    result.isInt = value.isInt
-                    values.addLast(result)
-                    prevKind = PrevTokenKind.Operand
-                }
-                else -> {
-                    val isUnary = prevKind == PrevTokenKind.None || prevKind == PrevTokenKind.Operator || prevKind == PrevTokenKind.LeftParen || prevKind == PrevTokenKind.LeftAbs
-                    if (isUnary) {
-                        val unary = toUnaryOperator(token) ?: throw IllegalStateException("Cannot calculate inline math: invalid unary operator.")
-                        pushOperator(UnaryOperatorToken(unary))
-                        prevKind = PrevTokenKind.Operator
-                    } else {
-                        val binary = toBinaryOperator(token) ?: throw IllegalStateException("Cannot calculate inline math: invalid binary operator.")
-                        pushOperator(BinaryOperatorToken(binary))
-                        prevKind = PrevTokenKind.Operator
-                    }
+                    CalculatorLeftParenToken -> "("
+                    CalculatorRightParenToken -> ")"
+                    CalculatorLeftAbsToken -> "|"
+                    CalculatorRightAbsToken -> "|"
+                    else -> it::class.simpleName.orEmpty()
                 }
             }
-        }
-
-        while (operators.isNotEmpty()) {
-            val top = operators.last()
-            if (top == LeftParenToken || top == LeftAbsToken) {
-                throw IllegalStateException("Cannot calculate inline math: mismatched parentheses/abs.")
-            }
-            popOperator()
-        }
-
-        if (values.size != 1) {
-            throw IllegalStateException(
-                "Cannot calculate inline math: invalid expression. " +
-                    "tokens=[${tokens.joinToString(" ") { it.toDebugString() }}], " +
-                    "values=${values.size}, operators=${operators.size}"
-            )
-        }
-        return values.last()
-    }
-
-    private fun Token.toDebugString(): String {
-        return when (this) {
-            is OperandToken -> operand.resolveValue().toString()
-            is UnaryOperatorToken -> when (operator) {
-                CalculatorOperator.Unary.Plus -> "u+"
-                CalculatorOperator.Unary.Minus -> "u-"
-                CalculatorOperator.Unary.Abs -> "abs"
-            }
-            is BinaryOperatorToken -> when (operator) {
-                CalculatorOperator.Binary.Plus -> "+"
-                CalculatorOperator.Binary.Minus -> "-"
-                CalculatorOperator.Binary.Times -> "*"
-                CalculatorOperator.Binary.Div -> "/"
-                CalculatorOperator.Binary.Mod -> "%"
-            }
-            LeftParenToken -> "("
-            RightParenToken -> ")"
-            LeftAbsToken -> "|"
-            RightAbsToken -> "|"
-            PlusOpToken -> "+"
-            MinusOpToken -> "-"
-            TimesOpToken -> "*"
-            DivOpToken -> "/"
-            ModOpToken -> "%"
-            else -> this::class.simpleName.orEmpty()
-        }
+        )
+        return evaluator.evaluate(tokens)
     }
 
     private fun resolveIsIntAfterBinary(
@@ -397,9 +238,10 @@ class ParadoxInlineMathCalculator {
         return when (operator) {
             CalculatorOperator.Binary.Plus, CalculatorOperator.Binary.Minus, CalculatorOperator.Binary.Times, CalculatorOperator.Binary.Mod -> true
             CalculatorOperator.Binary.Div -> {
-                val leftInt = left.value.toInt()
-                val rightInt = right.value.toInt()
-                rightInt != 0 && leftInt % rightInt == 0 && computedValue == leftInt / rightInt.toFloat()
+                // 注意：CalculatorOperator.Binary.Div 会原地修改 left.value，因此不能再用 left.value 推导可整除性。
+                // 在两个操作数都为整数时，只要结果是整数即可认为 isInt。
+                val asInt = computedValue.toInt().toFloat()
+                computedValue == asInt
             }
         }
     }

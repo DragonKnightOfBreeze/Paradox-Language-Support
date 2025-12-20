@@ -42,6 +42,24 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun basicOps() {
+        myFixture.configureByFile("features/calculators/calculator_basic_ops.test.txt")
+        val file = myFixture.file as ParadoxScriptFile
+        val map = toInlineMathMap(file)
+        val calculator = ParadoxInlineMathCalculator()
+
+        assertResult(7) { calculator.calculate(map.getValue("k1")) }
+        assertResult(9) { calculator.calculate(map.getValue("k2")) }
+        assertResult(1) { calculator.calculate(map.getValue("k3")) }
+        assertResult(1) { calculator.calculate(map.getValue("k4")) }
+        assertResult(3) { calculator.calculate(map.getValue("k5")) }
+        assertResult(0.5f) { calculator.calculate(map.getValue("k6")) }
+        assertResult(2) { calculator.calculate(map.getValue("k7")) }
+        assertResult(1) { calculator.calculate(map.getValue("k8")) }
+        assertResult(ArithmeticException::class.java) { calculator.calculate(map.getValue("k9")) }
+    }
+
+    @Test
     fun simpleWithSv() {
         myFixture.configureByFile("features/calculators/calculator_simple_with_sv.test.txt")
         val file = myFixture.file as ParadoxScriptFile
@@ -50,7 +68,7 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
 
         assertResult(2) { calculator.calculate(map.getValue("k1")) }
         assertResult(2) { calculator.calculate(map.getValue("k2")) }
-        // assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("v" to "NaN")) }
+        assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("v" to "NaN")) }
         assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("v" to "1")) }
         assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k2"), mapOf("var" to "NaN")) }
         assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("var" to "1")) }
