@@ -144,6 +144,8 @@ class ParadoxInlineMathCalculatorDialog(
         return tokenText
     }
 
+    override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathCalculatorDialog"
+
     private class ArgumentsTableModel(items: MutableList<ParadoxInlineMathCalculator.Argument>) : ListTableModel<ParadoxInlineMathCalculator.Argument>(
         arrayOf(
             object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.expression")) {
