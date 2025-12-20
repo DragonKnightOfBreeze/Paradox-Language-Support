@@ -43,11 +43,11 @@ class ParadoxScriptedVariablePsiReference(
     }
 
     private fun doResolve(): ParadoxScriptScriptedVariable? {
-        // 首先尝试从当前文件中查找引用，然后从全局范围中查找引用
+        // 首先尝试从当前文件中查找引用（在同文件中适用后续覆盖），然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return null
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-        ParadoxScriptedVariableSearch.searchLocal(name, selector).find()?.let { return it }
+        ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().lastOrNull()?.let { return it }
         ParadoxScriptedVariableSearch.searchGlobal(name, selector).find()?.let { return it }
         return null
     }

@@ -4,8 +4,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -45,7 +45,7 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchNormal("UI_OK", selector).processQuery(false) { p ->
+        ParadoxLocalisationSearch.searchNormal("UI_OK", selector).processQuery { p ->
             results += p.name
             true
         }
@@ -76,7 +76,7 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).processQuery(false) { p ->
+        ParadoxLocalisationSearch.searchSynced("SYNC_TITLE", selector).processQuery { p ->
             results += p.name
             true
         }
@@ -90,7 +90,7 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchNormal("NOT_EXISTS", selector).processQuery(false) { p ->
+        ParadoxLocalisationSearch.searchNormal("NOT_EXISTS", selector).processQuery { p ->
             results += p.name
             true
         }
@@ -104,7 +104,7 @@ class ParadoxLocalisationIndicesTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).localisation()
         val results = mutableListOf<String>()
-        ParadoxLocalisationSearch.searchSynced("NOT_EXISTS", selector).processQuery(false) { p ->
+        ParadoxLocalisationSearch.searchSynced("NOT_EXISTS", selector).processQuery { p ->
             results += p.name
             true
         }

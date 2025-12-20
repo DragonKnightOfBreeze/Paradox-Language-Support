@@ -4,9 +4,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.processQuery
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxFileInfo
@@ -54,7 +54,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).file()
         val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search(relPath, selector = selector).processQuery(false) { vf ->
+        ParadoxFilePathSearch.search(relPath, selector = selector).processQuery { vf ->
             results += vf.path
             true
         }
@@ -90,7 +90,7 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
         val project = project
         val selector = selector(project, myFixture.file).file()
         val results = mutableListOf<String>()
-        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).processQuery(false) { vf ->
+        ParadoxFilePathSearch.search("common/does/not/exist.txt", selector = selector).processQuery { vf ->
             results += vf.path
             true
         }
