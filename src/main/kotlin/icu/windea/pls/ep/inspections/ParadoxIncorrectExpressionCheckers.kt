@@ -22,6 +22,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.codeInsight.expression
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
@@ -35,8 +37,6 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentProperty
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.resolved

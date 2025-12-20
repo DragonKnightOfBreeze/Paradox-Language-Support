@@ -17,6 +17,7 @@ import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.codeInsight.completion.offsetInParent
 import icu.windea.pls.lang.codeInsight.completion.quoted
 import icu.windea.pls.lang.codeInsight.completion.rightQuoted
+import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
@@ -25,7 +26,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.isPropertyValue

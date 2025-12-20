@@ -16,6 +16,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -23,7 +24,6 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.lang.psi.findParentDefinition
 
 /**
  * 声明全局封装变量的重构。

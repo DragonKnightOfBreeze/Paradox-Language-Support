@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxScriptedModifierManager {

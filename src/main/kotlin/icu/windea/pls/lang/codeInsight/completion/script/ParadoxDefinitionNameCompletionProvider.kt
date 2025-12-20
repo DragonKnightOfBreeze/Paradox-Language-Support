@@ -36,6 +36,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -53,7 +54,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isDefinitionName
 

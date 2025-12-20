@@ -18,6 +18,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -26,7 +27,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {

@@ -19,6 +19,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
 import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -29,7 +30,6 @@ import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.paths.relativeTo
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isPropertyValue
 
 /**

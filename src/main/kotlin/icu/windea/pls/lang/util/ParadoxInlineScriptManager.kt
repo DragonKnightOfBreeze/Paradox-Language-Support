@@ -29,6 +29,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.processQueryAsync
@@ -49,7 +50,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.resolved
 import icu.windea.pls.script.psi.stringValue
 

@@ -5,9 +5,9 @@ import com.intellij.psi.codeStyle.SuggestedNameInfo
 import com.intellij.refactoring.rename.NameSuggestionProvider
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
-import icu.windea.pls.lang.psi.findParentDefinition
 
 // org.jetbrains.kotlin.idea.base.codeInsight.KotlinNameSuggestionProvider
 

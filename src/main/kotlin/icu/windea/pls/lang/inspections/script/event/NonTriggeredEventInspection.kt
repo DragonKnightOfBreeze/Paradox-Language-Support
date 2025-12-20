@@ -13,13 +13,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.findProperty
-import icu.windea.pls.lang.psi.properties
 
 class NonTriggeredEventInspection : EventInspectionBase() {
     // see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88

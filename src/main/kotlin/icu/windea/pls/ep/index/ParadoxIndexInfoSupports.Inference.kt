@@ -16,6 +16,8 @@ import icu.windea.pls.core.writeOrWriteFrom
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -27,8 +29,6 @@ import icu.windea.pls.model.index.ParadoxInferredScopeContextAwareDefinitionInde
 import icu.windea.pls.model.index.ParadoxOnActionInEventIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentProperty
-import icu.windea.pls.lang.psi.findProperty
 import java.io.DataInput
 import java.io.DataOutput
 

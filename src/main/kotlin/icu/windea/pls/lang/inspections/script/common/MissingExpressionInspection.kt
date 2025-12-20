@@ -20,6 +20,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.Occurrence
@@ -29,7 +30,6 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.lang.psi.members
 import javax.swing.JComponent
 
 /**

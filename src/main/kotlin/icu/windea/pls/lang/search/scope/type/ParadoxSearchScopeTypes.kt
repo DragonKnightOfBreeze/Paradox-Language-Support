@@ -7,12 +7,12 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.ParadoxBaseFileType
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 
 object ParadoxSearchScopeTypes {
     private val map = mutableMapOf<String, ParadoxSearchScopeType>()

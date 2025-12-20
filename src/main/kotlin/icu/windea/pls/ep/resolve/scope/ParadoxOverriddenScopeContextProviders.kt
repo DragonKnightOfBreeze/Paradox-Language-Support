@@ -12,12 +12,12 @@ import icu.windea.pls.config.config.originalConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContextProvider {

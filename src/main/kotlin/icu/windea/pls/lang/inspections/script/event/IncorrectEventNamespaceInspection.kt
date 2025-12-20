@@ -7,11 +7,11 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.lang.psi.findProperty
-import icu.windea.pls.lang.psi.properties
 
 /**
  * 检查事件脚本文件中的事件命名空间的格式是否合法。

@@ -9,10 +9,10 @@ import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.lang.psi.findParentByPath
 
 /**
  * 解析事件ID中的事件命名空间引用。

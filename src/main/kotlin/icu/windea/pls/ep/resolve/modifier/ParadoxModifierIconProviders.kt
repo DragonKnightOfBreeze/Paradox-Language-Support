@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.annotations.WithGameType
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -15,7 +16,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModifierInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypeSets
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.lang.psi.findProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {

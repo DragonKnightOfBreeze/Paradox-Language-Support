@@ -27,6 +27,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
@@ -40,7 +41,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 
 @Suppress("unused")
 object ParadoxEventManager {

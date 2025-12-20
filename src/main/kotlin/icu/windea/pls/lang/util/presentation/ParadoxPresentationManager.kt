@@ -12,6 +12,7 @@ import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -27,7 +28,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.lang.psi.properties
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon

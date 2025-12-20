@@ -26,6 +26,7 @@ import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
@@ -38,7 +39,6 @@ import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.properties
 
 /**
  * 推断 `scripted_trigger`、`scripted_effect` 等的作用域上下文。

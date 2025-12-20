@@ -12,11 +12,11 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchService
+import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.script.psi.isBlockMember
 
 /**

@@ -22,6 +22,7 @@ import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.annotations.WithGameType
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
+import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
@@ -39,7 +40,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.lang.psi.findParentByPath
 
 @Suppress("unused")
 object ParadoxTechnologyManager {

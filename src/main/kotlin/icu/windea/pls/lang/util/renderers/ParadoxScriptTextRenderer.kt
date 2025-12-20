@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.quoteIfNecessary
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.value
 
 class ParadoxScriptTextRenderer(

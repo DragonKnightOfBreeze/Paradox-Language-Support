@@ -10,6 +10,7 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -22,7 +23,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScopeType
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptBlockElement
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxMatchProvider {

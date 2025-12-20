@@ -20,6 +20,7 @@ import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.util.ParadoxCsvManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -50,7 +51,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionName
 
 object ParadoxTypeManager {

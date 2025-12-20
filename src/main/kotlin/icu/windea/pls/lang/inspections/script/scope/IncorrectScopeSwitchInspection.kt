@@ -11,6 +11,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.findParentDefinition
 import javax.swing.JComponent
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {

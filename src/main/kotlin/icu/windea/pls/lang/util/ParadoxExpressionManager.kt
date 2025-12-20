@@ -81,7 +81,9 @@ import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.lang.psi.inline
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
@@ -113,10 +115,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.lang.psi.members
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {

@@ -16,6 +16,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.findByPath
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -36,7 +37,6 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.lang.psi.findByPath
 import icu.windea.pls.script.psi.stringValue
 
 object CwtLocationExpressionManager {

@@ -12,6 +12,7 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -21,7 +22,6 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {

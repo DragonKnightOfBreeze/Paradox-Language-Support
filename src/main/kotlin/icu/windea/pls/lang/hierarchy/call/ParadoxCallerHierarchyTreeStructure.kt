@@ -12,6 +12,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.ui.tree.LeafState
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -20,7 +21,6 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.lang.psi.findParentDefinition
 
 // com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 

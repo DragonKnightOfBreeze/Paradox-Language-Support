@@ -22,6 +22,7 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -34,7 +35,6 @@ import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import java.util.*
 

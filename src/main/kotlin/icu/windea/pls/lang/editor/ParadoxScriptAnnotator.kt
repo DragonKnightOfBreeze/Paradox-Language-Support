@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
@@ -21,7 +22,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.isResolvableExpression
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.tagType

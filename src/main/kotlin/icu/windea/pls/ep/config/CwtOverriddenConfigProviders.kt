@@ -16,11 +16,11 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.ep.config.CwtTriggerWithParametersAwareOverriddenConfigProvider.Constants.CONTEXT_NAME_1
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {

@@ -14,13 +14,13 @@ import icu.windea.pls.core.writeByte
 import icu.windea.pls.core.writeIntFast
 import icu.windea.pls.core.writeUTFFast
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefineManager
 import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.lang.psi.properties
 import java.io.DataInput
 import java.io.DataOutput
 

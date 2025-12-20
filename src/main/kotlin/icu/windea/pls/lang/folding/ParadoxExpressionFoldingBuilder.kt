@@ -14,13 +14,13 @@ import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.annotations.WithInternalConfig
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
-import icu.windea.pls.lang.psi.properties
 
 @WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {

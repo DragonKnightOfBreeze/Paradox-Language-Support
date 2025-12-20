@@ -8,8 +8,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.inline
-import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 /**
  * 检查事件脚本文件是否缺失事件命名空间。
