@@ -6,9 +6,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -17,7 +20,6 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextUIRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer
@@ -55,7 +57,7 @@ object ParadoxPresentationManager {
 
     fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
         val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
-        definition.block?.properties()?.options(conditional = true, inline = true)?.forEach {
+        definition.block?.properties()?.options { conditional().inline() }?.forEach {
             if (it.name.lowercase() in keys) properties.add(it)
         }
         return properties

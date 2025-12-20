@@ -13,15 +13,16 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
+import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
-import icu.windea.pls.lang.util.dataFlow.ParadoxLocalisationSequence
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import kotlinx.coroutines.launch
 
 /**
@@ -70,10 +71,10 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         return PlsFileManager.findFiles(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
     }
 
-    protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): ParadoxLocalisationSequence {
+    protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
         val editor = e.editor
-        if (editor != null) return ParadoxLocalisationManipulator.buildSelectedSequence(editor, psiFile)
-        return ParadoxLocalisationManipulator.buildSequence(psiFile)
+        if (editor != null) return ParadoxPsiSequenceBuilder.selectedLocalisations(editor, psiFile)
+        return ParadoxPsiSequenceBuilder.localisations(psiFile)
     }
 
     protected open fun beforeInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {

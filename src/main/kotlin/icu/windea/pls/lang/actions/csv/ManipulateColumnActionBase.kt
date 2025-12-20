@@ -5,10 +5,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.util.dataFlow.ParadoxColumnSequence
-import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import java.util.function.Supplier
 
 /**
@@ -36,23 +37,23 @@ abstract class ManipulateColumnActionBase : AnAction() {
         doInvoke(e, file, elements)
     }
 
-    protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): ParadoxColumnSequence {
-        val editor = e.editor ?: return ParadoxCsvManipulator.buildEmptyColumnSequence()
-        return ParadoxCsvManipulator.buildSelectedColumnSequence(editor, file)
+    protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): WalkingSequence<ParadoxCsvColumn> {
+        val editor = e.editor ?: return WalkingSequence()
+        return ParadoxPsiSequenceBuilder.selectedColumns(editor, file)
     }
 
-    protected open fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: ParadoxColumnSequence): Supplier<String>? {
+    protected open fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: WalkingSequence<ParadoxCsvColumn>): Supplier<String>? {
         return null
     }
 
-    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence): Boolean {
+    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>): Boolean {
         return elements.any()
     }
 
-    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence): Boolean {
+    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>): Boolean {
         return true
     }
 
-    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence)
+    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>)
 }
 

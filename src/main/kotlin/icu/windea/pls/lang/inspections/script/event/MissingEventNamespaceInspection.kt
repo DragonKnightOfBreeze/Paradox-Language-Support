@@ -5,8 +5,9 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.properties
 
@@ -18,7 +19,7 @@ import icu.windea.pls.script.psi.properties
 class MissingEventNamespaceInspection : EventInspectionBase() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
-        val r = file.properties().options(inline = true).none { it.definitionInfo?.type == "event_namespace" }
+        val r = file.properties().options { inline() }.none { it.definitionInfo?.type == "event_namespace" }
         if (!r) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)

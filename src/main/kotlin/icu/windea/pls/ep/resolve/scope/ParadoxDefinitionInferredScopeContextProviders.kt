@@ -11,6 +11,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.data.definitionScopeContextModificationTracker
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
@@ -24,13 +25,13 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.index.PlsIndexService
 import icu.windea.pls.lang.match.findByPattern
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
 import icu.windea.pls.lang.search.scope.withFilePath
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEventManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
@@ -336,7 +337,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties().options(inline = true).forEach f@{
+                            scopesBlockElement.properties().options { inline() }.forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
@@ -486,7 +487,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties().options(inline = true).forEach f@{
+                            scopesBlockElement.properties().options { inline() }.forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f

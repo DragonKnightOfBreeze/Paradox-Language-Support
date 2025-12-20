@@ -11,8 +11,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.util.dataFlow.options
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -27,7 +28,7 @@ class NonTriggeredEventInspection : EventInspectionBase() {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file.properties().options(inline = true).forEach f@{ element ->
+        file.properties().options { inline() }.forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  // no `triggered` subtype declared, skip

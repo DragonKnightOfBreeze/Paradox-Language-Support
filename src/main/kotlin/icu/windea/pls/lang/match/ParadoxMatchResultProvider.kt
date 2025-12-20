@@ -20,6 +20,7 @@ import icu.windea.pls.core.cache.CancelableCache
 import icu.windea.pls.core.cache.NestedCache
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.KeyRegistry
@@ -31,6 +32,8 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.ep.match.ParadoxScriptExpressionMatcher.*
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDatabaseObjectExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxDefineReferenceExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxScopeFieldExpression
@@ -41,7 +44,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.members
@@ -103,7 +105,7 @@ object ParadoxMatchResultProvider {
             // 根据其中存在的属性键进行过滤（注意这里需要考虑内联和可选的情况）
             // 如果子句中包含对应的任意子句规则中的任意必须的属性键（忽略大小写），则认为匹配
             val actualKeys = mutableSetOf<String>()
-            blockElement.members().options(conditional = true, inline = true).forEach {
+            blockElement.members().options { conditional().inline() }.forEach {
                 if (it is ParadoxScriptProperty) actualKeys.add(it.name)
             }
             actualKeys.any { it in keys }

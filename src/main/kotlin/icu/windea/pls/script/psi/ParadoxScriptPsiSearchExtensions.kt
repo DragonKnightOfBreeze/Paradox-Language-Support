@@ -8,40 +8,40 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.transform
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
-import icu.windea.pls.lang.util.dataFlow.ParadoxMemberSequence
-import icu.windea.pls.lang.util.dataFlow.ParadoxPropertySequence
-import icu.windea.pls.lang.util.dataFlow.ParadoxValueSequence
-import icu.windea.pls.lang.util.dataFlow.options
-import icu.windea.pls.lang.util.dataFlow.transform
-import icu.windea.pls.lang.util.manipulators.ParadoxScriptManipulator
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.ParadoxScriptLanguage
 
-fun ParadoxScriptFile.members(): ParadoxMemberSequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this)
+fun ParadoxScriptFile.members(): WalkingSequence<ParadoxScriptMember> {
+    return ParadoxPsiSequenceBuilder.members(this)
 }
 
-fun ParadoxScriptMemberContainer.members(): ParadoxMemberSequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this)
+fun ParadoxScriptMemberContainer.members(): WalkingSequence<ParadoxScriptMember> {
+    return ParadoxPsiSequenceBuilder.members(this)
 }
 
-fun ParadoxScriptFile.properties(): ParadoxPropertySequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptProperty>() }
+fun ParadoxScriptFile.properties(): WalkingSequence<ParadoxScriptProperty> {
+    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
-fun ParadoxScriptMemberContainer.properties(): ParadoxPropertySequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptProperty>() }
+fun ParadoxScriptMemberContainer.properties(): WalkingSequence<ParadoxScriptProperty> {
+    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
-fun ParadoxScriptFile.values(): ParadoxValueSequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptValue>() }
+fun ParadoxScriptFile.values(): WalkingSequence<ParadoxScriptValue> {
+    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
-fun ParadoxScriptMemberContainer.values(): ParadoxValueSequence {
-    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptValue>() }
+fun ParadoxScriptMemberContainer.values(): WalkingSequence<ParadoxScriptValue> {
+    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
 /**
@@ -64,7 +64,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options(conditional = conditional, inline = conditional)?.process {
+    block?.properties()?.options { conditional(conditional).inline(inline) }?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -93,7 +93,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options(conditional = conditional, inline = inline)?.process {
+    block?.properties()?.options { conditional(conditional).inline(inline) }?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false

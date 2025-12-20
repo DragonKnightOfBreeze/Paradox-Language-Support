@@ -5,10 +5,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiFile
+import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.ParadoxCsvRow
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.util.dataFlow.ParadoxRowSequence
-import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
+import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import java.util.function.Supplier
 
 /**
@@ -36,22 +37,22 @@ abstract class ManipulateRowActionBase : AnAction() {
         doInvoke(e, file, elements)
     }
 
-    protected open fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {
-        val editor = e.editor ?: return ParadoxCsvManipulator.buildEmptyRowSequence()
-        return ParadoxCsvManipulator.buildSelectedRowSequence(editor, file)
+    protected open fun findElements(e: AnActionEvent, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
+        val editor = e.editor ?: return WalkingSequence()
+        return ParadoxPsiSequenceBuilder.selectedRows(editor, file)
     }
 
-    protected open fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String>? {
+    protected open fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Supplier<String>? {
         return null
     }
 
-    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Boolean {
+    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Boolean {
         return elements.any()
     }
 
-    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Boolean {
+    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>): Boolean {
         return true
     }
 
-    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence)
+    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvRow>)
 }

@@ -10,6 +10,7 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
@@ -17,12 +18,11 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.csv.psi.getColumnIndex
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.util.dataFlow.ParadoxColumnSequence
 import icu.windea.pls.lang.util.manipulators.ParadoxCsvManipulator
 import kotlinx.coroutines.launch
 
 class SelectColumnCellAction : ManipulateColumnActionBase() {
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         // 目前不支持批量处理
 
         val project = file.project
@@ -39,7 +39,7 @@ class SelectColumnCellAction : ManipulateColumnActionBase() {
 }
 
 sealed class InsertColumnActionBase(private val left: Boolean) : ManipulateColumnActionBase() {
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
@@ -79,11 +79,11 @@ class InsertColumnLeftAction : InsertColumnActionBase(left = true)
 class InsertColumnRightAction : InsertColumnActionBase(left = false)
 
 sealed class MoveColumnActionBase(private val left: Boolean) : ManipulateColumnActionBase() {
-    override fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence): Boolean {
+    override fun isEnabled(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>): Boolean {
         return elements.firstOrNull()?.findOtherColumn() != null
     }
 
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         // 目前不支持批量处理
         // 实际上是交换而非移动
 
@@ -123,7 +123,7 @@ class MoveColumnLeftAction : MoveColumnActionBase(left = true)
 class MoveColumnRightAction : MoveColumnActionBase(left = false)
 
 class SelectColumnAction : ManipulateColumnActionBase() {
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         // 目前不支持批量处理
 
         val project = file.project
@@ -144,7 +144,7 @@ class SelectColumnAction : ManipulateColumnActionBase() {
 }
 
 class RemoveColumnAction : ManipulateColumnActionBase() {
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: WalkingSequence<ParadoxCsvColumn>) {
         // 目前不支持批量处理
 
         val project = file.project

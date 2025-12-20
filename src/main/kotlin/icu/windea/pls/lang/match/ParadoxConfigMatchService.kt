@@ -26,6 +26,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete
@@ -36,9 +37,9 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.withOperator
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -400,7 +401,7 @@ object ParadoxConfigMatchService {
 
         // NOTE 这里需要兼容内联
         // NOTE propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-        val matched = blockElement.properties().options(inline = true).all p@{ propertyElement ->
+        val matched = blockElement.properties().options { inline() }.all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
@@ -434,7 +435,7 @@ object ParadoxConfigMatchService {
         val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.toOccurrence(blockElement, configGroup.project) })
 
         // NOTE 这里需要兼容内联
-        val matched = blockElement.values().options(inline = true).process p@{ valueElement ->
+        val matched = blockElement.values().options { inline() }.process p@{ valueElement ->
             // 如果没有匹配的规则则忽略
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
@@ -559,7 +560,7 @@ object ParadoxConfigMatchService {
                 c is CwtPropertyConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.properties().options(inline = true).none { propElement ->
+                    val notMatched = parentBlockElement.properties().options { inline() }.none { propElement ->
                         matchesPropertyForComplexEnum(propElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -567,7 +568,7 @@ object ParadoxConfigMatchService {
                 c is CwtValueConfig -> {
                     // ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.values().options(inline = true).none { valueElement ->
+                    val notMatched = parentBlockElement.values().options { inline() }.none { valueElement ->
                         matchesValueForComplexEnum(valueElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -623,14 +624,14 @@ object ParadoxConfigMatchService {
     private fun matchesBlockForComplexEnum(blockElement: ParadoxScriptBlockElement, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         config.properties?.forEach { propConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.properties().options(inline = true).none { propElement ->
+            val notMatched = blockElement.properties().options { inline() }.none { propElement ->
                 matchesPropertyForComplexEnum(propElement, propConfig, complexEnumConfig)
             }
             if (notMatched) return false
         }
         config.values?.forEach { valueConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.values().options(inline = true).none { valueElement ->
+            val notMatched = blockElement.values().options { inline() }.none { valueElement ->
                 matchesValueForComplexEnum(valueElement, valueConfig, complexEnumConfig)
             }
             if (notMatched) return false

@@ -5,9 +5,10 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.util.ParadoxEventManager
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.findProperty
@@ -23,7 +24,7 @@ class IncorrectEventIdInspection : EventInspectionBase() {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file.properties().options(inline = true).forEach f@{ element ->
+        file.properties().options { inline() }.forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
             val nameField = definitionInfo.typeConfig.nameField

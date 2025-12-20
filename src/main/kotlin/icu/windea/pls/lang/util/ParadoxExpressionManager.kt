@@ -50,6 +50,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collectReferences
 import icu.windea.pls.core.collections.SoftConcurrentHashMap
 import icu.windea.pls.core.collections.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.isEmpty
 import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.isLeftQuoted
@@ -79,6 +80,8 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
 import icu.windea.pls.lang.match.ParadoxMatchService
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.conditional
+import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReference
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
@@ -90,7 +93,6 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTokenNode
 import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
-import icu.windea.pls.lang.util.dataFlow.options
 import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.isComplexExpression
@@ -580,7 +582,7 @@ object ParadoxExpressionManager {
         }
         ProgressManager.checkCanceled()
         // 注意这里需要考虑内联和可选的情况
-        blockElement.members().options(conditional = true, inline = true).forEach f@{ data ->
+        blockElement.members().options { conditional().inline() }.forEach f@{ data ->
             val expression = when (data) {
                 is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
                 is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
