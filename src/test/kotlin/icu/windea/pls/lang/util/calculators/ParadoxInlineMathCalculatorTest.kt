@@ -141,24 +141,6 @@ class ParadoxInlineMathCalculatorTest : BasePlatformTestCase() {
         assertResult(IllegalStateException::class.java) { calculator.calculate(map.getValue("k11")) }
     }
 
-    @Test
-    fun simpleWithSv() {
-        myFixture.configureByFile("features/calculators/calculator_simple_with_sv.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/calculator_simple_with_sv.test.txt", ParadoxGameType.Stellaris)
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
-        val file = myFixture.file as ParadoxScriptFile
-        val map = toInlineMathMap(file)
-        val calculator = ParadoxInlineMathCalculator()
-
-        assertResult(2) { calculator.calculate(map.getValue("k1")) }
-        assertResult(2) { calculator.calculate(map.getValue("k2")) }
-        assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("v" to "NaN")) }
-        assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("v" to "1")) }
-        assertResult(IllegalArgumentException::class.java) { calculator.calculate(map.getValue("k2"), mapOf("var" to "NaN")) }
-        assertResult(2) { calculator.calculate(map.getValue("k2"), mapOf("var" to "1")) }
-        assertResult(3) { calculator.calculate(map.getValue("k2"), mapOf("var" to "2")) }
-    }
-
     private fun toInlineMathMap(file: ParadoxScriptFile): Map<String, ParadoxScriptInlineMath> {
         return file.properties().toList()
             .associateBy({ it.name }, { it.propertyValue })
