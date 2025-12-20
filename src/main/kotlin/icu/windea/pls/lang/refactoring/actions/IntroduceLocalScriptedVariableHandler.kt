@@ -28,7 +28,7 @@ import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 
 /**
  * 声明本地封装变量的重构。

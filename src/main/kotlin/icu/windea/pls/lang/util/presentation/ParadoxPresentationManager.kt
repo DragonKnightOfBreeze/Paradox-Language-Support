@@ -27,7 +27,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.properties
 import java.awt.Color
 import java.util.*
 import javax.swing.Icon

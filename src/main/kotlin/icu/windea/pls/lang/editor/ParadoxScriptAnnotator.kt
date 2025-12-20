@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.isResolvableExpression
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.tagType

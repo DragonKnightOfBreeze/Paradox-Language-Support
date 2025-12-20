@@ -17,6 +17,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*

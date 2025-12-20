@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.stringValue
 

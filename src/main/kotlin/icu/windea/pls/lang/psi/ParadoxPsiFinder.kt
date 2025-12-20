@@ -32,7 +32,6 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionName
 import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression

@@ -113,10 +113,10 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findParentByPath
+import icu.windea.pls.lang.psi.findParentByPath
 import icu.windea.pls.script.psi.isExpression
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.script.psi.members
+import icu.windea.pls.lang.psi.members
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {

@@ -20,7 +20,7 @@ import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 import javax.swing.JComponent
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {

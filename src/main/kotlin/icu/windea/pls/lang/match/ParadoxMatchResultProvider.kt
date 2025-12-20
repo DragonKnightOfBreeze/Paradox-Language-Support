@@ -46,7 +46,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.members
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.propertyValue
 
 private typealias KeyForCache = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>

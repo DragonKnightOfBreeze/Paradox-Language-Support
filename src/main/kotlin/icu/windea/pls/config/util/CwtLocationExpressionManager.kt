@@ -36,7 +36,7 @@ import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findByPath
+import icu.windea.pls.lang.psi.findByPath
 import icu.windea.pls.script.psi.stringValue
 
 object CwtLocationExpressionManager {

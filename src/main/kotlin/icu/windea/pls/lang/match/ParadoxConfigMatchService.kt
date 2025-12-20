@@ -64,9 +64,9 @@ import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.isBlockMember
 import icu.windea.pls.script.psi.isPropertyValue
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.values
+import icu.windea.pls.lang.psi.values
 
 object ParadoxConfigMatchService {
     private val CwtConfigGroup.typeConfigsCache by createKey(CwtConfigGroup.Keys) {

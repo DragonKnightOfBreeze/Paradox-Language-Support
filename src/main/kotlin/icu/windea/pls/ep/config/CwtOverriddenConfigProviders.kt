@@ -20,7 +20,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.stringValue
 
 class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {

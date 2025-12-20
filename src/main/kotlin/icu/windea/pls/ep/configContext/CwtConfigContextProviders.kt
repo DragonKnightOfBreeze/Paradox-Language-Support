@@ -29,7 +29,7 @@ import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.model.paths.relativeTo
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isPropertyValue
 
 /**

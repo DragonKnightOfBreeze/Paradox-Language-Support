@@ -1,6 +1,6 @@
 @file:Suppress("unused", "UNCHECKED_CAST")
 
-package icu.windea.pls.script.psi
+package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiDirectory
@@ -13,12 +13,19 @@ import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.transform
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
-import icu.windea.pls.lang.psi.conditional
-import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.ParadoxScriptLanguage
+import icu.windea.pls.script.psi.ParadoxScriptBlock
+import icu.windea.pls.script.psi.ParadoxScriptBlockElement
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isPropertyValue
+import icu.windea.pls.script.psi.propertyValue
 
 fun ParadoxScriptFile.members(): WalkingSequence<ParadoxScriptMember> {
     return ParadoxPsiSequenceBuilder.members(this)

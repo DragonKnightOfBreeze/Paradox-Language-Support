@@ -62,9 +62,9 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.findParentDefinition
-import icu.windea.pls.script.psi.findParentProperty
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.properties
 
 // NOTE 在这些实现代码中，对于传入参数的名字，要求不为空，但不要求必须严格合法（匹配 PlsPatternConstants.argumentName）
 

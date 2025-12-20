@@ -19,7 +19,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.lang.psi.findProperty
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {

@@ -16,8 +16,8 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findProperty
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.findProperty
+import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.script.psi.stringValue
 
 /**

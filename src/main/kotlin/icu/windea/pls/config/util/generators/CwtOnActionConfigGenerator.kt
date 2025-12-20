@@ -18,7 +18,7 @@ import icu.windea.pls.cwt.psi.CwtElementFactory
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

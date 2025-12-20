@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {

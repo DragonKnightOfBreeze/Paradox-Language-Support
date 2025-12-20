@@ -20,7 +20,7 @@ import icu.windea.pls.model.forGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.properties
 import java.io.DataInput
 import java.io.DataOutput
 

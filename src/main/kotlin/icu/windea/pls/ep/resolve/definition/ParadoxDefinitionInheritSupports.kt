@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes as T
 
 /**

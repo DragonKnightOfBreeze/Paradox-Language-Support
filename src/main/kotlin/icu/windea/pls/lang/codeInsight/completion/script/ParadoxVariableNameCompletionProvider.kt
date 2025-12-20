@@ -26,7 +26,7 @@ import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.script.psi.isBlockMember
 
 /**

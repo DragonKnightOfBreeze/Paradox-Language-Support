@@ -16,7 +16,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxScriptExpression
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.findParentProperty
+import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.script.psi.isBlockMember
 
 /**

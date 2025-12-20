@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 
 /**
  * 声明全局封装变量的重构。

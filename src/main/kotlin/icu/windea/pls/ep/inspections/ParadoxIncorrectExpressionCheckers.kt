@@ -35,8 +35,8 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import icu.windea.pls.script.psi.findParentProperty
-import icu.windea.pls.script.psi.findProperty
+import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.script.psi.floatValue
 import icu.windea.pls.script.psi.intValue
 import icu.windea.pls.script.psi.resolved

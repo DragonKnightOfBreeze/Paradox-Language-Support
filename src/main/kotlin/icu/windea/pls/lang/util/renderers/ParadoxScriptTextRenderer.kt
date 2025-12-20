@@ -6,7 +6,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.members
+import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.value
 
 class ParadoxScriptTextRenderer(

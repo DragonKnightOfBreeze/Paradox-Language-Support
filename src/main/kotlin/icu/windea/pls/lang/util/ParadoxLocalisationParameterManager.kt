@@ -30,8 +30,8 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
-import icu.windea.pls.script.psi.findParentProperty
-import icu.windea.pls.script.psi.properties
+import icu.windea.pls.lang.psi.findParentProperty
+import icu.windea.pls.lang.psi.properties
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterManager {

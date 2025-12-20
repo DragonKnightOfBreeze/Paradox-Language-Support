@@ -20,7 +20,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinition
 
 // com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 

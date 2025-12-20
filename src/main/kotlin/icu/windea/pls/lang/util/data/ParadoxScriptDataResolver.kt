@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.members
+import icu.windea.pls.lang.psi.members
 
 class ParadoxScriptDataResolver(
     val forward: Boolean = true,
