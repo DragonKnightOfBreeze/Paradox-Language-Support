@@ -1,0 +1,154 @@
+package icu.windea.pls.lang.ui.calculators
+
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.table.JBTable
+import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.ListTableModel
+import com.intellij.util.ui.TextTransferable
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import java.awt.Dimension
+import javax.swing.JComponent
+import javax.swing.JTextArea
+
+class ParadoxInlineMathCalculatorDialog(
+    val project: Project,
+    val element: ParadoxScriptInlineMath
+) : DialogWrapper(project, true) {
+    private val calculator = ParadoxInlineMathCalculator()
+    private val argumentList = calculator.resolveArguments(element).values.toMutableList()
+
+    private var hasEverCalculatedSuccessfully = false
+    private var currentOutputText: String = ""
+
+    private lateinit var resultTextArea: JTextArea
+
+    init {
+        title = PlsBundle.message("ui.dialog.calculator.inlineMath.title")
+        setOKButtonText(PlsBundle.message("ui.dialog.calculator.inlineMath.action.copy"))
+        setCancelButtonText(PlsBundle.message("ui.dialog.calculator.inlineMath.action.close"))
+        init()
+    }
+
+    override fun createCenterPanel(): DialogPanel {
+        val expressionText = getInlineExpressionText(element)
+
+        val tableModel = ArgumentsTableModel(argumentList)
+        val table = JBTable(tableModel).apply {
+            setShowGrid(false)
+            rowSelectionAllowed = false
+            columnSelectionAllowed = false
+            intercellSpacing = Dimension(0, 0)
+            // default show 5 rows height
+            preferredScrollableViewportSize = Dimension(-1, rowHeight * 5)
+        }
+        val tablePane = JBScrollPane(table)
+
+        val panel = panel {
+            row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.expression")) {
+                textField()
+                    .text(expressionText)
+                    .align(Align.FILL)
+                    .applyToComponent { isEditable = false }
+            }
+
+            row {
+                cell(tablePane).align(Align.FILL)
+            }.resizableRow()
+
+            row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.result")) {
+                resultTextArea = JTextArea().apply {
+                    lineWrap = true
+                    wrapStyleWord = true
+                    isEditable = false
+                    isOpaque = false
+                }
+                cell(JBScrollPane(resultTextArea).apply { border = null }).align(Align.FILL)
+            }
+        }
+
+        // realtime compute
+        tableModel.addTableModelListener {
+            updateResultText(initial = false)
+        }
+        updateResultText(initial = true)
+
+        return panel
+    }
+
+    override fun doOKAction() {
+        CopyPasteManager.getInstance().setContents(TextTransferable(currentOutputText as CharSequence))
+    }
+
+    override fun getPreferredFocusedComponent(): JComponent? {
+        return try {
+            resultTextArea
+        } catch (_: UninitializedPropertyAccessException) {
+            null
+        }
+    }
+
+    private fun updateResultText(initial: Boolean) {
+        val args = argumentList
+            .mapNotNull { a ->
+                val v = a.value.trim().orNull() ?: return@mapNotNull null
+                a.expression to v
+            }
+            .toMap()
+
+        val output = try {
+            val result = calculator.calculate(element, args)
+            hasEverCalculatedSuccessfully = true
+            result.resolveValue().toString()
+        } catch (e: Throwable) {
+            val message = e.message.orEmpty().ifEmpty { e::class.java.simpleName }
+            val isMissingArgs = e is IllegalArgumentException && message.startsWith("Missing arguments:")
+            when {
+                initial && isMissingArgs && !hasEverCalculatedSuccessfully -> ""
+                else -> message
+            }
+        }
+        currentOutputText = output
+        if (this::resultTextArea.isInitialized) {
+            resultTextArea.text = output
+        }
+    }
+
+    private fun getInlineExpressionText(element: ParadoxScriptInlineMath): String {
+        val tokenText = element.tokenElement?.text?.trim().orEmpty()
+        if (tokenText.startsWith("@[")) {
+            val noPrefix = tokenText.removePrefix("@[")
+            val noSuffix = noPrefix.removeSuffix("]")
+            return noSuffix.trim()
+        }
+        return tokenText
+    }
+
+    private class ArgumentsTableModel(items: MutableList<ParadoxInlineMathCalculator.Argument>) : ListTableModel<ParadoxInlineMathCalculator.Argument>(
+        arrayOf(
+            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.expression")) {
+                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.expression
+            },
+            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.value")) {
+                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.value
+
+                override fun isCellEditable(item: ParadoxInlineMathCalculator.Argument?): Boolean = true
+
+                override fun setValue(item: ParadoxInlineMathCalculator.Argument, value: String?) {
+                    item.value = value.orEmpty()
+                }
+            },
+            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.defaultValue")) {
+                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.defaultValue
+            },
+        ),
+        items
+    )
+}

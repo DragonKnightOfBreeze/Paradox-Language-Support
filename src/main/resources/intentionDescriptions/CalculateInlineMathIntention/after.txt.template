@@ -1,0 +1,2 @@
+IDE will show a dialog that can configure the argument information (`var` and `$NUM$` for this example)
+and show the calculation result (or error message) in real-time.

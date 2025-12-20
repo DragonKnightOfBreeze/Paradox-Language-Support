@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.calculators
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiRecursiveElementVisitor
@@ -52,7 +53,10 @@ class ParadoxInlineMathCalculator {
                     is ParadoxScriptInlineMathScriptedVariableReference -> {
                         val expression = element.text?.trim()?.orNull() ?: return
                         val id = element.name?.trim()?.orNull() ?: return
-                        val resolvedValue = element.resolved()?.scriptedVariableValue
+                        val resolvedValue = when {
+                            DumbService.isDumb(tokenElement.project) -> null
+                            else -> element.resolved()?.scriptedVariableValue
+                        }
                         val defaultValue = resolvedValue?.text.orEmpty()
                         result[expression] = Argument(expression, id, defaultValue, resolvedValue)
                     }
