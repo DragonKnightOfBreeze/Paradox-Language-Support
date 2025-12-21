@@ -484,4 +484,19 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
         val r = findOptions("suppress").mapNotNullTo(FastSet()) { it.stringValue }
         r.optimized()
     }
+
+    /**
+     * 要注入从而成为当前成员规则的子规则的一组成员规则的路径。
+     *
+     * 适用对象：任意值为子句的成员规则。
+     *
+     * CWTools 兼容性：PLS 扩展。
+     *
+     * 示例：`## inject = some/file.txt@some/property`
+     *
+     * @see icu.windea.pls.ep.config.CwtInjectConfigPostProcessor
+     */
+    val inject: CwtOptionDataAccessor<String?> by create {
+        findOption("inject")?.stringValue
+    }
 }
