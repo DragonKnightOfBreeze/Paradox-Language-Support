@@ -140,6 +140,7 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
             MathToken.Operator.Times -> MathOperator.Binary.Times
             MathToken.Operator.Div -> MathOperator.Binary.Div
             MathToken.Operator.Mod -> MathOperator.Binary.Mod
+            MathToken.Operator.Pow -> MathOperator.Binary.Pow
             else -> null
         }
     }

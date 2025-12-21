@@ -28,6 +28,10 @@ sealed interface MathToken {
             override fun render() = "%"
         }
 
+        data object Pow : Operator {
+            override fun render() = "^"
+        }
+
         data object LeftAbs : Operator {
             override fun render() = "|"
         }
