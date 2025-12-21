@@ -64,18 +64,14 @@ object CwtConfigResolverManager {
         if (element !is CwtBlockElement) return null
         val configs: MutableList<CwtMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
-            when (e) {
-                is CwtProperty -> {
-                    val resolved = CwtPropertyConfig.resolve(e, file, configGroup) ?: return@f
-                    CwtPropertyConfig.postProcess(resolved)
-                    configs += resolved
-                }
-                is CwtValue -> {
-                    val resolved = CwtValueConfig.resolve(e, file, configGroup)
-                    CwtValueConfig.postProcess(resolved)
-                    configs += resolved
-                }
+            val resolved = when (e) {
+                is CwtProperty -> CwtPropertyConfig.resolve(e, file, configGroup)
+                is CwtValue -> CwtValueConfig.resolve(e, file, configGroup)
+                else -> null
             }
+            if (resolved == null) return@f
+            CwtMemberConfig.postProcess(resolved)
+            configs += resolved
         }
         return configs // delay optimization
     }
@@ -89,16 +85,13 @@ object CwtConfigResolverManager {
             when (current) {
                 is CwtOptionComment -> {
                     current.forEachChild f@{ e ->
-                        when (e) {
-                            is CwtOption -> {
-                                val resolved = CwtOptionConfig.resolve(e) ?: return@f
-                                optionConfigs.add(0, resolved)
-                            }
-                            is CwtValue -> {
-                                val resolved = CwtOptionValueConfig.resolve(e)
-                                optionConfigs.add(0, resolved)
-                            }
+                        val resolved = when (e) {
+                            is CwtOption -> CwtOptionConfig.resolve(e)
+                            is CwtValue -> CwtOptionValueConfig.resolve(e)
+                            else -> null
                         }
+                        if (resolved == null) return@f
+                        optionConfigs.add(0, resolved)
                     }
                 }
                 is PsiWhiteSpace, is PsiComment -> continue
@@ -113,16 +106,13 @@ object CwtConfigResolverManager {
         if (element !is CwtBlock) return null
         val optionConfigs: MutableList<CwtOptionMemberConfig<*>> = FastList()
         element.forEachChild f@{ e ->
-            when (e) {
-                is CwtOption -> {
-                    val resolved = CwtOptionConfig.resolve(e) ?: return@f
-                    optionConfigs += resolved
-                }
-                is CwtValue -> {
-                    val resolved = CwtOptionValueConfig.resolve(e)
-                    optionConfigs += resolved
-                }
+            val resolved = when (e) {
+                is CwtOption -> CwtOptionConfig.resolve(e)
+                is CwtValue -> CwtOptionValueConfig.resolve(e)
+                else -> null
             }
+            if (resolved == null) return@f
+            optionConfigs += resolved
         }
         return optionConfigs.optimized() // optimized to optimize memory
     }

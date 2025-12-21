@@ -39,6 +39,11 @@ sealed interface CwtMemberConfig<out T : CwtMember> : CwtConfig<T> {
     override fun toString(): String
 
     interface Resolver {
+        fun withConfigs(config: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean
+
+        /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
+        fun postProcess(config: CwtMemberConfig<*>)
+
         /** 通过直接解析（即 [resolve]）以外的方式创建了规则后，需要考虑进行的后续优化。 */
         fun postOptimize(config: CwtMemberConfig<*>)
 

@@ -1,6 +1,6 @@
 package icu.windea.pls.config.util.manipulators
 
-import com.intellij.psi.util.startOffset
+import com.intellij.psi.PsiElement
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -132,6 +132,7 @@ object CwtConfigManipulator {
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig
     ): List<CwtMemberConfig<*>>? {
+        // TODO 2.1.0 需要评估：这里的递归检测可能会影响性能
         return withRecursionGuard {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
@@ -145,6 +146,7 @@ object CwtConfigManipulator {
         parentConfig: CwtMemberConfig<*> = containerConfig,
         context: CwtDeclarationConfigContext
     ): List<CwtMemberConfig<*>>? {
+        // TODO 2.1.0 需要评估：这里的递归检测可能会影响性能
         return withRecursionGuard {
             val key = getKeyForDeepCopy(containerConfig)
             withRecursionCheck(key) {
@@ -153,9 +155,9 @@ object CwtConfigManipulator {
         }
     }
 
-    private fun getKeyForDeepCopy(containerConfig: CwtMemberConfig<*>): String? {
-        // NOTE 2.1.0 尽管应当不会导致内存泄露，这里仍然不直接将 `PsiElement` 作为 key
-        return containerConfig.pointer.element?.let { e -> e.containingFile?.virtualFile?.path?.let { p -> "$p:${e.startOffset}" } }
+    private fun getKeyForDeepCopy(containerConfig: CwtMemberConfig<*>): Any? {
+        // TODO 2.1.0 需要评估：这里可以直接使用指针作为键，应当不会存在内存泄露或其他问题
+        return containerConfig.pointer.takeIf { it != emptyPointer<PsiElement>() }
     }
 
     private fun doDeepCopyConfigs(

@@ -3,7 +3,6 @@ package icu.windea.pls.ep.config
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.CwtTagType
 import icu.windea.pls.config.config.CwtMemberConfig
-import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.tagType
@@ -94,18 +93,9 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     }
 
     private fun updateChildConfigs(targetConfig: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean {
-        return when (targetConfig) {
-            is CwtPropertyConfig -> {
-                val updated = CwtPropertyConfig.withConfigs(targetConfig, configs)
-                if (updated) CwtPropertyConfig.postOptimize(targetConfig)
-                updated
-            }
-            is CwtValueConfig -> {
-                val updated = CwtValueConfig.withConfigs(targetConfig, configs)
-                if (updated) CwtValueConfig.postOptimize(targetConfig)
-                updated
-            }
-        }
+        val updated = CwtMemberConfig.withConfigs(targetConfig, configs)
+        if (updated) CwtMemberConfig.postOptimize(targetConfig)
+        return updated
     }
 
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {
