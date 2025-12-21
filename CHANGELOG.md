@@ -11,7 +11,6 @@
 - [x] #241 Expection in version 2.0.7
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
 - [x] #243 生成本地化时，某些缺失的本地化未被包含
-- [ ] #244 IDE lags and crashes involves to recursive invication of inline script in a specific situation, possible SOF
 - [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
 - [x] 新功能：支持通过意向动作，根据传参信息计算内联数学表达式 / NEW: Support to calculate inline math expressions with argument information via intention actions
 - [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示计算后的值 / NEW: Provide inlay hints for static inline math expressions, showing the calculation result

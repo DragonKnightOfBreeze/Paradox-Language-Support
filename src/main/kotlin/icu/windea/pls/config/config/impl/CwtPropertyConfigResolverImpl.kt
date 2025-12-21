@@ -71,7 +71,7 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         // bind parent config
         config.configs?.forEach { it.parentConfig = config }
         // apply special options
-        CwtConfigResolverUtil.applyOptions(config)
+        CwtConfigResolverUtil.postProcess(config)
         // collect information
         CwtConfigResolverUtil.collectFromConfigExpression(config, config.keyExpression)
         CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
