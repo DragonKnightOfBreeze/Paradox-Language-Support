@@ -8,7 +8,7 @@
 ## 2.1.0-dev
 
 - [x] 同步规则文件 / Synchronize config files
-- [x] #241 Expection in version 2.0.7
+- [x] #241 Exception in version 2.0.7
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
 - [x] #243 生成本地化时，某些缺失的本地化未被包含
 - [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
