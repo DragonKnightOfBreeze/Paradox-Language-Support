@@ -15,7 +15,7 @@
 - [x] 新功能：支持通过意向动作，根据传参信息计算内联数学表达式 / NEW: Support to calculate inline math expressions with argument information via intention actions
 - [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示计算后的值 / NEW: Provide inlay hints for static inline math expressions, showing the calculation result
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:xxx = {...}` ） / NEW: Support the injection syntax in VIC3 and EU5 (e.g., `inject:xxx = {...}`)
-- [ ] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.txt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.txt@some/property`)
+- [x] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.cwt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.cwt@some/property`)
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.7

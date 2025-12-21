@@ -1,0 +1,24 @@
+match_a = 1
+match_b = 2
+MixedCase = 3
+
+container = {
+    child = {
+        grand = 1
+    }
+    values_holder = { inner_value1 inner_value2 }
+}
+
+container2 = {
+    values_block = {
+        {
+            block_value = {
+                x = 1
+                y = 2
+            }
+        }
+    }
+}
+
+top_value1
+top_value2

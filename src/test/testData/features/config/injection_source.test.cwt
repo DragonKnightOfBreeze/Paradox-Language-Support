@@ -1,0 +1,6 @@
+injected_group = {
+    injected1 = 1
+    injected2 = 2
+}
+
+other_root = 3

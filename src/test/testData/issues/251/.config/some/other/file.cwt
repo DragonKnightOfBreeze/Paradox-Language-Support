@@ -1,0 +1,8 @@
+## inject = some/file.cwt@some/property
+k1 = v
+## inject = some/file.cwt@some/property
+k2 = {}
+## inject = some/file.cwt@some/property
+k3 = {
+    p = v
+}

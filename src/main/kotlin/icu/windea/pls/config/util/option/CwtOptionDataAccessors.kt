@@ -492,7 +492,7 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
      *
      * CWTools 兼容性：PLS 扩展。
      *
-     * 示例：`## inject = some/file.txt@some/property`
+     * 示例：`## inject = some/file.cwt@some/property`
      *
      * @see icu.windea.pls.ep.config.CwtInjectConfigPostProcessor
      */

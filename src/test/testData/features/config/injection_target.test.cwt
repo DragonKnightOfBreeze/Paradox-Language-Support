@@ -1,0 +1,19 @@
+## inject = common/test/injection_source.cwt@injected_group/*
+target_block = {
+    existing = 0
+}
+
+## inject = common/test/injection_source.cwt@injected_group/*
+empty_target = {}
+
+## inject = common/test/injection_source.cwt@injected_group/*
+{}
+
+## inject = common/test/injection_source.cwt@injected_group/not_exists*
+unmatched_target = { existing = 0 }
+
+## inject = common/test/injection_source.cwt@injected_group/*
+non_block = 1
+
+## inject = common/test/injection_source.cwt@injected_group/*
+duplicate_target = { injected1 = 0 }

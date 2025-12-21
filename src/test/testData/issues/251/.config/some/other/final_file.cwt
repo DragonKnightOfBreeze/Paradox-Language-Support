@@ -1,0 +1,10 @@
+k1 = v
+k2 = {
+    property = v1
+    property = v2
+}
+k3 = {
+    p = v
+    property = v1
+    property = v2
+}

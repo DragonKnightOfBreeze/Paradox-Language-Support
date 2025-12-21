@@ -1,0 +1,4 @@
+some = {
+    property = v1
+    property = v2
+}

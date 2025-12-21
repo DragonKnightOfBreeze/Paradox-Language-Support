@@ -1,0 +1,2 @@
+## inject = common/test/injection_recursive_b.cwt@cycle_target
+cycle_target = { existing = 0 }
