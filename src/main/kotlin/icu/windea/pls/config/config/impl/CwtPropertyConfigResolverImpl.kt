@@ -107,7 +107,7 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         val separatorType = element.separatorType
         val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
-        val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
+        val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs, injectable = true)
         logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
         return config
     }

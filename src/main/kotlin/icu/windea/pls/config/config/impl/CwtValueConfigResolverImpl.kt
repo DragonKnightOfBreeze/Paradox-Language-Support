@@ -92,7 +92,7 @@ class CwtValueConfigResolverImpl : CwtValueConfig.Resolver, CwtConfigResolverMix
         val valueType = element.type
         val configs = CwtConfigResolverManager.getConfigs(element, file, configGroup)
         val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
-        val config = create(pointer, configGroup, value, valueType, configs, optionConfigs)
+        val config = create(pointer, configGroup, value, valueType, configs, optionConfigs, injectable = true)
         logger.trace { "Resolved value config (value: ${config.value}).".withLocationPrefix(element) }
         return config
     }

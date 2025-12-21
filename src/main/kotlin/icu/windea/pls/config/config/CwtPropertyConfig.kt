@@ -47,7 +47,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
             configs: List<CwtMemberConfig<*>>? = null,
             optionConfigs: List<CwtOptionMemberConfig<*>> = emptyList(),
-            injectable: Boolean = true,
+            injectable: Boolean = false,
         ): CwtPropertyConfig
 
         fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean

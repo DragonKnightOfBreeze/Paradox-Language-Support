@@ -140,16 +140,16 @@ class CwtConfigInjectionTest : BasePlatformTestCase() {
             assertEquals(sourceFile.name, injected2.pointer.element!!.containingFile.name)
         }
 
-        // a top-level block value '{}' cannot carry child configs, injection should be ignored
+        // a top-level block value '{}' is also injectable now
         run {
             val values = targetFileConfig.values
             assertEquals(1, values.size)
             val v = values.single()
             assertEquals(PlsStringConstants.blockFolder, v.value)
             assertNotNull(v.configs)
-            assertTrue(v.configs!!.isEmpty())
+            assertTrue(v.configs!!.isNotEmpty())
 
-            assertTrue(v.properties.orEmpty().isEmpty())
+            assertTrue(v.properties.orEmpty().isNotEmpty())
             assertNull(v.parentConfig)
 
             assertNotNull(v.pointer.element)
