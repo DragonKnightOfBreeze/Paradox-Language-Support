@@ -7,10 +7,10 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
- * 用于提供重载后的规则。
+ * 用于基于上下文提供重载后的规则。
  *
  * 说明：
- * - 根据上下文，有时需要重载特定的脚本表达式对应的规则。
+ * - 基于脚本文件的上下文，有时需要重载特定的脚本表达式对应的规则。
  * - 这里得到的规则会覆盖原始规则。
  */
 @WithGameTypeEP

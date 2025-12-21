@@ -5,10 +5,10 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
- * 用于注入规则。
+ * 用于基于上下文注入规则。
  *
  * 说明：
- * - 根据规则的上下文，有时需要在特定位置注入规则。
+ * - 基于规则的上下文，有时需要在特定位置注入规则。
  * - 这里得到的规则可能覆盖原始的规则，并且一般与其使用相同的文件位置。
  */
 @WithGameTypeEP
