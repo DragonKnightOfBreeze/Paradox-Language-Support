@@ -9,13 +9,11 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
  */
 @WithGameTypeEP
 interface CwtConfigPostProcessor {
-    /**
-     * 执行额外的处理逻辑。
-     *
-     * @param config 目标成员规则。
-     * @return 是否继续执行。
-     */
-    fun postProcess(config: CwtMemberConfig<*>): Boolean
+    fun supports(config: CwtMemberConfig<*>): Boolean = true
+
+    fun deferred(config: CwtMemberConfig<*>): Boolean = false
+
+    fun postProcess(config: CwtMemberConfig<*>)
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<CwtConfigPostProcessor>("icu.windea.pls.configPostProcessor")

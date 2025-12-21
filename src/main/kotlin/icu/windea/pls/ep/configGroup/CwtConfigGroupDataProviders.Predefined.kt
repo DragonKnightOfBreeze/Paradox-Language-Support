@@ -1,14 +1,14 @@
 package icu.windea.pls.ep.configGroup
 
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 
 /**
  * 用于初始化规则分组中预先定义的那些数据。
  */
 class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+    override suspend fun process(configGroup: CwtConfigGroup) {
         val initializer = configGroup.initializer
+
         with(initializer.aliasNamesSupportScope) {
             this += "modifier" // 也支持，但不能切换作用域
             this += "trigger"
@@ -40,7 +40,7 @@ class CwtPredefinedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    override suspend fun postOptimize(configGroup: CwtConfigGroup) {
+    override suspend fun postProcess(configGroup: CwtConfigGroup) {
         // 2.0.7 nothing now (since it's not very necessary)
     }
 }

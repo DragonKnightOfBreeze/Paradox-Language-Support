@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.CwtConfig
 
 interface CwtConfigResolverMixin {
     fun String.withLocationPrefix(element: PsiElement? = null): String {
-        val location = CwtConfigResolverUtil.getLocation() ?: return this
+        val location = CwtConfigResolverManager.getLocation() ?: return this
         val file = element?.containingFile
         val lineNumber = file?.fileDocument?.getLineNumber(element.startOffset)
         val lineNumberString = lineNumber?.let { "#L$it" }.orEmpty()

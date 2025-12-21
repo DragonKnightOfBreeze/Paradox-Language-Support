@@ -15,7 +15,8 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.config.util.option.CwtOptionConfigsOptimizer
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
@@ -54,7 +55,7 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         val configs = configs?.optimized() // optimized to optimize memory
         val optionConfigs = optionConfigs.optimized() // optimized to optimize memory
         val noConfigs = configs == null || (!injectable && configs.isEmpty())  // 2.0.6 NOTE configs may be injected during inline or deep copy
-        val memberType = CwtConfigResolverUtil.checkMemberType(configs, noConfigs)
+        val memberType = CwtConfigResolverManager.checkMemberType(configs, noConfigs)
         val config = when (memberType) {
             CwtMemberType.NONE -> CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType, optionConfigs)
             CwtMemberType.MIXED -> CwtPropertyConfigImplWithConfigs(pointer, configGroup, key, separatorType, optionConfigs)
@@ -70,11 +71,11 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
     override fun postProcess(config: CwtPropertyConfig) {
         // bind parent config
         config.configs?.forEach { it.parentConfig = config }
-        // apply special options
-        CwtConfigResolverUtil.postProcess(config)
+        // run post processors
+        CwtConfigService.postProcess(config)
         // collect information
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.keyExpression)
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.valueExpression)
+        CwtConfigResolverManager.collectFromConfigExpression(config, config.keyExpression)
+        CwtConfigResolverManager.collectFromConfigExpression(config, config.valueExpression)
     }
 
     override fun postOptimize(config: CwtPropertyConfig) {
@@ -101,8 +102,8 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         val value: String = valueElement.value
         val valueType = valueElement.type
         val separatorType = element.separatorType
-        val configs = CwtConfigResolverUtil.getConfigs(valueElement, file, configGroup)
-        val optionConfigs = CwtConfigResolverUtil.getOptionConfigs(element)
+        val configs = CwtConfigResolverManager.getConfigs(valueElement, file, configGroup)
+        val optionConfigs = CwtConfigResolverManager.getOptionConfigs(element)
         val config = create(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
         logger.trace { "Resolved property config (key: ${config.key}, value: ${config.value}).".withLocationPrefix(element) }
         return config

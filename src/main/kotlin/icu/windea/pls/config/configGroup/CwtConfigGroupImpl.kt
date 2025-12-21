@@ -39,8 +39,8 @@ class CwtConfigGroupImpl(
             val start = System.currentTimeMillis()
             val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
             initializer.clear() // 清空以避免数据残留
-            dataProviders.forEach { dataProvider -> dataProvider.process(initializer, this) }
-            dataProviders.forEach { dataProvider -> dataProvider.postOptimize(this) }
+            dataProviders.forEach { dataProvider -> dataProvider.process(this) }
+            dataProviders.forEach { dataProvider -> dataProvider.postProcess(this) }
             initializer.copyUserDataTo(this) // 直接一次性替换规则数据
             initializer.clear() // 清空以避免内存泄露
             modificationTracker.incModificationCount() // 显式增加修改计数

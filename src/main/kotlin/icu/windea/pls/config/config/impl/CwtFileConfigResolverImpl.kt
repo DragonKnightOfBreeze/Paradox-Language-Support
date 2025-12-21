@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
@@ -32,7 +32,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         configs: List<CwtMemberConfig<*>>,
     ): CwtFileConfig {
         val configs = configs.optimized() // optimized to optimize memory
-        val memberType = CwtConfigResolverUtil.checkMemberType(configs)
+        val memberType = CwtConfigResolverManager.checkMemberType(configs)
         return when (memberType) {
             CwtMemberType.NONE -> CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
             CwtMemberType.MIXED -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
@@ -45,7 +45,7 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         val pointer = file.createPointer()
         val fileName = file.name
         val rootBlock = file.block
-        val configs = CwtConfigResolverUtil.getConfigs(rootBlock, file, configGroup).orEmpty()
+        val configs = CwtConfigResolverManager.getConfigs(rootBlock, file, configGroup).orEmpty()
         val config = create(pointer, configGroup, fileName, filePath, configs)
         when (configs.isEmpty()) {
             true -> logger.debug { "Resolved empty file config.".withLocationPrefix() }

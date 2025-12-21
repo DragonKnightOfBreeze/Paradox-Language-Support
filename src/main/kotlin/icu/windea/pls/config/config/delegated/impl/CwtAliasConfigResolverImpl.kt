@@ -8,7 +8,7 @@ import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.util.CwtConfigResolverMixin
-import icu.windea.pls.config.util.CwtConfigResolverUtil
+import icu.windea.pls.config.util.CwtConfigResolverManager
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
@@ -30,7 +30,7 @@ internal class CwtAliasConfigResolverImpl : CwtAliasConfig.Resolver, CwtConfigRe
 
     override fun postProcess(config: CwtAliasConfig) {
         // collect information
-        CwtConfigResolverUtil.collectFromConfigExpression(config, config.configExpression)
+        CwtConfigResolverManager.collectFromConfigExpression(config, config.configExpression)
     }
 }
 

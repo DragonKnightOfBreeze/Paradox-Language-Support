@@ -8,7 +8,6 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.configGroup.CwtConfigGroupInitializer
 import icu.windea.pls.config.filePathPatterns
 import icu.windea.pls.config.findPropertyByPath
 import icu.windea.pls.config.sortedByPriority
@@ -27,7 +26,7 @@ import kotlinx.coroutines.ensureActive
  * 用于初始化规则分组中需要经过计算的那些数据。
  */
 class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
-    override suspend fun process(initializer: CwtConfigGroupInitializer, configGroup: CwtConfigGroup) {
+    override suspend fun process(configGroup: CwtConfigGroup) {
         val currentCoroutineContext = currentCoroutineContext()
         val initializer = configGroup.initializer
 
@@ -245,7 +244,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
     }
 
-    override suspend fun postOptimize(configGroup: CwtConfigGroup) {
+    override suspend fun postProcess(configGroup: CwtConfigGroup) {
         // 2.0.7 nothing now (since it's not very necessary)
     }
 }

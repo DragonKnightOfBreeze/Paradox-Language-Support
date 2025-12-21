@@ -10,7 +10,6 @@ import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.collections.process
 import icu.windea.pls.ep.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.CwtInjectedConfigProvider
 import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
@@ -23,11 +22,20 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 object CwtConfigService {
-    fun postProcess(config: CwtMemberConfig<*>): Boolean {
+    /**
+     * @see CwtConfigPostProcessor.postProcess
+     */
+    fun postProcess(config: CwtMemberConfig<*>) {
         val gameType = config.configGroup.gameType
-        return CwtConfigPostProcessor.EP_NAME.extensionList.process f@{ ep ->
-            if (!PlsAnnotationManager.check(ep, gameType)) return@f true
-            ep.postProcess(config)
+        CwtConfigPostProcessor.EP_NAME.extensionList.forEach f@{ ep ->
+            if (!PlsAnnotationManager.check(ep, gameType)) return@f
+            if (!ep.supports(config)) return@f
+            if (ep.deferred(config)) {
+                val deferredActions = CwtConfigResolverManager.getPostProcessActions(config.configGroup)
+                deferredActions += Runnable { ep.postProcess(config) }
+            } else {
+                ep.postProcess(config)
+            }
         }
     }
 
