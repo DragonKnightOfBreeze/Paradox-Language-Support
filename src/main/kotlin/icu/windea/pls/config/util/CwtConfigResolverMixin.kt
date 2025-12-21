@@ -3,6 +3,8 @@ package icu.windea.pls.config.util
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
 
 interface CwtConfigResolverMixin {
     fun String.withLocationPrefix(element: PsiElement? = null): String {

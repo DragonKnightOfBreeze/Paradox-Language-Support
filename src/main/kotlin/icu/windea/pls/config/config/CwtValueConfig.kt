@@ -77,6 +77,8 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             targetConfig: CwtValueConfig,
             value: String,
         ): CwtValueConfig
+
+        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>)
     }
 
     companion object : Resolver by CwtValueConfigResolverImpl()

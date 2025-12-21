@@ -11,8 +11,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.config.util.CwtConfigResolverManager
+import icu.windea.pls.config.util.CwtConfigResolverMixin
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.collections.filterIsInstanceFast
@@ -31,13 +31,19 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
         filePath: String,
         configs: List<CwtMemberConfig<*>>,
     ): CwtFileConfig {
-        val configs = configs.optimized() // optimized to optimize memory
-        val memberType = CwtConfigResolverManager.checkMemberType(configs)
-        return when (memberType) {
-            CwtMemberType.NONE -> CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
-            CwtMemberType.MIXED -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath, configs)
-            CwtMemberType.PROPERTY -> CwtFileConfigImplWithPropertyConfigs(pointer, configGroup, fileName, filePath, configs)
-            CwtMemberType.VALUE -> CwtFileConfigImplWithValueConfigs(pointer, configGroup, fileName, filePath, configs)
+        val withConfigs = configs.isNotEmpty()
+        val config = when(withConfigs) {
+            true -> CwtFileConfigImplWithConfigs(pointer, configGroup, fileName, filePath)
+            else -> CwtFileConfigImpl(pointer, configGroup, fileName, filePath)
+        }
+        if (withConfigs) withConfigs(config, configs)
+        return config
+    }
+
+    override fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>) {
+        if (config is CwtFileConfigImplWithConfigs) {
+            config.configs = configs.optimized() // optimized to optimize memory
+            config.memberType = CwtConfigResolverManager.checkMemberType(configs)
         }
     }
 
@@ -56,9 +62,6 @@ internal class CwtFileConfigResolverImpl : CwtFileConfig.Resolver, CwtConfigReso
 }
 
 private abstract class CwtFileConfigBase : UserDataHolderBase(), CwtFileConfig {
-    override val properties: List<CwtPropertyConfig> get() = configs.filterIsInstanceFast<CwtPropertyConfig>()
-    override val values: List<CwtValueConfig> get() = configs.filterIsInstanceFast<CwtValueConfig>()
-
     override fun toString() = "CwtFileConfig(name='$name', path='$path')"
 }
 
@@ -78,37 +81,29 @@ private class CwtFileConfigImpl(
     path: String,
 ) : CwtFileConfigImplBase(pointer, configGroup, name, path) {
     override val configs: List<CwtMemberConfig<*>> get() = emptyList()
+    override val properties: List<CwtPropertyConfig> get() = emptyList()
+    override val values: List<CwtValueConfig> get() = emptyList()
 }
 
-// 12 + 6 * 4 = 36 -> 40
+// 12 + 7 * 4 = 40 -> 40
 private open class CwtFileConfigImplWithConfigs(
     pointer: SmartPsiElementPointer<CwtFile>,
     configGroup: CwtConfigGroup,
     name: String,
     path: String,
-    override val configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigImplBase(pointer, configGroup, name, path)
-
-// 12 + 6 * 4 = 36 -> 40
-private class CwtFileConfigImplWithPropertyConfigs(
-    pointer: SmartPsiElementPointer<CwtFile>,
-    configGroup: CwtConfigGroup,
-    name: String,
-    path: String,
-    configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigImplWithConfigs(pointer, configGroup, name, path, configs) {
-    override val properties: List<CwtPropertyConfig> get() = configs.cast()
-    override val values: List<CwtValueConfig> get() = emptyList()
-}
-
-// 12 + 6 * 4 = 36 -> 40
-private class CwtFileConfigImplWithValueConfigs(
-    pointer: SmartPsiElementPointer<CwtFile>,
-    configGroup: CwtConfigGroup,
-    name: String,
-    path: String,
-    configs: List<CwtMemberConfig<*>>,
-) : CwtFileConfigImplWithConfigs(pointer, configGroup, name, path, configs) {
-    override val properties: List<CwtPropertyConfig> get() = emptyList()
-    override val values: List<CwtValueConfig> get() = configs.cast()
+) : CwtFileConfigImplBase(pointer, configGroup, name, path) {
+    override var configs: List<CwtMemberConfig<*>> = emptyList()
+    var memberType: CwtMemberType = CwtMemberType.MIXED
+    override val properties: List<CwtPropertyConfig>
+        get() = when (memberType) {
+            CwtMemberType.PROPERTY -> configs.cast()
+            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
+            else -> emptyList()
+        }
+    override val values: List<CwtValueConfig>
+        get() = when (memberType) {
+            CwtMemberType.VALUE -> configs.cast()
+            CwtMemberType.MIXED -> configs.filterIsInstanceFast()
+            else -> emptyList()
+        }
 }
