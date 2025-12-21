@@ -1601,7 +1601,7 @@ Supported forms:
 
 ## FAQ {#faq}
 
-#### About Template Expressions
+#### About Template Expressions {#faq-template}
 
 Template expressions are composed of multiple data expressions (e.g., definition/localisation/string literal related data expressions) for more flexible matching.
 
@@ -1617,9 +1617,9 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### How to use ANT path patterns in config files
+#### How to use ANT path patterns in config files {#faq-ant}
 
-PLS extends config expressions; since 1.3.6, you can use ANT path patterns for more flexible matching.
+PLS extends config expressions. Since plugin version 1.3.6, you can use ANT path patterns for more flexible matching.
 
 ```cwt
 # a ant expression use prefix 'ant:'
@@ -1633,9 +1633,9 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### How to use regex in config files
+#### How to use regex in config files {#faq-regex}
 
-PLS extends config expressions; since 1.3.6, you can use regex for more flexible matching.
+PLS extends config expressions. Since plugin veresion 1.3.6, you can use regex for more flexible matching.
 
 ```cwt
 # a regex use prefix 're:'
@@ -1644,7 +1644,7 @@ re:foo.*
 re.i:foo.*
 ```
 
-#### How to specify scope context in config files
+#### How to specify scope context in config files {#faq-scope}
 
 Scope context is specified via options `push_scope` and `replace_scopes`.
 
@@ -1660,3 +1660,54 @@ some_config
 ## replace_scopes = { this = country root = country from = country }
 some_config
 ```
+
+#### 如何在规则文件中进行规则注入 {#faq-config-injection}
+
+Since plugin version 2.1.0, config injection can be performed during the resolving phase of config by using the `inject` option.
+
+If there is an existing config fragment
+
+```cwt
+# some/file.cwt
+some = {
+    property = v1
+    property = v2
+}
+```
+
+Then the config fragment
+
+```cwt
+# some/other/file.cwt
+## inject = some/file.cwt@some/property
+k1 = v
+## inject = some/file.cwt@some/property
+k2 = {}
+## inject = some/file.cwt@some/property
+k3 = {
+    p = v
+}
+```
+
+After processing, is equivalent to
+
+```cwt
+# some/other/file.cwt
+k1 = v
+k2 = {
+    property = v1
+    property = v2
+}
+k3 = {
+    p = v
+    property = v1
+    property = v2
+}
+```
+
+Notes:
+- The part before `@` is the path of the config file relative to the config group directory (e.g., the `config/stellaris` directory in the plugin's jar package) and must match exactly (wildcards are not supported, and case sensitivity is not ignored).
+- The part after `@` is the config path. The subpath `-` matches all individual values, while in other cases, it acts as a wildcard (case-insensitive, using `any` or `*` to match any character, and `?` to match a single character) to match all attributes of the corresponding key.
+- This only applies to configs where the value is a clause (i.e., `k = {...}` or `{...}`). The matched configs are injected at the end of the clause as sub-configs of the target config.
+- Config injection is processed only once during the parsing phase of the config file, so injection can be performed anywhere in any config file.
+- If injection fails (e.g., the matched config does not exist, recursion occurs, etc.), it is simply ignored, and a warning log is printed.

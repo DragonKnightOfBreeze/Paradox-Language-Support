@@ -1598,7 +1598,7 @@ title
 
 ## FAQ {#faq}
 
-#### 关于模板表达式
+#### 关于模板表达式 {#faq-template}
 
 模板表达式由多个数据表达式（如定义、本地化、字符串字面量对应的数据表达式）组合而成，用来进行更加灵活的匹配。
 
@@ -1614,9 +1614,9 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### 如何在规则文件中使用 ANT 路径模式
+#### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
-PLS 对规则表达式进行了扩展，从1.3.6开始，可以通过 ANT 路径模式进行更加灵活的匹配。
+PLS 对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过 ANT 路径模式进行更加灵活的匹配。
 
 ```cwt
 # a ant expression use prefix 'ant:'
@@ -1630,9 +1630,9 @@ ant.i:/foo/bar?/*
 # '**' - used to match any characters
 ```
 
-#### 如何在规则文件中使用正则表达式
+#### 如何在规则文件中使用正则表达式 {#faq-regex}
 
-PLS 对规则表达式进行了扩展，从1.3.6开始，可以通过正则表达式进行更加灵活的匹配。
+PLS 对规则表达式进行了扩展，从插件版本 1.3.6 开始，可以通过正则表达式进行更加灵活的匹配。
 
 ```cwt
 # a regex use prefix 're:'
@@ -1641,7 +1641,7 @@ re:foo.*
 re.i:foo.*
 ```
 
-#### 如何在规则文件中指定作用域上下文
+#### 如何在规则文件中指定作用域上下文 {#faq-scope}
 
 在规则文件中，作用域上下文是通过选项 `push_scope` 与 `replace_scopes` 来指定的。
 
@@ -1657,3 +1657,54 @@ some_config
 ## replace_scopes = { this = country root = country from = country }
 some_config
 ```
+
+#### 如何在规则文件中进行规则注入 {#faq-config-injection}
+
+从插件版本 2.1.0 开始，可以通过使用选项 `inject` 在规则的解析阶段进行规则注入。
+
+如果已存在规则片段
+
+```cwt
+# some/file.cwt
+some = {
+    property = v1
+    property = v2
+}
+```
+
+那么规则片段
+
+```cwt
+# some/other/file.cwt
+## inject = some/file.cwt@some/property
+k1 = v
+## inject = some/file.cwt@some/property
+k2 = {}
+## inject = some/file.cwt@some/property
+k3 = {
+    p = v
+}
+```
+
+在处理后等价于
+
+```cwt
+# some/other/file.cwt
+k1 = v
+k2 = {
+    property = v1
+    property = v2
+}
+k3 = {
+    p = v
+    property = v1
+    property = v2
+}
+```
+
+备注：
+- `@` 之前的是规则文件相对于规则分组目录（例如，插件的 jar 包中的 `config/stellaris` 目录）的路径，并且必须完全匹配（不支持通配符，不忽略大小写）。
+- `@` 之后的是规则路径，子路径 `-` 匹配所有单独的值，其余情况会作为通配符（忽略大小写，使用 `any` 或 `*` 匹配任意字符，使用 `?` 匹配单个字符）匹配对应键的所有属性。
+- 仅适用于值为子句的规则（即 `k = {...}` 或 `{...}`），匹配的规则会被注入到子句中的最后，作为目标规则的子规则。
+- 规则注入仅在规则文件的解析阶段处理一次，因此可以在任意规则文件中的任意位置进行注入。
+- 如果注入失败（匹配的规则不存在、存在递归等情况），则直接忽略，并打印警告日志。
