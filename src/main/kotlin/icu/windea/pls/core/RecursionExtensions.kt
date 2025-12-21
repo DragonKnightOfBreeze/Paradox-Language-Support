@@ -33,11 +33,14 @@ class SmartRecursionGuard(val name: Any) {
     val stackTrace = ArrayDeque<Any>()
 
     /**
-     * 若 [key] 不在当前调用栈中，则入栈并执行 [action]，结束后出栈；否则直接返回 `null`。
+     * 如果 [key] 为 `null` 则直接执行 [action] 并返回。
+     * 如果 [key] 不在当前调用栈中，则入栈并执行 [action] 并返回，结束后出栈。
+     * 否则直接返回 `null`。
      *
      * 用于在更小粒度（如某个元素/路径级别）避免递归重入。
      */
-    inline fun <T> withRecursionCheck(key: Any, action: () -> T): T? {
+    inline fun <T> withRecursionCheck(key: Any?, action: () -> T): T? {
+        if (key == null) return action()
         if (stackTrace.contains(key)) {
             return null
         }

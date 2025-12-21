@@ -10,4 +10,10 @@ class CwtPropertyPointer(
     private val delegate: SmartPsiElementPointer<CwtProperty>
 ) : SmartPsiElementPointer<CwtProperty> by delegate {
     val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
+
+    override fun equals(other: Any?) = delegate == other
+
+    override fun hashCode() = delegate.hashCode()
+
+    override fun toString() = delegate.toString()
 }

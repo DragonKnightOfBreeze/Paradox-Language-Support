@@ -1,0 +1,5 @@
+deep_group = {
+    deep_node = {
+        a = 1
+    }
+}

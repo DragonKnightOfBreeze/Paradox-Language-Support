@@ -1,0 +1,2 @@
+## inject = common/test/injection_deep_recursive_source.cwt@deep_group/*
+deep_target = { existing = 0 }

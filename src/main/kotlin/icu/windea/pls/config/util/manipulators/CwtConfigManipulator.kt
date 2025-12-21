@@ -1,5 +1,6 @@
 package icu.windea.pls.config.util.manipulators
 
+import com.intellij.psi.util.startOffset
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionConfig
@@ -28,6 +29,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
+import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionSubtypeExpression
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.model.constants.PlsStringConstants
@@ -130,13 +132,43 @@ object CwtConfigManipulator {
         containerConfig: CwtMemberConfig<*>,
         parentConfig: CwtMemberConfig<*> = containerConfig
     ): List<CwtMemberConfig<*>>? {
+        return withRecursionGuard {
+            val key = getKeyForDeepCopy(containerConfig)
+            withRecursionCheck(key) {
+                doDeepCopyConfigs(containerConfig, parentConfig)
+            }
+        }
+    }
+
+    fun deepCopyConfigsInDeclarationConfig(
+        containerConfig: CwtMemberConfig<*>,
+        parentConfig: CwtMemberConfig<*> = containerConfig,
+        context: CwtDeclarationConfigContext
+    ): List<CwtMemberConfig<*>>? {
+        return withRecursionGuard {
+            val key = getKeyForDeepCopy(containerConfig)
+            withRecursionCheck(key) {
+                doDeepCopyConfigsInDeclarationConfig(containerConfig, context, parentConfig)
+            }
+        }
+    }
+
+    private fun getKeyForDeepCopy(containerConfig: CwtMemberConfig<*>): String? {
+        // NOTE 2.1.0 尽管应当不会导致内存泄露，这里仍然不直接将 `PsiElement` 作为 key
+        return containerConfig.pointer.element?.let { e -> e.containingFile?.virtualFile?.path?.let { p -> "$p:${e.startOffset}" } }
+    }
+
+    private fun doDeepCopyConfigs(
+        containerConfig: CwtMemberConfig<*>,
+        parentConfig: CwtMemberConfig<*>
+    ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
         val result = createListForDeepCopy()
         for (config in configs) {
             val childConfigs = createListForDeepCopy(config.configs)
             val delegatedConfig = CwtMemberConfig.delegated(config, childConfigs).also { it.parentConfig = parentConfig }
-            if (childConfigs != null) childConfigs += deepCopyConfigs(config, delegatedConfig).orEmpty()
+            if (childConfigs != null) childConfigs += doDeepCopyConfigs(config, delegatedConfig).orEmpty()
             CwtMemberConfig.postOptimize(delegatedConfig) // 进行后续优化
             result += delegatedConfig
         }
@@ -145,10 +177,10 @@ object CwtConfigManipulator {
         return result // 这里需要直接返回可变列表
     }
 
-    fun deepCopyConfigsInDeclarationConfig(
+    private fun doDeepCopyConfigsInDeclarationConfig(
         containerConfig: CwtMemberConfig<*>,
-        parentConfig: CwtMemberConfig<*> = containerConfig,
-        context: CwtDeclarationConfigContext
+        context: CwtDeclarationConfigContext,
+        parentConfig: CwtMemberConfig<*>
     ): List<CwtMemberConfig<*>>? {
         val configs = containerConfig.configs?.optimized() ?: return null // 这里需要兼容并同样处理子规则列表为空的情况
         if (configs.isEmpty()) return configs
