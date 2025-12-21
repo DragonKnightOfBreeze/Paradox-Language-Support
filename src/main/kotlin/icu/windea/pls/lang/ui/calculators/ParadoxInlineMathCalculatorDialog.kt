@@ -28,7 +28,7 @@ import javax.swing.table.TableCellEditor
 class ParadoxInlineMathCalculatorDialog(
     val project: Project,
     val element: ParadoxScriptInlineMath
-) : DialogWrapper(project, true) {
+) : DialogWrapper(project, false, IdeModalityType.MODELESS) {
     private val calculator = ParadoxInlineMathCalculator()
     private val argumentList = calculator.resolveArguments(element).values.toMutableList()
     private var initialized = false
