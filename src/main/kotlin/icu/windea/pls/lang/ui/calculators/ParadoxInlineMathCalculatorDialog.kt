@@ -138,7 +138,7 @@ class ParadoxInlineMathCalculatorDialog(
         try {
             val result = calculator.calculate(element, args)
             initialized = true
-            return result.resolveValue().toString()
+            return result.formatted()
         } catch (e: Throwable) {
             val message = e.message.orEmpty().ifEmpty { e::class.java.simpleName }
             if (!initialized && e is IllegalArgumentException && message.startsWith("Missing arguments:")) {

@@ -1,12 +1,13 @@
 package icu.windea.pls.lang.util.calculators
 
-import com.intellij.lang.ASTNode
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
@@ -24,15 +25,6 @@ class ParadoxInlineMathCalculator {
         val resolvedValueElement: PsiElement? = null,
         var value: String = "",
     )
-
-    data class Result(
-        override var value: Float,
-        var isInt: Boolean = true,
-    ) : CalculatorResult {
-        override fun resolveValue(): Number {
-            return if (isInt) value.toInt() else value
-        }
-    }
 
     fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, Argument> {
         val tokenElement = element.tokenElement ?: return emptyMap()
@@ -69,11 +61,11 @@ class ParadoxInlineMathCalculator {
         })
     }
 
-    fun calculate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): Result {
+    fun calculate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathCalculationResult {
         return calculateInternal(element, args)
     }
 
-    private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): Result {
+    private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): MathCalculationResult {
         val arguments = resolveArguments(element)
         prepareArguments(arguments, args)
         return calculateItems(element, arguments, args)
@@ -123,46 +115,59 @@ class ParadoxInlineMathCalculator {
         }
     }
 
-    private fun calculateItems(element: ParadoxScriptInlineMath, arguments: Map<String, Argument>, args: Map<String, String>): Result {
-        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate inline math: token element is missing.")
+    private fun calculateItems(element: ParadoxScriptInlineMath, arguments: Map<String, Argument>, args: Map<String, String>): MathCalculationResult {
+        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate: token element is missing.")
         PsiTreeUtil.findChildOfType(tokenElement, PsiErrorElement::class.java)?.let { error ->
             val errorText = error.errorDescription.ifEmpty { "Syntax error" }
-            throw IllegalStateException("Cannot calculate inline math: $errorText")
+            throw IllegalStateException("Cannot calculate: $errorText")
         }
 
-        val tokens = mutableListOf<CalculatorExpressionToken>()
-        val node = tokenElement.node ?: throw IllegalStateException("Cannot calculate inline math: token element node is missing.")
-        collectTokens(node, tokens, arguments, args)
-        if (tokens.isEmpty()) throw IllegalStateException("Cannot calculate inline math: empty expression.")
+        val tokens = mutableListOf<MathToken>()
+        collectTokens(tokenElement, tokens, arguments, args)
+        if (tokens.isEmpty()) throw IllegalStateException("Cannot calculate: empty expression.")
         return evaluateTokens(tokens)
     }
 
-    private fun collectTokens(node: ASTNode, tokens: MutableList<CalculatorExpressionToken>, arguments: Map<String, Argument>, args: Map<String, String>) {
-        val element = node.psi
+    private fun collectTokens(element: PsiElement, tokens: MutableList<MathToken>, arguments: Map<String, Argument>, args: Map<String, String>) {
+        val operandToken = resolveOperandToken(element, arguments, args)
+        if (operandToken != null) {
+            tokens.add(operandToken)
+            return
+        }
 
-        when (element) {
+        val operatorToken = resolveOperatorToken(element)
+        if (operatorToken != null) {
+            tokens.add(operatorToken)
+        }
+
+        for (child in element.children()) {
+            ProgressManager.checkCanceled()
+            collectTokens(child, tokens, arguments, args)
+        }
+    }
+
+    private fun resolveOperandToken(element: PsiElement, arguments: Map<String, Argument>, args: Map<String, String>): MathToken.Operand? {
+        return when (element) {
             is ParadoxScriptInlineMathNumber -> {
                 val valueText = element.value
                 val number = parseNumberOrNull(valueText)
-                    ?: throw IllegalStateException("Cannot calculate inline math: invalid number '$valueText'.")
-                tokens.add(CalculatorOperandToken(number))
-                return
+                    ?: throw IllegalStateException("Cannot calculate: invalid number '$valueText'.")
+                MathToken.Operand(number)
             }
             is ParadoxScriptInlineMathParameter -> {
                 val expression = element.text?.trim()?.orNull()
-                    ?: throw IllegalStateException("Cannot calculate inline math: parameter text is missing.")
+                    ?: throw IllegalStateException("Cannot calculate: parameter text is missing.")
                 val argument = arguments[expression]
-                    ?: throw IllegalStateException("Cannot calculate inline math: parameter '$expression' is not resolved.")
+                    ?: throw IllegalStateException("Cannot calculate: parameter '$expression' is not resolved.")
                 val number = parseNumberOrNull(argument.value)
                     ?: throw IllegalArgumentException("Invalid argument value for '$expression': '${argument.value}'")
-                tokens.add(CalculatorOperandToken(number))
-                return
+                MathToken.Operand(number)
             }
             is ParadoxScriptInlineMathScriptedVariableReference -> {
                 val expression = element.text?.trim()?.orNull()
-                    ?: throw IllegalStateException("Cannot calculate inline math: scripted variable reference text is missing.")
+                    ?: throw IllegalStateException("Cannot calculate: scripted variable reference text is missing.")
                 val argument = arguments[expression]
-                    ?: throw IllegalStateException("Cannot calculate inline math: scripted variable reference '$expression' is not resolved.")
+                    ?: throw IllegalStateException("Cannot calculate: scripted variable reference '$expression' is not resolved.")
                 val resolvedNumber = when {
                     argument.value.isNotEmpty() -> {
                         parseNumberOrNull(argument.value)
@@ -176,115 +181,50 @@ class ParadoxInlineMathCalculator {
                                 withRecursionGuard {
                                     withRecursionCheck("sv:${argument.id}") {
                                         calculateInternal(resolvedValueElement, args)
-                                    } ?: throw IllegalArgumentException("Cannot calculate inline math: recursive scripted variable reference '$expression'.")
-                                } ?: throw IllegalArgumentException("Cannot calculate inline math: recursion detected.")
+                                    } ?: throw IllegalArgumentException("Cannot calculate: recursive scripted variable reference '$expression'.")
+                                } ?: throw IllegalArgumentException("Cannot calculate: recursion detected.")
                             }
                             else -> {
                                 val valueText = resolvedValueElement.text?.trim().orEmpty()
                                 parseNumberOrNull(valueText)
-                                    ?: throw IllegalStateException("Cannot calculate inline math: invalid scripted variable value '$valueText' for '$expression'.")
+                                    ?: throw IllegalStateException("Cannot calculate: invalid scripted variable value '$valueText' for '$expression'.")
                             }
                         }
                     }
                 }
-                tokens.add(CalculatorOperandToken(resolvedNumber))
-                return
+                MathToken.Operand(resolvedNumber)
             }
-        }
-
-        when (node.elementType) {
-            PLUS_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Plus))
-            MINUS_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Minus))
-            TIMES_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Times))
-            DIV_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Div))
-            MOD_SIGN -> tokens.add(CalculatorOperatorSymbolToken(CalculatorOperatorSymbol.Mod))
-            LP_SIGN -> tokens.add(CalculatorLeftParenToken)
-            RP_SIGN -> tokens.add(CalculatorRightParenToken)
-            LABS_SIGN -> tokens.add(CalculatorLeftAbsToken)
-            RABS_SIGN -> tokens.add(CalculatorRightAbsToken)
-        }
-
-        for (child in node.getChildren(null)) {
-            ProgressManager.checkCanceled()
-            collectTokens(child, tokens, arguments, args)
+            else -> null
         }
     }
 
-    private fun evaluateTokens(tokens: List<CalculatorExpressionToken>): Result {
-        val evaluator = CalculatorInfixExpressionEvaluator<Result>(
-            toUnaryOperator = {
-                when (it) {
-                    CalculatorOperatorSymbol.Plus -> CalculatorOperator.Unary.Plus
-                    CalculatorOperatorSymbol.Minus -> CalculatorOperator.Unary.Minus
-                    else -> null
-                }
-            },
-            toBinaryOperator = {
-                when (it) {
-                    CalculatorOperatorSymbol.Plus -> CalculatorOperator.Binary.Plus
-                    CalculatorOperatorSymbol.Minus -> CalculatorOperator.Binary.Minus
-                    CalculatorOperatorSymbol.Times -> CalculatorOperator.Binary.Times
-                    CalculatorOperatorSymbol.Div -> CalculatorOperator.Binary.Div
-                    CalculatorOperatorSymbol.Mod -> CalculatorOperator.Binary.Mod
-                }
-            },
-            validateBinary = { operator, right ->
-                ensureArithmeticValid(operator, right)
-            },
-            onUnaryApplied = { _, operand, result ->
-                result.isInt = operand.isInt
-            },
-            onBinaryApplied = { operator, left, right, result ->
-                result.isInt = resolveIsIntAfterBinary(operator, left, right, result.value)
-            },
-            tokenToDebugString = {
-                when (it) {
-                    is CalculatorOperandToken<*> -> (it.operand as? Result)?.resolveValue()?.toString().orEmpty()
-                    is CalculatorOperatorSymbolToken -> when (it.symbol) {
-                        CalculatorOperatorSymbol.Plus -> "+"
-                        CalculatorOperatorSymbol.Minus -> "-"
-                        CalculatorOperatorSymbol.Times -> "*"
-                        CalculatorOperatorSymbol.Div -> "/"
-                        CalculatorOperatorSymbol.Mod -> "%"
-                    }
-                    CalculatorLeftParenToken -> "("
-                    CalculatorRightParenToken -> ")"
-                    CalculatorLeftAbsToken -> "|"
-                    CalculatorRightAbsToken -> "|"
-                    else -> it::class.simpleName.orEmpty()
-                }
-            }
-        )
-        return evaluator.evaluate(tokens)
-    }
-
-    private fun resolveIsIntAfterBinary(operator: CalculatorOperator.Binary, left: Result, right: Result, computedValue: Float): Boolean {
-        val bothInt = left.isInt && right.isInt
-        if (!bothInt) return false
-        return when (operator) {
-            CalculatorOperator.Binary.Plus, CalculatorOperator.Binary.Minus, CalculatorOperator.Binary.Times, CalculatorOperator.Binary.Mod -> true
-            CalculatorOperator.Binary.Div -> {
-                // 注意：CalculatorOperator.Binary.Div 会原地修改 left.value，因此不能再用 left.value 推导可整除性。
-                // 在两个操作数都为整数时，只要结果是整数即可认为 isInt。
-                val asInt = computedValue.toInt().toFloat()
-                computedValue == asInt
-            }
+    private fun resolveOperatorToken(element: PsiElement): MathToken.Operator? {
+        return when (element.elementType) {
+            PLUS_SIGN -> MathToken.Operator.Plus
+            MINUS_SIGN -> MathToken.Operator.Minus
+            TIMES_SIGN -> MathToken.Operator.Times
+            DIV_SIGN -> MathToken.Operator.Div
+            MOD_SIGN -> MathToken.Operator.Mod
+            LABS_SIGN -> MathToken.Operator.LeftAbs
+            RABS_SIGN -> MathToken.Operator.RightAbs
+            LP_SIGN -> MathToken.Operator.LeftPar
+            RP_SIGN -> MathToken.Operator.RightPar
+            else -> null
         }
     }
 
-    private fun ensureArithmeticValid(operator: CalculatorOperator.Binary, right: Result) {
-        if (operator == CalculatorOperator.Binary.Div || operator == CalculatorOperator.Binary.Mod) {
-            if (right.value == 0f) throw ArithmeticException("/ by zero")
-        }
-    }
-
-    private fun parseNumberOrNull(text: String): Result? {
+    private fun parseNumberOrNull(text: String): MathCalculationResult? {
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return null
         val intValue = trimmed.toIntOrNull()
-        if (intValue != null) return Result(intValue.toFloat(), isInt = true)
+        if (intValue != null) return MathCalculationResult(intValue.toFloat(), isInt = true)
         val floatValue = trimmed.toFloatOrNull() ?: return null
         if (!floatValue.isFinite()) return null
-        return Result(floatValue, isInt = false)
+        return MathCalculationResult(floatValue, isInt = false)
+    }
+
+    private fun evaluateTokens(tokens: List<MathToken>): MathCalculationResult {
+        val evaluator = MathExpressionEvaluator()
+        return evaluator.evaluate(tokens)
     }
 }

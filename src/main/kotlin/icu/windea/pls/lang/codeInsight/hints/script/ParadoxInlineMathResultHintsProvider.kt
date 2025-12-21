@@ -12,7 +12,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.formatted
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
@@ -43,11 +42,6 @@ class ParadoxInlineMathResultHintsProvider : ParadoxScriptHintsProvider<NoSettin
     private fun PresentationFactory.doCollect(element: ParadoxScriptInlineMath): InlayPresentation? {
         val calculator = ParadoxInlineMathCalculator()
         val result = runCatchingCancelable { calculator.calculate(element) }.getOrNull() ?: return null
-        val v = result.resolveValue()
-        val r = when (v) {
-            is Float -> v.formatted(-3) // 保留3位小数
-            else -> v
-        }
-        return smallText("=> $r".optimized())
+        return smallText("=> ${result.formatted()}".optimized())
     }
 }

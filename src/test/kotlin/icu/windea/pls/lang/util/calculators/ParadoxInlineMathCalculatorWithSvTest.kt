@@ -157,11 +157,11 @@ class ParadoxInlineMathCalculatorWithSvTest : BasePlatformTestCase() {
             .mapValues { (_, v) -> v as ParadoxScriptInlineMath }
     }
 
-    private fun assertResult(expect: Number, expression: () -> CalculatorResult) {
-        Assert.assertEquals(expect, expression().resolveValue())
+    private fun assertResult(expect: Number, expression: () -> MathCalculationResult) {
+        Assert.assertEquals(expect, expression().normalized())
     }
 
-    private fun assertResult(expect: Class<out Throwable>, expression: () -> CalculatorResult) {
-        Assert.assertThrows(expect) { expression().resolveValue() }
+    private fun assertResult(expect: Class<out Throwable>, expression: () -> MathCalculationResult) {
+        Assert.assertThrows(expect) { expression().normalized() }
     }
 }
