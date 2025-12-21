@@ -18,6 +18,7 @@ class CalculateInlineMathIntention : PsiBasedModCommandAction<ParadoxScriptInlin
     override fun getFamilyName() = PlsBundle.message("intention.calculateInlineMath")
 
     override fun perform(context: ActionContext, element: ParadoxScriptInlineMath): ModCommand {
+        if (element.expression.isEmpty()) return ModCommand.nop()
         val project = context.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {

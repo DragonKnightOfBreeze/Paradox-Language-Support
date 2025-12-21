@@ -55,6 +55,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$Float"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$String"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$Color"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$InlineMath"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$ParameterConditionParameter"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$Parameter"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$InlineMathParameter"/>

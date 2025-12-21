@@ -99,6 +99,7 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider"
                                isEnabledByDefault="false" settingsKeyId="ParadoxLocalisationReferenceHintsSettingsKey"/>

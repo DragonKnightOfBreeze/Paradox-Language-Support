@@ -20,7 +20,7 @@ fun List<InlayPresentation>.mergePresentations(): InlayPresentation? {
 }
 
 /**
- * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移等）。
+ * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）。
  */
 fun InlayPresentation.toFinalPresentation(
     factory: PresentationFactory,

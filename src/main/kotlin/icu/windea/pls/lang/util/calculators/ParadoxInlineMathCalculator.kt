@@ -36,11 +36,11 @@ class ParadoxInlineMathCalculator {
     fun resolveArguments(element: ParadoxScriptInlineMath): Map<String, Argument> {
         val tokenElement = element.tokenElement ?: return emptyMap()
         val result = sortedMapOf<String, Argument>()
-        buildArgumentMap(tokenElement, result)
+        buildArguments(tokenElement, result)
         return result
     }
 
-    private fun buildArgumentMap(tokenElement: PsiElement, result: MutableMap<String, Argument>) {
+    private fun buildArguments(tokenElement: PsiElement, result: MutableMap<String, Argument>) {
         tokenElement.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 when (element) {
@@ -74,11 +74,15 @@ class ParadoxInlineMathCalculator {
 
     private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): Result {
         val arguments = resolveArguments(element)
+        prepareArguments(arguments, args)
+        return calculateItems(element, arguments, args)
+    }
 
+    private fun prepareArguments(arguments: Map<String, Argument>, args: Map<String, String>) {
+        if (arguments.isEmpty()) return
         // val parameterGroups = arguments.values
         //     .filter { it.expression.surroundsWith('$', '$') }
         //     .groupBy { it.id }
-
         for (argument in arguments.values) {
             // 不检查歧义参数
             // val isParameter = argument.expression.surroundsWith('$', '$')
@@ -116,11 +120,10 @@ class ParadoxInlineMathCalculator {
         if (missingArguments.isNotEmpty()) {
             throw IllegalArgumentException("Missing arguments: ${missingArguments.joinToString(", ") { it.expression }}")
         }
-        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate inline math: token element is missing.")
-        return calculateItems(tokenElement, arguments, args)
     }
 
-    private fun calculateItems(tokenElement: PsiElement, arguments: Map<String, Argument>, args: Map<String, String>): Result {
+    private fun calculateItems(element: ParadoxScriptInlineMath, arguments: Map<String, Argument>, args: Map<String, String>): Result {
+        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate inline math: token element is missing.")
         PsiTreeUtil.findChildOfType(tokenElement, PsiErrorElement::class.java)?.let { error ->
             val errorText = error.errorDescription.ifEmpty { "Syntax error" }
             throw IllegalStateException("Cannot calculate inline math: $errorText")
@@ -133,12 +136,7 @@ class ParadoxInlineMathCalculator {
         return evaluateTokens(tokens)
     }
 
-    private fun collectTokens(
-        node: ASTNode,
-        tokens: MutableList<CalculatorExpressionToken>,
-        arguments: Map<String, Argument>,
-        args: Map<String, String>,
-    ) {
+    private fun collectTokens(node: ASTNode, tokens: MutableList<CalculatorExpressionToken>, arguments: Map<String, Argument>, args: Map<String, String>) {
         val element = node.psi
 
         when (element) {
@@ -258,12 +256,7 @@ class ParadoxInlineMathCalculator {
         return evaluator.evaluate(tokens)
     }
 
-    private fun resolveIsIntAfterBinary(
-        operator: CalculatorOperator.Binary,
-        left: Result,
-        right: Result,
-        computedValue: Float,
-    ): Boolean {
+    private fun resolveIsIntAfterBinary(operator: CalculatorOperator.Binary, left: Result, right: Result, computedValue: Float): Boolean {
         val bothInt = left.isInt && right.isInt
         if (!bothInt) return false
         return when (operator) {

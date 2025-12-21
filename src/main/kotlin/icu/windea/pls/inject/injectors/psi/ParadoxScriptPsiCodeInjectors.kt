@@ -61,6 +61,12 @@ interface ParadoxScriptPsiCodeInjectors {
     @InjectFieldCache("getColorArgs", cleanUp = "subtreeChanged")
     class Color : CodeInjectorBase()
 
+    /** @see icu.windea.pls.script.psi.ParadoxScriptInlineMath */
+    @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptInlineMathImpl", pluginId = "icu.windea.pls")
+    // @InjectFieldCache("getText", cleanup = "subtreeChanged")
+    @InjectFieldCache("getExpression", cleanUp = "subtreeChanged")
+    class InlineMath : CodeInjectorBase()
+
     /** @see icu.windea.pls.script.psi.ParadoxScriptParameterConditionParameter */
     @InjectTarget("icu.windea.pls.script.psi.impl.ParadoxScriptParameterConditionParameterImpl", pluginId = "icu.windea.pls")
     @InjectFieldCache("getText", cleanUp = "subtreeChanged")

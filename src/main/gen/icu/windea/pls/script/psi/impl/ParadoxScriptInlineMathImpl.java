@@ -36,6 +36,11 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   }
 
   @Override
+  public @NotNull String getExpression() {
+    return ParadoxScriptPsiImplUtil.getExpression(this);
+  }
+
+  @Override
   public @Nullable PsiElement getTokenElement() {
     return ParadoxScriptPsiImplUtil.getTokenElement(this);
   }

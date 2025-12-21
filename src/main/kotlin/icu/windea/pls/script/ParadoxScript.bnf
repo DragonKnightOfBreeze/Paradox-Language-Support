@@ -272,7 +272,7 @@ private inline_parameter_condition_item_part ::= ARGUMENT_TOKEN | parameter | in
 inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-parsing INLINE_MATH_TOKEN
   pin=1
   extends=value
-  methods=[getValue getTokenElement]
+  methods=[getValue getExpression getTokenElement]
 }
 
 // ------

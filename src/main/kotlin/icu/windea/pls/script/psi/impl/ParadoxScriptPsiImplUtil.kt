@@ -466,6 +466,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getExpression(element: ParadoxScriptInlineMath): String {
+        return element.tokenElement?.text?.trim().orEmpty()
+    }
+
+    @JvmStatic
     fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
         return element.findChild { it.elementType == INLINE_MATH_TOKEN }
     }
