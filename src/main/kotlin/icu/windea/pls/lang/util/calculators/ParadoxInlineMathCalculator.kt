@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.calculators
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
@@ -204,6 +205,7 @@ class ParadoxInlineMathCalculator {
         }
 
         for (child in node.getChildren(null)) {
+            ProgressManager.checkCanceled()
             collectTokens(child, tokens, arguments, args)
         }
     }

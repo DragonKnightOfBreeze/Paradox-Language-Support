@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.util.calculators
 
+import com.intellij.openapi.progress.ProgressManager
+
 class CalculatorInfixExpressionEvaluator<R : CalculatorResult>(
     private val toUnaryOperator: (CalculatorOperatorSymbol) -> CalculatorOperator.Unary?,
     private val toBinaryOperator: (CalculatorOperatorSymbol) -> CalculatorOperator.Binary?,
@@ -84,6 +86,7 @@ class CalculatorInfixExpressionEvaluator<R : CalculatorResult>(
         fun toBinaryOperator(token: CalculatorOperatorSymbolToken): CalculatorOperator.Binary? = toBinaryOperator(token.symbol)
 
         for (token in tokens) {
+            ProgressManager.checkCanceled()
             when (token) {
                 is CalculatorOperandToken<*> -> {
                     values.addLast(token.operand as R)
