@@ -35,6 +35,8 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             injectable: Boolean = false,
         ): CwtValueConfig
 
+        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>): Boolean
+
         /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
         fun postProcess(config: CwtValueConfig)
 
@@ -77,8 +79,6 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
             targetConfig: CwtValueConfig,
             value: String,
         ): CwtValueConfig
-
-        fun withConfigs(config: CwtValueConfig, configs: List<CwtMemberConfig<*>>)
     }
 
     companion object : Resolver by CwtValueConfigResolverImpl()

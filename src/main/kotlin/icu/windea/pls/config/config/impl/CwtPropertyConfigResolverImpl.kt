@@ -62,11 +62,13 @@ class CwtPropertyConfigResolverImpl : CwtPropertyConfig.Resolver, CwtConfigResol
         return config
     }
 
-    override fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>) {
+    override fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean {
         if (config is CwtPropertyConfigImplWithConfigs) {
             config.configs = configs.optimized() // optimized to optimize memory
             config.memberType = CwtConfigResolverManager.checkMemberType(configs)
+            return true
         }
+        return false
     }
 
     override fun postProcess(config: CwtPropertyConfig) {

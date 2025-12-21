@@ -2,7 +2,6 @@ package icu.windea.pls.ep.config
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.CwtTagType
-import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -72,14 +71,8 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
 
                 val updated = updateChildConfigs(targetConfig, newConfigs)
                 if (!updated) {
-                    val delegatedTargetConfig = CwtMemberConfig.delegated(targetConfig, newConfigs)
-                    delegatedTargetConfig.parentConfig = targetConfig.parentConfig
-                    CwtMemberConfig.postOptimize(delegatedTargetConfig)
-                    val replaced = replaceConfig(targetConfig, delegatedTargetConfig)
-                    if (!replaced) {
-                        logger.warn("Config injection ignored because config cannot be replaced (config: ${config})")
-                        return@a null
-                    }
+                    logger.warn("Config injection ignored because config cannot carry child configs (config: ${config})")
+                    return@a null
                 }
                 logger.info("Applied config injection (path expression: ${pathExpression}, config: ${config})")
                 null
@@ -102,47 +95,18 @@ class CwtInjectConfigPostProcessor : CwtConfigPostProcessor {
     }
 
     private fun updateChildConfigs(targetConfig: CwtMemberConfig<*>, configs: List<CwtMemberConfig<*>>): Boolean {
-        val expectedSize = configs.size
         return when (targetConfig) {
             is CwtPropertyConfig -> {
-                CwtPropertyConfig.withConfigs(targetConfig, configs)
-                CwtPropertyConfig.postOptimize(targetConfig)
-                true
+                val updated = CwtPropertyConfig.withConfigs(targetConfig, configs)
+                if (updated) CwtPropertyConfig.postOptimize(targetConfig)
+                updated
             }
             is CwtValueConfig -> {
-                CwtValueConfig.withConfigs(targetConfig, configs)
-                CwtValueConfig.postOptimize(targetConfig)
-                targetConfig.configs?.size == expectedSize
+                val updated = CwtValueConfig.withConfigs(targetConfig, configs)
+                if (updated) CwtValueConfig.postOptimize(targetConfig)
+                updated
             }
         }
-    }
-
-    private fun replaceConfig(oldConfig: CwtMemberConfig<*>, newConfig: CwtMemberConfig<*>): Boolean {
-        val parentConfig = oldConfig.parentConfig
-        if (parentConfig != null) {
-            val parentConfigs = parentConfig.configs ?: return false
-            val index = parentConfigs.indexOf(oldConfig)
-            if (index == -1) return false
-            val newParentConfigs = CwtConfigManipulator.createListForDeepCopy().also {
-                it += parentConfigs
-                it[index] = newConfig
-            }
-            return updateChildConfigs(parentConfig, newParentConfigs)
-        }
-
-        val elementFile = oldConfig.pointer.element?.containingFile
-        val fileConfigs = CwtConfigResolverManager.getFileConfigs(oldConfig.configGroup)
-        val fileConfig = fileConfigs.values.firstOrNull { it.pointer.element == elementFile } ?: return false
-        val rootConfigs = fileConfig.configs
-        val index = rootConfigs.indexOf(oldConfig)
-        if (index == -1) return false
-
-        val newRootConfigs = CwtConfigManipulator.createListForDeepCopy().also {
-            it += rootConfigs
-            it[index] = newConfig
-        }
-        CwtFileConfig.withConfigs(fileConfig, newRootConfigs)
-        return true
     }
 
     private fun deepCopyForInjection(configToInject: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*>): CwtMemberConfig<*> {

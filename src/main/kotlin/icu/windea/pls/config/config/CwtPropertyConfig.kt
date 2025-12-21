@@ -50,7 +50,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
             injectable: Boolean = true,
         ): CwtPropertyConfig
 
-        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>)
+        fun withConfigs(config: CwtPropertyConfig, configs: List<CwtMemberConfig<*>>): Boolean
 
         /** 通过直接解析（即 [resolve]）的方式创建了规则后，需要进行的后续处理（应用特殊选项、从数据表达式收集信息）。 */
         fun postProcess(config: CwtPropertyConfig)

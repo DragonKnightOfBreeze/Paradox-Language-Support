@@ -35,7 +35,7 @@ interface CwtFileConfig : CwtConfig<CwtFile> {
             configs: List<CwtMemberConfig<*>> = emptyList(),
         ): CwtFileConfig
 
-        fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>)
+        fun withConfigs(config: CwtFileConfig, configs: List<CwtMemberConfig<*>>): Boolean
 
         fun resolve(file: CwtFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig
     }
