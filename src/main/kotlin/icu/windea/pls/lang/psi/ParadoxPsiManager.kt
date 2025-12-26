@@ -11,9 +11,11 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
+import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.containsLineBreak
+import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.orNull
@@ -65,6 +67,27 @@ object ParadoxPsiManager {
     }
 
     // region Common Methods
+
+    fun getOwnedComments(element: PsiElement): List<PsiComment> {
+        return PlsPsiManager.getOwnedComments(element) { true }
+    }
+
+    @Inferred
+    fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
+        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
+        // - 始终转义每行的注释文本
+
+        if (comments.isEmpty()) return null
+        return buildString {
+            for (comment in comments) {
+                val line = comment.text.trimStart('#').trim()
+                if (line.isEmpty()) continue
+                val l = line.escapeXml()
+                append(l)
+                append(lineSeparator)
+            }
+        }.trimEnd()
+    }
 
     fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
         val r = doGetArgumentTupleListFromCache(element)

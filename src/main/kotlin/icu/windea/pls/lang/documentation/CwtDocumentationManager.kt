@@ -41,6 +41,7 @@ import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
 import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
@@ -407,8 +408,8 @@ object CwtDocumentationManager {
     }
 
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val ownedComments = PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
-        val documentation = PlsPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
         if (documentation.isNullOrEmpty()) return
         content {
             append(documentation)

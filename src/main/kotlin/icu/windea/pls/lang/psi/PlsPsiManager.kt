@@ -13,8 +13,6 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
-import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.escapeXml
 
 object PlsPsiManager {
     fun toPresentableString(element: PsiElement): String {
@@ -150,44 +148,5 @@ object PlsPsiManager {
         // 这里使用“截断”而非“过滤”逻辑
         val attachedComments = getAttachedComments(element)
         return attachedComments.dropWhile { !predicate(it) }.takeWhile(predicate).toList().reversed()
-    }
-
-    @Inferred
-    fun getLineCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
-        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
-
-        if (comments.isEmpty()) return null
-        return buildString {
-            for (comment in comments) {
-                val line = getLineTextFromComment(comment)
-                if (line.isEmpty()) continue
-                append(line.escapeXml())
-                append(lineSeparator)
-            }
-        }.trimEnd()
-    }
-
-    @Inferred
-    fun getDocCommentText(comments: List<PsiComment>, lineSeparator: String = "\n"): String? {
-        // NOTE 2.0.7+ 这里需要考虑如何推断是否需要换行
-
-        // - 忽略所有前导的 '#'，然后再忽略所有首尾空白
-        // - 如果某行注释以 '\' 结束，则输出时不要在这里换行（并且，还会忽略所有末尾的 '\'）
-        // - 如果某行注释以逗号（中文/英文）结束，则输出时不要在这里换行
-
-        if (comments.isEmpty()) return null
-        return buildString {
-            for (comment in comments) {
-                val line = getLineTextFromComment(comment)
-                if (line.isEmpty()) continue
-                append(line.trimEnd('/').escapeXml())
-                if (line.last() in "/,，") continue
-                append(lineSeparator)
-            }
-        }.trimEnd()
-    }
-
-    private fun getLineTextFromComment(comment: PsiComment): String {
-        return comment.text.trimStart('#').trim()
     }
 }

@@ -45,7 +45,6 @@ import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -53,7 +52,7 @@ import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.cwt.psi.CwtValue
 import icu.windea.pls.cwt.psi.isBlockValue
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.psi.PlsPsiManager
+import icu.windea.pls.lang.psi.CwtPsiManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.CwtConfigPath
 import icu.windea.pls.model.paths.ParadoxPath
@@ -379,8 +378,8 @@ object CwtConfigManager {
     }
 
     private fun doGetDocumentation(element: CwtMember): String? {
-        val ownedComments = PlsPsiManager.getOwnedComments(element) { it is CwtDocComment }
-        val documentation = PlsPsiManager.getDocCommentText(ownedComments, "<br>")
+        val ownedComments = CwtPsiManager.getOwnedComments(element)
+        val documentation = CwtPsiManager.getDocCommentText(ownedComments, "<br>")
         return documentation
     }
 
