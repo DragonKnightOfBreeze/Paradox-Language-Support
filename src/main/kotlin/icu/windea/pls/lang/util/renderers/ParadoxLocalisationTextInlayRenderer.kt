@@ -54,7 +54,7 @@ class ParadoxLocalisationTextInlayRenderer(
     val factory: PresentationFactory,
     val textLengthLimit: Int = -1,
     val iconHeightLimit: Int = -1,
-) {
+) : ParadoxRenderer {
     private var builder = mutableListOf<InlayPresentation>()
     private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false

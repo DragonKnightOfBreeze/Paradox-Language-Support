@@ -603,7 +603,7 @@ object ParadoxCompletionManager {
                 val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val icon = when {
-                    config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression -> PlsIcons.Nodes.InlineScript
+                    config.configExpression == ParadoxInlineScriptManager.inlineScriptPathExpression -> PlsIcons.Nodes.Inline
                     else -> PlsIcons.Nodes.PathReference
                 }
                 val lookupElement = LookupElementBuilder.create(file, name)
@@ -817,7 +817,7 @@ object ParadoxCompletionManager {
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ParadoxCompletionPriorities.constant)
-                .withPatchableIcon(PlsIcons.Nodes.InlineScript)
+                .withPatchableIcon(PlsIcons.Nodes.Inline)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
         }

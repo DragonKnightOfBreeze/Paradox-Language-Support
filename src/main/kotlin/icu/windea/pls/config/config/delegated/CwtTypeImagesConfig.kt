@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 路径定位：`types/type[{type}]/images`，`{type}` 匹配定义类型。
  *
- * CWTools 兼容性：兼容，但存在一定的扩展。
+ * CWTools 兼容性：兼容，但存在一些扩展。
  *
  * 示例：
  * ```cwt

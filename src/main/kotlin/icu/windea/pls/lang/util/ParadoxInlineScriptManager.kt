@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
 import icu.windea.pls.config.configContext.inlineScriptHasConflict
@@ -40,6 +41,7 @@ import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager.inlineScriptPathExpression
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -58,6 +60,18 @@ object ParadoxInlineScriptManager {
 
     const val inlineScriptKey = "inline_script"
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
+
+    /**
+     * 检查输入的字符串是否匹配内联脚本用法的键。
+     */
+    fun isMatched(expression: String, gameType: ParadoxGameType? = null): Boolean {
+        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
+        if (gameType != null) {
+            val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
+            if (configs.isNullOrEmpty()) return false
+        }
+        return true
+    }
 
     /**
      * 按照 [inlineScriptPathExpression]，尝试将指定的 [pathReference] 解析为内联脚本文件的路径。
@@ -116,7 +130,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本使用对应的 PSI，得到内联脚本表达式对应的 PSI。
+     * 从内联脚本用法对应的 PSI，得到内联脚本表达式对应的 PSI。
      *
      * - `inline_script = "some/expression"` -> `"some/expression"`
      * - `inline_script = { script = "some/expression" }` -> `"some/expression"`
@@ -133,7 +147,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本表达式对应的 PSI，得到内联脚本使用对应的 PSI。
+     * 从内联脚本表达式对应的 PSI，得到内联脚本用法对应的 PSI。
      *
      * - `"some/expression"` -> `inline_script = "some/expression"`
      * - `"some/expression"` -> `inline_script = { script = "some/expression" }`
@@ -152,7 +166,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本使用对应的 PSI，得到对应的内联脚本表达式。
+     * 从内联脚本用法对应的 PSI，得到对应的内联脚本表达式。
      *
      * @param resolve 如果内联脚本表达式对应的 PSI 是一个封装变量引用，是否尝试解析。
      */
@@ -163,7 +177,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本使用对应的 Lighter AST，得到对应的内联脚本表达式。
+     * 从内联脚本用法对应的 Lighter AST，得到对应的内联脚本表达式。
      */
     fun getInlineScriptExpressionFromUsageElement(tree: LighterAST, node: LighterASTNode): String? {
         val v1 = ParadoxScriptLightTreeUtil.getStringValueFromPropertyNode(node, tree)
@@ -175,7 +189,7 @@ object ParadoxInlineScriptManager {
     }
 
     /**
-     * 从内联脚本使用对应的 PSI，得到对应的传入参数的键值映射。
+     * 从内联脚本用法对应的 PSI，得到对应的传入参数的键值映射。
      *
      * @param resolve 如果传入参数的值对应的 PSI 是一个封装变量引用，是否尝试解析。
      */

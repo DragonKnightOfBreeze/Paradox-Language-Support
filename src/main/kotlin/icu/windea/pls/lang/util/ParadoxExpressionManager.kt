@@ -236,9 +236,9 @@ object ParadoxExpressionManager {
         return when (element) {
             is ParadoxScriptBlock -> TextRange.create(0, 1) // "{"
             is ParadoxScriptInlineMath -> element.firstChild.textRangeInParent // "@[" or "@\["
-            is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.text.length).unquote(element.text)
-            is ParadoxCsvColumn -> TextRange.create(0, element.text.length).unquote(element.text)
-            else -> TextRange.create(0, element.text.length)
+            is ParadoxScriptStringExpressionElement -> TextRange.create(0, element.textLength).unquote(element.text)
+            is ParadoxCsvColumn -> TextRange.create(0, element.textLength).unquote(element.text)
+            else -> TextRange.create(0, element.textLength)
         }
     }
 
@@ -1007,7 +1007,7 @@ object ParadoxExpressionManager {
     }
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        if (config.key.isInlineScriptUsage()) return false // 排除是内联脚本调用的情况
+        if (config.key.isInlineScriptUsage()) return false // 排除是内联脚本用法的情况
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
         if (config.optionData { cardinality }?.isRequired() == false) return false
         return true

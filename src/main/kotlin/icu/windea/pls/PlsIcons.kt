@@ -140,6 +140,10 @@ object PlsIcons {
         @JvmField
         val Tag = IconManager.getInstance().getIcon("/icons/nodes/tag.svg")
         @JvmField
+        val Inline = IconManager.getInstance().getIcon("/icons/nodes/inline.svg")  // lower case 'i'
+        @JvmField
+        val Macro = IconManager.getInstance().getIcon("/icons/nodes/macro.svg") // lower case 'm'
+        @JvmField
         val TemplateExpression = IconManager.getInstance().getIcon("icons/nodes/templateExpression.svg")
         @JvmField
         val Alias = IconManager.getInstance().getIcon("/icons/nodes/alias.svg")
@@ -151,8 +155,6 @@ object PlsIcons {
         val EventId = IconManager.getInstance().getIcon("/icons/nodes/eventId.svg")
         @JvmField
         val PathReference = AllIcons.FileTypes.Any_type
-        @JvmField
-        val InlineScript = IconManager.getInstance().getIcon("/icons/nodes/inlineScript.svg")
         @JvmField
         val DatabaseObjectType = IconManager.getInstance().getIcon("/icons/nodes/databaseObjectType.svg")
         @JvmField

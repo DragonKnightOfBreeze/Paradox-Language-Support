@@ -16,7 +16,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContext
  *
  * 路径定位：`system_scopes/{name}`，`{name}` 匹配规则名称（系统作用域 ID）。
  *
- * CWTools 兼容性：兼容。
+ * CWTools 兼容性：PLS 扩展。
  *
  * 示例：
  * ```cwt

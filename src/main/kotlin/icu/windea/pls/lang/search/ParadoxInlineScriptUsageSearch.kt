@@ -7,7 +7,7 @@ import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 内联脚本使用的查询。
+ * 内联脚本用法的查询。
  */
 class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**

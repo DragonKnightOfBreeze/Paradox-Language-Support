@@ -24,6 +24,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -371,6 +372,10 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     run {
                         val inlineConfig = CwtInlineConfig.resolve(property) ?: return@run
                         initializer.inlineConfigGroup.computeIfAbsent(inlineConfig.name) { FastList() } += inlineConfig
+                    }
+                    run {
+                        val macroConfig = CwtMacroConfig.resolve(property) ?: return@run
+                        initializer.macroConfigs[macroConfig.name] = macroConfig
                     }
                     run {
                         val declarationConfig = CwtDeclarationConfig.resolve(property) ?: return@run

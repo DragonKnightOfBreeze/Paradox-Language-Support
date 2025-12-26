@@ -239,6 +239,13 @@ alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 inline[$inline$] = $declaration
 
+macro[$macro$] = {
+    modes = { $scalar }
+    # anything else?
+}
+
+# no `## inject = ...` completion now
+
 ## replace_scopes = $scope_context
 ## push_scope = $scope
 ## cardinality = $cardinality

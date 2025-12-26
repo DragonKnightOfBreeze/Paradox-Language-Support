@@ -86,12 +86,12 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
 }
 
 /**
- * 提供内联脚本调用中的规则上下文。
+ * 提供内联脚本用法中的规则上下文。
  *
  * - 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  */
 class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
-    // 注意：内联脚本调用可以在定义声明之外
+    // 注意：内联脚本用法可以在定义声明之外
 
     override fun getContext(element: ParadoxScriptMember, elementPath: ParadoxElementPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()

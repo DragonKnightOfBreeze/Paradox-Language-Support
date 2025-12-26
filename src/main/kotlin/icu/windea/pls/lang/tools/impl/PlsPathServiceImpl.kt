@@ -60,6 +60,7 @@ class PlsPathServiceImpl : PlsPathService {
     }
 
     override fun getSteamGamePath(steamId: String, gameName: String): Path? {
+        if (steamId.isEmpty() || gameName.isEmpty()) return null
         return steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId, gameName) ?: emptyPath }.takeIf { it !== emptyPath }
     }
 
@@ -87,6 +88,7 @@ class PlsPathServiceImpl : PlsPathService {
     }
 
     override fun getSteamWorkshopPath(steamId: String): Path? {
+        if (steamId.isEmpty()) return null
         return doGetSteamWorkshopPath(steamId)
     }
 
@@ -97,6 +99,7 @@ class PlsPathServiceImpl : PlsPathService {
     }
 
     override fun getGameDataPath(gameName: String): Path? {
+        if (gameName.isEmpty()) return null
         return doGetGameDataPath(gameName)
     }
 

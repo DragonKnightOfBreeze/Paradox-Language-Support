@@ -14,7 +14,7 @@ import icu.windea.pls.core.util.ReversibleValue
  *
  * 路径定位：`types/type[{type}]`，`{type}` 匹配规则名称（定义类型）。
  *
- * CWTools 兼容性：兼容，但存在一定的扩展。
+ * CWTools 兼容性：兼容，但存在一些扩展。
  *
  * 示例：
  * ```cwt
@@ -32,7 +32,7 @@ import icu.windea.pls.core.util.ReversibleValue
  * @property nameField 名称字段键，用于从属性中抽取“展示名称”。
  * @property typeKeyPrefix 类型键前缀（位于类型键之前的单独的字符串）。
  * @property nameFromFile 是否从文件名推导名称（默认 false）。
- * @property typePerFile 是否“一文件一类型实例”（默认 false）。
+ * @property typePerFile 是否一个文件对应一个类型实例（默认 false）。
  * @property unique 是否唯一（用于冲突检查/导航等）。
  * @property severity 严重级别标签（用于标注告警/错误等展示维度）。
  * @property skipRootKey 允许跳过的顶级键（支持多组设置，忽略大小写）。

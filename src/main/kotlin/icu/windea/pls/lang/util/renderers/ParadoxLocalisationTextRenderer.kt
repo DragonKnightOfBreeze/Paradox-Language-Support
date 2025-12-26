@@ -20,7 +20,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 @Suppress("UNUSED_PARAMETER")
-class ParadoxLocalisationTextRenderer {
+class ParadoxLocalisationTextRenderer : ParadoxRenderer {
     private val builder = StringBuilder()
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
 

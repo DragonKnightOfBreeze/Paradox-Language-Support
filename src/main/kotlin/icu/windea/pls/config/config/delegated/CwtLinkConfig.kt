@@ -37,7 +37,7 @@ import icu.windea.pls.lang.resolve.complexExpression.ParadoxVariableFieldExpress
  * 2. 本地化链接：`localisation_links/{name}`，`{name}` 匹配规则名称（链接名）。
  * 3. 如果静态的本地化链接未被声明，静态的常规链接会被全部复制作为本地化链接。
  *
- * CWTools 兼容性：兼容，但存在一定的扩展。
+ * CWTools 兼容性：兼容，但存在一些扩展。
  *
  * 示例：
  * ```cwt

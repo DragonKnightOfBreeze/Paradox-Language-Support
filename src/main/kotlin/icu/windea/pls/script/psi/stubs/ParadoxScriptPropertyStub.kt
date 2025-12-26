@@ -37,7 +37,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
     }
 
     /**
-     * （作为脚本属性的）内联脚本使用的存根。
+     * （作为脚本属性的）内联脚本用法的存根。
      *
      * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */

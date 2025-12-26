@@ -45,6 +45,8 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.trigger"), ParadoxScriptAttributesKeys.TRIGGER_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.effect"), ParadoxScriptAttributesKeys.EFFECT_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.tag"), ParadoxScriptAttributesKeys.TAG_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.inline"), ParadoxScriptAttributesKeys.INLINE_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.macro"), ParadoxScriptAttributesKeys.MACRO_KEY),
 
         AttributesDescriptor(PlsBundle.message("script.displayName.systemScope"), ParadoxScriptAttributesKeys.SYSTEM_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.scope"), ParadoxScriptAttributesKeys.SCOPE_KEY),
@@ -84,10 +86,12 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         "VALUE_FIELD_VALUE" to ParadoxScriptAttributesKeys.VALUE_FIELD_VALUE_KEY,
         "DATABASE_OBJECT_TYPE" to ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY,
-        "TAG" to ParadoxScriptAttributesKeys.TAG_KEY,
         "MODIFIER" to ParadoxScriptAttributesKeys.MODIFIER_KEY,
         "TRIGGER" to ParadoxScriptAttributesKeys.TRIGGER_KEY,
         "EFFECT" to ParadoxScriptAttributesKeys.EFFECT_KEY,
+        "TAG" to ParadoxScriptAttributesKeys.TAG_KEY,
+        "INLINE" to ParadoxScriptAttributesKeys.INLINE_KEY,
+        "MACRO" to ParadoxScriptAttributesKeys.MACRO_KEY,
         "VARIABLE" to ParadoxScriptAttributesKeys.VARIABLE_KEY,
     )
 

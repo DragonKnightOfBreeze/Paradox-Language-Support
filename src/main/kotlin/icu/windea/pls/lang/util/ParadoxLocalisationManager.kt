@@ -33,7 +33,7 @@ object ParadoxLocalisationManager {
     }
 
     fun getLocalizedText(element: ParadoxLocalisationProperty): String? {
-        return doGetLocalizedTextFromCache(element) // 从缓存中获取
+        return doGetLocalizedTextFromCache(element)
     }
 
     private fun doGetLocalizedTextFromCache(element: ParadoxLocalisationProperty): String? {

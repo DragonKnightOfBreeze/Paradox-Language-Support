@@ -29,7 +29,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElement(element: PsiElement): Boolean {
         run {
-            // 此内联操作也可以从内联脚本使用对应的 PSI 发起
+            // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (element.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@run
             val usageElement = element.parentOfType<ParadoxScriptProperty>() ?: return@run
             val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
@@ -45,7 +45,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
         run {
-            // 此内联操作也可以从内联脚本使用对应的 PSI 发起
+            // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
             val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
             val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run
@@ -60,7 +60,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
         run {
-            // 此内联操作也可以从内联脚本使用对应的 PSI 发起
+            // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run
             val usageElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
             val expressionElement = ParadoxInlineScriptManager.getExpressionElement(usageElement) ?: return@run

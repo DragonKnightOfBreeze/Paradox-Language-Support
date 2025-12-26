@@ -476,7 +476,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val project = configGroup.project
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.InlineScript
+        val contextIcon = PlsIcons.Nodes.Inline
         val contextKey = "inline_script@$inlineScriptExpression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
@@ -510,7 +510,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val context = findContext(element) as? ParadoxScriptFile ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpression(context) ?: return null
         val contextName = expression
-        val contextIcon = PlsIcons.Nodes.InlineScript
+        val contextIcon = PlsIcons.Nodes.Inline
         val contextKey = "inline_script@$expression"
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
@@ -536,7 +536,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(contextReferenceElement) ?: return null
         val name = argumentName
         val contextName = inlineScriptExpression.takeIf { !it.isParameterized() } ?: return null
-        val contextIcon = PlsIcons.Nodes.InlineScript
+        val contextIcon = PlsIcons.Nodes.Inline
         val contextKey = "inline_script@$inlineScriptExpression"
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = config.configGroup.gameType

@@ -20,6 +20,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -91,6 +92,7 @@ interface CwtDataProvider {
     val aliasGroups: Map<String, Map<String, List<CwtAliasConfig>>>
 
     val inlineConfigGroup: Map<String, List<CwtInlineConfig>>
+    val macroConfigs: Map<String, CwtMacroConfig>
 
     // name - config
     val modifierCategories: Map<String, CwtModifierCategoryConfig>

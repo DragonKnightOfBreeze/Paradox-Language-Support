@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.delegated.impl.CwtComplexEnumConfigResolverI
  *
  * 路径定位：`enums/complex_enum[{name}]`，`{name}` 匹配规则名称（枚举名）。
  *
- * CWTools 兼容性：兼容，但存在一定的扩展。
+ * CWTools 兼容性：兼容，但存在一些扩展。
  *
  * 示例：
  * ```cwt

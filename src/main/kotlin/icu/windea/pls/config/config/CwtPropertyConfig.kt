@@ -12,7 +12,7 @@ import icu.windea.pls.model.CwtType
 /**
  * 属性规则（属性型成员规则）。
  *
- * 对应 CWT 规则文件中的一个属性（`k = v` 或 `k = { ... }`）。
+ * 对应 CWT 规则文件中的一个属性（`k = v` 或 `k = {...}`）。
  *
  * @property key 属性键（去除首尾的双引号）。
  * @property separatorType 分隔符类型。

@@ -58,9 +58,9 @@ object ParadoxScriptNavigationManager {
             }
             is ParadoxScriptProperty -> {
                 run {
-                    // 作为内联脚本使用的属性使用特殊图标
+                    // 作为内联脚本用法的属性使用特殊图标
                     if (!element.name.isInlineScriptUsage()) return@run
-                    return PlsIcons.Nodes.InlineScript
+                    return PlsIcons.Nodes.Inline
                 }
                 run {
                     // 作为定义的属性使用特殊图标

@@ -22,6 +22,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
+import icu.windea.pls.config.config.delegated.CwtMacroConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.config.delegated.CwtRowConfig
@@ -82,6 +83,7 @@ abstract class CwtDataProviderBase : CwtDataProvider, UserDataHolderBase() {
     override val singleAliases get() = from.singleAliases
     override val aliasGroups get() = from.aliasGroups
     override val inlineConfigGroup get() = from.inlineConfigGroup
+    override val macroConfigs get() = from.macroConfigs
     override val modifierCategories get() = from.modifierCategories
     override val modifiers get() = from.modifiers
     override val databaseObjectTypes get() = from.databaseObjectTypes
@@ -165,6 +167,8 @@ private val UserDataHolder.singleAliases: FastMap<String, CwtSingleAliasConfig>
 private val UserDataHolder.aliasGroups: FastMap<String, FastMap<String, FastList<CwtAliasConfig>>>
     by createKey(CwtConfigGroup.Keys) { FastMap() }
 private val UserDataHolder.inlineConfigGroup: FastMap<String, FastList<CwtInlineConfig>>
+    by createKey(CwtConfigGroup.Keys) { FastMap() }
+private val UserDataHolder.macroConfigs: FastMap<String, CwtMacroConfig>
     by createKey(CwtConfigGroup.Keys) { FastMap() }
 private val UserDataHolder.modifierCategories: FastMap<String, CwtModifierCategoryConfig>
     by createKey(CwtConfigGroup.Keys) { FastMap() }

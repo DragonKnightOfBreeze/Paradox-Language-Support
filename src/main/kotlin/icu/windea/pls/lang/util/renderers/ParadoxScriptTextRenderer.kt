@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.value
 
 class ParadoxScriptTextRenderer(
     val renderInBlock: Boolean = false
-) {
+) : ParadoxRenderer {
     private val builder = StringBuilder()
 
     fun builder(): StringBuilder = builder

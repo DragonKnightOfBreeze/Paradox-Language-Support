@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.propertyValue
 import icu.windea.pls.script.psi.resolved
 
 /**
- * 提供内联脚本调用的代码补全。
+ * 提供内联脚本用法的代码补全。
  */
 class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

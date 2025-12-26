@@ -40,3 +40,7 @@ settings = {
         variable = <VARIABLE>some_variable</VARIABLE>
 	}
 }
+
+<INLINE>inline_script</INLINE> = <PATH_REFERENCE>some/inline_script</PATH_REFERENCE>
+
+<MACRO>INJECT</MACRO><MARKER>:</MARKER><DEFINITION_REFERENCE>some_definition</DEFINITION_REFERENCE> = {}

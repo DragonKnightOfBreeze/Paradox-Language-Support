@@ -17,12 +17,13 @@ import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.isIdentifier
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -50,7 +51,9 @@ object ParadoxDefinitionManager {
     // get info & match methods
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        // 从缓存中获取
+        // type key must be valid
+        if (getTypeKey(element) == null) return null
+        // get from cache
         return doGetInfoFromCache(element)
     }
 
@@ -69,13 +72,8 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
-        val typeKey = getTypeKey(element)
-        if (element is ParadoxScriptProperty) {
-            if (typeKey.isInlineScriptUsage()) return null // 排除是内联脚本调用的情况
-            if (typeKey.isParameterized()) return null // 排除可能带参数的情况
-        }
         doGetInfoFromStub(element, file)?.let { return it }
-        return doGetInfoFromPsi(element, file, typeKey)
+        return doGetInfoFromPsi(element, file)
     }
 
     fun doGetInfoFromStub(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
@@ -92,23 +90,25 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath, gameType)
     }
 
-    private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile, typeKey: String): ParadoxDefinitionInfo? {
+    private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
         val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val typeKey = getTypeKey(element) ?: return null
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize(), gameType)
     }
 
-    fun getTypeKey(element: ParadoxScriptDefinitionElement): String {
-        return when (element) {
-            is ParadoxScriptFile -> element.name.substringBeforeLast(".") // 如果是文件名，不要包含扩展名
-            else -> element.name // 否则直接使用 PSI 的名字
-        }
+    fun getTypeKey(element: ParadoxScriptDefinitionElement): String? {
+        if (element is ParadoxScriptFile) return element.name.substringBeforeLast('.')
+        val typeKey = element.name
+        if (!typeKey.isIdentifier('.', '-')) return null // 必须是一个合法的标识符（排除可能带参数的情况，但仍然兼容一些特殊字符）
+        if (!ParadoxInlineScriptManager.isMatched(typeKey, selectGameType(element))) return null // 排除是内联脚本用法的情况
+        return typeKey
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {

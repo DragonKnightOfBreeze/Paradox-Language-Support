@@ -12,7 +12,7 @@ var WalkingSequenceOptions.inline: Boolean by createKey(WalkingSequenceOptions.K
 /** @see inline */
 infix fun WalkingSequenceOptions.inline(value: Boolean = true) = apply { inline = value }
 
-/** 如果包含内联脚本使用，是否需要先进行内联。 */
+/** 如果包含内联脚本用法，是否需要先进行内联。 */
 var WalkingSequenceOptions.conditional: Boolean by createKey(WalkingSequenceOptions.Keys) { false }
 
 /** @see conditional */
