@@ -50,7 +50,7 @@ object ParadoxScriptStubManager {
                 if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
                 return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name)) {
+            if (ParadoxInlineScriptManager.isMatched(name)) {  // NOTE 2.1.0 这里目前不验证游戏类型
                 val inlineScriptUsageStub = createInlineScriptUsageStub(psi, parentStub, name)
                 if (inlineScriptUsageStub != null) return inlineScriptUsageStub
                 return@run
@@ -72,7 +72,7 @@ object ParadoxScriptStubManager {
                 if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
                 return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name)) {
+            if (ParadoxInlineScriptManager.isMatched(name)) { // NOTE 2.1.0 这里目前不验证游戏类型
                 val inlineScriptUsageStub = createInlineScriptUsageStub(tree, node, parentStub, name)
                 if (inlineScriptUsageStub != null) return inlineScriptUsageStub
                 return@run

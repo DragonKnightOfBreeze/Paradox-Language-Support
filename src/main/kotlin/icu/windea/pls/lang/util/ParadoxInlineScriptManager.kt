@@ -54,8 +54,6 @@ import icu.windea.pls.script.psi.resolved
 import icu.windea.pls.script.psi.stringValue
 
 object ParadoxInlineScriptManager {
-    // NOTE 目前，尽管仅为 Stellaris 提供了内联脚本对应的内联规则，一些地方的对内联脚本的支持并未仅限于 Stellaris（设计如此，保持现状）
-
     const val inlineScriptKey = "inline_script"
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
 
@@ -156,7 +154,7 @@ object ParadoxInlineScriptManager {
      */
     fun getExpressionElement(usageElement: ParadoxScriptProperty): ParadoxScriptValue? {
         // hardcoded
-        if (!isMatched(usageElement.name)) return null
+        if (!isMatched(usageElement.name)) return null // NOTE 2.1.0 这里目前不验证游戏类型
         val v = usageElement.propertyValue ?: return null
         val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v1 != null) return v1
@@ -175,10 +173,10 @@ object ParadoxInlineScriptManager {
         // hardcoded
         if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
         val p1 = expressionElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
-        if (isMatched(p1.name)) return p1
+        if (isMatched(p1.name)) return p1 // NOTE 2.1.0 这里目前不验证游戏类型
         if (p1.name.equals("script", true)) {
             val p2 = p1.parent?.castOrNull<ParadoxScriptBlock>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
-            if (isMatched(p2.name)) return p2
+            if (isMatched(p2.name)) return p2 // NOTE 2.1.0 这里目前不验证游戏类型
             return null
         }
         return null

@@ -431,6 +431,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
+        // NOTE 2.1.0 这里目前不验证游戏类型
         var inlineConfig: CwtInlineConfig? = null
         var contextReferenceElement: ParadoxScriptProperty? = null
         var completionOffset = -1
@@ -527,6 +528,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     }
 
     private fun doResolveArgument(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxParameterElement? {
+        // NOTE 2.1.0 这里目前不验证游戏类型
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { ParadoxInlineScriptManager.isMatched(it.name) }
         if (inlineConfig == null) return null
