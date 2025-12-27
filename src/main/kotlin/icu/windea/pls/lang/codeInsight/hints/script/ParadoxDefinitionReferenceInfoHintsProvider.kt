@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -25,6 +23,7 @@ import javax.swing.JComponent
 /**
  * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var showSubtypes: Boolean = true

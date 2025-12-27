@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -36,6 +34,7 @@ import javax.swing.JComponent
 /**
  * 通过内嵌提示显示修正的渲染后的图标。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay

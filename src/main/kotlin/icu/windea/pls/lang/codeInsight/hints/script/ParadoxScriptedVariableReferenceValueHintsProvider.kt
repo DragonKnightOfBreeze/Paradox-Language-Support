@@ -11,27 +11,24 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
-import icu.windea.pls.script.psi.ParadoxScriptInlineMath
-
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 
 /**
- * 通过内嵌提示显示内联数学表达式的计算结果（如果无需提供额外的传参信息）。
+ * 通过内嵌提示显示封装变量引用的解析结果（如果可以解析）。默认不启用。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxInlineMathResultHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-    private val settingsKey = SettingsKey<NoSettings>("ParadoxInlineMathResultHintsSettingsKey")
+class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
+    private val settingsKey = SettingsKey<NoSettings>("ParadoxScriptedVariableReferenceValueHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.inlineMathResult")
-    override val description: String get() = PlsBundle.message("script.hints.inlineMathResult.description")
+    override val name: String get() = PlsBundle.message("script.hints.scriptedVariableReferenceValue")
+    override val description: String get() = PlsBundle.message("script.hints.scriptedVariableReferenceValue.description")
     override val key: SettingsKey<NoSettings> get() = settingsKey
 
     override fun createSettings() = NoSettings()
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptInlineMath) return true
-        if (element.expression.isEmpty()) return true
+        if (element !is ParadoxScriptedVariableReference) return true
+        if (element.name.isNullOrEmpty()) return true
         val presentation = doCollect(element) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
@@ -39,9 +36,8 @@ class ParadoxInlineMathResultHintsProvider : ParadoxScriptHintsProvider<NoSettin
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxScriptInlineMath): InlayPresentation? {
-        val calculator = ParadoxInlineMathCalculator()
-        val result = runCatchingCancelable { calculator.calculate(element) }.getOrNull() ?: return null
-        return smallText("=> ${result.formatted()}".optimized())
+    private fun PresentationFactory.doCollect(element: ParadoxScriptedVariableReference): InlayPresentation? {
+        val value = element.resolved()?.value ?: return null
+        return smallText("=> ${value}".optimized())
     }
 }

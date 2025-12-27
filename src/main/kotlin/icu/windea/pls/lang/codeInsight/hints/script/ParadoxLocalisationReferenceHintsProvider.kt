@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -26,6 +24,7 @@ import javax.swing.JComponent
  *
  * 如果本地化文本过长则会先被截断。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,

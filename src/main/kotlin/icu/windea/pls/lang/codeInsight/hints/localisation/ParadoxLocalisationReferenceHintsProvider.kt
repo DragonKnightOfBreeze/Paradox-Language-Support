@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -24,10 +22,11 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableRefere
 import javax.swing.JComponent
 
 /**
- * 通过内嵌提示显示渲染后的本地化文本，适用于本地化参数中引用的本地化。
+ * 通过内嵌提示显示渲染后的本地化文本，适用于本地化参数中引用的本地化。默认不启用。
  *
  * 如果本地化文本过长则会先被截断。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,

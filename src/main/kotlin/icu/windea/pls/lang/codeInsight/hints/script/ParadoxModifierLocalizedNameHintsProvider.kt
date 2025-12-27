@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -38,6 +36,7 @@ import javax.swing.JComponent
  * 通过内嵌提示显示修正的本地化名称。
  * 来自对应的本地化。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,

@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -18,6 +16,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 
+@Suppress("UnstableApiUsage")
 abstract class ParadoxLocalisationHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
     override val previewText: String? get() = null
 

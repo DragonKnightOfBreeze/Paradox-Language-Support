@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -23,8 +21,9 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import javax.swing.JComponent
 
 /**
- * C通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
+ * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
         var showSubtypes: Boolean = true

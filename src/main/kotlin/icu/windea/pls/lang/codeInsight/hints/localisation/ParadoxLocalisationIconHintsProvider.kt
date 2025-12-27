@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -31,6 +29,7 @@ import javax.swing.JComponent
  *
  * 对应的图标需要大小合适且存在。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
         var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay

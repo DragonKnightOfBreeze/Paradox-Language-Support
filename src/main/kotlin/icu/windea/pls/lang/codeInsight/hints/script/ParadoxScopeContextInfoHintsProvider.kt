@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -38,6 +36,7 @@ import javax.swing.JComponent
  *
  * 示例：`this = owner root = country from = ?`
  */
+@Suppress("UnstableApiUsage")
 class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var showOnlyIfScopeIsChanged: Boolean = true

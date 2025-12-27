@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints
 
 import com.intellij.codeInsight.hints.InlayHintsProvider
@@ -12,6 +10,7 @@ import icu.windea.pls.core.codeInsight.editorActions.hints.toFinalPresentation
 import icu.windea.pls.core.toAtomicProperty
 import kotlin.reflect.KMutableProperty0
 
+@Suppress("UnstableApiUsage")
 abstract class ParadoxHintsProvider<T : Any> : InlayHintsProvider<T> {
     open val renderIcon = false
     open val renderLocalisation = false

@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.ChangeListener
@@ -33,6 +31,7 @@ import javax.swing.JComponent
  * @see ParadoxHintTextProvider
  * @see ParadoxHintTextProviderBase.ComplexEnumValue
  */
+@Suppress("UnstableApiUsage")
 class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,

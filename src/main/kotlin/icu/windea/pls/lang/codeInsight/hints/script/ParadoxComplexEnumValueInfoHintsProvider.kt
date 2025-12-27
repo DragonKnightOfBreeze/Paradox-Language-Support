@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
@@ -22,6 +20,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * 通过内嵌提示显示复杂枚举值信息，即枚举名。
  */
+@Suppress("UnstableApiUsage")
 class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
     private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")
 
