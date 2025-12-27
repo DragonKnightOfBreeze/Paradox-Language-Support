@@ -2,18 +2,16 @@ package icu.windea.pls.lang.injection
 
 import com.intellij.lang.injection.MultiHostInjector
 import com.intellij.lang.injection.MultiHostRegistrar
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.InjectionUtils
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.model.injection.ParadoxLocalisationTextInjectionInfo
 import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxParameter
-import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 脚本语言的语言注入器。
@@ -32,7 +30,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     // see org.intellij.plugins.intelliLang.inject.InjectorUtils
 
     private val toInject = listOf(
-        ParadoxScriptString::class.java,
+        ParadoxScriptStringExpressionElement::class.java,
         ParadoxParameter::class.java
     )
 
@@ -42,8 +40,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         if (host !is PsiLanguageInjectionHost) return
         InjectionUtils.enableInjectLanguageAction(host, false) // disable inject language action
 
-        runCatchingCancelable { doGetLanguageToInject(host, registrar) }
-            .onFailure { e -> thisLogger().error(e.message, e) }
+        doGetLanguageToInject(host, registrar)
     }
 
     private fun doGetLanguageToInject(host: PsiLanguageInjectionHost, registrar: MultiHostRegistrar) {

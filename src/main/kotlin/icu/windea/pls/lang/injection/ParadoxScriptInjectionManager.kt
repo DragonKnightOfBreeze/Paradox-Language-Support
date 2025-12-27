@@ -43,6 +43,7 @@ object ParadoxScriptInjectionManager {
     }
 
     fun applyParameterValueInjection(host: PsiLanguageInjectionHost): List<ParadoxParameterValueInjectionInfo> {
+        if (host !is ParadoxScriptString && host !is ParadoxParameter) return emptyList()
         val injectionInfos = mutableListOf<ParadoxParameterValueInjectionInfo>()
 
         ProgressManager.checkCanceled()
@@ -117,6 +118,7 @@ object ParadoxScriptInjectionManager {
     }
 
     fun applyLocalisationTextInjection(host: PsiLanguageInjectionHost): List<ParadoxLocalisationTextInjectionInfo> {
+        if (host !is ParadoxScriptString) return emptyList()
         val injectionInfos = mutableListOf<ParadoxLocalisationTextInjectionInfo>()
 
         ProgressManager.checkCanceled()
