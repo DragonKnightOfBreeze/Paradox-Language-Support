@@ -30,10 +30,4 @@ class ParadoxGotoRelatedItem(element: PsiElement, @NlsContexts.Separator group: 
         val qualifiedName = fileInfo.rootInfo.qualifiedName
         return PlsBundle.message("paradox.goto.related.item.container.name", path, qualifiedName)
     }
-
-    companion object {
-        fun createItems(elements: Collection<PsiElement>, @NlsContexts.Separator group: String): List<ParadoxGotoRelatedItem> {
-            return elements.mapTo(mutableListOf()) { ParadoxGotoRelatedItem(it, group) }
-        }
-    }
 }
