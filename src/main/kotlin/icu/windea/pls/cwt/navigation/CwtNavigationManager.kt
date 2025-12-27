@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.navigation
 
 import com.intellij.psi.PsiElement
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.truncate
 import icu.windea.pls.cwt.psi.CwtFile
@@ -22,8 +23,13 @@ object CwtNavigationManager {
     }
 
     fun getIcon(element: PsiElement): Icon? {
-        // 直接复用 PSI 的图标
-        return element.icon
+        return getPatchedIcon(element) ?: element.icon
+    }
+
+    fun getPatchedIcon(element: PsiElement): Icon? {
+        val configType = CwtConfigManager.getConfigType(element)
+        if (configType != null) return configType.icon
+        return null
     }
 
     fun getLongPresentableText(element: PsiElement): String? {
