@@ -39,7 +39,7 @@ object ParadoxDefinitionInjectionManager {
      */
     fun isMatched(expression: String, gameType: ParadoxGameType?): Boolean {
         if (gameType == null) return false
-        val mode = expression.substringBefore('.', "")
+        val mode = expression.substringBefore(':', "")
         return isSupported(mode, gameType)
     }
 
@@ -67,9 +67,9 @@ object ParadoxDefinitionInjectionManager {
         if (!isMatched(expression, gameType)) return null
         if (!isAvailable(element)) return null
 
-        val mode = expression.substringBefore('.', "")
+        val mode = expression.substringBefore(':', "")
         if (mode.isEmpty()) return null
-        val target = expression.substringAfter('.', "")
+        val target = expression.substringAfter(':', "")
         val config = PlsFacade.getConfigGroup(gameType).macroConfigs[mode]
         if (config == null) return null
         val modeConfig = config.modeConfigs[mode]

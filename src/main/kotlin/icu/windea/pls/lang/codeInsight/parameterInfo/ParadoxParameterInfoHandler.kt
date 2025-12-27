@@ -8,7 +8,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.escapeXml
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
@@ -63,7 +62,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
                         if (parameterElement != null) {
                             val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
                             if (inferredType != null) {
-                                append(": ").append(inferredType.escapeXml())
+                                append(": ").append(inferredType)
                             }
                         }
                     }
