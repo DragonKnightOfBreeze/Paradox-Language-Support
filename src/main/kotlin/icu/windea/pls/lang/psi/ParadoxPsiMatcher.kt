@@ -139,7 +139,7 @@ object ParadoxPsiMatcher {
         }
         if (element !is ParadoxScriptProperty) return false
         if (gameType == null) return false
-        if (!ParadoxInlineScriptManager.isMatched(element.name)) return false
+        if (!ParadoxInlineScriptManager.isMatched(element.name, gameType)) return false
         return true
     }
 
@@ -151,7 +151,7 @@ object ParadoxPsiMatcher {
         if (element !is ParadoxScriptProperty) return false
         if (gameType == null) return false
         if (!ParadoxDefinitionInjectionManager.isMatched(element.name, gameType)) return false
-        if (!ParadoxDefinitionInjectionManager.isSupported(element.name, gameType)) return false
+        if (!ParadoxDefinitionInjectionManager.isAvailable(element)) return false
         return true
     }
 

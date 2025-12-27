@@ -92,6 +92,7 @@
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.script.inlineMathResult"
+        bundle="messages.PlsBundle"
         nameKey="script.hints.inlineMathResult"
         descriptionKey="script.hints.inlineMathResult.description"/>
 

@@ -17,11 +17,6 @@ internal class CwtInlineConfigResolverImpl : CwtInlineConfig.Resolver, CwtConfig
 
     private fun doResolve(config: CwtPropertyConfig): CwtInlineConfig? {
         val name = config.key.removeSurroundingOrNull("inline[", "]")?.orNull()?.optimized() ?: return null
-        val propElements = config.properties
-        if (propElements.isNullOrEmpty()) {
-            logger.warn("Skipped invalid inline config (name: $name): Missing properties.".withLocationPrefix(config))
-            return null
-        }
         logger.debug { "Resolved inline config (name: $name).".withLocationPrefix(config) }
         return CwtInlineConfigImpl(config, name)
     }

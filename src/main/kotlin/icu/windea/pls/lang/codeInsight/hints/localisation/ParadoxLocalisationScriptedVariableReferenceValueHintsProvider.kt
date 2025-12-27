@@ -11,14 +11,13 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.optimized
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptHintsProvider
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 
 /**
  * 通过内嵌提示显示封装变量引用的解析结果（如果可以解析）。默认不启用。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxLocalisationScriptedVariableReferenceValueHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
+class ParadoxLocalisationScriptedVariableReferenceValueHintsProvider : ParadoxLocalisationHintsProvider<NoSettings>() {
     private val settingsKey = SettingsKey<NoSettings>("ParadoxLocalisationScriptedVariableReferenceValueHintsSettingsKey")
 
     override val name: String get() = PlsBundle.message("localisation.hints.scriptedVariableReferenceValue")

@@ -3,16 +3,18 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderFacade
 import icu.windea.pls.core.codeInsight.navigation.setTargets
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -35,10 +37,12 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
         val icon = PlsIcons.Gutter.DefinitionInjections
         val prefix = PlsStringConstants.definitionInjectionPrefix
         val name = definitionInfo.name
-        val tooltip = "$prefix <b>${name.escapeXml().or}</b>" // 目前不包含提示信息
-        val targets by lazy {
-            listOf<PsiElement>() // TODO 2.1.0
-        }
+        val tooltip = "$prefix <b>${name.escapeXml()}</b>" // 目前不包含提示信息
+        val targets0 = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
+        // TODO 2.1.0
+        if (targets0.isEmpty()) return
+        val targets = targets0.optimized()
+        ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.definitionInjections.title"))

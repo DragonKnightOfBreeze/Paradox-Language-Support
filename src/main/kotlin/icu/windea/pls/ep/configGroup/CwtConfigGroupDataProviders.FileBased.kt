@@ -132,13 +132,15 @@ class CwtFileBasedConfigGroupDataProvider : CwtConfigGroupDataProvider {
         CwtConfigResolverManager.getPostProcessActions(configGroup).forEach { it.run() }
 
         currentCoroutineContext.ensureActive()
-        for (fileConfig in internalFileConfigs.values) {
-            currentCoroutineContext.ensureActive()
-            processInternalFile(fileConfig)
-        }
-        for (fileConfig in fileConfigs.values) {
-            currentCoroutineContext.ensureActive()
-            processFile(fileConfig)
+        readAction {
+            for (fileConfig in internalFileConfigs.values) {
+                currentCoroutineContext.ensureActive()
+                processInternalFile(fileConfig)
+            }
+            for (fileConfig in fileConfigs.values) {
+                currentCoroutineContext.ensureActive()
+                processFile(fileConfig)
+            }
         }
     }
 
