@@ -1,6 +1,7 @@
 package icu.windea.pls
 
 import com.intellij.icons.AllIcons
+import com.intellij.platform.images.icons.PlatformImagesIcons
 import com.intellij.ui.IconManager
 import javax.swing.Icon
 
@@ -21,11 +22,9 @@ object PlsIcons {
         @JvmField
         val Library = AllIcons.Nodes.PpLibFolder
         @JvmField
-        val Image = IconManager.getInstance().getIcon("/icons/general/image.svg") // from ThumbnailToolWindow.svg
+        val Presentation = PlatformImagesIcons.ThumbnailToolWindow
         @JvmField
-        val Presentation = IconManager.getInstance().getIcon("/icons/general/presentation.svg") // from ThumbnailToolWindow.svg, fill #5D8DC3
-        @JvmField
-        val Steam = IconManager.getInstance().getIcon("/icons/general/steam.svg")
+        val Steam = IconManager.getInstance().getIcon("/icons/steam.svg")
     }
 
     object FileTypes {
@@ -140,7 +139,7 @@ object PlsIcons {
         @JvmField
         val Tag = IconManager.getInstance().getIcon("/icons/nodes/tag.svg")
         @JvmField
-        val Inline = IconManager.getInstance().getIcon("/icons/nodes/inline.svg")  // lower case 'i'
+        val Inline = IconManager.getInstance().getIcon("/icons/nodes/inline.svg") // lower case 'i'
         @JvmField
         val Macro = IconManager.getInstance().getIcon("/icons/nodes/macro.svg") // lower case 'm'
         @JvmField
@@ -196,11 +195,11 @@ object PlsIcons {
         @JvmField
         val RelatedImages = IconManager.getInstance().getIcon("/icons/gutter/relatedImages.svg")
         @JvmField
-        val InlineScripts = IconManager.getInstance().getIcon("/icons/gutter/inlineScripts.svg") // TODO 2.1.0
+        val InlineScripts = IconManager.getInstance().getIcon("/icons/gutter/inlineScripts.svg")
         @JvmField
-        val DefinitionInjections = IconManager.getInstance().getIcon("/icons/gutter/definitionInjections.svg") // TODO 2.1.0
+        val DefinitionInjections = IconManager.getInstance().getIcon("/icons/gutter/definitionInjections.svg")
         @JvmField
-        val DefinitionInjectionTargets = IconManager.getInstance().getIcon("/icons/gutter/definitionInjectionTargets.svg") // TODO 2.1.0
+        val DefinitionInjectionTargets = IconManager.getInstance().getIcon("/icons/gutter/definitionInjectionTargets.svg")
     }
 
     object Actions {

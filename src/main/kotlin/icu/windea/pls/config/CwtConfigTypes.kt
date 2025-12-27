@@ -46,7 +46,7 @@ object CwtConfigTypes {
         description = PlsBundle.message("cwt.config.description.dynamicValue")
     }
     val Inline = CwtConfigType.create("inline") {
-        icon = PlsIcons.Nodes.InlineScript
+        icon = PlsIcons.Nodes.Inline
         prefix = PlsStringConstants.inlinePrefix
         description = PlsBundle.message("cwt.config.description.inline")
     }

@@ -1,0 +1,9 @@
+<!-- Copyright 2000-2023 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license. -->
+<!-- See: https://intellij-icons.jetbrains.design/#AopCommonIcons-icons-around_advice -->
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <g fill="none" fill-rule="evenodd">
+    <path fill="#40B6E0" fill-opacity=".6" d="M8,13 C5.23857143,13 3,10.7614286 3,8 C3,5.23857143 5.23857143,3 8,3 C10.7614286,3 13,5.23857143 13,8 C13,10.7614286 10.7614286,13 8,13 Z" transform="scale(0.75)"/>
+    <path fill="#9AA7B0" fill-opacity=".8" d="M1.28987868,10 L2.34141142,10 C3.16508423,12.3303847 5.38756235,14 8,14 C10.6124377,14 12.8349158,12.3303847 13.6585886,10 L14.7101213,10 C13.8495721,12.8914889 11.1710206,15 8,15 C4.82897936,15 2.15042787,12.8914889 1.28987868,10 Z M1.28987868,6 C2.15042787,3.10851105 4.82897936,1 8,1 C11.1710206,1 13.8495721,3.10851105 14.7101213,6 L13.6585886,6 C12.8349158,3.66961525 10.6124377,2 8,2 C5.38756235,2 3.16508423,3.66961525 2.34141142,6 L1.28987868,6 Z" transform="scale(0.75)"/>
+    <path fill="#231F20" fill-opacity=".7" d="M1,1 L1,4 L1.649,4 C2.578,4 3,3.493 3,2.515 L3,2.5 C3,1.522 2.578,1 1.649,1 L1,1 Z M0,0 L1.649,0 C3.04,0 4,1.093 4,2.5 C4,3.921 3.04,5 1.649,5 L0,5 L0,0 Z" transform="translate(4.5 3.725) scale(0.9) "/>
+  </g>
+</svg>

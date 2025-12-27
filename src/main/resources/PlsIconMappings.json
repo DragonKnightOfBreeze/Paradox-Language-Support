@@ -71,7 +71,10 @@
         "relatedImages.svg": "icons/gutter/relatedImages.svg",
         "relatedScriptedVariables.svg": "icons/gutter/relatedScriptedVariables.svg",
         "relatedDefinitions.svg": "icons/gutter/relatedDefinitions.svg",
-        "relatedLocalisations.svg": "icons/gutter/relatedLocalisations.svg"
+        "relatedLocalisations.svg": "icons/gutter/relatedLocalisations.svg",
+        "inlineScripts.svg": "icons/gutter/inlineScripts.svg",
+        "definitionInjections.svg": "icons/gutter/definitionInjections.svg",
+        "definitionInjectionTargets.svg": "icons/gutter/definitionInjectionTargets.svg"
       },
       "actions": {
         "gameSettings.svg": "icons/actions/gameSettings.svg",
