@@ -29,7 +29,6 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
@@ -51,6 +50,7 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
 import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
@@ -72,6 +72,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
@@ -94,6 +95,7 @@ object ParadoxDocumentationManager {
             is ParadoxModifierElement -> getModifierDoc(element, originalElement, hint)
             is ParadoxScriptScriptedVariable -> getScriptedVariableDoc(element, originalElement, hint)
             is ParadoxScriptProperty -> getPropertyDoc(element, originalElement, hint)
+            is ParadoxScriptFile -> getScriptFileDoc(element, originalElement, hint)
             is ParadoxScriptPropertyKey -> computeLocalDocumentation(element.parent, originalElement, hint)
             is ParadoxLocalisationLocale -> getLocalisationLocaleDoc(element, originalElement, hint)
             is ParadoxLocalisationProperty -> getLocalisationPropertyDoc(element, originalElement, hint)
@@ -172,6 +174,13 @@ object ParadoxDocumentationManager {
         }
     }
 
+    private fun getScriptFileDoc(element: ParadoxScriptFile, originalElement: PsiElement?, hint: Boolean): String? {
+        val expression = ParadoxInlineScriptManager.getInlineScriptExpression(element)
+        if (expression != null) return getInlineScriptDoc(element, expression, originalElement, hint)
+
+        return null // nothing now
+    }
+
     private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
             // 对于相关图片信息，在 definition 部分显示在相关本地化信息之后，在 sections 部分则显示在之前
@@ -182,6 +191,12 @@ object ParadoxDocumentationManager {
             buildLineCommentContent(element)
             addOverrideStrategy(element)
             buildSections()
+        }
+    }
+
+    private fun getInlineScriptDoc(element: ParadoxScriptFile, expression: String, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            buildInlineScriptDefinition(element, expression)
         }
     }
 
@@ -503,7 +518,7 @@ object ParadoxDocumentationManager {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
-            // 加上定义信息
+            // 加上基本信息
             append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
             when (valueElement) {
@@ -544,7 +559,7 @@ object ParadoxDocumentationManager {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
-            // 加上定义信息
+            // 加上基本信息
             append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
             when (valueElement) {
@@ -586,7 +601,7 @@ object ParadoxDocumentationManager {
             addScopeContextForDefinition(element, definitionInfo)
 
             // 加上参数信息（如果支持且存在）
-            addParametersForDefinition(element, definitionInfo)
+            addParameters(element)
 
             // 加上事件类型信息（对于on_action）
             addEventTypeForOnAction(element, definitionInfo)
@@ -768,31 +783,6 @@ object ParadoxDocumentationManager {
         sections[PlsBundle.message("sectionTitle.scopeContext")] = getScopeContextText(scopeContext, gameType, element)
     }
 
-    private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        if (!PlsSettings.getInstance().state.documentation.showParameters) return
-
-        val sections = getSections(SECTIONS_INFO) ?: return
-        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
-        if (parameterContextInfo.parameters.isEmpty()) return // ignore
-        val parametersText = buildString {
-            append("<pre>")
-            var isFirst = true
-            parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
-                if (isFirst) isFirst = false else append("<br>")
-                append(parameterName)
-                // 加上推断得到的规则信息
-                val isOptional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
-                if (isOptional) append("?") // optional marker
-                // 加上推断得到的类型信息
-                val parameterElement = elements.firstOrNull()?.parameterElement
-                val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }
-                if (inferredType.isNotNullOrEmpty()) append(": ").append(inferredType.escapeXml())
-            }
-            append("</pre>")
-        }
-        sections[PlsBundle.message("sectionTitle.parameters")] = parametersText
-    }
-
     private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
         // 有些游戏类型直接通过 CWT 文件指定了事件类型，而非 CSV 文件，忽略这种情况
@@ -805,6 +795,18 @@ object ParadoxDocumentationManager {
         val categories = ReferenceLinkType.CwtConfig.Categories
         val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
         append(PlsStringConstants.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
+    }
+
+    private fun DocumentationBuilder.buildInlineScriptDefinition(element: ParadoxScriptFile, expression: String) {
+        definition {
+            // 加上文件信息
+            appendFileInfoHeader(element)
+            // 加上基本信息
+            append(PlsStringConstants.inlineScriptPrefix).append(" <b>").append(expression.escapeXml()).append("</b>")
+
+            // 加上参数信息（如果存在）
+            addParameters(element)
+        }
     }
 
     private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
@@ -895,6 +897,31 @@ object ParadoxDocumentationManager {
         ParadoxLocalisationArgumentManager.getInfo(element).let {
             sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
         }
+    }
+
+    private fun DocumentationBuilder.addParameters(element: ParadoxScriptDefinitionElement) {
+        if (!PlsSettings.getInstance().state.documentation.showParameters) return
+
+        val sections = getSections(SECTIONS_INFO) ?: return
+        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
+        if (parameterContextInfo.parameters.isEmpty()) return // ignore
+        val parametersText = buildString {
+            append("<pre>")
+            var isFirst = true
+            parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
+                if (isFirst) isFirst = false else append("<br>")
+                append(parameterName)
+                // 加上推断得到的规则信息
+                val isOptional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
+                if (isOptional) append("?") // optional marker
+                // 加上推断得到的类型信息
+                val parameterElement = elements.firstOrNull()?.parameterElement
+                val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }
+                if (inferredType.isNotNullOrEmpty()) append(": ").append(inferredType.escapeXml())
+            }
+            append("</pre>")
+        }
+        sections[PlsBundle.message("sectionTitle.parameters")] = parametersText
     }
 
     private fun DocumentationBuilder.addOverrideStrategy(element: PsiElement) {
