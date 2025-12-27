@@ -33,9 +33,9 @@ import icu.windea.pls.script.psi.resolved
 /**
  * 提供内联脚本用法的代码补全。
  */
-class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxInlineScriptUsageCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!PlsSettings.getInstance().state.completion.completeInlineScriptInvocations) return
+        if (!PlsSettings.getInstance().state.completion.completeInlineScriptUsage) return
 
         val file = parameters.originalFile
         if (file !is ParadoxScriptFile || selectRootFile(file) == null) return
@@ -68,6 +68,6 @@ class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<Compl
         context.rightQuoted = rightQuoted
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
 
-        ParadoxCompletionManager.completeInlineScriptInvocation(context, result)
+        ParadoxCompletionManager.completeInlineScriptUsage(context, result)
     }
 }

@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
@@ -61,6 +62,11 @@ object ParadoxScriptNavigationManager {
                     // 作为内联脚本用法的属性使用特殊图标
                     if (!element.name.isInlineScriptUsage()) return@run
                     return PlsIcons.Nodes.Inline
+                }
+                run {
+                    // 作为定义注入的属性使用特殊图标
+                    if (ParadoxDefinitionInjectionManager.getInfo(element) == null) return@run
+                    return PlsIcons.Nodes.Macro
                 }
                 run {
                     // 作为定义的属性使用特殊图标

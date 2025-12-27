@@ -804,7 +804,7 @@ object ParadoxCompletionManager {
         ParadoxParameterManager.completeArguments(contextElement, context, result)
     }
 
-    fun completeInlineScriptInvocation(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeInlineScriptUsage(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
         configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ inlineConfig ->
             ProgressManager.checkCanceled()

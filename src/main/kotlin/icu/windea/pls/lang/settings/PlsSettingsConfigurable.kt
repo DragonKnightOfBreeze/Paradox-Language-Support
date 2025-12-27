@@ -222,10 +222,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     checkBox(PlsBundle.message("settings.completion.completeLocalisationNames"))
                         .bindSelected(completionSettings::completeLocalisationNames)
                 }
-                // completeInlineScriptInvocations
+                // completeInlineScriptUsage
                 row {
-                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptInvocations"))
-                        .bindSelected(completionSettings::completeInlineScriptInvocations)
+                    checkBox(PlsBundle.message("settings.completion.completeInlineScriptUsage"))
+                        .bindSelected(completionSettings::completeInlineScriptUsage)
                 }
                 // completeVariableNames
                 row {

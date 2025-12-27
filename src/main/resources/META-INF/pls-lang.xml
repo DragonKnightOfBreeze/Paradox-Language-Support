@@ -63,7 +63,7 @@
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventIdCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider-->
-    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxInlineScriptInvocationCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxInlineScriptUsageCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableNameCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionNameCompletionProvider-->
     <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider-->
