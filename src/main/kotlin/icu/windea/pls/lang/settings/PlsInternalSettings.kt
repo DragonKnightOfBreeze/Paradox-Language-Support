@@ -6,7 +6,7 @@ import com.intellij.openapi.util.registry.Registry
 import icu.windea.pls.core.orNull
 
 /**
- * PLS的内部设置。可以通过 Registry 页面进行调整。
+ * PLS 内部设置。可以通过 Registry 页面进行调整。
  */
 @Service(Service.Level.APP)
 class PlsInternalSettings {

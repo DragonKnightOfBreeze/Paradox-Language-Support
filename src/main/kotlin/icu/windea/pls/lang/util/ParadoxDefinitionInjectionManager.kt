@@ -12,16 +12,6 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 object ParadoxDefinitionInjectionManager {
     const val definitionInjectionKey = "definition_injection"
 
-    // /**
-    //  * 检测指定的游戏类型是否支持内联脚本。
-    //  */
-    // fun isSupported(gameType: ParadoxGameType?): Boolean {
-    //     if (gameType == null) return false
-    //     val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
-    //     if (configs.isNullOrEmpty()) return false
-    //     return true
-    // }
-
     /**
      * 检查指定的游戏类型是否支持指定模式的定义注入。
      */
