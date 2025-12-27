@@ -60,4 +60,15 @@
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
+
+  <option name="PARADOX_SCRIPT.INLINE">
+    <value>
+      <option name="FOREGROUND" value="D5B778"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.MACRO">
+    <value>
+      <option name="FOREGROUND" value="D5B778"/>
+    </value>
+  </option>
 </list>
