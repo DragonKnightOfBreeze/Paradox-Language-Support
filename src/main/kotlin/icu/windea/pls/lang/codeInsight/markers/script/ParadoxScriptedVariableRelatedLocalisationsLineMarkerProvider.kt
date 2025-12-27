@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 /**
  * 提供封装变量（scripted_variable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
-class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations
@@ -35,8 +35,9 @@ class ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider : ParadoxRela
         val name = element.name?.orNull() ?: return
         // 查找同名本地化（优先首选语言）
         val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val targets = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale).optimized()
-        if (targets.isEmpty()) return
+        val targets0 = ParadoxScriptedVariableManager.getNameLocalisations(name, element, locale)
+        if (targets0.isEmpty()) return
+        val targets = targets0.optimized()
         // 提示文本：relatedLocalisation: <key>
         val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltip = "$prefix $name"

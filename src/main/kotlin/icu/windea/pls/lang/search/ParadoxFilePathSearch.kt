@@ -6,6 +6,7 @@ import com.intellij.psi.search.searches.ExtensibleQueryFactory
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
 /**
  * 文件路径的查询。
@@ -33,7 +34,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         private val iconExpression = CwtDataExpression.resolve("icon[]", false)
 
         /**
-         *  @see ParadoxFilePathSearch.SearchParameters
+         * @see ParadoxFilePathSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -46,7 +47,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         }
 
         /**
-         *  @see ParadoxFilePathSearch.SearchParameters
+         * @see ParadoxFilePathSearch.SearchParameters
          */
         @JvmStatic
         fun searchIcon(
@@ -56,6 +57,16 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return search(filePath, iconExpression, selector, ignoreLocale)
         }
+
+        /**
+         * @see ParadoxFilePathSearch.SearchParameters
+         */
+        @JvmStatic
+        fun searchInlineScript(
+            expression: String,
+            selector: ChainedParadoxSelector<VirtualFile>
+        ): ParadoxQuery<VirtualFile, SearchParameters> {
+            return search(ParadoxInlineScriptManager.getInlineScriptFilePath(expression), null, selector)
+        }
     }
 }
-

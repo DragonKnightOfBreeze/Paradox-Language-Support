@@ -5,21 +5,19 @@ import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 导航到当前定义的包括自身在内的相同名称且相同主要类型的定义。
- *
- * 不支持直接声明为文件的定义。
+ * 导航到当前注入的作为目标的定义声明。
  */
-class GotoDefinitionsAction : BaseCodeInsightAction() {
-    private val handler = GotoDefinitionsHandler()
+class GotoDefinitionInjectionTargetsAction : BaseCodeInsightAction() {
+    private val handler = GotoDefinitionInjectionTargetsHandler()
 
     override fun getHandler(): CodeInsightActionHandler {
         return handler
@@ -34,14 +32,15 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
         if (file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
-        presentation.isVisible = true
+        val gameType = selectGameType(file) ?: return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        if (!element.isDefinitionTypeKeyOrName()) return
+        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return
+        if(info.target.isEmpty()) return // 排除目标为空的情况
         presentation.isEnabled = true
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        return ParadoxPsiFinder.findScriptProperty(file, offset)
     }
 }

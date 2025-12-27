@@ -11,7 +11,10 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxLocalisationType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -116,11 +119,37 @@ object ParadoxPsiMatcher {
         return isLocalisation(element) && element.type == ParadoxLocalisationType.Synced
     }
 
+    @OptIn(ExperimentalContracts::class)
     fun isInvocationReference(element: PsiElement, referenceElement: PsiElement): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
         if (element !is ParadoxScriptProperty) return false
         if (referenceElement !is ParadoxScriptPropertyKey) return false
         val name = element.definitionInfo?.name?.orNull() ?: return false
         if (name != referenceElement.text.unquote()) return false
+        return true
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isInlineScriptUsage(element: PsiElement, gameType: ParadoxGameType): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        if (element !is ParadoxScriptProperty) return false
+        if (!ParadoxInlineScriptManager.isMatched(element.name, gameType)) return false
+        return true
+    }
+
+    @OptIn(ExperimentalContracts::class)
+    fun isDefinitionInjection(element: PsiElement, gameType: ParadoxGameType): Boolean {
+        contract {
+            returns(true) implies (element is ParadoxScriptProperty)
+        }
+        if (element !is ParadoxScriptProperty) return false
+        if (gameType == null) return false
+        if (!ParadoxDefinitionInjectionManager.isMatched(element.name, gameType)) return false
+        if (!ParadoxDefinitionInjectionManager.isSupported(element.name, gameType)) return false
         return true
     }
 

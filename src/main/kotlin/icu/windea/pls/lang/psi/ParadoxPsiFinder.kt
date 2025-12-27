@@ -26,7 +26,9 @@ import icu.windea.pls.localisation.psi.isComplexExpression
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.ParadoxScriptLanguage
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
@@ -175,6 +177,14 @@ object ParadoxPsiFinder {
         return file.findElementAt(offset) t@{
             if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationLocale>(false)
+        }
+    }
+
+    fun findScriptProperty(file: PsiFile, offset: Int, fromToken: Boolean = false): ParadoxScriptProperty? {
+        if (file.language !is ParadoxScriptLanguage) return null
+        return file.findElementAt(offset) t@{
+            if (fromToken && it.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@t null
+            it.parentOfType<ParadoxScriptProperty>(false)
         }
     }
 

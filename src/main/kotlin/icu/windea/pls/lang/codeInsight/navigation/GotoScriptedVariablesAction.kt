@@ -33,8 +33,9 @@ class GotoScriptedVariablesAction : BaseCodeInsightAction() {
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset)
-        presentation.isEnabled = ParadoxPsiMatcher.isScriptedVariable(element)
+        val element = findElement(file, offset) ?: return
+        if (!ParadoxPsiMatcher.isScriptedVariable(element)) return
+        presentation.isEnabled = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {

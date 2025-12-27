@@ -48,6 +48,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             element.isDefinitionTypeKeyOrName() -> {
                 val definition = element.findParentDefinition() ?: return null
                 val definitionInfo = definition.definitionInfo ?: return null
+                if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
                 val imageInfos = definitionInfo.images
                 if (imageInfos.isEmpty()) return GotoData(definition, PsiElement.EMPTY_ARRAY, emptyList())
                 val targets = mutableListOf<PsiElement>().synced()

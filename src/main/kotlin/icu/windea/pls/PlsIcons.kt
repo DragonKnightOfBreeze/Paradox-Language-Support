@@ -195,6 +195,12 @@ object PlsIcons {
         val RelatedLocalisations = IconManager.getInstance().getIcon("/icons/gutter/relatedLocalisations.svg")
         @JvmField
         val RelatedImages = IconManager.getInstance().getIcon("/icons/gutter/relatedImages.svg")
+        @JvmField
+        val InlineScripts = IconManager.getInstance().getIcon("/icons/gutter/inlineScripts.svg") // TODO 2.1.0
+        @JvmField
+        val DefinitionInjections = IconManager.getInstance().getIcon("/icons/gutter/definitionInjections.svg") // TODO 2.1.0
+        @JvmField
+        val DefinitionInjectionTargets = IconManager.getInstance().getIcon("/icons/gutter/definitionInjectionTargets.svg") // TODO 2.1.0
     }
 
     object Actions {

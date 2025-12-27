@@ -109,10 +109,13 @@
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider"/>
 
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableRelatedLocalisationLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedLocalisationsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxInlineScriptsLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionsLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionTargetsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationRelatedScriptedVariablesLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.markers.localisation.ParadoxLocalisationRelatedDefinitionsLineMarkerProvider"/>
@@ -355,27 +358,45 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
+      <action id="Pls.GoToRelatedScriptedVariables" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedScriptedVariablesAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt shift p"/>
+        <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
       <action id="Pls.GoToRelatedDefinitions" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedDefinitionsAction">
-        <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="alt shift p"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedLocalisationsAction">
-        <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="alt shift p"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.GoToRelatedImages" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedImagesAction">
-        <keyboard-shortcut first-keystroke="control alt shift p" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt shift p"/>
         <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
       <action id="Pls.GoToRelatedConfigs" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction">
-        <keyboard-shortcut first-keystroke="alt p" keymap="$default"/>
+        <keyboard-shortcut keymap="$default" first-keystroke="alt p"/>
         <mouse-shortcut keymap="$default" keystroke="alt button1"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
+      <action id="Pls.GoToInlineScripts" class="icu.windea.pls.lang.codeInsight.navigation.GotoInlineScriptsAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
+      <action id="Pls.GoToDefinitionInjections" class="icu.windea.pls.lang.codeInsight.navigation.GotoDefinitionInjectionsAction">
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
+      <action id="Pls.GoToDefinitionInjectionTargets" class="icu.windea.pls.lang.codeInsight.navigation.GotoDefinitionInjectionTargetsAction">
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>

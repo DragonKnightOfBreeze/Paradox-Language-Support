@@ -8,22 +8,20 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.util.ParadoxModifierManager
+import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前目标的相关图片的动作。
+ * 导航到当前定义的对应的定义注入。
  *
- * 支持的目标：
- * - 定义（来自类型键或名字）
- * - 修正（来自对应的脚本表达式）
+ * 不支持直接声明为文件的定义。
  */
-class GotoRelatedImagesAction : BaseCodeInsightAction() {
-    private val handler = GotoRelatedImagesHandler()
+class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
+    private val handler = GotoDefinitionInjectionsHandler()
 
     override fun getHandler(): CodeInsightActionHandler {
         return handler
@@ -36,19 +34,16 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file !is ParadoxScriptFile) return
+        val fileInfo = file.fileInfo ?: return
+        if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
-        if (file.definitionInfo != null) {
-            presentation.isEnabled = true
-            return
-        }
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val isEnabled = when {
-            element !is ParadoxScriptStringExpressionElement -> false
-            element.isDefinitionTypeKeyOrName() -> true
-            else -> ParadoxModifierManager.resolveModifier(element) != null
-        }
-        presentation.isEnabled = isEnabled
+        if (!element.isDefinitionTypeKeyOrName()) return
+        val definition = element.findParentDefinition() ?: return
+        val definitionInfo = definition.definitionInfo ?: return
+        if (definitionInfo.name.isEmpty()) return // 排除匿名定义
+        presentation.isEnabled = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {

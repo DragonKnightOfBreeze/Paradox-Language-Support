@@ -12,23 +12,18 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.util.anonymous
-import icu.windea.pls.core.util.or
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.findParentDefinition
-import icu.windea.pls.lang.search.ParadoxDefinitionSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.definition
-import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 import java.util.*
 
-class GotoDefinitionsHandler : GotoTargetHandler() {
+class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxDefinitions"
+        return "navigation.goto.paradoxDefinitionInjections"
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -40,15 +35,12 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val definitionInfo = definition.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitions.search", definitionInfo.name)) {
+        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, definition).definition().contextSensitive()
-                val resolved = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
-                targets.addAll(resolved)
+                // TODO 2.1.0
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
         return GotoData(definition, targets.distinct().toTypedArray(), emptyList())
     }
 
@@ -62,18 +54,18 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
-        val definitionName = definitionInfo.name.or.anonymous()
-        return PlsBundle.message("script.goto.definitions.chooseTitle", definitionName.escapeXml())
+        val definitionName = definitionInfo.name.orNull() ?: return ""
+        return PlsBundle.message("script.goto.definitionInjections.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return ""
-        val definitionName = definitionInfo.name.or.anonymous()
-        return PlsBundle.message("script.goto.definitions.findUsagesTitle", definitionName.escapeXml())
+        val definitionName = definitionInfo.name.orNull() ?: return ""
+        return PlsBundle.message("script.goto.definitionInjections.findUsagesTitle", definitionName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.definitions.notFoundMessage")
+        return PlsBundle.message("script.goto.definitionInjections.notFoundMessage")
     }
 
     override fun navigateToElement(descriptor: Navigatable) {

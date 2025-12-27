@@ -63,7 +63,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets0) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))
-            .setTargets { targets0 }
+            .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)

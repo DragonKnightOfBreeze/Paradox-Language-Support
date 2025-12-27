@@ -2,7 +2,6 @@ package icu.windea.pls.lang.util
 
 import com.intellij.lang.LighterAST
 import com.intellij.lang.LighterASTNode
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
@@ -105,12 +104,21 @@ object ParadoxInlineScriptManager {
     /**
      * 得到指定的内联脚本表达式对应的内联脚本文件。
      *
-     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/ 的内联脚本文件。
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun getInlineScriptFile(expression: String, project: Project, context: Any?): ParadoxScriptFile? {
-        val filePath = getInlineScriptFilePath(expression)
         val selector = selector(project, context).file().contextSensitive()
-        return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)?.castOrNull()
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).find()?.toPsiFile(project)?.castOrNull()
+    }
+
+    /**
+     * 得到指定的内联脚本表达式对应的所有内联脚本文件。
+     *
+     * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     */
+    fun getInlineScriptFiles(expression: String, project: Project, context: Any?): List<ParadoxScriptFile> {
+        val selector = selector(project, context).file().contextSensitive()
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).findAll().mapNotNull { it.toPsiFile(project)?.castOrNull() }
     }
 
     /**
@@ -119,10 +127,8 @@ object ParadoxInlineScriptManager {
      * @param expression 指定的内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     fun processInlineScriptFile(expression: String, project: Project, context: Any?, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
-        val filePath = getInlineScriptFilePath(expression)
         val selector = selector(project, context).file().contextSensitive()
-        return ParadoxFilePathSearch.search(filePath, null, selector).processQueryAsync(onlyMostRelevant) p@{
-            ProgressManager.checkCanceled()
+        return ParadoxFilePathSearch.searchInlineScript(expression, selector).processQueryAsync(onlyMostRelevant) p@{
             val file = it.toPsiFile(project)?.castOrNull<ParadoxScriptFile>() ?: return@p true
             processor(file)
             true
@@ -238,7 +244,6 @@ object ParadoxInlineScriptManager {
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()
         ParadoxInlineScriptUsageSearch.search(expression, selector).processQueryAsync p@{ p ->
-            ProgressManager.checkCanceled()
             if (!p.name.isInlineScriptUsage()) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true

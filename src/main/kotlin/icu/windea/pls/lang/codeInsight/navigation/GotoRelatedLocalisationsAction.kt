@@ -44,9 +44,8 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
             return
         }
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset)
+        val element = findElement(file, offset) ?: return
         val isEnabled = when {
-            element == null -> false
             ParadoxPsiMatcher.isScriptedVariable(element) -> true
             element !is ParadoxScriptStringExpressionElement -> false
             element.isDefinitionTypeKeyOrName() -> true

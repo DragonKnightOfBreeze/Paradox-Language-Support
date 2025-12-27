@@ -32,8 +32,8 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
             isVisible = true
             isEnabled = locale != null
         }
-        e.presentation.isEnabled = isEnabled
         e.presentation.isVisible = isVisible
+        e.presentation.isEnabled = isEnabled
     }
 
     override fun actionPerformed(e: AnActionEvent) {

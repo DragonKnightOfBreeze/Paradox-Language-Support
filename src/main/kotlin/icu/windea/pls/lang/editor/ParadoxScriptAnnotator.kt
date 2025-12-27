@@ -13,11 +13,11 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
@@ -49,11 +49,10 @@ class ParadoxScriptAnnotator : Annotator {
 
     private fun annotateProperty(element: ParadoxScriptProperty, holder: AnnotationHolder) {
         val gameType = selectGameType(element) ?: return
-        val propertyKey = element.propertyKey
         // 高亮内联脚本用法 - `inline_script = ...` 中的 `inline_script`
-        if (annotateInlineScriptUsage(propertyKey, holder, gameType)) return
+        if (annotateInlineScriptUsage(element, holder, gameType)) return
         // 高亮定义注入表达式 - `inject:some_definition = {...}` 中的 `inject:some_definition`（以及使用其他合法前缀的情况）
-        if (annotateDefinitionInjectionExpression(propertyKey, holder, gameType)) return
+        if (annotateDefinitionInjectionExpression(element, holder, gameType)) return
 
         // 高亮定义声明
         val definitionInfo = element.definitionInfo
@@ -121,25 +120,23 @@ class ParadoxScriptAnnotator : Annotator {
         return true
     }
 
-    private fun annotateInlineScriptUsage(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        val expression = element.name
-        if (!ParadoxInlineScriptManager.isMatched(expression, gameType)) return false
-        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element)
-        val r1 = TextRange.from(offset, expression.length)
+    private fun annotateInlineScriptUsage(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
+        if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return false
+        val name = element.name
+        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
+        val r1 = TextRange.from(offset, name.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.INLINE_KEY).create()
         return true
     }
 
-    private fun annotateDefinitionInjectionExpression(element: ParadoxScriptPropertyKey, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        val expression = element.name
-        if (!ParadoxDefinitionInjectionManager.isMatched(expression, gameType)) return false
-        val separatorIndex = expression.indexOf('.')
-        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element)
-        val r1 = TextRange.from(offset, separatorIndex)
+    private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
+        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return false
+        val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
+        val r1 = TextRange.from(offset, info.mode.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.INLINE_KEY).create()
-        val r2 = TextRange.from(offset + separatorIndex, 1)
+        val r2 = TextRange.from(offset + info.mode.length, 1)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r2).textAttributes(ParadoxScriptAttributesKeys.MARKER_KEY).create()
-        val r3 = TextRange.from(offset + separatorIndex + 1, expression.length - separatorIndex - 1)
+        val r3 = TextRange.from(offset + info.mode.length + 1, info.target.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r3).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY).create()
         return true
     }

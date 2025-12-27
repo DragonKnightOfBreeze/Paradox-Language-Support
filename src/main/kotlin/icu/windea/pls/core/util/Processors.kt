@@ -66,12 +66,22 @@ object Processors {
         return CollectProcessor(collection)
     }
 
-    /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]。*/
+    /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]，将元素加入 [collection]。*/
     fun <T, C : MutableCollection<T>> collect(collection: C, filter: (T) -> Boolean): CollectProcessor<T, C> {
         return object : CollectProcessor<T, C>(collection) {
             override fun accept(e: T): Boolean {
                 return filter(e)
             }
         }
+    }
+
+    /** 创建一个不带过滤条件的 [CollectProcessor]，将元素加入可变列表。*/
+    fun <T> collect(): CollectProcessor<T, MutableList<T>> {
+        return collect(mutableListOf())
+    }
+
+    /** 创建一个带过滤条件 [filter] 的 [CollectProcessor]，将元素加入列表。*/
+    fun <T> collect(filter: (T) -> Boolean): CollectProcessor<T, MutableList<T>> {
+        return collect(filter)
     }
 }

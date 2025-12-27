@@ -10,4 +10,8 @@ object PlsActions {
     const val GotoRelatedDefinitions = "Pls.GoToRelatedDefinitions"
     const val GotoRelatedLocalisations = "Pls.GoToRelatedLocalisations"
     const val GotoRelatedImages = "Pls.GoToRelatedImages"
+    const val GotoRelatedScriptedVariables = "Pls.GoToRelatedScriptedVariables"
+    const val GotoInlineScripts = "Pls.GoToInlineScripts"
+    const val GotoDefinitionInjections = "Pls.GoToDefinitionInjections"
+    const val GotoDefinitionInjectionTargets = "Pls.GoToDefinitionInjectionTargets"
 }

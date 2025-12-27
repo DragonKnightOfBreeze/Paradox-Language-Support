@@ -10,45 +10,38 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.search.ParadoxLocalisationSearch
-import icu.windea.pls.lang.search.selector.contextSensitive
-import icu.windea.pls.lang.search.selector.localisation
-import icu.windea.pls.lang.search.selector.preferLocale
-import icu.windea.pls.lang.search.selector.selector
-import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import java.util.*
 
-class GotoLocalisationsHandler : GotoTargetHandler() {
+class GotoRelatedScriptedVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxLocalisations"
+        return "navigation.goto.paradoxRelatedScriptedVariables"
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        // if (!ParadoxPsiMatcher.isLocalisation(element)) return null // 不需要
-        val type = element.type ?: return null
+        if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.localisations.search", element.name)) {
+        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedScriptedVariables.search", element.name)) {
             // need read actions here if necessary
             readAction {
-                val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
-                val resolved = ParadoxLocalisationSearch.search(element.name, type, selector).findAll()
+                val resolved = ParadoxLocalisationManager.getRelatedScriptedVariables(element)
                 targets.addAll(resolved)
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element } // remove current from targets
+        if (targets.isNotEmpty()) targets.removeIf { it == element }
         return GotoData(element, targets.distinct().toTypedArray(), emptyList())
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisation(file, offset) { BY_NAME }
+        return ParadoxPsiFinder.findLocalisation(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -56,17 +49,17 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.chooseTitle", name.escapeXml())
+        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
+        return PlsBundle.message("script.goto.relatedScriptedVariables.chooseTitle", localisationName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val name = ParadoxTargetInfo.from(sourceElement)?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.findUsagesTitle", name.escapeXml())
+        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
+        return PlsBundle.message("script.goto.relatedScriptedVariables.findUsagesTitle", localisationName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.localisations.notFoundMessage")
+        return PlsBundle.message("script.goto.relatedScriptedVariables.notFoundMessage")
     }
 
     override fun navigateToElement(descriptor: Navigatable) {

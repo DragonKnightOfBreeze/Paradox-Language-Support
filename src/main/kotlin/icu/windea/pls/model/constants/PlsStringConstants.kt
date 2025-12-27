@@ -53,6 +53,8 @@ object PlsStringConstants {
     const val localisationColorPrefix = "(localisation color)"
     const val localisationIconPrefix = "(localisation icon)"
     const val inlineScriptPrefix = "(inline script)"
+    const val definitionInjectionPrefix = "(definition injection)"
+    const val definitionInjectionTargetPrefix = "(definition injection target)"
 
     const val headerMarker = "<header>"
     const val rowMarker = "<row>"

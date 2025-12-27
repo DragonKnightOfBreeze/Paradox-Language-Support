@@ -10,38 +10,37 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.util.ParadoxLocalisationManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.util.*
 
-class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
+class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxRelatedDefinitions"
+        return "navigation.goto.paradoxDefinitionInjectionTargets"
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
+        val gameType = selectGameType(file) ?: return null
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        if (!ParadoxPsiMatcher.isNormalLocalisation(element)) return null
+        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return null
+        if (info.target.isEmpty()) return null // 排除目标为空的情况
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
-        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.relatedDefinitions.search", element.name)) {
+        runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {
             // need read actions here if necessary
             readAction {
-                val resolved = ParadoxLocalisationManager.getRelatedDefinitions(element)
-                targets.addAll(resolved)
+                // TODO 2.1.0
             }
         }
-        if (targets.isNotEmpty()) targets.removeIf { it == element }
         return GotoData(element, targets.distinct().toTypedArray(), emptyList())
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiFinder.findLocalisation(file, offset)
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        return ParadoxPsiFinder.findScriptProperty(file, offset)
     }
 
     override fun shouldSortTargets(): Boolean {
@@ -49,17 +48,21 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
-        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitions.chooseTitle", localisationName.escapeXml())
+        if (sourceElement !is ParadoxScriptProperty) return ""
+        val target = ParadoxDefinitionInjectionManager.getInfo(sourceElement)?.target
+        if (target.isNullOrEmpty()) return ""
+        return PlsBundle.message("script.goto.definitionInjectionTargets.chooseTitle", target.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
-        val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.relatedDefinitions.findUsagesTitle", localisationName.escapeXml())
+        if (sourceElement !is ParadoxScriptProperty) return ""
+        val target = ParadoxDefinitionInjectionManager.getInfo(sourceElement)?.target
+        if (target.isNullOrEmpty()) return ""
+        return PlsBundle.message("script.goto.definitionInjectionTargets.findUsagesTitle", target.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.relatedDefinitions.notFoundMessage")
+        return PlsBundle.message("script.goto.definitionInjectionTargets.notFoundMessage")
     }
 
     override fun navigateToElement(descriptor: Navigatable) {
@@ -70,4 +73,3 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
         }
     }
 }
-
