@@ -9,9 +9,8 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextRenderer
@@ -60,12 +59,12 @@ object ParadoxScriptNavigationManager {
             is ParadoxScriptProperty -> {
                 run {
                     // 作为内联脚本用法的属性使用特殊图标
-                    if (!element.name.isInlineScriptUsage()) return@run
+                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
                     return PlsIcons.Nodes.Inline
                 }
                 run {
                     // 作为定义注入的属性使用特殊图标
-                    if (ParadoxDefinitionInjectionManager.getInfo(element) == null) return@run
+                    if (!ParadoxPsiMatcher.isDefinitionInjection(element)) return@run
                     return PlsIcons.Nodes.Macro
                 }
                 run {
@@ -123,7 +122,7 @@ object ParadoxScriptNavigationManager {
             is ParadoxScriptProperty -> {
                 run {
                     // 内联脚本表达式
-                    if (!element.name.isInlineScriptUsage()) return@run
+                    if (!ParadoxPsiMatcher.isInlineScriptUsage(element)) return@run
                     return ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true)
                 }
                 run {

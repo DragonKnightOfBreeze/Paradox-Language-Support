@@ -11,6 +11,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.selectFile
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -132,21 +133,23 @@ object ParadoxPsiMatcher {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isInlineScriptUsage(element: PsiElement, gameType: ParadoxGameType): Boolean {
+    fun isInlineScriptUsage(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
         if (element !is ParadoxScriptProperty) return false
-        if (!ParadoxInlineScriptManager.isMatched(element.name, gameType)) return false
+        if (gameType == null) return false
+        if (!ParadoxInlineScriptManager.isMatched(element.name)) return false
         return true
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun isDefinitionInjection(element: PsiElement, gameType: ParadoxGameType): Boolean {
+    fun isDefinitionInjection(element: PsiElement, gameType: ParadoxGameType? = selectGameType(element)): Boolean {
         contract {
             returns(true) implies (element is ParadoxScriptProperty)
         }
         if (element !is ParadoxScriptProperty) return false
+        if (gameType == null) return false
         if (gameType == null) return false
         if (!ParadoxDefinitionInjectionManager.isMatched(element.name, gameType)) return false
         if (!ParadoxDefinitionInjectionManager.isSupported(element.name, gameType)) return false

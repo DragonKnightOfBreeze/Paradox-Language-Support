@@ -10,6 +10,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.search.selector.inlineScriptUsage
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 
@@ -19,6 +20,7 @@ import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 class UnusedInlineScriptInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
+        if (!ParadoxInlineScriptManager.isSupported(selectGameType(file))) return false
         return true
     }
 

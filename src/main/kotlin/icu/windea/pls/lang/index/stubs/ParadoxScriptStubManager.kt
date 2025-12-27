@@ -10,7 +10,6 @@ import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
@@ -51,7 +50,7 @@ object ParadoxScriptStubManager {
                 if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
                 return@run
             }
-            if (name.isInlineScriptUsage()) {
+            if (ParadoxInlineScriptManager.isMatched(name)) {
                 val inlineScriptUsageStub = createInlineScriptUsageStub(psi, parentStub, name)
                 if (inlineScriptUsageStub != null) return inlineScriptUsageStub
                 return@run
@@ -73,7 +72,7 @@ object ParadoxScriptStubManager {
                 if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
                 return@run
             }
-            if (name.isInlineScriptUsage()) {
+            if (ParadoxInlineScriptManager.isMatched(name)) {
                 val inlineScriptUsageStub = createInlineScriptUsageStub(tree, node, parentStub, name)
                 if (inlineScriptUsageStub != null) return inlineScriptUsageStub
                 return@run

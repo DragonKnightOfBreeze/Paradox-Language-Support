@@ -16,7 +16,6 @@ import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaclisationParameterManager
 import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
@@ -57,10 +56,6 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
 
 fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
-}
-
-fun String.isInlineScriptUsage(): Boolean {
-    return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
 inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {

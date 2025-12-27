@@ -18,7 +18,6 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxScriptInjectionManager
-import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
@@ -97,12 +96,13 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
+        val gameType = selectGameType(file) ?: return null
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return null
 
         // 要求当前位置相对于文件的表达式路径中包含子路径 `inline_script`
-        val rootIndex = elementPath.indexOfFirst { it.isInlineScriptUsage() }
+        val rootIndex = elementPath.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) }
         if (rootIndex == -1) return null
 
-        val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo // 注意这里的 fileInfo 可以为 null（例如，在内联脚本参数的多行参数值中）
         val elementPathFromRoot = ParadoxElementPath.resolve(elementPath.subPaths.drop(rootIndex + 1))
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType)

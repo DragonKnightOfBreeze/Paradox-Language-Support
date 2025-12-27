@@ -12,18 +12,35 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 object ParadoxDefinitionInjectionManager {
     const val definitionInjectionKey = "definition_injection"
 
+    // /**
+    //  * 检测指定的游戏类型是否支持内联脚本。
+    //  */
+    // fun isSupported(gameType: ParadoxGameType?): Boolean {
+    //     if (gameType == null) return false
+    //     val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
+    //     if (configs.isNullOrEmpty()) return false
+    //     return true
+    // }
+
     /**
-     * 检查输入的字符串是否匹配定义注入表达式。
+     * 检查指定的游戏类型是否支持指定模式的定义注入。
      */
-    fun isMatched(expression: String, gameType: ParadoxGameType? = null): Boolean {
-        val mode = expression.substringBefore('.', "")
+    fun isSupported(mode: String, gameType: ParadoxGameType?): Boolean {
+        if (gameType == null) return false
         if (mode.isEmpty()) return false
-        if (gameType != null) {
-            val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
-            if (config == null) return false
-            if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写
-        }
+        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
+        if (config == null) return false
+        if (config.modeConfigs[mode] == null) return false // 这里忽略 `prefix` 的大小写
         return true
+    }
+
+    /**
+     * 检查输入的字符串是否匹配定义注入的键。
+     */
+    fun isMatched(expression: String, gameType: ParadoxGameType?): Boolean {
+        if (gameType == null) return false
+        val mode = expression.substringBefore('.', "")
+        return isSupported(mode, gameType)
     }
 
     /**

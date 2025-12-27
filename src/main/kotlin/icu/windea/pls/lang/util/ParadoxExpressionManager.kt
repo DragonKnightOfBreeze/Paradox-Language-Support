@@ -74,7 +74,6 @@ import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsStates
-import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchPipeline
@@ -1007,7 +1006,8 @@ object ParadoxExpressionManager {
     }
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        if (config.key.isInlineScriptUsage()) return false // 排除是内联脚本用法的情况
+        val gameType = config.configGroup.gameType
+        if (ParadoxInlineScriptManager.isMatched(config.key, gameType)) return false // 排除是内联脚本用法的情况
         if (config.keyExpression.type != CwtDataTypes.Constant) return false
         if (config.optionData { cardinality }?.isRequired() == false) return false
         return true

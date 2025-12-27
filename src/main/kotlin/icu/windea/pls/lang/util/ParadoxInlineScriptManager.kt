@@ -26,7 +26,6 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.isInlineScriptUsage
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.findProperty
@@ -61,15 +60,29 @@ object ParadoxInlineScriptManager {
     val inlineScriptPathExpression = CwtDataExpression.resolve("filepath[common/inline_scripts/,.txt]", false)
 
     /**
-     * 检查输入的字符串是否匹配内联脚本用法的键。
+     * 检测指定的游戏类型是否支持内联脚本。
      */
-    fun isMatched(expression: String, gameType: ParadoxGameType? = null): Boolean {
-        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
-        if (gameType != null) {
-            val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
-            if (configs.isNullOrEmpty()) return false
-        }
+    fun isSupported(gameType: ParadoxGameType?): Boolean {
+        if (gameType == null) return false
+        val configs = PlsFacade.getConfigGroup(gameType).inlineConfigGroup[inlineScriptKey]
+        if (configs.isNullOrEmpty()) return false
         return true
+    }
+
+    /**
+     * 检查输入的字符串是否匹配内联脚本用法的键（不会检查游戏类型）。
+     */
+    fun isMatched(expression: String): Boolean {
+        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
+        return true
+    }
+
+    /**
+     * 检查输入的字符串是否匹配内联脚本用法的键（也会检查游戏类型）。
+     */
+    fun isMatched(expression: String, gameType: ParadoxGameType?): Boolean {
+        if (!expression.equals(inlineScriptKey, true)) return false // 这里忽略 `expression` 的大小写
+        return isSupported(gameType)
     }
 
     /**
@@ -143,7 +156,7 @@ object ParadoxInlineScriptManager {
      */
     fun getExpressionElement(usageElement: ParadoxScriptProperty): ParadoxScriptValue? {
         // hardcoded
-        if (!usageElement.name.isInlineScriptUsage()) return null
+        if (!isMatched(usageElement.name)) return null
         val v = usageElement.propertyValue ?: return null
         val v1 = v.takeIf { it is ParadoxScriptString || it is ParadoxScriptScriptedVariable }
         if (v1 != null) return v1
@@ -162,10 +175,10 @@ object ParadoxInlineScriptManager {
         // hardcoded
         if (expressionElement !is ParadoxScriptString && expressionElement !is ParadoxScriptScriptedVariableReference) return null
         val p1 = expressionElement.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
-        if (p1.name.isInlineScriptUsage()) return p1
+        if (isMatched(p1.name)) return p1
         if (p1.name.equals("script", true)) {
             val p2 = p1.parent?.castOrNull<ParadoxScriptBlock>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return null
-            if (p2.name.isInlineScriptUsage()) return p2
+            if (isMatched(p2.name)) return p2
             return null
         }
         return null
@@ -244,7 +257,7 @@ object ParadoxInlineScriptManager {
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()
         ParadoxInlineScriptUsageSearch.search(expression, selector).processQueryAsync p@{ p ->
-            if (!p.name.isInlineScriptUsage()) return@p true // 再次确认
+            if (!isMatched(p.name)) return@p true // 再次确认
             val memberElement = p.parentOfType<ParadoxScriptMember>() ?: return@p true
             val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true
             val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()

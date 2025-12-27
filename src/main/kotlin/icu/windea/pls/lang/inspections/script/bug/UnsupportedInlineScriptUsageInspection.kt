@@ -6,8 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.isInlineScriptUsage
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -16,6 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class UnsupportedInlineScriptUsageInspection : LocalInspectionTool()/*, DumbAware*/ {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
+        if (!ParadoxInlineScriptManager.isSupported(selectGameType(file))) return false
         return true
     }
 
@@ -25,7 +27,7 @@ class UnsupportedInlineScriptUsageInspection : LocalInspectionTool()/*, DumbAwar
             return object : PsiElementVisitor() {
                 override fun visitElement(element: PsiElement) {
                     if (element is ParadoxScriptProperty) {
-                        if (element.name.isInlineScriptUsage()) {
+                        if (ParadoxInlineScriptManager.isMatched(element.name)) {
                             holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1"))
                         }
                     }
