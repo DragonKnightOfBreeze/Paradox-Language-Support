@@ -70,7 +70,7 @@ object ParadoxDefinitionInjectionManager {
         val mode = expression.substringBefore(':', "")
         if (mode.isEmpty()) return null
         val target = expression.substringAfter(':', "")
-        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[mode]
+        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
         if (config == null) return null
         val modeConfig = config.modeConfigs[mode]
         if (modeConfig == null) return null

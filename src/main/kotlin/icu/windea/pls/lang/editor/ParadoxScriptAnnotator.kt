@@ -133,7 +133,7 @@ class ParadoxScriptAnnotator : Annotator {
         val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return false
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val r1 = TextRange.from(offset, info.mode.length)
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.INLINE_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.MACRO_KEY).create()
         val r2 = TextRange.from(offset + info.mode.length, 1)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r2).textAttributes(ParadoxScriptAttributesKeys.MARKER_KEY).create()
         val r3 = TextRange.from(offset + info.mode.length + 1, info.target.length)

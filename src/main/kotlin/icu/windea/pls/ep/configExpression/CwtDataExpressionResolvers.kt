@@ -51,6 +51,7 @@ class CwtCoreDataExpressionResolver : CwtRuleBasedDataExpressionResolver() {
         rule(CwtDataTypes.FileName, "filename"),
         rule(CwtDataTypes.FileName, "filename[", "]") { value = it.orNull() },
         rule(CwtDataTypes.FilePath, "filepath"),
+        rule(CwtDataTypes.FilePath, "filepath[./]") { value = "./" }, // fixed (should keep `"./"`)
         rule(CwtDataTypes.FilePath, "filepath[", "]") { value = it.optimizedPath().orNull() },
         rule(CwtDataTypes.Icon, "icon[", "]") { value = it.optimizedPath().orNull() },
 
