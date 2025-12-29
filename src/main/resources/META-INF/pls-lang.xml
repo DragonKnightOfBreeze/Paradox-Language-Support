@@ -204,7 +204,8 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider" isEnabledByDefault="false"/>
+    <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider"
+                               settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider"/>
 

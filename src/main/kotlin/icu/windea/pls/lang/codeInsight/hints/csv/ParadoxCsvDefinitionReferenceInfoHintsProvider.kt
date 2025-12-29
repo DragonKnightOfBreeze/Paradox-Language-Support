@@ -28,7 +28,7 @@ class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsPr
 
         // 省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
-        sink.addInlinePresentation(element.endOffset) {
+        sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": ")
             val typeConfig = definitionInfo.typeConfig
             text(typeConfig.name, typeConfig.pointer)

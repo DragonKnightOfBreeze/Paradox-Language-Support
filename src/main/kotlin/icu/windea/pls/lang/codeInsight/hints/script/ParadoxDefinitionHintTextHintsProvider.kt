@@ -14,6 +14,7 @@ import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
  * 通过内嵌提示显示定义的提示文本。
@@ -35,11 +36,12 @@ class ParadoxDefinitionHintTextHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
-        if (element !is ParadoxScriptProperty) return
+        if (element !is ParadoxScriptPropertyKey) return
+        val definition = element.parent as? ParadoxScriptProperty ?: return
 
-        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return
+        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(primaryLocalisation) ?: return
-        sink.addInlinePresentation(element.propertyKey.endOffset) { presentations.add(presentation) }
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

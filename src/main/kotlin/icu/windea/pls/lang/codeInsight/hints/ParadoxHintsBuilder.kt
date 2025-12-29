@@ -15,15 +15,14 @@ class ParadoxHintsBuilder {
     context(provider: ParadoxHintsProvider, context: ParadoxHintsContext)
     fun build(smaller: Boolean = false): InlayPresentation? {
         // 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）
-        var result = presentations.mergePresentations() ?: return null
-        result = when {
-            smaller -> context.factory.roundWithBackgroundAndSmallInset(result)
-            else -> context.factory.roundWithBackground(result)
+        val basePresentation = presentations.mergePresentations() ?: return null
+        val roundedPresentation = when {
+            smaller -> context.factory.roundWithBackgroundAndSmallInset(basePresentation)
+            else -> context.factory.roundWithBackground(basePresentation)
         }
-        result = MenuOnClickPresentation(result, context.project) {
+        return MenuOnClickPresentation(roundedPresentation, context.project) {
             InlayHintsUtils.getDefaultInlayHintsProviderPopupActions(provider.key) { provider.name }
         }
-        return result
     }
 
     context(context: ParadoxHintsContext)

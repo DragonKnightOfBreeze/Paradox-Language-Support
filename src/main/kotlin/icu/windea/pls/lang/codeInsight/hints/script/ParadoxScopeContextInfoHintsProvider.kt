@@ -37,9 +37,9 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val block = element.propertyValue as? ParadoxScriptBlock ?: return
         val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
         val atLineEnd = leftCurlyBrace.siblings(withSelf = false)
-            .dropWhile { (it is PsiWhiteSpace && !PlsPsiManager.containsBlankLine(it)) || it is PsiComment }
+            .dropWhile { (it is PsiWhiteSpace && !PlsPsiManager.containsLineBreak(it)) || it is PsiComment }
             .firstOrNull()
-        if(atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsBlankLine(atLineEnd)) return
+        if(atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsLineBreak(atLineEnd)) return
 
         val file = element.containingFile ?: return
         val gameType = selectGameType(file) ?: return

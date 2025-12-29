@@ -11,6 +11,7 @@ import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.CwtType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 
 /**
  * 通过内嵌提示显示定义信息，包括名称、类型和子类型。
@@ -19,15 +20,16 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 class ParadoxDefinitionInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
-        if (element !is ParadoxScriptProperty) return
-        val definitionInfo = element.definitionInfo ?: return
+        if (element !is ParadoxScriptPropertyKey) return
+        val definition = element.parent as? ParadoxScriptProperty ?: return
+        val definitionInfo = definition.definitionInfo ?: return
 
         // 忽略类似 `event_namespace` 这样的定义的值不是子句的定义
         if (definitionInfo.declarationConfig?.config?.let { it.valueType == CwtType.Block } == false) return
 
         // 如果定义名等同于类型键，则省略定义名
         val settings = ParadoxDeclarativeHintsSettings.getInstance(definitionInfo.project)
-        sink.addInlinePresentation(element.propertyKey.endOffset) {
+        sink.addInlinePresentation(element.endOffset, priority = 1) {
             when {
                 definitionInfo.name.equals(definitionInfo.typeKey, true) -> text(": ")
                 else -> text("${definitionInfo.name}: ".optimized())

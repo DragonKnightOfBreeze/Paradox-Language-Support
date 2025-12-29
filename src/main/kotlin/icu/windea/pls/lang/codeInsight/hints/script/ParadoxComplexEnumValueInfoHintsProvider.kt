@@ -32,7 +32,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider
         val enumName = resolved.enumName
         val configGroup = PlsFacade.getConfigGroup(resolved.project, resolved.gameType)
         val config = configGroup.complexEnums[enumName] ?: return
-        sink.addInlinePresentation(element.endOffset) {
+        sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": ")
             text(enumName, config.pointer)
         }

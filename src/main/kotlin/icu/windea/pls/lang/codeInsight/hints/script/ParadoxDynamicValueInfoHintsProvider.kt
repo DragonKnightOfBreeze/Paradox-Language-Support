@@ -30,7 +30,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         if (resolved !is ParadoxDynamicValueElement) return
 
         val type = resolved.dynamicValueType
-        sink.addInlinePresentation(element.endOffset) {
+        sink.addInlinePresentation(element.endOffset, priority = 1) {
             text(": $type".optimized())
         }
     }

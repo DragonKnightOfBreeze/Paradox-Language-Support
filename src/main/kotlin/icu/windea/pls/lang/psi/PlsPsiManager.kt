@@ -28,9 +28,9 @@ object PlsPsiManager {
         }
     }
 
-    // fun containsLineBreak(element: PsiWhiteSpace): Boolean {
-    //     return StringUtil.containsLineBreak(element.text)
-    // }
+    fun containsLineBreak(element: PsiWhiteSpace): Boolean {
+        return StringUtil.containsLineBreak(element.text)
+    }
 
     fun containsBlankLine(element: PsiWhiteSpace): Boolean {
         return StringUtil.getLineBreakCount(element.text) > 1
