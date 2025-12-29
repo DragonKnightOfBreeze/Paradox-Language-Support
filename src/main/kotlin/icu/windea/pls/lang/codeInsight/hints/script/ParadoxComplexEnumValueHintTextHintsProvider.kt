@@ -36,7 +36,8 @@ class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         val name = element.name
         if (name.isEmpty()) return true
@@ -54,9 +55,10 @@ class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(context)
         return renderer.render(hintLocalisation)
     }
 }

@@ -40,7 +40,8 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
 
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
         val name = element.name
@@ -51,7 +52,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val configGroup = config.configGroup
         val project = configGroup.project
 
-        runCatchingCancelable r@{
+        context.runCatchingCancelable r@{
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             val iconFile = paths.firstNotNullOfOrNull { path ->
                 val iconSelector = selector(project, element).file().contextSensitive()
@@ -69,10 +70,10 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@r
             // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            if (originalIconHeight <= settings.iconHeightLimit) {
+            val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+            if (originalIconHeight <= context.settings.iconHeightLimit) {
                 // 点击可以导航到声明处（DDS）
-                val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
+                val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
                 val finalPresentation = presentation.toFinalPresentation(smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)

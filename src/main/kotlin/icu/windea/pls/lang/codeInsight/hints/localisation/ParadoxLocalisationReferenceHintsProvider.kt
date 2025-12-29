@@ -31,7 +31,8 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxLocalisationParameter) return true
         if (isIgnored(element)) return true
         val presentation = collect(element)
@@ -45,8 +46,9 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
         return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxLocalisationParameter): InlayPresentation? {
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxLocalisationParameter): InlayPresentation? {
+        val renderer = ParadoxLocalisationTextInlayRenderer(context)
         return renderer.render(element)
     }
 }

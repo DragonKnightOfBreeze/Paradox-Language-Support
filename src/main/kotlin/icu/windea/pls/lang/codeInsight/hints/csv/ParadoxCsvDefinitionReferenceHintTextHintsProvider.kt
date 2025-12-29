@@ -35,7 +35,8 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider(
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
@@ -49,9 +50,10 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider(
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxScriptDefinitionElement): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxScriptDefinitionElement): InlayPresentation? {
         val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(context)
         return renderer.render(primaryLocalisation)
     }
 }

@@ -36,17 +36,18 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxLocalisationIcon) return true
         val name = element.name ?: return true
         if (name.isEmpty()) return true
         if (name.isParameterized()) return true
 
-        runCatchingCancelable r@{
+        context.runCatchingCancelable r@{
             val resolved = element.reference?.resolve()
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
-            val project = file.project
+            val project = context.file.project
             val iconUrl = when {
                 resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
                 resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, project, frameInfo)
@@ -60,10 +61,10 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val icon = iconFileUrl.toIconOrNull() ?: return@r
             // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            if (originalIconHeight <= settings.iconHeightLimit) {
+            val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+            if (originalIconHeight <= context.settings.iconHeightLimit) {
                 // 点击可以导航到声明处（定义或DDS）
-                val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
+                val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { resolved }
                 val finalPresentation = presentation.toFinalPresentation(smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)

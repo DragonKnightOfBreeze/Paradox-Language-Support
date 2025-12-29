@@ -28,7 +28,8 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxHintsProvider() {
 
     override val showTypeInfo: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
@@ -43,17 +44,18 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(definitionInfo: ParadoxDefinitionInfo): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(definitionInfo: ParadoxDefinitionInfo): InlayPresentation? {
         val presentations: MutableList<InlayPresentation> = mutableListOf()
         // 省略定义名
-        presentations.add(factory.smallText(": "))
+        presentations.add(context.factory.smallText(": "))
         val typeConfig = definitionInfo.typeConfig
-        presentations.add(factory.psiSingleReference(factory.smallText(typeConfig.name)) { typeConfig.pointer.element })
-        if (settings.showSubtypes) {
+        presentations.add(context.factory.psiSingleReference(context.factory.smallText(typeConfig.name)) { typeConfig.pointer.element })
+        if (context.settings.showSubtypes) {
             val subtypeConfigs = definitionInfo.subtypeConfigs
             for (subtypeConfig in subtypeConfigs) {
-                presentations.add(factory.smallText(", "))
-                presentations.add(factory.psiSingleReference(factory.smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
+                presentations.add(context.factory.smallText(", "))
+                presentations.add(context.factory.psiSingleReference(context.factory.smallText(subtypeConfig.name)) { subtypeConfig.pointer.element })
             }
         }
         return presentations.mergePresentations()

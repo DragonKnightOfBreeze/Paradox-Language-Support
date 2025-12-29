@@ -210,7 +210,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     class MyRequestProducer(
         request: DiffRequest,
         val otherFile: VirtualFile,
-        val icon: Icon,
+        val icon: Icon?,
         val isCurrent: Boolean
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {

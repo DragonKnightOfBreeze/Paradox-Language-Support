@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.9.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.10.5" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2023.3.0.1"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
@@ -112,6 +112,7 @@ dependencies {
     compileOnly("com.google.errorprone:error_prone_annotations:2.44.0")
     compileOnly("org.jspecify:jspecify:1.0.0")
     compileOnly("org.slf4j:slf4j-api:2.0.17")
+    compileOnly("org.jetbrains:annotations:26.0.2") // https://github.com/JetBrains/java-annotations
 
     // 目前仅用作参考
 

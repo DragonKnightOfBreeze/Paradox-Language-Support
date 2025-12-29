@@ -4,7 +4,6 @@ import com.intellij.codeInsight.hints.InlayPresentationFactory
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -15,6 +14,7 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
@@ -50,13 +50,10 @@ import javax.imageio.ImageIO
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
-    val editor: Editor,
-    val factory: PresentationFactory,
-    val textLengthLimit: Int = -1,
-    val iconHeightLimit: Int = -1,
+    val context: ParadoxHintsContext
 ) : ParadoxLocalisationRender {
     private var builder = mutableListOf<InlayPresentation>()
-    private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } // 记录到需要截断为止所剩余的长度
+    private val truncateRemain by lazy { AtomicInteger(context.settings.textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
 
@@ -105,14 +102,14 @@ class ParadoxLocalisationTextInlayRenderer(
         val newBuilder = builder
         builder = oldBuilder
         val presentation = newBuilder.mergePresentations() ?: return true
-        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
+        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
         builder.add(finalPresentation)
         return continueProcess
     }
 
     private fun doRender(action: () -> Boolean): InlayPresentation? {
         val r = action()
-        if (!r) builder.add(factory.smallText("...")) // 添加省略号
+        if (!r) builder.add(context.factory.smallText("...")) // 添加省略号
         return builder.mergePresentations()
     }
 
@@ -132,7 +129,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderStringTo(element: ParadoxLocalisationString): Boolean {
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Inlay)
-        builder.add(factory.truncatedSmallText(text))
+        builder.add(context.factory.truncatedSmallText(text))
         return continueProcess()
     }
 
@@ -185,13 +182,13 @@ class ParadoxLocalisationTextInlayRenderer(
                     }
                 }
                 resolved is CwtProperty -> {
-                    factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    context.factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                    factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    context.factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 else -> {
-                    factory.truncatedSmallText(element.text)
+                    context.factory.truncatedSmallText(element.text)
                 }
             }
             if (presentation != null) builder.add(presentation)
@@ -220,9 +217,9 @@ class ParadoxLocalisationTextInlayRenderer(
             // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > iconHeightLimit) return true // 图标过大，不再尝试渲染
+            if (originalIconHeight > context.settings.iconHeightLimit) return true // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
+            val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { resolved }
             builder.add(presentation)
             return true
         }
@@ -245,7 +242,7 @@ class ParadoxLocalisationTextInlayRenderer(
                 if (c is ParadoxLocalisationCommandText) {
                     getElementPresentation(c)?.let { presentations.add(it) }
                 } else {
-                    presentations.add(factory.smallText(c.text))
+                    presentations.add(context.factory.smallText(c.text))
                 }
             }
             val mergedPresentation = presentations.mergePresentations()
@@ -281,9 +278,9 @@ class ParadoxLocalisationTextInlayRenderer(
             var presentation = newBuilder.mergePresentations()
             if (presentation != null) {
                 val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-                presentation = WithAttributesPresentation(presentation, conceptAttributesKey, editor, attributesFlags)
-                val referencePresentation = factory.psiSingleReference(presentation) { referenceElement }
-                presentation = factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
+                presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
+                val referencePresentation = context.factory.psiSingleReference(presentation) { referenceElement }
+                presentation = context.factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
                     override fun onHover(event: MouseEvent, translated: Point) {
                         attributesFlags.isDefault = true // change foreground
                     }
@@ -298,7 +295,7 @@ class ParadoxLocalisationTextInlayRenderer(
             return continueProcess()
         }
 
-        builder.add(factory.smallText(element.name))
+        builder.add(context.factory.smallText(element.name))
         return continueProcess()
     }
 
@@ -331,21 +328,21 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
-        val truncatedText = if (textLengthLimit > 0) text.take(truncateRemain.get()) else text
+        val truncatedText = if (context.settings.textLengthLimit > 0) text.take(truncateRemain.get()) else text
         val truncatedTextSingleLine = truncatedText.substringBefore('\n')
         val finalText = truncatedTextSingleLine
         val result = smallText(finalText)
         if (truncatedTextSingleLine.length != truncatedText.length) {
             lineEnd = true
         }
-        if (textLengthLimit > 0) {
+        if (context.settings.textLengthLimit > 0) {
             truncateRemain.getAndAdd(-truncatedText.length)
         }
         return result
     }
 
     private fun continueProcess(): Boolean {
-        return !lineEnd && (truncateRemain.get() > 0 || textLengthLimit <= 0)
+        return !lineEnd && (truncateRemain.get() > 0 || context.settings.textLengthLimit <= 0)
     }
 
     private fun getElementPresentation(element: PsiElement): InlayPresentation? {
@@ -354,7 +351,7 @@ class ParadoxLocalisationTextInlayRenderer(
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
-            presentations.add(factory.smallText(element.text))
+            presentations.add(context.factory.smallText(element.text))
             return presentations.mergePresentations()
         }
         var i = 0
@@ -363,22 +360,22 @@ class ParadoxLocalisationTextInlayRenderer(
             val startOffset = reference.rangeInElement.startOffset
             if (startOffset != i) {
                 val s = text.substring(i, startOffset)
-                presentations.add(factory.smallText(s))
+                presentations.add(context.factory.smallText(s))
             }
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
             // 不要尝试跳转到dynamicValue的声明处
             if (resolved == null || resolved is MockPsiElement) {
-                presentations.add(factory.smallText(s))
+                presentations.add(context.factory.smallText(s))
             } else {
-                presentations.add(factory.psiSingleReference(factory.smallText(s)) { reference.resolve() })
+                presentations.add(context.factory.psiSingleReference(context.factory.smallText(s)) { reference.resolve() })
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
         if (endOffset != text.length) {
             val s = text.substring(endOffset)
-            presentations.add(factory.smallText(s))
+            presentations.add(context.factory.smallText(s))
         }
         return presentations.mergePresentations()
     }

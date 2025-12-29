@@ -42,24 +42,25 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
 
     override val showScopeContextInfo: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (file !is ParadoxScriptFile) return true
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+        if (context.file !is ParadoxScriptFile) return true
         if (element !is ParadoxScriptProperty) return true
         // 要求属性的值是一个块（block），且块的左花括号位于行尾（忽略空白和注释）
         val block = element.propertyValue as? ParadoxScriptBlock ?: return true
         val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return true
         val offset = leftCurlyBrace.endOffset
-        val document = editor.document
+        val document = context.editor.document
         val lineEndOffset = document.getLineEndOffset(document.getLineNumber(offset))
         val s = document.immutableCharSequence.subSequence(offset, lineEndOffset).toString().substringBefore("#")
         if (s.isNotBlank()) return true
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return true
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
         if (scopeContext != null) {
-            if (settings.showOnlyIfScopeIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return true
+            if (context.settings.showOnlyIfScopeIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return true
 
-            val gameType = selectGameType(file) ?: return true
-            val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
+            val gameType = selectGameType(context.file) ?: return true
+            val configGroup = PlsFacade.getConfigGroup(context.file.project, gameType)
             val presentation = collect(scopeContext, configGroup)
             val finalPresentation = presentation?.toFinalPresentation() ?: return true
             sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
@@ -67,18 +68,19 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
         var appendSeparator = false
         scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->
             if (appendSeparator) {
-                presentations.add(factory.smallText(" "))
+                presentations.add(context.factory.smallText(" "))
             } else {
                 appendSeparator = true
             }
-            presentations.add(factory.systemScopePresentation(key, configGroup))
-            presentations.add(factory.smallText(" = "))
-            presentations.add(factory.scopeLinkPresentation(value, configGroup))
+            presentations.add(context.factory.systemScopePresentation(key, configGroup))
+            presentations.add(context.factory.smallText(" = "))
+            presentations.add(context.factory.scopeLinkPresentation(value, configGroup))
         }
         return presentations.mergePresentations()
     }

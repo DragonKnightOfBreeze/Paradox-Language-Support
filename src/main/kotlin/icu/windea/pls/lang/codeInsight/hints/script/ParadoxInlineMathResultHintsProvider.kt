@@ -26,7 +26,8 @@ class ParadoxInlineMathResultHintsProvider : ParadoxHintsProvider() {
     override val description: String get() = PlsBundle.message("script.hints.inlineMathResult.description")
     override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptInlineMath) return true
         if (element.expression.isEmpty()) return true
         val presentation = collect(element) ?: return true
@@ -36,9 +37,11 @@ class ParadoxInlineMathResultHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxScriptInlineMath): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxScriptInlineMath): InlayPresentation? {
         val evaluator = ParadoxInlineMathEvaluator()
-        val result = runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return null
-        return factory.smallText("=> ${result.formatted()}".optimized())
+        val result = context.runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return null
+        val text = "=> ${result.formatted()}".optimized()
+        return context.factory.smallText(text)
     }
 }

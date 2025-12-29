@@ -27,7 +27,8 @@ class ParadoxCsvComplexEnumValueInfoHintsProvider : ParadoxHintsProvider() {
     override val description: String get() = PlsBundle.message("csv.hints.complexEnumValueInfo.description")
     override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
         val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
         if (!resolveConstraint.canResolveReference(element)) return true
@@ -42,13 +43,14 @@ class ParadoxCsvComplexEnumValueInfoHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
         val enumName = element.name
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val config = configGroup.complexEnums[enumName] ?: return null
         val presentations = mutableListOf<InlayPresentation>()
-        presentations.add(factory.smallText(": "))
-        presentations.add(factory.psiSingleReference(factory.smallText(config.name)) { config.pointer.element })
+        presentations.add(context.factory.smallText(": "))
+        presentations.add(context.factory.psiSingleReference(context.factory.smallText(config.name)) { config.pointer.element })
         return presentations.mergePresentations()
     }
 }

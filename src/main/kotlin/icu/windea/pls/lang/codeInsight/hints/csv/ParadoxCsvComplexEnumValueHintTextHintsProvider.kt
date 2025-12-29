@@ -35,7 +35,8 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
         val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
         if (!resolveConstraint.canResolveReference(element)) return true
@@ -50,9 +51,10 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(context)
         return renderer.render(hintLocalisation)
     }
 }

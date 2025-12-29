@@ -38,12 +38,13 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
             // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 ProgressManager.checkCanceled()
-                return context.run { context.collectFromElement(element, sink) }
+                return with(context) { collectFromElement(element, sink) }
             }
         }
     }
 
-    protected abstract fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean
+    context(context: ParadoxHintsContext)
+    protected abstract fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean
 
     /**
      * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）。

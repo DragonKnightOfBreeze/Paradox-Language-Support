@@ -24,7 +24,8 @@ class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxHintsProvider(
     override val description: String get() = PlsBundle.message("script.hints.scriptedVariableReferenceValue.description")
     override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptedVariableReference) return true
         if (element.name.isNullOrEmpty()) return true
         val presentation = collect(element) ?: return true
@@ -34,8 +35,9 @@ class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxHintsProvider(
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxScriptedVariableReference): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxScriptedVariableReference): InlayPresentation? {
         val value = element.resolved()?.value ?: return null
-        return factory.smallText("=> ${value}".optimized())
+        return context.factory.smallText("=> ${value}".optimized())
     }
 }

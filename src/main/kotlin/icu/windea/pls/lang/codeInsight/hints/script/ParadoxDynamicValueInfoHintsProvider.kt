@@ -28,7 +28,8 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxHintsProvider() {
     override val description: String get() = PlsBundle.message("script.hints.dynamicValueInfo.description")
     override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         // ignored for `value_field` or `variable_field` or other variants
 
         if (element !is ParadoxScriptStringExpressionElement) return true
@@ -46,11 +47,12 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxHintsProvider() {
         return true
     }
 
-    private fun ParadoxHintsContext.collect(element: ParadoxDynamicValueElement): InlayPresentation? {
+    context(context: ParadoxHintsContext)
+    private fun collect(element: ParadoxDynamicValueElement): InlayPresentation? {
         val name = element.name
         if (name.isEmpty()) return null
         if (name.isParameterized()) return null
         val type = element.dynamicValueType
-        return factory.smallText(": $type".optimized())
+        return context.factory.smallText(": $type".optimized())
     }
 }
