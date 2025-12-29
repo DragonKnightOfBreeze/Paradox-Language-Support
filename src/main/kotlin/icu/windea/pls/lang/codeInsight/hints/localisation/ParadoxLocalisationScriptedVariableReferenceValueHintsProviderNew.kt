@@ -4,13 +4,14 @@ import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
+/**
+ * 通过内嵌提示显示封装变量引用的解析结果（如果可以解析）。默认不启用。
+ */
 class ParadoxLocalisationScriptedVariableReferenceValueHintsProviderNew : ParadoxHintsProviderNew() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptedVariableReference) return
@@ -21,9 +22,5 @@ class ParadoxLocalisationScriptedVariableReferenceValueHintsProviderNew : Parado
         sink.addPresentation(InlineInlayPosition(element.endOffset, true), hintFormat = HintFormat.default) {
             text(text)
         }
-    }
-
-    override fun isSupportedFile(file: PsiFile): Boolean {
-        return file is ParadoxLocalisationFile
     }
 }

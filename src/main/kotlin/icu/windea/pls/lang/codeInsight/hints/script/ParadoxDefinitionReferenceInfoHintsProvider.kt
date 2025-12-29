@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
@@ -10,49 +8,36 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    data class Settings(
-        var showSubtypes: Boolean = true
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.definitionReferenceInfo")
 
     override val name: String get() = PlsBundle.message("script.hints.definitionReferenceInfo")
     override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun createSettings() = Settings()
+    override val showTypeInfo: Boolean get() = true
 
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                createTypeInfoRow(settings::showSubtypes)
-            }
-        }
-    }
-
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
         if (resolved is ParadoxScriptDefinitionElement) {
             val definitionInfo = resolved.definitionInfo ?: return true
-            val presentation = doCollect(definitionInfo, settings)
+            val presentation = collect(definitionInfo, settings)
             val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
             val endOffset = element.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -60,9 +45,9 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<S
         return true
     }
 
-    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.collect(definitionInfo: ParadoxDefinitionInfo, settings: ParadoxHintsSettings): InlayPresentation? {
         val presentations: MutableList<InlayPresentation> = mutableListOf()
-        // 省略definitionName
+        // 省略定义名
         presentations.add(smallText(": "))
         val typeConfig = definitionInfo.typeConfig
         presentations.add(psiSingleReference(smallText(typeConfig.name)) { typeConfig.pointer.element })

@@ -1,8 +1,6 @@
 package icu.windea.pls.lang.codeInsight.hints
 
-import com.intellij.codeInsight.hints.ChangeListener
 import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsCollector
 import com.intellij.codeInsight.hints.InlayHintsProvider
 import com.intellij.codeInsight.hints.InlayHintsSink
@@ -16,70 +14,36 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.toAtomicProperty
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.fileInfo
-import javax.swing.JComponent
-import kotlin.reflect.KMutableProperty0
 
 @Suppress("UnstableApiUsage")
 abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
-    open val renderIcon = false
-    open val renderLocalisation = false
+    open val showTypeInfo: Boolean get() = false
+    open val showScopeContextInfo: Boolean get() = false
+    open val renderIcon: Boolean get() = false
+    open val renderLocalisation: Boolean get() = false
 
     override val previewText: String? get() = null
 
-    override fun createConfigurable(settings: ParadoxHintsSettings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                if(renderLocalisation) createTextLengthLimitRow(settings)
-                if(renderIcon)  createIconHeightLimitRow(settings)
-            }
-        }
-    }
+    override fun createSettings() = ParadoxHintsSettings()
 
-    private fun Panel.createTextLengthLimitRow(settings: ParadoxHintsSettings) {
-        // 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
-        row {
-            label(PlsBundle.message("hints.settings.textLengthLimit")).widthGroup("left")
-                .applyToComponent { toolTipText = PlsBundle.message("hints.settings.textLengthLimit.tooltip") }
-            textField()
-                .bindIntText(settings::textLengthLimit.toAtomicProperty())
-                .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-        }
-    }
+    override fun createConfigurable(settings: ParadoxHintsSettings) = ParadoxHintsSettingsConfigurable(this, settings)
 
-    private fun Panel.createIconHeightLimitRow(settings: ParadoxHintsSettings) {
-        // 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
-        row {
-            label(PlsBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
-                .applyToComponent { toolTipText = PlsBundle.message("hints.settings.iconHeightLimit.tooltip") }
-            textField()
-                .bindIntText(settings::iconHeightLimit.toAtomicProperty())
-                .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-        }
-    }
+    override fun isLanguageSupported(language: Language) = language is ParadoxBaseLanguage
 
-    override fun isLanguageSupported(language: Language): Boolean {
-        return language is ParadoxBaseLanguage
-    }
-
-    /**
-     * 这里需要尽可能返回true，并不是注释所说的“返回false的话就不遍历子节点”。
-     */
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): InlayHintsCollector? {
-        if (file.fileInfo == null) return null // skip it
+        if (file.fileInfo == null) return null
         return object : FactoryInlayHintsCollector(editor) {
+            // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 ProgressManager.checkCanceled()
-                return factory.collect(element, file, editor, settings, sink)
+                return factory.collectFromElement(element, file, editor, settings, sink)
             }
         }
     }
 
-    protected abstract fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean
+    protected abstract fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean
 
     /**
      * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）。
@@ -97,11 +61,5 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
         }
         return presentation
     }
-
-    protected fun Panel.createTypeInfoRow(subtypeProperty: KMutableProperty0<Boolean>) {
-        row {
-            checkBox(PlsBundle.message("hints.settings.showTypes")).selected(true).enabled(false)
-            checkBox(PlsBundle.message("hints.settings.showSubtypes")).bindSelected(subtypeProperty)
-        }
-    }
 }
+

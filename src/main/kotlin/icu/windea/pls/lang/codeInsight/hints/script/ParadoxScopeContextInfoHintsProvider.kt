@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
@@ -11,7 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -19,7 +16,8 @@ import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.model.scope.ParadoxScope
@@ -29,7 +27,6 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
-import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示定义及其成员的作用域上下文信息。
@@ -37,32 +34,16 @@ import javax.swing.JComponent
  * 示例：`this = owner root = country from = ?`
  */
 @Suppress("UnstableApiUsage")
-class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    data class Settings(
-        var showOnlyIfScopeIsChanged: Boolean = true
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxScopeContextInfoHintsSettingsKey")
+class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scopeContextInfo")
 
     override val name: String get() = PlsBundle.message("script.hints.scopeContext")
     override val description: String get() = PlsBundle.message("script.hints.scopeContext.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
-    override fun createSettings() = Settings()
+    override val showScopeContextInfo: Boolean get() = true
 
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                row {
-                    checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
-                        .bindSelected(settings::showOnlyIfScopeIsChanged)
-                        .actionListener { _, component -> settings.showOnlyIfScopeIsChanged = component.isSelected }
-                }
-            }
-        }
-    }
-
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         if (file !is ParadoxScriptFile) return true
         if (element !is ParadoxScriptProperty) return true
         // 要求属性的值是一个块（block），且块的左花括号位于行尾（忽略空白和注释）
@@ -80,14 +61,14 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
 
             val gameType = selectGameType(file) ?: return true
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
-            val presentation = doCollect(scopeContext, configGroup)
+            val presentation = collect(scopeContext, configGroup)
             val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
             sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
         }
         return true
     }
 
-    private fun PresentationFactory.doCollect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
+    private fun PresentationFactory.collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
         var appendSeparator = false
         scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->

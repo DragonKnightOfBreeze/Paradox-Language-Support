@@ -11,6 +11,9 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
 import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
+/**
+ * 通过内嵌提示显示内联数学表达式的计算结果（如果无需提供额外的传参信息）。
+ */
 class ParadoxInlineMathResultHintsProviderNew: ParadoxHintsProviderNew() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptInlineMath) return

@@ -4,12 +4,10 @@ import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.optimized
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -38,9 +36,5 @@ class ParadoxCsvComplexEnumValueInfoHintsProviderNew : ParadoxHintsProviderNew()
         sink.addPresentation(InlineInlayPosition(element.endOffset, true), hintFormat = HintFormat.default) {
             text(text)
         }
-    }
-
-    override fun isSupportedFile(file: PsiFile): Boolean {
-        return file is ParadoxCsvFile
     }
 }

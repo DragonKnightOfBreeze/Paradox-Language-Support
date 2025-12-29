@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
@@ -10,10 +8,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierLocalizedNameHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -21,7 +19,6 @@ import icu.windea.pls.lang.search.selector.localisation
 import icu.windea.pls.lang.search.selector.preferLocale
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withConstraint
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -30,40 +27,23 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
-import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示修正的本地化名称。
  * 来自对应的本地化。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    data class Settings(
-        var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
-        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
+class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.modifierHintText")
 
     override val name: String get() = PlsBundle.message("script.hints.modifierHintText")
     override val description: String get() = PlsBundle.message("script.hints.modifierHintText.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun createSettings() = Settings()
-
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                createTextLengthLimitRow(settings::textLengthLimit)
-                createIconHeightLimitRow(settings::iconHeightLimit)
-            }
-        }
-    }
-
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
@@ -89,7 +69,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
         return true
     }
 
-    private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: ParadoxHintsSettings): InlayPresentation? {
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(localisation)
     }

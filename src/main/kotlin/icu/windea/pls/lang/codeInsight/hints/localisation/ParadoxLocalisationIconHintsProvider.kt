@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.codeInsight.hints.localisation
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
@@ -9,20 +7,18 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
-import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import javax.imageio.ImageIO
-import javax.swing.JComponent
 
 /**
  * 为本地化图标显示渲染后图标。
@@ -30,32 +26,18 @@ import javax.swing.JComponent
  * 对应的图标需要大小合适且存在。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
-    data class Settings(
-        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")
+class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.icon")
 
     override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
     override val renderIcon: Boolean get() = true
 
-    override fun createSettings() = Settings()
-
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                createIconHeightLimitRow(settings::iconHeightLimit)
-            }
-        }
-    }
-
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxLocalisationIcon) return true
         val name = element.name ?: return true
         if (name.isEmpty()) return true

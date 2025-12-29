@@ -15,6 +15,8 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider.*
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.settings.PlsInternalSettings
@@ -31,33 +33,17 @@ import javax.swing.JComponent
  * @see ParadoxHintTextProviderBase.ScriptedVariable
  */
 @Suppress("UnstableApiUsage")
-class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    data class Settings(
-        var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
-        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxScriptedVariableLocalizedNameHintsSettingsKey")
+class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scriptedVariableHintText")
 
     override val name: String get() = PlsBundle.message("script.hints.scriptedVariableHintText")
     override val description: String get() = PlsBundle.message("script.hints.scriptedVariableHintText.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun createSettings() = Settings()
-
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                createTextLengthLimitRow(settings::textLengthLimit)
-                createIconHeightLimitRow(settings::iconHeightLimit)
-            }
-        }
-    }
-
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         // only for scripted variables, not for scripted variable references
 
         if (element !is ParadoxScriptScriptedVariable) return true
@@ -71,7 +57,7 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxScriptScriptedVariable, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(element: ParadoxScriptScriptedVariable, editor: Editor, settings: ParadoxHintsSettings): InlayPresentation? {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)

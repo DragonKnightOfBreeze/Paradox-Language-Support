@@ -10,23 +10,19 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.lang.psi.ParadoxBaseFile
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.hints.AbstractKtInlayHintsProvider
 
 abstract class ParadoxHintsProviderNew : InlayHintsProvider {
     private val log = Logger.getInstance(this::class.java)
 
-    protected open fun isSupportedFile(file: PsiFile): Boolean {
-        return file is ParadoxScriptFile
-    }
-
     final override fun createCollector(
         file: PsiFile,
         editor: Editor
     ): InlayHintsCollector? {
         val project = editor.project ?: file.project
-        if (project.isDefault || !isSupportedFile(file)) return null
+        if (project.isDefault || file !is ParadoxBaseFile) return null
 
         return object : SharedBypassCollector {
             override fun collectFromElement(

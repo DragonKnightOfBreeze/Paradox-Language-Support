@@ -89,14 +89,13 @@
 
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProviderNew"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueInfoHintsProviderNew"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
-        providerId="paradox.script.inlineMathResult"
+        providerId="paradox.script.complexEnumValueInfo"
         bundle="messages.PlsBundle"
-        nameKey="script.hints.inlineMathResult"
-        descriptionKey="script.hints.inlineMathResult.description"/>
-
+        nameKey="script.hints.complexEnumValueInfo"
+        descriptionKey="script.hints.complexEnumValueInfo.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueInfoHintsProviderNew"
@@ -106,17 +105,15 @@
         bundle="messages.PlsBundle"
         nameKey="script.hints.dynamicValueInfo"
         descriptionKey="script.hints.dynamicValueInfo.description"/>
-
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueInfoHintsProviderNew"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProviderNew"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
-        providerId="paradox.script.complexEnumValueInfo"
+        providerId="paradox.script.inlineMathResult"
         bundle="messages.PlsBundle"
-        nameKey="script.hints.complexEnumValueInfo"
-        descriptionKey="script.hints.complexEnumValueInfo.description"/>
-
+        nameKey="script.hints.inlineMathResult"
+        descriptionKey="script.hints.inlineMathResult.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableReferenceValueHintsProviderNew"
@@ -126,7 +123,6 @@
         bundle="messages.PlsBundle"
         nameKey="script.hints.scriptedVariableReferenceValue"
         descriptionKey="script.hints.scriptedVariableReferenceValue.description"/>
-
     <codeInsight.declarativeInlayProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationScriptedVariableReferenceValueHintsProviderNew"
@@ -136,7 +132,6 @@
         bundle="messages.PlsBundle"
         nameKey="localisation.hints.scriptedVariableReferenceValue"
         descriptionKey="localisation.hints.scriptedVariableReferenceValue.description"/>
-
     <codeInsight.declarativeInlayProvider
         language="PARADOX_CSV"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueInfoHintsProviderNew"

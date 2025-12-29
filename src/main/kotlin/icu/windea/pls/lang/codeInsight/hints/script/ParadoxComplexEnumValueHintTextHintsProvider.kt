@@ -1,7 +1,5 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
@@ -10,19 +8,17 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
-import javax.swing.JComponent
 
 /**
  * 通过内嵌提示显示复杂枚举值的提示文本。
@@ -32,33 +28,17 @@ import javax.swing.JComponent
  * @see ParadoxHintTextProviderBase.ComplexEnumValue
  */
 @Suppress("UnstableApiUsage")
-class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
-    data class Settings(
-        var textLengthLimit: Int = PlsInternalSettings.getInstance().textLengthLimitForInlay,
-        var iconHeightLimit: Int = PlsInternalSettings.getInstance().iconHeightLimitForInlay,
-    )
-
-    private val settingsKey = SettingsKey<Settings>("ParadoxComplexEnumValueLocalizedNameHintsSettingsKey")
+class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.complexEnumValueHintText")
 
     override val name: String get() = PlsBundle.message("script.hints.complexEnumValueHintText")
     override val description: String get() = PlsBundle.message("script.hints.complexEnumValueHintText.description")
-    override val key: SettingsKey<Settings> get() = settingsKey
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun createSettings() = Settings()
-
-    override fun createConfigurable(settings: Settings): ImmediateConfigurable {
-        return object : ImmediateConfigurable {
-            override fun createComponent(listener: ChangeListener): JComponent = panel {
-                createTextLengthLimitRow(settings::textLengthLimit)
-                createIconHeightLimitRow(settings::iconHeightLimit)
-            }
-        }
-    }
-
-    override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
+    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         val name = element.name
         if (name.isEmpty()) return true
@@ -76,7 +56,7 @@ class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: ParadoxHintsSettings): InlayPresentation? {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
         val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)
