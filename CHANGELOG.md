@@ -7,6 +7,7 @@
 
 ## 2.1.0-dev
 
+- [x] 更新 IDEA 版本到 2025.2 / Update IDEA version to 2025.2
 - [x] 同步规则文件 / Synchronize config files
 - [x] #241 Exception in version 2.0.7
 - [x] #242 Possible IDE freeze involves to `ParadoxAnalyzeManager.getFileInfo`
