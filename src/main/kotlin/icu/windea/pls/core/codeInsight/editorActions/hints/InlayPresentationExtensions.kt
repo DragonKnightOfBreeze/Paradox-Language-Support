@@ -18,25 +18,3 @@ fun List<InlayPresentation>.mergePresentations(): InlayPresentation? {
         else -> SequencePresentation(this.optimized())
     }
 }
-
-/**
- * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）。
- */
-fun InlayPresentation.toFinalPresentation(
-    factory: PresentationFactory,
-    provider: InlayHintsProvider<*>,
-    project: Project?,
-    smaller: Boolean = false
-): InlayPresentation {
-    var presentation: InlayPresentation = if (smaller) {
-        factory.roundWithBackgroundAndSmallInset(this)
-    } else {
-        factory.roundWithBackground(this)
-    }
-    if (project != null) {
-        presentation = MenuOnClickPresentation(presentation, project) {
-            InlayHintsUtils.getDefaultInlayHintsProviderPopupActions(provider.key) { provider.name }
-        }
-    }
-    return presentation
-}

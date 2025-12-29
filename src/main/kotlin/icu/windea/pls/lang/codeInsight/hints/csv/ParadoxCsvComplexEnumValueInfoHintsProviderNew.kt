@@ -14,6 +14,9 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
+/**
+ * 通过内嵌提示显示复杂枚举值信息，即枚举名。
+ */
 class ParadoxCsvComplexEnumValueInfoHintsProviderNew : ParadoxHintsProviderNew() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxCsvColumn) return
