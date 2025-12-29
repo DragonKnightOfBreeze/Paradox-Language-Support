@@ -7,11 +7,9 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.MenuOnClickPresentation
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.lang.Language
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.ParadoxBaseLanguage
@@ -35,31 +33,33 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): InlayHintsCollector? {
         if (file.fileInfo == null) return null
         return object : FactoryInlayHintsCollector(editor) {
+            private val context = ParadoxHintsContext(file, editor, settings, factory)
+
             // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 ProgressManager.checkCanceled()
-                return factory.collectFromElement(element, file, editor, settings, sink)
+                return context.run { context.collectFromElement(element, sink) }
             }
         }
     }
 
-    protected abstract fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean
+    protected abstract fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean
 
     /**
      * 将内嵌提示处理为最终要显示的内嵌注释（加上背景、左偏移、默认点击操作等）。
      */
-    protected fun InlayPresentation.toFinalPresentation(factory: PresentationFactory, project: Project?, smaller: Boolean = false): InlayPresentation {
-        var presentation: InlayPresentation = if (smaller) {
-            factory.roundWithBackgroundAndSmallInset(this)
+    context(context: ParadoxHintsContext)
+    protected fun InlayPresentation.toFinalPresentation(smaller: Boolean = false): InlayPresentation {
+        var result = this
+        result = if (smaller) {
+            context.factory.roundWithBackgroundAndSmallInset(result)
         } else {
-            factory.roundWithBackground(this)
+            context.factory.roundWithBackground(result)
         }
-        if (project != null) {
-            presentation = MenuOnClickPresentation(presentation, project) {
-                InlayHintsUtils.getDefaultInlayHintsProviderPopupActions(key) { name }
-            }
+        result = MenuOnClickPresentation(result, context.project) {
+            InlayHintsUtils.getDefaultInlayHintsProviderPopupActions(key) { name }
         }
-        return presentation
+        return result
     }
 }
 

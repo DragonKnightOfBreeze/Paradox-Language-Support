@@ -4,9 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -16,6 +14,7 @@ import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.selectGameType
@@ -43,7 +42,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
 
     override val showScopeContextInfo: Boolean get() = true
 
-    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
+    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (file !is ParadoxScriptFile) return true
         if (element !is ParadoxScriptProperty) return true
         // 要求属性的值是一个块（block），且块的左花括号位于行尾（忽略空白和注释）
@@ -62,30 +61,34 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
             val gameType = selectGameType(file) ?: return true
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
             val presentation = collect(scopeContext, configGroup)
-            val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+            val finalPresentation = presentation?.toFinalPresentation() ?: return true
             sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
         }
         return true
     }
 
-    private fun PresentationFactory.collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
+    private fun ParadoxHintsContext.collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
         var appendSeparator = false
         scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->
             if (appendSeparator) {
-                presentations.add(smallText(" "))
+                presentations.add(factory.smallText(" "))
             } else {
                 appendSeparator = true
             }
-            presentations.add(systemScopePresentation(key, configGroup))
-            presentations.add(smallText(" = "))
-            presentations.add(scopeLinkPresentation(value, configGroup))
+            presentations.add(factory.systemScopePresentation(key, configGroup))
+            presentations.add(factory.smallText(" = "))
+            presentations.add(factory.scopeLinkPresentation(value, configGroup))
         }
         return presentations.mergePresentations()
     }
 
     private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-        return psiSingleReference(smallText(scope.optimized())) { configGroup.systemScopes[scope]?.pointer?.element }
+        return psiSingleReference(smallText(scope.optimized())) { getSystemScopeElement(configGroup, scope) }
+    }
+
+    private fun getSystemScopeElement(configGroup: CwtConfigGroup, scope: String): CwtProperty? {
+        return configGroup.systemScopes[scope]?.pointer?.element
     }
 
     private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {

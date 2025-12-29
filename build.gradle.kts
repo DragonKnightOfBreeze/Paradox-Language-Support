@@ -149,6 +149,7 @@ kotlin {
             listOf(
                 "-Xjvm-default=all",
                 "-Xinline-classes",
+                "-Xcontext-parameters",
                 "-opt-in=kotlin.RequiresOptIn",
                 "-opt-in=kotlin.ExperimentalStdlibApi",
             )

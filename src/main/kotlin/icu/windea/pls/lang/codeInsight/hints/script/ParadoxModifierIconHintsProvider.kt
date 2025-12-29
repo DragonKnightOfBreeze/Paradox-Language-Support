@@ -2,10 +2,7 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
@@ -13,6 +10,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.isParameterized
@@ -42,7 +40,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
 
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
-    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
+    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
         val name = element.name
@@ -74,8 +72,8 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
                 // 点击可以导航到声明处（DDS）
-                val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
-                val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
+                val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
+                val finalPresentation = presentation.toFinalPresentation(smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }

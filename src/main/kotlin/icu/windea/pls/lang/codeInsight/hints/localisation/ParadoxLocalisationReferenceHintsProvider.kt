@@ -3,13 +3,11 @@ package icu.windea.pls.lang.codeInsight.hints.localisation
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
@@ -23,7 +21,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationScriptedVariableRefere
  * 如果本地化文本过长则会先被截断。
  */
 @Suppress("UnstableApiUsage")
-class ParadoxLocalisationReferenceHintsProvider: ParadoxHintsProvider() {
+class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.localisationReference")
 
     override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
@@ -33,11 +31,11 @@ class ParadoxLocalisationReferenceHintsProvider: ParadoxHintsProvider() {
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
+    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxLocalisationParameter) return true
         if (isIgnored(element)) return true
-        val presentation = collect(element, editor, settings)
-        val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
+        val presentation = collect(element)
+        val finalPresentation = presentation?.toFinalPresentation() ?: return true
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
@@ -47,8 +45,8 @@ class ParadoxLocalisationReferenceHintsProvider: ParadoxHintsProvider() {
         return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
     }
 
-    private fun PresentationFactory.collect(element: ParadoxLocalisationParameter, editor: Editor, settings: ParadoxHintsSettings): InlayPresentation? {
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
+    private fun ParadoxHintsContext.collect(element: ParadoxLocalisationParameter): InlayPresentation? {
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(element)
     }
 }

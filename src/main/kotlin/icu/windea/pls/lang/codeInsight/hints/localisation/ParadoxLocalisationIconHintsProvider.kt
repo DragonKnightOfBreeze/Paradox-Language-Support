@@ -2,8 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
@@ -12,6 +10,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.isParameterized
@@ -37,7 +36,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
-    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
+    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxLocalisationIcon) return true
         val name = element.name ?: return true
         if (name.isEmpty()) return true
@@ -64,8 +63,8 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
                 // 点击可以导航到声明处（定义或DDS）
-                val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-                val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
+                val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
+                val finalPresentation = presentation.toFinalPresentation(smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }

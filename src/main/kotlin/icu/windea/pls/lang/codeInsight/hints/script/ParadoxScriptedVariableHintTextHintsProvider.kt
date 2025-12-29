@@ -1,28 +1,20 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.ChangeListener
-import com.intellij.codeInsight.hints.ImmediateConfigurable
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
-import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
-import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider.*
 import icu.windea.pls.lang.isParameterized
-import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import javax.swing.JComponent
 
 /**
  * 封装变量的提示文本的内嵌提示。
@@ -43,23 +35,23 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderLocalisation: Boolean get() = true
     override val renderIcon: Boolean get() = true
 
-    override fun PresentationFactory.collectFromElement(element: PsiElement, file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): Boolean {
+    override fun ParadoxHintsContext.collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
         // only for scripted variables, not for scripted variable references
 
         if (element !is ParadoxScriptScriptedVariable) return true
         val name = element.name
         if (name.isNullOrEmpty()) return true
         if (name.isParameterized()) return true
-        val presentation = doCollect(element, editor, settings) ?: return true
-        val finalPresentation = presentation.toFinalPresentation(this, file.project)
+        val presentation = collect(element) ?: return true
+        val finalPresentation = presentation.toFinalPresentation()
         val endOffset = element.scriptedVariableName.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxScriptScriptedVariable, editor: Editor, settings: ParadoxHintsSettings): InlayPresentation? {
+    private fun ParadoxHintsContext.collect(element: ParadoxScriptScriptedVariable): InlayPresentation? {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
-        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this, settings.textLengthLimit, settings.iconHeightLimit)
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, factory, settings.textLengthLimit, settings.iconHeightLimit)
         return renderer.render(hintLocalisation)
     }
 }
