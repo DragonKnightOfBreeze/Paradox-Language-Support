@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.navigation
+package icu.windea.pls.lang.codeInsight.markers
 
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.util.NlsContexts

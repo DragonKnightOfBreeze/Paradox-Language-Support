@@ -12,7 +12,7 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.codeInsight.editorActions.hints.mergePresentations
+import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.cwt.psi.CwtProperty

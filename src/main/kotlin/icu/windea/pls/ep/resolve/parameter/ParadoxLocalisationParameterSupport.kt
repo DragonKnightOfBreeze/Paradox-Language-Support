@@ -3,7 +3,7 @@ package icu.windea.pls.ep.resolve.parameter
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.config.CwtConfig
-import icu.windea.pls.core.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty

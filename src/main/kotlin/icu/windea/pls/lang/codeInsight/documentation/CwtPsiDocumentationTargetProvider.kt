@@ -1,21 +1,21 @@
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.ParadoxBaseLanguage
-import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 
-class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
+class CwtPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     override fun documentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
         val elementWithDocumentation = element.navigationElement ?: element
         if (!isValid(elementWithDocumentation)) return null
-        return ParadoxDocumentationTarget(elementWithDocumentation, originalElement)
+        return CwtDocumentationTarget(elementWithDocumentation, originalElement)
     }
 
     private fun isValid(elementWithDocumentation: PsiElement): Boolean {
-        if (elementWithDocumentation.language is ParadoxBaseLanguage) return true
-        if (elementWithDocumentation is ParadoxMockPsiElement) return true
+        if (elementWithDocumentation.language is CwtLanguage) return true
+        if (elementWithDocumentation is CwtConfigMockPsiElement) return true
         return false
     }
 }

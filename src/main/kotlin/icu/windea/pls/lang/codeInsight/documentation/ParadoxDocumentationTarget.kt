@@ -1,6 +1,6 @@
-@file:Suppress("UnstableApiUsage")
+@file:Suppress("UnstableApiUsage", "UNUSED_PARAMETER")
 
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.model.Pointer
 import com.intellij.openapi.application.readAction
@@ -14,7 +14,7 @@ import icu.windea.pls.core.createPointer
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
-class CwtDocumentationTarget(
+class ParadoxDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?
 ) : DocumentationTarget {
@@ -23,7 +23,7 @@ class CwtDocumentationTarget(
         val originalElementPtr = originalElement?.createPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
-            CwtDocumentationTarget(element, originalElementPtr?.dereference())
+            ParadoxDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
 
@@ -35,12 +35,12 @@ class CwtDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runReadAction { CwtDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
+        return runReadAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = true) }
     }
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            val html = readAction { CwtDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) }
+            val html = readAction { ParadoxDocumentationManager.computeLocalDocumentation(element, originalElement, hint = false) }
             html?.let { DocumentationResult.documentation(it) }
         }
     }

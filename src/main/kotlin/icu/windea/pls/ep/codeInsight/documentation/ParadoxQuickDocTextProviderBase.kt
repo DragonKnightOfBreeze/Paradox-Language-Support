@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.codeInsight.hints
+package icu.windea.pls.ep.codeInsight.documentation
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.definitionInfo

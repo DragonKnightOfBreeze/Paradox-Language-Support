@@ -1,4 +1,4 @@
-@file:Suppress("InspectionDescriptionNotFoundInspection", "unused")
+@file:Suppress("unused", "InspectionDescriptionNotFoundInspection")
 
 package icu.windea.pls.lang.inspections
 

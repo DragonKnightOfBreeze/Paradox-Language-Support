@@ -14,8 +14,8 @@ import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
-import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.documentation.grayed
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.pass
@@ -39,10 +39,10 @@ import icu.windea.pls.lang.codeInsight.completion.withModifierLocalizedNamesIfNe
 import icu.windea.pls.lang.codeInsight.completion.withPatchableIcon
 import icu.windea.pls.lang.codeInsight.completion.withPatchableTailText
 import icu.windea.pls.lang.codeInsight.completion.withScopeMatched
-import icu.windea.pls.lang.documentation.appendBr
-import icu.windea.pls.lang.documentation.appendIndent
-import icu.windea.pls.lang.documentation.appendPsiLink
-import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.codeInsight.documentation.appendBr
+import icu.windea.pls.lang.codeInsight.documentation.appendIndent
+import icu.windea.pls.lang.codeInsight.documentation.appendPsiLink
+import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxTemplateExpression
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxTemplateSnippetNode

@@ -183,11 +183,11 @@
 
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
-    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.CwtPsiDocumentationTargetProvider"/>
-    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.documentation.ParadoxPsiDocumentationTargetProvider"/>
-    <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.documentation.CwtInlineDocumentationProvider"/>
-    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>
-    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationLinkHandler"/>
+    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtPsiDocumentationTargetProvider"/>
+    <platform.backend.documentation.psiTargetProvider implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxPsiDocumentationTargetProvider"/>
+    <platform.backend.documentation.inlineDocumentationProvider implementation="icu.windea.pls.lang.codeInsight.documentation.CwtInlineDocumentationProvider"/>
+    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationLinkHandler"/>
+    <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationLinkHandler"/>
 
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.ParadoxScriptAnnotator"/>
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.ParadoxLocalisationAnnotator"/>
@@ -372,8 +372,8 @@
   <actions resource-bundle="messages.PlsBundle">
     <group id="Pls.Documentation.PrimaryGroup">
       <separator/>
-      <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>
-      <action id="Pls.Documentation.ResetLocale" class="icu.windea.pls.lang.documentation.actions.ResetQuickDocLocalisationLocaleAction"/>
+      <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.codeInsight.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>
+      <action id="Pls.Documentation.ResetLocale" class="icu.windea.pls.lang.codeInsight.documentation.actions.ResetQuickDocLocalisationLocaleAction"/>
       <add-to-group group-id="Documentation.PrimaryGroup"/>
     </group>
 

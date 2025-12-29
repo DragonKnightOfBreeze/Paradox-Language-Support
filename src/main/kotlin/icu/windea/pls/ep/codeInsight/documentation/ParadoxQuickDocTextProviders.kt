@@ -1,9 +1,8 @@
-package icu.windea.pls.ep.codeInsight.hints
+package icu.windea.pls.ep.codeInsight.documentation
 
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.documentation
 import icu.windea.pls.core.orNull
-import icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider.*
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
@@ -27,7 +26,7 @@ class ParadoxTextColorQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Def
 }
 
 class ParadoxExtendedScriptedVariableQuickDocTextProvider : ParadoxQuickDocTextProviderBase.ScriptedVariable() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptScriptedVariable, name: String): String? {
         val gameType = selectGameType(element) ?: return null
@@ -40,7 +39,7 @@ class ParadoxExtendedScriptedVariableQuickDocTextProvider : ParadoxQuickDocTextP
 }
 
 class ParadoxExtendedDefinitionQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val name = definitionInfo.name
@@ -53,7 +52,7 @@ class ParadoxExtendedDefinitionQuickDocTextProvider : ParadoxQuickDocTextProvide
 }
 
 class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
@@ -66,7 +65,7 @@ class ParadoxExtendedGameRuleQuickDocTextProvider : ParadoxQuickDocTextProviderB
 }
 
 class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Definition() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
@@ -79,7 +78,7 @@ class ParadoxExtendedOnActionQuickDocTextProvider : ParadoxQuickDocTextProviderB
 }
 
 class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextProviderBase.ComplexEnumValue() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxComplexEnumValueElement): String? {
         val name = element.name
@@ -92,7 +91,7 @@ class ParadoxExtendedComplexEnumValueQuickDocTextProvider : ParadoxQuickDocTextP
 }
 
 class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProviderBase.DynamicValue() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxDynamicValueElement): String? {
         val name = element.name
@@ -108,7 +107,7 @@ class ParadoxExtendedDynamicValueQuickDocTextProvider : ParadoxQuickDocTextProvi
 }
 
 class ParadoxExtendedParameterQuickDocTextProvider : ParadoxQuickDocTextProviderBase.Parameter() {
-    override val source: Source get() = Source.Extended
+    override val source: ParadoxQuickDocTextProvider.Source get() = ParadoxQuickDocTextProvider.Source.Extended
 
     override fun doGetQuickDocText(element: ParadoxParameterElement): String? {
         val name = element.name

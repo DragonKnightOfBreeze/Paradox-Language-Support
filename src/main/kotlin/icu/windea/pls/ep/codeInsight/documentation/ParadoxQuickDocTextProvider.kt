@@ -1,10 +1,10 @@
-package icu.windea.pls.ep.codeInsight.hints
+package icu.windea.pls.ep.codeInsight.documentation
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.documentation.ParadoxDocumentationManager
-import icu.windea.pls.lang.documentation.ParadoxDocumentationTarget
+import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationManager
+import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement

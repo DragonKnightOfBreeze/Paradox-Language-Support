@@ -1,14 +1,14 @@
 @file:Suppress("UnusedReceiverParameter")
 
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.documentation.buildDocumentation
-import icu.windea.pls.core.documentation.grayed
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.codeInsight.documentation.grayed
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull

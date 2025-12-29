@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -15,14 +15,14 @@ import icu.windea.pls.config.config.tagType
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.documentation.buildDocumentation
-import icu.windea.pls.core.documentation.buildSections
-import icu.windea.pls.core.documentation.content
-import icu.windea.pls.core.documentation.definition
-import icu.windea.pls.core.documentation.getSections
-import icu.windea.pls.core.documentation.grayed
-import icu.windea.pls.core.documentation.initSections
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.codeInsight.documentation.buildSections
+import icu.windea.pls.core.codeInsight.documentation.content
+import icu.windea.pls.core.codeInsight.documentation.definition
+import icu.windea.pls.core.codeInsight.documentation.getSections
+import icu.windea.pls.core.codeInsight.documentation.grayed
+import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
@@ -33,7 +33,6 @@ import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.cwt.psi.CwtDocComment
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.isExpression

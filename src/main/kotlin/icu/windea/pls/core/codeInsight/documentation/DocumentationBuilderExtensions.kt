@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package icu.windea.pls.core.documentation
+package icu.windea.pls.core.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
 import icu.windea.pls.core.util.createKey

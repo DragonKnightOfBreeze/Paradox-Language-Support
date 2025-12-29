@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.codeInsight.navigation.fileStatusAttributes
 import com.intellij.ide.util.ModuleRendererFactory

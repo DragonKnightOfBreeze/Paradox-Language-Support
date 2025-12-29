@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.lang.documentation
+package icu.windea.pls.lang.codeInsight.documentation
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -9,13 +9,13 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtLocationExpressionManager
-import icu.windea.pls.core.documentation.DocumentationBuilder
-import icu.windea.pls.core.documentation.buildDocumentation
-import icu.windea.pls.core.documentation.buildSections
-import icu.windea.pls.core.documentation.content
-import icu.windea.pls.core.documentation.definition
-import icu.windea.pls.core.documentation.getSections
-import icu.windea.pls.core.documentation.initSections
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
+import icu.windea.pls.core.codeInsight.documentation.buildSections
+import icu.windea.pls.core.codeInsight.documentation.content
+import icu.windea.pls.core.codeInsight.documentation.definition
+import icu.windea.pls.core.codeInsight.documentation.getSections
+import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.anonymous
@@ -79,6 +79,7 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
+import kotlin.collections.iterator
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0

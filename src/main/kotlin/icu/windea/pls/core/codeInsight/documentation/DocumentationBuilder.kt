@@ -1,4 +1,4 @@
-package icu.windea.pls.core.documentation
+package icu.windea.pls.core.codeInsight.documentation
 
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry

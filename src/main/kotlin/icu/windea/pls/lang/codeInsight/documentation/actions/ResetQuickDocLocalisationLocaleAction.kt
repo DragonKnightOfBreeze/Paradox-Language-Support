@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.documentation.actions
+package icu.windea.pls.lang.codeInsight.documentation.actions
 
 import com.intellij.codeInsight.hint.HintManagerImpl
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
 import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.documentation.targetElement
+import icu.windea.pls.lang.codeInsight.documentation.targetElement
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 // cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction
