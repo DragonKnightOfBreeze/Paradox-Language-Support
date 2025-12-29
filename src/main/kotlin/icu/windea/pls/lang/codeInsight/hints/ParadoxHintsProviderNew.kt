@@ -17,12 +17,16 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 abstract class ParadoxHintsProviderNew : InlayHintsProvider {
     private val log = Logger.getInstance(this::class.java)
 
+    protected open fun isSupportedFile(file: PsiFile): Boolean {
+        return file is ParadoxScriptFile
+    }
+
     final override fun createCollector(
         file: PsiFile,
         editor: Editor
     ): InlayHintsCollector? {
         val project = editor.project ?: file.project
-        if (project.isDefault || file !is ParadoxScriptFile) return null
+        if (project.isDefault || !isSupportedFile(file)) return null
 
         return object : SharedBypassCollector {
             override fun collectFromElement(
