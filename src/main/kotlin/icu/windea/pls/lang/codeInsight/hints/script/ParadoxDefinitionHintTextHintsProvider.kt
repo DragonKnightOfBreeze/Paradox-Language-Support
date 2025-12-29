@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -11,9 +10,9 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
@@ -35,20 +34,12 @@ class ParadoxDefinitionHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element is ParadoxScriptProperty) {
-            val presentation = collect(element)
-            val finalPresentation = presentation?.toFinalPresentation() ?: return true
-            val endOffset = element.propertyKey.endOffset
-            sink.addInlineElement(endOffset, true, finalPresentation, false)
-        }
-        return true
-    }
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptProperty) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxScriptDefinitionElement): InlayPresentation? {
-        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return null
+        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(primaryLocalisation)
+        val presentation = renderer.render(primaryLocalisation) ?: return
+        sink.addInlinePresentation(element.propertyKey.endOffset) { presentations.add(presentation) }
     }
 }

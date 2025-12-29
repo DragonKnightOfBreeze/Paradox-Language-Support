@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -10,6 +9,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -21,7 +21,6 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
@@ -42,35 +41,27 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return true
-        if (!element.isExpression()) return true
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        if (!element.isExpression()) return
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
         val type = config.configExpression.type
-        if (type == CwtDataTypes.Modifier) {
-            val name = element.value
-            if (name.isEmpty()) return true
-            if (name.isParameterized()) return true
-            val configGroup = config.configGroup
-            val project = configGroup.project
-            val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
-            val localisation = keys.firstNotNullOfOrNull { key ->
-                val selector = selector(project, element).localisation().contextSensitive()
-                    .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
-                ParadoxLocalisationSearch.searchNormal(key, selector).find()
-            } ?: return true
-            val presentation = collect(localisation)
-            val finalPresentation = presentation?.toFinalPresentation() ?: return true
-            val endOffset = element.endOffset
-            sink.addInlineElement(endOffset, true, finalPresentation, false)
-        }
-        return true
-    }
+        if (type != CwtDataTypes.Modifier) return
+        val name = element.value
+        if (name.isEmpty()) return
+        if (name.isParameterized()) return
+        val configGroup = config.configGroup
+        val project = configGroup.project
+        val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
+        val localisation = keys.firstNotNullOfOrNull { key ->
+            val selector = selector(project, element).localisation().contextSensitive()
+                .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
+            ParadoxLocalisationSearch.searchNormal(key, selector).find()
+        } ?: return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(localisation: ParadoxLocalisationProperty): InlayPresentation? {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(localisation)
+        val presentation = renderer.render(localisation) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

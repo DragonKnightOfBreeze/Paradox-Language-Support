@@ -1,15 +1,11 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.InlayHintsSink
-import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.optimized
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -19,41 +15,23 @@ import icu.windea.pls.script.psi.isExpression
 /**
  * 通过内嵌提示显示动态值信息，即类型。
  */
-@Deprecated("Use `ParadoxDynamicValueInfoHintsProviderNew` instead.")
-@Suppress("UnstableApiUsage")
-class ParadoxDynamicValueInfoHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.dynamicValueInfo")
-
-    override val name: String get() = PlsBundle.message("script.hints.dynamicValueInfo")
-    override val description: String get() = PlsBundle.message("script.hints.dynamicValueInfo.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
-
-    context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+class ParadoxDynamicValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
+    override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         // ignored for `value_field` or `variable_field` or other variants
 
-        if (element !is ParadoxScriptStringExpressionElement) return true
-        if (!element.isExpression()) return true
+        if (element !is ParadoxScriptStringExpressionElement) return
+        if (!element.isExpression()) return
         val expression = element.name
-        if (expression.isEmpty()) return true
-        if (expression.isParameterized()) return true
+        if (expression.isEmpty()) return
+        if (expression.isParameterized()) return
+
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
-        if (resolved !is ParadoxDynamicValueElement) return true
-        val presentation = collect(resolved) ?: return true
-        val finalPresentation = presentation.toFinalPresentation()
-        val endOffset = element.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+        if (resolved !is ParadoxDynamicValueElement) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxDynamicValueElement): InlayPresentation? {
-        val name = element.name
-        if (name.isEmpty()) return null
-        if (name.isParameterized()) return null
-        val type = element.dynamicValueType
-        val text = ": $type".optimized()
-        return context.factory.smallText(text)
+        val type = resolved.dynamicValueType
+        sink.addInlinePresentation(element.endOffset) {
+            text(": $type".optimized())
+        }
     }
 }

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -12,6 +11,7 @@ import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
@@ -38,31 +38,21 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         // ignored for `value_field` or `variable_field` or other variants
 
-        if (element !is ParadoxScriptStringExpressionElement) return true
-        if (!element.isExpression()) return true
+        if (element !is ParadoxScriptStringExpressionElement) return
+        if (!element.isExpression()) return
         val expression = element.name
-        if (expression.isEmpty()) return true
-        if (expression.isParameterized()) return true
+        if (expression.isEmpty()) return
+        if (expression.isParameterized()) return
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
-        if (resolved !is ParadoxDynamicValueElement) return true
-        val presentation = collect(resolved) ?: return true
-        val finalPresentation = presentation.toFinalPresentation()
-        val endOffset = element.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+        if (resolved !is ParadoxDynamicValueElement) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxDynamicValueElement): InlayPresentation? {
-        val name = element.name
-        if (name.isEmpty()) return null
-        if (name.isParameterized()) return null
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(hintLocalisation)
+        val presentation = renderer.render(hintLocalisation) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

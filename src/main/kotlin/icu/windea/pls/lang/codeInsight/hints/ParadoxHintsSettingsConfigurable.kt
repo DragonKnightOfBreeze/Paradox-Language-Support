@@ -14,25 +14,8 @@ class ParadoxHintsSettingsConfigurable(
 ) : ImmediateConfigurable {
     override fun createComponent(listener: ChangeListener): JComponent = panel {
         // NOTE 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
-        if (provider.showTypeInfo) createTypeInfoRow()
-        if (provider.showScopeContextInfo) createScopeContextInfoRow()
         if (provider.renderLocalisation) createTextLengthLimitRow()
         if (provider.renderIcon) createIconHeightLimitRow()
-    }
-
-    private fun Panel.createTypeInfoRow() {
-        row {
-            checkBox(PlsBundle.message("hints.settings.showTypes")).selected(true).enabled(false)
-            checkBox(PlsBundle.message("hints.settings.showSubtypes")).bindSelected(settings::showSubtypes)
-        }
-    }
-
-    private fun Panel.createScopeContextInfoRow() {
-        row {
-            checkBox(PlsBundle.message("script.hints.scopeContext.settings.showOnlyIfChanged"))
-                .bindSelected(settings::showOnlyIfScopeIsChanged)
-                .actionListener { _, component -> settings.showOnlyIfScopeIsChanged = component.isSelected }
-        }
     }
 
     private fun Panel.createTextLengthLimitRow() {

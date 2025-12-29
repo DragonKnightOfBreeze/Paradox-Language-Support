@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -13,6 +14,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -41,44 +43,40 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return true
-        if (!element.isExpression()) return true
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        if (!element.isExpression()) return
         val name = element.name
-        if (name.isEmpty()) return true
-        if (name.isParameterized()) return true
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        if (config.configExpression.type != CwtDataTypes.Modifier) return true
+        if (name.isEmpty()) return
+        if (name.isParameterized()) return
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
+        if (config.configExpression.type != CwtDataTypes.Modifier) return
         val configGroup = config.configGroup
         val project = configGroup.project
 
-        context.runCatchingCancelable r@{
-            val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
-            val iconFile = paths.firstNotNullOfOrNull { path ->
-                val iconSelector = selector(project, element).file().contextSensitive()
-                ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
-            }
-            val iconUrl = when {
-                iconFile != null -> ParadoxImageManager.resolveUrlByFile(iconFile, project)
-                else -> null
-            }
-
-            // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
-
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val iconFileUrl = iconUrl.toFileUrl()
-            val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            if (originalIconHeight <= context.settings.iconHeightLimit) {
-                // 点击可以导航到声明处（DDS）
-                val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
-                val finalPresentation = presentation.toFinalPresentation(smaller = true)
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
+        val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
+        val iconFile = paths.firstNotNullOfOrNull { path ->
+            val iconSelector = selector(project, element).file().contextSensitive()
+            ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
         }
-        return true
+        val iconUrl = when {
+            iconFile != null -> ParadoxImageManager.resolveUrlByFile(iconFile, project)
+            else -> null
+        }
+
+        // 如果无法解析（包括对应文件不存在的情况）就直接跳过
+        if (!ParadoxImageManager.canResolve(iconUrl)) return
+
+        // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+        val iconFileUrl = iconUrl.toFileUrl()
+        val icon = iconFileUrl.toIconOrNull() ?: return
+        // 这里需要尝试使用图标的原始高度
+        val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        if (originalIconHeight > context.settings.iconHeightLimit) return
+
+        sink.addInlinePresentation(element.endOffset, smaller = true) {
+            // 点击可以导航到声明处（图片）
+            icon(icon, iconFile?.toPsiFile(project)?.createPointer())
+        }
     }
 }

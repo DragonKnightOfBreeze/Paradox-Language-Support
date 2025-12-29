@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -13,6 +12,7 @@ import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -36,25 +36,21 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxCsvColumn) return true
-        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
-        if (!resolveConstraint.canResolveReference(element)) return true
-        val reference = element.reference ?: return true
-        if (!resolveConstraint.canResolve(reference)) return true
-        val resolved = reference.resolve() ?: return true
-        if (resolved !is ParadoxComplexEnumValueElement) return true
-        val presentation = collect(resolved) ?: return true
-        val finalPresentation = presentation.toFinalPresentation()
-        val endOffset = element.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxCsvColumn) return
+        val expression = element.name
+        if (expression.isEmpty()) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
+        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        if (!resolveConstraint.canResolveReference(element)) return
+        val reference = element.reference ?: return
+        if (!resolveConstraint.canResolve(reference)) return
+        val resolved = reference.resolve() ?: return
+        if (resolved !is ParadoxComplexEnumValueElement) return
+
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(hintLocalisation)
+        val presentation = renderer.render(hintLocalisation) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

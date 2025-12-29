@@ -1,16 +1,12 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.InlayHintsSink
-import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.codeInsight.hints.mergePresentations
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
+import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -19,42 +15,26 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 /**
  * 通过内嵌提示显示复杂枚举值信息，即枚举名。
  */
-@Deprecated("Use `ParadoxComplexEnumValueInfoHintsProviderNew` instead.")
-@Suppress("UnstableApiUsage")
-class ParadoxComplexEnumValueInfoHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.complexEnumValueInfo")
-
-    override val name: String get() = PlsBundle.message("script.hints.complexEnumValueInfo")
-    override val description: String get() = PlsBundle.message("script.hints.complexEnumValueInfo.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
-
-    context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptStringExpressionElement) return true
+class ParadoxComplexEnumValueInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
+    override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
+        if (element !is ParadoxScriptStringExpressionElement) return
         val expression = element.name
-        if (expression.isEmpty()) return true
-        if (expression.isParameterized()) return true
-        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
-        if (!resolveConstraint.canResolveReference(element)) return true
-        val reference = element.reference ?: return true
-        if (!resolveConstraint.canResolve(reference)) return true
-        val resolved = reference.resolve() ?: return true
-        if (resolved !is ParadoxComplexEnumValueElement) return true
-        val presentation = collect(resolved) ?: return true
-        val finalPresentation = presentation.toFinalPresentation()
-        val endOffset = element.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+        if (expression.isEmpty()) return
+        if (expression.isParameterized()) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxComplexEnumValueElement): InlayPresentation? {
-        val enumName = element.enumName
-        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
-        val config = configGroup.complexEnums[enumName] ?: return null
-        val presentations = mutableListOf<InlayPresentation>()
-        presentations.add(context.factory.smallText(": "))
-        presentations.add(context.factory.psiSingleReference(context.factory.smallText(config.name)) { config.pointer.element })
-        return presentations.mergePresentations()
+        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        if (!resolveConstraint.canResolveReference(element)) return
+        val reference = element.reference ?: return
+        if (!resolveConstraint.canResolve(reference)) return
+        val resolved = reference.resolve() ?: return
+        if (resolved !is ParadoxComplexEnumValueElement) return
+
+        val enumName = resolved.enumName
+        val configGroup = PlsFacade.getConfigGroup(resolved.project, resolved.gameType)
+        val config = configGroup.complexEnums[enumName] ?: return
+        sink.addInlinePresentation(element.endOffset) {
+            text(": ")
+            text(enumName, config.pointer)
+        }
     }
 }

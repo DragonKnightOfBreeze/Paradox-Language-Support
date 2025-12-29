@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
@@ -10,6 +9,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -32,23 +32,13 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxLocalisationParameter) return true
-        if (isIgnored(element)) return true
-        val presentation = collect(element)
-        val finalPresentation = presentation?.toFinalPresentation() ?: return true
-        val endOffset = element.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxLocalisationParameter) return
+        val ignored = element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
+        if (ignored) return
 
-    private fun isIgnored(element: ParadoxLocalisationParameter): Boolean {
-        return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
-    }
-
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxLocalisationParameter): InlayPresentation? {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(element)
+        val presentation = renderer.render(element) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

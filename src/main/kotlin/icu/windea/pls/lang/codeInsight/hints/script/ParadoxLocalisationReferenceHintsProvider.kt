@@ -2,13 +2,13 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -30,25 +30,17 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (!ParadoxResolveConstraint.LocalisationReference.canResolveReference(element)) return true
-        val reference = element.reference ?: return true
-        if (!ParadoxResolveConstraint.LocalisationReference.canResolve(reference)) return true
-        val resolved = reference.resolve() ?: return true
-        if (resolved is ParadoxLocalisationProperty) {
-            val localisationType = resolved.type
-            if (localisationType == null) return true
-            val presentation = collect(resolved)
-            val finalPresentation = presentation?.toFinalPresentation() ?: return true
-            val endOffset = element.endOffset
-            sink.addInlineElement(endOffset, true, finalPresentation, false)
-        }
-        return true
-    }
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        val resolveConstraint = ParadoxResolveConstraint.LocalisationReference
+        if (!resolveConstraint.canResolveReference(element)) return
+        val reference = element.reference ?: return
+        if (!resolveConstraint.canResolve(reference)) return
+        val resolved = reference.resolve() ?: return
+        if (resolved !is ParadoxLocalisationProperty) return
+        if (resolved.type == null) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(localisation: ParadoxLocalisationProperty): InlayPresentation? {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(localisation)
+        val presentation = renderer.render(resolved) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

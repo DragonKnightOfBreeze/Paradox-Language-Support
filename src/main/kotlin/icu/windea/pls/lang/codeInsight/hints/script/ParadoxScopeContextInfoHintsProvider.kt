@@ -1,106 +1,69 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.InlayHintsSink
-import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
-import com.intellij.codeInsight.hints.presentation.PresentationFactory
+import com.intellij.codeInsight.hints.declarative.InlayTreeSink
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
-import icu.windea.pls.PlsBundle
+import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
-import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
-import icu.windea.pls.cwt.psi.CwtProperty
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
+import icu.windea.pls.lang.codeInsight.hints.text
+import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
-import icu.windea.pls.model.scope.ParadoxScope
-import icu.windea.pls.model.scope.ParadoxScopeContext
 import icu.windea.pls.model.scope.toScopeMap
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 通过内嵌提示显示定义及其成员的作用域上下文信息。
  *
  * 示例：`this = owner root = country from = ?`
+ *
+ * @see ParadoxScopeContextInfoSettingsProvider
  */
-@Suppress("UnstableApiUsage")
-class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scopeContextInfo")
+class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
+    override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
+        if (element !is ParadoxScriptProperty) return
 
-    override val name: String get() = PlsBundle.message("script.hints.scopeContext")
-    override val description: String get() = PlsBundle.message("script.hints.scopeContext.description")
-    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+        // 属性的值需要是一个块（block），且块的左花括号需要位于行尾（忽略空白和注释）
+        val block = element.propertyValue as? ParadoxScriptBlock ?: return
+        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
+        val atLineEnd = leftCurlyBrace.siblings(withSelf = false)
+            .dropWhile { (it is PsiWhiteSpace && !PlsPsiManager.containsBlankLine(it)) || it is PsiComment }
+            .firstOrNull()
+        if(atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsBlankLine(atLineEnd)) return
 
-    override val showScopeContextInfo: Boolean get() = true
+        val file = element.containingFile ?: return
+        val gameType = selectGameType(file) ?: return
+        val project = file.project
 
-    context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (context.file !is ParadoxScriptFile) return true
-        if (element !is ParadoxScriptProperty) return true
-        // 要求属性的值是一个块（block），且块的左花括号位于行尾（忽略空白和注释）
-        val block = element.propertyValue as? ParadoxScriptBlock ?: return true
-        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return true
-        val offset = leftCurlyBrace.endOffset
-        val document = context.editor.document
-        val lineEndOffset = document.getLineEndOffset(document.getLineNumber(offset))
-        val s = document.immutableCharSequence.subSequence(offset, lineEndOffset).toString().substringBefore("#")
-        if (s.isNotBlank()) return true
-        if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return true
-        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
-        if (scopeContext != null) {
-            if (context.settings.showOnlyIfScopeIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return true
+        if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
+        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element) ?: return
 
-            val gameType = selectGameType(context.file) ?: return true
-            val configGroup = PlsFacade.getConfigGroup(context.file.project, gameType)
-            val presentation = collect(scopeContext, configGroup)
-            val finalPresentation = presentation?.toFinalPresentation() ?: return true
-            sink.addInlineElement(offset, true, finalPresentation, false) // 不再固定放到行尾，因为如果行尾有注释，需要放到注释之前
-        }
-        return true
-    }
+        val settings = ParadoxDeclarativeHintsSettings.getInstance(project)
+        if (settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(scopeInfo: ParadoxScopeContext, configGroup: CwtConfigGroup): InlayPresentation? {
-        val presentations = mutableListOf<InlayPresentation>()
-        var appendSeparator = false
-        scopeInfo.toScopeMap(showPrev = false).forEach { (key, value) ->
-            if (appendSeparator) {
-                presentations.add(context.factory.smallText(" "))
-            } else {
-                appendSeparator = true
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        sink.addInlinePresentation(leftCurlyBrace.endOffset) {
+            val scopeMap = scopeContext.toScopeMap(showPrev = false)
+            var appendSeparator = false
+            for ((systemScope, scope) in scopeMap) {
+                if (appendSeparator) text(" ") else appendSeparator = true
+                text(systemScope.optimized(), configGroup.systemScopes[systemScope]?.pointer)
+                text(" = ")
+                when {
+                    ParadoxScopeManager.isUnsureScopeId(scope.id) -> text(scope.id)
+                    else -> text(scope.id, configGroup.scopeAliasMap[scope.id]?.pointer)
+                }
             }
-            presentations.add(context.factory.systemScopePresentation(key, configGroup))
-            presentations.add(context.factory.smallText(" = "))
-            presentations.add(context.factory.scopeLinkPresentation(value, configGroup))
         }
-        return presentations.mergePresentations()
-    }
-
-    private fun PresentationFactory.systemScopePresentation(scope: String, configGroup: CwtConfigGroup): InlayPresentation {
-        return psiSingleReference(smallText(scope.optimized())) { getSystemScopeElement(configGroup, scope) }
-    }
-
-    private fun getSystemScopeElement(configGroup: CwtConfigGroup, scope: String): CwtProperty? {
-        return configGroup.systemScopes[scope]?.pointer?.element
-    }
-
-    private fun PresentationFactory.scopeLinkPresentation(scope: ParadoxScope, configGroup: CwtConfigGroup): InlayPresentation {
-        return when {
-            ParadoxScopeManager.isUnsureScopeId(scope.id) -> smallText(scope.id)
-            else -> psiSingleReference(smallText(scope.id)) { getScopeElement(configGroup, scope) }
-        }
-    }
-
-    private fun getScopeElement(configGroup: CwtConfigGroup, scope: ParadoxScope): CwtProperty? {
-        return configGroup.scopeAliasMap[scope.id]?.pointer?.element
     }
 }

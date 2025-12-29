@@ -2,7 +2,6 @@ package icu.windea.pls.lang.codeInsight.hints.script
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.SettingsKey
-import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
@@ -12,6 +11,7 @@ import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -36,24 +36,17 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderIcon: Boolean get() = true
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         // only for scripted variables, not for scripted variable references
 
-        if (element !is ParadoxScriptScriptedVariable) return true
+        if (element !is ParadoxScriptScriptedVariable) return
         val name = element.name
-        if (name.isNullOrEmpty()) return true
-        if (name.isParameterized()) return true
-        val presentation = collect(element) ?: return true
-        val finalPresentation = presentation.toFinalPresentation()
-        val endOffset = element.scriptedVariableName.endOffset
-        sink.addInlineElement(endOffset, true, finalPresentation, false)
-        return true
-    }
+        if (name.isNullOrEmpty()) return
+        if (name.isParameterized()) return
 
-    context(context: ParadoxHintsContext)
-    private fun collect(element: ParadoxScriptScriptedVariable): InlayPresentation? {
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return null
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        return renderer.render(hintLocalisation)
+        val presentation = renderer.render(hintLocalisation) ?: return
+        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
     }
 }

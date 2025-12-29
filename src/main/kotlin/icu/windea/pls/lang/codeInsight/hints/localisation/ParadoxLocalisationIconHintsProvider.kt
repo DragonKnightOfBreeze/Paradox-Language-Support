@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
@@ -13,6 +14,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
@@ -37,40 +39,34 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
     // icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
     context(context: ParadoxHintsContext)
-    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxLocalisationIcon) return true
-        val name = element.name ?: return true
-        if (name.isEmpty()) return true
-        if (name.isParameterized()) return true
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxLocalisationIcon) return
+        val name = element.name ?: return
+        if (name.isEmpty()) return
+        if (name.isParameterized()) return
 
-        context.runCatchingCancelable r@{
-            val resolved = element.reference?.resolve()
-            val iconFrame = element.frame
-            val frameInfo = ImageFrameInfo.of(iconFrame)
-            val project = context.file.project
-            val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, project, frameInfo)
-                else -> null
-            }
-
-            // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
-
-            val iconFileUrl = iconUrl.toFileUrl()
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            if (originalIconHeight <= context.settings.iconHeightLimit) {
-                // 点击可以导航到声明处（定义或DDS）
-                val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { resolved }
-                val finalPresentation = presentation.toFinalPresentation(smaller = true)
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
+        val resolved = element.reference?.resolve()
+        val iconFrame = element.frame
+        val frameInfo = ImageFrameInfo.of(iconFrame)
+        val iconUrl = when {
+            resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+            resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, context.project, frameInfo)
+            else -> null
         }
 
-        return true
+        // 如果无法解析（包括对应文件不存在的情况）就直接跳过
+        if (!ParadoxImageManager.canResolve(iconUrl)) return
+
+        // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+        val iconFileUrl = iconUrl.toFileUrl()
+        val icon = iconFileUrl.toIconOrNull() ?: return
+        // 这里需要尝试使用图标的原始高度
+        val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        if (originalIconHeight > context.settings.iconHeightLimit) return
+
+        sink.addInlinePresentation(element.endOffset, smaller = true) {
+            // 点击可以导航到声明处（定义或图片）
+            icon(icon, resolved?.createPointer())
+        }
     }
 }
