@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.calculators
+package icu.windea.pls.lang.util.evaluators
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMathNumber
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 
-class ParadoxInlineMathCalculator {
+class ParadoxInlineMathEvaluator {
     data class Argument(
         val expression: String,
         val id: String,
@@ -61,14 +61,14 @@ class ParadoxInlineMathCalculator {
         })
     }
 
-    fun calculate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathCalculationResult {
-        return calculateInternal(element, args)
+    fun evaluate(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult {
+        return evaluateInternal(element, args)
     }
 
-    private fun calculateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): MathCalculationResult {
+    private fun evaluateInternal(element: ParadoxScriptInlineMath, args: Map<String, String>): MathResult {
         val arguments = resolveArguments(element)
         prepareArguments(arguments, args)
-        return calculateItems(element, arguments, args)
+        return evaluateItems(element, arguments, args)
     }
 
     private fun prepareArguments(arguments: Map<String, Argument>, args: Map<String, String>) {
@@ -115,16 +115,16 @@ class ParadoxInlineMathCalculator {
         }
     }
 
-    private fun calculateItems(element: ParadoxScriptInlineMath, arguments: Map<String, Argument>, args: Map<String, String>): MathCalculationResult {
-        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot calculate: token element is missing.")
+    private fun evaluateItems(element: ParadoxScriptInlineMath, arguments: Map<String, Argument>, args: Map<String, String>): MathResult {
+        val tokenElement = element.tokenElement ?: throw IllegalStateException("Cannot evaluate: token element is missing.")
         PsiTreeUtil.findChildOfType(tokenElement, PsiErrorElement::class.java)?.let { error ->
             val errorText = error.errorDescription.ifEmpty { "Syntax error" }
-            throw IllegalStateException("Cannot calculate: $errorText")
+            throw IllegalStateException("Cannot evaluate: $errorText")
         }
 
         val tokens = mutableListOf<MathToken>()
         collectTokens(tokenElement, tokens, arguments, args)
-        if (tokens.isEmpty()) throw IllegalStateException("Cannot calculate: empty expression.")
+        if (tokens.isEmpty()) throw IllegalStateException("Cannot evaluate: empty expression.")
         return evaluateTokens(tokens)
     }
 
@@ -151,23 +151,23 @@ class ParadoxInlineMathCalculator {
             is ParadoxScriptInlineMathNumber -> {
                 val valueText = element.value
                 val number = parseNumberOrNull(valueText)
-                    ?: throw IllegalStateException("Cannot calculate: invalid number '$valueText'.")
+                    ?: throw IllegalStateException("Cannot evaluate: invalid number '$valueText'.")
                 MathToken.Operand(number)
             }
             is ParadoxScriptInlineMathParameter -> {
                 val expression = element.text?.trim()?.orNull()
-                    ?: throw IllegalStateException("Cannot calculate: parameter text is missing.")
+                    ?: throw IllegalStateException("Cannot evaluate: parameter text is missing.")
                 val argument = arguments[expression]
-                    ?: throw IllegalStateException("Cannot calculate: parameter '$expression' is not resolved.")
+                    ?: throw IllegalStateException("Cannot evaluate: parameter '$expression' is not resolved.")
                 val number = parseNumberOrNull(argument.value)
                     ?: throw IllegalArgumentException("Invalid argument value for '$expression': '${argument.value}'")
                 MathToken.Operand(number)
             }
             is ParadoxScriptInlineMathScriptedVariableReference -> {
                 val expression = element.text?.trim()?.orNull()
-                    ?: throw IllegalStateException("Cannot calculate: scripted variable reference text is missing.")
+                    ?: throw IllegalStateException("Cannot evaluate: scripted variable reference text is missing.")
                 val argument = arguments[expression]
-                    ?: throw IllegalStateException("Cannot calculate: scripted variable reference '$expression' is not resolved.")
+                    ?: throw IllegalStateException("Cannot evaluate: scripted variable reference '$expression' is not resolved.")
                 val resolvedNumber = when {
                     argument.value.isNotEmpty() -> {
                         parseNumberOrNull(argument.value)
@@ -180,14 +180,14 @@ class ParadoxInlineMathCalculator {
                             is ParadoxScriptInlineMath -> {
                                 withRecursionGuard {
                                     withRecursionCheck("sv:${argument.id}") {
-                                        calculateInternal(resolvedValueElement, args)
-                                    } ?: throw IllegalArgumentException("Cannot calculate: recursive scripted variable reference '$expression'.")
-                                } ?: throw IllegalArgumentException("Cannot calculate: recursion detected.")
+                                        evaluateInternal(resolvedValueElement, args)
+                                    } ?: throw IllegalArgumentException("Cannot evaluate: recursive scripted variable reference '$expression'.")
+                                } ?: throw IllegalArgumentException("Cannot evaluate: recursion detected.")
                             }
                             else -> {
                                 val valueText = resolvedValueElement.text?.trim().orEmpty()
                                 parseNumberOrNull(valueText)
-                                    ?: throw IllegalStateException("Cannot calculate: invalid scripted variable value '$valueText' for '$expression'.")
+                                    ?: throw IllegalStateException("Cannot evaluate: invalid scripted variable value '$valueText' for '$expression'.")
                             }
                         }
                     }
@@ -213,17 +213,17 @@ class ParadoxInlineMathCalculator {
         }
     }
 
-    private fun parseNumberOrNull(text: String): MathCalculationResult? {
+    private fun parseNumberOrNull(text: String): MathResult? {
         val trimmed = text.trim()
         if (trimmed.isEmpty()) return null
         val intValue = trimmed.toIntOrNull()
-        if (intValue != null) return MathCalculationResult(intValue.toFloat(), isInt = true)
+        if (intValue != null) return MathResult(intValue.toFloat(), isInt = true)
         val floatValue = trimmed.toFloatOrNull() ?: return null
         if (!floatValue.isFinite()) return null
-        return MathCalculationResult(floatValue, isInt = false)
+        return MathResult(floatValue, isInt = false)
     }
 
-    private fun evaluateTokens(tokens: List<MathToken>): MathCalculationResult {
+    private fun evaluateTokens(tokens: List<MathToken>): MathResult {
         val evaluator = MathExpressionEvaluator()
         return evaluator.evaluate(tokens)
     }

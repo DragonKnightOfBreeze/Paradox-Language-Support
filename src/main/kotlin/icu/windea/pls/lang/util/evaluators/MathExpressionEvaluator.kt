@@ -1,12 +1,12 @@
-package icu.windea.pls.lang.util.calculators
+package icu.windea.pls.lang.util.evaluators
 
 import com.intellij.openapi.progress.ProgressManager
 
 open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
     private enum class ContextType { None, Operand, Operator, LeftPar, LeftAbs }
 
-    override fun evaluate(tokens: List<MathToken>): MathCalculationResult {
-        val values = ArrayDeque<MathCalculationResult>()
+    override fun evaluate(tokens: List<MathToken>): MathResult {
+        val values = ArrayDeque<MathResult>()
         val expressions = ArrayDeque<MathExpression>()
         var contextType = ContextType.None
 
@@ -17,7 +17,7 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
                     val value = values.removeLastOrNull()
                         ?: throw IllegalStateException("Cannot evaluate: missing operand for unary operator.")
                     validateUnary(expression.operator, value)
-                    val result = expression.operator.calculate(value)
+                    val result = expression.operator.evaluate(value)
                     onUnaryApplied(expression.operator, value, result)
                     values.addLast(result)
                 }
@@ -27,7 +27,7 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
                     val left = values.removeLastOrNull()
                         ?: throw IllegalStateException("Cannot evaluate: missing left operand for binary operator.")
                     validateBinary(expression.operator, left, right)
-                    val result = expression.operator.calculate(left, right)
+                    val result = expression.operator.evaluate(left, right)
                     onBinaryApplied(expression.operator, left, right, result)
                     values.addLast(result)
                 }
@@ -71,7 +71,7 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
 
                     val value = values.removeLastOrNull()
                         ?: throw IllegalStateException("Cannot evaluate: missing operand for absolute operator.")
-                    val result = MathOperator.Unary.Abs.calculate(value)
+                    val result = MathOperator.Unary.Abs.evaluate(value)
                     onUnaryApplied(MathOperator.Unary.Abs, value, result)
                     values.addLast(result)
                     contextType = ContextType.Operand
@@ -145,29 +145,29 @@ open class MathExpressionEvaluator: MathExpressionEvaluatorBase() {
         }
     }
 
-    override fun validateBinary(operator: MathOperator.Binary, left: MathCalculationResult, right: MathCalculationResult) {
+    override fun validateBinary(operator: MathOperator.Binary, left: MathResult, right: MathResult) {
         ensureArithmeticValid(operator, right)
     }
 
-    override fun onUnaryApplied(operator: MathOperator.Unary, input: MathCalculationResult, result: MathCalculationResult) {
+    override fun onUnaryApplied(operator: MathOperator.Unary, input: MathResult, result: MathResult) {
         handleNumberType(result, input)
     }
 
-    override fun onBinaryApplied(operator: MathOperator.Binary, left: MathCalculationResult, right: MathCalculationResult, result: MathCalculationResult) {
+    override fun onBinaryApplied(operator: MathOperator.Binary, left: MathResult, right: MathResult, result: MathResult) {
         handleNumberType(operator, left, right, result)
     }
 
-    private fun ensureArithmeticValid(operator: MathOperator.Binary, right: MathCalculationResult) {
+    private fun ensureArithmeticValid(operator: MathOperator.Binary, right: MathResult) {
         if (operator is MathOperator.Binary.Div || operator is MathOperator.Binary.Mod) {
             if (right.value == 0f) throw ArithmeticException("/ by zero")
         }
     }
 
-    private fun handleNumberType(result: MathCalculationResult, input: MathCalculationResult) {
+    private fun handleNumberType(result: MathResult, input: MathResult) {
         result.isInt = input.isInt
     }
 
-    private fun handleNumberType(operator: MathOperator.Binary, left: MathCalculationResult, right: MathCalculationResult, result: MathCalculationResult) {
+    private fun handleNumberType(operator: MathOperator.Binary, left: MathResult, right: MathResult, result: MathResult) {
         if (!left.isInt || !right.isInt) {
             result.isInt = false
             return

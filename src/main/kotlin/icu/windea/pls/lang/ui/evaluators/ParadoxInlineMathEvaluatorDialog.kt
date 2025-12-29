@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui.calculators
+package icu.windea.pls.lang.ui.evaluators
 
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.ide.CopyPasteManager
@@ -16,7 +16,7 @@ import com.intellij.util.ui.ListTableModel
 import com.intellij.util.ui.TextTransferable
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 import java.awt.Dimension
@@ -25,12 +25,12 @@ import javax.swing.JComponent
 import javax.swing.JTextArea
 import javax.swing.table.TableCellEditor
 
-class ParadoxInlineMathCalculatorDialog(
+class ParadoxInlineMathEvaluatorDialog(
     val project: Project,
     val element: ParadoxScriptInlineMath
 ) : DialogWrapper(project, false, IdeModalityType.MODELESS) {
-    private val calculator = ParadoxInlineMathCalculator()
-    private val argumentList = calculator.resolveArguments(element).values.toMutableList()
+    private val evaluator = ParadoxInlineMathEvaluator()
+    private val argumentList = evaluator.resolveArguments(element).values.toMutableList()
     private var initialized = false
     private var currentOutputText = ""
     private val resultTextArea by lazy {
@@ -47,9 +47,9 @@ class ParadoxInlineMathCalculatorDialog(
     val result: String get() = currentOutputText
 
     init {
-        title = PlsBundle.message("ui.dialog.calculator.inlineMath.title")
-        setOKButtonText(PlsBundle.message("ui.dialog.calculator.inlineMath.action.copy"))
-        setCancelButtonText(PlsBundle.message("ui.dialog.calculator.inlineMath.action.close"))
+        title = PlsBundle.message("ui.dialog.evaluator.inlineMath.title")
+        setOKButtonText(PlsBundle.message("ui.dialog.evaluator.inlineMath.action.copy"))
+        setCancelButtonText(PlsBundle.message("ui.dialog.evaluator.inlineMath.action.close"))
         init()
     }
 
@@ -83,12 +83,12 @@ class ParadoxInlineMathCalculatorDialog(
 
         // 快速搜索
         TableSpeedSearch.installOn(table) { e ->
-            val element = e as ParadoxInlineMathCalculator.Argument
+            val element = e as ParadoxInlineMathEvaluator.Argument
             element.expression
         }
 
         val panel = panel {
-            row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.expression")) {
+            row(PlsBundle.message("ui.dialog.evaluator.inlineMath.label.expression")) {
                 cell(expressionField)
                     .align(Align.FILL)
             }
@@ -99,14 +99,14 @@ class ParadoxInlineMathCalculatorDialog(
                     .align(Align.FILL)
             }.resizableRow()
 
-            row(PlsBundle.message("ui.dialog.calculator.inlineMath.label.result")) {
+            row(PlsBundle.message("ui.dialog.evaluator.inlineMath.label.result")) {
                 val scrollPane = JBScrollPane().apply { setViewportView(resultTextArea) }
                 cell(scrollPane)
                     .align(Align.FILL)
             }
         }.withPreferredWidth(PREFERRED_DIALOG_WIDTH)
 
-        // 实时计算
+        // 实时求值
         tableModel.addTableModelListener { updateResultText() }
         updateResultText()
 
@@ -136,7 +136,7 @@ class ParadoxInlineMathCalculatorDialog(
 
     private fun getOutput(args: Map<String, String>): String {
         try {
-            val result = calculator.calculate(element, args)
+            val result = evaluator.evaluate(element, args)
             initialized = true
             return result.formatted()
         } catch (e: Throwable) {
@@ -160,28 +160,28 @@ class ParadoxInlineMathCalculatorDialog(
         return tokenText
     }
 
-    override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathCalculatorDialog"
+    override fun getDimensionServiceKey() = "Pls.ParadoxInlineMathEvaluatorDialog"
 
-    class ArgumentsTableModel(items: MutableList<ParadoxInlineMathCalculator.Argument>) : ListTableModel<ParadoxInlineMathCalculator.Argument>(
+    class ArgumentsTableModel(items: MutableList<ParadoxInlineMathEvaluator.Argument>) : ListTableModel<ParadoxInlineMathEvaluator.Argument>(
         arrayOf(
-            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.expression")) {
-                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.expression
+            object : ColumnInfo<ParadoxInlineMathEvaluator.Argument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.expression")) {
+                override fun valueOf(item: ParadoxInlineMathEvaluator.Argument): String = item.expression
             },
-            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.value")) {
-                override fun isCellEditable(item: ParadoxInlineMathCalculator.Argument?): Boolean = true
+            object : ColumnInfo<ParadoxInlineMathEvaluator.Argument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.value")) {
+                override fun isCellEditable(item: ParadoxInlineMathEvaluator.Argument?): Boolean = true
 
-                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.value
+                override fun valueOf(item: ParadoxInlineMathEvaluator.Argument): String = item.value
 
-                override fun setValue(item: ParadoxInlineMathCalculator.Argument, value: String?) {
+                override fun setValue(item: ParadoxInlineMathEvaluator.Argument, value: String?) {
                     item.value = value.orEmpty()
                 }
 
-                override fun getEditor(item: ParadoxInlineMathCalculator.Argument?): TableCellEditor {
+                override fun getEditor(item: ParadoxInlineMathEvaluator.Argument?): TableCellEditor {
                     return DefaultCellEditor(JBTextField())
                 }
             },
-            object : ColumnInfo<ParadoxInlineMathCalculator.Argument, String>(PlsBundle.message("ui.dialog.calculator.inlineMath.table.column.defaultValue")) {
-                override fun valueOf(item: ParadoxInlineMathCalculator.Argument): String = item.defaultValue
+            object : ColumnInfo<ParadoxInlineMathEvaluator.Argument, String>(PlsBundle.message("ui.dialog.evaluator.inlineMath.table.column.defaultValue")) {
+                override fun valueOf(item: ParadoxInlineMathEvaluator.Argument): String = item.defaultValue
             },
         ),
         items

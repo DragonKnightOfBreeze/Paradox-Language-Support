@@ -13,11 +13,11 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
-import icu.windea.pls.lang.util.calculators.ParadoxInlineMathCalculator
+import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
 /**
- * 通过内嵌提示显示内联数学表达式的计算结果（如果无需提供额外的传参信息）。
+ * 通过内嵌提示显示内联数学表达式的求值结果（如果无需提供额外的传参信息）。
  */
 @Deprecated("Use `ParadoxInlineMathResultHintsProviderNew` instead.")
 @Suppress("UnstableApiUsage")
@@ -39,8 +39,8 @@ class ParadoxInlineMathResultHintsProvider : ParadoxHintsProvider() {
     }
 
     private fun PresentationFactory.collect(element: ParadoxScriptInlineMath): InlayPresentation? {
-        val calculator = ParadoxInlineMathCalculator()
-        val result = runCatchingCancelable { calculator.calculate(element) }.getOrNull() ?: return null
+        val evaluator = ParadoxInlineMathEvaluator()
+        val result = runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return null
         return smallText("=> ${result.formatted()}".optimized())
     }
 }

@@ -1,9 +1,9 @@
-package icu.windea.pls.lang.util.calculators
+package icu.windea.pls.lang.util.evaluators
 
 sealed interface MathToken {
     fun render(): String
 
-    data class Operand(val operand: MathCalculationResult) : MathToken {
+    data class Operand(val operand: MathResult) : MathToken {
         override fun render() = operand.normalized().toString()
     }
 

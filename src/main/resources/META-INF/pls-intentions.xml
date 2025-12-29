@@ -64,7 +64,7 @@
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.CalculateInlineMathIntention</className>
+      <className>icu.windea.pls.lang.intentions.script.EvaluateInlineMathIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>

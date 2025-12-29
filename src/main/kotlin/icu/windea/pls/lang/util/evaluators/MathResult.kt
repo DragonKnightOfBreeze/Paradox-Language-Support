@@ -1,8 +1,8 @@
-package icu.windea.pls.lang.util.calculators
+package icu.windea.pls.lang.util.evaluators
 
 import icu.windea.pls.core.formatted
 
-data class MathCalculationResult(
+data class MathResult(
     var value: Float,
     var isInt: Boolean,
     var precision: Int = -3, // 默认保留3位小数

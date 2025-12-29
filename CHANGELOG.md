@@ -14,8 +14,8 @@
 - [x] 优化：可配置 - 如果远程仓库地址已配置，覆盖相关的内置规则分组 / OP: Configurable - Override related builtin config group if remote repository urls are configured
 - [x] 优化：为内联脚本表达式提供特殊的快速文档 / OP: Provide special quick doc for inline script expressions
 - [x] 优化：补充更多装订线图标和内嵌提示，补充部分内嵌提示的预览（在对应的配置页面中） / OP: Add more gutter icons and inlay hints, add several inlay hint previews (in related settings page)
-- [x] 新功能：支持通过意向动作，根据传参信息计算内联数学表达式 / NEW: Support to calculate inline math expressions with argument information via intention actions
-- [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示计算后的值 / NEW: Provide inlay hints for static inline math expressions, showing the calculation result
+- [x] 新功能：支持通过意向动作，根据传参信息求值内联数学表达式 / NEW: Support to evaluate inline math expressions with argument information via intention actions
+- [x] 新功能：为静态的内联数学表达式提供内嵌提示，显示评估后的值 / NEW: Provide inlay hints for static inline math expressions, showing the evaluation result
 - [x] 新功能：支持在规则文件中通过特定的选项注释注入规则（如 `## inject = some/file.cwt@some/property`） / NEW: Support to inject configs in config files via specific option comments (e.g., `## inject = some/file.cwt@some/property`) #251
 - [ ] 新功能：支持 VIC3 和 EU5 中的注入语法（如 `inject:xxx = {...}` ） / NEW: Support the injection syntax in VIC3 and EU5 (e.g., `inject:xxx = {...}`) #252
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes

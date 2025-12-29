@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.calculators
+package icu.windea.pls.lang.util.evaluators
 
 sealed interface MathExpression {
     val precedence: Int
