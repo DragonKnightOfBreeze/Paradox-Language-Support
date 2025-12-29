@@ -1,20 +1,18 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
-import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.util.evaluators.ParadoxInlineMathEvaluator
 import icu.windea.pls.script.psi.ParadoxScriptInlineMath
 
 /**
  * 通过内嵌提示显示内联数学表达式的求值结果（如果无需提供额外的传参信息）。
  */
-class ParadoxInlineMathResultHintsProviderNew: ParadoxHintsProviderNew() {
+class ParadoxInlineMathResultHintsProviderNew: ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptInlineMath) return
         if (element.expression.isEmpty()) return
@@ -24,8 +22,8 @@ class ParadoxInlineMathResultHintsProviderNew: ParadoxHintsProviderNew() {
     private fun collect(element: ParadoxScriptInlineMath, sink: InlayTreeSink) {
         val evaluator = ParadoxInlineMathEvaluator()
         val result = runCatchingCancelable { evaluator.evaluate(element) }.getOrNull() ?: return
-        val text = "=> ${result.formatted()}".optimized()
-        sink.addPresentation(InlineInlayPosition(element.endOffset, true), hintFormat = HintFormat.default) {
+        sink.addInlinePresentation(element.endOffset) {
+            val text = "=> ${result.formatted()}".optimized()
             text(text)
         }
     }

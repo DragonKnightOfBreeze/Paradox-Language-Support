@@ -1,21 +1,19 @@
 package icu.windea.pls.lang.codeInsight.hints.csv
 
-import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
-import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.optimized
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 
 /**
  * 通过内嵌提示显示复杂枚举值信息，即枚举名。
  */
-class ParadoxCsvComplexEnumValueInfoHintsProviderNew : ParadoxHintsProviderNew() {
+class ParadoxCsvComplexEnumValueInfoHintsProviderNew : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxCsvColumn) return
         val expression = element.name
@@ -30,10 +28,10 @@ class ParadoxCsvComplexEnumValueInfoHintsProviderNew : ParadoxHintsProviderNew()
 
         val enumName = resolved.enumName
         val configGroup = PlsFacade.getConfigGroup(resolved.project, resolved.gameType)
-        val config = configGroup.complexEnums[enumName] ?: return
-        val text = ": ${config.name}".optimized()
+        if (configGroup.complexEnums[enumName] == null) return
 
-        sink.addPresentation(InlineInlayPosition(element.endOffset, true), hintFormat = HintFormat.default) {
+        sink.addInlinePresentation(element.endOffset) {
+            val text = ": $enumName".optimized()
             text(text)
         }
     }

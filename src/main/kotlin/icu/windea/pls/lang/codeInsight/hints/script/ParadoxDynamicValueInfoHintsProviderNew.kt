@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
-import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.core.optimized
-import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProviderNew
+import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
@@ -16,7 +14,7 @@ import icu.windea.pls.script.psi.isExpression
 /**
  * 通过内嵌提示显示动态值信息，即类型。
  */
-class ParadoxDynamicValueInfoHintsProviderNew : ParadoxHintsProviderNew() {
+class ParadoxDynamicValueInfoHintsProviderNew : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         // ignored for `value_field` or `variable_field` or other variants
 
@@ -34,9 +32,9 @@ class ParadoxDynamicValueInfoHintsProviderNew : ParadoxHintsProviderNew() {
         if (name.isEmpty()) return
         if (name.isParameterized()) return
         val type = resolved.dynamicValueType
-        val text = ": $type".optimized()
 
-        sink.addPresentation(InlineInlayPosition(element.endOffset, true), hintFormat = HintFormat.default) {
+        sink.addInlinePresentation(element.endOffset) {
+            val text = ": $type".optimized()
             text(text)
         }
     }

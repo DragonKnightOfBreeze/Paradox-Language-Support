@@ -53,6 +53,7 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxHintsProvider() {
         if (name.isEmpty()) return null
         if (name.isParameterized()) return null
         val type = element.dynamicValueType
-        return context.factory.smallText(": $type".optimized())
+        val text = ": $type".optimized()
+        return context.factory.smallText(text)
     }
 }

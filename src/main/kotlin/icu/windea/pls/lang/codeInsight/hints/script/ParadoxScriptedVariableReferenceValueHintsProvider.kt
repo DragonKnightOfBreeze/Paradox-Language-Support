@@ -38,6 +38,6 @@ class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxHintsProvider(
     context(context: ParadoxHintsContext)
     private fun collect(element: ParadoxScriptedVariableReference): InlayPresentation? {
         val value = element.resolved()?.value ?: return null
-        return context.factory.smallText("=> ${value}".optimized())
+        return context.factory.smallText("=> $value".optimized())
     }
 }

@@ -38,7 +38,7 @@ class ParadoxLocalisationScriptedVariableReferenceValueHintsProvider: ParadoxHin
     context(context: ParadoxHintsContext)
     private fun collect(element: ParadoxScriptedVariableReference): InlayPresentation? {
         val value = element.resolved()?.value ?: return null
-        val text = "=> ${value}".optimized()
+        val text = "=> $value".optimized()
         return context.factory.smallText(text)
     }
 }

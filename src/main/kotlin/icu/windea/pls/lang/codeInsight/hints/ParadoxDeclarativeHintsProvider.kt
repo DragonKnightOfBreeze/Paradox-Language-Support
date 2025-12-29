@@ -1,10 +1,13 @@
 package icu.windea.pls.lang.codeInsight.hints
 
+import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayHintsCollector
 import com.intellij.codeInsight.hints.declarative.InlayHintsProvider
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
+import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
+import com.intellij.codeInsight.hints.declarative.PresentationTreeBuilder
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.IndexNotReadyException
@@ -14,13 +17,10 @@ import icu.windea.pls.lang.psi.ParadoxBaseFile
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.hints.AbstractKtInlayHintsProvider
 
-abstract class ParadoxHintsProviderNew : InlayHintsProvider {
-    private val log = Logger.getInstance(this::class.java)
+abstract class ParadoxDeclarativeHintsProvider : InlayHintsProvider {
+    private val logger = thisLogger()
 
-    final override fun createCollector(
-        file: PsiFile,
-        editor: Editor
-    ): InlayHintsCollector? {
+    final override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
         val project = editor.project ?: file.project
         if (project.isDefault || file !is ParadoxBaseFile) return null
 
@@ -30,17 +30,25 @@ abstract class ParadoxHintsProviderNew : InlayHintsProvider {
                 sink: InlayTreeSink
             ) {
                 try {
-                    this@ParadoxHintsProviderNew.collectFromElement(element, sink)
+                    this@ParadoxDeclarativeHintsProvider.collectFromElement(element, sink)
                 } catch (e: ProcessCanceledException) {
                     throw e
                 } catch (e: IndexNotReadyException) {
                     throw e
                 } catch (e: Exception) {
-                    log.warn(e)
+                    logger.warn(e)
                 }
             }
         }
     }
 
     protected abstract fun collectFromElement(element: PsiElement, sink: InlayTreeSink)
+
+    fun InlayTreeSink.addInlinePresentation(
+        offset: Int,
+        relatedToPrevious: Boolean = true,
+        priority: Int = 0,
+        tooltip: String? = null,
+        builder: PresentationTreeBuilder.() -> Unit,
+    ) = addPresentation(InlineInlayPosition(offset, relatedToPrevious, priority), null, tooltip, HintFormat.default, builder)
 }
