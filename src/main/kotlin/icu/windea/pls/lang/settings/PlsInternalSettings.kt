@@ -11,11 +11,6 @@ import icu.windea.pls.core.orNull
 @Service(Service.Level.APP)
 class PlsInternalSettings {
     /**
-     * 每次打开项目后，初始化规则分组时，是否显示（不可取消的）模态进度条。
-     */
-    val showModalOnInitConfigGroups get() = Registry.`is`("pls.settings.showModalOnInitConfigGroups", false)
-
-    /**
      * 渲染本地化文本时，使用的文本字体大小（这会影响在快速文档中渲染图标时，使用的最终缩放）。
      */
     val localisationFontSize get() = Registry.intValue("pls.settings.localisationFontSize", 18)
