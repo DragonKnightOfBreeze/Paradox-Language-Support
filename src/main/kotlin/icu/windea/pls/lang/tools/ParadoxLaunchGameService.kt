@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 object ParadoxLaunchGameService {
     fun launchGameInSteam(rootInfo: ParadoxRootInfo) {
-        // MCP，基于 Steam 超链接协议
+        // MVP，基于 Steam 超链接协议
         val gameType = rootInfo.gameType
         val steamId = gameType.steamId
         val url = PlsUrlService.getSteamGameLaunchUrl(steamId)

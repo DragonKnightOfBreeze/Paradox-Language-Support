@@ -55,7 +55,7 @@ import javax.swing.UIManager
 class ParadoxLocalisationTextHtmlRenderer(
     val color: Color? = null,
     val forDoc: Boolean = false,
-) : ParadoxRenderer {
+) : ParadoxLocalisationRender {
     private var builder = DocumentationBuilder()
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
     private val colorStack = ArrayDeque<Color>()
