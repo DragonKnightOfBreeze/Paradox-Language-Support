@@ -2,7 +2,6 @@ package icu.windea.pls.lang.psi
 
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.findParentInFile
 import com.intellij.psi.util.parentOfType
@@ -25,55 +24,50 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
+import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
 
 @Suppress("unused")
 object ParadoxPsiSequenceBuilder {
     // region Paradox Script
 
-    fun members(file: PsiFile): WalkingSequence<ParadoxScriptMember> {
+    fun members(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
         val options = WalkingSequenceOptions()
-        val delegate = buildMembers(file, options)
+        val delegate = builderMembers(element, options)
         return WalkingSequence(options, delegate)
     }
 
-    fun members(blockElement: PsiElement): WalkingSequence<ParadoxScriptMember> {
-        val options = WalkingSequenceOptions()
-        val delegate = builderMembers(blockElement, options)
-        return WalkingSequence(options, delegate)
-    }
-
-    private fun buildMembers(file: PsiFile, options: WalkingSequenceOptions): Sequence<ParadoxScriptMember> {
-        if (file !is ParadoxScriptFile) return emptySequence()
-        return sequence b@{
-            val blockElement = file.block ?: return@b
-            yieldMembers(blockElement, options)
-        }
-    }
-
-    private fun builderMembers(blockElement: PsiElement, options: WalkingSequenceOptions): Sequence<ParadoxScriptMember> {
+    private fun builderMembers(element: ParadoxScriptMemberContainer, options: WalkingSequenceOptions): Sequence<ParadoxScriptMember> {
+        val nextElement = if (element is ParadoxScriptFile) element.block else element
+        if (nextElement == null) return emptySequence()
         return sequence {
-            yieldMembers(blockElement, options)
+            yieldMembers(nextElement, options)
         }
     }
 
-    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: PsiElement, options: WalkingSequenceOptions) {
-        element.children(options.forward).forEach {
-            if (it is ParadoxScriptMember) yieldMember(it, options)
-            if (options.conditional && it is ParadoxScriptParameterCondition) yieldMembers(it, options)
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldMembers(element: ParadoxScriptMemberContainer, options: WalkingSequenceOptions) {
+        element.children(options.forward).forEach { child ->
+            when (child) {
+                is ParadoxScriptMember -> yieldMember(child, options)
+                is ParadoxScriptParameterCondition -> if (options.conditional) yieldMembers(child, options)
+            }
         }
     }
 
     private suspend fun SequenceScope<ParadoxScriptMember>.yieldMember(element: ParadoxScriptMember, options: WalkingSequenceOptions) {
         yield(element)
-        if (options.inline) {
-            val inlined = ParadoxInlineService.getInlinedElement(element)
-            val finalInlined = when {
-                inlined is ParadoxScriptFile -> inlined.block
-                else -> inlined
-            }
-            if (finalInlined != null) yieldMembers(finalInlined, options)
+        if (options.inline) yieldInlineMember(element, options)
+    }
+
+    private suspend fun SequenceScope<ParadoxScriptMember>.yieldInlineMember(element: ParadoxScriptMember, options: WalkingSequenceOptions) {
+        val inlined = ParadoxInlineService.getInlinedElement(element) ?: return
+        if (inlined is ParadoxScriptFile) {
+            val nextElement = inlined.block
+            if (nextElement == null) return
+            yieldMembers(nextElement, options)
+            return
         }
+        yieldMember(inlined, options)
     }
 
     // endregion

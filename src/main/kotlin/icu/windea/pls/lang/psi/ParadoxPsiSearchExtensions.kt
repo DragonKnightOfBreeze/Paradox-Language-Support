@@ -27,24 +27,12 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
 
-fun ParadoxScriptFile.members(): WalkingSequence<ParadoxScriptMember> {
-    return ParadoxPsiSequenceBuilder.members(this)
-}
-
 fun ParadoxScriptMemberContainer.members(): WalkingSequence<ParadoxScriptMember> {
     return ParadoxPsiSequenceBuilder.members(this)
 }
 
-fun ParadoxScriptFile.properties(): WalkingSequence<ParadoxScriptProperty> {
-    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptProperty>() }
-}
-
 fun ParadoxScriptMemberContainer.properties(): WalkingSequence<ParadoxScriptProperty> {
     return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptProperty>() }
-}
-
-fun ParadoxScriptFile.values(): WalkingSequence<ParadoxScriptValue> {
-    return ParadoxPsiSequenceBuilder.members(this).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
 fun ParadoxScriptMemberContainer.values(): WalkingSequence<ParadoxScriptValue> {

@@ -18,6 +18,7 @@ import icu.windea.pls.core.codeInsight.documentation.getSections
 import icu.windea.pls.core.codeInsight.documentation.initSections
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.unresolved
@@ -79,7 +80,6 @@ import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import kotlin.collections.iterator
 
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
@@ -332,9 +332,9 @@ object ParadoxDocumentationManager {
         definition {
             append(PlsStringConstants.dynamicValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             append(": ")
-            var appendSeparator = false
+            val m = OnceMarker()
             for (dynamicValueType in dynamicValueTypes) {
-                if (appendSeparator) append(" | ") else appendSeparator = true
+                if (m.mark()) append(" | ")
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType]
                 if (valueConfig != null) {
                     val category = ReferenceLinkType.CwtConfig.Categories.values

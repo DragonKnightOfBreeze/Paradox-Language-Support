@@ -18,6 +18,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -45,12 +46,16 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.imageio.ImageIO
 
 /**
- * 仅渲染单行文本，从第二行开始的文本会被截断。
+ * 用于将本地化文本渲染为内嵌提示（[InlayPresentation]）。
+ *
+ * 说明：
+ * - 仅在当前节点不是标识符或图标时，才会适用截断限制。
+ * - 仅渲染单行文本，从第二行开始的文本会被截断。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
     val context: ParadoxHintsContext
-) : ParadoxLocalisationRenderer() {
+) {
     private var builder = mutableListOf<InlayPresentation>()
     private val truncateRemain by lazy { AtomicInteger(context.settings.textLengthLimit) } // 记录到需要截断为止所剩余的长度
     private var lineEnd = false
@@ -92,6 +97,7 @@ class ParadoxLocalisationTextInlayRenderer(
             renderWithColorTo(color, action)
         }
     }
+
     private fun renderWithColorTo(color: Color?, action: () -> Boolean): Boolean {
         val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
         val oldBuilder = builder
@@ -135,7 +141,7 @@ class ParadoxLocalisationTextInlayRenderer(
         // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
-        val color = if (renderColorfulText) element.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
         return renderWithColorTo(color) {
             var continueProcess = true
             for (richText in richTextList) {
@@ -152,7 +158,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (renderColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
             // 如果处理文本失败，则使用原始文本
             // 直接解析为本地化（或者封装变量）以优化性能
@@ -231,7 +237,7 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (renderColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color) r@{
             // 直接显示命令文本，适用对应的颜色高亮
             // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）

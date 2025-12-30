@@ -33,7 +33,7 @@ import java.util.*
 import javax.swing.Icon
 import javax.swing.JLabel
 
-object ParadoxPresentationManager {
+object ParadoxPresentationUtil {
     fun getNameLocalisation(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
@@ -64,7 +64,8 @@ object ParadoxPresentationManager {
     }
 
     fun getPropertyText(property: ParadoxScriptProperty, detail: Boolean = false): SimpleColoredText {
-        val rendered = ParadoxScriptTextRenderer(renderInBlock = detail).render(property)
+        val renderer = ParadoxScriptTextRenderer().apply { renderInBlock = detail }
+        val rendered = renderer.render(property)
         val propertyText = SimpleColoredText(rendered, DiagramElementManager.DEFAULT_TEXT_ATTR)
         val propertyValue = property.propertyValue
         if (propertyValue is ParadoxScriptScriptedVariableReference) {

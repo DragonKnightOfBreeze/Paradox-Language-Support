@@ -13,6 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
@@ -181,9 +182,9 @@ fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameTyp
 
 fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
     val categories = ReferenceLinkType.CwtConfig.Categories
-    var appendSeparator = false
+    val m = OnceMarker()
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
-        if (appendSeparator) appendBr() else appendSeparator = true
+        if (m.mark()) appendBr()
         val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
         appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
@@ -201,9 +202,9 @@ fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<Strin
     if (modifierCategories.isEmpty()) return ""
     return buildDocumentation {
         append("<pre>")
-        var appendSeparator = false
+        val m = OnceMarker()
         for (modifierCategory in modifierCategories) {
-            if (appendSeparator) append(", ") else appendSeparator = true
+            if (m.mark()) append(", ")
             val category = ReferenceLinkType.CwtConfig.Categories.modifierCategories
             val link = ReferenceLinkType.CwtConfig.createLink(category, modifierCategory, gameType)
             appendPsiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
@@ -224,9 +225,9 @@ fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxG
     if (scopeIds.isEmpty()) return ""
     return buildDocumentation {
         append("<pre>")
-        var appendSeparator = false
+        val m = OnceMarker()
         for (scopeId in scopeIds) {
-            if (appendSeparator) append(", ") else appendSeparator = true
+            if (m.mark()) append(", ")
             buildScopeDoc(scopeId, gameType, contextElement)
         }
         append("</pre>")

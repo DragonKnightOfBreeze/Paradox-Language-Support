@@ -94,23 +94,23 @@ class StellarisTechnologyCardBuilder(
     }
 
     private fun getNameLabel(): JLabel {
-        val nameText = ParadoxPresentationManager.getNameTextOrKey(element)
-        return ParadoxPresentationManager.getLabel(nameText.or.anonymous(), Constants.whiteColor)
+        val nameText = ParadoxPresentationUtil.getNameTextOrKey(element)
+        return ParadoxPresentationUtil.getLabel(nameText.or.anonymous(), Constants.whiteColor)
     }
 
     private fun getCostLabel(): JLabel {
         val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, element)?.color // Green
         val cost = element.getDefinitionData<StellarisTechnologyData>()?.cost ?: 0
-        return ParadoxPresentationManager.getLabel(cost.toString(), color)
+        return ParadoxPresentationUtil.getLabel(cost.toString(), color)
     }
 
     private fun getIcon(): Icon? {
-        return ParadoxPresentationManager.getIcon(element) ?: getUnknownIcon()
+        return ParadoxPresentationUtil.getIcon(element) ?: getUnknownIcon()
     }
 
     private fun getUnknownIcon(): Icon? {
         val sprite = ParadoxDefinitionSearch.search("GFX_technology_unknown", ParadoxDefinitionTypes.Sprite, selector()).find() ?: return null
-        return ParadoxPresentationManager.getIcon(sprite)
+        return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun getBackgroundIcon(): Icon? {
@@ -123,27 +123,27 @@ class StellarisTechnologyCardBuilder(
             else -> "GFX_tech_entry_${area}_bg"
         }
         val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, selector()).find() ?: return null
-        return ParadoxPresentationManager.getIcon(sprite)
+        return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun getBottomLineIcon(): Icon? {
         val area = definitionData.area ?: return null
         val spriteName = "GFX_bottom_line_${area}"
         val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, selector()).find() ?: return null
-        return ParadoxPresentationManager.getIcon(sprite)
+        return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun getCategoryIcon(): Icon? {
         val category = definitionData.category?.firstOrNull() ?: return null
         val categoryDef = ParadoxDefinitionSearch.search(category, ParadoxDefinitionTypes.TechnologyCategory, selector()).find() ?: return null
-        return ParadoxPresentationManager.getIcon(categoryDef)
+        return ParadoxPresentationUtil.getIcon(categoryDef)
     }
 
     @Suppress("unused")
     private fun getGatewayIcon(): Icon? {
         val spriteName = "GFX_tech_gateway"
         val sprite = ParadoxDefinitionSearch.search(spriteName, ParadoxDefinitionTypes.Sprite, selector()).find() ?: return null
-        return ParadoxPresentationManager.getIcon(sprite)
+        return ParadoxPresentationUtil.getIcon(sprite)
     }
 
     private fun selector(): ChainedParadoxSelector<ParadoxScriptDefinitionElement> {

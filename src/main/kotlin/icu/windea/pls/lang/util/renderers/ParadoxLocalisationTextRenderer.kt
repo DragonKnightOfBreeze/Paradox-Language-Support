@@ -19,12 +19,13 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
+/**
+ * 用于将本地化文本渲染为去除格式后的纯文本。
+ */
 @Suppress("UNUSED_PARAMETER")
-class ParadoxLocalisationTextRenderer : ParadoxLocalisationRenderer() {
+class ParadoxLocalisationTextRenderer {
     private val builder = StringBuilder()
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
-
-    fun builder(): StringBuilder = builder
 
     fun render(element: ParadoxLocalisationProperty): String {
         renderTo(element)

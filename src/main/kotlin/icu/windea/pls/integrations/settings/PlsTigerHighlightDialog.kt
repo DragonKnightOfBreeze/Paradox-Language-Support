@@ -58,11 +58,11 @@ class PlsTigerHighlightDialog : DialogWrapper(null, true) {
 
     // 方案1：通过分割线分成5组，每组两行，第一行包括严重度的总cb、重置按钮，第二行包括各个置信度的cb
     // private fun Panel.createMapping() {
-    //     var appendSeparator = false
+    //     val m = OnceMarker()
     //     mergedProperties.forEach { (severity, mergedOption) ->
     //         lateinit var mergedCb: ComboBox<PlsLintHighlightSeverity>
     //
-    //         if (appendSeparator) separator() else appendSeparator = true
+    //         if (m.mark()) separator()
     //         row {
     //             label(PlsBundle.message("lint.tiger.severity")).widthGroup("tiger.label.0")
     //             label(PlsTigerLintManager.getSeverityDisplayName(severity)).widthGroup("tiger.label.1")

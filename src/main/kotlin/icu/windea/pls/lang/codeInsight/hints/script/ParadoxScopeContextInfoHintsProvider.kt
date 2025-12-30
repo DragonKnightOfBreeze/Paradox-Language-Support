@@ -10,6 +10,7 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -39,7 +40,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val atLineEnd = leftCurlyBrace.siblings(withSelf = false)
             .dropWhile { (it is PsiWhiteSpace && !PlsPsiManager.containsLineBreak(it)) || it is PsiComment }
             .firstOrNull()
-        if(atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsLineBreak(atLineEnd)) return
+        if (atLineEnd !is PsiWhiteSpace || !PlsPsiManager.containsLineBreak(atLineEnd)) return
 
         val file = element.containingFile ?: return
         val gameType = selectGameType(file) ?: return
@@ -54,9 +55,9 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         sink.addInlinePresentation(leftCurlyBrace.endOffset) {
             val scopeMap = scopeContext.toScopeMap(showPrev = false)
-            var appendSeparator = false
+            val m = OnceMarker()
             for ((systemScope, scope) in scopeMap) {
-                if (appendSeparator) text(" ") else appendSeparator = true
+                if (m.mark()) text(" ")
                 text(systemScope.optimized(), configGroup.systemScopes[systemScope]?.pointer)
                 text(" = ")
                 when {

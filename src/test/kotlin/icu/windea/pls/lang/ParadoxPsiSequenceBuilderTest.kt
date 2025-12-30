@@ -142,7 +142,7 @@ class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
     @Test
     fun members_nonScriptFile() {
         myFixture.configureByFile("features/walking/walking_test_2.test.yml")
-        val file = myFixture.file
+        val file = myFixture.file as ParadoxScriptFile
         val members = ParadoxPsiSequenceBuilder.members(file).toList()
         Assert.assertTrue(members.isEmpty())
     }

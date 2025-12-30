@@ -14,13 +14,16 @@ import icu.windea.pls.script.navigation.ParadoxScriptItemPresentation
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxBaseFile, ParadoxScriptMember, ParadoxScriptDefinitionElement {
+) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxBaseFile, ParadoxScriptMember, ParadoxScriptDefinitionElement, ParadoxScriptMemberContainer {
     companion object {
         @JvmField
         val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_SCRIPT_FILE", ParadoxScriptLanguage)
     }
 
-    override val block get() = findChild<ParadoxScriptRootBlock>()
+    override val block: ParadoxScriptRootBlock? get() = findChild<ParadoxScriptRootBlock>()
+    override val memberList: List<ParadoxScriptMember> get() = block?.memberList.orEmpty()
+    override val propertyList: List<ParadoxScriptProperty> get() = block?.propertyList.orEmpty()
+    override val valueList: List<ParadoxScriptValue> get() = block?.valueList.orEmpty()
 
     override fun getFileType() = ParadoxScriptFileType
 

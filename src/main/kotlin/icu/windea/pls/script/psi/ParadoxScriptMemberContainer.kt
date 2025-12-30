@@ -3,8 +3,8 @@ package icu.windea.pls.script.psi
 import com.intellij.psi.PsiElement
 
 /**
- * @see ParadoxScriptRootBlock
- * @see ParadoxScriptBlock
+ * @see ParadoxScriptFile
+ * @see ParadoxScriptBlockElement
  * @see ParadoxScriptParameterCondition
  */
 interface ParadoxScriptMemberContainer: PsiElement {
