@@ -4,8 +4,8 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.lang.annotations.WithGameTypeEP
-import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
+import icu.windea.pls.lang.codeInsight.navigation.GotoSuperDefinitionActionHandler
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
