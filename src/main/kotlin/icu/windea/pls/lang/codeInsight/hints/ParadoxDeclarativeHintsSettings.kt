@@ -20,15 +20,11 @@ class ParadoxDeclarativeHintsSettings : SerializablePersistentStateComponent<Par
     var showSubtypesForCsvDefinitionReference: Boolean
         get() = state.showSubtypesForCsvDefinitionReference
         set(value) = run { updateState { it.copy(showSubtypesForCsvDefinitionReference = value) } }
-    var showScopeContextOnlyIfIsChanged: Boolean
-        get() = state.showOnlyIfScopeIsChanged
-        set(value) = run { updateState { it.copy(showOnlyIfScopeIsChanged = value) } }
 
     data class State(
         @JvmField val showSubtypesForDefinition: Boolean = true,
         @JvmField val showSubtypesForDefinitionReference: Boolean = true,
         @JvmField val showSubtypesForCsvDefinitionReference: Boolean = true,
-        @JvmField val showOnlyIfScopeIsChanged: Boolean = true
     )
 
     companion object {

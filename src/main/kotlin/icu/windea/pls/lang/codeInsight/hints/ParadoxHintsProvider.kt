@@ -20,6 +20,7 @@ import icu.windea.pls.lang.psi.ParadoxBaseFile
 abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     private val logger = thisLogger()
 
+    open val showScopeContextInfo: Boolean get() = false
     open val renderIcon: Boolean get() = false
     open val renderLocalisation: Boolean get() = false
 

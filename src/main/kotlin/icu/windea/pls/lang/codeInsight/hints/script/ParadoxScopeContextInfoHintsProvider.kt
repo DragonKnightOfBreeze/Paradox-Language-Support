@@ -1,20 +1,22 @@
 package icu.windea.pls.lang.codeInsight.hints.script
 
-import com.intellij.codeInsight.hints.declarative.InlayTreeSink
+import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.siblings
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.OnceMarker
-import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsProvider
-import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
-import icu.windea.pls.lang.codeInsight.hints.text
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -27,11 +29,19 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  * 通过内嵌提示显示定义及其成员的作用域上下文信息。
  *
  * 示例：`this = owner root = country from = ?`
- *
- * @see ParadoxScopeContextInfoSettingsProvider
  */
-class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
-    override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
+@Suppress("UnstableApiUsage")
+class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.scopeContextInfo")
+
+    override val name: String get() = PlsBundle.message("script.hints.scopeContextInfo")
+    override val description: String get() = PlsBundle.message("script.hints.scopeContextInfo.description")
+    override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
+
+    override val showScopeContextInfo: Boolean get() = true
+
+    context(context: ParadoxHintsContext)
+    override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxScriptProperty) return
 
         // 属性的值需要是一个块（block），且块的左花括号需要位于行尾（忽略空白和注释）
@@ -49,8 +59,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
         if (!ParadoxScopeManager.isScopeContextSupported(element, indirect = true)) return
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element) ?: return
 
-        val settings = ParadoxDeclarativeHintsSettings.getInstance(project)
-        if (settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
+        if (context.settings.showScopeContextOnlyIfIsChanged && !ParadoxScopeManager.isScopeContextChanged(element, scopeContext)) return
 
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         sink.addInlinePresentation(leftCurlyBrace.endOffset) {

@@ -107,15 +107,6 @@
         descriptionKey="script.hints.definitionReferenceInfo.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider"
-        isEnabledByDefault="true"
-        group="OTHER_GROUP"
-        providerId="paradox.script.scopeContextInfo"
-        bundle="messages.PlsBundle"
-        nameKey="script.hints.scopeContextInfo"
-        descriptionKey="script.hints.scopeContextInfo.description"/>
-    <codeInsight.declarativeInlayProvider
-        language="PARADOX_SCRIPT"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueInfoHintsProvider"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
@@ -187,10 +178,6 @@
         implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.script.definitionReferenceInfo"/>
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
-        language="PARADOX_SCRIPT"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoSettingsProvider"
-        providerId="paradox.script.scopeContextInfo"/>
-    <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_CSV"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.csv.definitionReferenceInfo"/>
@@ -203,6 +190,7 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider"
                                settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
