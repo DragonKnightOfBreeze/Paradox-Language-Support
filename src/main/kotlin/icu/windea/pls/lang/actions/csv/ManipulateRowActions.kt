@@ -14,7 +14,6 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.forward
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.csv.psi.ParadoxCsvElementFactory
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.csv.psi.ParadoxCsvRow

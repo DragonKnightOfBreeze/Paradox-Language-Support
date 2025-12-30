@@ -46,7 +46,7 @@ class ParadoxScriptTextRendererTest : BasePlatformTestCase() {
 
     @Test
     fun testConditional_false() {
-        val input = "settings = { a = b [[!PARAM] parameter_condition = \$PARAM\$ ] c }"
+        val input = "settings = { a = b [[!PARAM] parameter_condition = \$PARAM$ ] c }"
         val expect = """
             settings = {
                 a = b
@@ -61,11 +61,11 @@ class ParadoxScriptTextRendererTest : BasePlatformTestCase() {
 
     @Test
     fun testConditional_true() {
-        val input = "settings = { a = b [[!PARAM] parameter_condition = \$PARAM\$ ] c }"
+        val input = "settings = { a = b [[!PARAM] parameter_condition = \$PARAM$ ] c }"
         val expect = """
             settings = {
                 a = b
-                parameter_condition = ${'$'}PARAM${'$'}
+                parameter_condition = ${'$'}PARAM$
                 c
             }
             """.trimIndent()

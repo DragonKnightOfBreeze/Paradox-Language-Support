@@ -9,9 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.process
-import icu.windea.pls.core.collections.transform
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -59,7 +57,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options { conditional(conditional).inline(inline) }?.process {
+    block?.properties()?.options { conditional(conditional) + inline(inline) }?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -88,7 +86,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties()?.options { conditional(conditional).inline(inline) }?.process {
+    block?.properties()?.options { conditional(conditional) + inline(inline) }?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false

@@ -26,7 +26,6 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.firstChild
 import icu.windea.pls.core.isIncomplete

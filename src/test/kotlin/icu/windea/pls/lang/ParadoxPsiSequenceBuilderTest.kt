@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.forward
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
 import icu.windea.pls.lang.psi.conditional

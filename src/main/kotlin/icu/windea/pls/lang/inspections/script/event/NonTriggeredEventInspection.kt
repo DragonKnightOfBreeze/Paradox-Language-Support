@@ -11,7 +11,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.psi.inline

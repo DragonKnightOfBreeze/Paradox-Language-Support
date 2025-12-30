@@ -5,7 +5,6 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.psi.inline

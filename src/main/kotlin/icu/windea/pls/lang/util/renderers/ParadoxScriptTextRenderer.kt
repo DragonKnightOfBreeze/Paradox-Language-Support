@@ -3,7 +3,6 @@ package icu.windea.pls.lang.util.renderers
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.quoteIfNecessary
@@ -177,8 +176,6 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
 
     context(_: Context)
     private fun getMembers(element: ParadoxScriptMemberContainer): WalkingSequence<ParadoxScriptMember> {
-        val inlineOption = this@ParadoxScriptTextRenderer.inline
-        val conditionalOption = this@ParadoxScriptTextRenderer.conditional
-        return element.members().options { inline(inlineOption).conditional(conditionalOption) }
+        return element.members().options { conditional(conditional) + inline(inline) }
     }
 }

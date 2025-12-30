@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
-import icu.windea.pls.core.collections.options
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.lang.PlsKeys
@@ -57,7 +56,7 @@ object ParadoxPresentationUtil {
 
     fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
         val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
-        definition.block?.properties()?.options { conditional().inline() }?.forEach {
+        definition.block?.properties()?.options { conditional() + inline() }?.forEach {
             if (it.name.lowercase() in keys) properties.add(it)
         }
         return properties
