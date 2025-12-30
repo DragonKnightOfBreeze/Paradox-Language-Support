@@ -1,0 +1,20 @@
+# common/characters/00_characters.txt
+character = {
+    id = windea
+    name = name_windea
+    title = title_windea
+
+    gender = female
+    species = unknown
+    tags = { creation }
+
+    on_awakened = {/*<# this = character root = character from = character fromfrom = scene #>*/
+        from = {/*<# this = character root = character #>*/
+            save_global_event_target_as = the_waker
+        }
+        pass = yes
+    }
+    on_abandoned = {/*<# this = character root = character from = character fromfrom = scene #>*/
+        revival = yes
+    }
+}

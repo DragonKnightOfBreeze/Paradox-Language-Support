@@ -1,0 +1,19 @@
+character = {
+    id = windea
+    name = name_windea
+    title = title_windea
+
+    gender = female
+    species = unknown
+    tags = { creation }
+
+    on_awakened = {
+        from = {
+            save_global_event_target_as = the_waker
+        }
+        pass = yes
+    }
+    on_abandoned = {
+        revival = yes
+    }
+}

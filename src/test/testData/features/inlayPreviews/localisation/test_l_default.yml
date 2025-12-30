@@ -1,0 +1,2 @@
+l_default:
+  key:0 "value: $@var$"

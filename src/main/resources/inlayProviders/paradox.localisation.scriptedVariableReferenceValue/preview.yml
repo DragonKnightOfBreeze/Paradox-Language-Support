@@ -1,0 +1,6 @@
+# in common/scripted_variables/test.txt
+# @var = 1
+
+# localisation/test_l_default.yml
+l_default:
+  key:0 "value: $@var/*<# => 1 #>*/$"

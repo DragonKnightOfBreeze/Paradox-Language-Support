@@ -1,0 +1,52 @@
+types = {
+    type[character] = {
+        path = "game/common/characters"
+        path_extension = .txt
+        name_field = id
+        localisation = {
+            name = name
+            title = title
+        }
+    }
+}
+
+character = {
+    id = scalar
+    name = localisation
+    title = localisation
+    gender = enum[gender]
+    species = <species>
+    tags = { enum[character_tag] }
+    ## replace_scopes = { this = character root = character from = character fromfrom = scene }
+    on_awakened = single_alias_right[effect]
+    ## replace_scopes = { this = character root = character from = character fromfrom = scene }
+    on_abandoned = single_alias_right[effect]
+}
+
+rows = {
+    row[chapter_page] = {
+        path = "game/common/chapters"
+        file_extension = .csv
+        columns = {
+            name = <chapter>
+            page = int
+            category = enum[chapter_category]
+        }
+        end_column = end
+    }
+}
+
+enums = {
+    enum[gender] = {
+        male
+        female
+    }
+    complex_enum[character_tag] = {
+        path = "game/common/character_tags"
+        path_extension = .txt
+        start_from_root = yes
+        name = {
+            enum_name
+        }
+    }
+}

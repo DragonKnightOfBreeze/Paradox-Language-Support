@@ -1,0 +1,4 @@
+# common/chapters/00_chapters.txt
+name;page;category;
+awakening/*<# : chapter #>*/;1;narrative;
+guidance/*<# : chapter #>*/;2;narrative;

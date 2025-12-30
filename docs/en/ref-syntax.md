@@ -113,14 +113,14 @@ string_value = "text"
 
 # Regular comment
 types = {
-	### Doc comment
-	type[army] = {
+    ### Doc comment
+    type[army] = {
         path = "game/common/armies"
         file_extension = .txt
-		subtype[has_species] = {
-			## cardinality = 0..0
-			has_species = no
-		}
+        subtype[has_species] = {
+            ## cardinality = 0..0
+            has_species = no
+        }
         localisation = {
             ## required
             ## primary
@@ -132,7 +132,7 @@ types = {
             ## primary
             icon = icon # <sprite>
         }
-	}
+    }
 }
 ```
 

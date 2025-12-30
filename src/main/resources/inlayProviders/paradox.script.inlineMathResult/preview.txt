@@ -1,2 +1,4 @@
+# common/test.txt
 @var = 1
+key = @var
 key = @[ var + 1 ]/*<# => 2 #>*/
