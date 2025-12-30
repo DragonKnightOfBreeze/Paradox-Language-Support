@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.editor
@@ -16,6 +17,10 @@ object PlsFileManager {
 
     fun isInjectedFile(file: VirtualFile?): Boolean {
         return file is VirtualFileWindow
+    }
+
+    fun isStubFile(file: VirtualFile?): Boolean {
+        return file is StubVirtualFile
     }
 
     fun findFiles(e: AnActionEvent, deep: Boolean = false): Sequence<VirtualFile> {

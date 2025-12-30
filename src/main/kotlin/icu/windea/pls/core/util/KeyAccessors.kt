@@ -7,19 +7,13 @@ import com.intellij.openapi.util.KeyWithDefaultValue
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.core.EMPTY_OBJECT
-import icu.windea.pls.core.runCatchingCancelable
 import kotlin.reflect.KProperty
-
-/** 安全写入用户数据：出现可取消异常时自动吞掉。*/
-inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
-    runCatchingCancelable { putUserData(key, value) }
-}
 
 /**
  * 获取或初始化用户数据。
  *
- * - 若不存在则调用 [action] 计算默认值并缓存；
- * - 若默认值为 `null`，以 [EMPTY_OBJECT] 占位存储，后续读取仍返回 `null`。
+ * - 如果不存在则调用 [action] 计算默认值并缓存。
+ * - 如果默认值为 `null`，以 [EMPTY_OBJECT] 占位存储，后续读取仍返回 `null`。
  */
 @Suppress("UNCHECKED_CAST")
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> T): T {
@@ -28,17 +22,15 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> 
     if (data != null) return data
     val defaultValue = action()
     // default value is still saved if it's null
-    if (defaultValue != null) putUserData(key, defaultValue) else putUserData(key as Key<Any>, EMPTY_OBJECT)
+    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
 /**
- * 获取用户数据，若不存在则根据 [Key] 类型提供默认值：
+ * 获取用户数据，如果不存在则根据 [Key] 类型提供默认值：
  * - [KeyWithDefaultValue]：使用其 `defaultValue`；
  * - [KeyWithFactory]：调用其 `factory(this)`；
  * - 否则返回 `null`。
- *
- * 默认值为 `null` 时，同样以 [EMPTY_OBJECT] 占位存储。
  */
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
@@ -51,11 +43,13 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
         else -> return null
     }
     // default value is still saved if it's null
-    if (defaultValue != null) putUserData(key, defaultValue) else putUserData(key as Key<Any>, EMPTY_OBJECT)
+    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
-/** 获取或初始化带工厂的 Key 的值，始终返回非空。*/
+/**
+ * 获取或初始化带工厂的 Key 的值，始终返回非空。
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: KeyWithFactory<T, THIS>): T {
     val value = getUserData(key)
@@ -63,7 +57,7 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: KeyWithFactory<T, 
     if (value != null) return value
     val defaultValue = key.factory(this)
     // default value is still saved if it's null
-    if (defaultValue != null) putUserData(key, defaultValue) else putUserData(key as Key<Any>, EMPTY_OBJECT)
+    putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
@@ -94,7 +88,7 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
         else -> return null
     }
     // default value is still saved if it's null
-    if (defaultValue != null) put(key, defaultValue) else put(key as Key<Any>, EMPTY_OBJECT)
+    put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
@@ -106,7 +100,7 @@ fun <T> ProcessingContext.getOrDefault(key: KeyWithFactory<T, ProcessingContext>
     if (value != null) return value
     val defaultValue = key.factory(this)
     // default value is still saved if it's null
-    if (defaultValue != null) put(key, defaultValue) else put(key as Key<Any>, EMPTY_OBJECT)
+    put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 

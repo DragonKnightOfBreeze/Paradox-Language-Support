@@ -42,6 +42,9 @@ object ParadoxAnalyzeManager {
         // try to get injected root info first
         doGetInjectedRootInfo(rootFile)?.let { return it }
 
+        // skip for `StubVirtualFile` (unsupported)
+        if (PlsFileManager.isStubFile(rootFile)) return null
+
         // get root info from cache (load if necessary)
         return doGetCachedRootInfo(rootFile)
     }
@@ -51,9 +54,7 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = runCatchingCancelable {
-            rootFile.getOrPutUserData(PlsKeys.cachedRootInfo) { StatefulValue() }
-        }.getOrNull() ?: return null
+        val cachedRootInfo = rootFile.getOrPutUserData(PlsKeys.cachedRootInfo) { StatefulValue() }
         if (cachedRootInfo.isInitialized) return cachedRootInfo.value
         synchronized(cachedRootInfo) {
             if (cachedRootInfo.isInitialized) return cachedRootInfo.value
@@ -76,11 +77,14 @@ object ParadoxAnalyzeManager {
     }
 
     fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        // no fileInfo for `VirtualFileWindow` (injected PSI)
+        // no file info for `VirtualFileWindow` (injected PSI)
         if (PlsFileManager.isInjectedFile(file)) return null
 
         // try to get injected file info first
         doGetInjectedFileInfo(file)?.let { return it }
+
+        // skip for `StubVirtualFile` (unsupported)
+        if (PlsFileManager.isStubFile(file)) return null
 
         // get file info from cache (load if necessary)
         return doGetCachedFileInfo(file)
@@ -95,13 +99,11 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = runCatchingCancelable {
-            file.getOrPutUserData(PlsKeys.cachedFileInfo) { StatefulValue() }
-        }.getOrNull() ?: return null
+        val cachedFileInfo = file.getOrPutUserData(PlsKeys.cachedFileInfo) { StatefulValue() }
         if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
         synchronized(cachedFileInfo) {
             if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
-             runCatchingCancelable {
+            runCatchingCancelable {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null
                 var currentFile = doGetFile(file, currentFilePath)
@@ -115,7 +117,7 @@ object ParadoxAnalyzeManager {
                     currentFilePath = currentFilePath.parent ?: break
                     currentFile = doGetFile(currentFile?.parent, currentFilePath)
                 }
-             }.onFailure { e -> logger.warn(e) }
+            }.onFailure { e -> logger.warn(e) }
             cachedFileInfo.value = null
             return null
         }
@@ -176,6 +178,9 @@ object ParadoxAnalyzeManager {
         // try to get injected locale config first
         doGetInjectedLocaleConfig(file)?.let { return it }
 
+        // skip for `StubVirtualFile` (unsupported)
+        if (PlsFileManager.isStubFile(file)) return null
+
         // get locale config from cache (load if necessary)
         return doGetCachedLocaleConfig(file, project)
     }
@@ -186,9 +191,7 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val cachedLocaleConfig = runCatchingCancelable {
-            file.getOrPutUserData(PlsKeys.cachedLocaleConfig) { StatefulValue() }
-        }.getOrNull() ?: return null
+        val cachedLocaleConfig = file.getOrPutUserData(PlsKeys.cachedLocaleConfig) { StatefulValue() }
         if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
         synchronized(cachedLocaleConfig) {
             if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value

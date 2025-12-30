@@ -10,23 +10,17 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
-import icu.windea.pls.core.util.tryPutUserData
 import icu.windea.pls.lang.analyze.ParadoxMetadataService
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsFileManager
 
 /**
  * 用于监听游戏或模组文件的更改，以更新相关缓存。
  */
 class ParadoxFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
-        val metadataFileNames = ParadoxMetadataService.metadataFileNames
-
-        val filesToClearRootInfo = mutableSetOf<VirtualFile>()
-        val filesToClearFileInfo = mutableSetOf<VirtualFile>()
-        val filesToClearLocaleConfig = mutableSetOf<VirtualFile>()
-        val filesToClearSliceInfos = mutableSetOf<VirtualFile>()
         var reparseOpenedFiles = false
         var refreshFilePaths = false
         var refreshInlineScripts = false
@@ -36,60 +30,60 @@ class ParadoxFileListener : AsyncFileListener {
             when (event) {
                 is VFileCreateEvent -> {
                     val fileName = event.childName
-                    run {
-                        if (shouldRefreshForFilePaths(event.parent)) refreshFilePaths = true
-                    }
-                    run {
-                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
-                        selectRootFile(event.parent)?.let { filesToClearRootInfo.add(it) }
+
+                    if (shouldRestartAnalysis(fileName)) {
+                        clearRootInfo(event.parent)
                         reparseOpenedFiles = true
+                    }
+                    if (shouldRefreshForFilePaths(event.parent)) {
+                        refreshFilePaths = true
                     }
                 }
                 is VFileDeleteEvent -> {
                     val file = event.file
                     val fileName = file.name
-                    run {
-                        filesToClearFileInfo.add(file)
-                        filesToClearLocaleConfig.add(file)
-                        filesToClearSliceInfos.add(file)
-                    }
-                    run {
-                        if (shouldRefreshForFilePaths(file.parent)) refreshFilePaths = true
-                    }
-                    run {
-                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
-                        selectRootFile(file.parent)?.let { filesToClearRootInfo.add(it) }
+
+                    clearFileInfo(file)
+                    clearLocaleConfig(file)
+                    clearSliceInfos(file)
+
+                    if (shouldRestartAnalysis(fileName)) {
+                        clearRootInfo(file.parent)
                         reparseOpenedFiles = true
+                    }
+                    if (shouldRefreshForFilePaths(file.parent)) {
+                        refreshFilePaths = true
                     }
                 }
                 is VFileCopyEvent -> {
                     val fileName = event.newChildName
-                    run {
-                        if (shouldRefreshForFilePaths(event.newParent)) refreshFilePaths = true
-                    }
-                    run {
-                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
-                        selectRootFile(event.newParent)?.let { filesToClearRootInfo.add(it) }
+
+                    if (shouldRestartAnalysis(fileName)) {
+                        clearRootInfo(event.newParent)
                         reparseOpenedFiles = true
+                    }
+                    if (shouldRefreshForFilePaths(event.newParent)) {
+                        refreshFilePaths = true
                     }
                 }
                 is VFileMoveEvent -> {
                     val file = event.file
                     val fileName = file.name
-                    run {
-                        filesToClearFileInfo.add(file)
-                        filesToClearLocaleConfig.add(file)
-                        filesToClearSliceInfos.add(file)
-                    }
-                    run {
-                        if (shouldRefreshForFilePaths(file)) refreshFilePaths = true
-                        if (shouldRefreshForInlineScripts(file)) refreshInlineScripts = true
-                    }
-                    run {
-                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
-                        selectRootFile(event.oldParent)?.let { filesToClearRootInfo.add(it) }
-                        selectRootFile(event.newParent)?.let { filesToClearRootInfo.add(it) }
+
+                    clearFileInfo(file)
+                    clearLocaleConfig(file)
+                    clearSliceInfos(file)
+
+                    if (shouldRestartAnalysis(fileName)) {
+                        clearRootInfo(event.oldParent)
+                        clearRootInfo(event.newParent)
                         reparseOpenedFiles = true
+                    }
+                    if (shouldRefreshForFilePaths(file)) {
+                        refreshFilePaths = true
+                    }
+                    if (shouldRefreshForInlineScripts(file)) {
+                        refreshInlineScripts = true
                     }
                 }
                 is VFilePropertyChangeEvent -> {
@@ -97,31 +91,31 @@ class ParadoxFileListener : AsyncFileListener {
                     val file = event.file
                     val newFileName = event.newValue.toString()
                     val oldFileName = event.oldValue.toString()
-                    run {
-                        filesToClearFileInfo.add(file)
-                        filesToClearLocaleConfig.add(file)
-                        filesToClearSliceInfos.add(file)
-                    }
-                    run {
-                        if (shouldRefreshForFilePaths(file)) refreshFilePaths = true
-                        if (shouldRefreshForInlineScripts(file)) refreshInlineScripts = true
-                    }
-                    run {
-                        if (metadataFileNames.none { newFileName.equals(it, true) || oldFileName.equals(it, true) }) return@run
-                        selectRootFile(file)?.let { filesToClearRootInfo.add(it) }
+
+                    clearFileInfo(file)
+                    clearLocaleConfig(file)
+                    clearSliceInfos(file)
+
+                    if (shouldRestartAnalysis(newFileName) || shouldRestartAnalysis(oldFileName)) {
+                        clearRootInfo(file)
                         reparseOpenedFiles = true
+                    }
+                    if (shouldRefreshForFilePaths(file)) {
+                        refreshFilePaths = true
+                    }
+                    if (shouldRefreshForInlineScripts(file)) {
+                        refreshInlineScripts = true
                     }
                 }
                 is VFileContentChangeEvent -> {
                     val file = event.file
                     val fileName = file.name
-                    run {
-                        filesToClearLocaleConfig.add(file)
-                        filesToClearSliceInfos.add(file)
-                    }
-                    run {
-                        if (metadataFileNames.none { fileName.equals(it, true) }) return@run
-                        selectRootFile(file)?.let { filesToClearRootInfo.add(it) }
+
+                    clearLocaleConfig(file)
+                    clearSliceInfos(file)
+
+                    if (shouldRestartAnalysis(fileName)) {
+                        clearRootInfo(file)
                         reparseOpenedFiles = true
                     }
                 }
@@ -129,13 +123,6 @@ class ParadoxFileListener : AsyncFileListener {
         }
 
         return object : AsyncFileListener.ChangeApplier {
-            override fun beforeVfsChange() {
-                filesToClearRootInfo.forEach { file -> file.tryPutUserData(PlsKeys.cachedRootInfo, null) }
-                filesToClearFileInfo.forEach { file -> file.tryPutUserData(PlsKeys.cachedFileInfo, null) }
-                filesToClearLocaleConfig.forEach { file -> file.tryPutUserData(PlsKeys.cachedLocaleConfig, null) }
-                filesToClearSliceInfos.forEach { file -> file.tryPutUserData(ParadoxImageManager.Keys.sliceInfos, null) }
-            }
-
             override fun afterVfsChange() {
                 if (refreshFilePaths) {
                     refreshForFilePaths()
@@ -152,21 +139,37 @@ class ParadoxFileListener : AsyncFileListener {
         }
     }
 
+    private fun clearRootInfo(file: VirtualFile) {
+        val rootFile = selectRootFile(file) ?: return
+        if (PlsFileManager.isStubFile(rootFile)) return
+        rootFile.putUserData(PlsKeys.cachedRootInfo, null)
+    }
+
+    private fun clearFileInfo(file: VirtualFile) {
+        if (PlsFileManager.isStubFile(file)) return
+        file.putUserData(PlsKeys.cachedFileInfo, null)
+    }
+
+    private fun clearLocaleConfig(file: VirtualFile) {
+        if (PlsFileManager.isStubFile(file)) return
+        file.putUserData(PlsKeys.cachedLocaleConfig, null)
+    }
+
+    private fun clearSliceInfos(file: VirtualFile) {
+        if (PlsFileManager.isStubFile(file)) return
+        file.putUserData(ParadoxImageManager.Keys.sliceInfos, null)
+    }
+
+    private fun shouldRestartAnalysis(fileName: String): Boolean {
+        return ParadoxMetadataService.metadataFileNames.any { fileName.equals(it, true) }
+    }
+
     private fun shouldRefreshForFilePaths(file: VirtualFile?): Boolean {
         return file?.fileInfo != null
     }
 
-    private fun refreshForFilePaths() {
-        ParadoxModificationTrackers.FilePath.incModificationCount()
-    }
-
     private fun shouldRefreshForInlineScripts(file: VirtualFile): Boolean {
         return ParadoxInlineScriptManager.getInlineScriptExpression(file) != null
-    }
-
-    private fun refreshForInlineScripts() {
-        ParadoxModificationTrackers.ScriptFile.incModificationCount()
-        ParadoxModificationTrackers.InlineScripts.incModificationCount()
     }
 
     private fun reparseOpenedFiles() {
@@ -179,5 +182,14 @@ class ParadoxFileListener : AsyncFileListener {
         // 重新解析所有项目的所有已打开的内联脚本文件
         val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
         PlsAnalyzeManager.reparseFiles(files)
+    }
+
+    private fun refreshForFilePaths() {
+        ParadoxModificationTrackers.FilePath.incModificationCount()
+    }
+
+    private fun refreshForInlineScripts() {
+        ParadoxModificationTrackers.ScriptFile.incModificationCount()
+        ParadoxModificationTrackers.InlineScripts.incModificationCount()
     }
 }

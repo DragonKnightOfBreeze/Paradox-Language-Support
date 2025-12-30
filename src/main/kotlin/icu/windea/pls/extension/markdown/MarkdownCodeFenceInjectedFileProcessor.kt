@@ -1,9 +1,9 @@
 package icu.windea.pls.extension.markdown
 
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.util.tryPutUserData
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.util.PlsFileManager
 
 /**
  * 用于为Markdown代码块注入文件信息，从而获取其中的CWT规则上下文。
@@ -12,9 +12,11 @@ import icu.windea.pls.lang.PlsKeys
  */
 class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
     override fun process(file: PsiFile): Boolean {
+        val vFile = file.virtualFile
+        if (PlsFileManager.isStubFile(vFile)) return false
         val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return false
         val injectedFileInfo = PlsMarkdownManager.getInjectFileInfoFromInjectedFile(element)
-        file.virtualFile.tryPutUserData(PlsKeys.injectedFileInfo, injectedFileInfo)
+        vFile.putUserData(PlsKeys.injectedFileInfo, injectedFileInfo)
         return true
     }
 }
