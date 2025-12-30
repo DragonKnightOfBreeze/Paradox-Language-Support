@@ -4,9 +4,11 @@ import com.intellij.codeInsight.hints.InlayPresentationFactory
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.PresentationFactory
 import com.intellij.codeInsight.hints.presentation.WithAttributesPresentation
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.runCatchingCancelable
@@ -15,6 +17,7 @@ import icu.windea.pls.core.toIconOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
@@ -23,6 +26,7 @@ import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
+import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer.*
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
@@ -52,114 +56,137 @@ import javax.imageio.ImageIO
  * - 仅在当前节点不是标识符或图标时，才会适用截断限制。
  * - 仅渲染单行文本，从第二行开始的文本会被截断。
  */
-@Suppress("UnstableApiUsage")
+@Suppress("unused", "UnstableApiUsage")
 class ParadoxLocalisationTextInlayRenderer(
-    val context: ParadoxHintsContext
-) {
-    private var builder = mutableListOf<InlayPresentation>()
-    private val truncateRemain by lazy { AtomicInteger(context.settings.textLengthLimit) } // 记录到需要截断为止所剩余的长度
-    private var lineEnd = false
-    private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
+    val hintsContext: ParadoxHintsContext
+) : ParadoxRenderer<PsiElement, Context, InlayPresentation?> {
+    data class Context(
+        val editor: Editor,
+        val settings: ParadoxHintsSettings,
+        val factory: PresentationFactory,
+        var builder: MutableList<InlayPresentation> = mutableListOf(),
+    ) {
+        val truncateRemain: AtomicInteger = AtomicInteger(settings.textLengthLimit) // 记录到需要截断为止所剩余的长度
+        var lineEnd: Boolean = false
+        val guardStack: ArrayDeque<String> = ArrayDeque() // 防止 StackOverflow
+    }
 
-    fun render(element: ParadoxLocalisationProperty): InlayPresentation? {
-        // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        return doRender {
-            renderTo(element)
+    var color: Color? = null
+
+    fun withColor(color: Color?) = apply { this.color = color }
+
+    override fun initContext(): Context {
+        return Context(hintsContext.editor, hintsContext.settings, hintsContext.factory)
+    }
+
+    override fun render(input: PsiElement, context: Context): InlayPresentation? {
+        return when (input) {
+            is ParadoxLocalisationProperty -> render(input, context)
+            is ParadoxLocalisationRichText -> render(input, context)
+            else -> throw UnsupportedOperationException("Unsupported element type: ${input.elementType}")
         }
     }
 
-    fun render(element: ParadoxLocalisationParameter): InlayPresentation? {
+    fun render(element: ParadoxLocalisationProperty, context: Context = initContext()): InlayPresentation? {
         // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        return doRender {
-            renderRichTextTo(element)
-        }
+        val r = with(context) { renderProperty(element) }
+        if (!r) context.builder.add(context.factory.smallText("...")) // 添加省略号
+        return context.builder.mergePresentations()
     }
 
-    private fun renderTo(element: ParadoxLocalisationProperty): Boolean {
-        guardStack.addLast(element.name)
-        val richTextList = element.propertyValue?.richTextList
-        if (richTextList.isNullOrEmpty()) return true
-        var continueProcess = true
-        for (richText in richTextList) {
-            ProgressManager.checkCanceled()
-            val r = renderRichTextTo(richText)
-            if (!r) {
-                continueProcess = false
-                break
+    fun render(element: ParadoxLocalisationRichText, context: Context = initContext()): InlayPresentation? {
+        // 虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
+        val r = with(context) { renderRichText(element) }
+        if (!r) context.builder.add(context.factory.smallText("...")) // 添加省略号
+        return context.builder.mergePresentations()
+    }
+
+    context(context: Context)
+    private fun renderProperty(element: ParadoxLocalisationProperty): Boolean {
+        context.guardStack.addLast(element.name)
+        try {
+            val richTextList = element.propertyValue?.richTextList
+            if (richTextList.isNullOrEmpty()) return true
+            return renderWithColor(color) r@{
+                for (richText in richTextList) {
+                    ProgressManager.checkCanceled()
+                    val r = renderRichText(richText)
+                    if (!r) return@r false
+                }
+                true
             }
-        }
-        return continueProcess
-    }
-
-    @Suppress("unused")
-    fun renderWithColor(color: Color?, action: () -> Boolean): InlayPresentation? {
-        return doRender {
-            renderWithColorTo(color, action)
+        } finally {
+            context.guardStack.removeLast()
         }
     }
 
-    private fun renderWithColorTo(color: Color?, action: () -> Boolean): Boolean {
-        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
-        val oldBuilder = builder
-        builder = mutableListOf()
+    context(context: Context)
+    private fun renderRootRichText(element: ParadoxLocalisationRichText): Boolean {
+        return renderWithColor(color) {
+            renderRichText(element)
+        }
+    }
+
+    context(context: Context)
+    private fun renderWithColor(color: Color?, action: () -> Boolean): Boolean {
+        if (color == null) return action()
+
+        val textAttributesKey = ParadoxLocalisationAttributesKeys.getColorOnlyKey(color)
+        val oldBuilder = context.builder
+        context.builder = mutableListOf()
         val continueProcess = action()
-        val newBuilder = builder
-        builder = oldBuilder
+        val newBuilder = context.builder
+        context.builder = oldBuilder
         val presentation = newBuilder.mergePresentations() ?: return true
         val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
-        builder.add(finalPresentation)
+        context.builder.add(finalPresentation)
         return continueProcess
     }
 
-    private fun doRender(action: () -> Boolean): InlayPresentation? {
-        val r = action()
-        if (!r) builder.add(context.factory.smallText("...")) // 添加省略号
-        return builder.mergePresentations()
-    }
-
-    private fun renderRichTextTo(element: ParadoxLocalisationRichText): Boolean {
+    context(context: Context)
+    private fun renderRichText(element: ParadoxLocalisationRichText): Boolean {
         return when (element) {
-            is ParadoxLocalisationString -> renderStringTo(element)
-            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
-            is ParadoxLocalisationParameter -> renderParameterTo(element)
-            is ParadoxLocalisationIcon -> renderIconTo(element)
-            is ParadoxLocalisationCommand -> renderCommandTo(element)
-            is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
-            is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
-            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
-            else -> true
+            is ParadoxLocalisationString -> renderString(element)
+            is ParadoxLocalisationColorfulText -> renderColorfulText(element)
+            is ParadoxLocalisationParameter -> renderParameter(element)
+            is ParadoxLocalisationIcon -> renderIcon(element)
+            is ParadoxLocalisationCommand -> renderCommand(element)
+            is ParadoxLocalisationConceptCommand -> renderConceptCommand(element)
+            is ParadoxLocalisationTextIcon -> renderTextIcon(element)
+            is ParadoxLocalisationTextFormat -> renderTextFormat(element)
+            else -> throw UnsupportedOperationException()
         }
     }
 
-    private fun renderStringTo(element: ParadoxLocalisationString): Boolean {
-        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Inlay)
-        builder.add(context.factory.truncatedSmallText(text))
+    context(context: Context)
+    private fun renderString(element: ParadoxLocalisationString): Boolean {
+        val escapeType = ParadoxEscapeManager.Type.Inlay
+        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, escapeType)
+        context.builder.add(context.factory.truncatedSmallText(text))
         return continueProcess()
     }
 
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText): Boolean {
+    context(context: Context)
+    private fun renderColorfulText(element: ParadoxLocalisationColorfulText): Boolean {
         // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
-        return renderWithColorTo(color) {
-            var continueProcess = true
+        val color = if (shouldRenderColurfulText()) element.colorInfo?.color else null
+        return renderWithColor(color) r@{
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
-                val r = renderRichTextTo(richText)
-                if (!r) {
-                    continueProcess = false
-                    break
-                }
+                val r = renderRichText(richText)
+                if (!r) return@r false
             }
-            continueProcess
+            true
         }
     }
 
-    private fun renderParameterTo(element: ParadoxLocalisationParameter): Boolean {
+    context(context: Context)
+    private fun renderParameter(element: ParadoxLocalisationParameter): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        return renderWithColorTo(color) r@{
+        val color = if (shouldRenderColurfulText()) element.argumentElement?.colorInfo?.color else null
+        return renderWithColor(color) r@{
             // 如果处理文本失败，则使用原始文本
             // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
@@ -169,19 +196,15 @@ class ParadoxLocalisationTextInlayRenderer(
                         getElementPresentation(element)
                     } else {
                         val resolvedName = resolved.name
-                        if (guardStack.contains(resolvedName)) {
+                        if (context.guardStack.contains(resolvedName)) {
                             getElementPresentation(element)
                         } else {
-                            try {
-                                val oldBuilder = builder
-                                builder = mutableListOf()
-                                renderTo(resolved)
-                                val newBuilder = builder
-                                builder = oldBuilder
-                                newBuilder.mergePresentations()
-                            } finally {
-                                guardStack.removeLast()
-                            }
+                            val oldBuilder = context.builder
+                            context.builder = mutableListOf()
+                            renderProperty(resolved)
+                            val newBuilder = context.builder
+                            context.builder = oldBuilder
+                            newBuilder.mergePresentations()
                         }
                     }
                 }
@@ -195,12 +218,13 @@ class ParadoxLocalisationTextInlayRenderer(
                     context.factory.truncatedSmallText(element.text)
                 }
             }
-            if (presentation != null) builder.add(presentation)
+            if (presentation != null) context.builder.add(presentation)
             continueProcess()
         }
     }
 
-    private fun renderIconTo(element: ParadoxLocalisationIcon): Boolean {
+    context(context: Context)
+    private fun renderIcon(element: ParadoxLocalisationIcon): Boolean {
         // 尝试渲染图标
         runCatchingCancelable r@{
             val resolved = element.reference?.resolve() ?: return@r
@@ -224,23 +248,24 @@ class ParadoxLocalisationTextInlayRenderer(
             if (originalIconHeight > context.settings.iconHeightLimit) return true // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = context.factory.psiSingleReference(context.factory.smallScaledIcon(icon)) { resolved }
-            builder.add(presentation)
+            context.builder.add(presentation)
             return true
         }
 
         // 直接显示原始文本
         // 点击其中的相关文本也能跳转到相关声明
         val presentation = getElementPresentation(element)
-        if (presentation != null) builder.add(presentation)
+        if (presentation != null) context.builder.add(presentation)
         return continueProcess()
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
+    context(context: Context)
+    private fun renderCommand(element: ParadoxLocalisationCommand): Boolean {
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        return renderWithColorTo(color) r@{
+        val color = if (shouldRenderColurfulText()) element.argumentElement?.colorInfo?.color else null
+        return renderWithColor(color) r@{
             // 直接显示命令文本，适用对应的颜色高亮
-            // 点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
+            // 点击其中的相关文本也能跳转到相关声明（如 `scope` 和 `scripted_loc`）
             val presentations = mutableListOf<InlayPresentation>()
             element.forEachChild { c ->
                 if (c is ParadoxLocalisationCommandText) {
@@ -250,12 +275,13 @@ class ParadoxLocalisationTextInlayRenderer(
                 }
             }
             val mergedPresentation = presentations.mergePresentations()
-            if (mergedPresentation != null) builder.add(mergedPresentation)
+            if (mergedPresentation != null) context.builder.add(mergedPresentation)
             continueProcess()
         }
     }
 
-    private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand): Boolean {
+    context(context: Context)
+    private fun renderConceptCommand(element: ParadoxLocalisationConceptCommand): Boolean {
         // 尝试渲染概念文本
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
@@ -263,21 +289,21 @@ class ParadoxLocalisationTextInlayRenderer(
             textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
             else -> null
         }
-        run r2@{
-            if (richTextList.isNullOrEmpty()) return@r2
+        run r@{
+            if (richTextList.isNullOrEmpty()) return@r
             val newBuilder = mutableListOf<InlayPresentation>()
-            val oldBuilder = builder
-            builder = newBuilder
+            val oldBuilder = context.builder
+            context.builder = newBuilder
             var continueProcess = true
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
-                val r = renderRichTextTo(richText)
+                val r = renderRichText(richText)
                 if (!r) {
                     continueProcess = false
                     break
                 }
             }
-            builder = oldBuilder
+            context.builder = oldBuilder
             val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
             var presentation = newBuilder.mergePresentations()
             if (presentation != null) {
@@ -293,62 +319,65 @@ class ParadoxLocalisationTextInlayRenderer(
                         attributesFlags.isDefault = false // reset foreground
                     }
                 })
-                builder.add(presentation)
+                context.builder.add(presentation)
             }
             if (!continueProcess) return false
             return continueProcess()
         }
 
-        builder.add(context.factory.smallText(element.name))
+        context.builder.add(context.factory.smallText(element.name))
         return continueProcess()
     }
 
-    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon): Boolean {
+    context(context: Context)
+    private fun renderTextIcon(element: ParadoxLocalisationTextIcon): Boolean {
         // TODO 1.4.1+ 更完善的支持（渲染文本图标）
 
         // 直接显示原始文本
         // 点击其中的相关文本也能跳转到相关声明
         val presentation = getElementPresentation(element)
-        if (presentation != null) builder.add(presentation)
+        if (presentation != null) context.builder.add(presentation)
         return continueProcess()
     }
 
-    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat): Boolean {
+    context(context: Context)
+    private fun renderTextFormat(element: ParadoxLocalisationTextFormat): Boolean {
         // TODO 1.4.1+ 更完善的支持（适用文本格式）
 
         // 直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return true
-        var continueProcess = true
         for (richText in richTextList) {
             ProgressManager.checkCanceled()
-            val r = renderRichTextTo(richText)
-            if (!r) {
-                continueProcess = false
-                break
-            }
+            val r = renderRichText(richText)
+            if (!r) return false
         }
-        return continueProcess
+        return true
     }
 
+    context(context: Context)
     private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
-        val truncatedText = if (context.settings.textLengthLimit > 0) text.take(truncateRemain.get()) else text
+        val textLengthLimit = context.settings.textLengthLimit
+        val truncatedText = if (textLengthLimit > 0) text.take(context.truncateRemain.get()) else text
         val truncatedTextSingleLine = truncatedText.substringBefore('\n')
         val finalText = truncatedTextSingleLine
         val result = smallText(finalText)
         if (truncatedTextSingleLine.length != truncatedText.length) {
-            lineEnd = true
+            context.lineEnd = true
         }
-        if (context.settings.textLengthLimit > 0) {
-            truncateRemain.getAndAdd(-truncatedText.length)
+        if (textLengthLimit > 0) {
+            context.truncateRemain.getAndAdd(-truncatedText.length)
         }
         return result
     }
 
+    context(context: Context)
     private fun continueProcess(): Boolean {
-        return !lineEnd && (truncateRemain.get() > 0 || context.settings.textLengthLimit <= 0)
+        val textLengthLimit = context.settings.textLengthLimit
+        return !context.lineEnd && (context.truncateRemain.get() > 0 || textLengthLimit <= 0)
     }
 
+    context(context: Context)
     private fun getElementPresentation(element: PsiElement): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
 
@@ -382,5 +411,9 @@ class ParadoxLocalisationTextInlayRenderer(
             presentations.add(context.factory.smallText(s))
         }
         return presentations.mergePresentations()
+    }
+
+    private fun shouldRenderColurfulText(): Boolean {
+        return PlsSettings.getInstance().state.others.renderLocalisationColorfulText
     }
 }

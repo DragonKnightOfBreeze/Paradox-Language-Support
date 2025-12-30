@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.members
+import icu.windea.pls.lang.util.renderers.ParadoxScriptTextRenderer.*
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -25,7 +26,7 @@ import icu.windea.pls.script.psi.value
 /**
  * 用于将脚本成员结构渲染为纯文本。
  */
-class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextRenderer.Context, String> {
+class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, Context, String> {
     data class Context(
         var builder: StringBuilder = StringBuilder(),
         var depth: Int = 0,
@@ -49,24 +50,14 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
         }
     }
 
-    fun render(element: ParadoxScriptFile, context: Context): String {
-        with(context) { renderRoot(element) }
+    fun render(element: ParadoxScriptFile, context: Context = initContext()): String {
+        with(context) { renderFile(element) }
         return context.builder.toString()
     }
 
-    fun render(element: ParadoxScriptMember, context: Context): String {
-        with(context) { renderRoot(element) }
+    fun render(element: ParadoxScriptMember, context: Context = initContext()): String {
+        with(context) { renderMember(element) }
         return context.builder.toString()
-    }
-
-    context(context: Context)
-    private fun renderRoot(element: PsiElement) {
-        when (element) {
-            is ParadoxScriptFile -> renderFile(element)
-            is ParadoxScriptProperty -> renderProperty(element)
-            is ParadoxScriptValue -> renderValue(element)
-            else -> throw UnsupportedOperationException()
-        }
     }
 
     context(context: Context)
@@ -75,6 +66,7 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
         val m = OnceMarker()
         for (member in members) {
             if (m.mark()) renderBlankBetweenMembers()
+            renderIndent()
             renderMember(member)
         }
     }
@@ -82,15 +74,15 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
     context(context: Context)
     private fun renderMember(element: ParadoxScriptMember) {
         when (element) {
-            is ParadoxScriptProperty -> {
-                renderIndent()
-                renderProperty(element)
-            }
-            is ParadoxScriptValue -> {
-                renderIndent()
-                renderValue(element)
-            }
+            is ParadoxScriptProperty -> renderProperty(element)
+            is ParadoxScriptValue -> renderValue(element)
         }
+    }
+
+    context(context: Context)
+    private fun renderIndent() {
+        if (!multiline || context.depth <= 0) return
+        context.builder.append(indent.repeat(context.depth))
     }
 
     context(context: Context)
@@ -113,9 +105,12 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
             val members = getMembers(element)
             val m = OnceMarker()
             for (member in members) {
+                if (!m.get()) renderBlankAfterLeftBracket()
                 if (m.mark()) renderBlankBetweenMembers()
+                renderIndent()
                 renderMember(member)
             }
+            if (m.get()) renderBlankBeforeRightBracket()
             renderRightBracket()
             return
         }
@@ -139,6 +134,10 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
     private fun renderLeftBracket() {
         context.depth++
         context.builder.append("{")
+    }
+
+    context(context: Context)
+    private fun renderBlankAfterLeftBracket() {
         when {
             multiline -> context.builder.appendLine()
             else -> context.builder.append(" ")
@@ -147,6 +146,12 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
 
     context(context: Context)
     private fun renderRightBracket() {
+        context.builder.append("}")
+        context.depth--
+    }
+
+    context(context: Context)
+    private fun renderBlankBeforeRightBracket() {
         when {
             multiline -> {
                 context.builder.appendLine()
@@ -156,14 +161,6 @@ class ParadoxScriptTextRenderer : ParadoxRenderer<PsiElement, ParadoxScriptTextR
             }
             else -> context.builder.append(" ")
         }
-        context.builder.append("}")
-        context.depth--
-    }
-
-    context(context: Context)
-    private fun renderIndent() {
-        if (!multiline || context.depth <= 0) return
-        context.builder.append(indent.repeat(context.depth))
     }
 
     context(context: Context)

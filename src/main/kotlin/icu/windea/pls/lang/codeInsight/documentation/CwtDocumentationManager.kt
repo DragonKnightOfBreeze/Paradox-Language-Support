@@ -258,12 +258,12 @@ object CwtDocumentationManager {
             if (sections == null || render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
                 sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(descLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(descLocalisation)
                 sections["desc"] = richText
             }
         }

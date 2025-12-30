@@ -4,6 +4,10 @@ class OnceMarker {
     @Volatile
     private var value: Boolean = false
 
+    fun get(): Boolean {
+        return value
+    }
+
     fun mark(): Boolean {
         if (value) {
             return true
@@ -11,5 +15,9 @@ class OnceMarker {
             value = true
             return false
         }
+    }
+
+    fun reset() {
+        value = false
     }
 }

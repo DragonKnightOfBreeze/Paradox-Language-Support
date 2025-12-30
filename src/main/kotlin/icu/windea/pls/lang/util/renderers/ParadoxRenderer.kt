@@ -8,5 +8,5 @@ package icu.windea.pls.lang.util.renderers
 interface ParadoxRenderer<T, C, R> {
     fun initContext(): C
 
-    fun render(input: T, context: C = initContext()): R
+    fun render(input: T, context: C): R
 }

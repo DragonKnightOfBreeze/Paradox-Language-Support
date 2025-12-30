@@ -85,7 +85,7 @@ object ParadoxPresentationUtil {
     }
 
     fun getLabel(text: String, color: Color? = null): JLabel {
-        return ParadoxLocalisationTextUIRenderer(color).render(text)
+        return ParadoxLocalisationTextUIRenderer().withColor(color).renderLabel(text)
     }
 
     fun getIcon(ddsFile: PsiFile): Icon? {

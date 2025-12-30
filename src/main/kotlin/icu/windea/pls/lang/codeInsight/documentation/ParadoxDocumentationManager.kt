@@ -318,7 +318,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -371,7 +371,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -438,12 +438,12 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
                 sections["name"] = richText
             }
             run {
                 if (descLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(descLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(descLocalisation)
                 sections["desc"] = richText
             }
         }
@@ -550,7 +550,7 @@ object ParadoxDocumentationManager {
             if (sections == null || !render) return@rs
             run {
                 if (nameLocalisation == null) return@run
-                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
+                val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(nameLocalisation)
                 sections["name"] = richText
             }
         }
@@ -679,7 +679,7 @@ object ParadoxDocumentationManager {
                 sectionKeys.add(key)
                 if (sections != null && PlsSettings.getInstance().state.documentation.renderRelatedLocalisationsForDefinitions) {
                     // 加上渲染后的相关本地化文本
-                    val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(resolvedElement)
+                    val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(resolvedElement)
                     sections[key] = richText
                 }
             }
@@ -874,7 +874,7 @@ object ParadoxDocumentationManager {
                 found ?: element
             }
         }
-        val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(usedElement)
+        val richText = ParadoxLocalisationTextHtmlRenderer().forDoc().render(usedElement)
         if (richText.isEmpty()) return
         sections[PlsBundle.message("sectionTitle.text")] = richText
     }
