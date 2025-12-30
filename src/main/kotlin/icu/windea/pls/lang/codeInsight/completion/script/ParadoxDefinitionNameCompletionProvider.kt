@@ -94,7 +94,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
                 val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
-                if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
+                if (elementPath.path.isParameterized()) return // 忽略成员路径带参数的情况
                 val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue

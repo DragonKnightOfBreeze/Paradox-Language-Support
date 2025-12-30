@@ -29,7 +29,7 @@ object PlsKeys : KeyRegistry() {
     val injectedGameType by createKey<ParadoxGameType>(this)
     /** 用于为临时文件注入语言环境规则（[CwtLocaleConfig]）。 */
     val injectedLocaleConfig by createKey<CwtLocaleConfig>(this)
-    /** 用于为临时脚本文件注入表达式路径前缀 */
+    /** 用于为临时脚本文件注入成员路径前缀 */
     val injectedElementPathPrefix by createKey<ParadoxElementPath>(this)
 
     /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */

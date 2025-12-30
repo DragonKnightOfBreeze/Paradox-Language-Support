@@ -95,7 +95,7 @@ object ParadoxDefinitionManager {
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
         val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
-        if (elementPath.path.isParameterized()) return null // 忽略表达式路径带参数的情况
+        if (elementPath.path.isParameterized()) return null // 忽略成员路径带参数的情况
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKey = getTypeKey(element) ?: return null
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null

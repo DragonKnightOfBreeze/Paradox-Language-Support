@@ -99,7 +99,7 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         val gameType = selectGameType(file) ?: return null
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return null
 
-        // 要求当前位置相对于文件的表达式路径中包含子路径 `inline_script`
+        // 要求当前位置相对于文件的成员路径中包含子路径 `inline_script`
         val rootIndex = elementPath.indexOfFirst { ParadoxInlineScriptManager.isMatched(it) }
         if (rootIndex == -1) return null
 

@@ -140,7 +140,7 @@ object ParadoxCompletionManager {
         // 仅提示不在定义声明中的key（顶级键和类型键）
         if (!configContext.isDefinitionOrMember()) {
             val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
-            if (elementPath.path.isParameterized()) return // 忽略表达式路径带参数的情况
+            if (elementPath.path.isParameterized()) return // 忽略成员路径带参数的情况
             val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptService.getKeyPrefixes(it).firstOrNull() } }
             context.isKey = true
             completeKey(context, result, elementPath, typeKeyPrefix)

@@ -24,7 +24,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  * title = "title" # 得到当前定义声明中指定路径（`title`）的属性的值，解析为本地化的名字。
  * ```
  *
- * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
+ * @property namePaths 用于获取名字文本的一组成员路径。名字文本用于替换占位符。
  * @property forceUpperCase 本地化的名字是否需要强制大写。
  *
  * @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig

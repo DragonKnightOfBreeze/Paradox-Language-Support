@@ -26,8 +26,8 @@ import icu.windea.pls.images.ImageFrameInfo
  * icon = "icon|p1,p2" # 以上并从 `p1`/`p2` 路径读取帧数用于后续切分。
  * ```
  *
- * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
- * @property framePaths 用于获取帧数的一组表达式路径。帧数用于后续切分图片。
+ * @property namePaths 用于获取名字文本的一组成员路径。名字文本用于替换占位符。
+ * @property framePaths 用于获取帧数的一组成员路径。帧数用于后续切分图片。
  *
  * @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
  */
