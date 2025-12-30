@@ -14,6 +14,7 @@ import icu.windea.pls.core.findChild
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -75,5 +76,13 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxHintsProvider() {
                 }
             }
         }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptProperty) return
+        val block = element.propertyValue as? ParadoxScriptBlock ?: return
+        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return
+        ParadoxHintsPreviewUtil.fillData(leftCurlyBrace, sink)
     }
 }

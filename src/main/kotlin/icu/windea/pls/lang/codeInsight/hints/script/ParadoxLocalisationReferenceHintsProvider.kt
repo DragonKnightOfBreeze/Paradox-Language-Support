@@ -6,12 +6,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 /**
  * 通过内嵌提示显示渲染后的本地化文本，适用于引用的本地化。默认不启用。
@@ -20,7 +22,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.localisationReferenceInof")
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.script.localisationReferenceInfo")
 
     override val name: String get() = PlsBundle.message("script.hints.localisationReferenceInfo")
     override val description: String get() = PlsBundle.message("script.hints.localisationReferenceInfo.description")
@@ -42,5 +44,11 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxHintsProvider() {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(resolved) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
     }
 }

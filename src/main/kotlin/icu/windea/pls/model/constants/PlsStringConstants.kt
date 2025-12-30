@@ -58,7 +58,7 @@ object PlsStringConstants {
 
     const val headerMarker = "<header>"
     const val rowMarker = "<row>"
-    const val loadingMarker = "<loading...>"
+    // const val loadingMarker = "<loading...>"
 
     const val commentFolder = "# ..."
     const val quotedFolder = "\"...\""

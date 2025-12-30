@@ -9,12 +9,14 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableName
 
 /**
  * 封装变量的提示文本的内嵌提示。
@@ -39,14 +41,21 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         // only for scripted variables, not for scripted variable references
 
-        if (element !is ParadoxScriptScriptedVariable) return
-        val name = element.name
+        if (element !is ParadoxScriptScriptedVariableName) return
+        val scriptedVariable = element.parent as? ParadoxScriptScriptedVariable ?: return
+        val name = scriptedVariable.name
         if (name.isNullOrEmpty()) return
         if (name.isParameterized()) return
 
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return
+        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(scriptedVariable) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptScriptedVariableName) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
     }
 }

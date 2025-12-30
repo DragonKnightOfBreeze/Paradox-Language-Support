@@ -9,6 +9,7 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -54,5 +55,11 @@ class ParadoxComplexEnumValueHintTextHintsProvider: ParadoxHintsProvider() {
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
     }
 }

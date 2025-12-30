@@ -35,15 +35,23 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): InlayHintsCollector? {
         val project = editor.project ?: file.project
         if (project.isDefault || file !is ParadoxBaseFile) return null
-        if (file.fileInfo == null) return null
+        val preview = ParadoxHintsPreviewUtil.detectPreview(file, 4)
+        if (!preview && file.fileInfo == null) return null
 
         return object : FactoryInlayHintsCollector(editor) {
             private val context = ParadoxHintsContext(file, editor, settings, factory)
 
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
+                // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
                 ProgressManager.checkCanceled()
                 try {
-                    with(context) { collectFromElement(element, sink) }
+                    with(context) {
+                        if (preview) {
+                            collectForPreview(element, sink)
+                        } else {
+                            collectFromElement(element, sink)
+                        }
+                    }
                 } catch (e: ProcessCanceledException) {
                     throw e
                 } catch (e: IndexNotReadyException) {
@@ -51,7 +59,6 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
                 } catch (e: Exception) {
                     logger.warn(e)
                 }
-                // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
                 return true
             }
         }
@@ -59,4 +66,7 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
 
     context(context: ParadoxHintsContext)
     protected abstract fun collectFromElement(element: PsiElement, sink: InlayHintsSink)
+
+    context(context: ParadoxHintsContext)
+    protected open fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {}
 }

@@ -5,10 +5,12 @@ import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
 import icu.windea.pls.lang.codeInsight.PlsCodeInsightService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
+import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
@@ -47,5 +49,11 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider(
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(primaryLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
+    }
+
+    context(context: ParadoxHintsContext)
+    override fun collectForPreview(element: PsiElement, sink: InlayHintsSink) {
+        if (element !is ParadoxCsvColumn) return
+        ParadoxHintsPreviewUtil.fillData(element, sink)
     }
 }
