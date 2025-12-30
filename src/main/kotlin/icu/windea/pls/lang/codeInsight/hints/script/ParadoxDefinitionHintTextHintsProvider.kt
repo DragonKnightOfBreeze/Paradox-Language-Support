@@ -42,6 +42,6 @@ class ParadoxDefinitionHintTextHintsProvider : ParadoxHintsProvider() {
         val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(primaryLocalisation) ?: return
-        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
+        sink.addInlinePresentation(element.endOffset, smallInset = true) { add(presentation) }
     }
 }

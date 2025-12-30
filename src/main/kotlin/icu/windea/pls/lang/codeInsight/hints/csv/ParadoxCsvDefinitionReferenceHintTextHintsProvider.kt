@@ -46,6 +46,6 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider(
         val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(primaryLocalisation) ?: return
-        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
+        sink.addInlinePresentation(element.endOffset) { add(presentation) }
     }
 }

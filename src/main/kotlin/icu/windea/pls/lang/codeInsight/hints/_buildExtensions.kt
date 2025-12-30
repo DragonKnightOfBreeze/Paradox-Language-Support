@@ -46,10 +46,10 @@ context(_: ParadoxHintsProvider, context: ParadoxHintsContext)
 fun InlayHintsSink.addInlinePresentation(
     offset: Int,
     relatedToPrevious: Boolean = true,
-    smaller: Boolean = false,
+    smallInset: Boolean = false,
     builder: ParadoxHintsBuilder.() -> Unit
 ) {
-    val presentation = ParadoxHintsBuilder().also { it.builder() }.build(smaller) ?: return
+    val presentation = ParadoxHintsBuilder().also { it.builder() }.build(smallInset) ?: return
     addInlineElement(offset, relatedToPrevious, presentation, false)
 }
 

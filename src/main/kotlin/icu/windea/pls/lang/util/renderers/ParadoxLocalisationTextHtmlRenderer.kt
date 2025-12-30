@@ -17,15 +17,14 @@ import icu.windea.pls.core.util.or
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.ReferenceLinkService
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.codeInsight.documentation.appendImgTag
 import icu.windea.pls.lang.codeInsight.documentation.appendPsiLinkOrUnresolved
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.mock.MockPsiElement
 import icu.windea.pls.lang.resolveLocalisation
 import icu.windea.pls.lang.resolveScriptedVariable
 import icu.windea.pls.lang.settings.PlsInternalSettings
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxEscapeManager
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
 import icu.windea.pls.lang.util.ParadoxImageManager
@@ -55,7 +54,7 @@ import javax.swing.UIManager
 class ParadoxLocalisationTextHtmlRenderer(
     val color: Color? = null,
     val forDoc: Boolean = false,
-) : ParadoxLocalisationRender {
+) : ParadoxLocalisationRenderer() {
     private var builder = DocumentationBuilder()
     private val guardStack = ArrayDeque<String>() // 防止 StackOverflow
     private val colorStack = ArrayDeque<Color>()
@@ -118,7 +117,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.colorInfo?.color else null
+            val color = if (renderColorfulText) element.colorInfo?.color else null
         renderWithColorTo(color) {
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
@@ -131,7 +130,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则使用原始文本
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (renderColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) {
             // 直接解析为本地化（或者封装变量）以优化性能
             val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
@@ -220,7 +219,7 @@ class ParadoxLocalisationTextHtmlRenderer(
         // 如果处理文本失败，则使用原始文本
         // 如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (PlsSettings.getInstance().state.others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (renderColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) r@{
             // 直接显示命令文本，适用对应的颜色高亮
             // （仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接

@@ -74,7 +74,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
         if (originalIconHeight > context.settings.iconHeightLimit) return
 
-        sink.addInlinePresentation(element.endOffset, smaller = true) {
+        sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
             icon(icon, iconFile?.toPsiFile(project)?.createPointer())
         }

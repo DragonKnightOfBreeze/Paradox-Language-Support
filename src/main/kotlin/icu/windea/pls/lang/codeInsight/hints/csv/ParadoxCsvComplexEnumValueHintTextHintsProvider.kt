@@ -51,6 +51,6 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
-        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
+        sink.addInlinePresentation(element.endOffset) { add(presentation) }
     }
 }

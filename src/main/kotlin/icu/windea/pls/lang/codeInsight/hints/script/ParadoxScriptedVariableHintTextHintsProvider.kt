@@ -47,6 +47,6 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxHintsProvider() {
         val hintLocalisation = PlsCodeInsightService.getHintLocalisation(element) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
         val presentation = renderer.render(hintLocalisation) ?: return
-        sink.addInlinePresentation(element.endOffset) { presentations.add(presentation) }
+        sink.addInlinePresentation(element.endOffset) { add(presentation) }
     }
 }
