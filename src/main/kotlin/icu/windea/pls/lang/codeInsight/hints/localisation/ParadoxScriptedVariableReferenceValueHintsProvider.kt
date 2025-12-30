@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 /**
  * 通过内嵌提示显示封装变量引用的解析结果（如果可以解析）。默认不启用。
  */
-class ParadoxLocalisationScriptedVariableReferenceValueHintsProvider : ParadoxDeclarativeHintsProvider() {
+class ParadoxScriptedVariableReferenceValueHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         if (element !is ParadoxScriptedVariableReference) return
         if (element.name.isNullOrEmpty()) return

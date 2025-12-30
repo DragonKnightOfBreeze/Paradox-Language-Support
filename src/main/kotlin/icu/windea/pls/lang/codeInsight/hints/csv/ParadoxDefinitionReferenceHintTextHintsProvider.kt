@@ -14,23 +14,23 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsPreviewUtil
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer
 import icu.windea.pls.model.constraints.ParadoxResolveConstraint
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 通过内嵌提示显示复杂枚举值的提示文本。
- * 来自本地化名称（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ * 通过内嵌提示显示定义引用的提示文本。
+ * 来自本地化名称（即最相关的本地化），或者对应的扩展规则。优先级从低到高。
  *
  * @see ParadoxHintTextProvider
- * @see ParadoxHintTextProviderBase.ComplexEnumValue
+ * @see ParadoxHintTextProviderBase.Definition
  */
 @Suppress("UnstableApiUsage")
-class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.csv.complexEnumValueHintText")
+class ParadoxDefinitionReferenceHintTextHintsProvider : ParadoxHintsProvider() {
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.csv.definitionReferenceHintText")
 
-    override val name: String get() = PlsBundle.message("csv.hints.complexEnumValueHintText")
-    override val description: String get() = PlsBundle.message("csv.hints.complexEnumValueHintText.description")
+    override val name: String get() = PlsBundle.message("csv.hints.definitionReferenceHintText")
+    override val description: String get() = PlsBundle.message("csv.hints.definitionReferenceHintText.description")
     override val key: SettingsKey<ParadoxHintsSettings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -38,20 +38,16 @@ class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
-        if (element !is ParadoxCsvColumn) return
-        val expression = element.name
-        if (expression.isEmpty()) return
-
-        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        val resolveConstraint = ParadoxResolveConstraint.Definition
         if (!resolveConstraint.canResolveReference(element)) return
         val reference = element.reference ?: return
         if (!resolveConstraint.canResolve(reference)) return
         val resolved = reference.resolve() ?: return
-        if (resolved !is ParadoxComplexEnumValueElement) return
+        if (resolved !is ParadoxScriptDefinitionElement) return
 
-        val hintLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
+        val primaryLocalisation = PlsCodeInsightService.getHintLocalisation(resolved) ?: return
         val renderer = ParadoxLocalisationTextInlayRenderer(context)
-        val presentation = renderer.render(hintLocalisation) ?: return
+        val presentation = renderer.render(primaryLocalisation) ?: return
         sink.addInlinePresentation(element.endOffset) { add(presentation) }
     }
 

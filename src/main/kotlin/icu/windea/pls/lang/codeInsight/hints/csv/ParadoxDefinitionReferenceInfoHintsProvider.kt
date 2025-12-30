@@ -14,9 +14,9 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 /**
  * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  *
- * @see ParadoxCsvDefinitionReferenceInfoSettingsProvider
+ * @see ParadoxDefinitionReferenceInfoSettingsProvider
  */
-class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
+class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxDeclarativeHintsProvider() {
     override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
         val resolveConstraint = ParadoxResolveConstraint.Definition
         if (!resolveConstraint.canResolveReference(element)) return

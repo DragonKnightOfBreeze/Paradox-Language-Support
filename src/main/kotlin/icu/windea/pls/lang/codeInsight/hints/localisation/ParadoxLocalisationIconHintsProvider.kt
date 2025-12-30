@@ -28,7 +28,7 @@ import javax.imageio.ImageIO
  */
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
-    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.icon")
+    private val settingsKey = SettingsKey<ParadoxHintsSettings>("paradox.localisation.localisationIcon")
 
     override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")

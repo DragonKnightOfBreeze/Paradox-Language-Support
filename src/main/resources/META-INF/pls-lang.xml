@@ -143,7 +143,7 @@
         descriptionKey="script.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_LOCALISATION"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationScriptedVariableReferenceValueHintsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxScriptedVariableReferenceValueHintsProvider"
         isEnabledByDefault="false"
         group="OTHER_GROUP"
         providerId="paradox.localisation.scriptedVariableReferenceValue"
@@ -152,7 +152,7 @@
         descriptionKey="localisation.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_CSV"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoHintsProvider"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.csv.definitionReferenceInfo"
@@ -161,7 +161,7 @@
         descriptionKey="csv.hints.definitionReferenceInfo.description"/>
     <codeInsight.declarativeInlayProvider
         language="PARADOX_CSV"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueInfoHintsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxComplexEnumValueInfoHintsProvider"
         isEnabledByDefault="true"
         group="OTHER_GROUP"
         providerId="paradox.csv.complexEnumValueInfo"
@@ -179,7 +179,7 @@
         providerId="paradox.script.definitionReferenceInfo"/>
     <codeInsight.declarativeInlayProviderCustomSettingsProvider
         language="PARADOX_CSV"
-        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoSettingsProvider"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.csv.definitionReferenceInfo"/>
 
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider"/>
@@ -194,8 +194,8 @@
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider"
                                settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
-    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceHintTextHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceHintTextHintsProvider"/>
+    <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxComplexEnumValueHintTextHintsProvider"/>
 
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider"/>

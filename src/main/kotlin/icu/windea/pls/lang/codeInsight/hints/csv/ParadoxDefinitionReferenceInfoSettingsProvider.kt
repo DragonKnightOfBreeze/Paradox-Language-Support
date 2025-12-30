@@ -11,9 +11,9 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxDeclarativeHintsSettings
 import javax.swing.JComponent
 
 /**
- * @see ParadoxCsvDefinitionReferenceHintTextHintsProvider
+ * @see ParadoxDefinitionReferenceHintTextHintsProvider
  */
-class ParadoxCsvDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsProvider<Boolean> {
+class ParadoxDefinitionReferenceInfoSettingsProvider : InlayHintsCustomSettingsProvider<Boolean> {
     private val showDefinitionSubtypesProperty = AtomicProperty(true)
     private var showDefinitionSubtypes by showDefinitionSubtypesProperty
 
