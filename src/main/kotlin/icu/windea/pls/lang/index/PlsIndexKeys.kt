@@ -34,6 +34,9 @@ object PlsIndexKeys {
     // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
 
+    // for definition injections, definitionName -> ParadoxScriptProperty
+    val DefinitionInjectionTarget = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definitionInjection.name.index")
+
     val ConfigSymbol = ID.create<String, List<CwtConfigSymbolIndexInfo>>("cwt.config.symbol.index")
     val FileLocale = ID.create<String, Void>("paradox.file.locale.index")
     val FilePath = ID.create<String, ParadoxFilePathIndexInfo>("paradox.file.path.index")

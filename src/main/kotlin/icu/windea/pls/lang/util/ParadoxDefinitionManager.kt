@@ -58,7 +58,6 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
@@ -71,7 +70,7 @@ object ParadoxDefinitionManager {
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
+    private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         doGetInfoFromStub(element, file)?.let { return it }
         return doGetInfoFromPsi(element, file)
     }
@@ -81,7 +80,7 @@ object ParadoxDefinitionManager {
         val name = stub.definitionName
         val type = stub.definitionType
         val gameType = stub.gameType
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.definitionSubtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
@@ -92,11 +91,11 @@ object ParadoxDefinitionManager {
 
     private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
+        val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val path = fileInfo.path
-        val gameType = fileInfo.rootInfo.gameType // 这里还是基于fileInfo获取gameType
         val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略成员路径带参数的情况
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val typeKey = getTypeKey(element) ?: return null
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null

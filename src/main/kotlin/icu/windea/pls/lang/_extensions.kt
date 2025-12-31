@@ -14,6 +14,7 @@ import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaclisationParameterManager
@@ -22,10 +23,12 @@ import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import java.util.concurrent.atomic.AtomicReference
@@ -73,8 +76,8 @@ inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> 
 
 val String?.errorDetails get() = this?.orNull()?.let { PlsBundle.message("error.details", it) }.orEmpty()
 
-// 注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
-// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
+// 注意：不要更改直接调用 `CachedValuesManager.getCachedValue(...)` 的那个顶级方法（静态方法）的方法声明，IDE 内部会进行检查
+// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE 都会报错
 
 inline val VirtualFile.rootInfo: ParadoxRootInfo?
     get() = ParadoxAnalyzeManager.getRootInfo(this)
@@ -87,6 +90,9 @@ inline val PsiElement.fileInfo: ParadoxFileInfo?
 
 inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
     get() = ParadoxDefinitionManager.getInfo(this)
+
+inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo?
+    get() = ParadoxDefinitionInjectionManager.getInfo(this)
 
 inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)

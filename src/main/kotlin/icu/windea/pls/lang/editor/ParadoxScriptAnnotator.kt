@@ -13,6 +13,7 @@ import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.selectGameType
@@ -130,13 +131,19 @@ class ParadoxScriptAnnotator : Annotator {
     }
 
     private fun annotateDefinitionInjectionExpression(element: ParadoxScriptProperty, holder: AnnotationHolder, gameType: ParadoxGameType): Boolean {
-        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return false
+        if (!ParadoxPsiMatcher.isDefinitionInjection(element, gameType)) return false
+        val name = element.name
+        if (name.isParameterized()) return false // 忽略带参数的情况
+        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
+        if (mode.isEmpty()) return false
+        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
-        val r1 = TextRange.from(offset, info.mode.length)
+        val r1 = TextRange.from(offset, mode.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r1).textAttributes(ParadoxScriptAttributesKeys.MACRO_KEY).create()
-        val r2 = TextRange.from(offset + info.mode.length, 1)
+        val r2 = TextRange.from(offset + mode.length, 1)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r2).textAttributes(ParadoxScriptAttributesKeys.MARKER_KEY).create()
-        val r3 = TextRange.from(offset + info.mode.length + 1, info.target.length)
+        if (target.isEmpty()) return true
+        val r3 = TextRange.from(offset + mode.length + 1, target.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r3).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY).create()
         return true
     }

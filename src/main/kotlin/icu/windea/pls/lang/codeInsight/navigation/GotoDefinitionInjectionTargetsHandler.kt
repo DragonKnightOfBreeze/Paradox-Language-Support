@@ -27,7 +27,7 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
-        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return null
+        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return null
         if (info.target.isEmpty()) return null // 排除目标为空的情况
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {

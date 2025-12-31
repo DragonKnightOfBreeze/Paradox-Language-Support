@@ -7,18 +7,23 @@ import com.intellij.psi.stubs.StubElement
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
+import icu.windea.pls.lang.psi.stubs.ParadoxStub
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
 import icu.windea.pls.lang.resolve.ParadoxScriptService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -45,18 +50,26 @@ object ParadoxScriptStubManager {
         val name = psi.name
         if (name.isEmpty() || name.isParameterized()) return ParadoxScriptPropertyStub.createDummy(parentStub)
         run {
+            val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return@run
             if (parentStub is ParadoxScriptPropertyStub.InlineScriptUsage) {
-                val inlineScriptArgumentStub = createInlineScriptArgumentStub(parentStub, name)
-                if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
+                val stub = createInlineScriptArgumentStub(parentStub, name)
+                if (stub != null) return stub
                 return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name)) {  // NOTE 2.1.0 这里目前不验证游戏类型
-                val inlineScriptUsageStub = createInlineScriptUsageStub(psi, parentStub, name)
-                if (inlineScriptUsageStub != null) return inlineScriptUsageStub
+            if (ParadoxInlineScriptManager.isMatched(name)) {
+                val stub = createInlineScriptUsageStub(psi, parentStub, name)
+                if (stub != null) return stub
                 return@run
             }
-            val definitionStub = createDefinitionStub(psi, parentStub, name)
-            if (definitionStub != null) return definitionStub
+            if (ParadoxDefinitionInjectionManager.isMatched(name, gameType)) {
+                val stub = createDefinitionInjectionStub(psi, parentStub, name)
+                if (stub != null) return stub
+                return@run
+            }
+            val definitionInjectionStub = createDefinitionInjectionStub(psi, parentStub, name)
+            if (definitionInjectionStub != null) return definitionInjectionStub
+            val stub = createDefinitionStub(psi, parentStub, name)
+            if (stub != null) return stub
 
         }
         return ParadoxScriptPropertyStub.create(parentStub, name)
@@ -67,14 +80,20 @@ object ParadoxScriptStubManager {
         val name = ParadoxScriptLightTreeUtil.getNameFromPropertyNode(node, tree).orEmpty()
         if (name.isEmpty() || name.isParameterized()) return ParadoxScriptPropertyStub.createDummy(parentStub)
         run {
+            val gameType = parentStub.castOrNull<ParadoxStub<*>>()?.gameType ?: return@run
             if (parentStub is ParadoxScriptPropertyStub.InlineScriptUsage) {
-                val inlineScriptArgumentStub = createInlineScriptArgumentStub(parentStub, name)
-                if (inlineScriptArgumentStub != null) return inlineScriptArgumentStub
+                val stub = createInlineScriptArgumentStub(parentStub, name)
+                if (stub != null) return stub
                 return@run
             }
-            if (ParadoxInlineScriptManager.isMatched(name)) { // NOTE 2.1.0 这里目前不验证游戏类型
-                val inlineScriptUsageStub = createInlineScriptUsageStub(tree, node, parentStub, name)
-                if (inlineScriptUsageStub != null) return inlineScriptUsageStub
+            if (ParadoxInlineScriptManager.isMatched(name, gameType)) {
+                val stub = createInlineScriptUsageStub(tree, node, parentStub, name)
+                if (stub != null) return stub
+                return@run
+            }
+            if (ParadoxDefinitionInjectionManager.isMatched(name, gameType)) {
+                val stub = createDefinitionInjectionStub(tree, node, parentStub, name)
+                if (stub != null) return stub
                 return@run
             }
             val definitionStub = createDefinitionStub(tree, node, parentStub, name)
@@ -87,12 +106,12 @@ object ParadoxScriptStubManager {
         // 定义的名字可以为空
         val typeKey = name
         val definitionInfo = psi.definitionInfo ?: return null
-        val definitionName = definitionInfo.name // NOTE 这里不处理需要内联的情况
         val definitionType = definitionInfo.type
         if (definitionType.isEmpty()) return null
+        val definitionName = definitionInfo.name // NOTE 这里不处理需要内联的情况
         val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(definitionInfo) // 如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
     }
 
     private fun createDefinitionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
@@ -110,11 +129,11 @@ object ParadoxScriptStubManager {
         if (elementPath == null) return null
         val typeKeyPrefix = lazy { ParadoxScriptService.getKeyPrefixes(node, tree).firstOrNull() }
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
+        val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
         val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, typeKey) // 如果无法在索引时获取，之后再懒加载
-        return ParadoxScriptPropertyStub.createDefinition(parentStub, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
+        return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
     }
 
     private fun getSubtypesWhenCreateDefinitionStub(definitionInfo: ParadoxDefinitionInfo): List<String>? {
@@ -150,5 +169,40 @@ object ParadoxScriptStubManager {
         // if (parentStub !is ParadoxScriptPropertyStub.InlineScriptUsage) return null
         if (name.equals("script", true)) return null
         return ParadoxScriptPropertyStub.createInlineScriptArgument(parentStub, name)
+    }
+
+    private fun createDefinitionInjectionStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
+        if (name.isParameterized()) return null // 忽略带参数的情况
+        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
+        if (mode.isEmpty()) return null
+        val definitionName = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
+        if (definitionName.isEmpty()) return null
+        val definitionInjectionInfo = psi.definitionInjectionInfo ?: return null
+        val definitionType = definitionInjectionInfo.type
+        if (definitionType.isEmpty()) return null
+        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, definitionName, definitionType)
+    }
+
+    private fun createDefinitionInjectionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
+        if (name.isParameterized()) return null // 忽略带参数的情况
+        val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
+        if (mode.isEmpty()) return null
+        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
+        if (target.isEmpty()) return null
+        val psi = parentStub.psi
+        val file = psi.containingFile
+        val project = file.project
+        val vFile = selectFile(file) ?: return null
+        val fileInfo = vFile.fileInfo ?: return null
+        val gameType = selectGameType(vFile) ?: return null
+        val path = fileInfo.path
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) // 这里需要指定 project
+        val elementPath = ParadoxElementPath.resolve(listOf(target))
+        val typeKey = target
+        val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, null) ?: return null
+        if (typeConfig.nameField != null || typeConfig.skipRootKey != null) return null // 排除不期望匹配的类型规则
+        val definitionType = typeConfig.name
+        if (definitionType.isEmpty()) return null
+        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, definitionType)
     }
 }

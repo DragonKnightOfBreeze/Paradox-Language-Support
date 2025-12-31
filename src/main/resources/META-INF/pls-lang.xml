@@ -10,6 +10,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.complexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.defineSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.inlineScriptUsageSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.definitionInjectionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.text2TargetSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -358,6 +359,7 @@
     <dynamicValueSearch implementation="icu.windea.pls.lang.search.ParadoxDynamicValueSearcher"/>
     <defineSearch implementation="icu.windea.pls.lang.search.ParadoxDefineSearcher"/>
     <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearcher"/>
+    <definitionInjectionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>
     <text2TargetSearch implementation="icu.windea.pls.lang.search.target.ParadoxSubstringTextBasedTargetSearcher"/>

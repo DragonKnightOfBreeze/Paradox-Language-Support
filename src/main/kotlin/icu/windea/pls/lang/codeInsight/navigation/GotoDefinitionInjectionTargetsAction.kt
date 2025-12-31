@@ -35,7 +35,7 @@ class GotoDefinitionInjectionTargetsAction : BaseCodeInsightAction() {
         val gameType = selectGameType(file) ?: return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val info = ParadoxDefinitionInjectionManager.getInfo(element, gameType) ?: return
+        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if(info.target.isEmpty()) return // 排除目标为空的情况
         presentation.isEnabled = true
     }

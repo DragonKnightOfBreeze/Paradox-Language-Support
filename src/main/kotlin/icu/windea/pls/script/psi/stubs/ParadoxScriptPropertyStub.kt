@@ -39,23 +39,39 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
     /**
      * （作为脚本属性的）内联脚本用法的存根。
      *
-     * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
      */
     interface InlineScriptUsage : ParadoxScriptPropertyStub {
-        val inlineScriptExpression: String
+        val expression: String
     }
 
     /**
      * （作为脚本属性的）内联脚本的传入参数的存根。
      *
      * @property argumentName 传入参数的名字。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property inlineScriptExpression 内联脚本表达式。来自父存根（[ParadoxLocalisationPropertyListStub]）。
+     * @property expression 内联脚本表达式。来自父存根（[ParadoxLocalisationPropertyListStub]）。
      */
     interface InlineScriptArgument : ParadoxScriptPropertyStub {
         val argumentName: String
-        val inlineScriptExpression: String
+        val expression: String
 
         override fun getParentStub(): InlineScriptUsage
+    }
+
+    /**
+     * （作为脚本属性的）定义注入的存根。
+     *
+     * @property expression 宏表达式。等同于 [ParadoxScriptPropertyStub.name]。
+     * @property mode 注入模式。不能为空。
+     * @property definitionName 目标定义的名字。不能为空。等同于目标定义的类型键。
+     * @property definitionType 目标定义的类型。不能为空。
+     *
+     */
+    interface DefinitionInjection : ParadoxScriptPropertyStub {
+        val expression: String
+        val mode: String
+        val definitionName: String
+        val definitionType: String
     }
 
     private sealed class Base(
@@ -82,26 +98,31 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
 
     private class DefinitionImpl(
         parent: StubElement<*>?,
+        override val name: String,
         override val definitionName: String?,
         override val definitionType: String,
         override val definitionSubtypes: List<String>?,
-        override val typeKey: String,
         override val elementPath: ParadoxElementPath,
     ) : Base(parent), Definition {
-        override val name get() = typeKey
+        override val typeKey get() = name
 
         override fun toString(): String {
-            return "ParadoxScriptPropertyStub.Definition(name=$definitionName, type=$definitionType, gameType=$gameType)"
+            return "ParadoxScriptPropertyStub.Definition(" +
+                "definitionName=$definitionName, " +
+                "definitionType=$definitionType, " +
+                "gameType=$gameType)"
         }
     }
 
     private class InlineScriptUsageImpl(
         parent: StubElement<*>?,
         override val name: String,
-        override val inlineScriptExpression: String,
+        override val expression: String,
     ) : Base(parent), InlineScriptUsage {
         override fun toString(): String {
-            return "ParadoxScriptPropertyStub.InlineScriptUsage(expression=$inlineScriptExpression, gameType=$gameType)"
+            return "ParadoxScriptPropertyStub.InlineScriptUsage(" +
+                "expression=$expression, " +
+                "gameType=$gameType)"
         }
     }
 
@@ -110,12 +131,34 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val name: String,
     ) : Base(parent), InlineScriptArgument {
         override val argumentName get() = name
-        override val inlineScriptExpression get() = parentStub.inlineScriptExpression
+        override val expression get() = parentStub.expression
 
         override fun getParentStub() = super.getParentStub() as InlineScriptUsage
 
         override fun toString(): String {
-            return "ParadoxScriptPropertyStub.InlineScriptArgument(name=$argumentName, expression=$inlineScriptExpression, gameType=$gameType)"
+            return "ParadoxScriptPropertyStub.InlineScriptArgument(" +
+                "argumentName=$argumentName, " +
+                "expression=$expression, " +
+                "gameType=$gameType)"
+        }
+    }
+
+    private class DefinitionInjectionImpl(
+        parent: StubElement<*>?,
+        override val name: String,
+        override val mode: String,
+        override val definitionName: String,
+        override val definitionType: String,
+    ) : Base(parent), DefinitionInjection {
+        override val expression: String get() = name
+
+        override fun toString(): String {
+            return "ParadoxScriptPropertyStub.DefinitionInjection(" +
+                "expression=$expression, " +
+                "mode=$mode, " +
+                "definitionName=$definitionName, " +
+                "definitionType=$definitionType, " +
+                "gameType=$gameType)"
         }
     }
 
@@ -130,13 +173,13 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
 
         fun createDefinition(
             parent: StubElement<*>?,
+            name: String,
             definitionName: String?,
             definitionType: String,
             definitionSubtypes: List<String>?,
-            typeKey: String,
             elementPath: ParadoxElementPath,
         ): Definition {
-            return DefinitionImpl(parent, definitionName, definitionType, definitionSubtypes, typeKey, elementPath)
+            return DefinitionImpl(parent, name, definitionName, definitionType, definitionSubtypes, elementPath)
         }
 
         fun createInlineScriptUsage(
@@ -152,6 +195,16 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             name: String,
         ): InlineScriptArgument {
             return InlineScriptArgumentImpl(parent, name)
+        }
+
+        fun createDefinitionInjection(
+            parent: StubElement<*>?,
+            expression: String,
+            mode: String,
+            definitionName: String,
+            definitionType: String,
+        ): DefinitionInjection {
+            return DefinitionInjectionImpl(parent, expression, mode, definitionName, definitionType)
         }
     }
 }

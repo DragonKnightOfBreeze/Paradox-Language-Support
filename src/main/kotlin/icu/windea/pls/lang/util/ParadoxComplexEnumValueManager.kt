@@ -45,7 +45,7 @@ object ParadoxComplexEnumValueManager {
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueIndexInfo? {
+    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueIndexInfo? {
         val value = element.value
         if (value.isParameterized()) return null // 排除可能带参数的情况
         val project = file.project
