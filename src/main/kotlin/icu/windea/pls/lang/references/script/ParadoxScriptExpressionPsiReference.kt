@@ -2,7 +2,6 @@ package icu.windea.pls.lang.references.script
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.PsiReference
@@ -13,7 +12,7 @@ import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
@@ -100,13 +99,13 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
-            .mapToArray { PsiElementResolveResult(it) }
+        val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
+        return resolved.createResults()
     }
 }
-

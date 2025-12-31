@@ -2,11 +2,10 @@ package icu.windea.pls.lang.references.script
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.SmartPsiElementPointer
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -53,6 +52,6 @@ class ParadoxEventNamespacePsiReference(
         val selector = selector(project, event).definition().contextSensitive()
         val eventNamespaces = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.EventNamespace, selector).findAll()
         result.addAll(eventNamespaces)
-        return result.mapToArray { PsiElementResolveResult(it) }
+        return result.createResults()
     }
 }

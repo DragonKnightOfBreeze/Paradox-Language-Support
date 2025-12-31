@@ -2,12 +2,11 @@ package icu.windea.pls.lang.references.localisation
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -86,11 +85,11 @@ class ParadoxLocalisationParameterPsiReference(
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         // 查找所有语言环境的
         val resolved = ParadoxLocalisationSearch.search(name, type, selector).findAll()
-        if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
+        if (resolved.isNotEmpty()) return resolved.createResults()
 
         // 尝试解析成 localisation_parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
-        if (resolvedParameter != null) return resolvedParameter.let { arrayOf(PsiElementResolveResult(it)) }
+        if (resolvedParameter != null) return resolvedParameter.createResults()
 
         return ResolveResult.EMPTY_ARRAY
     }

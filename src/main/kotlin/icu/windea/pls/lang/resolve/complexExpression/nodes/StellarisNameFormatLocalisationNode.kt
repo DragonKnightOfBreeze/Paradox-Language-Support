@@ -3,12 +3,11 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -85,13 +84,15 @@ class StellarisNameFormatLocalisationNode(
         private fun doResolve(): PsiElement? {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-            return ParadoxLocalisationSearch.searchNormal(name, selector).find()
+            val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).find()
+            return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val preferredLocale = selectLocale(element) ?: ParadoxLocaleManager.getPreferredLocaleConfig()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
-            return ParadoxLocalisationSearch.searchNormal(name, selector).findAll().mapToArray { PsiElementResolveResult(it) }
+            val resolved = ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
+            return resolved.createResults()
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
@@ -13,7 +12,7 @@ import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
@@ -121,12 +120,10 @@ class ParadoxTemplateSnippetNode(
             if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
             if (config.configExpression.type in CwtDataTypeGroups.DynamicValue) {
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
-                if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
-                return ResolveResult.EMPTY_ARRAY
+                return resolved.createResults()
             }
             val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
-            if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
-            return ResolveResult.EMPTY_ARRAY
+            return resolved.createResults()
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {

@@ -3,13 +3,12 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -85,14 +84,16 @@ class ParadoxDefineVariableNode(
             if (namespace == null) return null
             val selector = selector(project, element).define().contextSensitive()
             val defineInfo = ParadoxDefineSearch.search(namespace, variableName, selector).find() ?: return null
-            return ParadoxDefineManager.getDefineElement(defineInfo, project)
+            val resolved = ParadoxDefineManager.getDefineElement(defineInfo, project)
+            return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             if (namespace == null) return ResolveResult.EMPTY_ARRAY
             val selector = selector(project, element).define().contextSensitive()
             val defineInfos = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
-            return ParadoxDefineManager.getDefineElements(defineInfos, project).mapToArray { PsiElementResolveResult(it) }
+            val resolved = ParadoxDefineManager.getDefineElements(defineInfos, project)
+            return resolved.createResults()
         }
     }
 

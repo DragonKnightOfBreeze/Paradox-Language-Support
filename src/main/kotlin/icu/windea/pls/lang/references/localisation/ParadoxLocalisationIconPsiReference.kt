@@ -2,11 +2,10 @@ package icu.windea.pls.lang.references.localisation
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.resolve.ParadoxLocalisationIconService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -56,7 +55,6 @@ class ParadoxLocalisationIconPsiReference(
         val name = element.name
         if (name.isNullOrEmpty()) return ResolveResult.EMPTY_ARRAY
         val resolved = ParadoxLocalisationIconService.resolveAll(name, element, project)
-        if (resolved.isEmpty()) return ResolveResult.EMPTY_ARRAY
-        return resolved.mapToArray { PsiElementResolveResult(it) }
+        return resolved.createResults()
     }
 }

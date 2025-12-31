@@ -2,13 +2,12 @@ package icu.windea.pls.lang.references.localisation
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.resolve.ParadoxLocalisationExpressionService
@@ -52,12 +51,13 @@ class ParadoxLocalisationExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         // 根据对应的 expression 进行解析
-        return ParadoxExpressionManager.resolveLocalisationExpression(element, rangeInElement)
+        val resolved = ParadoxExpressionManager.resolveLocalisationExpression(element, rangeInElement)
+        return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         // 根据对应的 expression 进行解析
-        return ParadoxExpressionManager.multiResolveLocalisationExpression(element, rangeInElement)
-            .mapToArray { PsiElementResolveResult(it) }
+        val resolved = ParadoxExpressionManager.multiResolveLocalisationExpression(element, rangeInElement)
+        return resolved.createResults()
     }
 }

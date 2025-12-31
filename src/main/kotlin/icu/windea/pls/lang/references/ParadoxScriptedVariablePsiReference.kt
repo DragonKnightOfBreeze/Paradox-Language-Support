@@ -2,11 +2,10 @@ package icu.windea.pls.lang.references
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -56,10 +55,10 @@ class ParadoxScriptedVariablePsiReference(
         // 首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
         val name = element.name ?: return ResolveResult.EMPTY_ARRAY
-        val result = mutableListOf<ParadoxScriptScriptedVariable>()
+        val resolved = mutableListOf<ParadoxScriptScriptedVariable>()
         val selector = selector(project, element).scriptedVariable().contextSensitive()
-        ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { result += it }
-        ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { result += it }
-        return result.mapToArray { PsiElementResolveResult(it) }
+        ParadoxScriptedVariableSearch.searchLocal(name, selector).findAll().let { resolved += it }
+        ParadoxScriptedVariableSearch.searchGlobal(name, selector).findAll().let { resolved += it }
+        return resolved.createResults()
     }
 }

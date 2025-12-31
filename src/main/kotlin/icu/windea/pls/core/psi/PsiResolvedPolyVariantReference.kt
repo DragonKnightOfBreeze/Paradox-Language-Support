@@ -2,11 +2,10 @@ package icu.windea.pls.core.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.util.IncorrectOperationException
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 
 /**
  * 已解析的（多目标）引用。
@@ -27,6 +26,6 @@ open class PsiResolvedPolyVariantReference<T : PsiElement>(
 
     /** 返回构造时提供的 [resolved] 目标集合。*/
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-        return resolved.mapToArray { PsiElementResolveResult(it) }
+        return resolved.createResults()
     }
 }

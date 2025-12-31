@@ -1,11 +1,13 @@
 package icu.windea.pls.lang.references.script
 
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.property
 
@@ -19,7 +21,19 @@ class ParadoxDefinitionInjectionPsiReferenceProvider : PsiReferenceProvider() {
         if (element !is ParadoxScriptPropertyKey) return PsiReference.EMPTY_ARRAY
         val property = element.property ?: return PsiReference.EMPTY_ARRAY
         val info = ParadoxDefinitionInjectionManager.getInfo(property) ?: return PsiReference.EMPTY_ARRAY
+        val offset = ParadoxExpressionManager.getExpressionOffset(element)
 
-        return PsiReference.EMPTY_ARRAY // TODO 2.1.0
+        // 兼容目标为空或者目标定义的类型为空的情况，此时仅返回 `modeReference`
+
+        val mode = info.mode
+        if (mode.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val modeRange = TextRange.from(offset, mode.length)
+        val modeReference = ParadoxDefinitionInjectionModePsiReference(element, modeRange, info)
+
+        val target = info.target
+        if (target.isEmpty() || info.type.isEmpty()) return arrayOf(modeReference)
+        val targetRange = TextRange.from(offset + mode.length + 1, target.length)
+        val targetReference = ParadoxDefinitionInjectionTargetPsiReference(element, targetRange, info)
+        return arrayOf(modeReference, targetReference)
     }
 }

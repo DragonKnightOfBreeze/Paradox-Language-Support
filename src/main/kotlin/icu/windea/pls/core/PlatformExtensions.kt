@@ -36,11 +36,13 @@ import com.intellij.platform.backend.presentation.TargetPresentationBuilder
 import com.intellij.profile.codeInspection.InspectionProfileManager
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReference
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.TokenType
@@ -691,6 +693,17 @@ fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, for
         }
     }
     return token to offset
+}
+
+context(reference: PsiReference)
+fun PsiElement?.createResults(): Array<out ResolveResult> {
+    if (this == null) return ResolveResult.EMPTY_ARRAY
+    return arrayOf(PsiElementResolveResult(this))
+}
+
+context(reference: PsiReference)
+fun Collection<PsiElement>.createResults(): Array<out ResolveResult> {
+    return PsiElementResolveResult.createResults(this)
 }
 
 // endregion

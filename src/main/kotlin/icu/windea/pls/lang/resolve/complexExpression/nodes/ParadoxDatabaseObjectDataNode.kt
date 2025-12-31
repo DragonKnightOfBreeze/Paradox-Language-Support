@@ -3,12 +3,11 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.definitionInfo
@@ -186,13 +185,13 @@ class ParadoxDatabaseObjectDataNode(
                 val selector = selector(project, element).localisation().contextSensitive().preferLocale(preferredLocale)
                 return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
                     .filter { node.isValidDatabaseObject(it, typeToSearch) }
-                    .mapToArray { PsiElementResolveResult(it) }
+                    .createResults()
             }
 
             val selector = selector(project, element).definition().contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
-                .mapToArray { PsiElementResolveResult(it) }
+                .createResults()
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {

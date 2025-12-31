@@ -2,12 +2,11 @@ package icu.windea.pls.lang.references.csv
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.config.CwtPropertyConfig
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
@@ -50,17 +49,19 @@ class ParadoxCsvExpressionPsiReference(
         }
         // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return null
-        return ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, config)
+        val resolved = ParadoxExpressionManager.resolveCsvExpression(element, rangeInElement, config)
+        return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
         if (element is ParadoxCsvColumn && element.isHeaderColumn()) {
-            return columnConfig.pointer.element?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
+            val resolved = columnConfig.pointer.element
+            return resolved.createResults()
         }
         // 根据对应的 expression 进行解析
         val config = columnConfig.valueConfig ?: return ResolveResult.EMPTY_ARRAY
-        return ParadoxExpressionManager.multiResolveCsvExpression(element, rangeInElement, config)
-            .mapToArray { PsiElementResolveResult(it) }
+        val resolved = ParadoxExpressionManager.multiResolveCsvExpression(element, rangeInElement, config)
+        return resolved.createResults()
     }
 }

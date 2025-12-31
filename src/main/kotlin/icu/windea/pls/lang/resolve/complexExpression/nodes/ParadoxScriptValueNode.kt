@@ -3,13 +3,12 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.set
@@ -86,12 +85,13 @@ class ParadoxScriptValueNode(
         }
 
         private fun doResolve(): PsiElement? {
-            return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
-                .mapToArray { PsiElementResolveResult(it) }
+            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
+            return resolved.createResults()
         }
 
         override fun canResolveFor(constraint: ParadoxResolveConstraint): Boolean {

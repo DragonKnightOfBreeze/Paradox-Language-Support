@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve.complexExpression.nodes
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiPolyVariantReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.resolve.ResolveCache
@@ -11,7 +10,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.collections.mapToArray
+import icu.windea.pls.core.createResults
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -132,14 +131,14 @@ class ParadoxDataSourceNode(
                 val resolved = linkConfigsNotDynamicValue.flatMap {
                     ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, it, it.configExpression)
                 }
-                if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
+                if (resolved.isNotEmpty()) return resolved.createResults()
             }
             run {
                 if (linkConfigsDynamicValue.isEmpty()) return@run
                 val configExpressions = linkConfigsDynamicValue.mapNotNull { it.configExpression }
                 if (configExpressions.isEmpty()) return@run
                 val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, node.configGroup)
-                if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
+                if (resolved != null) return resolved.createResults()
             }
             return ResolveResult.EMPTY_ARRAY
         }
