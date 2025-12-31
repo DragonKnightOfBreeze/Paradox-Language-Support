@@ -69,7 +69,7 @@ class ParadoxModDependencySettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
-                    .columns(36)
+                    .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
             }

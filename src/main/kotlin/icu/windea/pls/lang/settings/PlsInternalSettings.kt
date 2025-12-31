@@ -23,7 +23,7 @@ class PlsInternalSettings {
     /**
      * 内嵌提示中的本地化文本的默认文本长度限制。
      */
-    val textLengthLimitForInlay get() = Registry.intValue("pls.settings.textLengthLimit.for.inlay", 36)
+    val textLengthLimitForInlay get() = Registry.intValue("pls.settings.textLengthLimit.for.inlay", 60)
 
     /**
      * 内嵌提示中的本地化文本的默认图标高度限制。
@@ -33,7 +33,7 @@ class PlsInternalSettings {
     /**
      * 面包屑导航、导航栏、结构视图中的字符串字面量的文本长度限制。
      */
-    val textLengthLimitForPresentation get() = Registry.intValue("pls.settings.textLengthLimit.for.presentation", 36)
+    val textLengthLimitForPresentation get() = Registry.intValue("pls.settings.textLengthLimit.for.presentation", 60)
 
     /**
      * 在快速文档中渲染的图片（DDS/TGA）的最大尺寸。如果超出，则会基于此尺寸进行缩放。
