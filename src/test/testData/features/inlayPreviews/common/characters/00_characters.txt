@@ -2,6 +2,7 @@ character = {
     id = windea
     name = name_windea
     title = title_windea
+    desc = desc_windea
 
     gender = female
     species = unknown
