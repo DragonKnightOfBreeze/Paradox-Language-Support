@@ -5,8 +5,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
@@ -34,8 +34,9 @@ object PlsTestUtil {
     }
 
     fun injectFileInfo(file: VirtualFile, path: String, gameType: ParadoxGameType) {
-        val fileType = ParadoxFileType.resolvePossible(file.name)
-        val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(path), "", fileType, ParadoxRootInfo.Injected(gameType))
+        val filePath = ParadoxPath.resolve(path)
+        val fileGroup = ParadoxFileGroup.resolvePossible(file.name)
+        val fileInfo = ParadoxFileInfo(filePath, "", fileGroup, ParadoxRootInfo.Injected(gameType))
         file.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         file.putUserData(PlsKeys.injectedGameType, gameType)
     }

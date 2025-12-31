@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
-import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon
 
@@ -30,8 +30,7 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
             }
             return icon
         } else {
-            val fileType = fileInfo.fileType
-            if (fileType != ParadoxFileType.ModDescriptor) return null
+            if (fileInfo.group != ParadoxFileGroup.ModDescriptor) return null
             val icon = PlsIcons.FileTypes.ModDescriptor
             return icon
         }

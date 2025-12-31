@@ -5,7 +5,7 @@ import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vcs.changes.FilePathIconProvider
 import icu.windea.pls.PlsIcons
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
-import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxFileGroup
 import javax.swing.Icon
 
 /**
@@ -13,20 +13,19 @@ import javax.swing.Icon
  */
 class ParadoxFilePathIconProvider : FilePathIconProvider {
     override fun getIcon(filePath: FilePath, project: Project?): Icon? {
-        val possibleFileType = ParadoxFileType.resolvePossible(filePath.name)
-        if (possibleFileType == ParadoxFileType.Other) return null
+        val possibleGroup = ParadoxFileGroup.resolvePossible(filePath.name)
+        if (possibleGroup == ParadoxFileGroup.Other) return null
 
         val fileInfo = ParadoxAnalyzeManager.getFileInfo(filePath) ?: return null
-        val fileType = fileInfo.fileType
-        return getIcon(fileType)
+        return getIcon(fileInfo.group)
     }
 
-    private fun getIcon(fileType: ParadoxFileType): Icon? {
+    private fun getIcon(fileType: ParadoxFileGroup): Icon? {
         return when (fileType) {
-            ParadoxFileType.Script -> PlsIcons.FileTypes.ParadoxScript
-            ParadoxFileType.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
-            ParadoxFileType.Csv -> PlsIcons.FileTypes.ParadoxCsv
-            ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModDescriptor
+            ParadoxFileGroup.Script -> PlsIcons.FileTypes.ParadoxScript
+            ParadoxFileGroup.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
+            ParadoxFileGroup.Csv -> PlsIcons.FileTypes.ParadoxCsv
+            ParadoxFileGroup.ModDescriptor -> PlsIcons.FileTypes.ModDescriptor
             else -> null
         }
     }

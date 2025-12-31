@@ -21,7 +21,7 @@ import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxEntryInfo
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.ParadoxScriptFileType
@@ -159,23 +159,23 @@ object ParadoxFileManager {
         return PlsSettings.getInstance().state.ignoredFileNameSet.contains(fileName)
     }
 
-    fun getFileType(fileType: ParadoxFileType): FileType? {
+    fun getFileType(fileType: ParadoxFileGroup): FileType? {
         return when (fileType) {
-            ParadoxFileType.Script -> ParadoxScriptFileType
-            ParadoxFileType.Localisation -> ParadoxLocalisationFileType
-            ParadoxFileType.Csv -> ParadoxCsvFileType
-            ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
+            ParadoxFileGroup.Script -> ParadoxScriptFileType
+            ParadoxFileGroup.Localisation -> ParadoxLocalisationFileType
+            ParadoxFileGroup.Csv -> ParadoxCsvFileType
+            ParadoxFileGroup.ModDescriptor -> ParadoxScriptFileType
             else -> null
         }
     }
 
-    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileType): Boolean {
+    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileGroup): Boolean {
         return when (fileType) {
-            ParadoxFileType.Script -> true
-            ParadoxFileType.Localisation -> true
-            ParadoxFileType.Csv -> true
-            ParadoxFileType.ModDescriptor -> false
-            ParadoxFileType.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
+            ParadoxFileGroup.Script -> true
+            ParadoxFileGroup.Localisation -> true
+            ParadoxFileGroup.Csv -> true
+            ParadoxFileGroup.ModDescriptor -> false
+            ParadoxFileGroup.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
         }
     }
 

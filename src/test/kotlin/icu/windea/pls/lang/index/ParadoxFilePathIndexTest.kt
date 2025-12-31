@@ -10,7 +10,7 @@ import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
@@ -108,13 +108,13 @@ class ParadoxFilePathIndexTest : BasePlatformTestCase() {
 
         // inject fileInfo for the file and parent directories so isIncluded() can recurse to 'jomini'
         run {
-            val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileType.Other, ParadoxRootInfo.Injected(ParadoxGameType.Stellaris))
+            val fileInfo = ParadoxFileInfo(ParadoxPath.resolve(relPath), "", ParadoxFileGroup.Other, ParadoxRootInfo.Injected(ParadoxGameType.Stellaris))
             copied.putUserData(PlsKeys.injectedFileInfo, fileInfo)
             copied.putUserData(PlsKeys.injectedGameType, ParadoxGameType.Stellaris)
             var dir = copied.parent
             val parts = listOf("jomini/gfx/interface/icons", "jomini/gfx/interface", "jomini/gfx", "jomini")
             parts.forEach { p ->
-                dir?.putUserData(PlsKeys.injectedFileInfo, ParadoxFileInfo(ParadoxPath.resolve(p), "", ParadoxFileType.Other, ParadoxRootInfo.Injected(ParadoxGameType.Stellaris)))
+                dir?.putUserData(PlsKeys.injectedFileInfo, ParadoxFileInfo(ParadoxPath.resolve(p), "", ParadoxFileGroup.Other, ParadoxRootInfo.Injected(ParadoxGameType.Stellaris)))
                 dir = dir?.parent
             }
         }

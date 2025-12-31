@@ -79,7 +79,7 @@ object ParadoxOverrideService {
         val overrideStrategy = getOverrideStrategy(file) ?: return null
         if (overrideStrategy == ParadoxOverrideStrategy.ORDERED) return null
         val fileInfo = file.fileInfo ?: return null
-        if (!ParadoxFileManager.canOverrideFile(file, fileInfo.fileType)) return null
+        if (!ParadoxFileManager.canOverrideFile(file, fileInfo.group)) return null
         val path = fileInfo.path.path
         val project = file.project
         val selector = selector(project, file).file()

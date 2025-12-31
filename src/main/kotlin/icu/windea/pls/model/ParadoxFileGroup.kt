@@ -6,17 +6,22 @@ import icu.windea.pls.model.paths.ParadoxPath
 import icu.windea.pls.model.paths.ParadoxPathMatcher
 import icu.windea.pls.model.paths.matches
 
-enum class ParadoxFileType {
-    Script,
-    Localisation,
-    Csv,
-    ModDescriptor,
-    Other,
+/**
+ * 文件分组。
+ */
+enum class ParadoxFileGroup(val id: String) {
+    Script("script"),
+    Localisation("localisation"),
+    Csv("csv"),
+    ModDescriptor("mod descriptor"),
+    Other("other"),
     ;
+
+    override fun toString() = id
 
     companion object {
         @JvmStatic
-        fun resolve(path: ParadoxPath): ParadoxFileType {
+        fun resolve(path: ParadoxPath): ParadoxFileGroup {
             return when {
                 path.matches(ParadoxPathMatcher.ModDescriptorFile) -> ModDescriptor
                 path.matches(ParadoxPathMatcher.ScriptFile) -> Script
@@ -27,7 +32,7 @@ enum class ParadoxFileType {
         }
 
         @JvmStatic
-        fun resolvePossible(fileName: String): ParadoxFileType {
+        fun resolvePossible(fileName: String): ParadoxFileGroup {
             val fileExtension = fileName.substringAfterLast('.').orNull()?.lowercase() ?: return Other
             return when {
                 fileExtension == "mod" -> ModDescriptor

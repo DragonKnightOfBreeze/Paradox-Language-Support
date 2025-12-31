@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFileWithoutContent
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.lang.util.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxFileManager
-import icu.windea.pls.model.ParadoxFileType
+import icu.windea.pls.model.ParadoxFileGroup
 
 /**
  * 文件类型重载器。
@@ -22,27 +22,27 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 
         runCatchingCancelable r@{
             val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo) ?: return@r
-            return ParadoxFileManager.getFileType(injectedFileInfo.fileType)
+            return ParadoxFileManager.getFileType(injectedFileInfo.group)
         }
 
         runCatchingCancelable r@{
             val fileInfo = file.getUserData(PlsKeys.cachedFileInfo)?.value ?: return@r
-            return ParadoxFileManager.getFileType(fileInfo.fileType)
+            return ParadoxFileManager.getFileType(fileInfo.group)
         }
 
         if (file is VirtualFileWindow) {
             val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
-            return ParadoxFileManager.getFileType(fileInfo.fileType)
+            return ParadoxFileManager.getFileType(fileInfo.group)
         }
 
-        val possibleFileType = ParadoxFileType.resolvePossible(file.name)
-        if (possibleFileType == ParadoxFileType.Other) return null
+        val possibleGroup = ParadoxFileGroup.resolvePossible(file.name)
+        if (possibleGroup == ParadoxFileGroup.Other) return null
 
         if (ParadoxFileManager.isTestDataFile(file)) {
-            return ParadoxFileManager.getFileType(possibleFileType)
+            return ParadoxFileManager.getFileType(possibleGroup)
         }
 
         val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
-        return ParadoxFileManager.getFileType(fileInfo.fileType)
+        return ParadoxFileManager.getFileType(fileInfo.group)
     }
 }

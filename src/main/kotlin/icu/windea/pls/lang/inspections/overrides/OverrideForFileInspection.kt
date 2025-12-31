@@ -21,7 +21,7 @@ class OverrideForFileInspection : OverrideRelatedInspectionBase() {
         val file = holder.file
         val fileInfo = file.fileInfo
         if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
-        if (!ParadoxFileManager.canOverrideFile(file, fileInfo.fileType)) return PsiElementVisitor.EMPTY_VISITOR
+        if (!ParadoxFileManager.canOverrideFile(file, fileInfo.group)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitFile(file: PsiFile) {

@@ -12,8 +12,8 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analyze.ParadoxInferredGameTypeProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.paths.ParadoxPath
@@ -31,26 +31,26 @@ object ParadoxAnalyzeService {
     fun resolveFileInfo(file: VirtualFile, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = file.isDirectory
         val (path, entryName) = resolvePathAndEntryName(file.path, isDirectory, rootInfo) ?: return null
-        val fileType = when {
-            isDirectory -> ParadoxFileType.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
-            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path)
+        val group = when {
+            isDirectory -> ParadoxFileGroup.Other
+            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileGroup.Other
+            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileGroup.Other
+            else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, group, rootInfo)
         return fileInfo
     }
 
     fun resolveFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
         val isDirectory = filePath.isDirectory
         val (path, entryName) = resolvePathAndEntryName(filePath.path, isDirectory, rootInfo) ?: return null
-        val fileType = when {
-            isDirectory -> ParadoxFileType.Other
-            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
-            ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path)
+        val group = when {
+            isDirectory -> ParadoxFileGroup.Other
+            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileGroup.Other
+            ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileGroup.Other
+            else -> ParadoxFileGroup.resolve(path)
         }
-        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, fileType, rootInfo)
+        val fileInfo = ParadoxFileInfo(path.normalize(), entryName, group, rootInfo)
         return fileInfo
     }
 

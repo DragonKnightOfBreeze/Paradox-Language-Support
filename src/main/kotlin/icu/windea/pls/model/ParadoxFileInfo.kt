@@ -9,14 +9,14 @@ import java.util.*
  *
  * @property path 文件路径。相对于入口目录，参见 [ParadoxEntryInfo]。
  * @property entry 入口名称。参见 [ParadoxEntryInfo]。
- * @property fileType 检测得到的文件类型。
- * @property rootInfo 游戏或模组的根信息。
+ * @property group 文件分组。
+ * @property rootInfo 游戏或模组信息。
  */
 class ParadoxFileInfo(
     val path: ParadoxPath,
     val entry: String,
-    val fileType: ParadoxFileType,
-    val rootInfo: ParadoxRootInfo
+    val group: ParadoxFileGroup,
+    val rootInfo: ParadoxRootInfo,
 ) {
     val rootPath: Path?
         get() {
@@ -37,10 +37,10 @@ class ParadoxFileInfo(
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxFileInfo
             && path == other.path && entry == other.entry
-            && fileType == other.fileType && rootInfo == other.rootInfo
+            && group == other.group && rootInfo == other.rootInfo
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(path, entry, fileType, rootInfo)
+        return Objects.hash(path, entry, group, rootInfo)
     }
 }

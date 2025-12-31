@@ -20,8 +20,8 @@ import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.constants.PlsConstants
@@ -97,16 +97,16 @@ object PlsMarkdownManager {
         run {
             val rootInfo = selectRootFile(element)?.rootInfo
             if (rootInfo == null) return@run
-            val fileType = ParadoxFileType.resolve(path)
-            val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", fileType, rootInfo)
+            val group = ParadoxFileGroup.resolve(path)
+            val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
             return injectedFileInfo
         }
 
         // 需要尽可能兼容 markdown 文件不在游戏或模组目录中的情况
 
         val rootInfo = ParadoxRootInfo.Injected(pathInjectionInfo.gameType)
-        val fileType = ParadoxFileType.resolve(path)
-        val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", fileType, rootInfo)
+        val group = ParadoxFileGroup.resolve(path)
+        val injectedFileInfo = ParadoxFileInfo(path.normalize(), "", group, rootInfo)
         return injectedFileInfo
     }
 
