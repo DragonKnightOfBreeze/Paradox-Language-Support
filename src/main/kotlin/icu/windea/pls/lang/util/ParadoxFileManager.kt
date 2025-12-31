@@ -20,8 +20,8 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxEntryInfo
-import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxFileGroup
+import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.ParadoxScriptFileType

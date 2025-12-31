@@ -9,9 +9,9 @@ import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
-import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 基于本地化文本片段的目标（封装变量/定义/本地化）查询。

@@ -45,7 +45,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isExpression
-import icu.windea.pls.script.psi.tagType
 import javax.swing.JComponent
 
 /**
