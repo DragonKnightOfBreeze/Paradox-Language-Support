@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.index
 
 object PlsIndexVersions {
-    const val ScriptStub = 78 // VERSION for 2.0.6 released
-    const val LocalisationStub = 78 // VERSION for 2.0.6 released
+    const val ScriptStub = 79 // 2.1.0
+    const val LocalisationStub = 79 // 2.1.0
 
-    const val FilePath = 78 // VERSION for 2.0.6 released
-    const val FileLocale = 78 // VERSION for 2.0.6 released
-    const val ConfigSymbol = 78 // VERSION for 2.0.6 released
-    const val Define = 78 // VERSION for 2.0.6 released
-    const val Merged = 78 // VERSION for 2.0.6 released
+    const val FilePath = 79 // 2.1.0
+    const val FileLocale = 79 // 2.1.0
+    const val ConfigSymbol = 79 // 2.1.0
+    const val Define = 79 // 2.1.0
+    const val Merged = 79 // 2.1.0
 }
