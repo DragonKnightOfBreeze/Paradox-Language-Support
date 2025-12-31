@@ -34,6 +34,7 @@ object PlsIndexKeys {
     // for inline script arguments, inlineScriptExpression -> ParadoxScriptProperty
     val InlineScriptArgument = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.inlineScriptArgument.index")
 
+    // #252
     // for definition injections, definitionName -> ParadoxScriptProperty
     val DefinitionInjectionTarget = StubIndexKey.createIndexKey<String, ParadoxScriptProperty>("paradox.definitionInjection.name.index")
 

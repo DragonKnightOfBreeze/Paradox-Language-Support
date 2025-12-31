@@ -24,6 +24,8 @@ import java.awt.Color
 
 // region PSI Accessors
 
+val ParadoxScriptPropertyKey.property: ParadoxScriptProperty?
+    get() = parent?.castOrNull()
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
     get() = siblings(forward = true, withSelf = false).findIsInstance()
 

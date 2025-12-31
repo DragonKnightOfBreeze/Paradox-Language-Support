@@ -8,6 +8,9 @@ import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.ep.resolve.modifier.support
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 
+/**
+ * 修正信息。
+ */
 data class ParadoxModifierInfo(
     val name: String,
     val gameType: ParadoxGameType,

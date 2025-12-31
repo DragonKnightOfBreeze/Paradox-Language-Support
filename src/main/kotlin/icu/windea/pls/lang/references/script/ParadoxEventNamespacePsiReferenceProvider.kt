@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptString
 
 /**
- * 解析事件ID中的事件命名空间引用。
+ * 解析事件 ID 中的事件命名空间引用。
  */
 class ParadoxEventNamespacePsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {

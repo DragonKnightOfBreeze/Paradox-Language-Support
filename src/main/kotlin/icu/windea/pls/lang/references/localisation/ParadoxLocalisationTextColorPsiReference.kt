@@ -20,6 +20,6 @@ class ParadoxLocalisationTextColorPsiReference(
     }
 
     override fun resolve(): PsiElement? {
-        return element.colorInfo?.pointer?.element
+        return element.colorInfo?.element
     }
 }

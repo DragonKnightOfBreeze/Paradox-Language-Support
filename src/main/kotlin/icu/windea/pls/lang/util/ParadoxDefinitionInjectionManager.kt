@@ -66,13 +66,6 @@ object ParadoxDefinitionInjectionManager {
         return true // 这里目前不继续检查当前位置是否匹配任意定义类型
     }
 
-    /**
-     * 检查内联脚本用法在 [element] 对应的位置是否支持（但不一定正确）。这意味着会提供引用解析，但不会传递规则上下文。
-     */
-    fun isSupported(element: ParadoxScriptProperty): Boolean {
-        return true // TODO 2.1.0
-    }
-
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
         if (getModeFromExpression(element.name).isEmpty()) return null
@@ -105,7 +98,7 @@ object ParadoxDefinitionInjectionManager {
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
         val typeConfig = configGroup.types[type] ?: return null
-        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig, gameType)
+        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
 
     private fun doGetInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
@@ -128,7 +121,7 @@ object ParadoxDefinitionInjectionManager {
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, null) ?: return null
         if (!canApply(typeConfig)) return null // 排除不期望匹配的类型规则
         val type = typeConfig.name
-        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig, gameType)
+        return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
 
     fun getModeFromExpression(expression: String): String {

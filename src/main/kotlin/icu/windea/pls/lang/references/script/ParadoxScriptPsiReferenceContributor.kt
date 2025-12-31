@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptString
 
@@ -13,6 +14,7 @@ class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
     private val expressionReferenceProvider = ParadoxScriptExpressionPsiReferenceProvider()
     private val enumNamespaceReferenceProvider = ParadoxEventNamespacePsiReferenceProvider()
     private val typeKeyPrefixReferenceProvider = ParadoxScriptTypeKeyPrefixPsiReferenceProvider()
+    private val definitionInjectionReferenceProvider = ParadoxDefinitionInjectionPsiReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(psiElement(ParadoxScriptScriptedVariableReference::class.java), provider)
@@ -21,5 +23,6 @@ class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
         registrar.registerReferenceProvider(psiElement(ParadoxScriptExpressionElement::class.java), expressionReferenceProvider)
         registrar.registerReferenceProvider(psiElement(ParadoxScriptString::class.java), enumNamespaceReferenceProvider)
         registrar.registerReferenceProvider(psiElement(ParadoxScriptString::class.java), typeKeyPrefixReferenceProvider)
+        registrar.registerReferenceProvider(psiElement(ParadoxScriptPropertyKey::class.java), definitionInjectionReferenceProvider) // #252
     }
 }

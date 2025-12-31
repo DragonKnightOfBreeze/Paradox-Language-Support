@@ -1,7 +1,9 @@
 package icu.windea.pls.model
 
+import com.intellij.openapi.project.Project
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 data class ParadoxDefinitionInjectionInfo(
     val mode: String, // must be valid
@@ -9,5 +11,8 @@ data class ParadoxDefinitionInjectionInfo(
     val type: String, // can be empty
     val modeConfig: CwtValueConfig,
     val typeConfig: CwtTypeConfig?,
-    val gameType: ParadoxGameType,
-)
+) {
+    val configGroup: CwtConfigGroup get() = modeConfig.configGroup
+    val project: Project get() = configGroup.project
+    val gameType: ParadoxGameType get() = configGroup.gameType
+}

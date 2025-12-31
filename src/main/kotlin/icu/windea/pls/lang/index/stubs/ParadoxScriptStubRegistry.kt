@@ -152,7 +152,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     dataStream.writeByte(Flags.inlineScriptArgument)
                     dataStream.writeName(stub.name)
                 }
-                is ParadoxScriptPropertyStub.DefinitionInjection -> {
+                is ParadoxScriptPropertyStub.DefinitionInjection -> { // #252
                     dataStream.writeByte(Flags.definitionInjection)
                     dataStream.writeName(stub.name)
                     dataStream.writeName(stub.mode)
@@ -196,7 +196,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     val name = dataStream.readNameString().orEmpty()
                     ParadoxScriptPropertyStub.createInlineScriptArgument(parentStub, name)
                 }
-                Flags.definitionInjection -> {
+                Flags.definitionInjection -> { // #252
                     val name = dataStream.readNameString().orEmpty()
                     val mode = dataStream.readNameString().orEmpty()
                     val definitionName = dataStream.readNameString().orEmpty()
@@ -238,7 +238,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     if (stub.expression.isEmpty()) return
                     sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.expression)
                 }
-                is ParadoxScriptPropertyStub.DefinitionInjection -> {
+                is ParadoxScriptPropertyStub.DefinitionInjection -> { // #252
                     if (stub.definitionName.isEmpty()) return
                     if (stub.definitionType.isEmpty()) return
                     val targetKey = stub.definitionType + "@" + stub.definitionName
@@ -253,7 +253,7 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
             const val inlineScriptUsage: Byte = 2
             const val inlineScriptArgument: Byte = 3
             const val definitionNamed: Byte = 4
-            const val definitionInjection: Byte = 5
+            const val definitionInjection: Byte = 5 // #252
         }
     }
 }

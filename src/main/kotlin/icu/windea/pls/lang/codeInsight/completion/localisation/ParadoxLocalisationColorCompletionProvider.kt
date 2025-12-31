@@ -36,11 +36,11 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
         val lookupElements = mutableListOf<LookupElement>()
         for (colorConfig in colorConfigs) {
             ProgressManager.checkCanceled()
-            val element = colorConfig.pointer.element ?: continue
+            val element = colorConfig.element ?: continue
             val name = colorConfig.name
             val icon = colorConfig.icon
             val tailText = " from <text_color>"
-            val typeFile = colorConfig.pointer.containingFile
+            val typeFile = element.containingFile
             val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)

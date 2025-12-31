@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import icu.windea.pls.lang.annotations.WithGameType
 
 /**
- * @property modifierCategory modifier_category属性的值，并非modifier_categories.cwt中已定义的值
+ * @property modifierCategory `modifier_category` 属性的值，并非 `modifier_categories.cwt` 中已定义的值。
  */
 @WithGameType(ParadoxGameType.Stellaris)
 data class ParadoxEconomicCategoryInfo(

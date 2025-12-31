@@ -10,6 +10,9 @@ import icu.windea.pls.ep.resolve.parameter.support
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import javax.swing.Icon
 
+/**
+ * 参数信息。
+ */
 data class ParadoxParameterInfo(
     val name: String,
     val contextName: String,
