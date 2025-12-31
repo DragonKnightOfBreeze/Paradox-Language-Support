@@ -14,15 +14,17 @@ import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 基于本地化文本片段的目标（封装变量/定义/本地化）查询器的基类。
  *
  * 目前支持的目标类型：
- * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [icu.windea.pls.script.psi.ParadoxScriptScriptedVariable]
- * - 定义 - [ParadoxSearchTargetType.Definition] - [icu.windea.pls.script.psi.ParadoxScriptDefinitionElement]
- * - 本地化 - [ParadoxSearchTargetType.Localisation] - [icu.windea.pls.localisation.psi.ParadoxLocalisationProperty]
+ * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [ParadoxScriptScriptedVariable]
+ * - 定义 - [ParadoxSearchTargetType.Definition] - [ParadoxScriptDefinitionElement]
+ * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  *
  * 流程：输入的文本片段 → 用于查询的文本片段 → 所属的本地 → 相关的封装变量和定义
  */

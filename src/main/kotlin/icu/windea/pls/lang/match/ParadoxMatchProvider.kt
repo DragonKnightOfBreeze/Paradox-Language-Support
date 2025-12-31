@@ -60,7 +60,7 @@ object ParadoxMatchProvider {
     }
 
     /**
-     * 根据附加到 [config] 上的 `## predicate` 选项中的元数据，以及 [element] 所在的块（[icu.windea.pls.script.psi.ParadoxScriptBlockElement]）中的结构，进行简单的结构匹配。
+     * 根据附加到 [config] 上的 `## predicate` 选项中的元数据，以及 [element] 所在的块（[ParadoxScriptBlockElement]）中的结构，进行简单的结构匹配。
      */
     fun matchesByPredicate(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
         run {

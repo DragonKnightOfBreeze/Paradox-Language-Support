@@ -9,14 +9,17 @@ import com.intellij.util.Query
 import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * 基于本地化文本片段的目标（封装变量/定义/本地化）查询。
  *
  * 目前支持的目标类型：
- * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [icu.windea.pls.script.psi.ParadoxScriptScriptedVariable]
- * - 定义 - [ParadoxSearchTargetType.Definition] - [icu.windea.pls.script.psi.ParadoxScriptDefinitionElement]
- * - 本地化 - [ParadoxSearchTargetType.Localisation] - [icu.windea.pls.localisation.psi.ParadoxLocalisationProperty]
+ * - 封装变量 - [ParadoxSearchTargetType.ScriptedVariable] - [ParadoxScriptScriptedVariable]
+ * - 定义 - [ParadoxSearchTargetType.Definition] - [ParadoxScriptDefinitionElement]
+ * - 本地化 - [ParadoxSearchTargetType.Localisation] - [ParadoxLocalisationProperty]
  */
 class ParadoxTextBasedTargetSearch : ExtensibleQueryFactory<PsiElement, ParadoxTextBasedTargetSearch.SearchParameters>(EP_NAME) {
     class SearchParameters(

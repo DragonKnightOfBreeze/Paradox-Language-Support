@@ -28,7 +28,7 @@ import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxScriptService {
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[icu.windea.pls.script.psi.ParadoxScriptMember]）的相对于所在文件的路径。
+     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的相对于所在文件的路径。
      *
      * @param maxDepth 指定的最大深度。如果为正数且深度超出指定的最大深度，则直接返回 null。
      */
@@ -96,10 +96,10 @@ object ParadoxScriptService {
     }
 
     /**
-     * 得到 [element] 对应的脚本成员的 PSI（[icu.windea.pls.script.psi.ParadoxScriptMember]）的一组键前缀。
+     * 得到 [element] 对应的脚本成员的 PSI（[ParadoxScriptMember]）的一组键前缀。
      *
-     * 找到 [element] 对应的 [icu.windea.pls.script.psi.ParadoxScriptMember]，
-     * 接着找到直接在其前面的连续的一组 [icu.windea.pls.script.psi.ParadoxScriptString]（忽略空白和注释），
+     * 找到 [element] 对应的 [ParadoxScriptMember]，
+     * 接着找到直接在其前面的连续的一组 [ParadoxScriptString]（忽略空白和注释），
      * 最后将它们转化为字符串列表（基于值，顺序从后往前）。
      */
     fun getKeyPrefixes(element: PsiElement): List<String> {
