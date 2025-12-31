@@ -20,7 +20,7 @@ import icu.windea.pls.integrations.lints.PlsTigerLintResult.*
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
 import icu.windea.pls.integrations.settings.PlsIntegrationsSettings
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
@@ -48,7 +48,7 @@ object PlsTigerLintManager {
 
     fun checkAvailableFor(file: PsiFile): Boolean {
         if (!isEnabled()) return false
-        if (file.language !is ParadoxBaseLanguage) return false
+        if (file.language !is ParadoxLanguage) return false
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）

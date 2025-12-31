@@ -4,7 +4,7 @@ import com.intellij.find.findUsages.FindUsagesHandler
 import com.intellij.find.findUsages.FindUsagesHandlerFactory
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -15,7 +15,7 @@ class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFacto
     val findLocalisationOptions = ParadoxLocalisationFindUsagesOptions(project)
 
     override fun canFindUsages(element: PsiElement): Boolean {
-        return element.language is ParadoxBaseLanguage
+        return element.language is ParadoxLanguage
     }
 
     override fun createFindUsagesHandler(element: PsiElement, forHighlightUsages: Boolean): FindUsagesHandler {

@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.ParadoxCsvManager
@@ -43,7 +43,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     }
 
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
-        if (element.language !is ParadoxBaseLanguage) return null
+        if (element.language !is ParadoxLanguage) return null
         return when (element) {
             is ParadoxScriptScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_1
             is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_2

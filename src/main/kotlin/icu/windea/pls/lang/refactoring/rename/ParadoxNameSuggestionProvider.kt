@@ -3,7 +3,7 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.SuggestedNameInfo
 import com.intellij.refactoring.rename.NameSuggestionProvider
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
@@ -13,7 +13,7 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 class ParadoxNameSuggestionProvider : NameSuggestionProvider {
     override fun getSuggestedNames(element: PsiElement, nameSuggestionContext: PsiElement?, result: MutableSet<String>): SuggestedNameInfo? {
-        if (element.language !is ParadoxBaseLanguage) return null
+        if (element.language !is ParadoxLanguage) return null
         val declarationInfo = ParadoxTargetInfo.from(element) ?: return null
         if (!isSupported(declarationInfo)) return null
         return collectSuggestedNames(declarationInfo, nameSuggestionContext, result)

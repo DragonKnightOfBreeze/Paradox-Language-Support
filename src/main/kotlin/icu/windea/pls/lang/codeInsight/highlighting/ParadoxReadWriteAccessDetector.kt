@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.resolveFirst
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
@@ -59,7 +59,7 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 
     override fun getExpressionAccess(expression: PsiElement): Access {
         // find usages use this method finally
-        if (expression.language !is ParadoxBaseLanguage) return Access.ReadWrite
+        if (expression.language !is ParadoxLanguage) return Access.ReadWrite
         for (reference in expression.references) {
             ProgressManager.checkCanceled()
             if (ParadoxResolveConstraint.Parameter.canResolve(reference)) {

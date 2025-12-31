@@ -1,10 +1,10 @@
 package icu.windea.pls.csv
 
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 
-object ParadoxCsvLanguage : ParadoxBaseLanguage("PARADOX_CSV") {
-    override fun getBaseLanguage() = ParadoxBaseLanguage
+object ParadoxCsvLanguage : ParadoxLanguage("PARADOX_CSV") {
+    override fun getBaseLanguage() = ParadoxLanguage
 
     override fun getDisplayName() = PlsBundle.message("language.name.csv")
 }

@@ -5,7 +5,7 @@ import icu.windea.pls.model.ParadoxGameType
 
 abstract class ParadoxMockPsiElement(parent: PsiElement) : MockPsiElement(parent) {
     // override fun getLanguage(): Language {
-    //    return ParadoxBaseLanguage
+    //    return ParadoxLanguage
     // }
 
     abstract val gameType: ParadoxGameType

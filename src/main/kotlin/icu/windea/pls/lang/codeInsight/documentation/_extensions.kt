@@ -21,7 +21,7 @@ import com.intellij.util.TextWithIcon
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psiDocumentationTargets
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
@@ -80,7 +80,7 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
 private fun getDocumentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
     return when {
         element is PsiFileSystemItem -> null
-        element.language is ParadoxBaseLanguage -> ParadoxDocumentationTarget(element, null)
+        element.language is ParadoxLanguage -> ParadoxDocumentationTarget(element, null)
         element.language is CwtLanguage -> CwtDocumentationTarget(element, null)
         else -> null
     }

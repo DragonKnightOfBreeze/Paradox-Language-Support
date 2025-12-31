@@ -15,7 +15,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.ParadoxBaseFileType
+import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
 
 object PlsAnalyzeManager {
@@ -64,7 +64,7 @@ object PlsAnalyzeManager {
             val allEditors = EditorFactory.getInstance().allEditors
             for (editor in allEditors) {
                 val file = editor.virtualFile ?: continue
-                if (onlyParadoxFiles && file.fileType !is ParadoxBaseFileType) continue
+                if (onlyParadoxFiles && file.fileType !is ParadoxFileType) continue
                 if (onlyInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) continue
                 files.add(file)
             }

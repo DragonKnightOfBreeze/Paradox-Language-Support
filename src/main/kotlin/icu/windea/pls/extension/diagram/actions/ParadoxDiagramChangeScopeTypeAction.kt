@@ -10,7 +10,7 @@ import com.intellij.uml.core.actions.visibility.SelectedVisibilityIcon
 import icu.windea.pls.core.orNull
 import icu.windea.pls.extension.diagram.ParadoxDiagramDataModel
 import icu.windea.pls.extension.diagram.PlsDiagramBundle
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeType
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
 import javax.swing.Icon
@@ -39,9 +39,9 @@ class ParadoxDiagramChangeScopeTypeAction(
         val originalFile = dataModel.originalFile
         val currentScopeType = dataModel.provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
         val finalCurrentSearchScopeType = when {
-            currentScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxBaseLanguage -> null
+            currentScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxLanguage -> null
             currentScopeType != null -> currentScopeType
-            originalFile?.language is ParadoxBaseLanguage -> ParadoxSearchScopeTypes.File.id
+            originalFile?.language is ParadoxLanguage -> ParadoxSearchScopeTypes.File.id
             else -> null
         }
         val selected = ParadoxSearchScopeTypes.get(finalCurrentSearchScopeType).id == scopeType.id

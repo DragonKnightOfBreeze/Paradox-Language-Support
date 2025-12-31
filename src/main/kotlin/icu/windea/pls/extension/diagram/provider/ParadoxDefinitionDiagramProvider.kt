@@ -13,7 +13,7 @@ import icu.windea.pls.extension.diagram.ParadoxDiagramEdge
 import icu.windea.pls.extension.diagram.ParadoxDiagramElementManager
 import icu.windea.pls.extension.diagram.ParadoxDiagramNode
 import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.scope.type.ParadoxSearchScopeTypes
@@ -68,7 +68,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
             val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
             val finalSearchScopeType = when {
-                searchScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxBaseLanguage -> null
+                searchScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxLanguage -> null
                 searchScopeType != null -> searchScopeType
                 originalFile is ParadoxScriptFile -> ParadoxSearchScopeTypes.File.id
                 else -> null

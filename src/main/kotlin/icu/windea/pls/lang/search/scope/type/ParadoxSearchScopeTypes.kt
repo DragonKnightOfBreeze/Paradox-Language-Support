@@ -5,7 +5,7 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.toPsiFile
-import icu.windea.pls.lang.ParadoxBaseFileType
+import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.search.scope.ParadoxSearchScope
@@ -30,7 +30,7 @@ object ParadoxSearchScopeTypes {
         val fileInfo = file.fileInfo ?: return null
         val result = mutableListOf<ParadoxSearchScopeType>()
         result.add(All)
-        if (file.fileType is ParadoxBaseFileType) {
+        if (file.fileType is ParadoxFileType) {
             result.add(File)
         }
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)

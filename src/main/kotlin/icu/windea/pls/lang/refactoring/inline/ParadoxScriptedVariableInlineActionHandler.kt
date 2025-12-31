@@ -11,14 +11,14 @@ import com.intellij.refactoring.util.CommonRefactoringUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.util.ParadoxRecursionManager
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 class ParadoxScriptedVariableInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.scriptedVariable")
 
-    override fun isEnabledForLanguage(language: Language) = language is ParadoxBaseLanguage
+    override fun isEnabledForLanguage(language: Language) = language is ParadoxLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
         if (element !is ParadoxScriptScriptedVariable) return false

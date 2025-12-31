@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.core.toPsiFileSystemItem
 import icu.windea.pls.extension.diagram.provider.ParadoxDiagramProvider
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
@@ -26,7 +26,7 @@ abstract class ParadoxDiagramElementManager(
     }
 
     override fun isAcceptableAsNode(o: Any?): Boolean {
-        return o is PsiDirectory || (o is PsiFile && o.language is ParadoxBaseLanguage)
+        return o is PsiDirectory || (o is PsiFile && o.language is ParadoxLanguage)
     }
 
     override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String {

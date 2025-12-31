@@ -8,7 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.ParadoxBaseFile
+import icu.windea.pls.lang.psi.ParadoxFile
 import icu.windea.pls.lang.psi.PlsPsiManager
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -16,7 +16,7 @@ import icu.windea.pls.model.*
 class ParadoxCsvFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
-) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxBaseFile {
+) : PsiFileBase(viewProvider, ParadoxCsvLanguage), ParadoxFile {
     companion object {
         @JvmField
         val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)

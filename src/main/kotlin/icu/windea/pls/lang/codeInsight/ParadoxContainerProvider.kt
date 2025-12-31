@@ -2,11 +2,11 @@ package icu.windea.pls.lang.codeInsight
 
 import com.intellij.codeInsight.ContainerProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 
 class ParadoxContainerProvider : ContainerProvider {
     override fun getContainer(item: PsiElement): PsiElement? {
-        if (item.language is ParadoxBaseLanguage) {
+        if (item.language is ParadoxLanguage) {
             // no implementation, only containingFile
             return item.containingFile
         }

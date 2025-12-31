@@ -18,7 +18,7 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.resolveFirst
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionError
@@ -82,7 +82,7 @@ class ParadoxTemplateSnippetNode(
             return when {
                 resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-                resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+                resolvedElement.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 else -> throw IncorrectOperationException()
             }
         }

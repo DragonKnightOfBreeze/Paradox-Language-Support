@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -26,7 +26,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
             val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return@run
             val editor = dataContext.getData(CommonDataKeys.EDITOR) ?: return@run
             val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-            if (file == null || file.language !is ParadoxBaseLanguage) return@run
+            if (file == null || file.language !is ParadoxLanguage) return@run
             val offset = editor.caretModel.offset
 
             run r@{

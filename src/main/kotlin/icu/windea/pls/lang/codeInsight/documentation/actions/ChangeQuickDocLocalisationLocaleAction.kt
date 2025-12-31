@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.documentation.targetElement
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
@@ -29,7 +29,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
             val browser = e.getData(DOCUMENTATION_BROWSER)
             val targetElement = browser?.targetPointer?.dereference()?.targetElement
             if (targetElement == null) return@run
-            if (targetElement.language !is ParadoxBaseLanguage) return@run
+            if (targetElement.language !is ParadoxLanguage) return@run
             isVisible = true
             isEnabled = true
         }
@@ -41,7 +41,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         val browser = e.getData(DOCUMENTATION_BROWSER)
         val targetElement = browser?.targetPointer?.dereference()?.targetElement
         if (targetElement == null) return
-        if (targetElement.language !is ParadoxBaseLanguage) return
+        if (targetElement.language !is ParadoxLanguage) return
         val allLocales = ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
         val localePopup = ParadoxLocaleListPopup(allLocales)
         localePopup.doFinalStep action@{

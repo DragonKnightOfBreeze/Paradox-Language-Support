@@ -5,11 +5,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.testFramework.LightVirtualFile
 import icu.windea.pls.core.getCurrentStackTrace
-import icu.windea.pls.lang.psi.ParadoxBaseFile
+import icu.windea.pls.lang.psi.ParadoxFile
 
 @Suppress("UnstableApiUsage")
 object ParadoxHintsPreviewUtil {
-    fun detectPreview(file: ParadoxBaseFile, index: Int): Boolean {
+    fun detectPreview(file: ParadoxFile, index: Int): Boolean {
         // 首先判断是否是内存文件，然后再根据堆栈来判断
         val vFile = file.viewProvider.virtualFile
         if (vFile !is LightVirtualFile) return false

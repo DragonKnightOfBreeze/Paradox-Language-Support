@@ -12,7 +12,7 @@ import icu.windea.pls.core.util.singleton
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
@@ -55,7 +55,7 @@ import icu.windea.pls.script.psi.isDefinitionName
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
-        if (element.language !is ParadoxBaseLanguage) return false
+        if (element.language !is ParadoxLanguage) return false
         return when (element) {
             is ParadoxScriptedVariableReference -> true
             is ParadoxExpressionElement -> true
@@ -70,7 +70,7 @@ object ParadoxTypeManager {
     }
 
     fun findTypedElements(elementAt: PsiElement): List<PsiElement> {
-        if (elementAt.language !is ParadoxBaseLanguage) return emptyList()
+        if (elementAt.language !is ParadoxLanguage) return emptyList()
         val element = elementAt.parents(withSelf = true).find { isTypedElement(it) }
         if (element == null) return emptyList()
         return listOf(element)
@@ -80,7 +80,7 @@ object ParadoxTypeManager {
      * 名字 - 如果 PSI 表示一个封装变量、定义、本地化或参数则可用。
      */
     fun getName(element: PsiElement): String? {
-        if (element.language !is ParadoxBaseLanguage) return null
+        if (element.language !is ParadoxLanguage) return null
         return when (element) {
             is ParadoxScriptScriptedVariable -> element.name
             is ParadoxScriptPropertyKey -> {
@@ -99,7 +99,7 @@ object ParadoxTypeManager {
      * 表达式 - 如果 PSI 表示一个表达式则可用。
      */
     fun getExpression(element: PsiElement): String? {
-        if (element.language !is ParadoxBaseLanguage) return null
+        if (element.language !is ParadoxLanguage) return null
         return when (element) {
             is ParadoxScriptBlock -> PlsStringConstants.blockFolder
             is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder

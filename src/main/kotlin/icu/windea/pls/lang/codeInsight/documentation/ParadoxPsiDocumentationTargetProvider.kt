@@ -3,7 +3,7 @@ package icu.windea.pls.lang.codeInsight.documentation
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.PsiDocumentationTargetProvider
 import com.intellij.psi.PsiElement
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
 
 class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
@@ -14,7 +14,7 @@ class ParadoxPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
     }
 
     private fun isValid(elementWithDocumentation: PsiElement): Boolean {
-        if (elementWithDocumentation.language is ParadoxBaseLanguage) return true
+        if (elementWithDocumentation.language is ParadoxLanguage) return true
         if (elementWithDocumentation is ParadoxMockPsiElement) return true
         return false
     }

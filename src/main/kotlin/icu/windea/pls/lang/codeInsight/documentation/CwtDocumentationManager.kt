@@ -36,7 +36,7 @@ import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.isExpression
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
@@ -416,7 +416,7 @@ object CwtDocumentationManager {
     }
 
     private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
-        if (originalElement != null && originalElement.language is ParadoxBaseLanguage) {
+        if (originalElement != null && originalElement.language is ParadoxLanguage) {
             val gameType = selectGameType(originalElement)
             if (gameType != null) return PlsFacade.getConfigGroup(project, gameType)
         }

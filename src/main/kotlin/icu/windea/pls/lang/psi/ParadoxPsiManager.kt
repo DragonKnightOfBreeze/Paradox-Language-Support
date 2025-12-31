@@ -31,7 +31,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -382,7 +382,7 @@ object ParadoxPsiManager {
         return when {
             resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-            resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolvedElement.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }
     }

@@ -15,7 +15,7 @@ import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.selectRootFile
@@ -74,7 +74,7 @@ object PlsMarkdownManager {
         val languageId = infos.firstOrNull()
         if (languageId.isNullOrEmpty()) return null
         val language = Language.getRegisteredLanguages().find { it.id.equals(languageId, ignoreCase = true) }
-        if (language !is ParadoxBaseLanguage) return null
+        if (language !is ParadoxLanguage) return null
 
         return ParadoxPathInjectionInfo(gameType, path)
     }

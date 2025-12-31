@@ -2,9 +2,9 @@ package icu.windea.pls.localisation
 
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.lang.ParadoxBaseFileType
+import icu.windea.pls.lang.ParadoxFileType
 
-object ParadoxLocalisationFileType : ParadoxBaseFileType(ParadoxLocalisationLanguage) {
+object ParadoxLocalisationFileType : ParadoxFileType(ParadoxLocalisationLanguage) {
     override fun getName() = "Paradox Localisation"
 
     override fun getDescription() = PlsBundle.message("language.name.localisation")

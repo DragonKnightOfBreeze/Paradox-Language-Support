@@ -18,7 +18,7 @@ import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.unquote
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.resolve.ParadoxScriptExpressionService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -62,7 +62,7 @@ class ParadoxScriptExpressionPsiReference(
                 element.setValue(pathReference)
             }
             resolved.language is CwtLanguage -> throw IncorrectOperationException() // cannot rename cwt config
-            resolved.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved.language is ParadoxLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }
     }

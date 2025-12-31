@@ -31,7 +31,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (!PsiModificationTrackerImpl.canAffectPsi(event)) return
 
         val file = event.file ?: return
-        if (file !is ParadoxBaseFile) return
+        if (file !is ParadoxFile) return
         val fileInfo = file.fileInfo ?: return
         when (file) {
             is ParadoxScriptFile -> {

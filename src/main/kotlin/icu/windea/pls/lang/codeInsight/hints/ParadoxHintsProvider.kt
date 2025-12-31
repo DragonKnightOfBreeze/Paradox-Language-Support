@@ -12,9 +12,9 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.ParadoxBaseLanguage
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxBaseFile
+import icu.windea.pls.lang.psi.ParadoxFile
 
 @Suppress("UnstableApiUsage")
 abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
@@ -30,11 +30,11 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
 
     override fun createConfigurable(settings: ParadoxHintsSettings) = ParadoxHintsSettingsConfigurable(this, settings)
 
-    override fun isLanguageSupported(language: Language) = language is ParadoxBaseLanguage
+    override fun isLanguageSupported(language: Language) = language is ParadoxLanguage
 
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: ParadoxHintsSettings, sink: InlayHintsSink): InlayHintsCollector? {
         val project = editor.project ?: file.project
-        if (project.isDefault || file !is ParadoxBaseFile) return null
+        if (project.isDefault || file !is ParadoxFile) return null
         val preview = ParadoxHintsPreviewUtil.detectPreview(file, 4)
         if (!preview && file.fileInfo == null) return null
 
