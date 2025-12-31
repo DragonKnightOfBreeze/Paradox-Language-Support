@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.QueryExecutorBase
-import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.RequestResultProcessor
@@ -37,10 +36,10 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val target = queryParameters.elementToSearch
         if (target !is ParadoxScriptDefinitionElement) return
 
-        val definitionInfo = runReadAction { target.definitionInfo }
+        val definitionInfo = target.definitionInfo
         if (definitionInfo == null) return
         if (definitionInfo.name.isEmpty()) return // ignore anonymous definitions
-        val words = runReadAction { getWords(target, definitionInfo) }
+        val words = getWords(target, definitionInfo)
         val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.supports(definitionInfo.type) }
 
         // 这里不能直接使用target.useScope，否则文件高亮会出现问题

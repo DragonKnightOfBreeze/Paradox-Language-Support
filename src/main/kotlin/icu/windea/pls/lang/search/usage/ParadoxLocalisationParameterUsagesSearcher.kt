@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.QueryExecutorBase
-import com.intellij.openapi.application.runReadAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.RequestResultProcessor
@@ -21,7 +20,7 @@ class ParadoxLocalisationParameterUsagesSearcher : QueryExecutorBase<PsiReferenc
         val target = queryParameters.elementToSearch
         if (target !is ParadoxLocalisationParameterElement) return
 
-        val name = runReadAction { target.name }
+        val name = target.name
         if (name.isEmpty()) return
 
         // 这里不能直接使用target.useScope，否则文件高亮会出现问题
