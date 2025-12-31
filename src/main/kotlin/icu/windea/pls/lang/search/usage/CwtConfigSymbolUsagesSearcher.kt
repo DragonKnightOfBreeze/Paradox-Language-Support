@@ -15,7 +15,7 @@ import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.search.scope.withFileTypes
 
 /**
- * 规则符号的使用的查询。
+ * 规则符号的用法的查询。
  */
 class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

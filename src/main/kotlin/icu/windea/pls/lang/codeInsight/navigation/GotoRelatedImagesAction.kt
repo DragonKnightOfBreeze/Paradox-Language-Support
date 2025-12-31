@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -36,6 +37,8 @@ class GotoRelatedImagesAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         if (file !is ParadoxScriptFile) return
+        val fileInfo = file.fileInfo ?: return
+        if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
         presentation.isVisible = true
         if (file.definitionInfo != null) {
             presentation.isEnabled = true

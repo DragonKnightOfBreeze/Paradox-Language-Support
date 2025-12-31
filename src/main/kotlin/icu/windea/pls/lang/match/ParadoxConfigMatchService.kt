@@ -118,7 +118,7 @@ object ParadoxConfigMatchService {
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
-        // 判断definition是否需要是scriptFile还是scriptProperty
+        // 判断 definition 是否需要是 scriptFile 还是 scriptProperty
         run {
             if (typeConfig.typePerFile) {
                 if (element !is ParadoxScriptFile) return false
@@ -130,7 +130,7 @@ object ParadoxConfigMatchService {
         val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
-        // 判断definition的propertyValue是否需要是block
+        // 判断 definition 的 propertyValue 是否需要是 block
         run {
             val configGroup = typeConfig.configGroup
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
@@ -157,7 +157,7 @@ object ParadoxConfigMatchService {
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
-        // 判断definition是否需要是scriptFile还是scriptProperty
+        // 判断 definition 是否需要是 scriptFile 还是 scriptProperty
         run {
             val elementType = node.tokenType
             if (typeConfig.typePerFile) {
@@ -170,7 +170,7 @@ object ParadoxConfigMatchService {
         val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
         if (fastResult != null) return fastResult
 
-        // 判断definition的propertyValue是否需要是block
+        // 判断 definition 的 propertyValue 是否需要是 block
         run {
             val configGroup = typeConfig.configGroup
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
@@ -190,7 +190,7 @@ object ParadoxConfigMatchService {
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean {
-        // 判断element是否需要是scriptFile还是scriptProperty
+        // 判断 element 是否需要是 scriptFile 还是 scriptProperty
         if (typeConfig.typePerFile) return false
 
         val fastResult = matchesTypeFast(typeConfig, path, elementPath, typeKey, typeKeyPrefix)
@@ -206,34 +206,34 @@ object ParadoxConfigMatchService {
         typeKey: String?,
         typeKeyPrefix: Lazy<String?>?
     ): Boolean? {
-        // 判断path是否匹配
+        // 判断 path 是否匹配
         if (path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(typeConfig, path)) return false
         }
 
         if (typeKey != null) {
-            // 如果选项starts_with存在，则要求type_key匹配这个前缀
+            // 如果选项 starts_with 存在，则要求 type_key 匹配这个前缀
             val startsWithConfig = typeConfig.startsWith
             if (!startsWithConfig.isNullOrEmpty()) {
                 val result = typeKey.startsWith(startsWithConfig)
                 if (!result) return false
             }
 
-            // 如果type_key_regex存在，则要求type_key匹配
+            // 如果选项 type_key_regex 存在，则要求 type_key 匹配
             val typeKeyRegexConfig = typeConfig.typeKeyRegex
             if (typeKeyRegexConfig != null) {
                 val result = typeKeyRegexConfig.matches(typeKey)
                 if (!result) return false
             }
 
-            // 如果选项type_key_filter存在，则需要通过type_key进行过滤（忽略大小写）
+            // 如果选项 type_key_filter存在，则需要通过 type_key 进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
                 val result = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
                 if (!result) return false
             }
 
-            // 如果name_field存在，则要求type_key必须是由type_key_filter指定的所有可能的type_key之一，或者没有指定任何type_key
+            // 如果 name_field 存在，则要求 type_key 必须是由 type_key_filter 指定的所有可能的 type_key 之一，或者没有指定任何 type_key
             val nameFieldConfig = typeConfig.nameField
             if (nameFieldConfig != null) {
                 val result = typeConfig.possibleTypeKeys.isEmpty() || typeConfig.possibleTypeKeys.contains(typeKey)
@@ -241,18 +241,18 @@ object ParadoxConfigMatchService {
             }
         }
 
-        // 如果属性type_key_prefix存在，且有必要校验，则要求其与typeKeyPrefix必须一致（忽略大小写）
+        // 如果属性 type_key_prefix 存在，且有必要校验，则要求其与 typeKeyPrefix 必须一致（忽略大小写）
         if (typeKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesModel.mayWithTypeKeyPrefix) {
             val result = typeConfig.typeKeyPrefix.equals(typeKeyPrefix.value, ignoreCase = true)
             if (!result) return false
         }
 
         if (elementPath != null) {
-            // 如果属性skip_root_key存在，则要判断是否需要跳过rootKey
-            // skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
-            // skip_root_key可以重复（其中之一匹配即可）
+            // 如果属性 skip_root_key 存在，则要判断是否需要跳过 rootKey
+            // skip_root_key 可以为列表（如果是列表，其中的每一个 root_key 都要依次匹配）
+            // skip_root_key 可以重复（其中之一匹配即可）
             val skipRootKeyConfig = typeConfig.skipRootKey
-            if (skipRootKeyConfig.isNullOrEmpty()) {
+            if (skipRootKeyConfig.isEmpty()) {
                 if (elementPath.length > 1) return false
             } else {
                 if (elementPath.isEmpty()) return false
@@ -276,7 +276,7 @@ object ParadoxConfigMatchService {
         val fastResult = matchesSubtypeFast(typeKey, subtypeConfig, subtypeConfigs)
         if (fastResult != null) return fastResult
 
-        // 根据config对property进行内容匹配
+        // 根据 config 对 property 进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
         val finalMatchOptions = matchOptions or ParadoxMatchOptions.SkipIndex or ParadoxMatchOptions.SkipScope
@@ -288,35 +288,35 @@ object ParadoxConfigMatchService {
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>
     ): Boolean? {
-        // 如果only_if_not存在，且已经匹配指定的任意子类型，则不匹配
+        // 如果 only_if_not 存在，且已经匹配指定的任意子类型，则不匹配
         val onlyIfNotConfig = subtypeConfig.onlyIfNot
         if (!onlyIfNotConfig.isNullOrEmpty()) {
             val matchesAny = subtypeConfigs.any { it.name in onlyIfNotConfig }
             if (matchesAny) return false
         }
 
-        // 如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
+        // 如果 starts_with 存在，则要求 typeKey 匹配这个前缀（不忽略大小写）
         val startsWithConfig = subtypeConfig.startsWith
         if (!startsWithConfig.isNullOrEmpty()) {
             val result = typeKey.startsWith(startsWithConfig, false)
             if (!result) return false
         }
 
-        // 如果type_key_regex存在，则要求type_key匹配
+        // 如果 type_key_regex 存在，则要求 typeKey 匹配
         val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
         if (typeKeyRegexConfig != null) {
             val result = typeKeyRegexConfig.matches(typeKey)
             if (!result) return false
         }
 
-        // 如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+        // 如果 type_key_filter 存在，则通过 typeKey 进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
         if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
             val filterResult = typeKeyFilterConfig.withOperator { it.contains(typeKey) }
             if (!filterResult) return false
         }
 
-        // 根据config对property进行内容匹配
+        // 根据 config 对 property 进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
 
@@ -354,7 +354,7 @@ object ParadoxConfigMatchService {
         matchOptions: Int
     ): Boolean {
         val propValue = propertyElement.propertyValue
-        // 对于propertyValue同样这样判断（可能脚本没有写完）
+        // 对于 propertyValue 同样这样判断（可能脚本没有写完）
         if (propValue == null) return propertyConfig.optionData { cardinality }?.min == 0
 
         when {
@@ -367,11 +367,11 @@ object ParadoxConfigMatchService {
                 val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
                 return ParadoxMatchService.matchScriptExpression(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
             }
-            // 匹配single_alias
+            // 匹配 single_alias
             ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
                 return matchesSingleAliasForSubtype(definitionElement, propertyElement, propertyConfig, configGroup, matchOptions)
             }
-            // 匹配alias
+            // 匹配 alias
             ParadoxExpressionManager.isAliasEntryConfig(propertyConfig) -> {
                 return matchesAliasForSubtype(definitionElement, propertyElement, propertyConfig, matchOptions)
             }
@@ -399,7 +399,7 @@ object ParadoxConfigMatchService {
         val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.toOccurrence(definitionElement, configGroup.project) })
 
         // NOTE 这里需要兼容内联
-        // NOTE propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
+        // NOTE propConfig.key 可能有重复，这种情况下只要有其中一个匹配即可
         val matched = blockElement.properties().options { inline() }.all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
@@ -463,7 +463,7 @@ object ParadoxConfigMatchService {
     }
 
     private fun matchesAliasForSubtype(definitionElement: ParadoxScriptDefinitionElement, propertyElement: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig, matchOptions: Int): Boolean {
-        // aliasName和aliasSubName需要匹配
+        // aliasName 和 aliasSubName 需要匹配
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
         val quoted = propertyElement.propertyKey.text.isLeftQuoted()

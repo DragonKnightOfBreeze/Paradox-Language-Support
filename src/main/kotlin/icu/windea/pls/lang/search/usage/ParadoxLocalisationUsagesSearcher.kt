@@ -15,7 +15,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or
 
 /**
- * 本地化的使用的查询。
+ * 本地化的用法的查询。
  */
 class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

@@ -14,7 +14,7 @@ import icu.windea.pls.model.constraints.ParadoxResolveConstraint
 import kotlin.experimental.or
 
 /**
- * 参数的使用的查询。
+ * 参数的用法的查询。
  */
 class ParadoxParameterUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {

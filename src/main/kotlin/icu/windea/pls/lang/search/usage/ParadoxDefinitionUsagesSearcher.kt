@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import kotlin.experimental.or
 
 /**
- * 定义的使用的查询。
+ * 定义的用法的查询。
  *
  * 定义对应的 PSI（[ParadoxScriptDefinitionElement]） 的名字被称为定义的类型键（typeKey），它不一定是定义的名字（definitionName）。
  * 因此，这里需要特殊处理。

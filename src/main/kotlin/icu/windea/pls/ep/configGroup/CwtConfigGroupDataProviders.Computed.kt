@@ -87,7 +87,7 @@ class CwtComputedConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 initializer.swappedTypes[typeName] = typeConfig
                 val baseTypeName = typeConfig.baseType!!.substringBefore('.')
                 val baseDeclarationConfig = initializer.declarations[baseTypeName] ?: continue
-                val rootKeysList = typeConfig.skipRootKey?.filter { it.isNotEmpty() }?.orNull() ?: continue
+                val rootKeysList = typeConfig.skipRootKey.filter { it.isNotEmpty() }.orNull() ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
                 val configPaths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey) }
                 val c0 = baseDeclarationConfig.configForDeclaration

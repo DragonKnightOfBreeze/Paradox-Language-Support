@@ -36,6 +36,16 @@ object ParadoxDefinitionInjectionManager {
     const val definitionInjectionKey = "definition_injection"
 
     /**
+     * 检查指定的游戏类型是否支持定义注入。
+     */
+    fun isSupported(gameType: ParadoxGameType?): Boolean {
+        if (gameType == null) return false
+        val config = PlsFacade.getConfigGroup(gameType).macroConfigs[definitionInjectionKey]
+        if (config == null) return false
+        return true
+    }
+
+    /**
      * 检查指定的游戏类型是否支持指定模式的定义注入。
      */
     fun isSupported(mode: String, gameType: ParadoxGameType?): Boolean {
@@ -114,7 +124,7 @@ object ParadoxDefinitionInjectionManager {
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
-        if (target.isEmpty()) return null
+        if (target.isEmpty()) return ParadoxDefinitionInjectionInfo(mode, target, "", modeConfig, null) // 兼容目标为空的情况
         val path = fileInfo.path
         val elementPath = ParadoxElementPath.resolve(listOf(target))
         val typeKey = target
@@ -139,13 +149,13 @@ object ParadoxDefinitionInjectionManager {
     fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
         if (definitionInfo.name.isEmpty()) return false
         if (definitionInfo.type.isEmpty()) return false
-        val typeConfig = definitionInfo.typeConfig
-        if (!canApply(typeConfig)) return false
+        if (!canApply(definitionInfo.typeConfig)) return false // 排除不期望匹配的类型规则
         return true
     }
 
     fun canApply(typeConfig: CwtTypeConfig): Boolean {
-        if (typeConfig.nameField != null || typeConfig.skipRootKey != null) return false // 排除不期望匹配的类型规则
+        if (typeConfig.nameField != null) return false
+        if (typeConfig.skipRootKey.isNotEmpty()) return false
         return true
     }
 }

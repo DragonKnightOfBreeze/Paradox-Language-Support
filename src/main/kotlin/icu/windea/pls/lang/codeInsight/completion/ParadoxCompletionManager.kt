@@ -335,7 +335,7 @@ object ParadoxCompletionManager {
 
             if (!ParadoxConfigMatchService.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
-            if (skipRootKeyConfig.isNullOrEmpty()) {
+            if (skipRootKeyConfig.isEmpty()) {
                 if (elementPath.isEmpty()) {
                     typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                         infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

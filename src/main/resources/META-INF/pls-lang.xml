@@ -289,6 +289,7 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptArgumentIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionInjectionIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
@@ -317,6 +318,7 @@
     <!--icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReferenceProvider-->
     <!--icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReferenceProvider-->
     <!--icu.windea.pls.lang.references.script.ParadoxScriptTypeKeyPrefixPsiReferenceProvider-->
+    <!--icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionPsiReferenceProvider-->
     <psi.referenceContributor language="PARADOX_LOCALISATION" implementation="icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceContributor"/>
     <!--icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceProvider-->
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>

@@ -67,7 +67,7 @@ interface CwtTypeConfig : CwtFilePathMatchableConfig {
     @FromProperty("severity: string?")
     val severity: String?
     @FromProperty("skip_root_key: string | string[]", multiple = true)
-    val skipRootKey: List<List<@CaseInsensitive String>>?
+    val skipRootKey: List<List<@CaseInsensitive String>>
     @FromOption("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
     @FromOption("type_key_regex: string?")

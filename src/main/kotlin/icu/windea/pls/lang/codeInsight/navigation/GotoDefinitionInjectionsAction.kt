@@ -37,6 +37,8 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         if (file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
+        val gameType = fileInfo.rootInfo.gameType
+        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         presentation.isVisible = true
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return

@@ -31,12 +31,14 @@ class GotoDefinitionInjectionTargetsAction : BaseCodeInsightAction() {
         if (file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
+        val gameType = fileInfo.rootInfo.gameType
+        if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isEmpty()) return // 排除目标为空的情况
         if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
-        presentation.isEnabled = true
+        presentation.isEnabledAndVisible = true
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {

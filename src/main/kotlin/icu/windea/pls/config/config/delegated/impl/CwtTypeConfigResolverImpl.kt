@@ -33,7 +33,6 @@ internal class CwtTypeConfigResolverImpl : CwtTypeConfig.Resolver, CwtConfigReso
     override fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
 
     private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
-        val configGroup = config.configGroup
         val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.optimized() ?: return null
         val propElements = config.properties
         if (propElements.isNullOrEmpty()) {
@@ -92,7 +91,7 @@ private class CwtTypeConfigImpl(
     override val typePerFile: Boolean,
     override val unique: Boolean,
     override val severity: String?,
-    override val skipRootKey: List<List<String>>?,
+    override val skipRootKey: List<List<String>>,
     override val typeKeyFilter: ReversibleValue<Set<String>>?,
     override val typeKeyRegex: Regex?,
     override val startsWith: String?,

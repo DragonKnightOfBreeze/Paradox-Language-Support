@@ -17,6 +17,8 @@ import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormat
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
 import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
 import icu.windea.pls.lang.references.script.ParadoxConditionParameterPsiReference
+import icu.windea.pls.lang.references.script.ParadoxDefinitionInjectionTargetPsiReference
+import icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReference
 import icu.windea.pls.lang.references.script.ParadoxParameterPsiReference
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxIdentifierNode
@@ -87,6 +89,8 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.Definition
                 }
+                is ParadoxEventNamespacePsiReference -> true // <event_namespace>
+                is ParadoxDefinitionInjectionTargetPsiReference -> true
                 else -> false
             }
         }

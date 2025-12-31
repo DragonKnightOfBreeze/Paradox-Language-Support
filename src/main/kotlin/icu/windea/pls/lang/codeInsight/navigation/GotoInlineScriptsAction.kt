@@ -9,7 +9,7 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -32,7 +32,8 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         if (file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
-        val gameType = selectGameType(file) ?: return
+        val gameType = fileInfo.rootInfo.gameType
+        if (!ParadoxInlineScriptManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return

@@ -19,7 +19,7 @@ import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.stringValue
 
 /**
- * 规则的使用的查询。
+ * 规则的用法的查询。
  */
 class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     // - 规则的属性名为 `alias[x:y]` 时，其在脚本文件中匹配的属性名会是 `y`，需要特殊处理
