@@ -1,6 +1,6 @@
 package icu.windea.pls.config.util.option
 
-import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtOptionValueConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -77,7 +77,7 @@ class CwtOptionFlags private constructor(value: Set<String>) {
      *
      * CWTools 兼容性：PLS 扩展。
      *
-     * @see CwtTagType
+     * @see ParadoxTagType
      */
     val tag = value.contains("tag")
 

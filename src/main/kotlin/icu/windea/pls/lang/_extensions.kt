@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
@@ -18,6 +19,7 @@ import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxLocaclisationParameterManager
+import icu.windea.pls.lang.util.ParadoxTagManager
 import icu.windea.pls.lang.util.data.ParadoxDataService
 import icu.windea.pls.lang.util.presentation.ParadoxPresentationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -31,6 +33,7 @@ import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
+import icu.windea.pls.script.psi.ParadoxScriptValue
 import java.util.concurrent.atomic.AtomicReference
 
 fun Char.isIdentifierChar(): Boolean {
@@ -96,6 +99,9 @@ inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjec
 
 inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
+
+inline val ParadoxScriptValue.tagType: ParadoxTagType?
+    get() = ParadoxTagManager.getTagType(this)
 
 inline fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
     return ParadoxLocaclisationParameterManager.resolveLocalisation(this)

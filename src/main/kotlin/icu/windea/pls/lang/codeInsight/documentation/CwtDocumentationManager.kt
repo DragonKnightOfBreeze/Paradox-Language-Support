@@ -154,13 +154,13 @@ object CwtDocumentationManager {
             appendCwtConfigFileInfoHeader(element)
 
             val bindingConfig = element.getUserData(PlsKeys.bindingConfig)
-            val tagName = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
+            val tagType = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
 
             val shortName = configType?.let { CwtConfigManager.getNameByConfigType(name, it) } ?: name
             val byName = if (shortName == name) null else name
             val prefix = when {
-                referenceElement != null && tagName != null -> "(${tagName.id})" // 处理特殊标签
+                referenceElement != null && tagType != null -> "($tagType)" // 处理特殊标签
                 configType?.isReference == true -> configType.prefix
                 referenceElement is ParadoxScriptPropertyKey -> PlsStringConstants.definitionPropertyPrefix
                 referenceElement is ParadoxScriptValue -> PlsStringConstants.definitionValuePrefix

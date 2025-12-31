@@ -1,20 +1,6 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.localisation.psi
-
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyImpl
-import icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPropertyListImpl
-import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub
-import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub
-
-// region PSI Accessors
-
-val ParadoxLocalisationPropertyList.greenStub: ParadoxLocalisationPropertyListStub?
-    get() = this.castOrNull<ParadoxLocalisationPropertyListImpl>()?.greenStub
-
-val ParadoxLocalisationProperty.greenStub: ParadoxLocalisationPropertyStub?
-    get() = this.castOrNull<ParadoxLocalisationPropertyImpl>()?.greenStub
-
-// endregion
 
 // region Predicates
 

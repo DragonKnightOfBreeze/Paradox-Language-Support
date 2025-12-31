@@ -2,7 +2,7 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.delegated.CwtAliasConfig
 import icu.windea.pls.config.config.delegated.CwtInlineConfig
 import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
@@ -48,7 +48,7 @@ var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKey(CwtMemberConfig.
 var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfig.Keys)
 
 /** 当前值规则的标签类型（解析阶段推断，用于渲染和提示）。*/
-var CwtValueConfig.tagType: CwtTagType? by createKey(CwtMemberConfig.Keys)
+var CwtValueConfig.tagType: ParadoxTagType? by createKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则的被重载前的原始规则（用于规则覆盖、来源追踪等场景）。*/
 var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMember>? by createKey(CwtMemberConfig.Keys)

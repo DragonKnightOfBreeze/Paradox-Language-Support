@@ -17,6 +17,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.psi.findProperty
 import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -31,7 +32,6 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
 import icu.windea.pls.script.psi.propertyValue
-import icu.windea.pls.script.psi.tagType
 
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -116,7 +116,7 @@ class ParadoxScriptAnnotator : Annotator {
     private fun annotateTag(element: ParadoxScriptExpressionElement, holder: AnnotationHolder): Boolean {
         // 目前不在这里显示标签类型，而是在快速文档中
         if (element !is ParadoxScriptString) return false
-        if (element.tagType() == null) return false
+        if (element.tagType == null) return false
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG_KEY).create()
         return true
     }

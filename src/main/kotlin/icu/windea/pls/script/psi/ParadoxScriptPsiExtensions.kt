@@ -3,18 +3,12 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.util.siblings
-import icu.windea.pls.config.CwtTagType
-import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.tagType
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.findChild
-import icu.windea.pls.core.findChildren
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.psi.impl.ParadoxScriptPropertyImpl
 import icu.windea.pls.script.psi.impl.ParadoxScriptScriptedVariableImpl
@@ -40,14 +34,6 @@ val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
     return findChild<T>(forward = false)
-}
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.valueList(): List<T> {
-    return findChild<ParadoxScriptBlock>(forward = false)?.findChildren<T>().orEmpty()
-}
-
-inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(): List<T> {
-    return findChildren<T>()
 }
 
 // endregion
@@ -224,22 +210,5 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
 //        else -> null
 //    }
 // }
-
-fun ParadoxScriptValue.tagType(): CwtTagType? {
-    if (this !is ParadoxScriptString) return null
-    if (!this.isBlockMember()) return null
-    val references = references
-    run {
-        val tagReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptTagAwarePsiReference>() }
-        if (tagReference == null) return@run
-        return tagReference.config.tagType
-    }
-    run {
-        val expressionReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptExpressionPsiReference>() }
-        if (expressionReference == null) return@run
-        return expressionReference.config.castOrNull<CwtValueConfig>()?.tagType
-    }
-    return null
-}
 
 // endregion

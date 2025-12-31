@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.config
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.optionData
@@ -17,7 +17,7 @@ class CwtBaseConfigPostProcessor : CwtConfigPostProcessor {
 
     private fun applyTagOption(config: CwtMemberConfig<*>) {
         if (config is CwtValueConfig && config.optionData { flags }.tag) {
-            config.tagType = CwtTagType.Predefined
+            config.tagType = ParadoxTagType.Predefined
         }
     }
 }

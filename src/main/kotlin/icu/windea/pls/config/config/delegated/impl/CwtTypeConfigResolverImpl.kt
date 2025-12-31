@@ -3,7 +3,7 @@ package icu.windea.pls.config.config.delegated.impl
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.UserDataHolderBase
-import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.bindConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
@@ -110,7 +110,7 @@ private class CwtTypeConfigImpl(
 
     override val typeKeyPrefixConfig: CwtValueConfig? by lazy {
         config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also {
-            it.tagType = CwtTagType.TypeKeyPrefix
+            it.tagType = ParadoxTagType.TypeKeyPrefix
             it.pointer.element?.bindConfig(it)
         }
     }

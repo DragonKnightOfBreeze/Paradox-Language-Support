@@ -33,6 +33,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.tagType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -138,7 +139,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
                 if (configs.isNotEmpty()) return continueCheck(configs)
                 // skip check value if it is a special tag and there are no matched configs
-                if (element.tagType() != null) return false
+                if (element.tagType != null) return false
 
                 val expectedConfigs = getExpectedConfigs(element, configContext)
                 if (isSkipped(element, expectedConfigs)) return true
