@@ -75,7 +75,7 @@
 - 索引信息（InfoIndexSupport）
   - 复杂枚举值、动态值、参数、本地化参数、带推断作用域的定义、事件与 on_action 互相关联索引
 - 检查/抑制
-  - 不正确表达式检查：区间整型/浮点、颜色字段、作用域/作用域组字段、科技等级、switch 中 trigger、带参数 trigger 中 trigger
+  - 不正确表达式检查：区间整型/浮点、颜色字段、作用域/作用域分组字段、科技等级、switch 中 trigger、带参数 trigger 中 trigger
   - 定义检查抑制：基础与 Stellaris 专用
 - 元数据/推断
   - 推断游戏类型：基于游戏数据 ModPath、Workshop 路径

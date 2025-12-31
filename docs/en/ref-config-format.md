@@ -10,11 +10,6 @@ This reference targets authors and maintainers who want to "understand / write /
 - **Build a mapping from documentation to implementation**: each config item is annotated with the corresponding interfaces/resolvers so you can trace the source code and verify behavior.
 - **Guide to practice**: outline purpose, format, and notes, laying the groundwork for refined examples and validation rules.
 
-Reference relationships:
-- Concepts and examples are based on the CWTools guidance: `references/cwt/guidance.md`.
-- PLS overall config workflow and grouping: `docs/en/config.md`.
-- Config interfaces and parsing logic mainly reside in: `icu.windea.pls.config.config` (including `delegated/` and `delegated/impl/`).
-
 ## Overview {#overview}
 
 PLS reads `.cwt` files, builds "config groups", and parses configs into structured "config objects" used by language features (highlighting, completion, navigation, inspections, documentation, etc.).
@@ -45,9 +40,9 @@ Terminology:
 
 ### Normal Configs {#configs-normal}
 
-> Semantics are aligned with CWTools or compatible with it. PLS may add small extensions on options and context.
+> These configs drive various language features, including but not limited to code completion, code inspection, quick documentation, inlay hints, etc.
 
-#### Priority {#config-priority}
+#### Priority Configs {#config-priority}
 
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideStrategy -->
 <!-- @see icu.windea.pls.lang.overrides.ParadoxOverrideService -->
@@ -71,6 +66,7 @@ Priority configs are used to configure how targets are overridden.
 - See `ParadoxPriorityProvider.getComparator()` for the implementation and defaults.
 
 **Format notes**:
+
 ```cwt
 priorities = {
     # LHS - file path of containing directory, relative to entry directory
@@ -83,9 +79,9 @@ priorities = {
 }
 ```
 
-**Practical examples**:
+**Examples**:
+
 ```cwt
-# Built-in example (excerpt)
 priorities = {
     "common/event_chains" = fios
     "common/on_actions" = ordered
@@ -97,7 +93,7 @@ priorities = {
 - Two mods both define an event with the same name under `events/`: because `events = fios`, the mod read earlier (loaded earlier) takes effect and the later one is ignored.
 - Two mods both add entries under `common/on_actions/`: because `ordered`, they will be merged in order without overriding.
 
-#### Declaration {#config-declaration}
+#### Declaration Configs {#config-declaration}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDeclarationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtDeclarationConfigResolverImpl -->
@@ -148,7 +144,7 @@ event = {
 - Root-level `single_alias_right[...]` is expanded first and then participates in subsequent parsing and inspections.
 - To ensure upward tracing in later features, all newly added nodes will have `parentConfig` (parent pointer) injected.
 
-#### System Scopes {#config-system-scope}
+#### System Scope Configs {#config-system-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtSystemScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtSystemScopeConfigResolverImpl -->
@@ -182,31 +178,29 @@ system_scopes = {
 }
 ```
 
-#### Inline Configs {#config-inline}
+#### Inline Config {#config-inline}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtInlineConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtInlineConfigResolverImpl -->
 <!-- @see cwt/cwtools-stellaris-config/config/common/inline_scripts.cwt -->
 
-- **Purpose**: declare reusable "inline logic" usage structures inside configs, currently used for "inline scripts".
-- **Path location**: `inline[{name}]`, where `{name}` is the config name.
+These configs describe the structure of inline usage locations, thereby providing features such as code highlighting, reference resolution, code completion, and code inspection in script files.
+These structures can be used in various places within script files (not limited to definition declarations), but there are also specific rules and limitations.
+Inline logic allows a code snippet to be reused during writing. At runtime, its usage location is replaced with the actual inlined code snippet.
 
-- **Parsing flow (implementation summary)**:
-  - Parse the name from the key `inline[...]` (`CwtInlineConfigResolverImpl`).
-  - Expand into normal properties: call `CwtInlineConfig.inline()` to deep-copy its children via `deepCopyConfigs`, producing `CwtPropertyConfig` that can be consumed by subsequent flows.
+Currently, they are only available for **inline scripts**.
 
-- **Cooperation with other configs**:
-  - After expansion, the result behaves like normal property configs and participates in validation and completion.
-  - If you need to provide context and polymorphic settings for the "inline script path", refer to the extended config: "Inline Script (Extended)".
+**Path location**: `inline[{name}]`, where `{name}` is the config name.
+
+**Cooperation with other configs**:
+- After expansion, the result behaves like normal property configs and participates in validation and completion.
+- If you need to provide context and polymorphic settings for the "inline script path", refer to the extended config: "Inline Script (Extended)".
 
 **Example** (Stellaris):
 
 ```cwt
-### Use inline script
 inline[inline_script] = filepath[common/inline_scripts/,.txt]
 
-### Inline script with parameters
-### Parameters accept strings; wrap by quotes to substitute an entire clause
 inline[inline_script] = {
     ## cardinality = 1..1
     script = filepath[common/inline_scripts/,.txt]
@@ -215,7 +209,32 @@ inline[inline_script] = {
 }
 ```
 
-#### Types and Subtypes {#config-type}
+#### Macro Configs {#config-macro}
+
+<!-- @see icu.windea.pls.config.config.delegated.CwtMacroConfig -->
+<!-- @see icu.windea.pls.config.config.delegated.impl.CwtMacroConfigResolverImpl -->
+<!-- @see cwt/cwtools-vic3-config/config/common/definition_injections.cwt -->
+
+These configs describe format of macro expressions and provide additional metadata for validation, thereby enabling features such as code highlighting, reference resolving, code completion, and code inspection in script files.
+These expressions can be used in various places within script files (not limited to definition declarations), but there are also specific rules and restrictions.
+Different macros serve different purposes and have distinct processing logic during game runtime.
+
+Currently, they are only available for **definition injections**.
+
+**路径定位**：`macro[{name}]`，`{name}` 匹配规则名称。
+
+**示例**（VIC3/EU5）：
+
+```cwt
+macro[definition_injection] = {
+    modes = {
+        # ...
+    }
+    # ...
+}
+```
+
+#### Type Configs and Subtype Configs {#config-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSubtypeConfig -->
@@ -291,7 +310,7 @@ types = {
 - `skip_root_key` is a multi-group setting: if any group matches the sequence of top-level keys in the file, the matcher can skip them and continue to match the definition key.
 - Subtype matching is order-sensitive; place more specific rules earlier.
 
-#### Aliases and Single Aliases {#config-alias}
+#### Alias Configs and Single Alias Configs {#config-alias}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtAliasConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtSingleAliasConfig -->
@@ -361,7 +380,7 @@ some_definition = {
 - Cardinality and option checks happen after expansion; consider the final semantics at the use site rather than the declaration.
 - `subName` is a constrained data expression; you can use templates/enums to increase reuse, but avoid being too broad and causing mismatches.
 
-#### Enums and Complex Enums {#config-enum}
+#### Enum Configs and Complex Enum Configs {#config-enum}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtEnumConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtComplexEnumConfig -->
@@ -428,7 +447,7 @@ enums = {
 - A complex enum without a `name` subsection or without any `enum_name` anchors found in matched files will result in an empty enum.
 - Path fields can be used in combination; `path_strict` enables strict matching; `path_extension` should not include a leading dot (write `txt`).
 
-#### Dynamic Value Types {#config-dynamic-value}
+#### Dynamic Value Type Configs {#config-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDynamicValueTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtDynamicValueTypeConfigResolverImpl -->
@@ -457,7 +476,7 @@ values = {
 }
 ```
 
-#### Links {#config-link}
+#### Link Configs {#config-link}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLinkConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLinkConfigResolverImpl -->
@@ -527,7 +546,7 @@ links = {
 - If the dynamic link argument is a single-quoted literal, treat it as a literal; generally no completion is provided.
 - Prefer the `<type>` shorthand in `data_source` (e.g., `<country>`) over `definition[country]`.
 
-#### Scopes and Scope Groups {#config-scope}
+#### Scope Configs and Scope Group Configs {#config-scope}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtScopeGroupConfig -->
@@ -562,7 +581,7 @@ scope_groups = {
 - Works with "System Scopes" to determine scope stacks and meanings; works with "Links" to constrain input/output scopes for chaining.
 - In extended configs, you can specify `replace_scopes` to map system scopes to concrete scope types under specific contexts.
 
-#### Modifiers and Modifier Categories {#config-modifier}
+#### Modifier Configs and Modifier Category Configs {#config-modifier}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig -->
@@ -630,7 +649,7 @@ modifier_categories = {
 - For modifier names under type configs, use `$` placeholders consistent with type/subtype expressions.
 - `supported_scopes` in categories should use standard scope IDs; parsing will normalize case automatically.
 
-#### Localisation Commands and Promotions {#config-localisation}
+#### Localisation Command Configs and Localisation Promotion Configs {#config-localisation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig -->
@@ -676,7 +695,7 @@ localisation_links = {
 - Promotion names should match localisation link names; otherwise they won't match correctly.
 - When cooperating with "Links (Localisation Links)", static regular links are copied automatically as localisation links; for dynamic behavior, declare localisation links separately.
 
-#### Type Presentation (Localisation / Images) {#config-type-presentation}
+#### Type Presentation Configs {#config-type-presentation}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeLocalisationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtTypeImagesConfig -->
@@ -714,7 +733,7 @@ types = {
 }
 ```
 
-#### Database Object Types {#config-db-type}
+#### Database Object Type Configs {#config-db-type}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtDatabaseObjectTypeConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtDatabaseObjectTypeConfigResolverImpl -->
@@ -738,7 +757,7 @@ database_object_types = {
 }
 ```
 
-#### Location and Row Matching {#config-location-row}
+#### Location Configs and Row Configs {#config-location-row}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocationConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.CwtRowConfig -->
@@ -774,7 +793,7 @@ rows = {
 }
 ```
 
-#### Locales {#config-locale}
+#### Locale Configs {#config-locale}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtLocaleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtLocaleConfigResolverImpl -->
@@ -801,7 +820,7 @@ locales = {
 
 > PLS-extended family of configs to enhance IDE features (quick documentation, inlay hints, completion, etc.).
 
-#### Scripted Variables (Extended) {#config-extended-scripted-variable}
+#### Extended Scripted Variable Configs {#config-extended-scripted-variable}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedScriptedVariableConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedScriptedVariableConfigResolverImpl -->
@@ -846,7 +865,7 @@ scripted_variables = {
 - Name can use template/ANT/regex patterns; avoid overly broad patterns that cause mismatches.
 - This entry only provides hint enhancements; it does not declare or validate the value/type of scripted variables.
 
-#### Definitions (Extended) {#config-extended-definition}
+#### Extended Definition Configs {#config-extended-definition}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDefinitionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDefinitionConfigResolverImpl -->
@@ -904,7 +923,7 @@ definitions = {
 - The name can use template/ANT/regex patterns; avoid overly broad matches that cause false positives.
 - This extension provides documentation/context enhancements only; it does not directly change the declaration structure. Cooperation with the declaration happens at use sites during context building and inspections/documentation.
 
-#### Game Rules (Extended) {#config-extended-game-rule}
+#### Extended Game Rule Configs {#config-extended-game-rule}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedGameRuleConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedGameRuleConfigResolverImpl -->
@@ -954,7 +973,7 @@ game_rules = {
 - If the value is `single_alias_right[...]`, it will be inlined before being used as an override.
 - This extension only affects the source/structure of declaration and the hints; it does not change global priority or override strategies.
 
-#### On Actions (Extended) {#config-extended-on-action}
+#### Extended On Action Configs {#config-extended-on-action}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedOnActionConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedOnActionConfigResolverImpl -->
@@ -1003,7 +1022,7 @@ on_actions = {
 - Name can use template/ANT/regex patterns; avoid overly broad patterns.
 - If scope replacement is needed, combine with general options (e.g., `replace_scopes`), but whether it participates in specific checks depends on the use-site context and feature implementation.
 
-#### Inline Scripts (Extended) {#config-extended-inline-script}
+#### Extended Inline Script Configs {#config-extended-inline-script}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedInlineScriptConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedInlineScriptConfigResolverImpl -->
@@ -1085,7 +1104,7 @@ inline_scripts = {
 - Root-level `single_alias_right[...]` will be inlined before being used as context configs.
 - This extension only provides context/scope information; it does not directly constrain where/How many times the inline script can be called.
 
-#### Parameters (Extended) {#config-extended-parameter}
+#### Extended Parameter Configs {#config-extended-parameter}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedParameterConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedParameterConfigResolverImpl -->
@@ -1192,7 +1211,7 @@ parameters = {
 - When `inherit = yes`, the context is taken from the use site; note it can be empty or vary by position. PLS enables "dynamic context" mode on this path.
 - Root-level `single_alias_right[...]` will be inlined before being used as context configs.
 
-#### Complex Enum Values (Extended) {#config-extended-complex-enum-value}
+#### Extended Complex Enum Value Configs {#config-extended-complex-enum-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedComplexEnumValueConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedComplexEnumValueConfigResolverImpl -->
@@ -1242,7 +1261,7 @@ complex_enum_values = {
 - This extension does not change how values are collected for complex enums; it only provides hints.
 - Name can use template/ANT/regex patterns; avoid overly broad patterns.
 
-#### Dynamic Values (Extended) {#config-extended-dynamic-value}
+#### Extended Dynamic Value Configs {#config-extended-dynamic-value}
 
 <!-- @see icu.windea.pls.config.config.delegated.CwtExtendedDynamicValueConfig -->
 <!-- @see icu.windea.pls.config.config.delegated.impl.CwtExtendedDynamicValueConfigResolverImpl -->
@@ -1300,9 +1319,9 @@ dynamic_values = {
 
 ### Internal Configs {#configs-internal}
 
-> Used internally by PLS to control parsing context or maintain global semantics. Not customizable.
+> These configs are used internally by the plugin and do not support customization (or are not currently supported).
 
-#### Schema {#config-internal-schema}
+#### Schema Config {#config-internal-schema}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtSchemaConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtSchemaConfigResolverImpl -->
@@ -1335,7 +1354,7 @@ some_key = $any              # goes into properties
 **Notes**:
 - Works together with "Config Expressions → Schema Expression"; mainly for editor-side hints and lightweight checking.
 
-#### Folding Settings {#config-internal-folding}
+#### Folding Settings Configs {#config-internal-folding}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl -->
@@ -1380,7 +1399,7 @@ folds = {
 - `key` and `keys` are alternatives; `keys` is for multiple keys. When both exist, the consumer decides (current implementation reads both).
 - Final behavior is controlled by the folding builder, see `ParadoxExpressionFoldingBuilder`.
 
-#### Postfix Template Settings {#config-internal-postfix}
+#### Postfix Template Settings Configs {#config-internal-postfix}
 
 <!-- @see icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig -->
 <!-- @see icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl -->
@@ -1436,15 +1455,14 @@ postfix = {
 
 Config expressions are structured syntax used inside string fields of configs to describe value shapes or matching patterns.
 
-Main families:
-
+Include:
 - Data Expression: parse data types or dynamic fragments.
 - Template Expression: patterns concatenating constants and dynamic fragments for flexible matching.
 - Cardinality Expression: declare occurrence ranges and strict/lenient checks.
 - Location Expression: locate resources like images/localisations.
 - Schema Expression: declare RHS value shapes in config files.
 
-### Data Expression
+### Data Expression {#config-expression-data}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtDataExpression -->
 
@@ -1475,7 +1493,7 @@ scope[country]
 pre_<opinion_modifier>_suf
 ```
 
-### Template Expression
+### Template Expression {#config-expression-template}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
@@ -1504,7 +1522,7 @@ value[gui_element_name]:localisation # value[gui_element_name] + ":" + localisat
 - When constants are adjacent to segments that look like rule names, prefer correct recognition of dynamic rules to avoid treating "symbol + rule name" as a single constant.
 - If whitespace is needed, use a more appropriate matching method (e.g., ANT/regex).
 
-### Cardinality Expression
+### Cardinality Expression {#config-expression-cardinality}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtCardinalityExpression -->
 
@@ -1528,14 +1546,14 @@ Examples:
 ## cardinality = ~1..10
 ```
 
-### Location Expression
+### Location Expression {#config-expression-location}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocationExpression -->
 
 Locate resource sources (images/localisations, etc.).
 If the expression contains `$`, it is treated as a placeholder to be substituted later with dynamic content such as definition names or property values.
 
-#### Image Location Expression
+#### Image Location Expression {#config-expression-location-image}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtImageLocationExpression -->
 
@@ -1561,7 +1579,7 @@ icon|p1,p2
 
 Note: `icon` can be parsed as a file path, a sprite name, or a definition name; for a definition name, parse its most relevant image next.
 
-#### Localisation Location Expression
+#### Localisation Location Expression {#config-expression-localisation}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression -->
 
@@ -1585,7 +1603,7 @@ $_desc|$name|$alt_name # when `$` repeats, the latter wins
 title
 ```
 
-### Schema Expression
+### Schema Expression {#config-expression-schema}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 

@@ -14,7 +14,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 这些表达式可以在脚本文件中的各种地方使用（不限于定义声明中），但是也存在特定的规则和限制。
  * 不同的宏拥有不同的用处与游戏运行时的处理逻辑。
  *
- * 目前仅适用于定义注入（definition injection）。
+ * 目前仅适用于**定义注入（definition injections）**。
  *
  * 路径定位：`macro[{name}]`，`{name}` 匹配规则名称。
  *

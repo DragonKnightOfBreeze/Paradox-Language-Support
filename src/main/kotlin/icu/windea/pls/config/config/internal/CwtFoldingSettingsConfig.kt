@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.impl.CwtFoldingSettingsConfigResolverImpl
 
 /**
- * 作为折叠设置的内部规则，目前尚不支持自定义。
+ * 作为折叠设置的内部规则。目前尚不支持自定义。
  *
  * 用于提供额外的代码折叠。
  *

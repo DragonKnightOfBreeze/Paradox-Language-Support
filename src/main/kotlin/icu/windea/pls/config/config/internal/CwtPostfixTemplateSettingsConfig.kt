@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtFileConfig
 import icu.windea.pls.config.config.internal.impl.CwtPostfixTemplateSettingsConfigResolverImpl
 
 /**
- * 作为后缀模板设置的内部规则，目前尚不支持自定义。
+ * 作为后缀模板设置的内部规则。目前尚不支持自定义。
  *
  * 用于提供额外的后缀补全，
  *
