@@ -1349,7 +1349,7 @@ some_key = $any              # goes into properties
 ```
 
 **注意事项**：
-- 与“规则表达式 → 架构（schema）表达式”协同工作，主要用于编辑器侧的提示与轻量级把关。
+- 与“规则表达式 → 模式（schema）表达式”协同工作，主要用于编辑器侧的提示与轻量级把关。
 
 #### 折叠设置规则 {#config-internal-folding}
 
@@ -1457,7 +1457,7 @@ postfix = {
 - 模板表达式（Template Expression）：由常量与动态片段拼接的模式，用于更灵活的匹配。
 - 基数表达式（Cardinality Expression）：用于声明出现次数范围及严谨/宽松校验。
 - 位置表达式（Location Expression）：用于定位图片、本地化等资源。
-- 架构表达式（Schema Expression）：用于 RHS 的取值形态声明。
+- 模式表达式（Schema Expression）：用于 RHS 的取值形态声明。
 
 ### 数据表达式（Data Expression） {#config-expression-data}
 
@@ -1600,7 +1600,7 @@ $_desc|$name|$alt_name # when `$` repeats, the latter wins
 title
 ```
 
-### 架构表达式（Schema Expression） {#config-expression-schema}
+### 模式表达式（Schema Expression） {#config-expression-schema}
 
 <!-- @see icu.windea.pls.config.configExpression.CwtSchemaExpression -->
 

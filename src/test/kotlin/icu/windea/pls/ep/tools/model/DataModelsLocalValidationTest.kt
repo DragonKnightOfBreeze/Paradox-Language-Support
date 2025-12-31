@@ -127,7 +127,7 @@ class DataModelsLocalValidationTest {
         val mappings = db.sequenceOf(PlaysetsMods).filter { it.playsetId eq active!!.id }.toList()
         println("sqlite -> mappings.size=${mappings.size}")
 
-        // 校验 enabled 标记（V4 架构下通常存在该列，并默认 true）
+        // 校验 enabled 标记（V4 模式下通常存在该列，并默认 true）
         assert(mappings.all { it.enabled })
 
         // 随机抽查一个映射，验证能找到 mod 记录

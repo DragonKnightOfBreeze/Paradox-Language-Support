@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configExpression.impl.CwtSchemaExpressionResolverImpl
 
 /**
- * 架构表达式。
+ * 模式表达式。
  *
  * 用于描述规则文件中的键与值的取值形态，从而为规则文件本身提供代码补全、代码检查等功能。
  * 目前仅用于提供基础的代码补全，且仅在 `cwt/core/schema.cwt` 中有用到。
