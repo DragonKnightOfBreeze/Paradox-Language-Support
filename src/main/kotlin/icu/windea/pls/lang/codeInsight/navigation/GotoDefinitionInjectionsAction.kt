@@ -11,6 +11,7 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
@@ -42,7 +43,7 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         if (!element.isDefinitionTypeKeyOrName()) return
         val definition = element.findParentDefinition() ?: return
         val definitionInfo = definition.definitionInfo ?: return
-        if (definitionInfo.name.isEmpty()) return // 排除匿名定义
+        if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
         presentation.isEnabled = true
     }
 

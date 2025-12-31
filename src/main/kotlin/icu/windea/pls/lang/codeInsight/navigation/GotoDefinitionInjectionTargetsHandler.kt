@@ -12,7 +12,10 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.util.*
@@ -23,17 +26,19 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
-        val gameType = selectGameType(file) ?: return null
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return null
         if (info.target.isEmpty()) return null // 排除目标为空的情况
+        if (info.type.isEmpty()) return null // 排除目标定义的类型为空的情况
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjectionTargets.search", info.target)) {
             // need read actions here if necessary
             readAction {
-                // TODO 2.1.0
+                val selector = selector(project, element).definition().contextSensitive()
+                val resolved = ParadoxDefinitionSearch.search(info.target, info.type, selector).findAll()
+                targets.addAll(resolved)
             }
         }
         return GotoData(element, targets.distinct().toTypedArray(), emptyList())

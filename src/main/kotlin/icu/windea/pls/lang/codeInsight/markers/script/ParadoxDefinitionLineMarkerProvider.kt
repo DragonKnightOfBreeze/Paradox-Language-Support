@@ -39,14 +39,11 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         val definitionInfo = element.definitionInfo ?: return
         val icon = PlsIcons.Gutter.Definition
         val prefix = PlsStringConstants.definitionPrefix
-        val name = definitionInfo.name
-        val type = definitionInfo.type
-        val typeText = definitionInfo.typesText
-        val tooltip = "$prefix <b>${name.escapeXml().or.anonymous()}</b>: $typeText"
+        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml().or.anonymous()}</b>: ${definitionInfo.typesText}"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()
-            val targets0 = ParadoxDefinitionSearch.search(name, type, selector).findAll()
+            val targets0 = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
             targets0.optimized()
         }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }

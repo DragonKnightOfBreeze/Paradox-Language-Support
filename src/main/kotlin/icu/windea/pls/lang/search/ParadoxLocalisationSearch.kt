@@ -17,7 +17,8 @@ import icu.windea.pls.model.ParadoxLocalisationType
 class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProperty, ParadoxLocalisationSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 本地化的名字。
-     * @property type 本地化的类型（所有/普通/同步）
+     * @property type 本地化的类型（所有/普通/同步）。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
         val name: String?,

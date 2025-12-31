@@ -200,7 +200,7 @@ object ParadoxScriptStubManager {
         val elementPath = ParadoxElementPath.resolve(listOf(target))
         val typeKey = target
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, null) ?: return null
-        if (typeConfig.nameField != null || typeConfig.skipRootKey != null) return null // 排除不期望匹配的类型规则
+        if (!ParadoxDefinitionInjectionManager.canApply(typeConfig)) return null // 排除不期望匹配的类型规则
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
         return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, definitionType)

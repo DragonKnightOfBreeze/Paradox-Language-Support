@@ -14,7 +14,11 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definitionInjection
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -29,17 +33,18 @@ class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMark
     override fun getGroup() = PlsBundle.message("script.gutterIcon.definitionInjections.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 definition
+        // 何时显示装订线图标：element 是 definition，且存在对应的 definitionInjection
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
-        if (definitionInfo.name.isEmpty()) return // 排除匿名定义
+        if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
         val icon = PlsIcons.Gutter.DefinitionInjections
         val prefix = PlsStringConstants.definitionInjectionPrefix
-        val name = definitionInfo.name
-        val tooltip = "$prefix <b>${name.escapeXml()}</b>" // 目前不包含提示信息
-        val targets0 = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
-        // TODO 2.1.0
+        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
+        val targetKey = definitionInfo.type + "@" + definitionInfo.name
+        val project = element.project
+        val selector = selector(project, element).definitionInjection().contextSensitive()
+        val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
         if (targets0.isEmpty()) return
         val targets = targets0.optimized()
         ProgressManager.checkCanceled()

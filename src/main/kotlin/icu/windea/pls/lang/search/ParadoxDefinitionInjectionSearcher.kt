@@ -29,25 +29,25 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxScriptProper
         if (SearchScope.isEmptyScope(scope)) return
 
         val mode = queryParameters.mode
-        val target = queryParameters.target
-        processQUeryFOrDefinitionInjections(mode, target, project, scope) { element -> consumer.process(element) }
+        val targetKey = queryParameters.targetKey
+        processQUeryFOrDefinitionInjections(mode, targetKey, project, scope) { element -> consumer.process(element) }
     }
 
     private fun processQUeryFOrDefinitionInjections(
         mode: String?,
-        target: String?,
+        targetKey: String?,
         project: Project,
         scope: GlobalSearchScope,
         processor: Processor<ParadoxScriptProperty>
     ): Boolean {
         val indexKey = PlsIndexKeys.DefinitionInjectionTarget
-        if (target == null) {
+        if (targetKey == null) {
             PlsIndexService.processElementsByKeys(indexKey, project, scope) p@{ _, element ->
                 if (!matchesMode(element, mode)) return@p true
                 processor.process(element)
             }
         } else {
-            PlsIndexService.processElements(indexKey, target, project, scope) p@{ element ->
+            PlsIndexService.processElements(indexKey, targetKey, project, scope) p@{ element ->
                 if (!matchesMode(element, mode)) return@p true
                 processor.process(element)
             }

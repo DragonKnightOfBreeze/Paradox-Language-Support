@@ -28,7 +28,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxScriptProperty
         val scope = queryParameters.scope.withFileTypes(ParadoxScriptFileType)
         if (SearchScope.isEmptyScope(scope)) return
 
-        val inlineScriptExpression = queryParameters.inlineScriptExpression
+        val inlineScriptExpression = queryParameters.expression
         processQueryForInlineScriptUsages(inlineScriptExpression, project, scope) { element -> consumer.process(element) }
     }
 

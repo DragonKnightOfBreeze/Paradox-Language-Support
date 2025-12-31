@@ -12,6 +12,9 @@ import icu.windea.pls.lang.search.scope.withFileTypes
 import icu.windea.pls.model.index.ParadoxParameterIndexInfo
 import icu.windea.pls.script.ParadoxScriptFileType
 
+/**
+ * 参数的查询器。
+ */
 class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, ParadoxParameterSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxParameterSearch.SearchParameters, consumer: Processor<in ParadoxParameterIndexInfo>) {
         ProgressManager.checkCanceled()

@@ -27,6 +27,8 @@ fun ChainedParadoxSelectorHolder.localisation() = ChainedParadoxSelector<Paradox
 
 fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxScriptProperty>(project, context)
 
+fun ChainedParadoxSelectorHolder.definitionInjection() = ChainedParadoxSelector<ParadoxScriptProperty>(project, context)
+
 fun ChainedParadoxSelectorHolder.file() = ChainedParadoxSelector<VirtualFile>(project, context)
 
 fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>(project, context)

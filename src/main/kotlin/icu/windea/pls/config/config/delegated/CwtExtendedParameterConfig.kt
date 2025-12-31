@@ -37,7 +37,7 @@ import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
  * ```
  *
  * @property name 名称。
- * @property contextKey 上下文键（如 `scripted_trigger@X`）。
+ * @property contextKey 上下文键（如 `scripted_trigger@x`、`inline_script@x`）。
  * @property contextConfigsType 上下文规则的聚合类型（`single` 或 `multiple`）。
  * @property inherit 是否继承使用处的规则上下文与作用域上下文。
  *

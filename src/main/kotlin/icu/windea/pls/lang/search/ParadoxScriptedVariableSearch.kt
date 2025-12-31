@@ -14,6 +14,7 @@ class ParadoxScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptScript
     /**
      * @property name 封装变量的名字（不以 `@` 开始）。
      * @property type 封装变量的类型（所有/本地/全局）。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
         val name: String?,

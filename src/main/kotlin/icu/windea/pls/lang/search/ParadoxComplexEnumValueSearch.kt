@@ -13,6 +13,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
     /**
      * @property name 名字。
      * @property enumName 枚举的名字。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
         val name: String?,

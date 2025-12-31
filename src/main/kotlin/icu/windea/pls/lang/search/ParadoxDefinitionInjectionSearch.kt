@@ -12,12 +12,12 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxDefinitionInjectionSearch.SearchParameters>(EP_NAME) {
     /**
      * @property mode 注入模式。
-     * @property target 目标定义的名字。
+     * @property targetKey 目标键，包括目标定义的名字和类型信息（如 `type@name`）。
      * @property selector 查询选择器。
      */
     class SearchParameters(
         val mode: String?,
-        val target: String?,
+        val targetKey: String?,
         override val selector: ChainedParadoxSelector<ParadoxScriptProperty>,
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
@@ -33,10 +33,10 @@ class ParadoxDefinitionInjectionSearch : ExtensibleQueryFactory<ParadoxScriptPro
         @JvmStatic
         fun search(
             mode: String?,
-            target: String?,
+            targetKey: String?,
             selector: ChainedParadoxSelector<ParadoxScriptProperty>,
         ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(mode, target, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(mode, targetKey, selector))
         }
     }
 }

@@ -6,7 +6,15 @@ import com.intellij.util.QueryExecutor
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.model.index.ParadoxLocalisationParameterIndexInfo
 
+/**
+ * 本地化参数的查询。
+ */
 class ParadoxLocalisationParameterSearch : ExtensibleQueryFactory<ParadoxLocalisationParameterIndexInfo, ParadoxLocalisationParameterSearch.SearchParameters>(EP_NAME) {
+    /**
+     * @property name 参数的名字。
+     * @property localisationName 所属的本地化的名字。
+     * @property selector 查询选择器。
+     */
     class SearchParameters(
         val name: String?,
         val localisationName: String,

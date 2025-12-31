@@ -16,6 +16,11 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
 import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definitionInjection
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
@@ -33,12 +38,15 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
         if (!element.isDefinitionTypeKeyOrName()) return null
         val definition = element.findParentDefinition() ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        if (definitionInfo.name.isEmpty()) return null // 排除匿名定义
+        if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return null // 排除不期望匹配的定义
+        val targetKey = definitionInfo.type + "@" + definitionInfo.name
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         runWithModalProgressBlocking(project, PlsBundle.message("script.goto.definitionInjections.search", definitionInfo.name)) {
             // need read actions here if necessary
             readAction {
-                // TODO 2.1.0
+                val selector = selector(project, definition).definitionInjection().contextSensitive()
+                val resolved = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+                targets.addAll(resolved)
             }
         }
         return GotoData(definition, targets.distinct().toTypedArray(), emptyList())

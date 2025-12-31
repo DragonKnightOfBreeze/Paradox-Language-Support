@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
@@ -17,6 +18,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -124,7 +126,7 @@ object ParadoxDefinitionInjectionManager {
         val elementPath = ParadoxElementPath.resolve(listOf(target))
         val typeKey = target
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, null) ?: return null
-        if (typeConfig.nameField != null || typeConfig.skipRootKey != null) return null // 排除不期望匹配的类型规则
+        if (!canApply(typeConfig)) return null // 排除不期望匹配的类型规则
         val type = typeConfig.name
         return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig, gameType)
     }
@@ -139,5 +141,18 @@ object ParadoxDefinitionInjectionManager {
 
     fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.DefinitionInjection? {
         return element.greenStub?.castOrNull()
+    }
+
+    fun canApply(definitionInfo: ParadoxDefinitionInfo): Boolean {
+        if (definitionInfo.name.isEmpty()) return false
+        if (definitionInfo.type.isEmpty()) return false
+        val typeConfig = definitionInfo.typeConfig
+        if (!canApply(typeConfig)) return false
+        return true
+    }
+
+    fun canApply(typeConfig: CwtTypeConfig): Boolean {
+        if (typeConfig.nameField != null || typeConfig.skipRootKey != null) return false // 排除不期望匹配的类型规则
+        return true
     }
 }

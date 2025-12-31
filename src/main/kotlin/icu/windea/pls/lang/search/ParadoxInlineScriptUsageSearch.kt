@@ -11,10 +11,11 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
  */
 class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptProperty, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**
-     * @property inlineScriptExpression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     * @property expression 内联脚本表达式。用于定位内联脚本文件，例如，`test` 对应路径为 `common/inline_scripts/test.txt` 的内联脚本文件。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
-        val inlineScriptExpression: String?,
+        val expression: String?,
         override val selector: ChainedParadoxSelector<ParadoxScriptProperty>
     ) : ParadoxSearchParameters<ParadoxScriptProperty>
 
@@ -29,10 +30,10 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxScriptPrope
          */
         @JvmStatic
         fun search(
-            inlineScriptExpression: String?,
+            expression: String?,
             selector: ChainedParadoxSelector<ParadoxScriptProperty>
         ): ParadoxQuery<ParadoxScriptProperty, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(inlineScriptExpression, selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(expression, selector))
         }
     }
 }

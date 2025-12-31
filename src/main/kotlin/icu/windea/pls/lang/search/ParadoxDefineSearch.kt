@@ -15,6 +15,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, Parad
     /**
      * @property namespace 命名空间。
      * @property variable 变量名。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
         val namespace: String?,

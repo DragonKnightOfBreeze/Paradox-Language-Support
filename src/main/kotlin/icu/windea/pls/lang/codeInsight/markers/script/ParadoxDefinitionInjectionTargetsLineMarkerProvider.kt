@@ -3,7 +3,6 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -13,8 +12,11 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
@@ -34,14 +36,16 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         val locationElement = element.propertyKey.idElement ?: return
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isEmpty()) return // 排除目标为空的情况
+        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
         val icon = PlsIcons.Gutter.DefinitionInjectionTargets
         val prefix = PlsStringConstants.definitionInjectionTargetPrefix
-        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>"
-        val targets0 = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
-        // TODO 2.1.0
-        if (targets0.isEmpty()) return
-        val targets = targets0.optimized()
-        ProgressManager.checkCanceled()
+        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
+        val targets by lazy {
+            val project = element.project
+            val selector = selector(project, element).definition().contextSensitive()
+            val targets0 = ParadoxDefinitionSearch.search(info.target, info.type, selector).findAll()
+            targets0.optimized()
+        }
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.definitionInjectionTargets.title"))

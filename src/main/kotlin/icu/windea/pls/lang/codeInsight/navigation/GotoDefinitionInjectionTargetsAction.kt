@@ -8,7 +8,6 @@ import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -32,11 +31,11 @@ class GotoDefinitionInjectionTargetsAction : BaseCodeInsightAction() {
         if (file !is ParadoxScriptFile) return
         val fileInfo = file.fileInfo ?: return
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
-        val gameType = selectGameType(file) ?: return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
-        if(info.target.isEmpty()) return // 排除目标为空的情况
+        if (info.target.isEmpty()) return // 排除目标为空的情况
+        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
         presentation.isEnabled = true
     }
 

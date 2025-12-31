@@ -13,6 +13,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
     /**
      * @property name 名字。
      * @property dynamicValueTypes 值集的名字。
+     * @property selector 查询选择器。
      */
     class SearchParameters(
         val name: String?,
