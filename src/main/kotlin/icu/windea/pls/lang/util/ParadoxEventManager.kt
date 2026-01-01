@@ -211,7 +211,7 @@ object ParadoxEventManager {
      * 得到作为调用者的事件列表。
      */
     fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-        // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
+        // NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找用法
         // NOTE 为了优化性能，这里可能需要新增并应用索引
 
         val name = definition.definitionInfo?.name

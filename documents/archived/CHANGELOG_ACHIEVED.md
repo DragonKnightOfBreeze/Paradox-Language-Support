@@ -286,7 +286,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     - 引用解析 - 如果可以直接匹配子句或子句中的属性则使用匹配的规则进行引用解析，否则默认使用首个子句规则
     - 代码补全 - 匹配任意则仅补全匹配的子句规则中的内容，空子句或者都不匹配则使用合并的规则，使用子句模板时如有必要当前的待补全项列表应当可以切换
   - [X] 判断定义的类型和子类型时，支持选项`## starts_with = likes_`（不忽略大小写）
-  - [X] 可以从CWT属性/字符串查找使用（从CWT规则查找脚本文件中对应的属性和值）
+  - [X] 可以从CWT属性/字符串查找用法（从CWT规则查找脚本文件中对应的属性和值）
 - 新增功能
   - [X] 在编辑器右键菜单和工具菜单中新增一些额外的操作选项，包括：打开Steam和游戏的相关目录
   - [X] 也可以通过Ctrl+鼠标左键点击子句的左花括号（`{ ... }`中的`{`）导航到对应的CWT规则，不要求精确对应
@@ -458,9 +458,9 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - 功能优化
   - [X] 可以通过导航到实现功能（`Navigate > Implementation(s)`）来从某一封装变量/定义/本地化/复杂枚举值跳转到所有同名的重载或者被重载的声明处
     - 注意对于非顶级属性名的定义名（如`some_event_id`）和复杂枚举值（如`policy_flag`
-      ），从声明处出发，需要间接通过意向（`Intentions`）来查找使用/导航到实现/导航到类型声明
+      ），从声明处出发，需要间接通过意向（`Intentions`）来查找用法/导航到实现/导航到类型声明
   - [X] 
-    查找使用时，即使声明处与引用处的名字文本不同，也能正确进行，同时鼠标放到声明或使用处时也能正确显示引用高亮（例如：`GFX_text_unity` > `unity`）
+    查找用法时，即使声明处与引用处的名字文本不同，也能正确进行，同时鼠标放到声明或使用处时也能正确显示引用高亮（例如：`GFX_text_unity` > `unity`）
   - [X] 优化如何提供类型信息（`View > Type Info`）和快速类型声明（`View > Quick Type Definition`）
 - 功能变更
   - [X] ~~Stellaris格式化引用（`format.xxx: "<some_parts> ..."`中的`<some_parts>`）~~ （移除支持，stellaris 3.6已经不再使用）
@@ -540,7 +540,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - BUG修复
   - [X] 修复无法从项目文件中的声明导航到库中的引用的问题（考虑使用`UseScopeEnlarger`或`ResolveScopeManager`）
   - [X] 可以从定义名并非rootKey的定义（如event）的声明处导航到所有使用处（鼠标放到定义的rootKey上，然后Ctrl+鼠标左键）
-  - [X] 从任意同名同类型的封装变量/定义/本地化/文件路径出发，可以通过查找使用导航到所有那个名字的使用
+  - [X] 从任意同名同类型的封装变量/定义/本地化/文件路径出发，可以通过查找用法导航到所有那个名字的使用
   - [X] 兼容更复杂的表达式的情况，如：`root.owner.event_target:target@root.owner`
   - [X] 兼容`value_field`或者`int_value_field`需要被识别为变量的情况（`root.owner.var_name`
     ）（通过更新CWT规则文件`links.cwt`）
@@ -571,8 +571,8 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
   - [X] 实现内嵌提示：预定义修正的本地化后的名字（`mod_$`）
   - [X] 实现动作：导航到（对应的）CWT规则（对于定义成员，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
-  - [X] 在查找使用中，区分参数和值集值值的读/写使用
-  - [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
+  - [X] 在查找用法中，区分参数和值集值值的读/写使用
+  - [X] 在查找用法中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
   - [X] 可设置要忽略的本地化文件的名字
   - [X] 为图标提供提示（tooltip），例如，鼠标悬浮到结构视图（Structure）中的节点图标上即可看到
   - [X] 可以提示本地化颜色的ID（由于颜色ID只有一个字符，当光标在本地化文本中且前一个字符是`"§"`
@@ -582,7 +582,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [X] 支持`complex_enum`，以及相关功能：匹配、代码提示
   - [X] 支持高亮`definitionName` `complexEnumValueName`（对应的PSI元素可能本身就对应着特定的CWT规则，需要同时高亮出来）
   - [X] 为`complexEnumValue`的引用（而非声明）提供特殊文档
-  - [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找使用、导航到类型声明等功能 -
+  - [X] 以某种方式另外实现`definitionName` `complexEnumValueName`的文档、查找用法、导航到类型声明等功能 -
     通过意向（intention）
   - [X] 为预定义的`modifier`提供相关本地化支持（`mod_$` `mod_$_desc`等，需要确定具体规则是什么） *
 
@@ -654,7 +654,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   - [X] 
     修复：[Cyan color support in localisation #4](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/4)
   - [X] 修复：[Bugs in translation #6](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/6)
-  - [X] 修复：对声明的查找使用的结果不完整（定义，本地化，参数等）
+  - [X] 修复：对声明的查找用法的结果不完整（定义，本地化，参数等）
   - [X] 尝试修复：访问缓存（CachedValue）时导致的PsiInvalidElementAccessException（限制太多，暂时避免使用）
 - 代码优化
   - [X] 提供方法以及检查代码：当需要获取定义或代码块的属性/值的时候，可以获取参数表达式中的属性/值
@@ -869,7 +869,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 - [X] 支持提示block中的value
 - [X] 仅当有必要进行提示时提示
 - [X] 基于cwt规则文件的key和value的代码提示的支持
-- [X] 基于cwt规则文件的key和value的引用的支持（提供查找使用，定位定义，颜色高亮等功能）
+- [X] 基于cwt规则文件的key和value的引用的支持（提供查找用法，定位定义，颜色高亮等功能）
 - [X] 支持cwt规则文件中的enum的引用（提供查找是引用，定位定义，颜色高亮等功能）
 - [X] 进行匹配时支持aliasName和aliasMatchLeft
 - [X] 进行代码提示时支持aliasName

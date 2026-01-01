@@ -149,7 +149,7 @@
 - [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 - [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 - [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
-- [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
+- [X] 修复：本地化命令中的动态值无法查找用法，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
 - [X] 修复：修复关于本地化的语言环境的一些问题 / FIX: Fix some problems about localisation locales
 - [X] 修复：修复某些场合下可能无法提示动态值的问题 / FIX: Fix a problem that dynamic values may not be completed in some cases
 - [X] 优化：`icon[path]`现在优先匹配直接位于`path`下的图标 / OP: `icon[path]` now prefer to match icons directly under `path`
@@ -765,7 +765,7 @@
 - [X] 更新IDEA版本到2023.2
 - [X] 匹配规则时如果发生索引异常，防止IDE报错
 - [X] 修复DDS图片无法正确渲染的问题
-- [X] 修复更新到IDEA 2023.2后，按住Ctrl并点击参数（以及其他类似目标）后，无法查找使用的问题
+- [X] 修复更新到IDEA 2023.2后，按住Ctrl并点击参数（以及其他类似目标）后，无法查找用法的问题
 - [X] 修复更新到IDEA 2023.2后，无法打开事件树和科技树图表的问题
 - [X] 修复 #47 - Parameters with defaults passed to script values cause highlight errors
 - [X] 优化：检查定义的相关本地化和图片是否缺失时，也检查由其生成的修正的相关本地化和图片是否缺失（可以配置并且默认不启用）

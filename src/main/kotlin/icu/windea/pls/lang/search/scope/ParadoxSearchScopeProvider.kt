@@ -15,7 +15,7 @@ import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.ParadoxRootInfo
 
 /**
- * 在查找使用以及其他一些地方提供自定义的额外的查询作用域。
+ * 在查找用法以及其他一些地方提供自定义的额外的查询作用域。
  */
 class ParadoxSearchScopeProvider : SearchScopeProvider {
     override fun getDisplayName(): String {
