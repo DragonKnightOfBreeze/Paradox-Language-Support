@@ -33,6 +33,7 @@ import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -47,6 +48,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isExpression
+import icu.windea.pls.script.psi.property
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
     override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
@@ -60,20 +62,30 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val result = mutableSetOf<CwtConfig<*>>()
 
+        // 尝试解析为定义注入目标
+        run {
+            if (element !is ParadoxScriptPropertyKey) return@run
+            val property = element.property ?: return@run
+            val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(property) ?: return@run
+            val modeConfig = definitionInjectionInfo.modeConfig
+            result += modeConfig
+            return result // 中断解析
+        }
+
         // 尝试解析为复杂枚举值声明
-        run r@{
-            if (element !is ParadoxScriptStringExpressionElement) return@r
-            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@r
-            val complexEnumConfig = configGroup.complexEnums[complexEnumValueInfo.enumName] ?: return@r
+        run {
+            if (element !is ParadoxScriptStringExpressionElement) return@run
+            val complexEnumValueInfo = ParadoxComplexEnumValueManager.getInfo(element) ?: return@run
+            val complexEnumConfig = configGroup.complexEnums[complexEnumValueInfo.enumName] ?: return@run
             result += complexEnumConfig
         }
 
         // 基于所有匹配的规则
-        run r@{
+        run {
             val orDefault = element is ParadoxScriptPropertyKey
             val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.AcceptDefinition
             val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
-            if (configs.isEmpty()) return@r
+            if (configs.isEmpty()) return@run
             for (config in configs) {
                 result += config
                 when {
@@ -162,22 +174,22 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
 
-        run r0@{
-            val element = ParadoxPsiFinder.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@r0
+        run {
+            val element = ParadoxPsiFinder.findScriptedVariable(file, offset) { BY_NAME or BY_REFERENCE } ?: return@run
             val name = element.name
-            if (name.isNullOrEmpty()) return@r0
-            if (name.isParameterized()) return@r0
+            if (name.isNullOrEmpty()) return@run
+            if (name.isParameterized()) return@run
             val config = configGroup.extendedScriptedVariables.findByPattern(name, element, configGroup)
             if (config != null) result += config
         }
 
-        run r0@{
-            val element = ParadoxPsiFinder.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@r0
+        run {
+            val element = ParadoxPsiFinder.findDefinition(file, offset) { BY_NAME or BY_TYPE_KEY or BY_REFERENCE } ?: return@run
             val definition = element
-            val definitionInfo = definition.definitionInfo ?: return@r0
+            val definitionInfo = definition.definitionInfo ?: return@run
             val definitionName = definitionInfo.name
-            if (definitionName.isEmpty()) return@r0
-            if (definitionName.isParameterized()) return@r0
+            if (definitionName.isEmpty()) return@run
+            if (definitionName.isParameterized()) return@run
             run r1@{
                 val extendedConfigs = configGroup.extendedDefinitions.findByPattern(definitionName, definition, configGroup).orEmpty()
                 val matchedConfigs = extendedConfigs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
@@ -195,18 +207,18 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             }
         }
 
-        run r0@{
+        run {
             val element = file.findElementAt(offset) {
                 it.parents(false).firstNotNullOfOrNull { p -> ParadoxParameterManager.getParameterElement(p) }
-            } ?: return@r0
+            } ?: return@run
             val extendedConfigs = configGroup.extendedParameters.findByPattern(element.name, element, configGroup).orEmpty()
                 .filterTo(result) { it.contextKey.matchesByPattern(element.contextKey, element, configGroup) }
             result += extendedConfigs
         }
 
-        run r0@{
-            val element = ParadoxPsiFinder.findScriptExpression(file, offset) ?: return@r0
-            if (element !is ParadoxScriptStringExpressionElement) return@r0
+        run {
+            val element = ParadoxPsiFinder.findScriptExpression(file, offset) ?: return@run
+            if (element !is ParadoxScriptStringExpressionElement) return@run
             val name = element.name
 
             for (reference in element.references) {
