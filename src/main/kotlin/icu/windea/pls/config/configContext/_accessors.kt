@@ -8,17 +8,19 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.paths.ParadoxElementPath
 
 // region CwtConfigContext Accessors
 
 var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKey(CwtConfigContext.Keys)
 var CwtConfigContext.elementPathFromRoot: ParadoxElementPath? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptExpression: String? by createKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKey(CwtConfigContext.Keys)
 var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKey(CwtConfigContext.Keys)
-var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? by createKey(CwtConfigContext.Keys)
 
 // endregion
 

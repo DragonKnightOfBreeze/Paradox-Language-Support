@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement
 /**
  * 提供对本地化表达式的支持。
  *
- * 用于实现代码高亮、引用解析、代码补全等功能。
+ * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
  * @see ParadoxLocalisationExpressionElement
  */

@@ -16,7 +16,7 @@ import icu.windea.pls.lang.annotations.WithGameTypeEP
 /**
  * 提供对CSV表达式（列）的支持。
  *
- * 用于实现代码高亮、引用解析、代码补全等功能。
+ * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
  * @see ParadoxCsvExpressionElement
  */

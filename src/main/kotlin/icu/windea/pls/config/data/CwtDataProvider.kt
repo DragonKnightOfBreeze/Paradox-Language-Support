@@ -39,7 +39,7 @@ import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 
 /**
- * 用于提供规则数据。
+ * 提供规则数据。
  *
  * @see CwtConfigGroup
  */

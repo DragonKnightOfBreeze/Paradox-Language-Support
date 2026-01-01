@@ -6,7 +6,7 @@ import icu.windea.pls.lang.hierarchy.call.ParadoxCalleeHierarchyTreeStructure
 import icu.windea.pls.script.psi.ParadoxScriptMember
 
 /**
- * 用于提供对脚本片段的内联逻辑的支持。
+ * 提供对脚本片段的内联逻辑的支持。
  *
  * 嵌套内联是允许的，但是需要在实现中妥善处理。
  *

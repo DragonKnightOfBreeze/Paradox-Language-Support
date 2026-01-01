@@ -9,7 +9,9 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.lang.annotations.WithGameTypeEP
 
 /**
- * 用于提供声明规则的上下文。
+ * 提供声明规则的上下文。
+ *
+ * 通过声明规则的上下文（[CwtDeclarationConfigContext]）可以得到最终使用的用于验证定义声明的规则。
  *
  * @see CwtDeclarationConfig
  * @see CwtDeclarationConfigContext

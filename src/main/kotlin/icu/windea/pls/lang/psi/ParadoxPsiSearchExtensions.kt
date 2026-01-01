@@ -7,10 +7,13 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.parents
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
+import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.resolve.expression.ParadoxDefinitionTypeExpression
 import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -21,6 +24,7 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptMemberContainer
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
@@ -69,7 +73,7 @@ fun PsiElement.findProperty(
 }
 
 /**
- * 得到符合指定条件的属性。可能为null，可能是定义，可能是脚本文件。
+ * 得到符合指定条件的属性。可能为 `null`，可能是定义，可能是脚本文件。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
@@ -138,22 +142,27 @@ fun <T : ParadoxScriptMember> ParadoxScriptMember.findByPath(
 }
 
 /**
- * 向上得到第一个定义。
- * 可能为null，可能为自身。
+ * 向上得到第一个定义。可能为 `null`，可能为自身。
  */
 fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
-    var current: PsiElement = this
-    while (current !is PsiDirectory) {
-        if (current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
-        current = current.parent ?: break
-        ProgressManager.checkCanceled()
-    }
-    return null
+    return parents(withSelf = true)
+        .takeWhile { it !is PsiDirectory }
+        .findIsInstance<ParadoxScriptDefinitionElement> { it.definitionInfo != null }
 }
 
 /**
- * 向上得到第一个属性。可能为null，可能是定义，可能是脚本文件。
+ * 向上得到第一个定义注入。可能为 `null`，可能为自身。
+ */
+fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
+    if (language !is ParadoxScriptLanguage) return null
+    return parents(withSelf = true)
+        .takeWhile { it !is ParadoxScriptRootBlock }
+        .findIsInstance<ParadoxScriptProperty> { it.definitionInjectionInfo != null }
+}
+
+/**
+ * 向上得到第一个属性。可能为 `null`，可能是定义，可能是脚本文件。
  * @param propertyName 要查找到的属性的名字。如果为null，则不指定。如果得到的是脚本文件，则忽略。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
@@ -181,7 +190,7 @@ fun PsiElement.findParentProperty(
 }
 
 /**
- * 向上得到第一个符合指定条件的属性。可能为null，可能是定义，可能是脚本文件。
+ * 向上得到第一个符合指定条件的属性。可能为 `null`，可能是定义，可能是脚本文件。
  * @param fromParentBlock 是否先向上得到第一个子句，再继续进行查找。
  */
 fun PsiElement.findParentProperty(

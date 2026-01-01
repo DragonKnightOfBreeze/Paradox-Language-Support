@@ -11,7 +11,7 @@ import icu.windea.pls.images.editor.ImageFileEditorImpl
 // org.intellij.images.editor.impl.ImageFileEditorProvider
 
 /**
- * 用于提供TGA图片的编辑器页面，如同普通图片一样。如果要编辑图片，需要使用外部编辑器。
+ * 提供 TGA 图片的编辑器页面，如同普通图片一样。如果要编辑图片，需要使用外部编辑器。
  */
 class TgaFileEditorProvider : FileEditorProvider, DumbAware {
     override fun accept(project: Project, file: VirtualFile): Boolean {

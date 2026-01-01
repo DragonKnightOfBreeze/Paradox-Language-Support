@@ -1,10 +1,12 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
@@ -18,6 +20,7 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatcher
+import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxGameType
@@ -136,13 +139,13 @@ object ParadoxDefinitionInjectionManager {
 
     fun getModeFromExpression(expression: String): String? {
         val index = expression.indexOf(':')
-        if(index == -1) return null
+        if (index == -1) return null
         return expression.substring(0, index)
     }
 
     fun getTargetFromExpression(expression: String): String? {
         val index = expression.indexOf(':')
-        if(index == -1) return null
+        if (index == -1) return null
         return expression.substring(index + 1)
     }
 
@@ -161,5 +164,9 @@ object ParadoxDefinitionInjectionManager {
         if (typeConfig.nameField != null) return false
         if (typeConfig.skipRootKey.isNotEmpty()) return false
         return true
+    }
+
+    fun getDeclaration(element: PsiElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): CwtPropertyConfig? {
+        return ParadoxDefinitionInjectionService.resolveDeclaration(element, definitionInjectionInfo)
     }
 }

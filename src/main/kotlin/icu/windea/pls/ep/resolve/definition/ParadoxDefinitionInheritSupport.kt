@@ -11,7 +11,7 @@ import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
- * 用于提供对定义的继承逻辑的支持。
+ * 提供对定义的继承逻辑的支持。
  *
  * 这个扩展点目前主要用于以下功能：
  * - 快速文档（[ParadoxDocumentationTarget]）。

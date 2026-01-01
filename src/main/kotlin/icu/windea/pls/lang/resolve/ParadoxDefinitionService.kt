@@ -79,9 +79,10 @@ object ParadoxDefinitionService {
     }
 
     fun resolveDeclaration(definitionInfo: ParadoxDefinitionInfo, matchOptions: Int = ParadoxMatchOptions.Default): CwtPropertyConfig? {
-        val declarationConfig = definitionInfo.configGroup.declarations.get(definitionInfo.type) ?: return null
+        val configGroup = definitionInfo.configGroup
+        val declarationConfig = configGroup.declarations.get(definitionInfo.type) ?: return null
         val subtypes = resolveSubtypeConfigs(definitionInfo, matchOptions).map { it.name }.optimized() // optimized to optimize memory
-        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, definitionInfo.configGroup)
+        val declarationConfigContext = CwtConfigService.getDeclarationConfigContext(definitionInfo.element, definitionInfo.name, definitionInfo.type, subtypes, configGroup)
         return declarationConfigContext?.getConfig(declarationConfig)
     }
 

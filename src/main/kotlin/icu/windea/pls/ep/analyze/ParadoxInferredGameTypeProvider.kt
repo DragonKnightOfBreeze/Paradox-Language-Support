@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
 /**
- * 用于提供推断的游戏类型。
+ * 提供推断的游戏类型。
  *
  * @see ParadoxGameType
  */

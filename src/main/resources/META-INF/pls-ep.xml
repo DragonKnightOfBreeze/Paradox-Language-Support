@@ -104,14 +104,16 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtColumnRelatedConfigProvider"/>
 
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider"/>
+    <configContextProvider id="base" implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>
+    <configContextProvider id="definition" implementation="icu.windea.pls.ep.configContext.CwtDefinitionConfigContextProvider" order="last, before base"/>
+    <configContextProvider id="parameterValue" implementation="icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider"/>
+    <configContextProvider id="inlineScriptUsage" implementation="icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider"/>
+    <configContextProvider id="inlineScript" implementation="icu.windea.pls.ep.configContext.CwtInlineScriptConfigContextProvider"/>
+    <configContextProvider id="definitionInjection" implementation="icu.windea.pls.ep.configContext.CwtDefinitionInjectionConfigContextProvider"/>
 
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseDeclarationConfigContextProvider" order="last"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtGameRuleDeclarationConfigContextProvider"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtOnActionDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider id="base" implementation="icu.windea.pls.ep.configContext.CwtBaseDeclarationConfigContextProvider" order="last"/>
+    <declarationConfigContextProvider id="gameRule" implementation="icu.windea.pls.ep.configContext.CwtGameRuleDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider id="onAction" implementation="icu.windea.pls.ep.configContext.CwtOnActionDeclarationConfigContextProvider"/>
 
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.CwtPredefinedConfigGroupDataProvider" order="first"/>
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.CwtFileBasedConfigGroupDataProvider"/>
@@ -129,11 +131,9 @@
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.configExpression.CwtTemplateDataExpressionResolver" order="last, after constant"/>
     <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.configExpression.CwtAntDataExpressionResolver"/>
     <dataExpressionResolver id="regex" implementation="icu.windea.pls.ep.configExpression.CwtRegexDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareDefinitionDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareLocalisationDataExpressionResolver"/>
-    <dataExpressionResolver implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareSyncedLocalisationDataExpressionResolver"/>
+    <dataExpressionResolver id="suffixAware" implementation="icu.windea.pls.ep.configExpression.CwtSuffixAwareDataExpressionResolver"/>
 
-    <dataExpressionMerger implementation="icu.windea.pls.ep.configExpression.CwtDefaultDataExpressionMerger"/>
+    <dataExpressionMerger implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionMerger"/>
 
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CwtBaseDataExpressionPriorityProvider"/>
     <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.configExpression.CwtCoreDataExpressionPriorityProvider"/>
@@ -239,14 +239,14 @@
     <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxScriptValueInlineParameterSupport"/>
     <parameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxInlineScriptParameterSupport"/>
 
-    <parameterInferredConfigProvider implementation="icu.windea.pls.ep.resolve.parameter.ParadoxDefaultExpressionParameterInferredConfigProvider" order="last"/>
+    <parameterInferredConfigProvider id="default" implementation="icu.windea.pls.ep.resolve.parameter.ParadoxDefaultExpressionParameterInferredConfigProvider" order="last"/>
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.resolve.parameter.ParadoxBaseParameterInferredConfigProvider"/>
     <parameterInferredConfigProvider implementation="icu.windea.pls.ep.resolve.parameter.ParadoxComplexExpressionNodeParameterInferredConfigProvider"/>
 
     <localisationParameterSupport implementation="icu.windea.pls.ep.resolve.parameter.ParadoxBaseLocalisationParameterSupport"/>
 
-    <definitionScopeContextProvider id="core" implementation="icu.windea.pls.ep.resolve.scope.ParadoxDefaultDefinitionScopeContextProvider" order="last"/>
-    <definitionScopeContextProvider id="base" implementation="icu.windea.pls.ep.resolve.scope.ParadoxBaseDefinitionScopeContextProvider" order="last, before core"/>
+    <definitionScopeContextProvider id="default" implementation="icu.windea.pls.ep.resolve.scope.ParadoxDefaultDefinitionScopeContextProvider" order="last"/>
+    <definitionScopeContextProvider implementation="icu.windea.pls.ep.resolve.scope.ParadoxBaseDefinitionScopeContextProvider" order="last, before default"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.ep.resolve.scope.ParadoxGameRuleScopeContextProvider"/>
     <definitionScopeContextProvider implementation="icu.windea.pls.ep.resolve.scope.ParadoxOnActionScopeContextProvider"/>
 

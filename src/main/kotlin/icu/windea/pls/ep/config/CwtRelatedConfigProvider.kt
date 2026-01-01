@@ -8,7 +8,7 @@ import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsAction
 import icu.windea.pls.lang.codeInsight.navigation.GotoRelatedConfigsHandler
 
 /**
- * 用于提供相关的规则。
+ * 提供相关的规则。
  *
  * @see GotoRelatedConfigsAction
  * @see GotoRelatedConfigsHandler

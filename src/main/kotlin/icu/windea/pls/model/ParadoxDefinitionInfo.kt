@@ -33,8 +33,12 @@ class ParadoxDefinitionInfo(
     subtypeConfigs0: List<CwtSubtypeConfig>?, // null -> lazy get
     val typeKey: String,
     val elementPath: ParadoxElementPath,
-    val gameType: ParadoxGameType,
 ) : UserDataHolderBase() {
+    val configGroup get() = typeConfig.configGroup
+    val gameType get() = configGroup.gameType
+    val project get() = configGroup.project
+    val declarationConfig get() = configGroup.declarations.get(type)
+
     private val subtypeConfigsCache = ConcurrentHashMap<Int, List<CwtSubtypeConfig>>()
     private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
 
@@ -52,10 +56,6 @@ class ParadoxDefinitionInfo(
     val modifiers: List<ModifierInfo> by lazy { doGetModifiers() }
     val primaryLocalisations: List<RelatedLocalisationInfo> by lazy { doGetPrimaryLocalisations() }
     val primaryImages: List<RelatedImageInfo> by lazy { doGetPrimaryImages() }
-
-    val declarationConfig get() = configGroup.declarations.get(type)
-    val configGroup get() = typeConfig.configGroup
-    val project get() = configGroup.project
 
     fun getSubtypeConfigs(matchOptions: Int = ParadoxMatchOptions.Default): List<CwtSubtypeConfig> {
         return doGetSubtypeConfigs(matchOptions)

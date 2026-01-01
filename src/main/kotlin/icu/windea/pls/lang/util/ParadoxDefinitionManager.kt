@@ -86,7 +86,7 @@ object ParadoxDefinitionManager {
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
         val typeKey = stub.typeKey
         val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath, gameType)
+        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, typeKey, elementPath)
     }
 
     private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
@@ -99,7 +99,7 @@ object ParadoxDefinitionManager {
         val typeKey = getTypeKey(element) ?: return null
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
-        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize(), gameType)
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize())
     }
 
     fun getTypeKey(element: ParadoxScriptDefinitionElement): String? {
