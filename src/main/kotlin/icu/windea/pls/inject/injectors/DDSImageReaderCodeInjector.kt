@@ -25,7 +25,6 @@ class DDSImageReaderCodeInjector : CodeInjectorBase() {
             val image = PlsImageManager.read(imageIndex, param, stream, "dds", "png") ?: return@run
             return image
         }
-
         continueInvocation()
     }
 }

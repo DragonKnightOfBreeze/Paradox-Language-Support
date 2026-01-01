@@ -17,7 +17,7 @@ import icu.windea.pls.inject.annotations.InjectTarget
  */
 @InjectTarget("com.intellij.codeInsight.generation.CommentByLineCommentHandler")
 class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
-    // 用于兼容CWT语言的各种注释（行注释"# ..."，选项注释"## ..."，文档注释"### ..."）
+    // 用于兼容 CWT 语言的各种注释（行注释 `# ...`，选项注释 `## ...`，文档注释 `### ...`）
 
     private val Any.editor: Editor by memberProperty("editor", null)
 
@@ -34,4 +34,3 @@ class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
         continueInvocation()
     }
 }
-

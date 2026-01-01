@@ -25,8 +25,6 @@ class TGAImageReaderCodeInjector : CodeInjectorBase() {
             val image = PlsImageManager.read(imageIndex, param, stream, "tga", "png") ?: return@run
             return image
         }
-
         continueInvocation()
     }
 }
-

@@ -7,7 +7,7 @@ import icu.windea.pls.inject.CodeInjectorBase
  * 注入目标信息。
  *
  * @property value 目标类名。
- * @property pluginId 目标类所属的插件ID。如果不需要通过插件类加载器加载，则为空字符串。
+ * @property pluginId 目标类所属的插件 ID。如果不需要通过插件类加载器加载，则为空字符串。
  *
  * @see CodeInjector
  * @see CodeInjectorBase

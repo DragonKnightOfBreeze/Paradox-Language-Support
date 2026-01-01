@@ -14,11 +14,11 @@ import icu.windea.pls.inject.annotations.InjectTarget
  */
 @InjectTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
-    // 重写IDE底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
+    // 重写 IDE 底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
 
     // rewrite this method to compatible with:
-    // color ids (e.g., "§Rsome text§!")
-    // localisation icon references (e.g., "£unity£")
+    // localisation colorful texts (e.g., `§Rsome text§!`)
+    // localisation icons (e.g., `£unity£`)
 
     @InjectMethod(static = true)
     fun checkJavaIdentifier(text: CharSequence, searcher: StringSearcher, index: Int): Boolean {

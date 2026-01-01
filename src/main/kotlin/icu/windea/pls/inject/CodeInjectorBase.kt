@@ -6,6 +6,7 @@ import com.intellij.openapi.extensions.PluginDescriptor
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.util.application
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectTarget
@@ -21,6 +22,12 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
 
+        val pluginId = codeInjectorInfo.injectPluginId
+        val enabledPlugin = pluginId.orNull()?.let { PluginId.findId(it) }
+            ?.let { PluginManager.getInstance().findEnabledPlugin(it) }
+        // skip if plugin of specied plugin id is not enabled
+        if (pluginId.isNotEmpty() && enabledPlugin == null) return
+
         val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
@@ -28,13 +35,11 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
 
         applyCodeInjectorSupports()
 
-        val pluginId = codeInjectorInfo.injectPluginId
         if (pluginId.isEmpty()) {
             targetClass.toClass()
         } else {
-            val pluginClassLoader = runCatchingCancelable {
-                PluginManager.getInstance().findEnabledPlugin(PluginId.findId(pluginId)!!)!!.pluginClassLoader
-            }.getOrElse { PluginDescriptor::class.java.classLoader }
+            val pluginClassLoader = runCatchingCancelable { enabledPlugin!!.pluginClassLoader }
+                .getOrElse { PluginDescriptor::class.java.classLoader }
             targetClass.toClass(pluginClassLoader, null)
         }
         targetClass.detach()

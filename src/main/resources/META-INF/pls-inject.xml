@@ -28,6 +28,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.TGAImageReaderCodeInjector"/>
 
     <!--code injectors to fix bugs-->
+    <codeInjector implementation="icu.windea.pls.inject.injectors.InjectLanguageActionCodeInjector"/>
     <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ImageDescriptorKtCodeInjector"/>-->
 
     <!--code injectors to provide additional features-->
