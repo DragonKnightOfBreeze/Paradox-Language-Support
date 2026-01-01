@@ -269,12 +269,6 @@ object ParadoxTypeManager {
                         }
                     }
                 }
-
-                // #252 兼容定义注入
-                val definitionInjectionInfo = element.definitionInjectionInfo
-                if (definitionInjectionInfo != null) {
-                    return definitionInjectionInfo.typeConfig?.pointer?.element.singleton.listOrEmpty()
-                }
             }
             element is ParadoxScriptExpressionElement -> {
                 if (element is ParadoxScriptPropertyKey) {
