@@ -2,11 +2,12 @@ package icu.windea.pls.config.configContext
 
 // region CwtConfigContext Extensions
 
-fun CwtConfigContext.isDefinition(): Boolean {
-    return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }
+fun CwtConfigContext.isRootForDefinition(): Boolean {
+    return (definitionInfo != null || definitionInjectionInfo != null)
+        && elementPathFromRoot.let { it != null && it.isEmpty() }
 }
 
-fun CwtConfigContext.isDefinitionOrMember(): Boolean {
+fun CwtConfigContext.inRoot(): Boolean {
     return elementPathFromRoot != null
 }
 

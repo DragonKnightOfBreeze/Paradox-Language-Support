@@ -36,7 +36,7 @@ import icu.windea.pls.config.config.optionData
 import icu.windea.pls.config.config.singleAliasConfig
 import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.config.configContext.isDefinition
+import icu.windea.pls.config.configContext.isRootForDefinition
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.suffixes
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -473,7 +473,7 @@ object ParadoxExpressionManager {
         if (contextConfigs.isEmpty()) return emptyList()
 
         // 如果当前上下文是定义，且匹配选项接受定义，则直接返回所有上下文规则
-        if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
+        if (element is ParadoxScriptDefinitionElement && configContext.isRootForDefinition()) {
             if (BitUtil.isSet(matchOptions, ParadoxMatchOptions.AcceptDefinition)) return contextConfigs
         }
 

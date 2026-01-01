@@ -21,7 +21,7 @@ import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.config.optionData
-import icu.windea.pls.config.configContext.isDefinitionOrMember
+import icu.windea.pls.config.configContext.inRoot
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.resolved
 import icu.windea.pls.config.util.CwtConfigService
@@ -138,7 +138,7 @@ object ParadoxCompletionManager {
         if (configContext == null) return
 
         // 仅提示不在定义声明中的key（顶级键和类型键）
-        if (!configContext.isDefinitionOrMember()) {
+        if (!configContext.inRoot()) {
             val elementPath = ParadoxScriptService.getElementPath(memberElement, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return
             if (elementPath.path.isParameterized()) return // 忽略成员路径带参数的情况
             val typeKeyPrefix = lazy { context.contextElement?.let { ParadoxScriptService.getKeyPrefixes(it).firstOrNull() } }
@@ -187,7 +187,7 @@ object ParadoxCompletionManager {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
 
-        if (!configContext.isDefinitionOrMember()) return
+        if (!configContext.inRoot()) return
 
         // 这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = ParadoxMatchOptions.Default or ParadoxMatchOptions.Relax or ParadoxMatchOptions.AcceptDefinition
@@ -226,7 +226,7 @@ object ParadoxCompletionManager {
         val configContext = ParadoxExpressionManager.getConfigContext(element)
         if (configContext == null) return
 
-        if (!configContext.isDefinitionOrMember()) return
+        if (!configContext.inRoot()) return
 
         val configs = configContext.getConfigs()
         if (configs.isEmpty()) return

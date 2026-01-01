@@ -19,8 +19,8 @@ import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configContext.CwtConfigContext
-import icu.windea.pls.config.configContext.isDefinition
-import icu.windea.pls.config.configContext.isDefinitionOrMember
+import icu.windea.pls.config.configContext.isRootForDefinition
+import icu.windea.pls.config.configContext.inRoot
 import icu.windea.pls.config.util.CwtConfigService
 import icu.windea.pls.core.quote
 import icu.windea.pls.core.truncate
@@ -98,7 +98,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
-                if (!configContext.isDefinitionOrMember() || configContext.isDefinition()) return true
+                if (!configContext.inRoot() || configContext.isRootForDefinition()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
@@ -131,7 +131,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 // skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 // skip if config context is not suitable
-                if (!configContext.isDefinitionOrMember()) return true
+                if (!configContext.inRoot()) return true
                 // skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
