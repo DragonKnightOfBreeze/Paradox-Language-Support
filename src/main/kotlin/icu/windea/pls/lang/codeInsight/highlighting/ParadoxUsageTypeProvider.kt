@@ -15,7 +15,9 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxCsvManager
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
 import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
@@ -30,12 +32,13 @@ import icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter
 import icu.windea.pls.script.psi.ParadoxScriptInlineMathScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptParameterConditionParameter
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isResolvableExpression
 
 /**
- * 在查找使用中，区分定义、本地化等各种声明的使用类型。
+ * 在查找用法中，区分定义、本地化等各种声明的用法类型。
  */
 class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     override fun getUsageType(element: PsiElement): UsageType? {
@@ -68,6 +71,13 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         // #131
         if (!element.isResolvableExpression()) return null
 
+        // 尝试解析为定义注入目标
+        run {
+            if (element !is ParadoxScriptPropertyKey) return@run
+            if (!ParadoxDefinitionInjectionManager.isMatched(element.name, selectGameType(element))) return@run
+            return ParadoxUsageTypes.DEFINITION_INJECTION_TARGET
+        }
+
         // 尝试解析为复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
@@ -79,13 +89,13 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
         val configExpression = config.configExpression
-        val type = configExpression.type
+        val dataType = configExpression.type
         // in invocation expression
         if (config.configExpression.type == CwtDataTypes.Parameter) {
             return ParadoxUsageTypes.PARAMETER_REFERENCE_4
         }
         // in script value expression
-        if (type in CwtDataTypeGroups.ValueField) {
+        if (dataType in CwtDataTypeGroups.ValueField) {
             val targetElement = targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
             if (targetElement is ParadoxParameterElement) {
                 return ParadoxUsageTypes.PARAMETER_REFERENCE_5

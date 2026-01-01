@@ -15,7 +15,7 @@ import icu.windea.pls.lang.psi.mock.CwtConfigSymbolElement
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
 
 /**
- * 在查找使用中，区分CWT规则符号的使用类型。
+ * 在查找用法中，区分规则符号的用法类型。
  */
 class CwtConfigUsageTypeProvider : UsageTypeProviderEx {
     override fun getUsageType(element: PsiElement): UsageType? {

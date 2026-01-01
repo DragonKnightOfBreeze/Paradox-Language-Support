@@ -25,8 +25,7 @@ object ParadoxUsageTypes {
     val LOCALISATION_TEXT_ICON = UsageType { PlsBundle.message("usageType.localisationTextIcon") }
     val LOCALISATION_TEXT_FORMAT = UsageType { PlsBundle.message("usageType.localisationTextFormat") }
 
-    val HEADER_COLUMN = UsageType { PlsBundle.message("usageType.headerColumn") }
-
+    val DEFINITION_INJECTION_TARGET = UsageType { PlsBundle.message("usageType.definitionInjectionTarget") }
     val COMPLEX_ENUM_VALUE = UsageType { PlsBundle.message("usageType.complexEnumValue") }
 
     private val FROM_CONFIG_EXPRESSION_TYPES: MutableMap<String, UsageType> = ConcurrentHashMap()
@@ -34,4 +33,6 @@ object ParadoxUsageTypes {
     fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.computeIfAbsent(configExpression.expressionString) {
         UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
     }
+
+    val HEADER_COLUMN = UsageType { PlsBundle.message("usageType.headerColumn") }
 }
