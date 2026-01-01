@@ -142,7 +142,7 @@ class ConvertImageFormatDialog(
 
             RecentsManager.getInstance(project).registerRecentEntry(recentKeys, targetDirectoryName)
 
-            executeCommand(project, PlsBundle.message("create.directory"), null) {
+            executeCommand(project, PlsBundle.message("create.directory")) {
                 runWriteAction {
                     try {
                         val path = FileUtil.toSystemIndependentName(targetDirectoryName)

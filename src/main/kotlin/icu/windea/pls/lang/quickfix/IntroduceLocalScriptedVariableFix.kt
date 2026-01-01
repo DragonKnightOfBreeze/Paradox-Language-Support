@@ -2,7 +2,6 @@ package icu.windea.pls.lang.quickfix
 
 import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.project.Project
@@ -12,6 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
 import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
@@ -31,21 +31,21 @@ class IntroduceLocalScriptedVariableFix(
         val element = startElement
         val containerElmeent = element.findParentDefinitionOrInjection() ?: element.containingFile as? ParadoxScriptFile ?: return
 
-        val command = r@{
+        val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
+        executeWriteCommand(project, commandName, makeWritable = file) c@{
             // 声明对应名字的封装变量，默认值给0
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElmeent, project)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
-            if (editor == null) return@r
+            if (editor == null) return@c
 
             // 光标移到 newVariableValue 的结束位置并选中
-            val newVariableValue = newVariable.scriptedVariableValue ?: return@r
+            val newVariableValue = newVariable.scriptedVariableValue ?: return@c
             editor.caretModel.moveToOffset(newVariableValue.endOffset)
             editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
             editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
         }
-        WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
     }
 
     override fun startInWriteAction() = false

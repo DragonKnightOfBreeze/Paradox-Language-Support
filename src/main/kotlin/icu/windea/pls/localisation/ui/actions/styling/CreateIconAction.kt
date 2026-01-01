@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ToggleAction
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiDocumentManager
@@ -12,6 +11,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
@@ -70,24 +70,22 @@ class CreateIconAction : ToggleAction(), DumbAware {
         }
         if (state) {
             // wrap
-            val command = Runnable {
+            executeWriteCommand(project, wrapActionName, makeWritable = file) {
                 editor.document.insertString(end, "£")
                 editor.document.insertString(start, "£")
                 editor.caretModel.moveToOffset(start + 1)
                 editor.selectionModel.setSelection(start + 1, end + 1)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
-            WriteCommandAction.runWriteCommandAction(project, wrapActionName, null, command, file)
         } else {
             // unwrap
-            val command = Runnable {
+            executeWriteCommand(project, unwrapActionName, makeWritable = file) {
                 editor.document.deleteString(end, end + 1)
                 editor.document.deleteString(start - 1, start)
                 editor.caretModel.moveToOffset(start - 1)
                 editor.selectionModel.setSelection(start - 1, end - 1)
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
             }
-            WriteCommandAction.runWriteCommandAction(project, unwrapActionName, null, command, file)
         }
     }
 

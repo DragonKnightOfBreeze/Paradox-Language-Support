@@ -4,8 +4,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.runUndoTransparentWriteAction
-import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -20,6 +18,7 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
@@ -159,10 +158,9 @@ class GenerateLocalisationFileAction : AnAction() {
                 ).notify(project)
             }
         }
-        executeCommand(project) {
-            runUndoTransparentWriteAction {
-                ProgressManager.getInstance().run(task)
-            }
+        val commandName = PlsBundle.message("command.generateLocalisationFiles")
+        executeWriteCommand(project, commandName) {
+            ProgressManager.getInstance().run(task)
         }
     }
 

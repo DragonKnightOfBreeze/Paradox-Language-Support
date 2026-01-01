@@ -4,7 +4,6 @@ import com.intellij.codeInsight.template.TemplateBuilderFactory
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.Editor
@@ -21,6 +20,7 @@ import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
@@ -28,6 +28,7 @@ import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
 import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 /**
@@ -52,18 +53,20 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
 
         // 要求对应的字面量在定义声明内
         // 2.1.0 兼容定义注入
-        val parentDefinition = element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() ?: return false
-        val command = Runnable {
+        val containerElement = element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() ?: return false
+
+        val commandName = PlsBundle.message("script.command.introduceLocalScriptedVariable.name")
+        executeWriteCommand(project, commandName, makeWritable = file) {
             // 用封装变量引用替换当前位置的字面量
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
-            newVariableReference = element.parent.replace(newVariableReference).cast()
+            newVariableReference = element.parent.replace(newVariableReference).cast<ParadoxScriptScriptedVariableReference>()
 
             // 声明对应名字的封装变量，以内联模板的方式编辑名字
             val variableValue = element.text
-            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
+            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, containerElement, project)
             PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
-            val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"))
+            val startAction = StartMarkAction.start(editor, project, commandName)
             val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(file)
             val variableName = newVariable.scriptedVariableName
             templateBuilder.replaceElement(variableName, "variableName", TextExpression(variableName.text), true)
@@ -83,7 +86,6 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
                 }
             })
         }
-        WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
 
         return true
     }

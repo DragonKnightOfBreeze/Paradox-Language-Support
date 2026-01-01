@@ -3,10 +3,10 @@ package icu.windea.pls.localisation.ui.actions.styling
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.model.ParadoxTextColorInfo
 
@@ -54,7 +54,7 @@ class SetColorAction(
         val end = if (endIndex != -1) selectionEnd + endIndex else selectionEnd
         val toReplaceEnd = if (endIndex != -1) selectionEnd + endIndex - 2 else selectionEnd
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return
-        val command = Runnable {
+        executeWriteCommand(project, setColorActionBaseName, makeWritable = file) {
             val toReplace = editor.document.getText(TextRange.create(toReplaceStart, toReplaceEnd))
             val replaced = "§${colorConfig.name}$toReplace§!"
             editor.document.replaceString(start, end, replaced)
@@ -64,7 +64,6 @@ class SetColorAction(
             editor.caretModel.moveToOffset(caretEnd)
             PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
         }
-        WriteCommandAction.runWriteCommandAction(project, setColorActionBaseName, null, command, file)
     }
 }
 

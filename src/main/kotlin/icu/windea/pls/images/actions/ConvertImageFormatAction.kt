@@ -5,7 +5,6 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ex.ApplicationManagerEx
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -24,6 +23,7 @@ import com.intellij.util.containers.MultiMap
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.cast
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
@@ -84,7 +84,9 @@ abstract class ConvertImageFormatAction(
         }
         if (targetDirectory != null) {
             val title = PlsBundle.message("convertImageFormat.command.name", targetFormatName)
-            executeCommand(project, title) { doConvert(files, newFileName, targetDirectory) }
+            executeCommand(project, title) {
+                doConvert(files, newFileName, targetDirectory)
+            }
         }
     }
 
@@ -125,8 +127,8 @@ abstract class ConvertImageFormatAction(
         added: MutableList<PsiFile>,
         failed: MutableList<PsiFile>
     ) {
+        val project = targetDirectory.project
         val existingFiles = MultiMap<PsiDirectory, PsiFile>()
-        val app = ApplicationManagerEx.getApplicationEx()
         val thrown = AtomicReference<Throwable>()
         val action = Consumer { pi: ProgressIndicator? ->
             try {
@@ -137,7 +139,9 @@ abstract class ConvertImageFormatAction(
                 thrown.set(e)
             }
         }
-        executeCommand(targetDirectory.project, title) { app.runWriteActionWithCancellableProgressInDispatchThread(title, targetDirectory.project, null, action) }
+        executeCommand(project, title) {
+            ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, action)
+        }
         val throwable = thrown.get()
         if (throwable is ProcessCanceledException) {
             // process was canceled, don't proceed with existing files
@@ -227,7 +231,9 @@ abstract class ConvertImageFormatAction(
                         val r = Consumer { pi: ProgressIndicator? ->
                             handleExistingFiles(SkipOverwriteChoice.OVERWRITE_ALL, choice, newFileName, targetDirectory, title, existingFiles, added, failed, pi)
                         }
-                        executeCommand(project, title) { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }
+                        executeCommand(project, title) {
+                            ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r)
+                        }
                         return SkipOverwriteChoice.OVERWRITE_ALL
                     }
                 }
@@ -240,9 +246,7 @@ abstract class ConvertImageFormatAction(
                     doConvert(replacement, targetDirectory, fileName, added, failed)
                 }
                 if (userChoice == SkipOverwriteChoice.OVERWRITE) {
-                    WriteCommandAction.writeCommandAction(project)
-                        .withName(title)
-                        .run(doCopy)
+                    executeWriteCommand(project, title) { doCopy.run() }
                 } else if (userChoice == SkipOverwriteChoice.OVERWRITE_ALL) {
                     doCopy.run()
                 }

@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util
 
-import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -31,6 +30,7 @@ import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.substringInLast
@@ -69,7 +69,7 @@ object CwtConfigManager {
     }
 
     fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
-        val file = runReadAction { element.containingFile } ?: return null
+        val file = runReadActionSmartly { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null
         return getContainingConfigGroup(vFile, file.project)
     }
@@ -179,7 +179,7 @@ object CwtConfigManager {
     private fun doGetConfigPathFromCache(element: CwtMember): CwtConfigPath? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            runReadAction {
+            runReadActionSmartly {
                 val file = element.containingFile
                 val value = doGetConfigPath(element)?.normalize()
                 value.withDependencyItems(file)
@@ -218,7 +218,7 @@ object CwtConfigManager {
     private fun doGetConfigTypeFromCache(element: CwtMember): CwtConfigType? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
-            runReadAction {
+            runReadActionSmartly {
                 val file = element.containingFile
                 val value = doGetConfigType(element, file)
                 value.withDependencyItems(file)
@@ -369,7 +369,7 @@ object CwtConfigManager {
     private fun doGetDocumentationFromCache(element: CwtMember): String? {
         // invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedDocumentation) {
-            runReadAction {
+            runReadActionSmartly {
                 val file = element.containingFile
                 val value = doGetDocumentation(element)
                 value.withDependencyItems(file)

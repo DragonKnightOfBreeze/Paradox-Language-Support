@@ -11,7 +11,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.codeInsight.template.TemplateBuilderFactory
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.TextExpression
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -38,6 +37,7 @@ import icu.windea.pls.config.util.manipulators.CwtConfigManipulator
 import icu.windea.pls.core.buildInlineTemplate
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.ifNotEmpty
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.processChild
@@ -380,37 +380,38 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
             val multiline = descriptors.size > PlsSettings.getInstance().state.completion.clauseTemplate.maxMemberCountInOneLine
             val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
 
-            val documentManager = PsiDocumentManager.getInstance(project)
-            val command = Runnable {
+            val commandName = PlsBundle.message("script.command.expandClauseTemplate.name")
+            executeWriteCommand(project, commandName, makeWritable = file) {
+                val documentManager = PsiDocumentManager.getInstance(project)
                 documentManager.commitDocument(editor.document)
                 val caretOffset = editor.caretModel.offset
                 val elementOffset = if (around) caretOffset + 1 else caretOffset
                 val elementAtCaret = file.findElementAt(elementOffset)?.parent as ParadoxScriptValue
                 val clauseText = buildString {
-                    append("{")
-                    if (multiline) append("\n")
+                    this.append("{")
+                    if (multiline) this.append("\n")
                     descriptors.forEach {
                         when (it) {
                             is ValueDescriptor -> {
-                                append(it.name.quoteIfNecessary())
+                                this.append(it.name.quoteIfNecessary())
                             }
                             is PropertyDescriptor -> {
-                                append(it.name.quoteIfNecessary())
-                                if (around) append(" ")
+                                this.append(it.name.quoteIfNecessary())
+                                if (around) this.append(" ")
                                 append(it.separator)
-                                if (around) append(" ")
-                                append(it.value.ifEmpty { "v" })
+                                if (around) this.append(" ")
+                                this.append(it.value.ifEmpty { "v" })
                             }
                         }
-                        if (multiline) append("\n") else append(" ")
+                        if (multiline) this.append("\n") else this.append(" ")
                     }
-                    append("}")
+                    this.append("}")
                 }
                 val clauseElement = ParadoxScriptElementFactory.createValue(project, clauseText)
                 val element = elementAtCaret.replace(clauseElement) as ParadoxScriptBlock
                 documentManager.doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
 
-                val startAction = StartMarkAction.start(editor, project, PlsBundle.message("script.command.expandClauseTemplate.name"))
+                val startAction = StartMarkAction.start(editor, project, commandName)
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
                 var i = 0
                 element.processChild { e ->
@@ -441,7 +442,6 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
                     }
                 })
             }
-            WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.expandClauseTemplate.name"), null, command, file)
         }
     }
 }

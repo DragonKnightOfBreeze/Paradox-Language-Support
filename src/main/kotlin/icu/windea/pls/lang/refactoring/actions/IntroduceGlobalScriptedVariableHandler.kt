@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.refactoring.actions
 
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.project.Project
@@ -13,6 +13,7 @@ import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
@@ -55,7 +56,11 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val targetFile = dialog.file.toPsiFile(project) ?: return true // 不期望的结果
         if (targetFile !is ParadoxScriptFile) return true
 
-        val command = Runnable {
+        val commandName = PlsBundle.message("script.command.introduceGlobalScriptedVariable.name")
+        executeWriteCommand(project, commandName, makeWritable = setOf(file, targetFile)) {
+            // 标记为全局命令
+            CommandProcessor.getInstance().markCurrentCommandAsGlobal(project)
+
             // 用封装变量引用替换当前位置的字面量
             val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableNameToUse)
             val newVariableReference = element.parent.replace(createdVariableReference)
@@ -73,7 +78,6 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
             editor.selectionModel.removeSelection()
             editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
         }
-        WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceGlobalScriptedVariable.name"), null, command, file, targetFile)
 
         return true
     }

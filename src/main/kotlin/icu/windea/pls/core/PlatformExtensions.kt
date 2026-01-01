@@ -21,10 +21,12 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.util.NlsContexts
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VfsUtil
@@ -64,6 +66,8 @@ import icu.windea.pls.core.collections.filterIsInstance
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.psi.PsiReferencesAware
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
 import icu.windea.pls.core.util.tupleOf
 import java.io.IOException
 import java.nio.file.Path
@@ -775,9 +779,49 @@ val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) t
 // 以下的委托方法用于读写需要保存为密码的配置项
 
 /** 委托读取：从 PasswordSafe 读取当前凭据。*/
-inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? = PasswordSafe.instance.getPassword(this)
+inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? {
+    return PasswordSafe.instance.getPassword(this)
+}
 
 /** 委托写入：将凭据写入 PasswordSafe。*/
-inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) = PasswordSafe.instance.setPassword(this, value)
+inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
+    PasswordSafe.instance.setPassword(this, value)
+}
+
+// endregion
+
+// region Command Extensions
+
+inline fun executeWriteCommand(
+    project: Project? = null,
+    @NlsContexts.Command name: String? = null,
+    groupId: String? = null,
+    noinline command: () -> Unit
+) {
+    WriteCommandAction.writeCommandAction(project)
+        .withName(name).withGroupId(groupId).run<Throwable>(command)
+}
+
+inline fun executeWriteCommand(
+    project: Project? = null,
+    @NlsContexts.Command name: String? = null,
+    groupId: String? = null,
+    makeWritable: PsiElement? = null,
+    noinline command: () -> Unit
+) {
+    WriteCommandAction.writeCommandAction(project, makeWritable.singleton.setOrEmpty())
+        .withName(name).withGroupId(groupId).run<Throwable>(command)
+}
+
+inline fun executeWriteCommand(
+    project: Project? = null,
+    @NlsContexts.Command name: String? = null,
+    groupId: String? = null,
+    makeWritable: Collection<PsiElement> = emptyList(),
+    noinline command: () -> Unit
+) {
+    WriteCommandAction.writeCommandAction(project, makeWritable)
+        .withName(name).withGroupId(groupId).run<Throwable>(command)
+}
 
 // endregion

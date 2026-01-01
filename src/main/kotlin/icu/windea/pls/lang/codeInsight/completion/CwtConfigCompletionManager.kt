@@ -11,7 +11,6 @@ import com.intellij.codeInsight.template.TemplateBuilderFactory
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.TextExpression
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.command.impl.FinishMarkAction
 import com.intellij.openapi.command.impl.StartMarkAction
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -44,6 +43,7 @@ import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.getKeyword
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
@@ -717,13 +717,14 @@ object CwtConfigCompletionManager {
         c.laterRunnable = Runnable {
             val project = file.project
             val editor = c.editor
-            val documentManager = PsiDocumentManager.getInstance(project)
-            val command = Runnable c@{
+            val commandName = PlsBundle.message("command.expandTemplate.name")
+            executeWriteCommand(project, commandName, makeWritable = file) c@{
+                val documentManager = PsiDocumentManager.getInstance(project)
                 documentManager.commitDocument(editor.document)
                 val elementOffset = caretMarker.startOffset - 1
                 val element = file.findElementAt(elementOffset)?.parent
                 if (element !is CwtPropertyKey && element !is CwtString) return@c
-                val startAction = StartMarkAction.start(editor, project, PlsBundle.message("command.expandTemplate.name"))
+                val startAction = StartMarkAction.start(editor, project, commandName)
                 val templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(element)
                 val shift = element.startOffset + if (context.quoted) 1 else 0
                 schemaExpression.parameterRanges.forEach { parameterRange ->
@@ -740,7 +741,6 @@ object CwtConfigCompletionManager {
                     FinishMarkAction.finish(project, editor, startAction)
                 })
             }
-            WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("command.expandTemplate.name"), null, command, file)
         }
     }
 
