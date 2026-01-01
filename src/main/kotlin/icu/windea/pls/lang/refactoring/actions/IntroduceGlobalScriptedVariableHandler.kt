@@ -41,7 +41,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
 
-        // 将光标移到int_token或float_token的开始并选中
+        // 将光标移到字面量的开始并选中
         editor.caretModel.moveToOffset(element.startOffset)
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
@@ -50,24 +50,25 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsInternalSettings.getInstance().defaultScriptedVariableName)
         if (!dialog.showAndGet()) return true // 取消
 
-        val variableName = dialog.variableName
-        val variableValue = element.text
+        val variableNameToUse = dialog.variableName
+        val variableValueToUse = element.text
         val targetFile = dialog.file.toPsiFile(project) ?: return true // 不期望的结果
         if (targetFile !is ParadoxScriptFile) return true
+
         val command = Runnable {
-            // 用封装参数（variableReference）替换当前位置的int或float
-            val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableName)
+            // 用封装变量引用替换当前位置的字面量
+            val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableNameToUse)
             val newVariableReference = element.parent.replace(createdVariableReference)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
 
-            // 在指定的文件中声明对应的封装变量
-            ParadoxPsiManager.introduceGlobalScriptedVariable(variableName, variableValue, targetFile, project)
+            // 在指定脚本文件中声明对应名字的封装变量
+            ParadoxPsiManager.introduceGlobalScriptedVariable(variableNameToUse, variableValueToUse, targetFile, project)
             val targetDocument = PsiDocumentManager.getInstance(project).getDocument(targetFile)
             if (targetDocument != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(targetDocument) // 提交文档更改
 
-            // 光标移到newVariableReference的结束位置
+            // 光标移到新的封装变量引用的结束位置（声明后自动跳转到目标脚本文件）
             editor.caretModel.moveToOffset(newVariableReference.endOffset)
             editor.selectionModel.removeSelection()
             editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

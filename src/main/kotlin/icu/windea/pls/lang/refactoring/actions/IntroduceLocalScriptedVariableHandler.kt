@@ -46,18 +46,19 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         val element = findElement(file, offset) ?: return false
         val name = PlsInternalSettings.getInstance().defaultScriptedVariableName
 
-        // 将光标移到所在PSI元素的结束位置并选中
+        // 将光标移到 element 的结束位置并选中
         editor.caretModel.moveToOffset(element.endOffset)
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
-        // 要求对应的int_token或float_token在定义声明内
+        // 要求对应的字面量在定义声明内
+        // 2.1.0 兼容定义注入
         val parentDefinition = element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() ?: return false
         val command = Runnable {
-            // 用封装参数（variableReference）替换当前位置的int或float
+            // 用封装变量引用替换当前位置的字面量
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
             newVariableReference = element.parent.replace(newVariableReference).cast()
 
-            // 声明对应名字的封装变量，以内联模板的方式编辑变量名
+            // 声明对应名字的封装变量，以内联模板的方式编辑名字
             val variableValue = element.text
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(name, variableValue, parentDefinition, project)
             PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document) // 提交文档更改
@@ -83,6 +84,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
             })
         }
         WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
+
         return true
     }
 

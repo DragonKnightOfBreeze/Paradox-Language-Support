@@ -28,24 +28,22 @@ class IntroduceLocalScriptedVariableFix(
     override fun getFamilyName() = PlsBundle.message("fix.introduceLocalScriptedVariable.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-        val command = Runnable r@{
+        val element = startElement
+        val containerElmeent = element.findParentDefinitionOrInjection() ?: element.containingFile as? ParadoxScriptFile ?: return
+
+        val command = r@{
             // 声明对应名字的封装变量，默认值给0
-            // 2.1.0 兼容定义注入
-            val element = startElement
-            val containerElmeent = element.findParentDefinitionOrInjection()
-                ?: element.containingFile as? ParadoxScriptFile
-                ?: return@r
             val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElmeent, project)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
-            if (editor != null) {
-                // 光标移到 newVariableValue 的结束位置并选中
-                val newVariableValue = newVariable.scriptedVariableValue ?: return@r
-                editor.caretModel.moveToOffset(newVariableValue.endOffset)
-                editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
-                editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-            }
+            if (editor == null) return@r
+
+            // 光标移到 newVariableValue 的结束位置并选中
+            val newVariableValue = newVariable.scriptedVariableValue ?: return@r
+            editor.caretModel.moveToOffset(newVariableValue.endOffset)
+            editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
+            editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
         }
         WriteCommandAction.runWriteCommandAction(project, PlsBundle.message("script.command.introduceLocalScriptedVariable.name"), null, command, file)
     }
