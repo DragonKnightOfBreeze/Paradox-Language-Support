@@ -15,6 +15,7 @@ import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.complexEnumValueInfo
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.overrides.ParadoxOverrideService
 import icu.windea.pls.lang.overrides.ParadoxOverrideStrategy
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -133,7 +134,7 @@ object ParadoxTypeManager {
             }
             is ParadoxCsvColumn -> {
                 if (element.isHeaderColumn()) return ParadoxType.String
-                return ParadoxTypeResolver.resolve(element.value)
+                ParadoxTypeResolver.resolve(element.value)
             }
             is ParadoxScriptedVariableReference -> {
                 element.reference?.resolve()?.let { getType(it) } ?: ParadoxType.Unknown
@@ -258,7 +259,12 @@ object ParadoxTypeManager {
                         }
                     }
                 }
-                return emptyList()
+
+                // #252 兼容定义注入
+                val definitionInjectionInfo = element.definitionInjectionInfo
+                if (definitionInjectionInfo != null) {
+                    return definitionInjectionInfo.typeConfig?.pointer?.element.singleton.listOrEmpty()
+                }
             }
             element is ParadoxScriptExpressionElement -> {
                 if (element is ParadoxScriptPropertyKey) {
