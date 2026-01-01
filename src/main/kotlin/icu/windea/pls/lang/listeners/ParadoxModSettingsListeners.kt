@@ -30,7 +30,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
     // org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
 
     private fun doUpdate(directory: String?) {
-        val root = directory?.orNull()?.toVirtualFile(false) ?: return
+        val root = directory?.orNull()?.toVirtualFile() ?: return
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
             val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }

@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vcs.FilePath
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightVirtualFile
@@ -138,7 +137,7 @@ object ParadoxAnalyzeManager {
         try {
             // 直接尝试通过filePath获取fileInfo
             var currentFilePath = filePath.path.toPathOrNull() ?: return null
-            var currentFile = VfsUtil.findFile(currentFilePath, false)
+            var currentFile = currentFilePath.toVirtualFile()
             while (true) {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
@@ -146,7 +145,7 @@ object ParadoxAnalyzeManager {
                     return newFileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
-                currentFile = VfsUtil.findFile(currentFilePath, false)
+                currentFile = currentFilePath.toVirtualFile()
             }
             return null
         } catch (e: Exception) {
@@ -161,7 +160,7 @@ object ParadoxAnalyzeManager {
         try {
             if (file is LightVirtualFile) {
                 file.originalFile?.let { return it }
-                VfsUtil.findFile(filePath, false)?.let { return it }
+                filePath.toVirtualFile()?.let { return it }
                 return null
             }
             return file
@@ -219,7 +218,7 @@ object ParadoxAnalyzeManager {
         val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
-        val rootFile = VfsUtil.findFile(path, true)?.takeIf { it.exists() }
+        val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() }
         if (rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
         if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))

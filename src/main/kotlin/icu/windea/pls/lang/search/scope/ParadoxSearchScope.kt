@@ -67,7 +67,7 @@ open class ParadoxSearchScope(
                 is ParadoxRootInfo.Mod -> {
                     val modDirectory = rootInfo.rootFile
                     val settings = PlsProfilesSettings.getInstance().state.modSettings.get(modDirectory.path)
-                    val gameDirectory = settings?.finalGameDirectory?.toVirtualFile(false)
+                    val gameDirectory = settings?.finalGameDirectory?.toVirtualFile()
                     val dependencyDirectories = getDependencyDirectories(settings, modDirectory)
                     return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
                 }
@@ -144,7 +144,7 @@ open class ParadoxSearchScope(
             val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.Mod>()?.rootFile
             if (modDirectory == null) return ParadoxModWithDependenciesSearchScope(project, contextFile, null, null, emptySet())
             val settings = PlsProfilesSettings.getInstance().state.gameSettings.get(modDirectory.path)
-            val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
+            val gameDirectory = settings?.gameDirectory?.toVirtualFile()
             val dependencyDirectories = getDependencyDirectories(settings)
             return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
         }
@@ -169,7 +169,7 @@ open class ParadoxSearchScope(
             for (modDependency in settings.modDependencies) {
                 // 要求模组依赖是启用的，或者是当前模组自身
                 if (modDependency.enabled || (modDirectory != null && modDependency.modDirectory == modDirectory.path)) {
-                    val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile(false)
+                    val modDependencyDirectory = modDependency.modDirectory?.toVirtualFile()
                     if (modDependencyDirectory != null) {
                         modDependencyDirectories.add(modDependencyDirectory)
                     }

@@ -15,6 +15,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toClasspathUrl
 import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.tools.PlsGitService
 import icu.windea.pls.model.ParadoxGameType
 
@@ -148,7 +149,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val directory = PlsConfigSettings.getInstance().state.remoteConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
-        val file = VfsUtil.findFile(path, true)
+        val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
 
@@ -194,7 +195,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val directory = PlsConfigSettings.getInstance().state.localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
-        val file = VfsUtil.findFile(path, true)
+        val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
 
@@ -249,7 +250,7 @@ class CwtTestConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(): VirtualFile? {
         val path = "src/test/testData/config".toPathOrNull() ?: return null
-        val file = VfsUtil.findFile(path, true)
+        val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
 }

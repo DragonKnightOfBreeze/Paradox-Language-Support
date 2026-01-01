@@ -23,6 +23,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processChild
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -85,7 +86,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 for (pathPattern in fileMap.keys) {
                     val missingLocales = allLocales.keys.filterTo(mutableSetOf()) { l ->
                         val p = pathPattern.replace("$", l).toPath()
-                        VfsUtil.findFile(p, false)?.takeIf { it.isValid } == null
+                        p.toVirtualFile()?.takeIf { it.isValid } == null
                     }
                     if (missingLocales.isNotEmpty()) {
                         missingLocaleMap.putIfAbsent(pathPattern, missingLocales)
@@ -112,7 +113,7 @@ class GenerateLocalisationFileAction : AnAction() {
 
                         try {
                             VfsUtil.createDirectoryIfMissing(newParentPath.toString())
-                            val newParent = VfsUtil.findFile(newParentPath, true) ?: continue
+                            val newParent = newParentPath.toVirtualFile(refreshIfNeed = true) ?: continue
                             val newFile = newParent.createChildData(this, newFileName.toString())
                             val newDocument = fileDocumentManager.getDocument(newFile) ?: continue
                             newDocument.insertString(0, baseText)

@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.io.createDirectories
 import com.intellij.util.io.createParentDirectories
+import icu.windea.pls.core.toVirtualFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URL
@@ -19,7 +20,7 @@ fun Initializer.awaitDirectory(value: Path): Lazy<Path> {
 
 /** 收集一个“从 VirtualFile 复制到 Path 并返回 VirtualFile” 的初始化任务并返回懒值。*/
 fun Initializer.awaitFileFromVirtualFile(value: Path, sourceUrl: URL): Lazy<VirtualFile> {
-    return await(value, { it.createFileFromVirtualFile(VfsUtil.findFileByURL(sourceUrl)!!) }, { VfsUtil.findFile(it, false)!! })
+    return await(value, { it.createFileFromVirtualFile(VfsUtil.findFileByURL(sourceUrl)!!) }, { it.toVirtualFile()!! })
 }
 
 /** 将给定 [virtualFile] 的内容复制到当前 [Path]，并刷新 VFS 返回对应的 `VirtualFile`。*/
@@ -30,7 +31,7 @@ private suspend fun Path.createFileFromVirtualFile(virtualFile: VirtualFile): Vi
         virtualFile.inputStream.use { Files.copy(it, path, StandardCopyOption.REPLACE_EXISTING) }
     }
     val file = withContext(Dispatchers.UI) {
-        VfsUtil.findFile(path, true)
+        path.toVirtualFile(true)
     }
     return file
 }

@@ -13,8 +13,8 @@ import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
 
@@ -46,7 +46,7 @@ object PlsAnalyzeManager {
         runReadAction {
             rootFilePaths.forEach f@{ rootFilePath ->
                 if (isExcludedRootFilePath(rootFilePath)) return@f
-                val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
+                val rootFile = rootFilePath.toVirtualFile() ?: return@f
                 VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
                     override fun visitFile(file: VirtualFile): Boolean {
                         if (file.isFile) files.add(file)

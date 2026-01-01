@@ -45,7 +45,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 val settings = PlsProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val modDirectory = rootFile
-                val gameDirectory = settings.finalGameDirectory?.toVirtualFile(false)
+                val gameDirectory = settings.finalGameDirectory?.toVirtualFile()
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxModSearchScope(project, contextFile, modDirectory))

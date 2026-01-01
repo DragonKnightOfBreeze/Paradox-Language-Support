@@ -37,12 +37,12 @@ class ParadoxLibraryService(private val project: Project) {
         val profilesSettings = PlsProfilesSettings.getInstance().state
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
-            val modFile = modDirectory.toVirtualFile(false) ?: return@f
+            val modFile = modDirectory.toVirtualFile() ?: return@f
             if (!modFile.exists()) return@f
             if (!projectFileIndex.isInContent(modFile)) return@f
             run {
                 val gameDirectory = modSettings.finalGameDirectory ?: return@run
-                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
+                val gameFile = gameDirectory.toVirtualFile() ?: return@run
                 if (!gameFile.exists()) return@run
                 if (projectFileIndex.isInContent(gameFile)) return@run
                 newRoots += gameFile
@@ -50,7 +50,7 @@ class ParadoxLibraryService(private val project: Project) {
             modSettings.modDependencies.forEach f1@{ modDependencySettings ->
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
                 if (modDependencyDirectory == modDirectory) return@f1 // 需要排除这种情况
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                val modDependencyFile = modDependencyDirectory.toVirtualFile() ?: return@f1
                 if (!modDependencyFile.exists()) return@f1
                 if (projectFileIndex.isInContent(modDependencyFile)) return@f1
                 newRoots += modDependencyFile
@@ -58,12 +58,12 @@ class ParadoxLibraryService(private val project: Project) {
         }
         profilesSettings.gameSettings.values.forEach f@{ gameSettings ->
             val gameDirectory = gameSettings.gameDirectory ?: return@f
-            val gameFile = gameDirectory.toVirtualFile(false) ?: return@f
+            val gameFile = gameDirectory.toVirtualFile() ?: return@f
             if (!gameFile.exists()) return@f
             if (!projectFileIndex.isInContent(gameFile)) return@f
             gameSettings.modDependencies.forEach f1@{ modDependencySettings ->
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                val modDependencyFile = modDependencyDirectory.toVirtualFile() ?: return@f1
                 if (!modDependencyFile.exists()) return@f1
                 if (projectFileIndex.isInContent(modDependencyFile)) return@f1
                 newRoots += modDependencyFile

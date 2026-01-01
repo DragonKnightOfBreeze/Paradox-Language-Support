@@ -6,8 +6,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileChooser.FileChooserPanel
 import com.intellij.openapi.fileChooser.FileSystemTree
 import com.intellij.openapi.fileChooser.actions.FileChooserAction
-import com.intellij.openapi.vfs.VfsUtil
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toVirtualFile
 import java.nio.file.Path
 
 /**
@@ -31,9 +31,9 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
         val presentation = e.presentation
         presentation.isVisible = isVisible(e)
         if (presentation.isEnabled) {
-            presentation.isEnabled = presentation.isVisible && runCatchingCancelable {
-                val targetPath = targetPath ?: return@runCatchingCancelable false
-                val file = VfsUtil.findFile(targetPath, false) ?: return@runCatchingCancelable false
+            presentation.isEnabled = presentation.isVisible && runCatchingCancelable r@{
+                val targetPath = targetPath ?: return@r false
+                val file = targetPath.toVirtualFile() ?: return@r false
                 fileChooser.isUnderRoots(file)
             }.getOrElse { false }
         }
@@ -49,7 +49,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
     override fun actionPerformed(fileChooser: FileSystemTree, e: AnActionEvent) {
         runCatchingCancelable {
             val targetPath = targetPath ?: return
-            val file = VfsUtil.findFile(targetPath, true) ?: return
+            val file = targetPath.toVirtualFile(refreshIfNeed = true) ?: return
             fileChooser.select(file, if (expand) Runnable { fileChooser.expand(file, null) } else null)
         }
     }

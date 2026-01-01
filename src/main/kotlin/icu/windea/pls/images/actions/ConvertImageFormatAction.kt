@@ -5,15 +5,13 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ex.ApplicationManagerEx
-import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.util.registry.Registry
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
@@ -29,6 +27,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.util.PlsFileManager
 import java.io.IOException
@@ -84,9 +83,8 @@ abstract class ConvertImageFormatAction(
             return
         }
         if (targetDirectory != null) {
-            val command = { doConvert(files, newFileName, targetDirectory) }
             val title = PlsBundle.message("convertImageFormat.command.name", targetFormatName)
-            CommandProcessor.getInstance().executeCommand(project, command, title, null)
+            executeCommand(project, title) { doConvert(files, newFileName, targetDirectory) }
         }
     }
 
@@ -129,32 +127,23 @@ abstract class ConvertImageFormatAction(
     ) {
         val existingFiles = MultiMap<PsiDirectory, PsiFile>()
         val app = ApplicationManagerEx.getApplicationEx()
-        if (Registry.`is`("run.refactorings.under.progress")) {
-            val thrown = AtomicReference<Throwable>()
-            val action = Consumer { pi: ProgressIndicator? ->
-                try {
-                    for (file in files) {
-                        doSave(file, newFileName, targetDirectory, added, failed, existingFiles, pi)
-                    }
-                } catch (e: Exception) {
-                    thrown.set(e)
-                }
-            }
-            CommandProcessor.getInstance().executeCommand(targetDirectory.project, { app.runWriteActionWithCancellableProgressInDispatchThread(title, targetDirectory.project, null, action) }, title, null)
-            val throwable = thrown.get()
-            if (throwable is ProcessCanceledException) {
-                // process was canceled, don't proceed with existing files
-                return
-            }
-            rethrow(throwable)
-        } else {
-            WriteCommandAction.writeCommandAction(targetDirectory.project).withName(title).run<IOException> {
+        val thrown = AtomicReference<Throwable>()
+        val action = Consumer { pi: ProgressIndicator? ->
+            try {
                 for (file in files) {
-                    doSave(file, newFileName, targetDirectory, added, failed, existingFiles, null)
+                    doSave(file, newFileName, targetDirectory, added, failed, existingFiles, pi)
                 }
+            } catch (e: Exception) {
+                thrown.set(e)
             }
         }
-
+        executeCommand(targetDirectory.project, title) { app.runWriteActionWithCancellableProgressInDispatchThread(title, targetDirectory.project, null, action) }
+        val throwable = thrown.get()
+        if (throwable is ProcessCanceledException) {
+            // process was canceled, don't proceed with existing files
+            return
+        }
+        rethrow(throwable)
         handleExistingFiles(newFileName, targetDirectory, choice, title, existingFiles, added, failed)
     }
 
@@ -238,12 +227,7 @@ abstract class ConvertImageFormatAction(
                         val r = Consumer { pi: ProgressIndicator? ->
                             handleExistingFiles(SkipOverwriteChoice.OVERWRITE_ALL, choice, newFileName, targetDirectory, title, existingFiles, added, failed, pi)
                         }
-                        if (Registry.`is`("run.refactorings.under.progress")) {
-                            val action = Runnable { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }
-                            CommandProcessor.getInstance().executeCommand(project, action, title, null)
-                        } else {
-                            r.accept(null)
-                        }
+                        executeCommand(project, title) { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }
                         return SkipOverwriteChoice.OVERWRITE_ALL
                     }
                 }
@@ -255,7 +239,7 @@ abstract class ConvertImageFormatAction(
                     existing.delete()
                     doConvert(replacement, targetDirectory, fileName, added, failed)
                 }
-                if (userChoice == SkipOverwriteChoice.OVERWRITE || userChoice == SkipOverwriteChoice.OVERWRITE_ALL && !Registry.`is`("run.refactorings.under.progress")) {
+                if (userChoice == SkipOverwriteChoice.OVERWRITE) {
                     WriteCommandAction.writeCommandAction(project)
                         .withName(title)
                         .run(doCopy)
@@ -287,7 +271,7 @@ abstract class ConvertImageFormatAction(
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
         ImageManager.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-        val t = VfsUtil.findFile(targetPath, true)
+        val t = targetPath.toVirtualFile(refreshIfNeed = true)
         return t?.toPsiFile(file.project)
     }
 }

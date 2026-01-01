@@ -9,9 +9,8 @@ import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.settings.PlsProfilesSettings
@@ -36,7 +35,7 @@ class ParadoxFilesViewProjectNode(
         rootPaths += profilesSettings.modDescriptorSettings.keys
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         rootPaths.forEach f@{ rootPath ->
-            val rootFile = VfsUtil.findFile(rootPath.toPath(), true) ?: return@f
+            val rootFile = rootPath.toVirtualFile(refreshIfNeed = true) ?: return@f
             val gameType = selectGameType(rootFile) ?: return@f
             if (projectFileIndex.isInContent(rootFile)) {
                 val element = ParadoxGameElement(project, gameType, rootFile)

@@ -13,6 +13,7 @@ import com.intellij.util.io.createDirectories
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.fileInfo
@@ -35,14 +36,13 @@ object ParadoxFileManager {
 
     const val scriptedVariablesPath = "common/scripted_variables"
 
-    fun getScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
+    fun getScriptedVariablesDirectory(contextFile: VirtualFile, createIfMissing: Boolean = true): VirtualFile? {
         val fileInfo = contextFile.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val entryPath = fileInfo.entryPath ?: return null
         val path = entryPath.resolve(scriptedVariablesPath)
-        VfsUtil.createDirectoryIfMissing(path.toString())
-        return VfsUtil.findFile(path, true)
+        return PlsFileManager.findDirectory(path)
     }
 
     /**
@@ -100,7 +100,7 @@ object ParadoxFileManager {
         try {
             directoryPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
-            val diffDirFile = VfsUtil.findFile(directoryPath, false) ?: return null
+            val diffDirFile = directoryPath.toVirtualFile() ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
             tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
             return tempFile
@@ -121,7 +121,7 @@ object ParadoxFileManager {
             val fileName = UUID.randomUUID().toString()
             val path = directoryPath.resolve(fileName)
             Files.writeString(path, text)
-            val tempFile = VfsUtil.findFile(path, true) ?: return null
+            val tempFile = path.toVirtualFile() ?: return null
             tempFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
             return tempFile
         } catch (e: Exception) {

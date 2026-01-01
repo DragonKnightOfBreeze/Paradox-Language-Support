@@ -11,7 +11,6 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.TextComponentAccessors
 import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.refactoring.RefactoringBundle.*
 import com.intellij.ui.RecentsManager
@@ -20,7 +19,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.matchesPath
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.constants.PlsPatternConstants
@@ -144,7 +143,7 @@ class IntroduceGlobalScriptedVariableDialog(
         } else if (!filePath.endsWith(".txt", true)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.3"))
         }
-        val selectedFile = VfsUtil.findFile(filePath.toPath(), false)
+        val selectedFile = filePath.toVirtualFile()
             ?.takeIf { it.exists() }
             ?: return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.invalid.1"))
         val path = selectedFile.fileInfo?.path?.path

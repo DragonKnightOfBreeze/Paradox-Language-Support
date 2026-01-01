@@ -3,12 +3,14 @@ package icu.windea.pls.lang.util
 import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.editor
+import java.nio.file.Path
 
 object PlsFileManager {
     fun isLightFile(file: VirtualFile?): Boolean {
@@ -45,5 +47,13 @@ object PlsFileManager {
                 }
             }
         }
+    }
+
+    fun findDirectory(path: Path, createIfMissing: Boolean = true): VirtualFile? {
+        val r = VfsUtil.findFile(path, false)
+        if (r != null) return r
+        if (!createIfMissing) return null
+        runWriteAction { VfsUtil.createDirectoryIfMissing(path.toString()) }
+        return VfsUtil.findFile(path, true)
     }
 }

@@ -71,7 +71,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 val location = element
                 if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
                     val filePath = element.value
-                    val virtualFile = filePath.toVirtualFile(false)
+                    val virtualFile = filePath.toVirtualFile()
                     if (virtualFile != null) return
                     val message = PlsBundle.message("inspection.script.unresolvedPathReference.desc.abs", filePath)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
