@@ -143,6 +143,15 @@
         nameKey="script.hints.scriptedVariableReferenceValue"
         descriptionKey="script.hints.scriptedVariableReferenceValue.description"/>
     <codeInsight.declarativeInlayProvider
+        language="PARADOX_SCRIPT"
+        implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInjectionInfoHintsProvider"
+        isEnabledByDefault="true"
+        group="OTHER_GROUP"
+        providerId="paradox.script.definitionInjectionInfo"
+        bundle="messages.PlsBundle"
+        nameKey="script.hints.definitionInjectionInfo"
+        descriptionKey="script.hints.definitionInjectionInfo.description"/>
+    <codeInsight.declarativeInlayProvider
         language="PARADOX_LOCALISATION"
         implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxScriptedVariableReferenceValueHintsProvider"
         isEnabledByDefault="false"
