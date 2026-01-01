@@ -11,6 +11,7 @@ import javax.swing.Icon
 /**
  * 用于在VCS提交记录中直接基于文件路径为（可能已经不存在的）文件提供正确的图标。
  */
+@Suppress("removal", "OVERRIDE_DEPRECATION")
 class ParadoxFilePathIconProvider : FilePathIconProvider {
     override fun getIcon(filePath: FilePath, project: Project?): Icon? {
         val possibleGroup = ParadoxFileGroup.resolvePossible(filePath.name)
