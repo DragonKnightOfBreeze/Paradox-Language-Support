@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -42,6 +42,6 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
-        return ParadoxPsiFinder.findScriptProperty(file, offset)
+        return ParadoxPsiFileManager.findScriptProperty(file, offset)
     }
 }

@@ -9,7 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
@@ -48,6 +48,6 @@ class GotoRelatedDefinitionInjectionsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
     }
 }

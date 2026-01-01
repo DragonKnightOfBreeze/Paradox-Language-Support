@@ -10,7 +10,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptFile
@@ -58,8 +58,8 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
-        return ParadoxPsiFinder.findScriptedVariable(file, offset) { BY_NAME }
-            ?: ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
+            ?: ParadoxPsiFileManager.findScriptExpression(file, offset).castOrNull()
     }
 }
 

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.script.psi.ParadoxScriptFile
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -39,6 +39,6 @@ class GotoScriptedVariablesAction : BaseCodeInsightAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFinder.findScriptedVariable(file, offset) { BY_NAME }
+        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
     }
 }

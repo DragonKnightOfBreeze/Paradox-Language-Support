@@ -43,7 +43,7 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
@@ -79,7 +79,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
-        return ParadoxPsiFinder.findDefinition(file, offset)
+        return ParadoxPsiFileManager.findDefinition(file, offset)
     }
 
     private fun findElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {

@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.psi.ParadoxPsiMatcher
 import icu.windea.pls.lang.search.ParadoxScriptedVariableSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -50,7 +50,7 @@ class GotoScriptedVariablesHandler : GotoTargetHandler() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptScriptedVariable? {
-        return ParadoxPsiFinder.findScriptedVariable(file, offset) { BY_NAME }
+        return ParadoxPsiFileManager.findScriptedVariable(file, offset) { BY_NAME }
     }
 
     override fun shouldSortTargets(): Boolean {

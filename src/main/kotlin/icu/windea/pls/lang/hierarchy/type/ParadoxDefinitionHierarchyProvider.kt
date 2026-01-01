@@ -8,7 +8,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
 /**
@@ -30,7 +30,7 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
             val offset = editor.caretModel.offset
 
             run r@{
-                val result = ParadoxPsiFinder.findDefinition(file, offset) { DEFAULT or BY_REFERENCE } ?: return@r
+                val result = ParadoxPsiFileManager.findDefinition(file, offset) { DEFAULT or BY_REFERENCE } ?: return@r
                 return result
             }
         }

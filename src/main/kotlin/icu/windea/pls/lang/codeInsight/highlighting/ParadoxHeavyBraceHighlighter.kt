@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionVisitor
@@ -34,7 +34,7 @@ class ParadoxHeavyBraceHighlighter : HeavyBraceHighlighter() {
 
     private fun matchBraceInComplexExpression(offset: Int, file: PsiFile): Pair<TextRange, TextRange>? {
         val caretOffset = offset
-        val element = ParadoxPsiFinder.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
+        val element = ParadoxPsiFileManager.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
         if (element == null) return null
 
         val elementOffset = element.startOffset

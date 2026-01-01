@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionUtil
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxMarkerNode
@@ -34,7 +34,7 @@ class ParadoxTypedHandler : TypedHandlerDelegate() {
         val closeMarker = ParadoxComplexExpressionUtil.getMatchedMarker(leftMarker) ?: return null
         val closeChar = closeMarker.singleOrNull() ?: return null
         val caretOffset = editor.caretModel.offset
-        val element = ParadoxPsiFinder.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
+        val element = ParadoxPsiFileManager.findExpressionForComplexExpression(file, caretOffset, fromToken = true)
         if (element == null) return null
 
         val gameType = selectGameType(file) ?: return null

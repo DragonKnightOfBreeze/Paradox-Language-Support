@@ -38,12 +38,23 @@ import icu.windea.pls.script.psi.isDefinitionName
 import icu.windea.pls.script.psi.isDefinitionTypeKey
 import icu.windea.pls.script.psi.isExpression
 
-/**
- * 用于从指定的文件位置查找特定目标。其中一些方法可以指定选项，以仅从名字、引用等位置查找。
- */
-@Suppress("unused")
-object ParadoxPsiFinder {
+object ParadoxPsiFileManager {
+    // region Find Extensions
+
     object ScriptedVariableOptions {
+        const val DEFAULT = 0x01
+        const val BY_NAME = 0x02
+        const val BY_REFERENCE = 0x04
+    }
+
+    object DefinitionOptions {
+        const val DEFAULT = 0x01
+        const val BY_TYPE_KEY = 0x02
+        const val BY_NAME = 0x04
+        const val BY_REFERENCE = 0x08
+    }
+
+    object LocalisationOptions {
         const val DEFAULT = 0x01
         const val BY_NAME = 0x02
         const val BY_REFERENCE = 0x04
@@ -76,13 +87,6 @@ object ParadoxPsiFinder {
 
     inline fun findScriptedVariable(file: PsiFile, offset: Int, optionsProvider: ScriptedVariableOptions.() -> Int): ParadoxScriptScriptedVariable? {
         return findScriptedVariable(file, offset, ScriptedVariableOptions.optionsProvider())
-    }
-
-    object DefinitionOptions {
-        const val DEFAULT = 0x01
-        const val BY_TYPE_KEY = 0x02
-        const val BY_NAME = 0x04
-        const val BY_REFERENCE = 0x08
     }
 
     fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptDefinitionElement? {
@@ -128,12 +132,6 @@ object ParadoxPsiFinder {
 
     inline fun findDefinition(file: PsiFile, offset: Int, optionsProvider: DefinitionOptions.() -> Int): ParadoxScriptDefinitionElement? {
         return findDefinition(file, offset, DefinitionOptions.optionsProvider())
-    }
-
-    object LocalisationOptions {
-        const val DEFAULT = 0x01
-        const val BY_NAME = 0x02
-        const val BY_REFERENCE = 0x04
     }
 
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
@@ -220,4 +218,6 @@ object ParadoxPsiFinder {
             else -> null
         }
     }
+
+    // endregion
 }

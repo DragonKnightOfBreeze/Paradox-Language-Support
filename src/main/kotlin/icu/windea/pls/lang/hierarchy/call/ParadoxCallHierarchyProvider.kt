@@ -9,7 +9,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.ParadoxPsiFinder
+import icu.windea.pls.lang.psi.ParadoxPsiFileManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
@@ -38,9 +38,9 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
             if (file == null || file.language !is ParadoxLanguage) return@run
             val offset = editor.caretModel.offset
 
-            ParadoxPsiFinder.findScriptedVariable(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
-            ParadoxPsiFinder.findDefinition(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
-            ParadoxPsiFinder.findLocalisation(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
+            ParadoxPsiFileManager.findScriptedVariable(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
+            ParadoxPsiFileManager.findDefinition(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
+            ParadoxPsiFileManager.findLocalisation(file, offset) { DEFAULT or BY_REFERENCE }?.let { return it }
         }
         return null
     }
