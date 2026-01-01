@@ -86,6 +86,7 @@ object ParadoxPsiFinder {
     }
 
     fun findDefinition(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptDefinitionElement? {
+        // TODO 2.1.0+ 考虑兼容定义注入
         val expressionElement by lazy {
             file.findElementAt(offset) {
                 it.parentOfType<ParadoxScriptExpressionElement>(false)

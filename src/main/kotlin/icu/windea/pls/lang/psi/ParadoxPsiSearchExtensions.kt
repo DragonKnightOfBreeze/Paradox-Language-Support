@@ -10,7 +10,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.parents
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.WalkingSequence
-import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.definitionInjectionInfo
@@ -148,7 +147,8 @@ fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
         .takeWhile { it !is PsiDirectory }
-        .findIsInstance<ParadoxScriptDefinitionElement> { it.definitionInfo != null }
+        .filterIsInstance<ParadoxScriptDefinitionElement>()
+        .find { it.definitionInfo != null }
 }
 
 /**
@@ -158,7 +158,19 @@ fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
         .takeWhile { it !is ParadoxScriptRootBlock }
-        .findIsInstance<ParadoxScriptProperty> { it.definitionInjectionInfo != null }
+        .filterIsInstance<ParadoxScriptProperty>()
+        .find { it.parent is ParadoxScriptBlock && it.definitionInjectionInfo != null }
+}
+
+/**
+ * 向上得到第一个定义或定义注入。可能为 `null`，可能为自身。
+ */
+fun PsiElement.findParentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
+    if (language !is ParadoxScriptLanguage) return null
+    return parents(withSelf = true)
+        .takeWhile { it !is ParadoxScriptRootBlock }
+        .filterIsInstance<ParadoxScriptDefinitionElement>()
+        .find { it.definitionInfo != null || (it is ParadoxScriptProperty && it.parent is ParadoxScriptBlock && it.definitionInjectionInfo != null) }
 }
 
 /**

@@ -6,7 +6,7 @@ import com.intellij.usages.impl.FileStructureGroupRuleProvider
 import com.intellij.usages.rules.UsageGroupingRule
 
 /**
- * 文件结构支持 - 定义的使用分组规则。
+ * 文件结构支持 - 定义的用法分组规则。
  */
 class ParadoxDefinitionFileStructureGroupRuleProvider : FileStructureGroupRuleProvider {
     // com.intellij.usages.impl.rules.JavaMethodGroupRuleProvider

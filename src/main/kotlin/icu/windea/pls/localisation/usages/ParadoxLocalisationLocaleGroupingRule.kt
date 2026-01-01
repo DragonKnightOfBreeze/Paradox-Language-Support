@@ -19,8 +19,13 @@ class ParadoxLocalisationLocaleGroupingRule(
 ) : SingleParentUsageGroupingRule() {
     // com.intellij.usages.impl.rules.MethodGroupingRule
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun getLocalisationLocale(usage: Usage, targets: Array<out UsageTarget>): ParadoxLocalisationLocale? {
+    override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
+        val localisationLocale = getLocalisationLocale(usage) ?: return null
+        val name = localisationLocale.name
+        return ParadoxLocalisationLocaleGroup(localisationLocale, name, localisationLocale.project, usageViewSettings)
+    }
+
+    private fun getLocalisationLocale(usage: Usage): ParadoxLocalisationLocale? {
         var element = usage.castOrNull<PsiElementUsage>()?.element ?: return null
         if (element.language !is ParadoxLocalisationLanguage) return null
         if (element is ParadoxLocalisationFile) {
@@ -30,10 +35,5 @@ class ParadoxLocalisationLocaleGroupingRule(
             }
         }
         return element.parentOfType<ParadoxLocalisationPropertyList>()?.locale
-    }
-
-    override fun getParentGroupFor(usage: Usage, targets: Array<out UsageTarget>): UsageGroup? {
-        val localisationLocale = getLocalisationLocale(usage, targets) ?: return null
-        return ParadoxLocalisationLocaleGroup(localisationLocale, usageViewSettings)
     }
 }

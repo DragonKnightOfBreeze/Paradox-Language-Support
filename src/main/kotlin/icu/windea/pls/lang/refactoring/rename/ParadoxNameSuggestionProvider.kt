@@ -3,9 +3,12 @@ package icu.windea.pls.lang.refactoring.rename
 import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.SuggestedNameInfo
 import com.intellij.refactoring.rename.NameSuggestionProvider
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinitionInjection
 import icu.windea.pls.model.codeInsight.ParadoxTargetInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
@@ -49,14 +52,26 @@ class ParadoxNameSuggestionProvider : NameSuggestionProvider {
         }
         suggestedNames.addAll(fromName)
 
-        // parentDefinitionName作为前缀
+        // parentDefinitionName 作为前缀
         run {
             if (declarationInfo is ParadoxTargetInfo.Definition) return@run // 排除本身是定义的情况
             val parentDefinition = nameSuggestionContext?.findParentDefinition() ?: return@run
             val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinition) ?: return@run
             if (!isSupported(parentDeclarationInfo)) return@run
             val parentDefinitionInfo = parentDefinition.definitionInfo ?: return@run
-            val parentDefinitionName = parentDefinitionInfo.name
+            val parentDefinitionName = parentDefinitionInfo.name.orNull() ?: return@run
+            suggestedNames.add("${parentDefinitionName}_$name")
+            suggestedNames.addAll(fromName.map { "${parentDefinitionName}_$it" })
+        }
+
+        // 兼容定义注入
+        run {
+            if (declarationInfo is ParadoxTargetInfo.DefinitionInjection) return@run // 排除本身是定义注入的情况
+            val parentDefinitionInjection = nameSuggestionContext?.findParentDefinitionInjection() ?: return@run
+            val parentDeclarationInfo = ParadoxTargetInfo.from(parentDefinitionInjection) ?: return@run
+            if (!isSupported(parentDeclarationInfo)) return@run
+            val parentDefinitionInjectionInfo = parentDefinitionInjection.definitionInjectionInfo ?: return@run
+            val parentDefinitionName = parentDefinitionInjectionInfo.target?.orNull() ?: return@run
             if (parentDefinitionName.isEmpty()) return@run
             suggestedNames.add("${parentDefinitionName}_$name")
             suggestedNames.addAll(fromName.map { "${parentDefinitionName}_$it" })

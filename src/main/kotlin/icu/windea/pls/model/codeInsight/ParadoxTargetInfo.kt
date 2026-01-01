@@ -6,6 +6,7 @@ import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
@@ -29,6 +30,11 @@ sealed class ParadoxTargetInfo {
         override val name: String,
         val type: String,
         val subtypes: List<String>
+    ) : ParadoxTargetInfo()
+
+    data class DefinitionInjection(
+        override val name: String,
+        val type: String
     ) : ParadoxTargetInfo()
 
     data class Localisation(
@@ -62,8 +68,16 @@ sealed class ParadoxTargetInfo {
                     ScriptedVariable(name)
                 }
                 is ParadoxScriptProperty -> {
-                    val definitionInfo = element.definitionInfo ?: return null
-                    Definition(definitionInfo.name, definitionInfo.type, definitionInfo.subtypes)
+                    run {
+                        val info = element.definitionInfo ?: return@run
+                        return Definition(info.name, info.type, info.subtypes)
+                    }
+                    run {
+                        val info = element.definitionInjectionInfo ?: return@run
+                        if (info.target.isNullOrEmpty() || info.type.isNullOrEmpty()) return null
+                        return DefinitionInjection(info.target, info.type)
+                    }
+                    null
                 }
                 is ParadoxLocalisationProperty -> {
                     val name = element.name.orNull() ?: return null
@@ -97,6 +111,7 @@ sealed class ParadoxTargetInfo {
             return when (targetInfo) {
                 is ScriptedVariable -> "#sv@${targetInfo.name}"
                 is Definition -> "#d@${targetInfo.name}.${targetInfo.type}"
+                is DefinitionInjection -> "#di@${targetInfo.name}.${targetInfo.type}"
                 is Localisation -> when (targetInfo.type) {
                     ParadoxLocalisationType.Normal -> "#l@${targetInfo.name}"
                     ParadoxLocalisationType.Synced -> "#ls@${targetInfo.name}"
@@ -115,6 +130,10 @@ sealed class ParadoxTargetInfo {
             anchor.removePrefixOrNull("#d@")?.let { s ->
                 val (name, type) = s.split('.', limit = 2).mapNotNull { it.orNull() }.takeIf { it.size == 2 } ?: return null
                 return Definition(name, type, emptyList())
+            }
+            anchor.removePrefixOrNull("#di@")?.let { s ->
+                val (name, type) = s.split('.', limit = 2).mapNotNull { it.orNull() }.takeIf { it.size == 2 } ?: return null
+                return DefinitionInjection(name, type)
             }
             anchor.removePrefixOrNull("#l@")?.let { s ->
                 val name = s.orNull() ?: return null

@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.usages
+package icu.windea.pls.script.usages
 
 import com.intellij.navigation.NavigationItemFileStatus
 import com.intellij.openapi.project.Project
@@ -9,12 +9,16 @@ import com.intellij.usages.UsageViewSettings
 import icu.windea.pls.core.compareToIgnoreCase
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
-import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.core.util.anonymous
+import icu.windea.pls.core.util.or
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import java.util.*
 import javax.swing.Icon
 
-class ParadoxLocalisationLocaleGroup(
-    element: ParadoxLocalisationLocale,
+class ParadoxDefinitionInjectionUsageGroup(
+    element: ParadoxScriptProperty,
     private val name: String,
+    private val type: String,
     private val project: Project,
     private val usageViewSettings: UsageViewSettings,
 ) : UsageGroup {
@@ -28,7 +32,7 @@ class ParadoxLocalisationLocaleGroup(
     }
 
     override fun getPresentableGroupText(): String {
-        return name
+        return name.or.anonymous()
     }
 
     override fun getFileStatus(): FileStatus? {
@@ -53,7 +57,7 @@ class ParadoxLocalisationLocaleGroup(
     }
 
     override fun compareTo(other: UsageGroup?): Int {
-        if (other !is ParadoxLocalisationLocaleGroup) {
+        if (other !is ParadoxDefinitionInjectionUsageGroup) {
             return -1 // 不期望的结果
         } else if (SmartPointerManager.getInstance(project).pointToTheSameElement(pointer, other.pointer)) {
             return 0
@@ -68,12 +72,13 @@ class ParadoxLocalisationLocaleGroup(
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxLocalisationLocaleGroup
+        return this === other || other is ParadoxDefinitionInjectionUsageGroup
             && name == other.name
+            && type == other.type
             && SmartPointerManager.getInstance(project).pointToTheSameElement(pointer, other.pointer)
     }
 
     override fun hashCode(): Int {
-        return name.hashCode()
+        return Objects.hash(name, type)
     }
 }

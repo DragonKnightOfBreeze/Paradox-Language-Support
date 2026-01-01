@@ -14,10 +14,10 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
-class IntroduceLocalVariableFix(
+class IntroduceLocalScriptedVariableFix(
     private val variableName: String,
     element: ParadoxScriptedVariableReference
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
@@ -28,17 +28,20 @@ class IntroduceLocalVariableFix(
     override fun getFamilyName() = PlsBundle.message("fix.introduceLocalScriptedVariable.familyName")
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-        val command = Runnable {
+        val command = Runnable r@{
             // 声明对应名字的封装变量，默认值给0
+            // 2.1.0 兼容定义注入
             val element = startElement
-            val parentDefinitionOrFile = element.findParentDefinition() ?: element.containingFile as? ParadoxScriptFile ?: return@Runnable
-            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", parentDefinitionOrFile, project)
+            val containerElmeent = element.findParentDefinitionOrInjection()
+                ?: element.containingFile as? ParadoxScriptFile
+                ?: return@r
+            val newVariable = ParadoxPsiManager.introduceLocalScriptedVariable(variableName, "0", containerElmeent, project)
 
             val document = PsiDocumentManager.getInstance(project).getDocument(file)
             if (document != null) PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(document) // 提交文档更改
             if (editor != null) {
-                // 光标移到newVariableValue的结束位置并选中
-                val newVariableValue = newVariable.scriptedVariableValue ?: return@Runnable
+                // 光标移到 newVariableValue 的结束位置并选中
+                val newVariableValue = newVariable.scriptedVariableValue ?: return@r
                 editor.caretModel.moveToOffset(newVariableValue.endOffset)
                 editor.selectionModel.setSelection(newVariableValue.startOffset, newVariableValue.endOffset)
                 editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

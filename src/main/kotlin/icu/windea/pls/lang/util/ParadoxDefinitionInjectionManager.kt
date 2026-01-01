@@ -16,6 +16,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxModificationTrackers
+import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -79,6 +80,18 @@ object ParadoxDefinitionInjectionManager {
         return true // 这里目前不继续检查当前位置是否匹配任意定义类型
     }
 
+    fun getModeFromExpression(expression: String): String? {
+        val index = expression.indexOf(':')
+        if (index == -1) return null
+        return expression.substring(0, index)
+    }
+
+    fun getTargetFromExpression(expression: String): String? {
+        val index = expression.indexOf(':')
+        if (index == -1) return null
+        return expression.substring(index + 1)
+    }
+
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
@@ -117,13 +130,13 @@ object ParadoxDefinitionInjectionManager {
     private fun doGetInfoFromPsi(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val expression = element.name
         if (!isMatched(expression, gameType)) return null
         if (!isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
         val mode = getModeFromExpression(expression)
         if (mode.isNullOrEmpty()) return null
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
@@ -137,16 +150,16 @@ object ParadoxDefinitionInjectionManager {
         return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
 
-    fun getModeFromExpression(expression: String): String? {
-        val index = expression.indexOf(':')
-        if (index == -1) return null
-        return expression.substring(0, index)
+    fun getTarget(element: ParadoxScriptProperty): String? {
+        val stub = runReadActionSmartly { getStub(element) }
+        stub?.let { return it.target }
+        return element.definitionInjectionInfo?.target
     }
 
-    fun getTargetFromExpression(expression: String): String? {
-        val index = expression.indexOf(':')
-        if (index == -1) return null
-        return expression.substring(index + 1)
+    fun getType(element: ParadoxScriptProperty): String? {
+        val stub = runReadActionSmartly { getStub(element) }
+        stub?.let { return it.type }
+        return element.definitionInjectionInfo?.type
     }
 
     fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.DefinitionInjection? {

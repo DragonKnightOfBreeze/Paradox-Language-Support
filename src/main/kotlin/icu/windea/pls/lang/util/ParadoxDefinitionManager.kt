@@ -92,12 +92,12 @@ object ParadoxDefinitionManager {
     private fun doGetInfoFromPsi(element: ParadoxScriptDefinitionElement, file: PsiFile): ParadoxDefinitionInfo? {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType // 这里还是基于 `fileInfo` 获取 `gameType`
-        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val path = fileInfo.path
         val elementPath = ParadoxScriptService.getElementPath(element, PlsInternalSettings.getInstance().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null // 忽略成员路径带参数的情况
         val typeKey = getTypeKey(element) ?: return null
         val typeKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxScriptService.getKeyPrefixes(element).firstOrNull() } else null
+        val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 `project`
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(element, configGroup, path, elementPath, typeKey, typeKeyPrefix) ?: return null
         return ParadoxDefinitionInfo(element, typeConfig, null, null, typeKey, elementPath.normalize())
     }

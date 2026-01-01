@@ -16,7 +16,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
@@ -33,7 +33,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         if (file.virtualFile == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        return element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
+        return element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() != null
     }
 
     override fun invokeAction(project: Project, editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {

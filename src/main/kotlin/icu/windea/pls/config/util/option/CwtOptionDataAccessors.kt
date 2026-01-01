@@ -469,14 +469,15 @@ object CwtOptionDataAccessors : CwtOptionDataAccessorMixin {
     /**
      * 检查抑制集合（suppress）。
      *
-     * 通过若干 `## suppress = TOOL_ID` 来禁用特定 Inspection（如解析未决表达式）。
-     * PLS 将收集所有同名选项为集合。
+     * 通过若干 `## suppress = TOOL_ID` 来禁用对应 ID 的代码检查。
      *
      * 适用对象：定义成员对应的规则。
      *
      * CWTools 兼容性：PLS 未启用相关功能。
      *
      * 示例：`## suppress = ParadoxScriptUnresolvedExpression`
+     *
+     * TODO 暂未使用，需要验证
      *
      * @see icu.windea.pls.lang.inspections.suppress.ParadoxScriptConfigAwareInspectionSuppressor
      */

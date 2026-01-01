@@ -35,6 +35,7 @@
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.navigation.ParadoxScriptBreadCrumbsProvider"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
+    <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionInjectionFileStructureGroupRuleProvider"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>

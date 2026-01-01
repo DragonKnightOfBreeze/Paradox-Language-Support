@@ -1,6 +1,7 @@
 package icu.windea.pls.script.usages
 
 import com.intellij.navigation.NavigationItemFileStatus
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FileStatus
 import com.intellij.psi.SmartPointerManager
 import com.intellij.usages.UsageGroup
@@ -10,37 +11,37 @@ import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
-import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.util.*
 import javax.swing.Icon
 
 class ParadoxDefinitionUsageGroup(
-    definition: ParadoxScriptDefinitionElement,
-    definitionInfo: ParadoxDefinitionInfo,
-    private val usageViewSettings: UsageViewSettings
+    element: ParadoxScriptDefinitionElement,
+    private val name: String,
+    private val type: String,
+    private val project: Project,
+    private val usageViewSettings: UsageViewSettings,
 ) : UsageGroup {
     // com.intellij.usages.impl.rules.MethodGroupingRule.MethodUsageGroup
 
-    private val _name = definitionInfo.name
-    private val _icon = definition.icon
-    private val _project = definitionInfo.project
-    private val _pointer = definition.createPointer()
+    private val icon = element.icon
+    private val pointer = element.createPointer()
 
     override fun getIcon(): Icon? {
-        return _icon
+        return icon
     }
 
     override fun getPresentableGroupText(): String {
-        return _name.or.anonymous()
+        return name.or.anonymous()
     }
 
     override fun getFileStatus(): FileStatus? {
-        if (_pointer.project.isDisposed) return null
-        return _pointer.containingFile?.let { NavigationItemFileStatus.get(it) }
+        if (pointer.project.isDisposed) return null
+        return pointer.containingFile?.let { NavigationItemFileStatus.get(it) }
     }
 
     override fun isValid(): Boolean {
-        return _pointer.element?.isValid == true
+        return pointer.element?.isValid == true
     }
 
     override fun canNavigate(): Boolean {
@@ -48,7 +49,7 @@ class ParadoxDefinitionUsageGroup(
     }
 
     override fun navigate(requestFocus: Boolean) {
-        if (isValid) _pointer.element?.navigate(requestFocus)
+        if (isValid) pointer.element?.navigate(requestFocus)
     }
 
     override fun canNavigateToSource(): Boolean {
@@ -58,24 +59,26 @@ class ParadoxDefinitionUsageGroup(
     override fun compareTo(other: UsageGroup?): Int {
         if (other !is ParadoxDefinitionUsageGroup) {
             return -1 // 不期望的结果
-        } else if (SmartPointerManager.getInstance(_project).pointToTheSameElement(_pointer, other._pointer)) {
+        } else if (SmartPointerManager.getInstance(project).pointToTheSameElement(pointer, other.pointer)) {
             return 0
         } else if (!usageViewSettings.isSortAlphabetically) {
-            val segment1 = _pointer.range
-            val segment2 = other._pointer.range
+            val segment1 = pointer.range
+            val segment2 = other.pointer.range
             if (segment1 != null && segment2 != null) {
                 return segment1.startOffset - segment2.startOffset
             }
         }
-        return _name.compareToIgnoreCase(other._name)
+        return name.compareToIgnoreCase(other.name)
     }
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxDefinitionUsageGroup && _name == other._name
-            && SmartPointerManager.getInstance(_project).pointToTheSameElement(_pointer, other._pointer)
+        return this === other || other is ParadoxDefinitionUsageGroup
+            && name == other.name
+            && type == other.type
+            && SmartPointerManager.getInstance(project).pointToTheSameElement(pointer, other.pointer)
     }
 
     override fun hashCode(): Int {
-        return _name.hashCode()
+        return Objects.hash(name, type)
     }
 }

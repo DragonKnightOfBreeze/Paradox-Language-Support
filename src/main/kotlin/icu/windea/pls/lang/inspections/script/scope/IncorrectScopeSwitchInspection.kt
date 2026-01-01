@@ -10,14 +10,15 @@ import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.core.pass
-import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxDynamicScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxErrorScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxParameterizedScopeLinkNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxScopeNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxSystemScopeNode
 import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -41,7 +42,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 val config = configs.firstOrNull()
                 if (config == null) return
-                val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
+                val definitionType by lazy { findParentDefinitionType(element) }
                 if (config is CwtPropertyConfig && config.configExpression.type == CwtDataTypes.ScopeField) {
                     val resultScopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
                     if (resultScopeContext == null) return
@@ -73,7 +74,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                             is ParadoxSystemScopeNode -> {
                                 if (!checkForSystemScopes) continue
                                 if (scopeContext.scope.id == ParadoxScopeManager.unknownScopeId) {
-                                    val definitionType = definitionInfo?.type ?: continue
+                                    val definitionType = definitionType ?: continue
                                     if (config.configGroup.definitionTypesModel.skipCheckSystemScope.contains(definitionType)) continue
                                     val description = PlsBundle.message(
                                         "inspection.script.incorrectScopeSwitch.desc.3",
@@ -88,6 +89,15 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                         }
                     }
                 }
+            }
+
+            private fun findParentDefinitionType(element: ParadoxScriptProperty): String? {
+                val fromElement = element.findParentDefinitionOrInjection() ?: return null
+                ParadoxDefinitionManager.getType(fromElement)?.let { return it }
+                if (fromElement is ParadoxScriptProperty) {
+                    ParadoxDefinitionInjectionManager.getType(fromElement)?.let { return it }
+                }
+                return null
             }
         }
     }

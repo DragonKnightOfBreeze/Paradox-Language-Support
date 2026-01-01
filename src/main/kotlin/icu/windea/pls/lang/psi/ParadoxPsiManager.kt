@@ -328,8 +328,8 @@ object ParadoxPsiManager {
     /**
      * 在所属定义之前另起一行（跳过注释和空白），声明指定名字和值的封装变量。
      */
-    fun introduceLocalScriptedVariable(name: String, value: String, parentDefinitionOrFile: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
-        val (parent, anchor) = parentDefinitionOrFile.findParentAndAnchorToIntroduceLocalScriptedVariable()
+    fun introduceLocalScriptedVariable(name: String, value: String, containerElement: ParadoxScriptDefinitionElement, project: Project): ParadoxScriptScriptedVariable {
+        val (parent, anchor) = containerElement.findParentAndAnchorToIntroduceLocalScriptedVariable()
         var newVariable = ParadoxScriptElementFactory.createScriptedVariable(project, name, value.quoteIfNecessary())
         val newLine = ParadoxScriptElementFactory.createLine(project)
         newVariable = parent.addAfter(newVariable, anchor).cast()

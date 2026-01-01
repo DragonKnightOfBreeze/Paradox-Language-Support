@@ -23,7 +23,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.TemplateEditingFinishedListener
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.psi.ParadoxPsiManager
-import icu.windea.pls.lang.psi.findParentDefinition
+import icu.windea.pls.lang.psi.findParentDefinitionOrInjection
 import icu.windea.pls.lang.refactoring.ContextAwareRefactoringActionHandler
 import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory
@@ -37,7 +37,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
     override fun isAvailable(editor: Editor, file: PsiFile, dataContext: DataContext): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
-        return element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() != null
+        return element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() != null
     }
 
     @Suppress("UnstableApiUsage")
@@ -51,7 +51,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
         // 要求对应的int_token或float_token在定义声明内
-        val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
+        val parentDefinition = element.findParentDefinitionOrInjection()?.castOrNull<ParadoxScriptProperty>() ?: return false
         val command = Runnable {
             // 用封装参数（variableReference）替换当前位置的int或float
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)

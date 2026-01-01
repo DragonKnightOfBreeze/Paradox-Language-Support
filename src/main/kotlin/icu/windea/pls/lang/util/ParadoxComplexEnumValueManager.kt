@@ -60,6 +60,7 @@ object ParadoxComplexEnumValueManager {
         val enumName = complexEnumConfig.name
         val readWriteAccess = Access.Write // write (declaration)
         val definitionElementOffset = when {
+            // TODO 2.1.0+ 考虑兼容定义注入
             complexEnumConfig.perDefinition -> element.findParentDefinition()?.startOffset ?: -1
             else -> -1
         }

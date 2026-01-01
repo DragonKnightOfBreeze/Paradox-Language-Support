@@ -96,6 +96,7 @@ object ParadoxSearchScopeTypes {
     }.also { map.put(it.id, it) }
 
     private fun findRootDefinition(project: Project, context: Any?): ParadoxScriptDefinitionElement? {
+        // TODO 2.1.0+ 考虑兼容定义注入
         val contextElement = when {
             context is PsiElement -> context
             context is ParadoxComplexEnumValueIndexInfo -> {

@@ -17,4 +17,6 @@ data class ParadoxDefinitionInjectionInfo(
     val project: Project get() = configGroup.project
     val gameType: ParadoxGameType get() = configGroup.gameType
     val declarationConfig get() = type?.orNull()?.let { configGroup.declarations.get(it) }
+
+    val expression: String get() = mode + ":" + type.orEmpty()
 }
