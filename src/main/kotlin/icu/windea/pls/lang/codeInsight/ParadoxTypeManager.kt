@@ -6,6 +6,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.listOrEmpty
 import icu.windea.pls.core.util.singleton
@@ -53,6 +54,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.isDefinitionName
+import icu.windea.pls.script.psi.property
 
 object ParadoxTypeManager {
     fun isTypedElement(element: PsiElement): Boolean {
@@ -155,8 +157,16 @@ object ParadoxTypeManager {
      */
     fun getDefinitionType(element: PsiElement): String? {
         if (element !is ParadoxScriptPropertyKey) return null
-        val definitionInfo = element.parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo ?: return null
-        return definitionInfo.typesText
+        val property = element.property ?: return null
+
+        val definitionInfo = property.definitionInfo
+        if (definitionInfo != null) return definitionInfo.typesText
+
+        // #252 兼容定义注入
+        val definitionInjectionInfo = property.definitionInjectionInfo
+        if (definitionInjectionInfo != null) return definitionInjectionInfo.type?.orNull()
+
+        return null
     }
 
     /**
