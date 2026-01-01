@@ -184,7 +184,7 @@ object ParadoxDocumentationManager {
 
     private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, hint: Boolean): String {
         return buildDocumentation {
-            // 对于相关图片信息，在 definition 部分显示在相关本地化信息之后，在 sections 部分则显示在之前
+            // 对于相关图片的信息，在 definition 部分显示在相关本地化的信息之后，在 sections 部分则显示在之前
             if (!hint) initSections()
             buildDefinitionDefinition(element, definitionInfo)
             if (hint) return@buildDocumentation
@@ -292,7 +292,7 @@ object ParadoxDocumentationManager {
                 append(": ").append(enumName)
             }
 
-            // 加上相关本地化信息：同名的本地化
+            // 加上相关本地化的信息：同名的本地化
             addRelatedLocalisationsForComplexEnumValue(element)
 
             // 加上作用域上下文信息
@@ -345,7 +345,7 @@ object ParadoxDocumentationManager {
                 }
             }
 
-            // 加上相关本地化信息：同名的本地化
+            // 加上相关本地化的信息：同名的本地化
             addRelatedLocalisationsForDynamicValue(element)
 
             // 加上作用域上下文信息
@@ -527,7 +527,7 @@ object ParadoxDocumentationManager {
                 is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
             }
 
-            // 加上相关本地化信息：同名的本地化
+            // 加上相关本地化的信息：同名的本地化
             addRelatedLocalisationsForScriptedVariable(element, name)
         }
     }
@@ -574,7 +574,6 @@ object ParadoxDocumentationManager {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
-
             // 加上定义信息
             addDefinitionInfo(element, definitionInfo)
 
@@ -586,10 +585,9 @@ object ParadoxDocumentationManager {
                 addSuperDefinitionInfo(superDefinition, superDefinitionInfo)
             }
 
-            // 加上相关本地化信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
+            // 加上相关本地化的信息：去重后的一组本地化的键名，不包括可选且没有对应的本地化的项，按解析顺序排序
             addRelatedLocalisationsForDefinition(element, definitionInfo)
-
-            // 加上相关图片信息：去重后的一组图片文件的 `filePath` ，或者 `sprite` 的 `definitionKey`，不包括可选且没有对应的图片的项，按解析顺序排序
+            // 加上相关图片的信息：去重后的一组图片的 ID（定义名或文件路径），不包括可选且没有对应的图片的项，按解析顺序排序
             addRelatedImagesForDefinition(element, definitionInfo)
 
             // 加上生成的修正的信息
@@ -597,7 +595,6 @@ object ParadoxDocumentationManager {
 
             // 加上修正分类和作用域信息（如果支持）
             addModifierScopeForDefinition(element, definitionInfo)
-
             // 加上作用域上下文信息（如果支持）
             addScopeContextForDefinition(element, definitionInfo)
 
@@ -830,7 +827,6 @@ object ParadoxDocumentationManager {
         definition {
             // 加上文件信息
             appendFileInfoHeader(element)
-
             // 加上定义信息
             addLocalisationInfo(element, localisationType)
 
