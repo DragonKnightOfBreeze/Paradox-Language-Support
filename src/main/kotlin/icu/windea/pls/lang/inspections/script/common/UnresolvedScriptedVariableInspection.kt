@@ -60,7 +60,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     private fun getQuickFixes(element: ParadoxScriptedVariableReference, name: String): Array<LocalQuickFix> {
         return arrayOf(
             IntroduceLocalScriptedVariableFix(name, element),
-            IntroduceGlobalVariableFix(name, element)
+            IntroduceGlobalVariableFix(name, element),
         )
     }
 

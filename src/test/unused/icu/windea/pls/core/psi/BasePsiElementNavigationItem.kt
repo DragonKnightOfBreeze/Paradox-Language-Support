@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.psi
 
 import com.intellij.navigation.PsiElementNavigationItem

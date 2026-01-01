@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.util
 
 import com.intellij.openapi.application.ex.ApplicationManagerEx
@@ -9,7 +11,6 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.reflect.KProperty
 
-@Deprecated("")
 class VirtualFileProvider(
     val filePath: Path,
     val sourceFileProvider: () -> VirtualFile,

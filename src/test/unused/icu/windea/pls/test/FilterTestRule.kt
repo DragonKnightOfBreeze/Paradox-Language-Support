@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.test
 
 import org.junit.Assume

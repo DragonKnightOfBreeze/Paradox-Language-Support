@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import com.intellij.testFramework.LightVirtualFileBase
+import com.intellij.util.application
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.editor
 import java.nio.file.Path
@@ -53,6 +54,8 @@ object PlsFileManager {
         val r = VfsUtil.findFile(path, false)
         if (r != null) return r
         if (!createIfMissing) return null
+
+        if (application.holdsReadLock()) return null // skip create if in read action
         runWriteAction { VfsUtil.createDirectoryIfMissing(path.toString()) }
         return VfsUtil.findFile(path, true)
     }

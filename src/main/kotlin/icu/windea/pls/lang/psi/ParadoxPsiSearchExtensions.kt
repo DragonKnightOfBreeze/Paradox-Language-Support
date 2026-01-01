@@ -159,7 +159,7 @@ fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
     return parents(withSelf = true)
         .takeWhile { it !is ParadoxScriptRootBlock }
         .filterIsInstance<ParadoxScriptProperty>()
-        .find { it.parent is ParadoxScriptBlock && it.definitionInjectionInfo != null }
+        .find { it.parent is ParadoxScriptRootBlock && it.definitionInjectionInfo != null }
 }
 
 /**
@@ -168,9 +168,9 @@ fun PsiElement.findParentDefinitionInjection(): ParadoxScriptProperty? {
 fun PsiElement.findParentDefinitionOrInjection(): ParadoxScriptDefinitionElement? {
     if (language !is ParadoxScriptLanguage) return null
     return parents(withSelf = true)
-        .takeWhile { it !is ParadoxScriptRootBlock }
+        .takeWhile { it !is PsiDirectory }
         .filterIsInstance<ParadoxScriptDefinitionElement>()
-        .find { it.definitionInfo != null || (it is ParadoxScriptProperty && it.parent is ParadoxScriptBlock && it.definitionInjectionInfo != null) }
+        .find { it.definitionInfo != null || (it is ParadoxScriptProperty && it.parent is ParadoxScriptRootBlock && it.definitionInjectionInfo != null) }
 }
 
 /**

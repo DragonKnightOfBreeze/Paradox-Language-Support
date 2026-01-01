@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core.annotations
 
 import org.intellij.lang.annotations.Language
