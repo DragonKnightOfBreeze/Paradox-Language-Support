@@ -5,21 +5,15 @@ import com.intellij.codeInsight.actions.BaseCodeInsightAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.lang.actions.editor
-import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFinder
-import icu.windea.pls.lang.psi.findParentDefinition
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
-import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 导航到当前定义的对应的定义注入。
- *
- * 不支持直接声明为文件的定义。
+ * 导航到当前定义注入的同目标的所有定义注入。
  */
 class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
     private val handler = GotoDefinitionInjectionsHandler()
@@ -39,17 +33,15 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         if (fileInfo.path.length <= 1) return // 忽略直接位于游戏或模组入口目录下的文件
         val gameType = fileInfo.rootInfo.gameType
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
-        presentation.isVisible = true
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        if (!element.isDefinitionTypeKeyOrName()) return
-        val definition = element.findParentDefinition() ?: return
-        val definitionInfo = definition.definitionInfo ?: return
-        if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
-        presentation.isEnabled = true
+        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
+        if (info.target.isEmpty()) return // 排除目标为空的情况
+        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
+        presentation.isEnabledAndVisible = true
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiFinder.findScriptExpression(file, offset).castOrNull()
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptProperty? {
+        return ParadoxPsiFinder.findScriptProperty(file, offset)
     }
 }

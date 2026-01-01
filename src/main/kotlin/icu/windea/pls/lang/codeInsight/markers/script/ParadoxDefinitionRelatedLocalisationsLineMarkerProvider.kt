@@ -21,7 +21,7 @@ import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 提供定义（definition）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
+ * 提供定义（definition）的相关本地化（relatedLocalisations，对应本地化）的装订线图标。
  */
 class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.definitionRelatedLocalisations")

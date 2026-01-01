@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前目标的相关本地化的动作。
+ * 导航到当前目标的相关本地化。
  *
  * 支持的目标：
  * - 封装变量（来自名字）

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.markers.script
 import com.intellij.codeInsight.daemon.NavigateAction
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsIcons
@@ -12,6 +13,7 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.search.ParadoxDefinitionInjectionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definitionInjection
@@ -22,47 +24,47 @@ import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 提供定义注入（definitionInjection）的导航到同目标的所有定义注入的装订线图标。
+ * 提供定义（definition）的相关注入（relatedDefinitionInjections，对应定义注入）的装订线图标。
  */
-class ParadoxDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
-    override fun getName() = PlsBundle.message("script.gutterIcon.definitionInjections")
+class ParadoxRelatedDefinitionInjectionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+    override fun getName() = PlsBundle.message("script.gutterIcon.relatedDefinitionInjections")
 
-    override fun getIcon() = PlsIcons.Gutter.DefinitionInjections
+    override fun getIcon() = PlsIcons.Gutter.RelatedDefinitionInjections
 
-    override fun getGroup() = PlsBundle.message("script.gutterIcon.definitionInjections.group")
+    override fun getGroup() = PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 definitionInjection
+        // 何时显示装订线图标：element 是 definition，且存在对应的 definitionInjection
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
-        val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
-        if (info.target.isEmpty()) return // 排除目标为空的情况
-        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
-        val icon = PlsIcons.Gutter.DefinitionInjections
+        val definitionInfo = element.definitionInfo ?: return
+        if (!ParadoxDefinitionInjectionManager.canApply(definitionInfo)) return // 排除不期望匹配的定义
+        // 显示在提示中 & 可导航
+        val icon = PlsIcons.Gutter.RelatedDefinitionInjections
         val prefix = PlsStringConstants.definitionInjectionPrefix
-        val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"
-        val targets by lazy {
-            val targetKey = info.type + "@" + info.target
-            val project = element.project
-            val selector = selector(project, element).definitionInjection().contextSensitive()
-            val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
-            targets0.optimized()
-        }
+        val tooltip = "$prefix <b>${definitionInfo.name.escapeXml()}</b>: ${definitionInfo.type}"
+        val targetKey = definitionInfo.type + "@" + definitionInfo.name
+        val project = element.project
+        val selector = selector(project, element).definitionInjection().contextSensitive()
+        val targets0 = ParadoxDefinitionInjectionSearch.search(null, targetKey, selector).findAll()
+        if (targets0.isEmpty()) return
+        val targets = targets0.optimized()
+        ProgressManager.checkCanceled()
         val lineMarkerInfo = NavigationGutterIconBuilderFacade.createForPsi(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
-            .setPopupTitle(PlsBundle.message("script.gutterIcon.definitionInjections.title"))
+            .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.title"))
             .setTargets { targets }
             .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { PlsBundle.message("script.gutterIcon.definitionInjections") }
+            .setNamer { PlsBundle.message("script.gutterIcon.relatedDefinitionInjections") }
             .createLineMarkerInfo(locationElement)
         result.add(lineMarkerInfo)
 
         // 绑定导航动作 & 在单独的分组中显示对应的意向动作
         NavigateAction.setNavigateAction(
             lineMarkerInfo,
-            PlsBundle.message("script.gutterIcon.definitionInjections.action"),
-            PlsActions.GotoDefinitionInjections
+            PlsBundle.message("script.gutterIcon.relatedDefinitionInjections.action"),
+            PlsActions.GotoRelatedDefinitionInjections
         )
     }
 }

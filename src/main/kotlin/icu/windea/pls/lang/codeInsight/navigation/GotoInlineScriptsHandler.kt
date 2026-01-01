@@ -24,6 +24,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
+        if (!ParadoxInlineScriptManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val offset = editor.caretModel.offset

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.actions.editor
 import icu.windea.pls.lang.fileInfo
 
 /**
- * 导航到对应的规则的动作。
+ * 导航到对应的规则。
  */
 class GotoRelatedConfigsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedConfigsHandler()

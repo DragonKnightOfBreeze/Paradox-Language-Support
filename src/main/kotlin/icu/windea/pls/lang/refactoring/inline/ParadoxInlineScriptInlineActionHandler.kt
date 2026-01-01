@@ -13,6 +13,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.configContext.inlineScriptHasRecursion
 import icu.windea.pls.core.castOrNull
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.script.ParadoxScriptLanguage
@@ -28,6 +29,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun isEnabledForLanguage(language: Language) = language is ParadoxScriptLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
+        if (!ParadoxInlineScriptManager.isSupported(selectGameType(element))) return false // 忽略游戏类型不支持的情况
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (element.elementType != ParadoxScriptElementTypes.PROPERTY_KEY_TOKEN) return@run
@@ -44,6 +46,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
+        if (!ParadoxInlineScriptManager.isSupported(selectGameType(element))) return false // 忽略游戏类型不支持的情况
         run {
             // 此内联操作也可以从内联脚本用法对应的 PSI 发起
             if (reference == null) return@run

@@ -12,6 +12,8 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.PlsActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -30,6 +32,7 @@ class ParadoxInlineScriptsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvi
         // 何时显示装订线图标：element 是 definition
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
+        if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element) ?: return
         val icon = PlsIcons.Gutter.InlineScripts
         val prefix = PlsStringConstants.inlineScriptPrefix

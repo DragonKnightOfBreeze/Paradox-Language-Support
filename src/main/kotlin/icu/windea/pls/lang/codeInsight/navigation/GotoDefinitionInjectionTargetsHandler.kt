@@ -16,6 +16,7 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import java.util.*
@@ -26,6 +27,7 @@ class GotoDefinitionInjectionTargetsHandler : GotoTargetHandler() {
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
+        if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val project = file.project
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null

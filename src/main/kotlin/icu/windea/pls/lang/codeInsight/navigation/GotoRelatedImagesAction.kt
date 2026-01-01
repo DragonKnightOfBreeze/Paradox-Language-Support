@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDefinitionTypeKeyOrName
 
 /**
- * 导航到当前目标的相关图片的动作。
+ * 导航到当前目标的相关图片。
  *
  * 支持的目标：
  * - 定义（来自类型键或名字）

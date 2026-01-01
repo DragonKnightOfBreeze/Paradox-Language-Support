@@ -212,6 +212,7 @@
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedLocalisationsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxRelatedDefinitionInjectionsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxInlineScriptsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionsLineMarkerProvider"/>
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxDefinitionInjectionTargetsLineMarkerProvider"/>
@@ -481,6 +482,10 @@
       <action id="Pls.GoToRelatedImages" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedImagesAction">
         <keyboard-shortcut keymap="$default" first-keystroke="control alt shift p"/>
         <mouse-shortcut keymap="$default" keystroke="control alt shift button1"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
+      <action id="Pls.GoToRelatedDefinitionInjections" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedDefinitionInjectionsAction">
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>

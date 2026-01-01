@@ -200,6 +200,8 @@ object PlsIcons {
         val DefinitionInjections = IconManager.getInstance().getIcon("/icons/gutter/definitionInjections.svg")
         @JvmField
         val DefinitionInjectionTargets = IconManager.getInstance().getIcon("/icons/gutter/definitionInjectionTargets.svg")
+        @JvmField
+        val RelatedDefinitionInjections = IconManager.getInstance().getIcon("/icons/gutter/relatedDefinitionInjections.svg")
     }
 
     object Actions {

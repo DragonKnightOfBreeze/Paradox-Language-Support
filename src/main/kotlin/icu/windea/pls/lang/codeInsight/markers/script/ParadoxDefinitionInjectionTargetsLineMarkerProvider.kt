@@ -16,12 +16,13 @@ import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.definition
 import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
- * 提供定义注入（definitionInjection）的导航到作为目标的定义（definition）声明的装订线图标。
+ * 提供定义注入（definitionInjection）的导航到作为目标的所有定义声明的装订线图标。
  */
 class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.definitionInjectionTargets")
@@ -31,9 +32,10 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
     override fun getGroup() = PlsBundle.message("script.gutterIcon.definitionInjectionTargets.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 definition
+        // 何时显示装订线图标：element 是 definitionInjection
         if (element !is ParadoxScriptProperty) return
         val locationElement = element.propertyKey.idElement ?: return
+        if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isEmpty()) return // 排除目标为空的情况
         if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
