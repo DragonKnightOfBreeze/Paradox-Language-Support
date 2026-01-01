@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
@@ -211,7 +211,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
                     val step2 = PlsDiagramBundle.message("techTree.update.step.2", size)
                     sReporter.nextStep(25, step2) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
                                 reporter.itemStep(step2) {
                                     readAction { createNode(technology) }
@@ -222,7 +222,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
                     val step3 = PlsDiagramBundle.message("techTree.update.step.3", size)
                     sReporter.nextStep(50, step3) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
                                 reporter.itemStep {
                                     readAction { createEdges(technology) }
@@ -233,7 +233,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
                     val step4 = PlsDiagramBundle.message("techTree.update.step.4", size)
                     sReporter.nextStep(100, step4) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
                                 reporter.itemStep {
                                     readAction { preloadLocalisations(technology) }

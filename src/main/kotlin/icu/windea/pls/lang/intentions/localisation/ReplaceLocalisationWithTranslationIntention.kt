@@ -9,7 +9,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
-import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
@@ -42,7 +42,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
 
             runCatchingCancelable r@{
                 if (contextsToHandle.isEmpty()) return@r
-                reportProgress(contextsToHandle.size) { reporter ->
+                reportProgressScope(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
                         reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.replace.progress.itemStep", context.key)) {
                             withErrorRef(errorRef) { handleText(context, selectedLocale) }.getOrThrow()

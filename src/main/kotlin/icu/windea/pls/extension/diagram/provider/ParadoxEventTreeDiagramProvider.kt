@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
-import com.intellij.platform.util.progress.reportProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
@@ -189,7 +189,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
                     val step2 = PlsDiagramBundle.message("eventTree.update.step.2", size)
                     sReporter.nextStep(25, step2) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             events.forEach { event ->
                                 reporter.itemStep(step2) {
                                     readAction { createNode(event) }
@@ -200,7 +200,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
                     val step3 = PlsDiagramBundle.message("eventTree.update.step.3", size)
                     sReporter.nextStep(50, step3) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             events.forEach { event ->
                                 reporter.itemStep {
                                     readAction { createEdges(event) }
@@ -211,7 +211,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
                     val step4 = PlsDiagramBundle.message("eventTree.update.step.4", size)
                     sReporter.nextStep(100, step4) {
-                        reportProgress(size) { reporter ->
+                        reportProgressScope(size) { reporter ->
                             events.forEach { event ->
                                 reporter.itemStep {
                                     readAction { preloadData(event) }
