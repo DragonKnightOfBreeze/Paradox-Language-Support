@@ -58,6 +58,7 @@ class ParadoxDefinitionInjectionSearcher : QueryExecutorBase<ParadoxScriptProper
     private fun matchesMode(element: ParadoxScriptProperty, mode: String?): Boolean {
         if (mode == null) return true
         val actualMode = ParadoxDefinitionInjectionManager.getModeFromExpression(element.name)
+        if (actualMode.isNullOrEmpty()) return false
         return actualMode.equals(mode, true)
     }
 }

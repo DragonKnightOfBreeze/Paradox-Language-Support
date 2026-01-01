@@ -37,8 +37,8 @@ class ParadoxDefinitionInjectionTargetsLineMarkerProvider : ParadoxRelatedItemLi
         val locationElement = element.propertyKey.idElement ?: return
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(element))) return // 忽略游戏类型不支持的情况
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
-        if (info.target.isEmpty()) return // 排除目标为空的情况
-        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
+        if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
+        if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
         val icon = PlsIcons.Gutter.DefinitionInjectionTargets
         val prefix = PlsStringConstants.definitionInjectionTargetPrefix
         val tooltip = "$prefix <b>${info.target.escapeXml()}</b>: ${info.type}"

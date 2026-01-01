@@ -7,8 +7,8 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 data class ParadoxDefinitionInjectionInfo(
     val mode: String, // must be valid
-    val target: String, // can be empty
-    val type: String, // can be empty
+    val target: String?,
+    val type: String?,
     val modeConfig: CwtValueConfig,
     val typeConfig: CwtTypeConfig?,
 ) {

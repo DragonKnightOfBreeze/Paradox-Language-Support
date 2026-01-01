@@ -78,7 +78,7 @@ object ParadoxDefinitionInjectionManager {
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
         // mode must exist
-        if (getModeFromExpression(element.name).isEmpty()) return null
+        if (getModeFromExpression(element.name).isNullOrEmpty()) return null
         // get from cache
         return doGetInfoFromCache(element)
     }
@@ -101,13 +101,13 @@ object ParadoxDefinitionInjectionManager {
     fun doGetInfoFromStub(element: ParadoxScriptProperty, file: PsiFile): ParadoxDefinitionInjectionInfo? {
         val stub = getStub(element) ?: return null
         val mode = stub.mode
-        val target = stub.definitionName
-        val type = stub.definitionType
+        val target = stub.target
+        val type = stub.type
         val gameType = stub.gameType
         val configGroup = PlsFacade.getConfigGroup(file.project, gameType) // 这里需要指定 project
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
-        val typeConfig = configGroup.types[type] ?: return null
+        val typeConfig = configGroup.types[type]
         return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
 
@@ -120,11 +120,11 @@ object ParadoxDefinitionInjectionManager {
         if (!isAvailable(element)) return null
         if (expression.isParameterized()) return null // 忽略带参数的情况
         val mode = getModeFromExpression(expression)
-        if (mode.isEmpty()) return null
+        if (mode.isNullOrEmpty()) return null
         val macroConfig = configGroup.macroConfigs[definitionInjectionKey] ?: return null
         val modeConfig = macroConfig.modeConfigs[mode] ?: return null
         val target = getTargetFromExpression(expression)
-        if (target.isEmpty()) return ParadoxDefinitionInjectionInfo(mode, target, "", modeConfig, null) // 兼容目标为空的情况
+        if (target.isNullOrEmpty()) return ParadoxDefinitionInjectionInfo(mode, target, null, modeConfig, null) // 兼容目标为空的情况
         val path = fileInfo.path
         val elementPath = ParadoxElementPath.resolve(listOf(target))
         val typeKey = target
@@ -134,12 +134,16 @@ object ParadoxDefinitionInjectionManager {
         return ParadoxDefinitionInjectionInfo(mode, target, type, modeConfig, typeConfig)
     }
 
-    fun getModeFromExpression(expression: String): String {
-        return expression.substringBefore(':', "")
+    fun getModeFromExpression(expression: String): String? {
+        val index = expression.indexOf(':')
+        if(index == -1) return null
+        return expression.substring(0, index)
     }
 
-    fun getTargetFromExpression(expression: String): String {
-        return expression.substringAfter(':', "")
+    fun getTargetFromExpression(expression: String): String? {
+        val index = expression.indexOf(':')
+        if(index == -1) return null
+        return expression.substring(index + 1)
     }
 
     fun getStub(element: ParadoxScriptProperty): ParadoxScriptPropertyStub.DefinitionInjection? {

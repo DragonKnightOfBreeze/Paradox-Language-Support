@@ -109,7 +109,7 @@ object ParadoxScriptStubManager {
         val definitionType = definitionInfo.type
         if (definitionType.isEmpty()) return null
         val definitionName = definitionInfo.name // NOTE 这里不处理需要内联的情况
-        val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(definitionInfo) // 如果无法在索引时获取，之后再懒加载
+        val definitionSubtypes = getDefinitionSubtypesWhenCreateStub(definitionInfo) // 如果无法在索引时获取，之后再懒加载
         val elementPath = definitionInfo.elementPath
         return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
     }
@@ -132,15 +132,15 @@ object ParadoxScriptStubManager {
         val definitionType = typeConfig.name
         if (definitionType.isEmpty()) return null
         val definitionName = ParadoxDefinitionService.resolveName(node, tree, typeKey, typeConfig) // NOTE 这里不处理需要内联的情况
-        val definitionSubtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, typeKey) // 如果无法在索引时获取，之后再懒加载
+        val definitionSubtypes = getDefinitionSubtypesWhenCreateStub(typeConfig, typeKey) // 如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStub.createDefinition(parentStub, typeKey, definitionName, definitionType, definitionSubtypes, elementPath)
     }
 
-    private fun getSubtypesWhenCreateDefinitionStub(definitionInfo: ParadoxDefinitionInfo): List<String>? {
+    private fun getDefinitionSubtypesWhenCreateStub(definitionInfo: ParadoxDefinitionInfo): List<String>? {
         return runCatchingCancelable { definitionInfo.subtypes }.getOrNull()
     }
 
-    private fun getSubtypesWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, typeKey: String): List<String>? {
+    private fun getDefinitionSubtypesWhenCreateStub(typeConfig: CwtTypeConfig, typeKey: String): List<String>? {
         val subtypesConfig = typeConfig.subtypes
         val result = mutableListOf<CwtSubtypeConfig>()
         for (subtypeConfig in subtypesConfig.values) {
@@ -172,23 +172,33 @@ object ParadoxScriptStubManager {
     }
 
     private fun createDefinitionInjectionStub(psi: ParadoxScriptProperty, parentStub: StubElement<out PsiElement>?, name: String): ParadoxScriptPropertyStub? {
-        if (name.isParameterized()) return null // 忽略带参数的情况
+        // 排除带参数的情况
+        // 目标或目标类型为空时，也会创建存根
+        if (name.isParameterized()) return null
         val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
-        if (mode.isEmpty()) return null
-        val definitionName = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        if (definitionName.isEmpty()) return null
-        val definitionInjectionInfo = psi.definitionInjectionInfo ?: return null
-        val definitionType = definitionInjectionInfo.type
-        if (definitionType.isEmpty()) return null
-        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, definitionName, definitionType)
+        if (mode.isNullOrEmpty()) return null
+        val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
+        val type = getDefinitionInjectionTypeWhenCreateStub(psi)
+        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
     }
 
     private fun createDefinitionInjectionStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, name: String): ParadoxScriptPropertyStub? {
-        if (name.isParameterized()) return null // 忽略带参数的情况
+        // 排除带参数的情况
+        // 目标或目标类型为空时，也会创建存根
+        if (name.isParameterized()) return null
         val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
-        if (mode.isEmpty()) return null
+        if (mode.isNullOrEmpty()) return null
         val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        if (target.isEmpty()) return null
+        val type = getDefinitionInjectionTypeWhenCreateStub(tree, node, parentStub, target)
+        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
+    }
+
+    private fun getDefinitionInjectionTypeWhenCreateStub(psi: ParadoxScriptProperty): String? {
+        return psi.definitionInjectionInfo?.type
+    }
+
+    private fun getDefinitionInjectionTypeWhenCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<out PsiElement>, target: String?): String? {
+        if (target.isNullOrEmpty()) return null
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
@@ -201,8 +211,6 @@ object ParadoxScriptStubManager {
         val typeKey = target
         val typeConfig = ParadoxConfigMatchService.getMatchedTypeConfig(node, tree, configGroup, path, elementPath, typeKey, null) ?: return null
         if (!ParadoxDefinitionInjectionManager.canApply(typeConfig)) return null // 排除不期望匹配的类型规则
-        val definitionType = typeConfig.name
-        if (definitionType.isEmpty()) return null
-        return ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, definitionType)
+        return typeConfig.name
     }
 }

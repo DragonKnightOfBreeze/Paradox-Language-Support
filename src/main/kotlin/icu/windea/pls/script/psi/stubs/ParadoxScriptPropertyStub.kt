@@ -62,16 +62,16 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
      * （作为脚本属性的）定义注入的存根。
      *
      * @property expression 宏表达式。等同于 [ParadoxScriptPropertyStub.name]。
-     * @property mode 注入模式。不能为空。
-     * @property definitionName 目标定义的名字。不能为空。等同于目标定义的类型键。
-     * @property definitionType 目标定义的类型。不能为空。
+     * @property mode 注入模式。
+     * @property target 目标定义的名字。等同于目标定义的类型键。
+     * @property type 目标定义的类型。
      *
      */
     interface DefinitionInjection : ParadoxScriptPropertyStub {
         val expression: String
         val mode: String
-        val definitionName: String
-        val definitionType: String
+        val target: String?
+        val type: String?
     }
 
     private sealed class Base(
@@ -147,8 +147,8 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         parent: StubElement<*>?,
         override val name: String,
         override val mode: String,
-        override val definitionName: String,
-        override val definitionType: String,
+        override val target: String?,
+        override val type: String?,
     ) : Base(parent), DefinitionInjection {
         override val expression: String get() = name
 
@@ -156,8 +156,8 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             return "ParadoxScriptPropertyStub.DefinitionInjection(" +
                 "expression=$expression, " +
                 "mode=$mode, " +
-                "definitionName=$definitionName, " +
-                "definitionType=$definitionType, " +
+                "definitionName=$target, " +
+                "definitionType=$type, " +
                 "gameType=$gameType)"
         }
     }
@@ -201,10 +201,10 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
             parent: StubElement<*>?,
             expression: String,
             mode: String,
-            definitionName: String,
-            definitionType: String,
+            target: String?,
+            type: String?,
         ): DefinitionInjection {
-            return DefinitionInjectionImpl(parent, expression, mode, definitionName, definitionType)
+            return DefinitionInjectionImpl(parent, expression, mode, target, type)
         }
     }
 }

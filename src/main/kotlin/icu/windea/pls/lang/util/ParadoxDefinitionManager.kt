@@ -52,7 +52,7 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         // type key must be valid
-        if (getTypeKey(element) == null) return null
+        if (getTypeKey(element).isNullOrEmpty()) return null
         // get from cache
         return doGetInfoFromCache(element)
     }

@@ -135,8 +135,10 @@ class ParadoxScriptAnnotator : Annotator {
         val name = element.name
         if (name.isParameterized()) return false // 忽略带参数的情况
 
+        // 兼容目标为空的情况，此时仅高亮模式前缀
+
         val mode = ParadoxDefinitionInjectionManager.getModeFromExpression(name)
-        if (mode.isEmpty()) return false
+        if (mode.isNullOrEmpty()) return false
         val offset = element.startOffset + ParadoxExpressionManager.getExpressionOffset(element.propertyKey)
         val modeRange = TextRange.from(offset, mode.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(modeRange).textAttributes(ParadoxScriptAttributesKeys.MACRO_KEY).create()
@@ -144,7 +146,7 @@ class ParadoxScriptAnnotator : Annotator {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(markerRange).textAttributes(ParadoxScriptAttributesKeys.MARKER_KEY).create()
 
         val target = ParadoxDefinitionInjectionManager.getTargetFromExpression(name)
-        if (target.isEmpty()) return true
+        if (target.isNullOrEmpty()) return true
         val targetRange = TextRange.from(offset + mode.length + 1, target.length)
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(targetRange).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY).create()
         return true

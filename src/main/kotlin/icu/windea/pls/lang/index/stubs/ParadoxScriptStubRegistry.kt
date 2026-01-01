@@ -156,8 +156,8 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     dataStream.writeByte(Flags.definitionInjection)
                     dataStream.writeName(stub.name)
                     dataStream.writeName(stub.mode)
-                    dataStream.writeName(stub.definitionName)
-                    dataStream.writeName(stub.definitionType)
+                    dataStream.writeName(stub.target)
+                    dataStream.writeName(stub.type)
                 }
                 else -> {
                     dataStream.writeByte(Flags.property)
@@ -199,9 +199,9 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                 Flags.definitionInjection -> { // #252
                     val name = dataStream.readNameString().orEmpty()
                     val mode = dataStream.readNameString().orEmpty()
-                    val definitionName = dataStream.readNameString().orEmpty()
-                    val definitionType = dataStream.readNameString().orEmpty()
-                    ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, definitionName, definitionType)
+                    val target = dataStream.readNameString()
+                    val type = dataStream.readNameString()
+                    ParadoxScriptPropertyStub.createDefinitionInjection(parentStub, name, mode, target, type)
                 }
                 else -> {
                     val name = dataStream.readNameString().orEmpty()
@@ -239,9 +239,9 @@ class ParadoxScriptStubRegistry : StubRegistryExtension {
                     sink.occurrence(PlsIndexKeys.InlineScriptArgument, stub.expression)
                 }
                 is ParadoxScriptPropertyStub.DefinitionInjection -> { // #252
-                    if (stub.definitionName.isEmpty()) return
-                    if (stub.definitionType.isEmpty()) return
-                    val targetKey = stub.definitionType + "@" + stub.definitionName
+                    if (stub.target.isNullOrEmpty()) return
+                    if (stub.type.isNullOrEmpty()) return
+                    val targetKey = stub.type + "@" + stub.target
                     sink.occurrence(PlsIndexKeys.DefinitionInjectionTarget, targetKey)
                 }
             }

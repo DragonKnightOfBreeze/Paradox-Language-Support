@@ -25,14 +25,12 @@ class ParadoxDefinitionInjectionPsiReferenceProvider : PsiReferenceProvider() {
 
         // 兼容目标为空或者目标定义的类型为空的情况，此时仅返回 `modeReference`
 
-        val mode = info.mode
-        if (mode.isEmpty()) return PsiReference.EMPTY_ARRAY
-        val modeRange = TextRange.from(offset, mode.length)
+        if (info.mode.isEmpty()) return PsiReference.EMPTY_ARRAY
+        val modeRange = TextRange.from(offset, info.mode.length)
         val modeReference = ParadoxDefinitionInjectionModePsiReference(element, modeRange, info)
 
-        val target = info.target
-        if (target.isEmpty() || info.type.isEmpty()) return arrayOf(modeReference)
-        val targetRange = TextRange.from(offset + mode.length + 1, target.length)
+        if (info.target.isNullOrEmpty() || info.type.isNullOrEmpty()) return arrayOf(modeReference)
+        val targetRange = TextRange.from(offset + info.mode.length + 1, info.target.length)
         val targetReference = ParadoxDefinitionInjectionTargetPsiReference(element, targetRange, info)
         return arrayOf(modeReference, targetReference)
     }

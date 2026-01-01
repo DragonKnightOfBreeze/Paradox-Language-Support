@@ -36,8 +36,8 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
-        if (info.target.isEmpty()) return // 排除目标为空的情况
-        if (info.type.isEmpty()) return // 排除目标定义的类型为空的情况
+        if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
+        if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况
         presentation.isEnabledAndVisible = true
     }
 
