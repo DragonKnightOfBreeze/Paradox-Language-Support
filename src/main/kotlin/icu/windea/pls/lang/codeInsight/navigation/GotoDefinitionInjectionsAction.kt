@@ -34,7 +34,7 @@ class GotoDefinitionInjectionsAction : BaseCodeInsightAction() {
         val gameType = fileInfo.rootInfo.gameType
         if (!ParadoxDefinitionInjectionManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
+        val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return
         if (info.target.isNullOrEmpty()) return // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return // 排除目标定义的类型为空的情况

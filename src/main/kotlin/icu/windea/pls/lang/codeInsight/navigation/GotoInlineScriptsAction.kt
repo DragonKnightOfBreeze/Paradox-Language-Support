@@ -35,7 +35,7 @@ class GotoInlineScriptsAction : BaseCodeInsightAction() {
         val gameType = fileInfo.rootInfo.gameType
         if (!ParadoxInlineScriptManager.isSupported(gameType)) return // 忽略游戏类型不支持的情况
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
+        val element = findElement(file, offset) ?: return // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return
         presentation.isEnabledAndVisible = true
     }

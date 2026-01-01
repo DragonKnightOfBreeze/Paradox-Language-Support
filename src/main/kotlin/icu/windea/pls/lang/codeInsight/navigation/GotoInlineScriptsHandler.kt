@@ -28,7 +28,7 @@ class GotoInlineScriptsHandler : GotoTargetHandler() {
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
         if (!ParadoxPsiMatcher.isInlineScriptUsage(element, gameType)) return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromUsageElement(element, resolve = true) ?: return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())

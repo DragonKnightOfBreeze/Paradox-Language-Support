@@ -30,7 +30,7 @@ class GotoDefinitionInjectionsHandler : GotoTargetHandler() {
         if (!ParadoxDefinitionInjectionManager.isSupported(selectGameType(file))) return null // 忽略游戏类型不支持的情况
         val project = file.project
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return null
+        val element = findElement(file, offset) ?: return null // 只要向上能找到符合条件的属性就行
         val info = ParadoxDefinitionInjectionManager.getInfo(element) ?: return null
         if (info.target.isNullOrEmpty()) return null // 排除目标为空的情况
         if (info.type.isNullOrEmpty()) return null // 排除目标定义的类型为空的情况
