@@ -69,6 +69,8 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             val definitionInjectionInfo = ParadoxDefinitionInjectionManager.getInfo(property) ?: return@run
             val modeConfig = definitionInjectionInfo.modeConfig
             result += modeConfig
+            val typeConfig = definitionInjectionInfo.typeConfig
+            if (typeConfig != null) result += typeConfig
             return result // 中断解析
         }
 
