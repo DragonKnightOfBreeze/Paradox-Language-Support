@@ -1,5 +1,4 @@
-character = {
-    id = windea
+windea = {
     name = name_windea
     title = title_windea
     desc = desc_windea

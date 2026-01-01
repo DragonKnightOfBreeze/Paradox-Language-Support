@@ -1,6 +1,5 @@
 # common/characters/00_characters.txt
-character/*<# windea: character #>*/ = {
-    id = windea
+windea/*<# : character #>*/ = {
     name = name_windea
     title = title_windea
     desc = desc_windea

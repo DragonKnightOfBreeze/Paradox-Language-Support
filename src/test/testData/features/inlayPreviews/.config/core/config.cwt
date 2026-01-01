@@ -2,8 +2,8 @@ types = {
     type[character] = {
         path = "game/common/characters"
         path_extension = .txt
-        name_field = id
         localisation = {
+            ## primary
             name = name
             title = title
         }

@@ -1,0 +1,15 @@
+# common/characters/99_characters_injected.txt
+REPLACE:windea/*<# : character #>*/ = {
+    title = title_windea_1
+    desc = desc_windea_1
+
+    on_awakened = {
+        from = {
+            save_global_event_target_as = the_waker
+        }
+        say_hello_world = yes
+    }
+    on_abandoned = {
+        revival = yes
+    }
+}
