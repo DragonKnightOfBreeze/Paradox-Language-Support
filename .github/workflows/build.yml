@@ -17,7 +17,7 @@ on:
   push:
     branches:
       - master
-      - "*-dev"
+      - "dev/**"
     paths-ignore:
       - ".idea/**"
       - "docs/**"
