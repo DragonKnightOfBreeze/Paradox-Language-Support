@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.hints.script
+package icu.windea.pls.lang.codeInsight.hints.localisation
 
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.model.ParadoxGameType
@@ -20,20 +20,13 @@ class ParadoxScriptedVariableReferenceValueHintsProviderTest : DeclarativeInlayH
     fun clear() = clearIntegrationTest()
 
     @Test
-    fun local() {
-        doTest("""
-@var = 1
-key = @var/*<# => 1 #>*/
-        """.trimIndent())
-    }
-
-    @Test
     fun global() {
         markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global.txt")
         myFixture.configureByText("global.txt", "@var = 1")
 
         doTest("""
-key = @var/*<# => 1 #>*/
+l_default:
+ key:0 "value: $@var/*<# => 1 #>*/$"
         """.trimIndent())
     }
 
@@ -41,12 +34,13 @@ key = @var/*<# => 1 #>*/
     fun unresolved() {
         doTest("""
 // NO_HINTS
-key = @var
+l_default:
+ key:0 "value: $@var$"
         """.trimIndent())
     }
 
     private fun doTest(text: String) {
-        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
-        doTestProvider("test.txt", text, ParadoxScriptedVariableReferenceValueHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.yml")
+        doTestProvider("test.yml", text, ParadoxScriptedVariableReferenceValueHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 }

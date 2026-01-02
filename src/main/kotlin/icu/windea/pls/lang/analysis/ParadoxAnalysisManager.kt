@@ -57,7 +57,7 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetForcedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return with(dataService) { rootFile.injectedRootInfo ?: markedRootInfo }
+        return with(dataService) { rootFile.injectedRootInfo ?: markedRootInfo?.also { rootFile.injectedRootInfo = it } }
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -117,7 +117,7 @@ object ParadoxAnalysisManager {
     }
 
     private fun doGetForcedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { isPossible(it, file) } }
+        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { isPossible(it, file) }?.also { file.injectedFileInfo = it } }
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {

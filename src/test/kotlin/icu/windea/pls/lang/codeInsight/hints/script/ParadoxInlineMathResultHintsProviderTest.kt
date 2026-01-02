@@ -27,7 +27,7 @@ key = @[ 1 + 1 ]/*<# => 2 #>*/
     }
 
     @Test
-    fun withSv() {
+    fun withLocalSv() {
         doTest("""
 @var = 1
 key = @[ var + 1 ]/*<# => 2 #>*/
@@ -35,10 +35,37 @@ key = @[ var + 1 ]/*<# => 2 #>*/
     }
 
     @Test
-    fun notStatic() {
+    fun withGlobalSv() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/scripted_variables/global.txt")
+        myFixture.configureByText("global.txt", "@var = 1")
+
+        doTest("""
+key = @[ var + 1 ]/*<# => 2 #>*/
+        """.trimIndent())
+    }
+
+    @Test
+    fun withUnresolvedSv() {
         doTest("""
 // NO_HINTS
 key = @[ var + 1 ]
+        """.trimIndent())
+    }
+
+    @Test
+    fun withParameter() {
+        val p = "\$PARAM|1$"
+        doTest("""
+key = @[ $p + 1 ]/*<# => 2 #>*/
+        """.trimIndent())
+    }
+
+    @Test
+    fun withUnresolvedParameter() {
+        val p = "\$PARAM$"
+        doTest("""
+// NO_HINTS
+key = @[ $p + 1 ]
         """.trimIndent())
     }
 
