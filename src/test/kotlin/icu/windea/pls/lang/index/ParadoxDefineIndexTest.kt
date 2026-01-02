@@ -10,8 +10,10 @@ import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -24,9 +26,10 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() {
-        markIntegrationTest()
-    }
+    fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun testDefineIndex_Basic() {
@@ -56,9 +59,8 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
 
     @Test
     fun testDefineSearcher_ByNamespaceAndVariable() {
-        myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
         markFileInfo(ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
 
         // act
         val selector = selector(project, myFixture.file).define()

@@ -3,16 +3,17 @@ package icu.windea.pls.lang.index
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.indexing.FileBasedIndex
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.selector.file
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.lang.search.selector.withSearchScope
 import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.clearIntegrationTest
 import icu.windea.pls.test.initConfigGroups
 import icu.windea.pls.test.markFileInfo
 import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -31,14 +32,14 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
+    @After
+    fun clear() = clearIntegrationTest()
+
     @Test
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
-
-        // Important: request reindex so FilePathIndex sees injected fileInfo
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         val project = project
         val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))
@@ -61,15 +62,12 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     @Test
     fun testIgnoreLocale_BothLocales_ReturnsBoth() {
         // Arrange: english and chinese files both exist
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
 
         // configure chinese file as well and inject file info
-        myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
         markFileInfo(ParadoxGameType.Stellaris, "localisation/ui/ui_l_simp_chinese.test.yml")
-
-        // Important: request reindex so FilePathIndex sees injected fileInfo
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
+        myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
 
         val project = project
         val selector = selector(project, myFixture.file).file().withSearchScope(GlobalSearchScope.projectScope(project))

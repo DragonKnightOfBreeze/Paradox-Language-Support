@@ -5,12 +5,10 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
-import icu.windea.pls.model.ParadoxFileInfo
 
 /**
  * 文件类型重载器。
@@ -22,11 +20,8 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         if (file.isDirectory) return null
         if (file is VirtualFileWithoutContent) return null
 
-        val fastFileInfo = getFastFileInfo(file)
-        if (fastFileInfo != null) return ParadoxFileManager.getFileType(fastFileInfo.group)
-
         if (file is VirtualFileWindow) {
-            val fileInfo = getResolvedFileInfo(file) ?: return null
+            val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return null
             return ParadoxFileManager.getFileType(fileInfo.group)
         }
 
@@ -38,18 +33,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
             if (fileType != null) return fileType
         }
 
-        val fileInfo = getResolvedFileInfo(file)
-        if (fileInfo != null) return ParadoxFileManager.getFileType(fileInfo.group)
-
-        return null
-    }
-
-    private fun getFastFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val dataService = ParadoxAnalysisDataService.getInstance()
-        return with(dataService) { markedFileInfo ?: file.injectedFileInfo ?: file.cachedFileInfo?.value }
-    }
-
-    private fun getResolvedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return ParadoxAnalysisManager.getFileInfo(file)
+        val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return null
+        return ParadoxFileManager.getFileType(fileInfo.group)
     }
 }

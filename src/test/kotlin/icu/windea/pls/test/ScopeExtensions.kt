@@ -3,6 +3,7 @@
 package icu.windea.pls.test
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
@@ -15,23 +16,17 @@ context(_: UsefulTestCase)
 fun initConfigGroup(project: Project, gameType: ParadoxGameType): CwtConfigGroup {
     val configGroupService = CwtConfigGroupService.getInstance(project)
     val groups = configGroupService.getConfigGroups().values
+        .filter { it.gameType == ParadoxGameType.Core || it.gameType == gameType }
     runBlocking { configGroupService.init(groups, project) }
     return configGroupService.getConfigGroup(gameType)
 }
 
 context(_: UsefulTestCase)
-fun initConfigGroups(project: Project) {
-    val configGroupService = CwtConfigGroupService.getInstance(project)
-    val configGroups = configGroupService.getConfigGroups().values
-    runBlocking { configGroupService.init(configGroups, project) }
-}
-
-context(_: UsefulTestCase)
 fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
-    val configGroupService = CwtConfigGroupService.getInstance(project)
-    val configGroups = configGroupService.getConfigGroups().values
-        .filter { it.gameType == ParadoxGameType.Core || it.gameType in gameTypes }
-    runBlocking { configGroupService.init(configGroups, project) }
+    val servconfigGroupService = CwtConfigGroupService.getInstance(project)
+    val configGroups = servconfigGroupService.getConfigGroups().values
+        .filter { it.gameType == ParadoxGameType.Core || (gameTypes.isEmpty() || it.gameType in gameTypes) }
+    runBlocking { servconfigGroupService.init(configGroups, project) }
 }
 
 context(_: UsefulTestCase)
@@ -41,11 +36,16 @@ fun markIntegrationTest() {
 }
 
 context(_: UsefulTestCase)
+fun clearIntegrationTest() {
+    ParadoxAnalysisInjector.clearMarkedFileInfo()
+}
+
+context(_: UsefulTestCase)
 fun markFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
     ParadoxAnalysisInjector.markFileInfo(gameType, path, entry, group)
 }
 
 context(_: UsefulTestCase)
-fun clearMarkedFileInfo() {
-    ParadoxAnalysisInjector.clearMarkedFileInfo()
+fun VirtualFile.injectFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
+    ParadoxAnalysisInjector.injectFileInfo(this, gameType, path, entry, group)
 }

@@ -29,6 +29,7 @@ import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -49,14 +50,14 @@ object ParadoxAnalysisManager {
         if (PlsFileManager.isStubFile(rootFile)) return null
 
         // try to get injected root info first
-        doGetInjectedRootInfo(rootFile)?.let { return it }
+        doGetForcedRootInfo(rootFile)?.let { return it }
 
         // get root info from cache (load if necessary)
         return doGetCachedRootInfo(rootFile)
     }
 
-    private fun doGetInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return with(dataService) { markedRootInfo ?: rootFile.injectedRootInfo }
+    private fun doGetForcedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+        return with(dataService) { rootFile.injectedRootInfo ?: markedRootInfo }
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -90,7 +91,7 @@ object ParadoxAnalysisManager {
         if (PlsFileManager.isStubFile(file)) return null
 
         // try to get injected file info first
-        doGetInjectedFileInfo(file)?.let { return it }
+        doGetForcedFileInfo(file)?.let { return it }
 
         // get file info from cache (load if necessary)
         return doGetCachedFileInfo(file)
@@ -100,15 +101,30 @@ object ParadoxAnalysisManager {
         return doGetFileInfo(filePath)
     }
 
-    private fun doGetInjectedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return with(dataService) { markedFileInfo ?: file.injectedFileInfo }
+    private fun isPossible(info: ParadoxFileInfo, file: VirtualFile): Boolean {
+        return info.group == ParadoxFileGroup.resolvePossible(file.name)
+    }
+
+    private fun isValid(fileInfo: ParadoxFileInfo?): Boolean {
+        if (fileInfo != null && fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
+            // consistency check
+            val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
+            if (expectedRootInfo != fileInfo.rootInfo) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun doGetForcedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        return with(dataService) { file.injectedFileInfo ?: markedFileInfo?.takeIf { isPossible(it, file) } }
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
         val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: StatefulValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
-        if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
+        if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { isValid(it) }
         synchronized(cachedFileInfo) {
-            if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
+            if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { isValid(it) }
             runCatchingCancelable {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null
@@ -127,17 +143,6 @@ object ParadoxAnalysisManager {
             cachedFileInfo.value = null
             return null
         }
-    }
-
-    private fun doValidateCachedFileInfo(fileInfo: ParadoxFileInfo?): Boolean {
-        if (fileInfo != null && fileInfo.rootInfo is ParadoxRootInfo.MetadataBased) {
-            // consistency check
-            val expectedRootInfo = doGetCachedRootInfo(fileInfo.rootInfo.rootFile)
-            if (expectedRootInfo != fileInfo.rootInfo) {
-                return false
-            }
-        }
-        return true
     }
 
     private fun doGetFileInfo(filePath: FilePath): ParadoxFileInfo? {
@@ -185,13 +190,13 @@ object ParadoxAnalysisManager {
         if (PlsFileManager.isStubFile(file)) return null
 
         // try to get injected locale config first
-        doGetInjectedLocaleConfig(file)?.let { return it }
+        doGetForcedLocaleConfig(file)?.let { return it }
 
         // get locale config from cache (load if necessary)
         return doGetCachedLocaleConfig(file, project)
     }
 
-    private fun doGetInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
+    private fun doGetForcedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
         return with(dataService) { file.injectedLocaleConfig }
     }
 

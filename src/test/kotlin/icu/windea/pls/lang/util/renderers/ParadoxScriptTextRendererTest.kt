@@ -2,8 +2,13 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.indexing.FileBasedIndex
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.ParadoxScriptFileType
+import icu.windea.pls.test.clearIntegrationTest
+import icu.windea.pls.test.markFileInfo
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -12,6 +17,12 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptTextRendererTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
+
+    @After
+    fun clear() = clearIntegrationTest()
 
     @Test
     fun testEmptyFile() {
@@ -152,9 +163,17 @@ class ParadoxScriptTextRendererTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableReference() {
         val input = "@var = 1\nkey = @var"
+        val expect = "key = 1"
+        assert(expect, input) { multiline = false }
+    }
+
+    @Test
+    fun testScriptedVariableReferenceUnresolved() {
+        val input = "key = @var"
         val expect = "key = (unresolved)"
         assert(expect, input) { multiline = false }
     }
+
 
     @Test
     fun testConditional_false() {
@@ -188,9 +207,9 @@ class ParadoxScriptTextRendererTest : BasePlatformTestCase() {
     }
 
     private fun assert(expect: String, input: String, configure: ParadoxScriptTextRenderer.() -> Unit = {}) {
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
         myFixture.configureByText(ParadoxScriptFileType, input)
         val element = myFixture.file
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
         val renderer = ParadoxScriptTextRenderer().also { it.configure() }
         val context = renderer.initContext()
         val result = renderer.render(element, context)

@@ -15,6 +15,7 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
@@ -35,7 +36,7 @@ class ParadoxAnalysisDataService : Disposable {
     @Volatile var useGameTypeInference: Boolean = false
     /** 接下来需要注入的根信息。通常用于集成测试。 */
     @Volatile var markedRootInfo: ParadoxRootInfo? = null
-    /** 接下来需要注入的文件信息。通常用于集成测试。 */
+    /** 接下来需要注入的文件信息。需要匹配可能的规则分组（[ParadoxFileGroup]）。通常用于集成测试。 */
     @Volatile var markedFileInfo: ParadoxFileInfo? = null
 
     // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）

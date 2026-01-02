@@ -30,7 +30,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     suspend fun init(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        val configGroupsToInit = buildList(configGroups.size * 2) {
+        val configGroupsToInit = buildSet {
             addAll(configGroups)
             // 之后也要初始化默认项目的规则数据
             configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
@@ -43,7 +43,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
 
     suspend fun refresh(configGroups: Collection<CwtConfigGroup>, project: Project) {
         val start = System.currentTimeMillis()
-        val configGroupsToInit = buildList(configGroups.size * 2) {
+        val configGroupsToInit = buildSet {
             addAll(configGroups)
             // 之后也要刷新默认项目的规则数据
             configGroups.forEach { configGroup -> add(PlsFacade.getConfigGroup(configGroup.gameType)) }
@@ -95,11 +95,6 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
-        if (project.isDefault) return emptyMap()
-        return buildConfigGroups()
-    }
-
-    private fun buildConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         val gameTypes = ParadoxGameType.getAll(withCore = true)
         val configGroups = buildMap(gameTypes.size) {
             for (gameType in gameTypes) {

@@ -61,6 +61,14 @@ object ParadoxAnalysisInjector {
         return true
     }
 
+    fun injectFileInfo(file: VirtualFile, gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
+        val filePath = ParadoxPath.resolve(path)
+        val fileEntry = entry
+        val fileGroup = group ?: ParadoxFileGroup.resolvePossible(path.substringAfterLast('/'))
+        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, ParadoxRootInfo.Injected(gameType))
+        with(dataService) { file.injectedFileInfo = fileInfo }
+    }
+
     fun injectLocaleConfig(file: VirtualFile, localeConfig: CwtLocaleConfig?): Boolean {
         with(dataService) { file.injectedLocaleConfig = localeConfig }
         return true

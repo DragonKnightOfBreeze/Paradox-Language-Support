@@ -74,7 +74,7 @@ class ParadoxGameElementNode(
     }
 
     private fun isIncluded(file: VirtualFile): Boolean {
-        return FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FilePath, file, this.project).values.single().included
+        return FileBasedIndex.getInstance().getFileData(PlsIndexKeys.FilePath, file, project).values.single().included
     }
 
     override fun update(presentation: PresentationData) {
