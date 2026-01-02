@@ -10,8 +10,10 @@ import icu.windea.pls.lang.search.selector.define
 import icu.windea.pls.lang.search.selector.selector
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxDefineIndexInfo
-import icu.windea.pls.test.PlsTestUtil
+import icu.windea.pls.test.markFileInfo
+import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -21,11 +23,15 @@ import org.junit.runners.JUnit4
 class ParadoxDefineIndexTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
 
+    @Before
+    fun setup() {
+        markIntegrationTest()
+    }
+
     @Test
     fun testDefineIndex_Basic() {
+        markFileInfo(ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
-        FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act
         val scope = GlobalSearchScope.projectScope(project)
@@ -51,7 +57,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefineSearcher_ByNamespaceAndVariable() {
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
+        markFileInfo(ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act

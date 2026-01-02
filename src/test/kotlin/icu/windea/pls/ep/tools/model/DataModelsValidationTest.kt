@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.lang.tools.PlsSqliteService
 import icu.windea.pls.lang.analyze.ParadoxMetadataManager
+import icu.windea.pls.lang.tools.PlsSqliteService
 import org.junit.Test
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
@@ -25,7 +25,6 @@ import kotlin.io.path.exists
  * - 使用 SQL 脚本构建的 SQLite（V4+）最小数据集的读取与验证
  */
 class DataModelsValidationTest {
-
     @Test
     fun parsePlaylistV2_fromResources() {
         val ins = getResource("/tools/playlist_v2.json")

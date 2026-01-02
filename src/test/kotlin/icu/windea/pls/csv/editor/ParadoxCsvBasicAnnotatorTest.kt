@@ -3,6 +3,8 @@ package icu.windea.pls.csv.editor
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -11,6 +13,9 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxCsvBasicAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
 
     @Test
     fun testValidCsv_noErrors() {

@@ -3,6 +3,8 @@ package icu.windea.pls.localisation.syntax
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 import icu.windea.pls.localisation.ParadoxLocalisationParserDefinition
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -13,6 +15,9 @@ class ParadoxLocalisationSyntaxPsiTest : ParsingTestCase("localisation/syntax", 
     override fun getTestDataPath() = "src/test/testData"
 
     override fun includeRanges() = true
+
+    @Before
+    fun setup() = markIntegrationTest()
 
     @Test
     fun code_settings() = doTest(true)

@@ -1,14 +1,14 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.psi
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.collections.forward
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.psi.ParadoxPsiSequenceBuilder
-import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
+import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -17,6 +17,9 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxPsiSequenceBuilderTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
 
     @Test
     fun localisations() {

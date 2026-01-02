@@ -1,15 +1,21 @@
 package icu.windea.pls.lang.codeInsight.hints
 
-import com.intellij.codeInsight.hints.InlayDumpUtil
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.utils.inlays.declarative.DeclarativeInlayHintsProviderTestCase
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxInlineMathResultHintsProvider
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.test.markFileInfo
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ParadoxInlineMathResultHintsProviderTest : DeclarativeInlayHintsProviderTestCase() {
+    @Before
+    fun setup() = markIntegrationTest()
+
     @Test
     fun simple() {
         doTest("""
@@ -34,9 +40,8 @@ key = @[ var + 1 ]
     }
 
     private fun doTest(text: String) {
-        val sourceText = InlayDumpUtil.removeInlays(text)
-        myFixture.configureByText("test.test.txt", sourceText)
-        doTestProviderWithConfigured(sourceText, text, ParadoxInlineMathResultHintsProvider(), emptyMap<String, Boolean>(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
+        doTestProvider(text, text, ParadoxInlineMathResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 
     override fun getProjectDescriptor(): LightProjectDescriptor {

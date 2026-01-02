@@ -3,6 +3,8 @@ package icu.windea.pls.script.editor
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.PlsBundle
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -11,6 +13,9 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxScriptBasicAnnotatorTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
 
     // TODO 2.0.2+ 澄清：由于 ParadoxScriptLexer 中会对 STRING_TOKEN 等进行合并，这里的代码并不能起效（计划以后重构，目前不视为语法性错误）
     // fun testAdjacentLiterals_errorAndFix() {

@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.analyze
 
-import icu.windea.pls.lang.analyze.ParadoxGameManager
 import org.junit.Assert
 import org.junit.Test
 

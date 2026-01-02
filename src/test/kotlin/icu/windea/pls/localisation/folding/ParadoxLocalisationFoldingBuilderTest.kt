@@ -3,6 +3,8 @@ package icu.windea.pls.localisation.folding
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.test.markIntegrationTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -11,6 +13,9 @@ import org.junit.runners.JUnit4
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ParadoxLocalisationFoldingBuilderTest : BasePlatformTestCase() {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun setup() = markIntegrationTest()
 
     @Test
     fun testCommentFolding_expand_true_whenNotCollapsedByDefault() {

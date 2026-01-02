@@ -38,8 +38,8 @@ import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.or
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.actions.editor
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.diff.FileDocumentFragmentContent
 import icu.windea.pls.lang.fileInfo
@@ -51,7 +51,6 @@ import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxElementPath
 import icu.windea.pls.script.ParadoxScriptFileType
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import java.awt.Color
@@ -211,8 +210,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(file.name, text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
         if (elementPath != null && elementPath.length > 1) {
-            val elementPathPrefix = ParadoxElementPath.resolve(elementPath.subPaths.dropLast(1))
-            tempFile.putUserData(PlsKeys.injectedElementPathPrefix, elementPathPrefix)
+            ParadoxAnalyzeInjector.injectRootKeys(tempFile, elementPath.subPaths.dropLast(1))
         }
         // return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)

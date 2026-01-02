@@ -23,7 +23,8 @@ import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatDe
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNameFormatLocalisationNode
 import icu.windea.pls.lang.resolve.complexExpression.nodes.StellarisNamePartNode
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.PlsTestUtil
+import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -36,7 +37,10 @@ class StellarisNameFormatExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
+    fun setup() {
+        markIntegrationTest()
+        initConfigGroups(project, ParadoxGameType.Stellaris)
+    }
 
     private fun parse(
         text: String,

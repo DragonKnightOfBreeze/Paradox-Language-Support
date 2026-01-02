@@ -12,7 +12,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.parent
-import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -51,14 +51,16 @@ object ParadoxScriptService {
             if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = current.parent ?: break
         }
-        if (current is PsiFile) {
-            val virtualFile = selectFile(current)
-            val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
-            if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
-            }
-        }
+        applyInjectionForRootKeys(current, subPaths)
         return ParadoxElementPath.resolve(subPaths)
+    }
+
+    private fun applyInjectionForRootKeys(current: PsiElement, subPaths: ArrayDeque<String>) {
+        if (current !is PsiFile) return
+        val file = selectFile(current) ?: return
+        val injectedRootKeys = ParadoxAnalyzeInjector.getInjectedRootKeys(file)
+        if (injectedRootKeys.isEmpty()) return
+        subPaths.addAll(0, injectedRootKeys)
     }
 
     /**
@@ -85,14 +87,15 @@ object ParadoxScriptService {
             if (maxDepth >= 0 && maxDepth < depth) return null // 如果深度超出指定的最大深度，则直接返回 null
             current = tree.getParent(current) ?: break
         }
-        if (current.tokenType == ParadoxScriptFile.ELEMENT_TYPE) {
-            val virtualFile = file
-            val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
-            if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
-                subPaths.addAll(0, injectedElementPathPrefix.subPaths)
-            }
-        }
+        applyInjectionForRootKeys(current, file, subPaths)
         return ParadoxElementPath.resolve(subPaths)
+    }
+
+    private fun applyInjectionForRootKeys(current: LighterASTNode, file: VirtualFile, subPaths: ArrayDeque<String>) {
+        if (current.tokenType != ParadoxScriptFile.ELEMENT_TYPE) return
+        val injectedRootKeys = ParadoxAnalyzeInjector.getInjectedRootKeys(file)
+        if (injectedRootKeys.isEmpty()) return
+        subPaths.addAll(0, injectedRootKeys)
     }
 
     /**

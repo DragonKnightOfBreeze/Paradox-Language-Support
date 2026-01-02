@@ -9,9 +9,7 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.paths.ParadoxElementPath
 
 object PlsKeys : KeyRegistry() {
     /** 用于在根目录级别保存根信息（[ParadoxRootInfo]）。 */
@@ -20,17 +18,6 @@ object PlsKeys : KeyRegistry() {
     val cachedFileInfo by createKey<StatefulValue<ParadoxFileInfo>>(this)
     /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
     val cachedLocaleConfig by createKey<StatefulValue<CwtLocaleConfig>>(this)
-
-    /** 用于为临时文件注入根信息（[ParadoxRootInfo]）。 */
-    val injectedRootInfo by createKey<ParadoxRootInfo>(this)
-    /** 用于为临时文件注入文件信息（[ParadoxFileInfo]）。 */
-    val injectedFileInfo by createKey<ParadoxFileInfo>(this)
-    /** 用于为临时文件注入游戏类型（[ParadoxGameType]）。 */
-    val injectedGameType by createKey<ParadoxGameType>(this)
-    /** 用于为临时文件注入语言环境规则（[CwtLocaleConfig]）。 */
-    val injectedLocaleConfig by createKey<CwtLocaleConfig>(this)
-    /** 用于为临时脚本文件注入成员路径前缀 */
-    val injectedElementPathPrefix by createKey<ParadoxElementPath>(this)
 
     /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
     val bindingConfig by createKey<CwtConfig<*>>(this)

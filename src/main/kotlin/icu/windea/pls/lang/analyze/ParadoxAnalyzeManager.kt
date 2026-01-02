@@ -5,7 +5,6 @@ import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
@@ -28,7 +27,6 @@ import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
 import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
 import icu.windea.pls.lang.psi.stubs.ParadoxStub
-import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
@@ -59,7 +57,9 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return rootFile.getUserData(PlsKeys.injectedRootInfo)
+        ParadoxAnalyzeInjector.getMarkedRootInfo()?.let { return it }
+        ParadoxAnalyzeInjector.getInjectedRootInfo(rootFile)?.let { return it }
+        return null
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
@@ -104,7 +104,9 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetInjectedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return file.getUserData(PlsKeys.injectedFileInfo)
+        ParadoxAnalyzeInjector.getMarkedFileInfo()?.let { return it }
+        ParadoxAnalyzeInjector.getInjectedFileInfo(file)?.let { return it }
+        return null
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
@@ -195,8 +197,8 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
-        val localeConfig = file.getUserData(PlsKeys.injectedLocaleConfig)
-        return localeConfig
+        ParadoxAnalyzeInjector.getInjectedLocaleConfig(file)?.let { return it }
+        return null
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
@@ -212,6 +214,17 @@ object ParadoxAnalyzeManager {
             cachedLocaleConfig.value = null
             return null
         }
+    }
+
+    // endregion
+
+    // region Manipulation Methods
+
+    fun inferGameTypeFromFileName(file: VirtualFile): ParadoxGameType? {
+        if (!ParadoxAnalyzeInjector.useGameTypeInference()) return null
+        val name = file.nameWithoutExtension
+        val gameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
+        return gameType
     }
 
     // endregion
@@ -248,8 +261,7 @@ object ParadoxAnalyzeManager {
     tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         if (from == null) return null
         if (from is ParadoxGameType) return from
-        if (from is VirtualFile) ParadoxFileManager.getInjectedGameTypeForTestDataFile(from)
-        if (from is UserDataHolder) from.getUserData(PlsKeys.injectedGameType)?.let { return it }
+        if (from is VirtualFile) inferGameTypeFromFileName(from)?.let { return it }
         return when {
             from is ParadoxIndexInfo -> from.gameType
             from is CwtConfigIndexInfo -> from.gameType
@@ -276,7 +288,7 @@ object ParadoxAnalyzeManager {
     tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
         if (from == null) return null
         if (from is CwtLocaleConfig) return from
-        if (from is UserDataHolder) from.getUserData(PlsKeys.injectedLocaleConfig)?.let { return it }
+        if (from is VirtualFile) ParadoxAnalyzeInjector.getInjectedLocaleConfig(from)?.let { return it }
         return when {
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)

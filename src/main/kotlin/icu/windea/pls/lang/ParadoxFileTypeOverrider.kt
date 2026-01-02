@@ -5,10 +5,11 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
 import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
+import icu.windea.pls.model.ParadoxFileInfo
 
 /**
  * 文件类型重载器。
@@ -20,29 +21,36 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         if (file.isDirectory) return null
         if (file is VirtualFileWithoutContent) return null
 
-        runCatchingCancelable r@{
-            val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo) ?: return@r
-            return ParadoxFileManager.getFileType(injectedFileInfo.group)
-        }
-
-        runCatchingCancelable r@{
-            val fileInfo = file.getUserData(PlsKeys.cachedFileInfo)?.value ?: return@r
-            return ParadoxFileManager.getFileType(fileInfo.group)
-        }
+        val fastFileInfo = getFastFileInfo(file)
+        if (fastFileInfo != null) return ParadoxFileManager.getFileType(fastFileInfo.group)
 
         if (file is VirtualFileWindow) {
-            val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
+            val fileInfo = getResolvedFileInfo(file) ?: return null
             return ParadoxFileManager.getFileType(fileInfo.group)
         }
 
         val possibleGroup = ParadoxFileGroup.resolvePossible(file.name)
         if (possibleGroup == ParadoxFileGroup.Other) return null
 
-        if (ParadoxFileManager.isTestDataFile(file)) {
-            return ParadoxFileManager.getFileType(possibleGroup)
+        if (ParadoxAnalyzeInjector.useDefaultFileExtensions()) {
+            val fileType = ParadoxFileManager.getFileType(possibleGroup)
+            if (fileType != null) return fileType
         }
 
-        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
-        return ParadoxFileManager.getFileType(fileInfo.group)
+        val fileInfo = getResolvedFileInfo(file)
+        if (fileInfo != null) return ParadoxFileManager.getFileType(fileInfo.group)
+
+        return null
+    }
+
+    private fun getFastFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        ParadoxAnalyzeInjector.getMarkedFileInfo()?.let { return it }
+        ParadoxAnalyzeInjector.getInjectedFileInfo(file)?.let { return it }
+        file.getUserData(PlsKeys.cachedFileInfo)?.value?.let { return it }
+        return null
+    }
+
+    private fun getResolvedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+        return ParadoxAnalyzeManager.getFileInfo(file)
     }
 }

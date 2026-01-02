@@ -15,7 +15,7 @@ import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.csv.ParadoxCsvFileType
-import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.tools.PlsPathService
@@ -70,6 +70,16 @@ object ParadoxFileManager {
         return true
     }
 
+    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileGroup): Boolean {
+        return when (fileType) {
+            ParadoxFileGroup.Script -> true
+            ParadoxFileGroup.Localisation -> true
+            ParadoxFileGroup.Csv -> true
+            ParadoxFileGroup.ModDescriptor -> false
+            ParadoxFileGroup.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
+        }
+    }
+
     /**
      * 基于文件信息，判断指定的文件与另一个文件是否是等同的。
      */
@@ -92,17 +102,33 @@ object ParadoxFileManager {
         return true
     }
 
-    /**
-     * 基于指定的虚拟文件创建一个临时文件。
-     */
-    @Deprecated("Use createLightFile()")
+    fun isIgnoredFile(fileName: String): Boolean {
+        return PlsSettings.getInstance().state.ignoredFileNameSet.contains(fileName)
+    }
+
+    fun isTestDataFile(file: VirtualFile): Boolean {
+        if (!PlsFacade.isUnitTestMode()) return false
+        val name = file.nameWithoutExtension
+        return name.split('_', '.').any { it == "test" }
+    }
+
+    fun getFileType(fileType: ParadoxFileGroup): FileType? {
+        return when (fileType) {
+            ParadoxFileGroup.Script -> ParadoxScriptFileType
+            ParadoxFileGroup.Localisation -> ParadoxLocalisationFileType
+            ParadoxFileGroup.Csv -> ParadoxCsvFileType
+            ParadoxFileGroup.ModDescriptor -> ParadoxScriptFileType
+            else -> null
+        }
+    }
+
     fun createTempFile(file: VirtualFile, directoryPath: Path): VirtualFile? {
         try {
             directoryPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
             val diffDirFile = directoryPath.toVirtualFile() ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
-            tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
+            ParadoxAnalyzeInjector.injectFileInfo(tempFile, file.fileInfo)
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
@@ -111,18 +137,14 @@ object ParadoxFileManager {
         }
     }
 
-    /**
-     * 基于指定的文本和文件信息创建一个临时文件。
-     */
-    @Deprecated("Use createLightFile()")
-    fun createTempFile(text: String, fileInfo: ParadoxFileInfo, directoryPath: Path): VirtualFile? {
+    fun createTempFile(text: CharSequence, directoryPath: Path, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
             directoryPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
             val path = directoryPath.resolve(fileName)
             Files.writeString(path, text)
             val tempFile = path.toVirtualFile() ?: return null
-            tempFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+            ParadoxAnalyzeInjector.injectFileInfo(tempFile, fileInfo)
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
@@ -132,16 +154,10 @@ object ParadoxFileManager {
     }
 
     fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
-        // 为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
+        // 为了兼容不同的 `lineSeparator`，这里不能直接使用 `document.charSequence`
         val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
         val lightFile = LightVirtualFile(name, text)
-        lightFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
-        return lightFile
-    }
-
-    fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
-        val lightFile = LightVirtualFile(name, text)
-        lightFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
+        ParadoxAnalyzeInjector.injectFileInfo(lightFile, file.fileInfo)
         return lightFile
     }
 
@@ -155,41 +171,9 @@ object ParadoxFileManager {
         return lightFile
     }
 
-    fun isIgnoredFile(fileName: String): Boolean {
-        return PlsSettings.getInstance().state.ignoredFileNameSet.contains(fileName)
-    }
-
-    fun getFileType(fileType: ParadoxFileGroup): FileType? {
-        return when (fileType) {
-            ParadoxFileGroup.Script -> ParadoxScriptFileType
-            ParadoxFileGroup.Localisation -> ParadoxLocalisationFileType
-            ParadoxFileGroup.Csv -> ParadoxCsvFileType
-            ParadoxFileGroup.ModDescriptor -> ParadoxScriptFileType
-            else -> null
-        }
-    }
-
-    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileGroup): Boolean {
-        return when (fileType) {
-            ParadoxFileGroup.Script -> true
-            ParadoxFileGroup.Localisation -> true
-            ParadoxFileGroup.Csv -> true
-            ParadoxFileGroup.ModDescriptor -> false
-            ParadoxFileGroup.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
-        }
-    }
-
-    fun isTestDataFile(file: VirtualFile): Boolean {
-        if (!PlsFacade.isUnitTestMode()) return false
-        val name = file.nameWithoutExtension
-        return name.split('_', '.').any { it == "test" }
-    }
-
-    fun getInjectedGameTypeForTestDataFile(file: VirtualFile): ParadoxGameType? {
-        if (!isTestDataFile(file)) return null
-        val name = file.nameWithoutExtension
-        val injectedGameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
-        file.putUserData(PlsKeys.injectedGameType, injectedGameType)
-        return injectedGameType
+    fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
+        val lightFile = LightVirtualFile(name, text)
+        ParadoxAnalyzeInjector.injectFileInfo(lightFile, fileInfo)
+        return lightFile
     }
 }

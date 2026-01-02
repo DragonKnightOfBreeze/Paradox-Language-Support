@@ -5,7 +5,8 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtModifierConfig
 import icu.windea.pls.config.util.CwtTemplateExpressionManager
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.test.PlsTestUtil
+import icu.windea.pls.test.initConfigGroups
+import icu.windea.pls.test.markIntegrationTest
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Before
@@ -19,7 +20,10 @@ class ParadoxTemplateExpressionTest : ParadoxComplexExpressionTest() {
     override fun getTestDataPath() = "src/test/testData"
 
     @Before
-    fun setup() = PlsTestUtil.initConfigGroups(project, ParadoxGameType.Stellaris)
+    fun setup() {
+        markIntegrationTest()
+        initConfigGroups(project, ParadoxGameType.Stellaris)
+    }
 
     private fun pickModifierWithTemplate(gameType: ParadoxGameType, predicate: (CwtModifierConfig) -> Boolean): CwtModifierConfig? {
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
