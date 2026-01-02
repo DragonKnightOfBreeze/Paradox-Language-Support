@@ -39,30 +39,21 @@ abstract class SyncedKeyRegistry : KeyRegistry() {
     fun <T : KeyProvider<*>> T.synced() = apply { onCreated { syncedKeys.add(it) } }
 }
 
-open class RegistedKey<T>(val registry: KeyRegistry, name: String) : Key<T>(name) {
-    val onWriteCallbacks: FastSet<(Any?, RegistedKey<T>) -> Unit> = FastSet()
-}
+open class RegistedKey<T>(val registry: KeyRegistry, name: String) : Key<T>(name)
 
 class RegistedKeyWithFactory<T, in THIS>(registry: KeyRegistry, name: String, val factory: THIS.() -> T) : RegistedKey<T>(registry, name)
 
 abstract class KeyProvider<T> {
-    val onCreatedCallbacks: FastSet<(RegistedKey<T>) -> Unit> = FastSet()
-    val onWriteCallbacks: FastSet<(Any?, RegistedKey<T>) -> Unit> = FastSet()
+    private val onCreatedCallbacks: FastSet<(RegistedKey<T>) -> Unit> = FastSet()
 
     protected fun finish(key: RegistedKey<T>): RegistedKey<T> {
         onCreatedCallbacks.forEach { it(key) }
         onCreatedCallbacks.clear()
-        key.onWriteCallbacks += onWriteCallbacks
-        onWriteCallbacks.clear()
         return key
     }
 
     fun onCreated(action: (RegistedKey<T>) -> Unit) {
         onCreatedCallbacks += action
-    }
-
-    fun onWrite(action: (Any?, RegistedKey<T>) -> Unit) {
-        onWriteCallbacks += action
     }
 }
 

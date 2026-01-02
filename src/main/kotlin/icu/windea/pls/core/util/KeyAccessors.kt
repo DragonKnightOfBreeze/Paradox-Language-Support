@@ -41,8 +41,6 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T
         key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, THIS>).factory(this)
         else -> return null
     }
-    // run write callbacks here
-    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -57,8 +55,6 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKeyWithFac
     if (value == EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
-    // run write callbacks here
-    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -73,7 +69,6 @@ inline operator fun <T, THIS : UserDataHolder> RegistedKeyWithFactory<T, THIS>.g
 }
 
 inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) {
-    onWriteCallbacks.forEach { it(this, this) } // run write callbacks here
     thisRef.putUserData(this, value)
 }
 
@@ -87,8 +82,6 @@ fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
         key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, ProcessingContext>).factory(this)
         else -> return null
     }
-    // run write callbacks here
-    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -101,8 +94,6 @@ fun <T> ProcessingContext.getOrDefault(key: RegistedKeyWithFactory<T, Processing
     if (value == EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
-    // run write callbacks here
-    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -117,6 +108,5 @@ inline operator fun <T> RegistedKeyWithFactory<T, ProcessingContext>.getValue(th
 }
 
 inline operator fun <T> RegistedKey<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) {
-    onWriteCallbacks.forEach { it(this, this) } // run write callbacks here
     thisRef.put(this, value)
 }
