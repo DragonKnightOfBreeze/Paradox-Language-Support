@@ -1,39 +1,49 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.analyze
 
+import com.intellij.extapi.psi.StubBasedPsiElementBase
+import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.openapi.util.UserDataHolder
 import com.intellij.openapi.vcs.FilePath
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.ui.layout.ValidationInfoBuilder
+import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.application
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.orNull
+import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.StatefulValue
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.lang.PlsKeys
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeService
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
-import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.tools.PlsPathService
+import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
+import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
+import icu.windea.pls.lang.psi.stubs.ParadoxLocaleAwareStub
+import icu.windea.pls.lang.psi.stubs.ParadoxStub
+import icu.windea.pls.lang.util.ParadoxFileManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.localisation.ParadoxLocalisationLanguage
+import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.index.CwtConfigIndexInfo
+import icu.windea.pls.model.index.ParadoxIndexInfo
 import java.nio.file.Path
-import kotlin.io.path.notExists
 
 object ParadoxAnalyzeManager {
     private val logger = thisLogger()
+
+    // region Get Methods
 
     fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
@@ -204,80 +214,92 @@ object ParadoxAnalyzeManager {
         }
     }
 
-    fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PlsPathService.getSteamGamePath(gameType.steamId, gameType.title)
-        if (path == null || path.notExists()) return null
-        return path.toString()
-    }
+    // endregion
 
-    fun validateGameDirectory(builder: ValidationInfoBuilder, gameType: ParadoxGameType, gameDirectory: String?): ValidationInfo? {
-        // 验证游戏目录是否合法
-        // - 路径合法
-        // - 路径对应的目录存在
-        // - 路径是游戏目录（基于 ParadoxMetadataProvider）
-        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val path = gameDirectory0.toPathOrNull()
-        if (path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
-        val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() }
-        if (rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
-        val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
-        return null
-    }
+    // region Select Methods
 
-    fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
-        val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Game) return null
-        return rootInfo.version
-    }
-
-    /**
-     * 比较游戏版本。
-     *
-     * - 使用由点号分割的整数组成的游戏版本号，如 `3.14`。
-     * - 允许通配符，如 "3.14.*"。
-     * - 允许后缀，如 `3.99.1 beta`。
-     */
-    fun compareGameVersion(version1: String, version2: String): Int {
-        val s1 = version1.splitByBlank(limit = 2)
-        val s2 = version2.splitByBlank(limit = 2)
-        val r = compareGameVersionNumbers(s1.first(), s2.first())
-        if (r != 0) return r
-        return compareGameVersionSuffix(s1.getOrNull(1), s2.getOrNull(1))
-    }
-
-    private fun compareGameVersionNumbers(numbers1: String, numbers2: String): Int {
-        val l1 = numbers1.split('.')
-        val l2 = numbers2.split('.')
-        val maxSize = Integer.max(l1.size, l2.size)
-        for (i in 0 until maxSize) {
-            val r = compareGameVersionNumber(l1.getOrNull(i), l2.getOrNull(i))
-            if (r != 0) return r
-        }
-        return 0
-    }
-
-    private fun compareGameVersionNumber(number1: String?, number2: String?): Int {
-        val s1 = number1.orEmpty()
-        val s2 = number2.orEmpty()
-        if (s1 == "*" || s2 == "*") return 0
-        if (s1 == s2) return 0
-        val n1 = s1.toIntOrNull()
-        val n2 = s2.toIntOrNull()
-        if (n1 == null || n2 == null) return s1.compareTo(s2)
-        return n1.compareTo(n2)
-    }
-
-    private fun compareGameVersionSuffix(suffix1: String?, suffix2: String?): Int {
-        val s1 = suffix1.orEmpty()
-        val s2 = suffix2.orEmpty()
+    tailrec fun selectRootFile(from: Any?): VirtualFile? {
+        if (from == null) return null
         return when {
-            s1.isEmpty() && s2.isEmpty() -> 0
-            s1.isEmpty() -> 1
-            s2.isEmpty() -> -1
-            else -> s1.compareTo(s2)
+            from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
+            from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
+            from is VirtualFile -> getFileInfo(from)?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
+            else -> selectRootFile(selectFile(from))
         }
     }
+
+    tailrec fun selectFile(from: Any?): VirtualFile? {
+        if (from == null) return null
+        return when {
+            from is ParadoxIndexInfo -> selectFile(from.virtualFile)
+            from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
+            from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
+            from is VirtualFile -> from
+            from is PsiDirectory -> selectFile(from.virtualFile)
+            from is PsiFile -> selectFile(from.originalFile.virtualFile)
+            from is PsiElement -> {
+                val nextFrom = runReadActionSmartly { from.containingFile }
+                selectFile(nextFrom)
+            }
+            else -> null
+        }
+    }
+
+    tailrec fun selectGameType(from: Any?): ParadoxGameType? {
+        if (from == null) return null
+        if (from is ParadoxGameType) return from
+        if (from is VirtualFile) ParadoxFileManager.getInjectedGameTypeForTestDataFile(from)
+        if (from is UserDataHolder) from.getUserData(PlsKeys.injectedGameType)?.let { return it }
+        return when {
+            from is ParadoxIndexInfo -> from.gameType
+            from is CwtConfigIndexInfo -> from.gameType
+            from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
+            from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
+            from is VirtualFile -> getFileInfo(from)?.rootInfo?.gameType
+            from is PsiDirectory -> selectGameType(selectFile(from))
+            from is PsiFile -> selectGameType(selectFile(from))
+            from is CwtConfigMockPsiElement -> from.gameType
+            from is ParadoxMockPsiElement -> from.gameType
+            from is ParadoxStub<*> -> from.gameType
+            from is StubBasedPsiElementBase<*> -> {
+                val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxStub<*>>() ?: from.containingFile }
+                selectGameType(nextFrom)
+            }
+            from is PsiElement -> {
+                val nextFrom = runReadActionSmartly { from.parent }
+                selectGameType(nextFrom)
+            }
+            else -> null
+        }
+    }
+
+    tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
+        if (from == null) return null
+        if (from is CwtLocaleConfig) return from
+        if (from is UserDataHolder) from.getUserData(PlsKeys.injectedLocaleConfig)?.let { return it }
+        return when {
+            from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
+            from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)
+            from is ParadoxLocaleAwareStub<*> -> {
+                val element = from.containingFileStub?.psi ?: return null
+                val id = from.locale ?: return null
+                ParadoxLocaleManager.getLocaleConfigById(element, id)
+            }
+            from is ParadoxLocalisationLocale -> {
+                val id = runReadActionSmartly { from.name }
+                ParadoxLocaleManager.getLocaleConfigById(from, id)
+            }
+            from is StubBasedPsiElementBase<*> -> {
+                val nextFrom = runReadActionSmartly { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() ?: from.parent }
+                selectLocale(nextFrom)
+            }
+            from is PsiElement && from.language is ParadoxLocalisationLanguage -> {
+                val nextFrom = runReadActionSmartly { from.parent }
+                selectLocale(nextFrom)
+            }
+            else -> ParadoxLocaleManager.getPreferredLocaleConfig()
+        }
+    }
+
+    // endregion
 }

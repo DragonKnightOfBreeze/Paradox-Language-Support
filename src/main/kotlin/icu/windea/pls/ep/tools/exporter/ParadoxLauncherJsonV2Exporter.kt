@@ -7,7 +7,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.tools.model.Constants
 import icu.windea.pls.ep.tools.model.LauncherJsonV2
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.lang.analyze.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo

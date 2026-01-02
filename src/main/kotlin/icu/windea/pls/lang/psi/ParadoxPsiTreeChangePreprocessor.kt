@@ -8,7 +8,7 @@ import icu.windea.pls.core.matchesAntPattern
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 import icu.windea.pls.script.psi.ParadoxScriptFile
 
@@ -17,11 +17,11 @@ import icu.windea.pls.script.psi.ParadoxScriptFile
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
         override fun enteredDumbMode() {
-            PlsAnalyzeManager.refreshAllFileTrackers()
+            PlsDaemonManager.refreshAllFileTrackers()
         }
 
         override fun exitDumbMode() {
-            PlsAnalyzeManager.refreshAllFileTrackers()
+            PlsDaemonManager.refreshAllFileTrackers()
         }
     }
 

@@ -42,8 +42,8 @@ class ParadoxScriptDataDelegateProvider<T>(
     val type: KType,
     val defaultValue: T
 ) {
-    @Suppress("UNCHECKED_CAST")
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+    @Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+    inline operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         if (data == null) return defaultValue
         return ParadoxScriptDataValueProvider.getValue(data, type) as? T? ?: defaultValue
     }
@@ -53,8 +53,8 @@ class ParadoxScriptAllDataDelegateProvider<T>(
     val allData: List<ParadoxScriptData>,
     val type: KType,
 ) {
-    @Suppress("UNCHECKED_CAST")
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): List<T> {
+    @Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+    inline operator fun getValue(thisRef: Any?, property: KProperty<*>): List<T> {
         if (allData.isEmpty()) return emptyList()
         return allData.mapNotNull { ParadoxScriptDataValueProvider.getValue(it, type) as? T? }
     }

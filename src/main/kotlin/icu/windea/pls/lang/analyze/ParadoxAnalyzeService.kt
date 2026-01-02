@@ -10,20 +10,40 @@ import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.ep.analyze.ParadoxInferredGameTypeProvider
+import icu.windea.pls.ep.analyze.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 
 object ParadoxAnalyzeService {
+    /**
+     * @see ParadoxRootMetadataProvider.get
+     */
+    fun getRootMetadata(rootFile: VirtualFile): ParadoxRootMetadata? {
+        return ParadoxRootMetadataProvider.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+            ep.get(rootFile)
+        }
+    }
+
+    /**
+     * @see ParadoxInferredGameTypeProvider.get
+     */
+    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
+        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
+            ep.get(rootFile)
+        }
+    }
+
     fun resolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val metadata = ParadoxMetadataService.getMetadata(rootFile) ?: return null
+        val metadata = getRootMetadata(rootFile) ?: return null
         val rootInfo = when (metadata) {
-            is ParadoxMetadata.Game -> ParadoxRootInfo.Game(metadata)
-            is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
+            is ParadoxRootMetadata.Game -> ParadoxRootInfo.Game(metadata)
+            is ParadoxRootMetadata.Mod -> ParadoxRootInfo.Mod(metadata)
         }
         return rootInfo
     }
@@ -77,14 +97,5 @@ object ParadoxAnalyzeService {
         val localeId = FileBasedIndex.getInstance().getFileData(indexId, file, project).keys.singleOrNull() ?: return null
         val localeConfig = PlsFacade.getConfigGroup().localisationLocalesById.get(localeId)
         return localeConfig
-    }
-
-    /**
-     * @see ParadoxInferredGameTypeProvider.getGameType
-     */
-    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
-        return ParadoxInferredGameTypeProvider.EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-            ep.getGameType(rootFile)
-        }
     }
 }

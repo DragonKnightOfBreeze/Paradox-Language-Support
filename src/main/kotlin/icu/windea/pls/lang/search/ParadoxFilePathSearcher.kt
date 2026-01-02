@@ -13,7 +13,7 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.util.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 /**

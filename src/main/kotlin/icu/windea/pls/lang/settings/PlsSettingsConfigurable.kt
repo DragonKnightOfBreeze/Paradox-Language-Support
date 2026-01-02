@@ -20,7 +20,7 @@ import icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener
 import icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.localeComboBox
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import java.awt.event.ActionEvent
 
@@ -686,15 +686,15 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
         if (!callbackLock.check("refreshForFilesByFileNames")) return
 
-        val files = PlsAnalyzeManager.findFilesByFileNames(fileNames)
-        PlsAnalyzeManager.reparseFiles(files)
+        val files = PlsDaemonManager.findFilesByFileNames(fileNames)
+        PlsDaemonManager.reparseFiles(files)
     }
 
     private fun refreshForOpenedFiles() {
         if (!callbackLock.check("refreshForOpenedFiles")) return
 
-        val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalyzeManager.refreshFiles(openedFiles)
+        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.refreshFiles(openedFiles)
     }
 
     private fun refreshForParameterInference() {
@@ -713,8 +713,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         ParadoxModificationTrackers.InlineScriptConfigInference.incModificationCount()
 
         // 这里只用刷新内联脚本文件
-        val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsAnalyzeManager.reparseFiles(openedFiles)
+        val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsDaemonManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForScopeContextInference() {

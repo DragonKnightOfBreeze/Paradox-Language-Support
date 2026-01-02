@@ -30,7 +30,7 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     fun testIgnoreLocale_ShouldMatchEnglishWhenSearchingChinese() {
         // Arrange: ensure only english file exists in test
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
 
         // Important: request reindex so FilePathIndex sees injected fileInfo
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
@@ -57,11 +57,11 @@ class ParadoxFilePathSearcherTest : BasePlatformTestCase() {
     fun testIgnoreLocale_BothLocales_ReturnsBoth() {
         // Arrange: english and chinese files both exist
         myFixture.configureByFile("features/index/localisation/ui/ui_l_english.test.yml")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_english.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "localisation/ui/ui_l_english.test.yml")
 
         // configure chinese file as well and inject file info
         myFixture.configureByFile("features/index/localisation/ui/ui_l_simp_chinese.test.yml")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "localisation/ui/ui_l_simp_chinese.test.yml", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "localisation/ui/ui_l_simp_chinese.test.yml")
 
         // Important: request reindex so FilePathIndex sees injected fileInfo
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)

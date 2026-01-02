@@ -6,7 +6,7 @@ import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.lang.util.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 

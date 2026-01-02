@@ -24,7 +24,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableNameIndex_Local() {
         myFixture.configureByFile("features/index/local_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -41,7 +41,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableSearcher_Local() {
         myFixture.configureByFile("features/index/local_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file.virtualFile).scriptedVariable()
         val results = mutableListOf<String>()
@@ -55,7 +55,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableSearcher_Local_SkipAfterCaret() {
         myFixture.configureByFile("features/index/local_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file.findElementAt(myFixture.caretOffset)!!).scriptedVariable()
         val results = mutableListOf<String>()
@@ -70,7 +70,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableSearcher_Local_WithOverride() {
         myFixture.configureByFile("features/index/local_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/test/local_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/test/local_vars.test.txt")
         val project = project
         run {
             val selector = selector(project, myFixture.file.findElementAt(myFixture.caretOffset)!!).scriptedVariable()
@@ -93,7 +93,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableNameIndex_Global() {
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
         val project = project
         val scope = GlobalSearchScope.projectScope(project)
         val elements = StubIndex.getElements(
@@ -109,7 +109,7 @@ class ParadoxScriptedVariableIndexTest : BasePlatformTestCase() {
     @Test
     fun testScriptedVariableSearcher_Global() {
         myFixture.configureByFile("features/index/common/scripted_variables/global_vars.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/scripted_variables/global_vars.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/scripted_variables/global_vars.test.txt")
         val project = project
         val selector = selector(project, myFixture.file).scriptedVariable()
         val results = mutableListOf<String>()

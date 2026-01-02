@@ -12,7 +12,7 @@ import icu.windea.pls.integrations.images.tools.PlsMagickToolProvider
 import icu.windea.pls.integrations.lints.PlsTigerLintManager
 import icu.windea.pls.integrations.lints.tools.PlsLintToolProvider
 import icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("unused")
@@ -52,8 +52,8 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onTigerSettingsChanged")) return
 
-        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalyzeManager.refreshFiles(files, refreshInlayHints = false)
+        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.refreshFiles(files, refreshInlayHints = false)
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {

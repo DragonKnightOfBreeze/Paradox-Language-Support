@@ -13,7 +13,6 @@ import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxFile
 
 @Suppress("UnstableApiUsage")
@@ -36,7 +35,7 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
         val project = editor.project ?: file.project
         if (project.isDefault || file !is ParadoxFile) return null
         val preview = ParadoxHintsPreviewUtil.detectPreview(file, 4)
-        if (!preview && file.fileInfo == null) return null
+        if (!preview && !isAvailable(file, editor)) return null
 
         return object : FactoryInlayHintsCollector(editor) {
             private val context = ParadoxHintsContext(file, editor, settings, factory)
@@ -63,6 +62,8 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
             }
         }
     }
+
+    protected open fun isAvailable(file: PsiFile, editor: Editor): Boolean = true
 
     context(context: ParadoxHintsContext)
     protected abstract fun collectFromElement(element: PsiElement, sink: InlayHintsSink)

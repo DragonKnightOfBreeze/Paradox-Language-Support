@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.lang.analyze.ParadoxMetadataService
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.lang.util.PlsFileManager
 
 /**
@@ -174,14 +174,14 @@ class ParadoxFileListener : AsyncFileListener {
 
     private fun reparseOpenedFiles() {
         // 重新解析所有项目的所有已打开的文件
-        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalyzeManager.reparseFiles(files)
+        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.reparseFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
         // 重新解析所有项目的所有已打开的内联脚本文件
-        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsAnalyzeManager.reparseFiles(files)
+        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsDaemonManager.reparseFiles(files)
     }
 
     private fun refreshForFilePaths() {

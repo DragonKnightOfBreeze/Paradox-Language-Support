@@ -3,22 +3,24 @@ package icu.windea.pls.lang.util
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal
 import com.intellij.openapi.application.runInEdt
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.isFile
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.FileContentUtilCore
+import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.lang.ParadoxFileType
 import icu.windea.pls.lang.ParadoxModificationTrackers
 
-object PlsAnalyzeManager {
+object PlsDaemonManager {
     // region VFS Methods
 
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
@@ -28,11 +30,12 @@ object PlsAnalyzeManager {
     }
 
     fun findFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
+        if (fileNames.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
         val projects = ProjectManager.getInstance().openProjects.filter { it.isInitialized && !it.isDisposed }
         val scopes = projects.map { GlobalSearchScope.allScope(it) }
         val scope = scopes.reduceOrNull { a, b -> a.union(b) } ?: return emptySet()
-        runReadAction {
+        runReadActionSmartly {
             FilenameIndex.processFilesByNames(fileNames, false, scope, null) { file ->
                 if (file.isFile) files.add(file)
                 true
@@ -41,9 +44,10 @@ object PlsAnalyzeManager {
         return files
     }
 
-    fun findFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
+    fun findFilesByRootFilePaths(rootFilePaths: Set<String>): Set<VirtualFile> {
+        if (rootFilePaths.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
-        runReadAction {
+        runReadActionSmartly {
             rootFilePaths.forEach f@{ rootFilePath ->
                 if (isExcludedRootFilePath(rootFilePath)) return@f
                 val rootFile = rootFilePath.toVirtualFile() ?: return@f
@@ -59,9 +63,10 @@ object PlsAnalyzeManager {
     }
 
     fun findOpenedFiles(onlyParadoxFiles: Boolean = false, onlyInlineScriptFiles: Boolean = false): Set<VirtualFile> {
+        val allEditors = EditorFactory.getInstance().allEditors
+        if (allEditors.isEmpty()) return emptySet()
         val files = mutableSetOf<VirtualFile>()
-        runReadAction {
-            val allEditors = EditorFactory.getInstance().allEditors
+        runReadActionSmartly {
             for (editor in allEditors) {
                 val file = editor.virtualFile ?: continue
                 if (onlyParadoxFiles && file.fileType !is ParadoxFileType) continue
@@ -74,7 +79,7 @@ object PlsAnalyzeManager {
 
     // endregion
 
-    // region Refresh & Reparse Methods
+    // region Refresh Methods
 
     fun refreshAllFileTrackers() {
         ParadoxModificationTrackers.ScriptFile.incModificationCount()
@@ -83,100 +88,74 @@ object PlsAnalyzeManager {
         ParadoxModificationTrackers.ScriptFileMap.values.forEach { it.incModificationCount() }
     }
 
+    fun refreshFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
+        doRefreshFiles(files, restartAnalyze, refreshInlayHints)
+    }
+
+    private fun doRefreshFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean, refreshInlayHints: Boolean) {
+        if (files.isEmpty()) return
+        val editors = getEditors(files)
+        if (editors.isEmpty()) return
+        val psiFiles = getEditorPsiFiles(editors)
+
+        // restart DaemonCodeAnalyzer
+        if (restartAnalyze) restartAnalyze(psiFiles)
+        // refresh inlay hints
+        if (refreshInlayHints) refreshInlayHints(editors)
+    }
+
     @Volatile
     private var reparseLock = false // 防止抖动（否则可能出现SOF）
 
-    fun reparseFiles(files: Collection<VirtualFile>) {
+    fun reparseFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
         if (reparseLock) return
         try {
             reparseLock = true
-            doReparseFiles(files)
+            doReparseFiles(files, restartAnalyze, refreshInlayHints)
         } finally {
             reparseLock = false
         }
     }
 
-    fun doReparseFiles(files: Collection<VirtualFile>) {
+    fun doReparseFiles(files: Collection<VirtualFile>, restartAnalyze: Boolean = true, refreshInlayHints: Boolean = true) {
         if (files.isEmpty()) return
-        val allEditors = EditorFactory.getInstance().allEditors
-        val editors = allEditors.filter f@{ editor ->
-            val file = editor.virtualFile ?: return@f false
-            if (file !in files) return@f false
-            true
-        }
+        val editors = getEditors(files)
         if (editors.isEmpty()) return
-        val psiFiles = runReadAction {
-            editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
-        }
+        val psiFiles = getEditorPsiFiles(editors)
 
         runInEdt {
             // refresh all file trackers
             refreshAllFileTrackers()
             // reparse files
             FileContentUtilCore.reparseFiles(files)
+
             // restart DaemonCodeAnalyzer
-            psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
+            if (restartAnalyze) restartAnalyze(psiFiles)
             // refresh inlay hints
-            editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
+            if (refreshInlayHints) refreshInlayHints(editors)
         }
     }
 
-    fun refreshFiles(files: Collection<VirtualFile>, restartDaemon: Boolean = true, refreshInlayHints: Boolean = true) {
-        doRefreshFiles(files, restartDaemon, refreshInlayHints)
-    }
-
-    private fun doRefreshFiles(files: Collection<VirtualFile>, restartDaemon: Boolean, refreshInlayHints: Boolean) {
-        if (files.isEmpty()) return
+    private fun getEditors(files: Collection<VirtualFile>): List<Editor> {
+        if (files.isEmpty()) return emptyList()
         val allEditors = EditorFactory.getInstance().allEditors
-        val editors = allEditors.filter f@{ editor ->
-            val file = editor.virtualFile ?: return@f false
-            if (file !in files) return@f false
-            true
-        }
-        if (editors.isEmpty()) return
-        val psiFiles = runReadAction {
+        return allEditors.filter { editor -> editor.virtualFile.let { it != null && it in files } }
+    }
+
+    private fun getEditorPsiFiles(editors: List<Editor>): List<PsiFile> {
+        if (editors.isEmpty()) return emptyList()
+        return runReadActionSmartly {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
-
-        if (restartDaemon) {
-            // restart DaemonCodeAnalyzer
-            psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
-        }
-        if (refreshInlayHints) {
-            // refresh inlay hints
-            editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
-        }
     }
 
-    // 目前并未用到 - 当图片发生更改时，不自动刷新所有可能用来渲染图片的内嵌提示
-    // @Suppress("UnstableApiUsage")
-    // suspend fun refreshInlayHintsImagesChangedIfNecessary() {
-    //    val settings = InlayHintsSettings.instance()
-    //    val enabledScriptProviders = InlayHintsProviderExtension.allForLanguage(ParadoxScriptLanguage)
-    //        .filter { it is ParadoxScriptHintsProvider<*> && it.renderIcon }
-    //        .filter { settings.hintsEnabled(it.key, ParadoxScriptLanguage) }
-    //    val enabledLocalisationProviders = InlayHintsProviderExtension.allForLanguage(ParadoxLocalisationLanguage)
-    //        .filter { it is ParadoxLocalisationHintsProvider<*> && it.renderIcon }
-    //        .filter { settings.hintsEnabled(it.key, ParadoxLocalisationLanguage) }
-    //    val refreshScriptFile = enabledScriptProviders.isNotEmpty()
-    //    val refreshLocalisationFile = enabledLocalisationProviders.isNotEmpty()
-    //    if (!refreshScriptFile && !refreshLocalisationFile) return
-    //
-    //    val allEditors = EditorFactory.getInstance().allEditors
-    //    val editors = allEditors.filter f@{ editor ->
-    //        val file = editor.virtualFile ?: return@f false
-    //        when (file.fileType) {
-    //            ParadoxScriptFileType -> refreshScriptFile
-    //            ParadoxLocalisationFileType -> refreshLocalisationFile
-    //            else -> false
-    //        }
-    //    }
-    //    if (editors.isEmpty()) return
-    //
-    //    withContext(Dispatchers.UI) {
-    //        editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
-    //    }
-    // }
+    private fun restartAnalyze(psiFiles: List<PsiFile>) {
+        if (psiFiles.isEmpty()) return
+        psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
+    }
 
-    // endregion
+    private fun refreshInlayHints(editors: List<Editor>) {
+        if (editors.isEmpty()) return
+        editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
+    }
 }

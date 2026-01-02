@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     init {
@@ -23,7 +23,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     }
 
     private fun refreshForOpenedFiles() {
-        val files = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsAnalyzeManager.refreshFiles(files)
+        val files = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsDaemonManager.refreshFiles(files)
     }
 }

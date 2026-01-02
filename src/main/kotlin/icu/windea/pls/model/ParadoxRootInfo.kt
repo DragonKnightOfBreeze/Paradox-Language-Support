@@ -4,22 +4,23 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.lang.analyze.ParadoxMetadata
 
 /**
  * 游戏或模组信息。
  *
  * @property gameType 游戏类型。
+ *
+ * @see ParadoxRootMetadata
  */
-sealed class ParadoxRootInfo {
-    abstract val gameType: ParadoxGameType
+sealed interface ParadoxRootInfo {
+    val gameType: ParadoxGameType
 
-    open val mainEntries: Set<String> get() = emptySet()
-    open val extraEntries: Set<String> get() = emptySet()
-    open val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
-    open val steamId: String? get() = null
+    val mainEntries: Set<String> get() = emptySet()
+    val extraEntries: Set<String> get() = emptySet()
+    val qualifiedName: String get() = PlsBundle.message("root.name.unnamed")
+    val steamId: String? get() = null
 
-    sealed class MetadataBased(open val metadata: ParadoxMetadata) : ParadoxRootInfo() {
+    sealed class MetadataBased(open val metadata: ParadoxRootMetadata) : ParadoxRootInfo {
         override val gameType: ParadoxGameType get() = metadata.gameType
 
         val name: String get() = metadata.name
@@ -28,7 +29,7 @@ sealed class ParadoxRootInfo {
         val infoFile: VirtualFile? get() = metadata.infoFile
     }
 
-    class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata) {
+    class Game(override val metadata: ParadoxRootMetadata.Game) : MetadataBased(metadata) {
         override val mainEntries: Set<String>
             get() = gameType.entryInfo.gameMain
         override val extraEntries: Set<String>
@@ -44,7 +45,7 @@ sealed class ParadoxRootInfo {
             get() = gameType.steamId
     }
 
-    class Mod(override val metadata: ParadoxMetadata.Mod) : MetadataBased(metadata) {
+    class Mod(override val metadata: ParadoxRootMetadata.Mod) : MetadataBased(metadata) {
         val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
         val supportedVersion: String? get() = metadata.supportedVersion
         val picture: String? get() = metadata.picture // 相对于模组目录的路径
@@ -68,5 +69,5 @@ sealed class ParadoxRootInfo {
             get() = if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
     }
 
-    class Injected(override val gameType: ParadoxGameType) : ParadoxRootInfo()
+    class Injected(override val gameType: ParadoxGameType) : ParadoxRootInfo
 }

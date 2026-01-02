@@ -1,16 +1,15 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.analyze
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.lang.analyze.ParadoxMetadataService
 import icu.windea.pls.lang.rootInfo
-import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
@@ -21,49 +20,49 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 
 object ParadoxMetadataManager {
-    // Files and Infos
+    private val logger = thisLogger()
+
+    // region Get Methods
 
     fun getLauncherSettingsJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly { ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile) }
+        return runReadActionSmartly {
+            ParadoxMetadataService.getLauncherSettingsJsonFile(rootFile)
+        }
     }
 
     fun getLauncherSettingsJsonInfo(file: VirtualFile): ParadoxLauncherSettingsJsonInfo? {
-        try {
-            return runReadActionSmartly { ParadoxMetadataService.resolveLauncherSettingsJsonInfo(file) }
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
-            return null
-        }
+        return runCatchingCancelable {
+            runReadActionSmartly { ParadoxMetadataService.resolveLauncherSettingsJsonInfo(file) }
+        }.onFailure { logger.warn(it) }.getOrNull()
     }
 
     fun getDescriptorModFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly { ParadoxMetadataService.getDescriptorModFile(rootFile) }
+        return runReadActionSmartly {
+            ParadoxMetadataService.getDescriptorModFile(rootFile)
+        }
     }
 
     fun getDescriptorModInfo(file: VirtualFile): ParadoxDescriptorModInfo? {
-        try {
-            return runReadActionSmartly { ParadoxMetadataService.resolveDescriptorModInfo(file) }
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
-            return null
-        }
+        return runCatchingCancelable {
+            runReadActionSmartly { ParadoxMetadataService.resolveDescriptorModInfo(file) }
+        }.onFailure { logger.warn(it) }.getOrNull()
     }
 
     fun getMetadataJsonFile(rootFile: VirtualFile): VirtualFile? {
-        return runReadActionSmartly { ParadoxMetadataService.getMetadataJsonFile(rootFile) }
+        return runReadActionSmartly {
+            ParadoxMetadataService.getMetadataJsonFile(rootFile)
+        }
     }
 
     fun getMetadataJsonInfo(file: VirtualFile): ParadoxMetadataJsonInfo? {
-        try {
-            return runReadActionSmartly { ParadoxMetadataService.resolveMetadataJsonInfo(file) }
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
-            return null
-        }
+        return runCatchingCancelable {
+            runReadActionSmartly { ParadoxMetadataService.resolveMetadataJsonInfo(file) }
+        }.onFailure { logger.warn(it) }.getOrNull()
     }
+
+    // endregion
+
+    // region Predicates
 
     fun useDescriptorMod(gameType: ParadoxGameType): Boolean {
         if (gameType == ParadoxGameType.Core) return false
@@ -76,7 +75,9 @@ object ParadoxMetadataManager {
         return gameType in ParadoxGameType.getAllUseMetadataJson()
     }
 
-    // Get From Metadata
+    // endregion
+
+    // region Get Methods From Metadata
 
     fun getModDirectoryFromSteamId(steamId: String?, workshopDirPath: Path): String? {
         if (steamId.isNullOrEmpty()) return null
@@ -105,7 +106,7 @@ object ParadoxMetadataManager {
     /**
      * 从模组目录获取模组信息，从而统一获取各种需要进一步获取的信息。
      *
-     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[ParadoxModDescriptorSettingsState]）被创建。
+     * 注意：需要调用这个方法以确保模组信息被解析，相关的配置项（[icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState]）被创建。
      */
     fun getModInfoFromModDirectory(modDirectory: String?): ParadoxRootInfo.Mod? {
         if (modDirectory.isNullOrEmpty()) return null
@@ -114,7 +115,9 @@ object ParadoxMetadataManager {
         return rootInfo.castOrNull()
     }
 
-    // Models
+    // endregion
+
+    // region Misc
 
     /**
      * 自动探测官方启动器播放列表（playlist.json）的 position 字段类型是否为整数（对应 V3）。
@@ -198,4 +201,6 @@ object ParadoxMetadataManager {
         }
         return result
     }
+
+    // endregion
 }

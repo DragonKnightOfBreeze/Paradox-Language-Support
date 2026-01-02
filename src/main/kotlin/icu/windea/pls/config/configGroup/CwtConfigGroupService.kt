@@ -19,7 +19,7 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -132,8 +132,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
                 refresh(configGroups, project)
             }
             // 重新解析已打开的文件
-            val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsAnalyzeManager.reparseFiles(openedFiles)
+            val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsDaemonManager.reparseFiles(openedFiles)
         }.invokeOnCompletion { e ->
             if (e is CancellationException) {
                 PlsFacade.createNotification(
@@ -160,8 +160,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         // TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
         reparseFilesInRootFilePaths(configGroups)
         val rootFilePaths = getRootFilePaths(configGroups)
-        val files = PlsAnalyzeManager.findFilesByRootFilePaths(rootFilePaths)
-        PlsAnalyzeManager.reparseFiles(files)
+        val files = PlsDaemonManager.findFilesByRootFilePaths(rootFilePaths)
+        PlsDaemonManager.reparseFiles(files)
     }
 
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {

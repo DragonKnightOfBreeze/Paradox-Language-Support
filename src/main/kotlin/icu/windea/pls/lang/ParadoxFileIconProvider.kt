@@ -6,7 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.lang.util.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon

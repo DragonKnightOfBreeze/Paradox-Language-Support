@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
  * @see ParadoxGameType
  */
 interface ParadoxInferredGameTypeProvider {
-    fun getGameType(rootFile: VirtualFile): ParadoxGameType?
+    fun get(rootFile: VirtualFile): ParadoxGameType?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")

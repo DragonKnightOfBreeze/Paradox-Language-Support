@@ -3,7 +3,7 @@ package icu.windea.pls.model.tools
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModDescriptorSettingsState
-import icu.windea.pls.lang.util.ParadoxMetadataManager
+import icu.windea.pls.lang.analyze.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxModSource
 
 /**

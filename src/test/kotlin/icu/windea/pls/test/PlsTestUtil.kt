@@ -33,10 +33,11 @@ object PlsTestUtil {
         runBlocking { configGroupService.init(configGroups, project) }
     }
 
-    fun injectFileInfo(file: VirtualFile, path: String, gameType: ParadoxGameType) {
+    fun injectFileInfo(file: VirtualFile, gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
         val filePath = ParadoxPath.resolve(path)
-        val fileGroup = ParadoxFileGroup.resolvePossible(file.name)
-        val fileInfo = ParadoxFileInfo(filePath, "", fileGroup, ParadoxRootInfo.Injected(gameType))
+        val fileEntry = entry
+        val fileGroup = group ?: ParadoxFileGroup.resolvePossible(file.name)
+        val fileInfo = ParadoxFileInfo(filePath, fileEntry, fileGroup, ParadoxRootInfo.Injected(gameType))
         file.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         file.putUserData(PlsKeys.injectedGameType, gameType)
     }

@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -34,13 +34,13 @@ class CwtConfigGroupLibraryService(private val project: Project) {
         // 即使对应的规则分组未启用，也要显示
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val fileProviders = CwtConfigGroupFileProvider.INSTANCE.EP_NAME.extensionList
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             if (projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        newRoots.removeIf { PlsAnalyzeManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsDaemonManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 

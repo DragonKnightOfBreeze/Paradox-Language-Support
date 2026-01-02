@@ -3,16 +3,16 @@ package icu.windea.pls.ep.analyze
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.analyze.ParadoxAnalyzeService
-import icu.windea.pls.lang.analyze.ParadoxMetadata
+import icu.windea.pls.lang.analyze.ParadoxMetadataManager
 import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.util.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
+import icu.windea.pls.model.ParadoxRootMetadata
 import icu.windea.pls.model.metadata.ParadoxDescriptorModInfo
 import icu.windea.pls.model.metadata.ParadoxMetadataJsonInfo
 
-class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
-    override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
+class ParadoxDescriptorModBasedModMetadataProvider : ParadoxRootMetadataProvider {
+    override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
         // 尝试在根目录中查找 `descriptor.mod`
 
         val infoFile = ParadoxMetadataManager.getDescriptorModFile(rootFile) ?: return null
@@ -24,7 +24,7 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
         override val rootFile: VirtualFile,
         override val infoFile: VirtualFile,
         val info: ParadoxDescriptorModInfo
-    ) : ParadoxMetadata.Mod {
+    ) : ParadoxRootMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
         override val inferredGameType: ParadoxGameType? = doGetInferredGameType()
@@ -51,8 +51,8 @@ class ParadoxDescriptorModBasedModMetadataProvider : ParadoxMetadataProvider {
 /**
  * 参见：[Mod structure - Victoria 3 Wiki](https://vic3.paradoxwikis.com/index.php?title=Mod_structure)
  */
-class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
-    override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
+class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxRootMetadataProvider {
+    override fun get(rootFile: VirtualFile): ParadoxRootMetadata? {
         // 尝试在根目录的 `.metadata` 子目录中查找 `metadata.json`
 
         val infoFile = ParadoxMetadataManager.getMetadataJsonFile(rootFile) ?: return null
@@ -64,7 +64,7 @@ class ParadoxMetadataJsonBasedModMetadataProvider : ParadoxMetadataProvider {
         override val rootFile: VirtualFile,
         override val infoFile: VirtualFile,
         val info: ParadoxMetadataJsonInfo,
-    ) : ParadoxMetadata.Mod {
+    ) : ParadoxRootMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
         override val inferredGameType: ParadoxGameType? = doGetInferredGameType()

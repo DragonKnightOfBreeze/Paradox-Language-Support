@@ -10,7 +10,6 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxFile
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.hints.AbstractKtInlayHintsProvider
@@ -22,7 +21,7 @@ abstract class ParadoxDeclarativeHintsProvider : InlayHintsProvider {
     final override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
         val project = editor.project ?: file.project
         if (project.isDefault || file !is ParadoxFile) return null
-        if (file.fileInfo == null) return null
+        if (!isAvailable(file, editor)) return null
 
         return object : SharedBypassCollector {
             override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
@@ -38,6 +37,8 @@ abstract class ParadoxDeclarativeHintsProvider : InlayHintsProvider {
             }
         }
     }
+
+    protected open fun isAvailable(file: PsiFile, editor: Editor): Boolean = true
 
     protected abstract fun collectFromElement(element: PsiElement, sink: InlayTreeSink)
 }

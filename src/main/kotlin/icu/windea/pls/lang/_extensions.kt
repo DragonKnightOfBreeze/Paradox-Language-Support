@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package icu.windea.pls.lang
 
@@ -7,13 +7,11 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.TextRangeUtil
-import icu.windea.pls.PlsBundle
 import icu.windea.pls.config.ParadoxTagType
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
-import icu.windea.pls.lang.util.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -27,6 +25,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionInjectionInfo
 import icu.windea.pls.model.ParadoxFileInfo
+import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.index.ParadoxComplexEnumValueIndexInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
@@ -34,7 +33,40 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.ParadoxScriptValue
-import java.util.concurrent.atomic.AtomicReference
+
+// Property and Method Delegates
+
+inline val VirtualFile.rootInfo: ParadoxRootInfo? get() = ParadoxAnalyzeManager.getRootInfo(this)
+
+inline val VirtualFile.fileInfo: ParadoxFileInfo? get() = ParadoxAnalyzeManager.getFileInfo(this)
+
+inline val PsiElement.fileInfo: ParadoxFileInfo? get() = ParadoxAnalyzeManager.getFileInfo(this)
+
+inline fun selectRootFile(from: Any?): VirtualFile? = ParadoxAnalyzeManager.selectRootFile(from)
+
+inline fun selectFile(from: Any?): VirtualFile? = ParadoxAnalyzeManager.selectFile(from)
+
+inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalyzeManager.selectGameType(from)
+
+inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalyzeManager.selectLocale(from)
+
+inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
+
+inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo? get() = ParadoxDefinitionInjectionManager.getInfo(this)
+
+inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo? get() = ParadoxComplexEnumValueManager.getInfo(this)
+
+inline val ParadoxScriptValue.tagType: ParadoxTagType? get() = ParadoxTagManager.getTagType(this)
+
+inline fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? = ParadoxLocaclisationParameterManager.resolveLocalisation(this)
+
+inline fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScriptedVariable? = ParadoxLocaclisationParameterManager.resolveScriptedVariable(this)
+
+inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? = ParadoxDataService.get(this, relax)
+
+inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? = ParadoxPresentationService.get(this)
+
+// Language Extensions
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -62,59 +94,4 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
 
 fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
     return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
-}
-
-inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
-    try {
-        state.set(true)
-        return action()
-    } finally {
-        state.remove()
-    }
-}
-
-inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
-    return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
-}
-
-val String?.errorDetails get() = this?.orNull()?.let { PlsBundle.message("error.details", it) }.orEmpty()
-
-// 注意：不要更改直接调用 `CachedValuesManager.getCachedValue(...)` 的那个顶级方法（静态方法）的方法声明，IDE 内部会进行检查
-// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE 都会报错
-
-inline val VirtualFile.rootInfo: ParadoxRootInfo?
-    get() = ParadoxAnalyzeManager.getRootInfo(this)
-
-inline val VirtualFile.fileInfo: ParadoxFileInfo?
-    get() = ParadoxAnalyzeManager.getFileInfo(this)
-
-inline val PsiElement.fileInfo: ParadoxFileInfo?
-    get() = ParadoxAnalyzeManager.getFileInfo(this)
-
-inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
-    get() = ParadoxDefinitionManager.getInfo(this)
-
-inline val ParadoxScriptProperty.definitionInjectionInfo: ParadoxDefinitionInjectionInfo?
-    get() = ParadoxDefinitionInjectionManager.getInfo(this)
-
-inline val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
-    get() = ParadoxComplexEnumValueManager.getInfo(this)
-
-inline val ParadoxScriptValue.tagType: ParadoxTagType?
-    get() = ParadoxTagManager.getTagType(this)
-
-inline fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
-    return ParadoxLocaclisationParameterManager.resolveLocalisation(this)
-}
-
-inline fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScriptedVariable? {
-    return ParadoxLocaclisationParameterManager.resolveScriptedVariable(this)
-}
-
-inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getDefinitionData(relax: Boolean = false): T? {
-    return ParadoxDataService.get(this, relax)
-}
-
-inline fun <reified T : ParadoxDefinitionPresentation> ParadoxScriptDefinitionElement.getDefinitionPresentation(): T? {
-    return ParadoxPresentationService.get(this)
 }

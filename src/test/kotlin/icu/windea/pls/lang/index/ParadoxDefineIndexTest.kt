@@ -24,7 +24,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefineIndex_Basic() {
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act
@@ -51,7 +51,7 @@ class ParadoxDefineIndexTest : BasePlatformTestCase() {
     @Test
     fun testDefineSearcher_ByNamespaceAndVariable() {
         myFixture.configureByFile("features/index/common/defines/defines_basic_stellaris.test.txt")
-        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, "common/defines/defines_basic_stellaris.test.txt", ParadoxGameType.Stellaris)
+        PlsTestUtil.injectFileInfo(myFixture.file.virtualFile, ParadoxGameType.Stellaris, "common/defines/defines_basic_stellaris.test.txt")
         FileBasedIndex.getInstance().requestReindex(myFixture.file.virtualFile)
 
         // act

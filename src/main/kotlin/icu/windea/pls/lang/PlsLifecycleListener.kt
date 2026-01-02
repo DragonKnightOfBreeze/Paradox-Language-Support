@@ -16,7 +16,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.lang.tools.PlsPathService
-import icu.windea.pls.lang.util.PlsAnalyzeManager
+import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.constants.PlsConstants
 import icu.windea.pls.model.constants.PlsPathConstants
 import kotlinx.coroutines.Dispatchers
@@ -99,8 +99,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         if (project.isDisposed) return
         CwtConfigGroupService.getInstance(project).initAsync {
             // 重新解析已打开的文件
-            val openedFiles = PlsAnalyzeManager.findOpenedFiles(onlyParadoxFiles = true)
-            PlsAnalyzeManager.reparseFiles(openedFiles)
+            val openedFiles = PlsDaemonManager.findOpenedFiles(onlyParadoxFiles = true)
+            PlsDaemonManager.reparseFiles(openedFiles)
             // 规则数据加载完毕后，异步地刷新外部库的根目录
             refreshRootsForLibrariesAsync(project)
         }
