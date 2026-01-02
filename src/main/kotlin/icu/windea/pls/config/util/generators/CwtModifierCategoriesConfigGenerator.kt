@@ -11,6 +11,7 @@ import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -135,9 +136,9 @@ class CwtModifierCategoriesConfigGenerator(override val project: Project) : CwtC
     }
 
     object Keys : KeyRegistry() {
-        val missingNames by createKey<Set<String>>(Keys)
-        val unknownNames by createKey<Set<String>>(Keys)
-        val categoriesFromLog by createKey<Set<String>>(Keys)
+        val missingNames by registerKey<Set<String>>(Keys)
+        val unknownNames by registerKey<Set<String>>(Keys)
+        val categoriesFromLog by registerKey<Set<String>>(Keys)
     }
 
     private companion object {

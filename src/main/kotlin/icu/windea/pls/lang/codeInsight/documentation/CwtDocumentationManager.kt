@@ -37,7 +37,6 @@ import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.isExpression
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.configType
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.CwtPsiManager
@@ -153,7 +152,7 @@ object CwtDocumentationManager {
         definition {
             appendCwtConfigFileInfoHeader(element)
 
-            val bindingConfig = element.getUserData(PlsKeys.bindingConfig)
+            val bindingConfig = element.getUserData(CwtConfigManager.Keys.bindingConfig)
             val tagType = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
             val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
 

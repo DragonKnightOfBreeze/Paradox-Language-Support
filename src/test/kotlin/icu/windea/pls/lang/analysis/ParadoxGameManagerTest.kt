@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.analyze
+package icu.windea.pls.lang.analysis
 
 import org.junit.Assert
 import org.junit.Test

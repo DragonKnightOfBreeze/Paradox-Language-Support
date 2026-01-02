@@ -11,7 +11,7 @@ import icu.windea.pls.config.ParadoxTagType
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -36,19 +36,19 @@ import icu.windea.pls.script.psi.ParadoxScriptValue
 
 // Property and Method Delegates
 
-inline val VirtualFile.rootInfo: ParadoxRootInfo? get() = ParadoxAnalyzeManager.getRootInfo(this)
+inline val VirtualFile.rootInfo: ParadoxRootInfo? get() = ParadoxAnalysisManager.getRootInfo(this)
 
-inline val VirtualFile.fileInfo: ParadoxFileInfo? get() = ParadoxAnalyzeManager.getFileInfo(this)
+inline val VirtualFile.fileInfo: ParadoxFileInfo? get() = ParadoxAnalysisManager.getFileInfo(this)
 
-inline val PsiElement.fileInfo: ParadoxFileInfo? get() = ParadoxAnalyzeManager.getFileInfo(this)
+inline val PsiElement.fileInfo: ParadoxFileInfo? get() = ParadoxAnalysisManager.getFileInfo(this)
 
-inline fun selectRootFile(from: Any?): VirtualFile? = ParadoxAnalyzeManager.selectRootFile(from)
+inline fun selectRootFile(from: Any?): VirtualFile? = ParadoxAnalysisManager.selectRootFile(from)
 
-inline fun selectFile(from: Any?): VirtualFile? = ParadoxAnalyzeManager.selectFile(from)
+inline fun selectFile(from: Any?): VirtualFile? = ParadoxAnalysisManager.selectFile(from)
 
-inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalyzeManager.selectGameType(from)
+inline fun selectGameType(from: Any?): ParadoxGameType? = ParadoxAnalysisManager.selectGameType(from)
 
-inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalyzeManager.selectLocale(from)
+inline fun selectLocale(from: Any?): CwtLocaleConfig? = ParadoxAnalysisManager.selectLocale(from)
 
 inline val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo? get() = ParadoxDefinitionManager.getInfo(this)
 

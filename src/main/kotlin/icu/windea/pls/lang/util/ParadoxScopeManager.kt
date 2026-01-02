@@ -29,6 +29,7 @@ import icu.windea.pls.core.toCapitalizedWords
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -85,7 +86,7 @@ import icu.windea.pls.script.psi.isBlockMember
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
     object Keys : KeyRegistry() {
-        val cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>(Keys)
+        val cachedScopeContext by registerKey<CachedValue<ParadoxScopeContext>>(Keys)
     }
 
     const val maxScopeLinkSize = 5

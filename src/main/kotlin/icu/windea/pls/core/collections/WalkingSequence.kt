@@ -5,6 +5,7 @@ package icu.windea.pls.core.collections
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
@@ -49,7 +50,7 @@ class WalkingSequenceOptionsBuilder(
 }
 
 /** 是否从前往后搜索。 */
-var WalkingSequenceOptions.forward: Boolean by createKey(WalkingSequenceOptions.Keys) { true }
+var WalkingSequenceOptions.forward: Boolean by registerKey(WalkingSequenceOptions.Keys) { true }
 
 /** @see WalkingSequenceOptions.forward */
 inline infix fun WalkingSequenceOptionsBuilder.forward(value: Boolean = true) = apply { options.forward = value }

@@ -1,10 +1,12 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.test
 
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.UsefulTestCase
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
@@ -34,11 +36,16 @@ fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
 
 context(_: UsefulTestCase)
 fun markIntegrationTest() {
-    ParadoxAnalyzeInjector.configureUseDefaultFileExtensions(true)
-    ParadoxAnalyzeInjector.configureUseGameTypeInference(true)
+    ParadoxAnalysisInjector.configureUseDefaultFileExtensions(true)
+    ParadoxAnalysisInjector.configureUseGameTypeInference(true)
 }
 
 context(_: UsefulTestCase)
 fun markFileInfo(gameType: ParadoxGameType, path: String, entry: String = "", group: ParadoxFileGroup? = null) {
-    ParadoxAnalyzeInjector.markFileInfo(gameType, path, entry, group)
+    ParadoxAnalysisInjector.markFileInfo(gameType, path, entry, group)
+}
+
+context(_: UsefulTestCase)
+fun clearMarkedFileInfo() {
+    ParadoxAnalysisInjector.clearMarkedFileInfo()
 }

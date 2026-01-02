@@ -13,6 +13,7 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.list
 import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpression
 import icu.windea.pls.lang.resolve.complexExpression.ParadoxComplexExpressionVisitor
 import icu.windea.pls.lang.resolve.complexExpression.nodes.ParadoxComplexExpressionNode
@@ -101,7 +102,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             if (passingConfig !is CwtValueConfig) return null
             val argumentNameElement = parentElement?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
             val argumentNameConfig = passingConfig.propertyConfig ?: return null
-            val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
+            val passingParameterElement = ParadoxParameterService.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
             val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
@@ -183,7 +184,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()
-                val passingParameterElement = ParadoxParameterSupport.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return emptyList()
+                val passingParameterElement = ParadoxParameterService.resolveArgument(expressionElement, argumentNode.rangeInExpression, expressionConfig) ?: return emptyList()
                 val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
                 val passingConfigs = passingContextConfigs.singleOrNull()?.configs?.filterIsInstance<CwtValueConfig>().orEmpty()
                 passingConfigs

@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.ThreeStateCheckBox
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty

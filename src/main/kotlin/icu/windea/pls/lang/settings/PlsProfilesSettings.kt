@@ -23,7 +23,7 @@ import icu.windea.pls.model.constants.PlsConstants
  *
  * 由插件自动根据游戏信息与模组信息进行配置。
  */
-@Service(Service.Level.APP)
+@Service
 @State(name = "PlsProfilesSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettings.State>(State()) {
     fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {

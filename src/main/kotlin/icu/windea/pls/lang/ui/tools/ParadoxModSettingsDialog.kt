@@ -21,8 +21,7 @@ import icu.windea.pls.lang.settings.ParadoxModDependencySettingsState
 import icu.windea.pls.lang.settings.ParadoxModSettingsState
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.settings.PlsSettings
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
-import icu.windea.pls.lang.analyze.ParadoxGameManager
+import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")

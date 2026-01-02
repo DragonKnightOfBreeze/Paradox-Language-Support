@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -169,11 +170,11 @@ class CwtOnActionConfigGenerator(override val project: Project) : CwtConfigGener
     )
 
     object Keys : KeyRegistry() {
-        val addedNames by createKey<Set<String>>(Keys)
-        val removedNames by createKey<Set<String>>(Keys)
-        val unmatchedTemplates by createKey<Set<CwtTemplateExpression>>(Keys)
-        val namesFromScripts by createKey<Set<String>>(Keys)
-        val configInfo by createKey<OnActionConfigInfo>(Keys)
+        val addedNames by registerKey<Set<String>>(Keys)
+        val removedNames by registerKey<Set<String>>(Keys)
+        val unmatchedTemplates by registerKey<Set<CwtTemplateExpression>>(Keys)
+        val namesFromScripts by registerKey<Set<String>>(Keys)
+        val configInfo by registerKey<OnActionConfigInfo>(Keys)
     }
 
     private companion object {

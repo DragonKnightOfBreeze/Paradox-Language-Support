@@ -6,7 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.PlsIcons
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxRootInfo
 import javax.swing.Icon
@@ -17,7 +17,7 @@ import javax.swing.Icon
 class ParadoxFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {
         if (project == null) return null
-        val fileInfo = ParadoxAnalyzeManager.getFileInfo(file) ?: return null
+        val fileInfo = ParadoxAnalysisManager.getFileInfo(file) ?: return null
         if (file.isDirectory) {
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return null

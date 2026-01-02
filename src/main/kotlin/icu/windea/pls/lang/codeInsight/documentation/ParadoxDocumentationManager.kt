@@ -36,7 +36,9 @@ import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.psi.mock.ParadoxModifierElement
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.resolve.ParadoxModifierService
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
@@ -257,7 +259,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParameterElement) {
         val name = element.name
         definition {
-            val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
+            val r = ParadoxParameterService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -268,7 +270,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: ParadoxLocalisationParameterElement) {
         val name = element.name
         definition {
-            val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
+            val r = ParadoxLocalisationParameterService.getDocumentationDefinition(element, this)
             if (!r) {
                 // 显示默认的快速文档
                 append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
@@ -900,7 +902,7 @@ object ParadoxDocumentationManager {
         if (!PlsSettings.getInstance().state.documentation.showParameters) return
 
         val sections = getSections(SECTIONS_INFO) ?: return
-        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
+        val parameterContextInfo = ParadoxParameterService.getContextInfo(element) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return // ignore
         val parametersText = buildString {
             append("<pre>")

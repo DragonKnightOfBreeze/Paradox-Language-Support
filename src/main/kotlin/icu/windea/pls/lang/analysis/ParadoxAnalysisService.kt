@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.analyze
+package icu.windea.pls.lang.analysis
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.FilePath
@@ -9,8 +9,8 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.removePrefixOrNull
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.ep.analyze.ParadoxInferredGameTypeProvider
-import icu.windea.pls.ep.analyze.ParadoxRootMetadataProvider
+import icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider
+import icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider
 import icu.windea.pls.lang.index.PlsIndexKeys
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
@@ -20,7 +20,7 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.ParadoxRootMetadata
 import icu.windea.pls.model.paths.ParadoxPath
 
-object ParadoxAnalyzeService {
+object ParadoxAnalysisService {
     /**
      * @see ParadoxRootMetadataProvider.get
      */

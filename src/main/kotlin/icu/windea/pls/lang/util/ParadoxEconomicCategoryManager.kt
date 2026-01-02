@@ -12,6 +12,7 @@ import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -33,8 +34,8 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {
     object Keys : KeyRegistry() {
-        val cachedEconomicCategoryInfo by createKey<CachedValue<ParadoxEconomicCategoryInfo>>(Keys)
-        val modifierCategories by createKey<Set<String>>(Keys)
+        val cachedEconomicCategoryInfo by registerKey<CachedValue<ParadoxEconomicCategoryInfo>>(Keys)
+        val modifierCategories by registerKey<Set<String>>(Keys)
     }
 
     private val logger = logger<ParadoxEconomicCategoryManager>()

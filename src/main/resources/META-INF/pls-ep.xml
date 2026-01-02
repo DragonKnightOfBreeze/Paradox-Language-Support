@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analyze.ParadoxInferredGameTypeProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analyze.ParadoxRootMetadataProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.analysis.ParadoxInferredGameTypeProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.rootMetadataProvider" interface="icu.windea.pls.ep.analysis.ParadoxRootMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.hintTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider" dynamic="true"/>
@@ -51,13 +51,13 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analyze.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
-    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analyze.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
+    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
+    <inferredGameTypeProvider implementation="icu.windea.pls.ep.analysis.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
 
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analyze.Eu5GameMetadataProvider"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
-    <rootMetadataProvider implementation="icu.windea.pls.ep.analyze.ParadoxMetadataJsonBasedModMetadataProvider"/>
+    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxLauncherSettingsJsonBasedGameMetadataProvider"/>
+    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.Eu5GameMetadataProvider"/>
+    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider" order="last"/>
+    <rootMetadataProvider implementation="icu.windea.pls.ep.analysis.ParadoxMetadataJsonBasedModMetadataProvider"/>
 
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxTextColorQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.documentation.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>

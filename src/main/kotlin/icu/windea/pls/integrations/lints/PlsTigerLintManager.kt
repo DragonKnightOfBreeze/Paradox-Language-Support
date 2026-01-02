@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -32,8 +33,8 @@ import kotlin.reflect.KMutableProperty0
 
 object PlsTigerLintManager {
     object Keys : KeyRegistry() {
-        val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
-        val tigerLintResultLock by createKey<Any>(Keys)
+        val cachedTigerLintResult by registerKey<CachedValue<PlsTigerLintResult>>(Keys)
+        val tigerLintResultLock by registerKey<Any>(Keys)
     }
 
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改

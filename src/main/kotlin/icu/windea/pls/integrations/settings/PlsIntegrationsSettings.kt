@@ -15,7 +15,7 @@ import icu.windea.pls.model.constants.PlsConstants
 /**
  * PLS 集成设置。可以在插件的对应设置页面中进行配置。
  */
-@Service(Service.Level.APP)
+@Service
 @State(name = "PlsIntegrationsSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsIntegrationsSettings : SimplePersistentStateComponent<PlsIntegrationsSettings.State>(State()) {
     companion object {

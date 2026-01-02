@@ -15,6 +15,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -44,9 +45,9 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 @Suppress("unused")
 object ParadoxTechnologyManager {
     object Keys : KeyRegistry() {
-        val cachedPrerequisites by createKey<CachedValue<Set<String>>>(Keys)
-        val technologyAllAttributes by createKey<Set<String>>(Keys)
-        val technologyAttributes by createKey<Set<String>>(Keys)
+        val cachedPrerequisites by registerKey<CachedValue<Set<String>>>(Keys)
+        val technologyAllAttributes by registerKey<Set<String>>(Keys)
+        val technologyAttributes by registerKey<Set<String>>(Keys)
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {

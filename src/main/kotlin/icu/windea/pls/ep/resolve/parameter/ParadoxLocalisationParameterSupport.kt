@@ -30,29 +30,5 @@ interface ParadoxLocalisationParameterSupport {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxLocalisationParameterSupport>("icu.windea.pls.localisationParameterSupport")
-
-        fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveParameter(localisationElement, name)
-            }
-        }
-
-        fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveParameter(element)
-            }
-        }
-
-        fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveArgument(element, rangeInElement, config)
-            }
-        }
-
-        fun getDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean {
-            return EP_NAME.extensionList.any { ep ->
-                ep.buildDocumentationDefinition(element, builder)
-            }
-        }
     }
 }

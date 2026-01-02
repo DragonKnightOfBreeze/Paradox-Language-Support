@@ -11,6 +11,7 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.lang.util.ParadoxParameterManager
@@ -38,13 +39,13 @@ class MissingParameterInspection : LocalInspectionTool() {
 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
                 val contextConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
-                val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, contextConfig) ?: return
+                val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, contextConfig) ?: return
                 if (contextReferenceInfo.contextName.isParameterized()) return // skip if context name is parameterized
                 val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
                 val requiredParameterNames = mutableSetOf<String>()
-                ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{
+                ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
                     ProgressManager.checkCanceled()
-                    val parameterContextInfo = ParadoxParameterSupport.getContextInfo(it) ?: return@p true
+                    val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
                     if (parameterContextInfo.parameters.isEmpty()) return@p true
                     parameterContextInfo.parameters.keys.forEach { parameterName ->
                         if (requiredParameterNames.contains(parameterName)) return@forEach

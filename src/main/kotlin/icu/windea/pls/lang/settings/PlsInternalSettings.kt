@@ -8,7 +8,7 @@ import icu.windea.pls.core.orNull
 /**
  * PLS 内部设置。可以通过 Registry 页面进行调整。
  */
-@Service(Service.Level.APP)
+@Service
 class PlsInternalSettings {
     /**
      * 渲染本地化文本时，使用的文本字体大小（这会影响在快速文档中渲染图标时，使用的最终缩放）。

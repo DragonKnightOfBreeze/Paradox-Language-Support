@@ -9,7 +9,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.documentation.targetElement
 import icu.windea.pls.lang.ui.ParadoxLocaleListPopup
 import icu.windea.pls.lang.util.ParadoxLocaleManager
@@ -46,7 +45,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         val localePopup = ParadoxLocaleListPopup(allLocales)
         localePopup.doFinalStep action@{
             val selected = localePopup.selectedLocale ?: return@action
-            targetElement.putUserData(PlsKeys.documentationLocale, selected.id)
+            targetElement.putUserData(ParadoxLocaleManager.Keys.documentationLocale, selected.id)
             browser.reload()
         }
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)

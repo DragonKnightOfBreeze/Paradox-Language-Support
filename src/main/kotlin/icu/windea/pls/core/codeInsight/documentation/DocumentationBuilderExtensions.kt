@@ -4,6 +4,7 @@ package icu.windea.pls.core.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
@@ -58,7 +59,7 @@ inline fun DocumentationBuilder.grayed(block: DocumentationBuilder.() -> Unit): 
     return this
 }
 
-var DocumentationBuilder.sectionGroup: SortedMap<Int, MutableMap<String, String>>? by createKey(DocumentationBuilder.Keys)
+var DocumentationBuilder.sectionGroup: SortedMap<Int, MutableMap<String, String>>? by registerKey(DocumentationBuilder.Keys)
 
 /** 初始化分节组 [sectionGroup]。*/
 fun DocumentationBuilder.initSections() {

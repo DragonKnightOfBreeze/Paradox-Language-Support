@@ -18,7 +18,7 @@ import icu.windea.pls.model.constants.PlsConstants
 /**
  * PLS AI 设置。可以在插件的对应设置页面中进行配置。
  */
-@Service(Service.Level.APP)
+@Service
 @State(name = "PlsAiSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettings.State>(State()) {
     fun isEnabled() = state.enable

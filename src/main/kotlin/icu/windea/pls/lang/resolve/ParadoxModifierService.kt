@@ -36,8 +36,7 @@ object ParadoxModifierService {
         val gameType = configGroup.gameType
         return ParadoxModifierSupport.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
             if (!PlsAnnotationManager.check(ep, gameType)) return@f null
-            ep.resolveModifier(name, element, configGroup)
-                ?.also { it.support = ep }
+            ep.resolveModifier(name, element, configGroup)?.also { it.support = ep }
         }
     }
 

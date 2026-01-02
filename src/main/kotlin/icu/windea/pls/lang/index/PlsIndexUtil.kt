@@ -2,6 +2,7 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.model.constants.PlsConstants
 

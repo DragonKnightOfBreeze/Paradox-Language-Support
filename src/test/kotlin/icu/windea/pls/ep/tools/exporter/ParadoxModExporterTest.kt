@@ -9,7 +9,7 @@ import icu.windea.pls.ep.tools.model.Playsets
 import icu.windea.pls.ep.tools.model.PlaysetsMods
 import icu.windea.pls.lang.tools.PlsPathService
 import icu.windea.pls.lang.tools.PlsSqliteService
-import icu.windea.pls.lang.analyze.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModInfo

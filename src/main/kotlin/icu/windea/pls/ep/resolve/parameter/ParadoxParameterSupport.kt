@@ -71,73 +71,9 @@ interface ParadoxParameterSupport {
      */
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = false
 
+    object Keys : SyncedKeyRegistry()
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
-
-        fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
-            return EP_NAME.extensionList.any { it.isContext(element) }
-        }
-
-        fun findContext(element: PsiElement): ParadoxScriptDefinitionElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.findContext(element) }
-        }
-
-        fun getContextKeyFromContext(element: ParadoxScriptDefinitionElement): String? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getContextKeyFromContext(element) }
-        }
-
-        fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.getContextInfo(element)
-            }
-        }
-
-        fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.getContextReferenceInfo(element, from, *extraArgs)
-                    ?.also { it.support = ep }
-            }
-        }
-
-        fun resolveParameter(element: ParadoxParameter): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveParameter(element)
-                    ?.also { it.support = ep }
-            }
-        }
-
-        fun resolveConditionParameter(element: ParadoxConditionParameter): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveConditionParameter(element)
-                    ?.also { it.support = ep }
-            }
-        }
-
-        fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
-                ep.resolveArgument(element, rangeInElement, config)
-                    ?.also { it.support = ep }
-            }
-        }
-
-        fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { ep ->
-                ep.processContext(parameterElement, onlyMostRelevant, processor)
-            }
-        }
-
-        fun processContextReference(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean {
-            return EP_NAME.extensionList.any { ep ->
-                ep.processContextReference(element, contextReferenceInfo, onlyMostRelevant, processor)
-            }
-        }
-
-        fun getDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean {
-            return EP_NAME.extensionList.any { ep ->
-                ep.buildDocumentationDefinition(parameterElement, builder)
-            }
-        }
     }
-
-    object Keys : SyncedKeyRegistry()
 }

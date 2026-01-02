@@ -5,6 +5,7 @@ import com.intellij.lang.parser.GeneratedParserUtilBase
 import icu.windea.pls.core.lookupWithOffset
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
@@ -14,8 +15,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
     object Keys : KeyRegistry()
 
-    var PsiBuilder.isFirstColumn: Boolean by createKey(Keys) { false }
-    var PsiBuilder.isEmptyColumn: Boolean by createKey(Keys) { false }
+    var PsiBuilder.isFirstColumn: Boolean by registerKey(Keys) { false }
+    var PsiBuilder.isEmptyColumn: Boolean by registerKey(Keys) { false }
 
     @JvmStatic
     fun checkEol(b: PsiBuilder, l: Int): Boolean {

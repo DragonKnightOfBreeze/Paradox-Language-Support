@@ -17,7 +17,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.cwt.psi.CwtMember
-import icu.windea.pls.lang.PlsKeys
 
 /**
  * 解析为被内联的CWT规则，或者返回自身。
@@ -57,7 +56,7 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
 }
 
 fun <T : CwtMember> T.bindConfig(config: CwtConfig<*>): T {
-    this.putUserData(PlsKeys.bindingConfig, config)
+    this.putUserData(CwtConfigManager.Keys.bindingConfig, config)
     return this
 }
 

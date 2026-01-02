@@ -8,7 +8,6 @@ import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toIconOrNull
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.psi.conditional
 import icu.windea.pls.lang.psi.inline
 import icu.windea.pls.lang.psi.properties
@@ -105,7 +104,7 @@ object ParadoxPresentationUtil {
 
     fun getIcon(definition: ParadoxScriptDefinitionElement, ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
-        val frameInfo = definition.getUserData(PlsKeys.imageFrameInfo)
+        val frameInfo = definition.getUserData(ParadoxDefinitionManager.Keys.imageFrameInfo)
         val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project, frameInfo) ?: return null
         if (!ParadoxImageManager.canResolve(iconUrl)) return null
         return iconUrl.toFileUrl().toIconOrNull()

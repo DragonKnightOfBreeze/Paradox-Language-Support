@@ -1,12 +1,14 @@
 package icu.windea.pls.inject
 
 import com.intellij.ide.AppLifecycleListener
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.application
 import icu.windea.pls.core.staticProperty
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.inject.model.InjectMethodInfo
 import javassist.ClassClassPath
 import javassist.ClassPool
@@ -17,7 +19,7 @@ import java.lang.reflect.Method
 private val logger = logger<CodeInjectorService>()
 
 @Service
-class CodeInjectorService {
+class CodeInjectorService: Disposable {
     /**
      * 用于在IDE启动时应用代码注入器。
      */
@@ -60,6 +62,15 @@ class CodeInjectorService {
         staticProperty<ClassPool, ClassPool?>("defaultPool").set(null)
     }
 
+    override fun dispose() {
+        // 避免内存泄露（这里需要保存到项目级别，以便代码注入器后续获取）
+        val application = application
+        application.putUserData(invokeInjectMethodKey, null)
+        application.putUserData(continueInvocationExceptionKey, null)
+        application.putUserData(classPoolKey, null)
+        application.putUserData(codeInjectorsKey, null)
+    }
+
     private fun getClassPool(): ClassPool {
         val pool = ClassPool.getDefault()
         pool.appendClassPath(ClassClassPath(this.javaClass))
@@ -82,7 +93,6 @@ class CodeInjectorService {
         // for Application
         @JvmField
         val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
-
         // for Application
         @JvmField
         val classPoolKey = createKey<ClassPool>("CLASS_POOL_BY_WINDEA")

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.data
 import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.ep.util.data.ParadoxDefinitionData
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey

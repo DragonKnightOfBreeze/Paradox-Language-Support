@@ -21,6 +21,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.tupleOf
@@ -37,7 +38,7 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 
 object CwtConfigSymbolManager {
     object Keys : KeyRegistry() {
-        val cachedSymbolInfos by createKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
+        val cachedSymbolInfos by registerKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
     }
 
     // NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）

@@ -3,9 +3,9 @@
 package icu.windea.pls.ep.resolve.parameter
 
 import com.intellij.psi.SmartPsiElementPointer
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.setValue
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport.Keys.synced
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
@@ -13,12 +13,12 @@ import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 
-val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys).synced()
-val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.support by registerKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.containingContext by registerKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.containingContextReference by registerKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.definitionName by registerKey<String>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.definitionTypes by registerKey<List<String>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.inlineScriptExpression by registerKey<String>(ParadoxParameterSupport.Keys).synced()
 
 var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName

@@ -11,6 +11,7 @@ import icu.windea.pls.config.util.option.CwtOptionDataAccessor
 import icu.windea.pls.config.util.option.CwtOptionDataAccessors
 import icu.windea.pls.core.toBooleanYesNo
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
@@ -39,28 +40,28 @@ fun <T> CwtMemberConfig<*>.optionData(accessor: CwtOptionDataAccessor<T>): T = a
 inline fun <T> CwtMemberConfig<*>.optionData(accessorGetter: CwtOptionDataAccessors.() -> CwtOptionDataAccessor<T>): T = optionData(CwtOptionDataAccessors.accessorGetter())
 
 /** 绑定到当前属性规则的单内联规则（解析阶段填充）。*/
-var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
 /** 绑定到当前属性规则的内联规则（解析阶段填充）。*/
-var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by registerKey(CwtMemberConfig.Keys)
 
 /** 绑定到当前属性规则的内联扩展规则（解析阶段填充）。*/
-var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前值规则的标签类型（解析阶段推断，用于渲染和提示）。*/
-var CwtValueConfig.tagType: ParadoxTagType? by createKey(CwtMemberConfig.Keys)
+var CwtValueConfig.tagType: ParadoxTagType? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则的被重载前的原始规则（用于规则覆盖、来源追踪等场景）。*/
-var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMember>? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMember>? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则对应的重载提供者（来源于可重载的规则分组）。*/
-var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则（作为声明规则的顶级成员规则时）对应的声明规则的上下文信息（用于声明/定义相关能力）。*/
-var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by registerKey(CwtMemberConfig.Keys)
 
 /** 当前成员规则（作为声明规则的顶级成员规则时）对应的声明规则的上下文缓存键（用于缓存/索引加速）。*/
-var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.declarationConfigCacheKey: String? by registerKey(CwtMemberConfig.Keys)
 
 // endregion
 

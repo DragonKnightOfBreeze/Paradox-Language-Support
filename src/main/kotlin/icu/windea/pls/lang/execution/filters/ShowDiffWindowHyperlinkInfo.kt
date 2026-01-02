@@ -37,6 +37,7 @@ class ShowDiffWindowHyperlinkInfo(
     }
 
     override fun dispose() {
+        // 避免内存泄露
         diffWindowWrapper.dispose()
     }
 }

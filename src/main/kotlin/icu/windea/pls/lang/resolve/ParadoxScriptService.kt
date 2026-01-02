@@ -12,7 +12,7 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.parent
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.paths.ParadoxElementPath
@@ -58,7 +58,7 @@ object ParadoxScriptService {
     private fun applyInjectionForRootKeys(current: PsiElement, subPaths: ArrayDeque<String>) {
         if (current !is PsiFile) return
         val file = selectFile(current) ?: return
-        val injectedRootKeys = ParadoxAnalyzeInjector.getInjectedRootKeys(file)
+        val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(file)
         if (injectedRootKeys.isEmpty()) return
         subPaths.addAll(0, injectedRootKeys)
     }
@@ -93,7 +93,7 @@ object ParadoxScriptService {
 
     private fun applyInjectionForRootKeys(current: LighterASTNode, file: VirtualFile, subPaths: ArrayDeque<String>) {
         if (current.tokenType != ParadoxScriptFile.ELEMENT_TYPE) return
-        val injectedRootKeys = ParadoxAnalyzeInjector.getInjectedRootKeys(file)
+        val injectedRootKeys = ParadoxAnalysisInjector.getInjectedRootKeys(file)
         if (injectedRootKeys.isEmpty()) return
         subPaths.addAll(0, injectedRootKeys)
     }

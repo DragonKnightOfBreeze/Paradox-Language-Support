@@ -16,15 +16,15 @@ import icu.windea.pls.core.icon
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.withDependencyItems
-import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.findParentProperty
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.search.selector.localisationParameter
 import icu.windea.pls.lang.search.selector.selector
@@ -36,7 +36,7 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterManager {
     object Keys : KeyRegistry() {
-        val cachedParameterNames by createKey<CachedValue<Set<String>>>(Keys)
+        val cachedParameterNames by registerKey<CachedValue<Set<String>>>(Keys)
     }
 
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
@@ -134,7 +134,7 @@ object ParadoxLocalisationParameterManager {
         val parameterNames = getParameterNames(localisation)
         if (parameterNames.isNotEmpty()) {
             for (parameterName in parameterNames) {
-                val parameter = ParadoxLocalisationParameterSupport.resolveParameter(localisation, parameterName) ?: continue
+                val parameter = ParadoxLocalisationParameterService.resolveParameter(localisation, parameterName) ?: continue
                 val lookupElement = LookupElementBuilder.create(parameter, parameterName)
                     .withIcon(PlsIcons.Nodes.Parameter)
                     .withTypeText(localisationName, localisationIcon, true)

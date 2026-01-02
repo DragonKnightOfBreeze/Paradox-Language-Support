@@ -23,6 +23,7 @@ import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
@@ -84,9 +85,9 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
     }
 
     object Keys : KeyRegistry() {
-        val typeText by createKey<String>(Keys)
-        val nameText by createKey<String>(Keys)
-        val nodeData by createKey<StellarisTechnologyData>(Keys)
+        val typeText by registerKey<String>(Keys)
+        val nameText by registerKey<String>(Keys)
+        val nodeData by registerKey<StellarisTechnologyData>(Keys)
     }
 
     private val _elementManager by lazy { ElementManager(this) }

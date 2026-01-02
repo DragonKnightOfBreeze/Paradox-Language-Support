@@ -11,13 +11,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.TaskCancellation
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
-import com.intellij.util.application
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.getDefaultProject
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.lang.util.PlsDaemonManager
 import icu.windea.pls.model.ParadoxGameType
@@ -93,15 +89,8 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
      */
     fun getConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         // #184
-        // 不能将规则数据缓存到默认项目的服务对象中，否则会被不定期清空
-        // 因此，目前改为缓存到应用的用户数据（默认项目的规则数据）或服务（对应项目的规则数据）中
-        if (project.isDefault) {
-            // `getOrPutUserData` 并不保证线程安全，因此这里要加锁
-            val key = Keys.defaultConfigGroup
-            return synchronized(key) {
-                application.getOrPutUserData(key) { buildConfigGroups() }
-            }
-        }
+        // 不能将规则数据缓存到默认项目的服务中，否则会被不定期清空，因为需要改为缓存到应用的服务中
+        if (project.isDefault) return getInstance().cache
         return cache
     }
 
@@ -183,13 +172,9 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
     }
 
     override fun dispose() {
-        // 清理规则分组数据
+        // 清理规则分组数据，避免内存泄露
         cache.values.forEach { it.clear() }
         cache = emptyMap()
-    }
-
-    object Keys : KeyRegistry() {
-        val defaultConfigGroup = createKey<Map<ParadoxGameType, CwtConfigGroup>>("pls.default.configGroup")
     }
 
     companion object {

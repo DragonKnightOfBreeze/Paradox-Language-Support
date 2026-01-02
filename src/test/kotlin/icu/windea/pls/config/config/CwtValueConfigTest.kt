@@ -9,6 +9,7 @@ import icu.windea.pls.config.configGroup.CwtConfigGroupImpl
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.findChild
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.cwt.psi.CwtValue

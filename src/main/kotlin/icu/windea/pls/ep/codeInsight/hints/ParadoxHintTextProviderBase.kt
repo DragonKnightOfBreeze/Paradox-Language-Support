@@ -2,7 +2,7 @@ package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.psi.PsiElement
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.isParameterized
@@ -19,7 +19,7 @@ sealed class ParadoxHintTextProviderBase : ParadoxHintTextProvider {
     protected fun createHintLocalisation(hintText: String, element: PsiElement): ParadoxLocalisationProperty {
         val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(element.project, "hint", hintText)
         // it's necessary to inject fileInfo here (so that gameType can be got later)
-        ParadoxAnalyzeInjector.injectFileInfo(hintLocalisation.containingFile.virtualFile, element.fileInfo)
+        ParadoxAnalysisInjector.injectFileInfo(hintLocalisation.containingFile.virtualFile, element.fileInfo)
         return hintLocalisation
     }
 

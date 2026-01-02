@@ -8,6 +8,7 @@ import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFileSystemItem
 import icu.windea.pls.core.util.Tuple2
@@ -135,7 +136,7 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
 
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is CwtProperty && element !is CwtValue) return null
-        val config = element.getUserData(PlsKeys.bindingConfig) ?: return null // retrieve config from user data
+        val config = element.getUserData(CwtConfigManager.Keys.bindingConfig) ?: return null // retrieve config from user data
         // 这里目前仅支持可能用到的那些
         val linkType = ReferenceLinkType.CwtConfig
         val categories = ReferenceLinkType.CwtConfig.Categories

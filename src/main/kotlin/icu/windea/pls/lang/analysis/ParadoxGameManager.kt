@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.analyze
+package icu.windea.pls.lang.analysis
 
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.layout.ValidationInfoBuilder

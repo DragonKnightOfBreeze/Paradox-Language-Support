@@ -25,6 +25,7 @@ import icu.windea.pls.core.pass
 import icu.windea.pls.core.processQueryAsync
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -58,12 +59,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
-        val modifierNameKeys by createKey<Set<String>>(Keys)
-        val modifierDescKeys by createKey<Set<String>>(Keys)
-        val modifierIconPaths by createKey<Set<String>>(Keys)
+        val modifierNameKeys by registerKey<Set<String>>(Keys)
+        val modifierDescKeys by registerKey<Set<String>>(Keys)
+        val modifierIconPaths by registerKey<Set<String>>(Keys)
     }
 
-    private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.modifierInfoCache by registerKey(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> modifierInfo
         createNestedCache<VirtualFile, _, _, Cache<String, ParadoxModifierInfo>> {
             CacheBuilder().build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }

@@ -12,6 +12,7 @@ import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.trimFast
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -33,7 +34,7 @@ import org.intellij.plugins.markdown.lang.psi.impl.MarkdownCodeFence
 
 object PlsMarkdownManager {
     object Keys : KeyRegistry() {
-        val cachedPathInjectionInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
+        val cachedPathInjectionInfo by registerKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
     }
 
     fun getIdentifierFromInlineCode(element: PsiElement): String? {

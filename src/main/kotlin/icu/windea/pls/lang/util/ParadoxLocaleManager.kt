@@ -5,10 +5,19 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.pinned
-import icu.windea.pls.lang.PlsKeys
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.lang.settings.PlsSettings
 
 object ParadoxLocaleManager {
+    object Keys : KeyRegistry() {
+        /** 用于标记快速文档使用的本地化语言环境。 */
+        val documentationLocale by registerKey<String>(this)
+    }
+
     const val ID_AUTO = "auto"
     const val ID_AUTO_OS = "auto.os"
     const val ID_DEFAULT = "l_default"
@@ -71,13 +80,13 @@ object ParadoxLocaleManager {
     }
 
     fun getResolvedLocaleConfigInDocumentation(element: PsiElement, defaultLocale: CwtLocaleConfig? = null): CwtLocaleConfig {
-        val id = element.getUserData(PlsKeys.documentationLocale)
+        val id = element.getUserData(Keys.documentationLocale)
         val locale = id?.let { getResolvedLocaleConfig(id) } ?: defaultLocale ?: getPreferredLocaleConfig()
         return locale
     }
 
     fun getLocaleConfigInDocumentation(element: PsiElement): CwtLocaleConfig? {
-        val id = element.getUserData(PlsKeys.documentationLocale) ?: return null
+        val id = element.getUserData(Keys.documentationLocale) ?: return null
         val locale = getLocaleConfig(id, withAuto = true)
         return locale
     }

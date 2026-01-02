@@ -85,7 +85,7 @@ class CwtConfigContext(
 }
 
 @Optimized
-private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
+private val CwtConfigGroup.configsCache by registerKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         // rootFile -> cacheKey -> configs
         // use soft values to optimize memory

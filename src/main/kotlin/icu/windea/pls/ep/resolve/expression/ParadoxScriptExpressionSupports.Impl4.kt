@@ -9,12 +9,13 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.unquote
-import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.keyword
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxExpressionManager
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
@@ -39,7 +40,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupportBa
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
+        return ParadoxParameterService.resolveArgument(element, rangeInElement, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -67,7 +68,7 @@ class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpress
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-        return ParadoxLocalisationParameterSupport.resolveArgument(element, rangeInElement, config)
+        return ParadoxLocalisationParameterService.resolveArgument(element, rangeInElement, config)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

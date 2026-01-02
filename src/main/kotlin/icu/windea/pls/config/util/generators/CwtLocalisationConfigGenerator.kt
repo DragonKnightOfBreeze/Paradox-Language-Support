@@ -12,6 +12,7 @@ import icu.windea.pls.core.collections.caseInsensitiveStringSet
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtBlock
@@ -267,12 +268,12 @@ class CwtLocalisationConfigGenerator(override val project: Project) : CwtConfigG
     )
 
     object Keys : KeyRegistry() {
-        val missingPromotionNames by createKey<Set<String>>(Keys)
-        val unknownPromotionNames by createKey<Set<String>>(Keys)
-        val missingCommandNames by createKey<Set<String>>(Keys)
-        val unknownCommandNames by createKey<Set<String>>(Keys)
-        val promotionScopesFromLog by createKey<Map<String, Set<String>>>(Keys)
-        val commandScopesFromLog by createKey<Map<String, Set<String>>>(Keys)
+        val missingPromotionNames by registerKey<Set<String>>(Keys)
+        val unknownPromotionNames by registerKey<Set<String>>(Keys)
+        val missingCommandNames by registerKey<Set<String>>(Keys)
+        val unknownCommandNames by registerKey<Set<String>>(Keys)
+        val promotionScopesFromLog by registerKey<Map<String, Set<String>>>(Keys)
+        val commandScopesFromLog by registerKey<Map<String, Set<String>>>(Keys)
     }
 
     private companion object {

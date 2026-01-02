@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.analyze
+package icu.windea.pls.ep.analysis
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.vfs.VirtualFile

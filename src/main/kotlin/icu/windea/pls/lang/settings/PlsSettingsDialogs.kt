@@ -10,8 +10,7 @@ import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.Entry
 import icu.windea.pls.lang.PlsDataKeys
 import icu.windea.pls.lang.ui.EntryListTableModel
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
-import icu.windea.pls.lang.analyze.ParadoxGameManager
+import icu.windea.pls.lang.analysis.ParadoxGameManager
 import icu.windea.pls.model.ParadoxGameType
 import javax.swing.JComponent
 

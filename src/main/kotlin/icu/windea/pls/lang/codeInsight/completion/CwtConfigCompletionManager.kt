@@ -52,6 +52,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.setValue
@@ -79,22 +80,22 @@ object CwtConfigCompletionManager {
 
     // region Accessors
 
-    var ProcessingContext.expressionElement: CwtExpressionElement? by createKey(Keys)
-    var ProcessingContext.containerElement: PsiElement? by createKey(Keys)
-    var ProcessingContext.keyToMatch: String? by createKey(Keys)
-    var ProcessingContext.optionContainerIdToMatch: String? by createKey(Keys)
-    var ProcessingContext.schema: CwtSchemaConfig? by createKey(Keys)
-    var ProcessingContext.contextConfigs: List<CwtMemberConfig<*>> by createKey(Keys) { emptyList() }
-    var ProcessingContext.isOptionKey: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isOptionValue: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isOptionBlockValue: Boolean by createKey(Keys) { false }
-    var ProcessingContext.inOption: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isPropertyKey: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isPropertyValue: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isBlockValue: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isKey: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isKeyOnly: Boolean by createKey(Keys) { false }
-    var ProcessingContext.isValueOnly: Boolean by createKey(Keys) { false }
+    var ProcessingContext.expressionElement: CwtExpressionElement? by registerKey(Keys)
+    var ProcessingContext.containerElement: PsiElement? by registerKey(Keys)
+    var ProcessingContext.keyToMatch: String? by registerKey(Keys)
+    var ProcessingContext.optionContainerIdToMatch: String? by registerKey(Keys)
+    var ProcessingContext.schema: CwtSchemaConfig? by registerKey(Keys)
+    var ProcessingContext.contextConfigs: List<CwtMemberConfig<*>> by registerKey(Keys) { emptyList() }
+    var ProcessingContext.isOptionKey: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isOptionValue: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isOptionBlockValue: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.inOption: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isPropertyKey: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isPropertyValue: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isBlockValue: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isKey: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isKeyOnly: Boolean by registerKey(Keys) { false }
+    var ProcessingContext.isValueOnly: Boolean by registerKey(Keys) { false }
 
     // endregion
 

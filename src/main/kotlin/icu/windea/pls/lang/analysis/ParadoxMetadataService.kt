@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.analyze
+package icu.windea.pls.lang.analysis
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.openapi.vfs.VirtualFile

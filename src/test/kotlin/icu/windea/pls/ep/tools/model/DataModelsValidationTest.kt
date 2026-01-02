@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.tools.model
 
 import icu.windea.pls.core.util.jsonMapper
-import icu.windea.pls.lang.analyze.ParadoxMetadataManager
+import icu.windea.pls.lang.analysis.ParadoxMetadataManager
 import icu.windea.pls.lang.tools.PlsSqliteService
 import org.junit.Test
 import org.ktorm.database.Database

@@ -33,6 +33,7 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.withOperator
@@ -68,12 +69,12 @@ import icu.windea.pls.script.psi.isPropertyValue
 import icu.windea.pls.script.psi.propertyValue
 
 object ParadoxConfigMatchService {
-    private val CwtConfigGroup.typeConfigsCache by createKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.typeConfigsCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
         }.cancelable()
     }
-    private val CwtConfigGroup.complexEnumConfigsCache by createKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.complexEnumConfigsCache by registerKey(CwtConfigGroup.Keys) {
         CacheBuilder().build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
         }.cancelable()

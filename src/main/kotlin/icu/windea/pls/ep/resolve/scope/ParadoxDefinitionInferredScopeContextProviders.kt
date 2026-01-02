@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -49,7 +50,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -155,7 +156,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
  */
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -264,7 +265,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
  */
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -411,7 +412,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
  */
 class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by createKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
     }
 
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {

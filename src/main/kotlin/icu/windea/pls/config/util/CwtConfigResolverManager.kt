@@ -24,6 +24,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -39,8 +40,8 @@ import icu.windea.pls.model.CwtMemberType
 
 object CwtConfigResolverManager {
     object Keys : KeyRegistry() {
-        val fileConfigs by createKey<MutableMap<String, CwtFileConfig>>(Keys)
-        val postProcessActions by createKey<MutableList<Runnable>>(Keys)
+        val fileConfigs by registerKey<MutableMap<String, CwtFileConfig>>(Keys)
+        val postProcessActions by registerKey<MutableList<Runnable>>(Keys)
     }
 
     private val currentLocation = ThreadLocal<String>()

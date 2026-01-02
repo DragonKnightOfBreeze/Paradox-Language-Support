@@ -42,14 +42,13 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.createKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.withOperator
 import icu.windea.pls.core.withRecursionGuard
-import icu.windea.pls.ep.resolve.parameter.ParadoxParameterInferredConfigProvider
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
 import icu.windea.pls.lang.codeInsight.completion.addElement
@@ -64,6 +63,7 @@ import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.match.matchesByPattern
 import icu.windea.pls.lang.psi.ParadoxPsiManager
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.settings.PlsSettings
@@ -84,11 +84,11 @@ import java.util.*
 
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
-        val cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
-        val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(Keys)
+        val cachedParameterContextInfo by registerKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
+        val inferredContextConfigsFromUsages by registerKey<List<CwtMemberConfig<*>>>(Keys)
     }
 
-    private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
+    private val CwtConfigGroup.parameterInfoCache by registerKey(CwtConfigGroup.Keys) {
         // rootFile -> cacheKey -> parameterInfo
         createNestedCache<VirtualFile, _, _, Cache<String, ParadoxParameterInfo>> {
             CacheBuilder().build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
@@ -164,9 +164,9 @@ object ParadoxParameterManager {
     }
 
     /**
-     * 得到[element]对应的参数上下文信息。
+     * 得到 [element] 对应的参数上下文信息。
      *
-     * 这个方法不会判断[element]是否是合法的参数上下文，如果需要，考虑使用[ParadoxParameterSupport.getContextInfo]。
+     * 这个方法不会判断 [element] 是否是合法的参数上下文，如果需要，考虑使用 [ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
@@ -255,8 +255,8 @@ object ParadoxParameterManager {
     fun completeParameters(element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         // 向上找到参数上下文
-        val parameterContext = ParadoxParameterSupport.findContext(element) ?: return
-        val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return
+        val parameterContext = ParadoxParameterService.findContext(element) ?: return
+        val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return
         for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
             ProgressManager.checkCanceled()
@@ -264,8 +264,8 @@ object ParadoxParameterManager {
             // 排除当前正在输入的那个
             if (parameterInfos.size == 1 && element isSamePosition parameter) continue
             val parameterElement = when {
-                parameter is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(parameter)
-                parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
+                parameter is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
+                parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                 else -> null
             } ?: continue
             val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
@@ -275,7 +275,7 @@ object ParadoxParameterManager {
             result.addElement(lookupElement, context)
         }
 
-        val contextKey = ParadoxParameterSupport.getContextKeyFromContext(parameterContext) ?: return
+        val contextKey = ParadoxParameterService.getContextKeyFromContext(parameterContext) ?: return
         context.contextKey = contextKey
         ParadoxExtendedCompletionManager.completeExtendedParameter(context, result)
     }
@@ -286,12 +286,12 @@ object ParadoxParameterManager {
         val from = ParadoxParameterContextReferenceInfo.From.Argument
         val config = context.config ?: return
         val completionOffset = context.parameters?.offset ?: return
-        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, config, completionOffset) ?: return
+        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, config, completionOffset) ?: return
         val argumentNames = contextReferenceInfo.arguments.mapTo(mutableSetOf()) { it.argumentName }
         // 整合查找到的所有参数上下文
-        ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
+        ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{ parameterContext ->
             ProgressManager.checkCanceled()
-            val parameterContextInfo = ParadoxParameterSupport.getContextInfo(parameterContext) ?: return@p true
+            val parameterContextInfo = ParadoxParameterService.getContextInfo(parameterContext) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             for ((parameterName, parameterInfos) in parameterContextInfo.parameters) {
                 // 排除已输入的
@@ -299,8 +299,8 @@ object ParadoxParameterManager {
 
                 val parameter = parameterInfos.firstNotNullOfOrNull { it.element } ?: continue
                 val parameterElement = when {
-                    parameter is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(parameter)
-                    parameter is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(parameter)
+                    parameter is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(parameter)
+                    parameter is ParadoxParameter -> ParadoxParameterService.resolveParameter(parameter)
                     else -> null
                 } ?: continue
                 val lookupElement = LookupElementBuilder.create(parameterElement, parameterName)
@@ -328,8 +328,8 @@ object ParadoxParameterManager {
     fun getParameterElement(element: PsiElement): ParadoxParameterElement? {
         return when (element) {
             is ParadoxParameterElement -> element
-            is ParadoxParameter -> ParadoxParameterSupport.resolveParameter(element)
-            is ParadoxConditionParameter -> ParadoxParameterSupport.resolveConditionParameter(element)
+            is ParadoxParameter -> ParadoxParameterService.resolveParameter(element)
+            is ParadoxConditionParameter -> ParadoxParameterService.resolveConditionParameter(element)
             else -> null
         }
     }
@@ -394,9 +394,9 @@ object ParadoxParameterManager {
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val fastInference = PlsSettings.getInstance().state.inference.configContextForParametersFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
+        ParadoxParameterService.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
-            val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
+            val contextInfo = ParadoxParameterService.getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo).orNull()
             if(fastInference && contextConfigs.isNotNullOrEmpty()) {
                 result.set(contextConfigs)
@@ -414,7 +414,7 @@ object ParadoxParameterManager {
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         parameterInfos.process p@{ parameterInfo ->
             ProgressManager.checkCanceled()
-            val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
+            val contextConfigs = ParadoxParameterService.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
             if(fastInference && contextConfigs.isNotNullOrEmpty()) {
                 result.set(contextConfigs)
                 return@p false

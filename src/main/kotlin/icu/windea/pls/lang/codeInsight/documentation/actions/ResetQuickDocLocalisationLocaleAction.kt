@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.platform.ide.documentation.DOCUMENTATION_BROWSER
 import icu.windea.pls.lang.ParadoxLanguage
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.codeInsight.documentation.targetElement
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 
@@ -43,7 +42,7 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
         if (targetElement.language !is ParadoxLanguage) return
         val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
         if (locale == null) return
-        targetElement.putUserData(PlsKeys.documentationLocale, null)
+        targetElement.putUserData(ParadoxLocaleManager.Keys.documentationLocale, null)
         browser.reload()
     }
 }

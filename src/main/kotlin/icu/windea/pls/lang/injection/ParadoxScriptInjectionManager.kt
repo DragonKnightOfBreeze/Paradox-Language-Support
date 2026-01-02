@@ -18,10 +18,12 @@ import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.ParadoxExpressionManager
@@ -39,7 +41,7 @@ import icu.windea.pls.script.psi.propertyKey
 
 object ParadoxScriptInjectionManager {
     object Keys : KeyRegistry() {
-        val parameterValueInjectionInfos by createKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
+        val parameterValueInjectionInfos by registerKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
     }
 
     fun applyParameterValueInjection(host: PsiLanguageInjectionHost): List<ParadoxParameterValueInjectionInfo> {
@@ -66,7 +68,7 @@ object ParadoxScriptInjectionManager {
 
         // 这里先向上得到 `contextReferenceInfo`，接着获取传入值对应的 `textRange`，然后选用在 `host` 的 `textRange` 之内的那些
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(host, from = from) ?: return
+        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(host, from = from) ?: return
         if (contextReferenceInfo.arguments.isEmpty()) return
         val hostRange = host.textRange
         contextReferenceInfo.arguments.forEach f@{ referenceInfo ->
@@ -106,7 +108,7 @@ object ParadoxScriptInjectionManager {
 
         val defaultValueIndex = host.text.indexOf(defaultValue)
         val rangeInsideHost = TextRange.from(defaultValueIndex, defaultValue.length)
-        val parameterElementProvider = lazy { ParadoxParameterSupport.resolveParameter(host) }
+        val parameterElementProvider = lazy { ParadoxParameterService.resolveParameter(host) }
         val injectionInfo = ParadoxParameterValueInjectionInfo(rangeInsideHost, false, parameterElementProvider)
         injectionInfos += injectionInfo
     }

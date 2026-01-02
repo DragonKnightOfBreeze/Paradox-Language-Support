@@ -2,7 +2,7 @@ package icu.windea.pls.extension.markdown
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.inject.processors.InjectedFileProcessor
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
 import icu.windea.pls.lang.util.PlsFileManager
 
 /**
@@ -16,7 +16,7 @@ class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
         if (PlsFileManager.isStubFile(vFile)) return false
         val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return false
         val injectedFileInfo = PlsMarkdownManager.getInjectFileInfoFromInjectedFile(element)
-        ParadoxAnalyzeInjector.injectFileInfo(vFile, injectedFileInfo)
+        ParadoxAnalysisInjector.injectFileInfo(vFile, injectedFileInfo)
         return true
     }
 }

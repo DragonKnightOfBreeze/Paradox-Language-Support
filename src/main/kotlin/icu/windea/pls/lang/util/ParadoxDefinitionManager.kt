@@ -10,9 +10,11 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.ParadoxModificationTrackers
 import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.definitionInfo
@@ -41,11 +43,14 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
  */
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
-        val cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
-        val cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(Keys)
-        val cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
-        val cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
-        val cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(Keys)
+        val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
+        val cachedDefinitionPrimaryLocalisationKey by registerKey<CachedValue<String>>(Keys)
+        val cachedDefinitionPrimaryLocalisation by registerKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
+        val cachedDefinitionPrimaryLocalisations by registerKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
+        val cachedDefinitionPrimaryImage by registerKey<CachedValue<PsiFile>>(Keys)
+
+        /** 用于标记图片的帧数信息以便后续进行切分。 */
+        val imageFrameInfo by registerKey<ImageFrameInfo>(Keys)
     }
 
     // get info & match methods
@@ -244,7 +249,7 @@ object ParadoxDefinitionManager {
             val resolved = CwtLocationExpressionManager.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
             val file = resolved?.element?.castOrNull<PsiFile>()
             if (file == null) continue
-            element.putUserData(PlsKeys.imageFrameInfo, resolved.frameInfo)
+            element.putUserData(Keys.imageFrameInfo, resolved.frameInfo)
             return file
         }
         return null

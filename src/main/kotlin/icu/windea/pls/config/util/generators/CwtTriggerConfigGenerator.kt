@@ -14,6 +14,7 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.cwt.psi.CwtElementFactory
@@ -184,10 +185,10 @@ class CwtTriggerConfigGenerator(override val project: Project) : CwtConfigGenera
     )
 
     object Keys : KeyRegistry() {
-        val missingNames by createKey<Set<String>>(Keys)
-        val unknownNames by createKey<Set<String>>(Keys)
-        val infos by createKey<Map<String, TriggerInfo>>(Keys)
-        val configInfos by createKey<Map<String, TriggerConfigInfo>>(Keys)
+        val missingNames by registerKey<Set<String>>(Keys)
+        val unknownNames by registerKey<Set<String>>(Keys)
+        val infos by registerKey<Map<String, TriggerInfo>>(Keys)
+        val configInfos by registerKey<Map<String, TriggerConfigInfo>>(Keys)
     }
 
     companion object {

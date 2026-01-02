@@ -12,6 +12,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -34,7 +35,7 @@ import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
 
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
-        val cachedDefinitionInjectionInfo by createKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
+        val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
     }
 
     const val definitionInjectionKey = "definition_injection"

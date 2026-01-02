@@ -23,8 +23,9 @@ import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.KeyWithFactory
+import icu.windea.pls.core.util.RegistedKeyWithFactory
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getUserDataOrDefault
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -48,7 +49,7 @@ import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.propertyValue
 
-private typealias KeyForCache = KeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
+private typealias KeyForCache = RegistedKeyWithFactory<CachedValue<MatchResultNestedCache>, CwtConfigGroup>
 private typealias MatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult, MatchResultCache>
 private typealias MatchResultCache = CancelableCache<String, ParadoxMatchResult>
 
@@ -62,7 +63,7 @@ object ParadoxMatchResultProvider {
         val cacheForModifiers by createKeyForCache(ParadoxModificationTrackers.ScriptFile)
         val cacheForTemplates by createKeyForCache(ParadoxModificationTrackers.ScriptFile, ParadoxModificationTrackers.LocalisationFile)
 
-        private fun createKeyForCache(vararg dependencyItems: Any) = createKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
+        private fun createKeyForCache(vararg dependencyItems: Any) = registerKey<CachedValue<MatchResultNestedCache>, CwtConfigGroup>(Keys) {
             // rootFile -> cacheKey -> configMatchResult
             createCachedValue(project) {
                 createNestedCache<VirtualFile, _, _, _> {

@@ -18,7 +18,7 @@ import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.search.selector.ChainedParadoxSelector
 import icu.windea.pls.lang.selectGameType
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.index.ParadoxIndexInfo
 
@@ -57,7 +57,7 @@ object PlsIndexService {
         val indexId = index.name
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
+            ParadoxAnalysisManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
 
             val fileData = index.getFileData(file, project)
@@ -81,7 +81,7 @@ object PlsIndexService {
         val keys = setOf(key)
         return processFilesWithKeys(indexId, keys, scope) p@{ file ->
             ProgressManager.checkCanceled()
-            ParadoxAnalyzeManager.getFileInfo(file) // ensure file info is resolved here
+            ParadoxAnalysisManager.getFileInfo(file) // ensure file info is resolved here
             if (gameType != null && gameType != selectGameType(file)) return@p true // check game type at file level
 
             val infos = index.getFileDataWithKey(file, project, key).castOrNull<List<T>>()

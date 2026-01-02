@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.analyze
+package icu.windea.pls.lang.analysis
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.injected.editor.VirtualFileWindow
@@ -20,8 +20,6 @@ import icu.windea.pls.core.runReadActionSmartly
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.util.StatefulValue
-import icu.windea.pls.core.util.getOrPutUserData
-import icu.windea.pls.lang.PlsKeys
 import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.psi.mock.CwtConfigMockPsiElement
 import icu.windea.pls.lang.psi.mock.ParadoxMockPsiElement
@@ -38,37 +36,36 @@ import icu.windea.pls.model.index.CwtConfigIndexInfo
 import icu.windea.pls.model.index.ParadoxIndexInfo
 import java.nio.file.Path
 
-object ParadoxAnalyzeManager {
+object ParadoxAnalysisManager {
     private val logger = thisLogger()
+    private val dataService get() = ParadoxAnalysisDataService.getInstance()
 
     // region Get Methods
 
     fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
 
-        // try to get injected root info first
-        doGetInjectedRootInfo(rootFile)?.let { return it }
-
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(rootFile)) return null
+
+        // try to get injected root info first
+        doGetInjectedRootInfo(rootFile)?.let { return it }
 
         // get root info from cache (load if necessary)
         return doGetCachedRootInfo(rootFile)
     }
 
     private fun doGetInjectedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        ParadoxAnalyzeInjector.getMarkedRootInfo()?.let { return it }
-        ParadoxAnalyzeInjector.getInjectedRootInfo(rootFile)?.let { return it }
-        return null
+        return with(dataService) { markedRootInfo ?: rootFile.injectedRootInfo }
     }
 
     private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val cachedRootInfo = rootFile.getOrPutUserData(PlsKeys.cachedRootInfo) { StatefulValue() }
+        val cachedRootInfo = with(dataService) { rootFile.cachedRootInfo ?: StatefulValue<ParadoxRootInfo>().also { rootFile.cachedRootInfo = it } }
         if (cachedRootInfo.isInitialized) return cachedRootInfo.value
         synchronized(cachedRootInfo) {
             if (cachedRootInfo.isInitialized) return cachedRootInfo.value
             runCatchingCancelable {
-                val rootInfo = ParadoxAnalyzeService.resolveRootInfo(rootFile)
+                val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
                 cachedRootInfo.value = rootInfo
                 if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                     application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
@@ -89,11 +86,11 @@ object ParadoxAnalyzeManager {
         // no file info for `VirtualFileWindow` (injected PSI)
         if (PlsFileManager.isInjectedFile(file)) return null
 
-        // try to get injected file info first
-        doGetInjectedFileInfo(file)?.let { return it }
-
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(file)) return null
+
+        // try to get injected file info first
+        doGetInjectedFileInfo(file)?.let { return it }
 
         // get file info from cache (load if necessary)
         return doGetCachedFileInfo(file)
@@ -104,13 +101,11 @@ object ParadoxAnalyzeManager {
     }
 
     private fun doGetInjectedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        ParadoxAnalyzeInjector.getMarkedFileInfo()?.let { return it }
-        ParadoxAnalyzeInjector.getInjectedFileInfo(file)?.let { return it }
-        return null
+        return with(dataService) { markedFileInfo ?: file.injectedFileInfo }
     }
 
     private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val cachedFileInfo = file.getOrPutUserData(PlsKeys.cachedFileInfo) { StatefulValue() }
+        val cachedFileInfo = with(dataService) { file.cachedFileInfo ?: StatefulValue<ParadoxFileInfo>().also { file.cachedFileInfo = it } }
         if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
         synchronized(cachedFileInfo) {
             if (cachedFileInfo.isInitialized) return cachedFileInfo.value.takeIf { doValidateCachedFileInfo(it) }
@@ -121,7 +116,7 @@ object ParadoxAnalyzeManager {
                 while (true) {
                     val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                     if (rootInfo != null) {
-                        val fileInfo = ParadoxAnalyzeService.resolveFileInfo(file, rootInfo)
+                        val fileInfo = ParadoxAnalysisService.resolveFileInfo(file, rootInfo)
                         cachedFileInfo.value = fileInfo
                         return fileInfo
                     }
@@ -153,7 +148,7 @@ object ParadoxAnalyzeManager {
             while (true) {
                 val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                 if (rootInfo != null) {
-                    val newFileInfo = ParadoxAnalyzeService.resolveFileInfo(filePath, rootInfo)
+                    val newFileInfo = ParadoxAnalysisService.resolveFileInfo(filePath, rootInfo)
                     return newFileInfo
                 }
                 currentFilePath = currentFilePath.parent ?: break
@@ -186,28 +181,27 @@ object ParadoxAnalyzeManager {
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         // 使用简单缓存与文件索引以优化性能（避免直接访问 PSI）
 
-        // try to get injected locale config first
-        doGetInjectedLocaleConfig(file)?.let { return it }
-
         // skip for `StubVirtualFile` (unsupported)
         if (PlsFileManager.isStubFile(file)) return null
+
+        // try to get injected locale config first
+        doGetInjectedLocaleConfig(file)?.let { return it }
 
         // get locale config from cache (load if necessary)
         return doGetCachedLocaleConfig(file, project)
     }
 
     private fun doGetInjectedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
-        ParadoxAnalyzeInjector.getInjectedLocaleConfig(file)?.let { return it }
-        return null
+        return with(dataService) { file.injectedLocaleConfig }
     }
 
     private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val cachedLocaleConfig = file.getOrPutUserData(PlsKeys.cachedLocaleConfig) { StatefulValue() }
+        val cachedLocaleConfig = with(dataService) { file.cachedLocaleConfig ?: StatefulValue<CwtLocaleConfig>().also { file.cachedLocaleConfig = it } }
         if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
         synchronized(cachedLocaleConfig) {
             if (cachedLocaleConfig.isInitialized) return cachedLocaleConfig.value
             runCatchingCancelable {
-                val localeConfig = ParadoxAnalyzeService.resolveLocaleConfig(file, project)
+                val localeConfig = ParadoxAnalysisService.resolveLocaleConfig(file, project)
                 cachedLocaleConfig.value = localeConfig
                 return localeConfig
             }.onFailure { e -> logger.warn(e) }
@@ -216,12 +210,16 @@ object ParadoxAnalyzeManager {
         }
     }
 
+    fun getSliceInfos(file: VirtualFile): MutableSet<String> {
+        return with(dataService) { file.sliceInfos ?: mutableSetOf<String>().also { file.sliceInfos = it } }
+    }
+
     // endregion
 
     // region Manipulation Methods
 
     fun inferGameTypeFromFileName(file: VirtualFile): ParadoxGameType? {
-        if (!ParadoxAnalyzeInjector.useGameTypeInference()) return null
+        if (!ParadoxAnalysisInjector.useGameTypeInference()) return null
         val name = file.nameWithoutExtension
         val gameType = name.split('_', '.').firstNotNullOfOrNull { ParadoxGameType.get(it) }
         return gameType
@@ -288,7 +286,7 @@ object ParadoxAnalyzeManager {
     tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
         if (from == null) return null
         if (from is CwtLocaleConfig) return from
-        if (from is VirtualFile) ParadoxAnalyzeInjector.getInjectedLocaleConfig(from)?.let { return it }
+        if (from is VirtualFile) ParadoxAnalysisInjector.getInjectedLocaleConfig(from)?.let { return it }
         return when {
             from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
             from is PsiFile -> getLocaleConfig(from.virtualFile ?: return null, from.project)

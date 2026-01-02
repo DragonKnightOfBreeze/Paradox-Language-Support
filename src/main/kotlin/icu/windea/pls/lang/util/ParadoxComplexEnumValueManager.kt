@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -29,7 +30,7 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
-        val cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueIndexInfo>>(Keys)
+        val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueIndexInfo>>(Keys)
     }
 
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {

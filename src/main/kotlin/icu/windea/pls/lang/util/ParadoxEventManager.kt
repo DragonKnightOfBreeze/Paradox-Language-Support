@@ -21,6 +21,7 @@ import icu.windea.pls.core.processQuery
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
@@ -45,12 +46,12 @@ import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 @Suppress("unused")
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
-        val cachedEventInvocations by createKey<CachedValue<Set<String>>>(Keys)
-        val eventAllTypes by createKey<Set<String>>(Keys)
-        val eventAllAttributes by createKey<Set<String>>(Keys)
-        val eventType by createKey<String>(Keys)
-        val eventAttributes by createKey<Set<String>>(Keys)
-        val eventScope by createKey<String>(Keys)
+        val cachedEventInvocations by registerKey<CachedValue<Set<String>>>(Keys)
+        val eventAllTypes by registerKey<Set<String>>(Keys)
+        val eventAllAttributes by registerKey<Set<String>>(Keys)
+        val eventType by registerKey<String>(Keys)
+        val eventAttributes by registerKey<Set<String>>(Keys)
+        val eventScope by registerKey<String>(Keys)
     }
 
     fun isValidEventNamespace(eventNamespace: String): Boolean {

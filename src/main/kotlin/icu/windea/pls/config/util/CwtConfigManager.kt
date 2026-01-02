@@ -38,6 +38,7 @@ import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -60,12 +61,15 @@ import kotlin.io.path.name
 
 object CwtConfigManager {
     object Keys : KeyRegistry() {
-        val gameTypeIdFromRepoFile by createKey<String>(Keys)
-        val cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(Keys)
-        val cachedConfigType by createKey<CachedValue<CwtConfigType>>(Keys)
-        val cachedDocumentation by createKey<CachedValue<String>>(Keys)
-        val filePathPatterns by createKey<Set<String>>(Keys)
-        val filePathPatternsForPriority by createKey<Set<String>>(Keys)
+        val gameTypeIdFromRepoFile by registerKey<String>(Keys)
+        val cachedConfigPath by registerKey<CachedValue<CwtConfigPath>>(Keys)
+        val cachedConfigType by registerKey<CachedValue<CwtConfigType>>(Keys)
+        val cachedDocumentation by registerKey<CachedValue<String>>(Keys)
+        val filePathPatterns by registerKey<Set<String>>(Keys)
+        val filePathPatternsForPriority by registerKey<Set<String>>(Keys)
+
+        /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
+        val bindingConfig by registerKey<CwtConfig<*>>(this)
     }
 
     fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {

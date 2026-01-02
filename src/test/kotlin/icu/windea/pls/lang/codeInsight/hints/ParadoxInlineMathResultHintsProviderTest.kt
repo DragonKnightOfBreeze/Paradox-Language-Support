@@ -41,7 +41,7 @@ key = @[ var + 1 ]
 
     private fun doTest(text: String) {
         markFileInfo(ParadoxGameType.Stellaris, "common/test.txt")
-        doTestProvider(text, text, ParadoxInlineMathResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
+        doTestProvider("test.txt", text, ParadoxInlineMathResultHintsProvider(), verifyHintsPresence = true, testMode = ProviderTestMode.SIMPLE)
     }
 
     override fun getProjectDescriptor(): LightProjectDescriptor {

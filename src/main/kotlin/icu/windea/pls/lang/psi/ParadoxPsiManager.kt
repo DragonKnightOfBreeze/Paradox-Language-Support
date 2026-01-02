@@ -26,6 +26,7 @@ import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.tupleOf
@@ -63,7 +64,7 @@ import icu.windea.pls.script.psi.resolved
 
 object ParadoxPsiManager {
     object Keys : KeyRegistry() {
-        val cachedArgumentTupleList by createKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
+        val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
     }
 
     // region Common Methods

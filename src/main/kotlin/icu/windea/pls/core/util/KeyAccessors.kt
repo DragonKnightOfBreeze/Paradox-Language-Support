@@ -29,19 +29,20 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T & Any>, action: () -> 
 /**
  * 获取用户数据，如果不存在则根据 [Key] 类型提供默认值：
  * - [KeyWithDefaultValue]：使用其 `defaultValue`；
- * - [KeyWithFactory]：调用其 `factory(this)`；
+ * - [RegistedKeyWithFactory]：调用其 `factory(this)`；
  * - 否则返回 `null`。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
+fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKey<T>): T? {
     val value = getUserData(key)
     if (value == EMPTY_OBJECT) return null
     if (value != null) return value
     val defaultValue = when {
-        key is KeyWithDefaultValue -> key.defaultValue
-        key is KeyWithFactory<*, *> -> (key as KeyWithFactory<T, THIS>).factory(this)
+        key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, THIS>).factory(this)
         else -> return null
     }
+    // run write callbacks here
+    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -51,42 +52,43 @@ fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
  * 获取或初始化带工厂的 Key 的值，始终返回非空。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: KeyWithFactory<T, THIS>): T {
+fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: RegistedKeyWithFactory<T, THIS>): T {
     val value = getUserData(key)
     if (value == EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
+    // run write callbacks here
+    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     putUserData(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
-/** 属性委托：`val v by Key<T>`，从 [UserDataHolder] 读取（含默认值逻辑）。*/
-inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? {
+inline operator fun <T> RegistedKey<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? {
     return thisRef.getUserDataOrDefault(this)
 }
 
-/** 属性委托：`val v by KeyWithFactory<T>`，从 [UserDataHolder] 读取或用工厂初始化。*/
-inline operator fun <T, THIS : UserDataHolder> KeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
+inline operator fun <T, THIS : UserDataHolder> RegistedKeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
     return thisRef.getUserDataOrDefault(this)
 }
 
-/** 属性委托写入：`var v by Key<T>`。*/
-inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) {
+inline operator fun <T> RegistedKey<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) {
+    onWriteCallbacks.forEach { it(this, this) } // run write callbacks here
     thisRef.putUserData(this, value)
 }
 
 /** 从 [ProcessingContext] 获取或按 Key 类型提供默认值（逻辑同 UserDataHolder 版本）。*/
 @Suppress("UNCHECKED_CAST")
-fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
+fun <T> ProcessingContext.getOrDefault(key: RegistedKey<T>): T? {
     val value = get(key)
     if (value == EMPTY_OBJECT) return null
     if (value != null) return value
     val defaultValue = when {
-        key is KeyWithDefaultValue -> key.defaultValue
-        key is KeyWithFactory<*, *> -> (key as KeyWithFactory<T, ProcessingContext>).factory(this)
+        key is RegistedKeyWithFactory<*, *> -> (key as RegistedKeyWithFactory<T, ProcessingContext>).factory(this)
         else -> return null
     }
+    // run write callbacks here
+    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
@@ -94,27 +96,27 @@ fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
 
 /** 获取或初始化带工厂的 Key 的值（ProcessingContext 版本）。*/
 @Suppress("UNCHECKED_CAST")
-fun <T> ProcessingContext.getOrDefault(key: KeyWithFactory<T, ProcessingContext>): T {
+fun <T> ProcessingContext.getOrDefault(key: RegistedKeyWithFactory<T, ProcessingContext>): T {
     val value = get(key)
     if (value == EMPTY_OBJECT) return null as T
     if (value != null) return value
     val defaultValue = key.factory(this)
+    // run write callbacks here
+    key.onWriteCallbacks.forEach { it(this, key) }
     // default value is still saved if it's null
     put(key as Key<Any>, defaultValue ?: EMPTY_OBJECT)
     return defaultValue
 }
 
-/** 属性委托：从 [ProcessingContext] 读取。*/
-inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? {
+inline operator fun <T> RegistedKey<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? {
     return thisRef.getOrDefault(this)
 }
 
-/** 属性委托：从 [ProcessingContext] 读取或用工厂初始化。*/
-inline operator fun <T> KeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
+inline operator fun <T> RegistedKeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
     return thisRef.getOrDefault(this)
 }
 
-/** 属性委托写入（ProcessingContext 版本）。*/
-inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) {
+inline operator fun <T> RegistedKey<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) {
+    onWriteCallbacks.forEach { it(this, this) } // run write callbacks here
     thisRef.put(this, value)
 }

@@ -5,8 +5,9 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.impl.FileTypeOverrider
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileWithoutContent
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeInjector
-import icu.windea.pls.lang.analyze.ParadoxAnalyzeManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxAnalysisInjector
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
@@ -32,7 +33,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         val possibleGroup = ParadoxFileGroup.resolvePossible(file.name)
         if (possibleGroup == ParadoxFileGroup.Other) return null
 
-        if (ParadoxAnalyzeInjector.useDefaultFileExtensions()) {
+        if (ParadoxAnalysisInjector.useDefaultFileExtensions()) {
             val fileType = ParadoxFileManager.getFileType(possibleGroup)
             if (fileType != null) return fileType
         }
@@ -44,13 +45,11 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
     }
 
     private fun getFastFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        ParadoxAnalyzeInjector.getMarkedFileInfo()?.let { return it }
-        ParadoxAnalyzeInjector.getInjectedFileInfo(file)?.let { return it }
-        file.getUserData(PlsKeys.cachedFileInfo)?.value?.let { return it }
-        return null
+        val dataService = ParadoxAnalysisDataService.getInstance()
+        return with(dataService) { markedFileInfo ?: file.injectedFileInfo ?: file.cachedFileInfo?.value }
     }
 
     private fun getResolvedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return ParadoxAnalyzeManager.getFileInfo(file)
+        return ParadoxAnalysisManager.getFileInfo(file)
     }
 }

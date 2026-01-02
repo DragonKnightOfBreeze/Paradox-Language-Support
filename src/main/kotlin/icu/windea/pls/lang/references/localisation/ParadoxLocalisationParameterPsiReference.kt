@@ -8,6 +8,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.ep.resolve.parameter.ParadoxLocalisationParameterSupport
+import icu.windea.pls.lang.resolve.ParadoxLocalisationParameterService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.selector.contextSensitive
 import icu.windea.pls.lang.search.selector.localisation
@@ -68,7 +69,7 @@ class ParadoxLocalisationParameterPsiReference(
         if (resolved != null) return resolved
 
         // 尝试解析成 localisation_parameter
-        val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
+        val resolvedParameter = ParadoxLocalisationParameterService.resolveParameter(element)
         if (resolvedParameter != null) return resolvedParameter
 
         return null
@@ -88,7 +89,7 @@ class ParadoxLocalisationParameterPsiReference(
         if (resolved.isNotEmpty()) return resolved.createResults()
 
         // 尝试解析成 localisation_parameter
-        val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
+        val resolvedParameter = ParadoxLocalisationParameterService.resolveParameter(element)
         if (resolvedParameter != null) return resolvedParameter.createResults()
 
         return ResolveResult.EMPTY_ARRAY

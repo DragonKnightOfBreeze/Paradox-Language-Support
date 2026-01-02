@@ -9,6 +9,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -26,7 +27,7 @@ import icu.windea.pls.lang.match.ParadoxMatchService
 
 object ParadoxCsvManager {
     object Keys : KeyRegistry() {
-        val cachedRowConfig by createKey<CachedValue<CwtRowConfig>>(Keys)
+        val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
     }
 
     private const val SEPARATOR = ';'

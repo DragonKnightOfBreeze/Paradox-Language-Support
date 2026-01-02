@@ -10,6 +10,7 @@ import icu.windea.pls.core.isExactWord
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.withDependencyItems
@@ -31,7 +32,7 @@ import icu.windea.pls.script.psi.intValue
 
 object ParadoxTextColorManager {
     object Keys : KeyRegistry() {
-        val cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>(Keys)
+        val cachedTextColorInfo by registerKey<CachedValue<ParadoxTextColorInfo>>(Keys)
     }
 
     fun getId(element: PsiElement): String? {

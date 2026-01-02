@@ -10,16 +10,17 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
-import icu.windea.pls.lang.analyze.ParadoxMetadataService
-import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisDataService
+import icu.windea.pls.lang.analysis.ParadoxMetadataService
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.PlsDaemonManager
-import icu.windea.pls.lang.util.PlsFileManager
 
 /**
  * 用于监听游戏或模组文件的更改，以更新相关缓存。
  */
 class ParadoxFileListener : AsyncFileListener {
+    private val dataService get() = ParadoxAnalysisDataService.getInstance()
+
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
         var reparseOpenedFiles = false
         var refreshFilePaths = false
@@ -141,23 +142,19 @@ class ParadoxFileListener : AsyncFileListener {
 
     private fun clearRootInfo(file: VirtualFile) {
         val rootFile = selectRootFile(file) ?: return
-        if (PlsFileManager.isStubFile(rootFile)) return
-        rootFile.putUserData(PlsKeys.cachedRootInfo, null)
+        with(dataService) { rootFile.cachedRootInfo = null }
     }
 
     private fun clearFileInfo(file: VirtualFile) {
-        if (PlsFileManager.isStubFile(file)) return
-        file.putUserData(PlsKeys.cachedFileInfo, null)
+        with(dataService) { file.cachedFileInfo = null }
     }
 
     private fun clearLocaleConfig(file: VirtualFile) {
-        if (PlsFileManager.isStubFile(file)) return
-        file.putUserData(PlsKeys.cachedLocaleConfig, null)
+        with(dataService) { file.cachedLocaleConfig = null }
     }
 
     private fun clearSliceInfos(file: VirtualFile) {
-        if (PlsFileManager.isStubFile(file)) return
-        file.putUserData(ParadoxImageManager.Keys.sliceInfos, null)
+        with(dataService) { file.sliceInfos = null }
     }
 
     private fun shouldRestartAnalysis(fileName: String): Boolean {

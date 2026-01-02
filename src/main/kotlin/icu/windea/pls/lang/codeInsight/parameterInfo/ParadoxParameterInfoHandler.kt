@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.PlsBundle
-import icu.windea.pls.ep.resolve.parameter.ParadoxParameterSupport
+import icu.windea.pls.lang.resolve.ParadoxParameterService
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
@@ -20,12 +20,12 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterContextInfoMap = mutableMapOf<String, ParadoxParameterContextInfo>()
-        ParadoxParameterSupport.processContextReference(element, contextReferenceInfo, true) p@{
+        ParadoxParameterService.processContextReference(element, contextReferenceInfo, true) p@{
             ProgressManager.checkCanceled()
-            val parameterContextInfo = ParadoxParameterSupport.getContextInfo(it) ?: return@p true
+            val parameterContextInfo = ParadoxParameterService.getContextInfo(it) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             parameterContextInfoMap.putIfAbsent(parameterContextInfo.parameters.keys.toString(), parameterContextInfo)
             true
@@ -38,7 +38,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterService.getContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val current = context.parameterOwner
         if (current != null && current !== targetElement) return null

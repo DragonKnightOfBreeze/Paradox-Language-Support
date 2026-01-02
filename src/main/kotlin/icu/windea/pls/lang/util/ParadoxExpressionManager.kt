@@ -60,6 +60,7 @@ import icu.windea.pls.core.toInt
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.list
@@ -118,16 +119,16 @@ import icu.windea.pls.script.psi.isPropertyValue
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
-        val cachedParameterRanges by createKey<CachedValue<List<TextRange>>>(Keys)
+        val cachedParameterRanges by registerKey<CachedValue<List<TextRange>>>(Keys)
 
-        val cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
-        val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
+        val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
+        val cachedConfigsCache by registerKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
+        val cachedChildOccurrenceMapCache by registerKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
 
-        val cachedExpressionReferences by createKey<CachedValue<Array<out PsiReference>>>(Keys)
-        val cachedExpressionReferencesForMergedIndex by createKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedExpressionReferences by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedExpressionReferencesForMergedIndex by registerKey<CachedValue<Array<out PsiReference>>>(Keys)
 
-        val inBlockKeys by createKey<Set<String>>(Keys)
+        val inBlockKeys by registerKey<Set<String>>(Keys)
     }
 
     // region Common Methods

@@ -18,7 +18,7 @@ import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.anonymous
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.or
 import icu.windea.pls.core.util.provideDelegate
@@ -26,6 +26,7 @@ import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageManager
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -48,7 +49,7 @@ import kotlin.io.path.exists
 
 object ParadoxImageManager {
     object Keys : KeyRegistry() {
-        val sliceInfos by createKey<MutableSet<String>>(Keys)
+        val sliceInfos by registerKey<MutableSet<String>>(Keys)
     }
 
     private val logger = logger<ParadoxImageManager>()
@@ -128,7 +129,7 @@ object ParadoxImageManager {
     }
 
     private fun doResolveUrlByDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?): String? {
-        // 兼容definition不是sprite的情况
+        // 兼容 `definition` 不是 `sprite` 的情况
         val resolved = runReadActionSmartly {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
                 CwtLocationExpressionManager.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
@@ -189,8 +190,9 @@ object ParadoxImageManager {
 
     private fun doCreateSlicedImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
         if (imagePath.exists()) {
+            if (PlsFileManager.isStubFile(file)) return true
             val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
-            val slicedInfos = file.getOrPutUserData(Keys.sliceInfos) { mutableSetOf() }
+            val slicedInfos = ParadoxAnalysisManager.getSliceInfos(file)
             if (!slicedInfos.add(sliceInfo)) return true
             imagePath.deleteIfExists() // IDE newly opened or outdated, delete it
         }
