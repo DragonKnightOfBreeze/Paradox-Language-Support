@@ -1,2 +1,2 @@
 l_default:
-  key:0 "value: $@var$"
+ key:0 "value: $@var$"

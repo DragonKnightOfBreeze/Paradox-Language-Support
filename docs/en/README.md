@@ -14,7 +14,7 @@ Paradox Language Support (PLS) is the IntelliJ IDEA plugin designed specifically
 - **Rich Language Features**: Provides syntax highlighting, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagrams, diff viewing and many other features.
 - **Image Processing**: Supports previewing and rendering DDS and TGA images, and allows conversion between different image formats (PNG, DDS and TGA).
 - **Enhanced Information Hints**: Displays key information such as localisation text, images, scopes, and parameters intuitively through quick documentation and inlay hints.
-- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, inline scripts and complex expressions.
+- **Advanced Language Features Support**: Compatible with various advanced features in script and localization languages, including parameters, scopes, complex expressoins, inline scripts, definition injections, etc.
 - **Extensible Config System**: Supports customizing and importing config files to enhance features like code navigation, code completion and documentation hints.
 - **Tool Integrations**: Integrates practical tools like [Image Magick](https://www.imagemagick.org), [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin) and [Tiger](https://github.com/amtep/tiger) to boost development efficiency.
 - **AI Assistance**: Preliminary integration of AI technology for translating and polishing localisation text.
@@ -53,7 +53,7 @@ The plugin comes with the latest built-in configs, ready to use out-of-the-box. 
 
 ## Contribution & Support
 
-All forms of support and contribution are welcomed, including but not limited to:
+All forms of contribution and support are welcomed, including but not limited to:
 
 - ⭐ Star the project on GitHub.
 - 🐛 Submit feedback and issues (via [Discord](https://discord.gg/vBpbET2bXT) or [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)).

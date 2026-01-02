@@ -48,7 +48,7 @@ Paradox Language Support（PLS）是专为 Paradox 游戏模组开发者设计�
 - **丰富的语言功能**：提供代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模板、代码层级、图表和差异比较等多项功能。
 - **图像处理**：支持预览与渲染 DDS 和 TGA 图片，并可在不同图片格式（PNG、DDS、TGA）之间互相转换。
 - **信息增强提示**：通过快速文档和内嵌提示，直观展示本地化文本、图片、作用域和参数等关键信息。
-- **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、内联脚本及复杂表达式。
+- **高级语言特性支持**：兼容脚本与本地化语言中的多种高级特性，包括参数、作用域、复杂表达式、内联脚本和定义注入等。
 - **可扩展的规则系统**：支持自定义和导入规则文件，强化代码导航、代码补全、文档提示等功能。
 - **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
 - **AI 辅助**：初步集成 AI 技术，可用于本地化文本的翻译与润色。
@@ -69,7 +69,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 3. 点击编辑器右上角的悬浮工具栏中的 *模组配置* 按钮。
 4. 配置模组的游戏类型、游戏目录及所需的模组依赖。
 5. 确认配置，等待 IDE 完成索引。
-6. 开始你的模组开发之旅吧！
+6. 开启你的模组开发之旅。
 
 **实用技巧：**
 
@@ -148,7 +148,7 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 
 ## 贡献与支持
 
-欢迎任何形式的支持与贡献，包括但不限于：
+欢迎任何形式的贡献与支持，包括但不限于：
 
 - ⭐ 在 GitHub 上收藏项目。
 - 🐛 提交问题反馈（通过 [Discord](https://discord.gg/vBpbET2bXT)、[群聊](https://qm.qq.com/q/oRPgLwrTZm) 或 [GitHub Issues](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues)）。
@@ -156,4 +156,4 @@ PLS 基于自身的[规则系统](https://windea.icu/Paradox-Language-Support/zh
 - 📢 向朋友或社区推荐本插件。
 - 💝 通过[爱发电](https://afdian.com/a/dk_breeze)赞助项目。
 
-如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系！
+如果你对提交 PR 感兴趣，但对插件开发或规则编写有任何疑问，欢迎通过邮件或 [Discord](https://discord.gg/vBpbET2bXT) 进行联系。

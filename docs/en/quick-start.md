@@ -7,7 +7,7 @@
 3. Click the *Mod Settings* button in the floating toolbar at the top right of the editor.
 4. Configure the mod's game type, game directory, and required mod dependencies.
 5. Confirm the configuration and wait for the IDE to finish indexing.
-6. Begin your mod development voyage!
+6. Then enjoy your mod development voyage.
 
 ## Practical Tips
 

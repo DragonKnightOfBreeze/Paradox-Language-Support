@@ -1,0 +1,7 @@
+# localisation/comments_l_simp_chinese.yml
+l_simp_chinese:
+ the_comment:0 "$comment_from_the_wakers$"
+
+# localisation/comments_l_english.yml
+l_english:
+ the_comment:0 "$comment_from_the_wakers$"

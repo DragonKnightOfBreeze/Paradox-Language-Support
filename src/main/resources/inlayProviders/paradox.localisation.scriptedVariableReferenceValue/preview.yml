@@ -3,4 +3,4 @@
 
 # localisation/test_l_default.yml
 l_default:
-  key:0 "value: $@var/*<# => 1 #>*/$"
+ key:0 "value: $@var/*<# => 1 #>*/$"
