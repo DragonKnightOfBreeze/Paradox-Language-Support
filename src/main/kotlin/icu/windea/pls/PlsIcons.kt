@@ -3,6 +3,8 @@ package icu.windea.pls
 import com.intellij.icons.AllIcons
 import com.intellij.platform.images.icons.PlatformImagesIcons
 import com.intellij.ui.IconManager
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import javax.swing.Icon
 
 @Suppress("unused")
@@ -176,6 +178,12 @@ object PlsIcons {
         fun DynamicValue(dynamicValueType: String?) = when (dynamicValueType) {
             "variable" -> Variable
             else -> DynamicValue
+        }
+
+        @JvmStatic
+        fun PathReference(pathExpression: CwtDataExpression?) = when(pathExpression) {
+            ParadoxInlineScriptManager.inlineScriptPathExpression -> Inline
+            else -> PathReference
         }
     }
 
